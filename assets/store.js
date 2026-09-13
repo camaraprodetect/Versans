@@ -13,6 +13,8 @@
     cart: JSON.parse(read(LS.cart) || '[]'),
     filter: 'all',
     openFilterGroup: null,
+    catalogFilters: { colors: [], priceMin: '', priceMax: '' },
+    catalogFilterSections: { colors: true, price: true },
     pdp: null,
     qty: 1
   };
@@ -45,6 +47,218 @@
     if (!isGlassesProduct(p)) return false;
     var match = /^product-(\d+)$/.exec(String((p && p.slug) || ''));
     return !match || Number(match[1]) >= 31;
+  }
+
+
+  var COLOR_DEFS = [
+    { key: 'black', label: 'שחור', swatch: '#111111', terms: ['שחור', 'black'] },
+    { key: 'white', label: 'לבן', swatch: '#ffffff', terms: ['לבן', 'white'] },
+    { key: 'silver', label: 'כסף', swatch: '#c7ccd1', terms: ['כסף', 'silver', 'steel'] },
+    { key: 'gold', label: 'זהב', swatch: '#d8ae45', terms: ['זהב', 'gold'] },
+    { key: 'rose-gold', label: 'רוז גולד', swatch: '#d8a08e', terms: ['רוז גולד', 'rose gold', 'rosegold'] },
+    { key: 'blue', label: 'כחול', swatch: '#245d96', terms: ['כחול', 'blue'] },
+    { key: 'light-blue', label: 'תכלת', swatch: '#83d8ed', terms: ['תכלת', 'light blue', 'sky blue'] },
+    { key: 'green', label: 'ירוק', swatch: '#2d714d', terms: ['ירוק', 'green'] },
+    { key: 'turquoise', label: 'טורקיז', swatch: '#2aa7a3', terms: ['טורקיז', 'turquoise', 'teal'] },
+    { key: 'pink', label: 'ורוד', swatch: '#e8a2b8', terms: ['ורוד', 'pink'] },
+    { key: 'purple', label: 'סגול', swatch: '#9a74ba', terms: ['סגול', 'purple', 'lavender'] },
+    { key: 'gray', label: 'אפור', swatch: '#777c82', terms: ['אפור', 'gray', 'grey'] },
+    { key: 'brown', label: 'חום', swatch: '#7a513d', terms: ['חום', 'brown'] },
+    { key: 'red', label: 'אדום', swatch: '#a93434', terms: ['אדום', 'red'] },
+    { key: 'beige', label: 'בז׳', swatch: '#d8c6a6', terms: ['בז', 'beige'] },
+    { key: 'transparent', label: 'שקוף', swatch: 'linear-gradient(135deg,#fff 0 45%,#d9e1e7 45% 55%,#fff 55% 100%)', terms: ['שקוף', 'transparent', 'clear'] }
+  ];
+
+  var PRICE_RANGES = [
+    { key: 'under-200', label: 'עד 199.90 ₪', min: 0, max: 199.99 },
+    { key: '200-299', label: '200–299.90 ₪', min: 200, max: 299.99 },
+    { key: '300-399', label: '300–399.90 ₪', min: 300, max: 399.99 },
+    { key: '400-499', label: '400–499.90 ₪', min: 400, max: 499.99 },
+    { key: '500-plus', label: '500 ₪ ומעלה', min: 500, max: Infinity }
+  ];
+
+
+  var TYPE_DEFS = [
+    { key: 'greeting', label: 'תכשיט עם ברכה' },
+    { key: 'necklaces', label: 'שרשראות' },
+    { key: 'bracelets', label: 'צמידים' },
+    { key: 'photo-bracelets', label: 'צמיד תמונה' },
+    { key: 'watches', label: 'שעונים' },
+    { key: 'glasses', label: 'משקפיים' },
+    { key: 'gift-boxes', label: 'מארזים' },
+    { key: 'custom', label: 'Custom' },
+    { key: 'sets', label: 'סטים' }
+  ];
+
+  var DELIVERY_RANGES = [
+    { key: 'fast', label: 'עד 14 ימי עסקים', min: 0, max: 14 },
+    { key: 'standard', label: '15–18 ימי עסקים', min: 15, max: 18 },
+    { key: 'extended', label: '19–25 ימי עסקים', min: 19, max: 25 }
+  ];
+
+  var MATERIAL_DEFS = [
+    { key: 'sterling-925', label: 'Sterling Silver 925', terms: ['925 sterling silver', 'sterling silver 925', 'כסף סטרלינג', 'ציפוי sterling silver 925'] },
+    { key: 'stainless-steel', label: 'Stainless Steel', terms: ['stainless steel', 'נירוסטה', 'פלדת אל חלד'] },
+    { key: 'zinc-alloy', label: 'Zinc Alloy', terms: ['zinc alloy', 'סגסוגת אבץ'] },
+    { key: 'acetate', label: 'אצטט', terms: ['acetate', 'אצטט'] }
+  ];
+
+  var FEATURE_DEFS = [
+    { key: 'color-choice', label: 'בחירת צבע' },
+    { key: 'size-choice', label: 'בחירת מידה / אורך' },
+    { key: 'personalized', label: 'התאמה אישית' },
+    { key: 'gift-box', label: 'כולל / בחירת מארז' },
+    { key: 'model-choice', label: 'בחירת דגם' }
+  ];
+
+  function textValue(v) {
+    if (v == null) return '';
+    if (typeof v === 'string' || typeof v === 'number') return String(v);
+    if (typeof v === 'object') return [v.he, v.en, v.label, v.name, v.id].filter(Boolean).join(' ');
+    return '';
+  }
+
+  function productColorKeys(p) {
+    if (!p) return [];
+    var parts = [p.id, p.slug, textValue(p.title), textValue(p.subtitle), textValue(p.badge)];
+    if (Array.isArray(p.colors)) {
+      p.colors.forEach(function (color) {
+        parts.push(textValue(color));
+        if (color && color.label) parts.push(textValue(color.label));
+      });
+    }
+    var text = parts.join(' ').toLowerCase();
+    var keys = [];
+    COLOR_DEFS.forEach(function (def) {
+      if (def.terms.some(function (term) { return text.indexOf(term.toLowerCase()) !== -1; })) keys.push(def.key);
+    });
+    return keys;
+  }
+
+  function colorDefByKey(key) {
+    for (var i = 0; i < COLOR_DEFS.length; i++) if (COLOR_DEFS[i].key === key) return COLOR_DEFS[i];
+    return null;
+  }
+
+  function currentCollectionProducts() {
+    return PRODUCTS.filter(function (p) {
+      if (state.filter === 'all') return true;
+      if (state.filter.indexOf('glasses') === 0 && !isCurrentGlassesCollectionProduct(p)) return false;
+      var collections = Array.isArray(p.categories) && p.categories.length ? p.categories : [p.category];
+      return collections.indexOf(state.filter) !== -1;
+    });
+  }
+
+  function availableColorOptions(list) {
+    return COLOR_DEFS.map(function (def) {
+      var count = list.reduce(function (total, p) {
+        return total + (productColorKeys(p).indexOf(def.key) !== -1 ? 1 : 0);
+      }, 0);
+      return { key: def.key, label: def.label, swatch: def.swatch, count: count };
+    }).filter(function (option) { return option.count > 0; });
+  }
+
+  function availablePriceRanges(list) {
+    return PRICE_RANGES.map(function (range) {
+      var count = list.reduce(function (total, p) {
+        var price = Number(p && p.price);
+        return total + (isFinite(price) && price >= range.min && price <= range.max ? 1 : 0);
+      }, 0);
+      return { key: range.key, label: range.label, min: range.min, max: range.max, count: count };
+    }).filter(function (range) { return range.count > 0; });
+  }
+
+  function productSearchText(p) {
+    if (!p) return '';
+    var parts = [p.id, p.slug, textValue(p.title), textValue(p.subtitle), textValue(p.badge), textValue(p.afterText)];
+    if (p.details) {
+      ['he', 'en'].forEach(function (lang) {
+        if (Array.isArray(p.details[lang])) p.details[lang].forEach(function (item) { parts.push(textValue(item)); });
+      });
+    }
+    return parts.join(' ').toLowerCase();
+  }
+
+  function productTypeKeys(p) {
+    var collections = p && Array.isArray(p.categories) && p.categories.length ? p.categories : [p && p.category];
+    return TYPE_DEFS.filter(function (def) { return collections.indexOf(def.key) !== -1; }).map(function (def) { return def.key; });
+  }
+
+  function productMaterialKeys(p) {
+    var text = productSearchText(p);
+    return MATERIAL_DEFS.filter(function (def) {
+      return def.terms.some(function (term) { return text.indexOf(term.toLowerCase()) !== -1; });
+    }).map(function (def) { return def.key; });
+  }
+
+  function productFeatureKeys(p) {
+    if (!p) return [];
+    var keys = [];
+    if (Array.isArray(p.colors) && p.colors.length) keys.push('color-choice');
+    if (Array.isArray(p.sizes) && p.sizes.length) keys.push('size-choice');
+    if (p.customName) keys.push('personalized');
+    var collections = Array.isArray(p.categories) && p.categories.length ? p.categories : [p.category];
+    if ((Array.isArray(p.boxes) && p.boxes.length) || collections.indexOf('gift-boxes') !== -1) keys.push('gift-box');
+    if (Array.isArray(p.necklaces) && p.necklaces.length > 1) keys.push('model-choice');
+    return keys;
+  }
+
+  function availableDefinitionOptions(list, defs, getter) {
+    return defs.map(function (def) {
+      var count = list.reduce(function (total, p) {
+        return total + (getter(p).indexOf(def.key) !== -1 ? 1 : 0);
+      }, 0);
+      return { key: def.key, label: def.label, count: count };
+    }).filter(function (option) { return option.count > 0; });
+  }
+
+  function availableDeliveryRanges(list) {
+    return DELIVERY_RANGES.map(function (range) {
+      var count = list.reduce(function (total, p) {
+        var max = Number(p && p.deliveryBusinessDays && p.deliveryBusinessDays.max);
+        return total + (isFinite(max) && max >= range.min && max <= range.max ? 1 : 0);
+      }, 0);
+      return { key: range.key, label: range.label, min: range.min, max: range.max, count: count };
+    }).filter(function (range) { return range.count > 0; });
+  }
+
+  function availableSaleOptions(list) {
+    var sale = 0;
+    var regular = 0;
+    list.forEach(function (p) {
+      var price = Number(p && p.price);
+      var compareAt = Number(p && p.compareAt);
+      if (isFinite(compareAt) && isFinite(price) && compareAt > price) sale += 1;
+      else regular += 1;
+    });
+    return [
+      { key: 'sale', label: 'במבצע', count: sale },
+      { key: 'regular', label: 'ללא מחיר קודם', count: regular }
+    ].filter(function (option) { return option.count > 0; });
+  }
+
+  function resetCatalogFilters() {
+    state.catalogFilters = { colors: [], priceMin: '', priceMax: '' };
+  }
+
+  function matchesAnySelected(selected, productKeys) {
+    if (!selected || !selected.length) return true;
+    return selected.some(function (key) { return productKeys.indexOf(key) !== -1; });
+  }
+
+  function matchesCatalogFilters(p) {
+    var filters = state.catalogFilters || { colors: [], priceMin: '', priceMax: '' };
+    if (!matchesAnySelected(filters.colors, productColorKeys(p))) return false;
+
+    var price = Number(p && p.price);
+    var hasMin = filters.priceMin !== '' && filters.priceMin != null;
+    var hasMax = filters.priceMax !== '' && filters.priceMax != null;
+    var minPrice = hasMin ? Number(filters.priceMin) : null;
+    var maxPrice = hasMax ? Number(filters.priceMax) : null;
+
+    if (hasMin && isFinite(minPrice) && (!isFinite(price) || price < minPrice)) return false;
+    if (hasMax && isFinite(maxPrice) && (!isFinite(price) || price > maxPrice)) return false;
+    return true;
   }
 
   /* Keep the sunglasses visually mixed in every catalog view without making
@@ -146,33 +360,78 @@
     }
   }
 
+  function renderCollectionNav() {
+    var activeKey = state.filter;
+    if (activeKey.indexOf('greeting-') === 0) activeKey = 'greeting';
+    else if (activeKey.indexOf('watches-') === 0) activeKey = 'watches';
+    else if (activeKey.indexOf('glasses-') === 0) activeKey = 'glasses';
+
+    $$('[data-nav-cat]').forEach(function (link) {
+      var active = link.getAttribute('data-nav-cat') === activeKey;
+      link.classList.toggle('is-active', active);
+      if (active) link.setAttribute('aria-current', 'page');
+      else link.removeAttribute('aria-current');
+    });
+  }
+
+  function filterSectionHTML(key, title, bodyHtml, extraOptionsClass) {
+    var open = !state.catalogFilterSections || state.catalogFilterSections[key] !== false;
+    var bodyId = 'catalogFilterBody-' + key;
+    return '<section class="catalog-filter-section" data-filter-section="' + esc(key) + '">' +
+      '<button type="button" class="catalog-filter-title catalog-filter-title--toggle" data-filter-section-toggle="' + esc(key) + '" aria-expanded="' + open + '" aria-controls="' + bodyId + '">' +
+        '<span>' + esc(title) + '</span><span class="catalog-filter-title__icon" aria-hidden="true">' + (open ? '−' : '+') + '</span>' +
+      '</button>' +
+      '<div class="catalog-filter-options' + (extraOptionsClass ? ' ' + extraOptionsClass : '') + '" id="' + bodyId + '"' + (open ? '' : ' hidden') + '>' + bodyHtml + '</div>' +
+    '</section>';
+  }
+
+  function basicFilterOptionHTML(option, dataAttr, active, extraClass) {
+    return '<button type="button" class="catalog-filter-option' + (extraClass ? ' ' + extraClass : '') + (active ? ' is-active' : '') + '" ' + dataAttr + '="' + esc(option.key) + '" aria-pressed="' + active + '">' +
+      '<span class="catalog-filter-option__label">' + esc(option.label) + '</span>' +
+      '<span class="catalog-filter-option__count">' + option.count + '</span>' +
+    '</button>';
+  }
+
   function renderFilters() {
     var wrap = $('#filters');
     if (!wrap) return;
-    wrap.innerHTML = CATEGORIES.map(function (c) {
-      var active = state.filter === c.key;
-      var children = Array.isArray(c.children) ? c.children : [];
-      if (!children.length) {
-        return '<button class="chip' + (active ? ' is-on' : '') + '" data-cat="' + esc(c.key) + '" aria-pressed="' + active + '">' +
-               '<span>' + esc(L(c.label)) + '</span></button>';
-      }
 
-      var expanded = state.openFilterGroup === c.key;
-      var childSelected = children.some(function (child) { return state.filter === child.key; });
-      var groupActive = active || childSelected;
-      var childHtml = children.map(function (child) {
-        var childActive = state.filter === child.key;
-        return '<button class="chip chip--sub' + (childActive ? ' is-on' : '') + '" data-cat="' + esc(child.key) + '" data-parent-group="' + esc(c.key) + '" aria-pressed="' + childActive + '">' +
-               '<span>' + esc(L(child.label)) + '</span><span class="chip__sub-arrow" aria-hidden="true">↳</span></button>';
-      }).join('');
+    var collectionProducts = currentCollectionProducts();
+    var colors = availableColorOptions(collectionProducts);
+    var filters = state.catalogFilters || { colors: [], priceMin: '', priceMax: '' };
+    var selectedColors = filters.colors || [];
+    var selectedMin = filters.priceMin == null ? '' : String(filters.priceMin);
+    var selectedMax = filters.priceMax == null ? '' : String(filters.priceMax);
+    var hasActiveFilters = selectedColors.length > 0 || selectedMin !== '' || selectedMax !== '';
+    var sections = [];
 
-      return '<div class="filter-group' + (expanded ? ' is-open' : '') + '">' +
-        '<button class="chip chip--group' + (groupActive ? ' is-on' : '') + (expanded ? ' is-expanded' : '') + '" data-cat="' + esc(c.key) + '" data-group="' + esc(c.key) + '" aria-pressed="' + active + '" aria-expanded="' + expanded + '">' +
-          '<span>' + esc(L(c.label)) + '</span><span class="chip__group-icon" aria-hidden="true">' + (expanded ? '−' : '+') + '</span>' +
-        '</button>' +
-        '<div class="filter-group__children"' + (expanded ? '' : ' hidden') + '>' + childHtml + '</div>' +
-      '</div>';
-    }).join('');
+    if (colors.length) {
+      sections.push(filterSectionHTML('colors', 'צבע', colors.map(function (option) {
+        var active = selectedColors.indexOf(option.key) !== -1;
+        return '<button type="button" class="catalog-filter-option catalog-filter-option--color' + (active ? ' is-active' : '') + '" data-product-color="' + esc(option.key) + '" aria-pressed="' + active + '">' +
+          '<span class="catalog-filter-swatch" style="--filter-swatch:' + esc(option.swatch) + '" aria-hidden="true"></span>' +
+          '<span class="catalog-filter-option__label">' + esc(option.label) + '</span>' +
+          '<span class="catalog-filter-option__count">' + option.count + '</span>' +
+        '</button>';
+      }).join(''), 'catalog-filter-options--colors'));
+    }
+
+    if (collectionProducts.length) {
+      var priceHtml =
+        '<label class="catalog-price-field">' +
+          '<span class="catalog-price-label">מינימום ₪</span>' +
+          '<input class="catalog-price-input" type="number" inputmode="decimal" min="0" step="0.01" dir="ltr" data-price-min value="' + esc(selectedMin) + '" placeholder="Min">' +
+        '</label>' +
+        '<label class="catalog-price-field">' +
+          '<span class="catalog-price-label">מקסימום ₪</span>' +
+          '<input class="catalog-price-input" type="number" inputmode="decimal" min="0" step="0.01" dir="ltr" data-price-max value="' + esc(selectedMax) + '" placeholder="Max">' +
+        '</label>';
+      sections.push(filterSectionHTML('price', 'מחיר', priceHtml, 'catalog-price-inputs'));
+    }
+
+    var clearHtml = '<button type="button" class="catalog-filter-clear" data-clear-product-filters' + (hasActiveFilters ? '' : ' hidden') + '>נקה סינון</button>';
+    wrap.innerHTML = sections.length ? (clearHtml + sections.join('')) : '<p class="catalog-filter-empty">אין סינונים נוספים בקטגוריה הזו.</p>';
+    renderCollectionNav();
     renderGlassesCollectionBanner();
   }
 
@@ -268,11 +527,8 @@
   function renderGrid() {
     var grid = $('#grid');
     if (!grid) return;
-    var list = PRODUCTS.filter(function (p) {
-      if (state.filter === 'all') return true;
-      if (state.filter.indexOf('glasses') === 0 && !isCurrentGlassesCollectionProduct(p)) return false;
-      var collections = Array.isArray(p.categories) && p.categories.length ? p.categories : [p.category];
-      return collections.indexOf(state.filter) !== -1;
+    var list = currentCollectionProducts().filter(function (p) {
+      return matchesCatalogFilters(p);
     });
     list = shuffleGlassesWithinList(list);
 
@@ -765,6 +1021,26 @@
     }
   }, { passive: false });
 
+  function toggleCatalogArrayFilter(field, key) {
+    var values = Array.isArray(state.catalogFilters[field]) ? state.catalogFilters[field].slice() : [];
+    var index = values.indexOf(key);
+    if (index === -1) values.push(key);
+    else values.splice(index, 1);
+    state.catalogFilters[field] = values;
+  }
+
+  document.addEventListener('input', function (e) {
+    if (!e.target.matches('[data-price-min], [data-price-max]')) return;
+    if (e.target.matches('[data-price-min]')) state.catalogFilters.priceMin = e.target.value.trim();
+    if (e.target.matches('[data-price-max]')) state.catalogFilters.priceMax = e.target.value.trim();
+
+    var clear = $('[data-clear-product-filters]');
+    if (clear) {
+      clear.hidden = !((state.catalogFilters.colors || []).length || state.catalogFilters.priceMin !== '' || state.catalogFilters.priceMax !== '');
+    }
+    renderGrid();
+  });
+
   /* ---------- אירועים ---------------------------------------------------- */
   document.addEventListener('click', function (e) {
     var el;
@@ -778,8 +1054,27 @@
       e.preventDefault();
       return;
     }
+    if ((el = e.target.closest('[data-filter-section-toggle]'))) {
+      var sectionKey = el.getAttribute('data-filter-section-toggle');
+      state.catalogFilterSections[sectionKey] = !(state.catalogFilterSections[sectionKey] !== false);
+      renderFilters();
+      return;
+    }
+    if ((el = e.target.closest('[data-product-color]'))) {
+      toggleCatalogArrayFilter('colors', el.getAttribute('data-product-color'));
+      renderFilters();
+      renderGrid();
+      return;
+    }
+    if ((el = e.target.closest('[data-clear-product-filters]'))) {
+      resetCatalogFilters();
+      renderFilters();
+      renderGrid();
+      return;
+    }
     if ((el = e.target.closest('[data-cat]'))) {
       var nextFilter = el.getAttribute('data-cat');
+      var collectionChanged = state.filter !== nextFilter;
       var groupKey = el.getAttribute('data-group');
       var parentGroup = el.getAttribute('data-parent-group');
 
@@ -795,8 +1090,10 @@
         state.openFilterGroup = parentGroup || null;
       }
 
+      if (collectionChanged) resetCatalogFilters();
       renderFilters();
       renderGrid();
+      if (el.closest('.nav__menu')) setMenu(false);
       window.requestAnimationFrame(scrollCatalogTop);
       return;
     }

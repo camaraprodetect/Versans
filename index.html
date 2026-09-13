@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&amp;family=Frank+Ruhl+Libre:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/styles.css?v=20260913-collection-banners-v1">
+<link rel="stylesheet" href="assets/styles.css?v=20260913-minmax-price-v4">
 <link rel="icon" type="image/png" href="images/VerSansLogoBlackJewlery.png">
 <link rel="stylesheet" href="assets/brand.css?v=20260905-versans-v1">
 <link rel="stylesheet" href="assets/home.css?v=20260907-hero-slider-v1">
@@ -77,12 +77,18 @@
 
     <div class="navscrim" id="navScrim" hidden></div>
 
-    <nav class="nav__menu" id="navmenu" aria-label="ראשי">
+    <nav class="nav__menu" id="navmenu" aria-label="קטגוריות החנות">
       <button class="iconbtn nav__close" type="button" data-nav-close aria-label="סגירת התפריט"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
-      <a href="#shop" data-i18n="nav.shop">החנות</a>
-      <a href="#reviews" data-i18n="nav.how">ביקורות</a>
-      <a href="#faq" data-i18n="nav.faq">שאלות נפוצות</a>
-      <a href="#contact" data-i18n="nav.contact">צרו קשר</a>
+      <a href="#shop" data-cat="all" data-nav-cat="all">הכל</a>
+      <a href="#shop" data-cat="greeting" data-nav-cat="greeting">תכשיט עם ברכה</a>
+      <a href="#shop" data-cat="necklaces" data-nav-cat="necklaces">שרשראות</a>
+      <a href="#shop" data-cat="bracelets" data-nav-cat="bracelets">צמידים</a>
+      <a href="#shop" data-cat="photo-bracelets" data-nav-cat="photo-bracelets">צמיד תמונה</a>
+      <a href="#shop" data-cat="watches" data-nav-cat="watches">שעונים</a>
+      <a href="#shop" data-cat="glasses" data-nav-cat="glasses">משקפיים</a>
+      <a href="#shop" data-cat="gift-boxes" data-nav-cat="gift-boxes">מארזים</a>
+      <a href="#shop" data-cat="custom" data-nav-cat="custom">Custom</a>
+      <a href="#shop" data-cat="sets" data-nav-cat="sets">סטים</a>
     </nav>
 
     <div class="nav__actions">
@@ -149,7 +155,7 @@
       </picture>
     </div>
     <div class="shop__layout">
-      <aside class="shop__sidebar"><p class="shop__filter-label" data-i18n="shop.filter">קטגוריות</p><div class="filters" id="filters" role="group" aria-label="סינון לפי קטגוריה"></div></aside>
+      <aside class="shop__sidebar"><p class="shop__filter-label">סינון</p><div class="filters" id="filters" role="group" aria-label="סינון מוצרים"></div></aside>
       <div class="grid" id="grid"></div>
     </div>
   </div>
@@ -460,7 +466,7 @@
 <script src="assets/i18n.js?v=20260908-delivery-v1"></script>
 <script src="assets/reviews.js?v=20260908-reviews-counts-v12"></script>
 <script src="assets/home.js?v=20260907-hero-slider-v1"></script>
-<script src="assets/store.js?v=20260913-collection-banners-v1"></script>
+<script src="assets/store.js?v=20260913-minmax-price-v4"></script>
 <script src="assets/auth-nav.js?v=20260905-auth-v1"></script>
 </body>
 </html>
