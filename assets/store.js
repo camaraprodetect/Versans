@@ -1060,6 +1060,17 @@
       e.preventDefault();
       return;
     }
+    if ((el = e.target.closest('[data-catalog-filter-toggle]'))) {
+      var filtersPanel = $('#filters');
+      if (filtersPanel) {
+        var willOpen = filtersPanel.hidden;
+        filtersPanel.hidden = !willOpen;
+        el.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+        var panelIcon = $('[data-catalog-filter-toggle-icon]', el);
+        if (panelIcon) panelIcon.textContent = willOpen ? '−' : '+';
+      }
+      return;
+    }
     if ((el = e.target.closest('[data-filter-section-toggle]'))) {
       var sectionKey = el.getAttribute('data-filter-section-toggle');
       state.catalogFilterSections[sectionKey] = !(state.catalogFilterSections[sectionKey] !== false);
