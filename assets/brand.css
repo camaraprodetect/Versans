@@ -1,0 +1,23 @@
+/* VerSans: display the supplied PNG at its visible bounds without changing the asset.
+   Original: 800 x 800. Display window: x=50, y=275, width=704, height=260. */
+.brand__logo{position:relative;display:block;width:188px;max-width:100%;aspect-ratio:704/260;overflow:hidden;flex:none;direction:ltr;line-height:0}
+.brand__logo img{position:absolute;display:block;left:-7.102273%;top:-105.769231%;width:113.636364%;max-width:none;height:auto;aspect-ratio:1;object-fit:contain}
+.brand__sr{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+.brand{gap:0;padding-block:.75rem}
+.brand__footer-link{display:inline-block;max-width:100%;vertical-align:top}
+.foot__brand .brand__logo{width:230px}
+.foot__brand .brand__logo img{filter:brightness(0) invert(1)}
+.ge-brand{display:block;min-width:0;justify-self:center}
+.ge-brand .brand__logo{width:160px;margin:0;padding:0}
+@media(max-width:980px){.brand .brand__logo{width:166px}}
+@media(max-width:700px){
+  .brand .brand__logo{width:clamp(126px,37vw,156px)}
+  .policy-topnav .nav__actions{display:contents}
+  .policy-topnav .policy-shop-link{grid-column:1;grid-row:1;justify-self:start}
+  .policy-topnav #langBtn{grid-column:3;grid-row:1;justify-self:end}
+  .foot__brand .brand__logo{width:200px}
+  .ge-topbar{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:.5rem;padding-inline:16px}
+  .ge-brand .brand__logo{width:clamp(108px,32vw,148px)}
+  .ge-back{min-width:0;font-size:.8rem;line-height:1.5}
+  .ge-top-actions{min-width:0}
+}

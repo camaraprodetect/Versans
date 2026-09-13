@@ -1,0 +1,16 @@
+{
+  "name": "versans-store",
+  "version": "1.0.0",
+  "private": true,
+  "description": "VerSans jewellery store with SQLite accounts, database-backed reviews, HYP checkout and greeting PNG storage",
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "dependencies": {},
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "data:backup": "node scripts/backup-data.js",
+    "data:export": "node scripts/export-data.js"
+  }
+}

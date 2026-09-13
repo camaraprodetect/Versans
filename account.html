@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>החשבון שלי — VerSans</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css?v=20260908-promo-v3">
+<link rel="stylesheet" href="assets/brand.css?v=20260905-versans-v1">
+<link rel="stylesheet" href="assets/auth.css?v=20260905-auth-v6">
+<link rel="icon" type="image/png" href="images/VerSansLogoBlackJewlery.png">
+<link rel="stylesheet" href="assets/fonts.css?v=20260909-fonts-only">
+<link rel="stylesheet" href="assets/typography-only.css?v=20260909-fonts-only">
+</head>
+<body class="auth-page" data-auth-page="account">
+<main class="auth-shell">
+  <section class="auth-visual" aria-hidden="true"><div class="auth-visual__media"><img src="images/auth-showcase.png" alt="" loading="eager" decoding="async"></div><div class="auth-visual__content"><p class="auth-visual__eyebrow">VERSANS ACCOUNT</p><h1 id="authVisualTitle">המתנה שלכם. החשבון שלכם.</h1><p id="authVisualText">חשבון VerSans מאפשר לנו לזהות אתכם בצורה מאובטחת ולהוסיף בהמשך היסטוריית הזמנות, ביקורות והטבות.</p></div></section>
+  <section class="auth-panel">
+    <div class="auth-card">
+      <div class="auth-card__top"><a class="auth-card__brand" href="index.html" aria-label="VerSans"><span class="brand__logo"><img src="images/VerSansLogoBlackJewlery.png" alt="VerSans" width="800" height="800"></span></a><div><a class="auth-back" id="authBack" href="index.html">חזרה לחנות</a></div></div>
+      <p class="auth-card__eyebrow">VERSANS</p><h2 id="authTitle">החשבון שלי</h2><p class="auth-card__lead" id="authLead">פרטי החשבון המחובר כרגע.</p>
+      <p class="account-loading" id="accountLoading">טוען את החשבון…</p>
+      <div id="accountDetails" hidden>
+        <div class="account-card">
+          <div class="account-row"><span id="labelName">שם</span><strong id="accountName"></strong></div>
+          <div class="account-row"><span id="labelEmail">אימייל</span><strong id="accountEmail" dir="ltr"></strong></div>
+          <div class="account-row"><span id="labelSince">נרשמת בתאריך</span><strong id="accountSince"></strong></div>
+        </div>
+        <div class="auth-message" id="authMessage" role="status" aria-live="polite"></div>
+        <div class="account-actions"><a class="btn btn--ghost" href="index.html#shop"><span id="shopText">חזרה לחנות</span></a><button class="btn btn--primary" id="logoutBtn" type="button"><span id="logoutText">התנתקות</span></button></div>
+      </div>
+    </div>
+  </section>
+</main>
+<script src="assets/auth.js?v=20260905-auth-v1"></script>
+</body>
+</html>

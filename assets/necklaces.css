@@ -1,0 +1,26 @@
+.necklace-picker-main{padding:2.2rem 0 5rem}
+.necklace-picker-hero{display:flex;align-items:flex-end;justify-content:space-between;gap:2rem;padding-block:2rem 3.2rem;border-bottom:1px solid var(--line)}
+.necklace-picker-hero>div{max-width:760px}
+.necklace-picker-hero__eyebrow{display:block;margin-bottom:.7rem;color:var(--muted);font-size:.78rem;letter-spacing:.04em}
+.necklace-picker-hero h1{font-size:clamp(2.3rem,4.5vw,4.7rem);line-height:1.05}
+.necklace-picker-hero p{margin-top:1rem;color:var(--muted);font-size:1rem;line-height:1.9;max-width:65ch}
+.necklace-picker-back{min-width:160px}
+.necklace-picker-products{padding-top:3rem}
+.necklace-picker-products__head{display:flex;align-items:end;justify-content:space-between;gap:1rem;margin-bottom:1.6rem}
+.necklace-picker-products__head h2{font-size:clamp(1.7rem,2.4vw,2.5rem)}
+.necklace-picker-products__head span{color:var(--muted);font-size:.85rem}
+.necklace-picker-products .prod__actions{grid-template-columns:1fr}
+.necklace-picker-products .prod__actions .btn--primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+.necklace-picker-products .prod__actions .btn--primary:hover{background:#243849}
+.necklace-picker-nav{position:static!important;transform:none!important;background:transparent!important;box-shadow:none!important;border:0!important}
+@media(max-width:760px){
+  .necklace-picker-main{padding-top:1rem}
+  .necklace-picker-hero{align-items:stretch;flex-direction:column;padding-block:1.4rem 2.2rem}
+  .necklace-picker-back{width:100%}
+  .necklace-picker-products{padding-top:2rem}
+  .necklace-picker-products__head{align-items:flex-start;flex-direction:column}
+  .necklace-picker-nav{display:none!important}
+}
+
+.necklace-picker-package-note{margin-top:.7rem!important;padding:.75rem .9rem;border:1px solid var(--line);background:#fff;font-weight:600;color:var(--ink)!important;max-width:64ch}
+.necklace-picker-products .btn.is-added{opacity:.75}

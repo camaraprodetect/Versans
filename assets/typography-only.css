@@ -1,0 +1,21 @@
+/* VerSans: font families from the Apple Design version only.
+   Existing colors, sizes, weights, spacing, layout and effects remain unchanged.
+   Printable greeting templates retain their own selected fonts, as in that version. */
+:root {
+  --versans-ui-font: 'Noto Sans Hebrew', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+}
+body {
+  font-family: var(--versans-ui-font);
+}
+body:not(:has(.ge-main)) {
+  --sans: var(--versans-ui-font);
+  --serif: var(--versans-ui-font);
+}
+body.product-page-body {
+  --p-font: var(--versans-ui-font);
+  --sans: var(--versans-ui-font);
+  --serif: var(--versans-ui-font);
+}
+body button, body input, body textarea, body select {
+  font-family: var(--versans-ui-font);
+}

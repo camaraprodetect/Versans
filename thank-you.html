@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ההזמנה התקבלה — VerSans</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&amp;family=Frank+Ruhl+Libre:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css?v=20260908-promo-v3">
+<link rel="icon" type="image/png" href="images/VerSansLogoBlackJewlery.png">
+<link rel="stylesheet" href="assets/brand.css?v=20260905-versans-v1">
+<link rel="stylesheet" href="assets/fonts.css?v=20260909-fonts-only">
+<link rel="stylesheet" href="assets/typography-only.css?v=20260909-fonts-only">
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav__inner container">
+    <a class="brand" href="index.html">
+      <span class="brand__logo"><img src="images/VerSansLogoBlackJewlery.png" alt="VerSans" width="800" height="800" decoding="async"></span><span class="brand__sr" data-brand aria-hidden="true" dir="ltr">VerSans</span>
+    </a>
+    <div class="nav__actions">
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <div class="result" id="result">
+    <div class="spinner"></div>
+    <p style="margin-top:1.2rem" id="checkingText">בודקים את התשלום…</p>
+  </div>
+</main>
+
+<footer class="foot">
+  <div class="container">
+    <div class="foot__bottom" style="margin-top:0;border:0">
+      <span>© <span id="year"></span> <span data-brand></span></span>
+      <span><a href="policies.html#terms">תקנון</a></span>
+      <span><a href="policies.html#cancel-request">ביטול עסקה</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/config.js?v=20260905-versans-v1"></script>
+<script src="assets/i18n.js?v=20260905-versans-v1"></script>
+<script>
+(function () {
+  'use strict';
+  var lang = 'he';
+  var dict = I18N.he;
+  function t(k) { return dict[k] || I18N.he[k] || k; }
+
+  document.documentElement.lang = 'he';
+  document.documentElement.dir = 'rtl';
+  document.title = t('ty.ok.t') + ' — ' + STORE_CONFIG.brand.name.he;
+  document.getElementById('checkingText').textContent = t('ty.checking');
+  document.getElementById('year').textContent = new Date().getFullYear();
+  Array.prototype.forEach.call(document.querySelectorAll('[data-brand]'), function (el) {
+    el.textContent = STORE_CONFIG.brand.name[lang] || STORE_CONFIG.brand.name.he;
+  });
+
+  var params = new URLSearchParams(window.location.search);
+  var pending = null;
+  try { pending = JSON.parse(localStorage.getItem('kw_pending') || 'null'); } catch (e) {}
+
+  var okIcon = '<svg class="result__icon" viewBox="0 0 48 48" fill="none" stroke="#2F6B4F" stroke-width="2"><circle cx="24" cy="24" r="21"/><path d="M15 24.5l6.5 6.5L33 18"/></svg>';
+  var noIcon = '<svg class="result__icon" viewBox="0 0 48 48" fill="none" stroke="#A32B22" stroke-width="2"><circle cx="24" cy="24" r="21"/><path d="M17 17l14 14M31 17L17 31"/></svg>';
+
+  function show(ok, orderId) {
+    var html = (ok ? okIcon : noIcon) +
+      '<h1>' + (ok ? t('ty.ok.t') : t('ty.fail.t')) + '</h1>' +
+      '<p>' + (ok ? t('ty.ok.d') : t('ty.fail.d')) + '</p>' +
+      (ok && orderId ? '<p class="result__order">' + t('ty.order') + ': ' + orderId + '</p>' : '') +
+      '<p class="result__cta"><a class="btn btn--primary" href="index.html">' + t('ty.home') + '</a></p>';
+    document.getElementById('result').innerHTML = html;
+    if (ok) {
+      try { localStorage.removeItem('kw_cart'); localStorage.removeItem('kw_pending'); } catch (e) {}
+    }
+  }
+
+  var orderId = params.get('Order') || (pending && pending.order) || '';
+
+  // אין פרמטרים בכלל – הגעה ישירה לעמוד
+  if (!params.toString()) { show(false, ''); return; }
+
+  fetch('/api/verify-payment?' + params.toString())
+    .then(function (r) { return r.json(); })
+    .then(function (data) { show(!!(data && data.ok), orderId); })
+    .catch(function () {
+      // אם האימות בשרת נכשל, נופלים לקוד התשובה של HYP שחזר בכתובת
+      show(params.get('CCode') === '0', orderId);
+    });
+})();
+</script>
+</body>
+</html>
