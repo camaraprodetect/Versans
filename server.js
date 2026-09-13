@@ -1108,9 +1108,13 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
-    if (serveStatic(req, res, pathname)) return;
-    res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
-    res.end('404 - Not found');
+if (serveStatic(req, res, pathname)) return;
+
+// אם serveStatic כבר שלח headers/response, לא שולחים תשובה נוספת
+if (res.headersSent) return;
+
+res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+res.end('404 - Not found');
   } catch (err) {
     console.error(`${req.method} ${pathname} failed:`, err);
     if (!res.headersSent) json(res, err.status || 500, { ok: false, error: err.status ? err.message : 'internal_error' });
