@@ -85,12 +85,21 @@ html[lang=en] .promo-marquee__item{direction:ltr}
 .brand__name{font:500 2.45rem/.95 var(--serif);letter-spacing:-.045em}
 .brand__latin{font:400 .625rem/1.3 var(--sans);letter-spacing:.36em;text-align:center;padding-inline-start:.36em}
 .brand__mark{display:none}
-.nav__menu{grid-column:2;grid-row:1;display:flex;gap:clamp(.55rem,1vw,1.15rem);align-items:center;justify-content:center;justify-self:center;min-width:0;width:100%}
-.nav__menu a{position:relative;font-size:clamp(.9rem,.88vw,1.02rem);font-weight:500;white-space:nowrap;text-decoration:none;padding-block:1rem;color:var(--ink);transition:color .2s ease}
+.nav__menu{grid-column:2;grid-row:1;display:flex;gap:clamp(1rem,1.45vw,1.8rem);align-items:center;justify-content:center;justify-self:center;min-width:0;width:100%}
+.nav__menu a{position:relative;font-size:clamp(.9rem,1.05vw,1.14rem);font-weight:500;white-space:nowrap;text-decoration:none;padding-block:1rem;color:var(--ink);transition:color .2s ease}
 .nav__menu a::after{content:'';position:absolute;bottom:.6rem;inset-inline:0;height:1px;background:var(--ink);transform:scaleX(0);transition:transform .2s}
 .nav__menu a:hover::after{transform:scaleX(1)}
 .nav__menu a.is-active{font-weight:700;color:var(--navy)}
 .nav__menu a.is-active::after{transform:scaleX(1)}
+.nav__item{position:relative;display:flex;align-items:center;align-self:stretch}
+.nav__submenu{position:absolute;top:calc(100% - .55rem);inset-inline-start:50%;z-index:72;display:grid;min-width:190px;padding:.5rem;background:#fff;border:1px solid var(--line);box-shadow:0 18px 38px #14233320;opacity:0;visibility:hidden;pointer-events:none;transform:translate(-50%,-7px);transition:opacity .18s ease,transform .18s ease,visibility .18s ease}
+html[dir=rtl] .nav__submenu{transform:translate(50%,-7px)}
+.nav__item--has-submenu:hover .nav__submenu,.nav__item--has-submenu:focus-within .nav__submenu,.nav__submenu.is-open{opacity:1;visibility:visible;pointer-events:auto;transform:translate(-50%,0)}
+html[dir=rtl] .nav__item--has-submenu:hover .nav__submenu,html[dir=rtl] .nav__item--has-submenu:focus-within .nav__submenu,html[dir=rtl] .nav__submenu.is-open{transform:translate(50%,0)}
+.nav__submenu a{display:block;padding:.68rem .8rem;font-size:.94rem;line-height:1.3;border-radius:2px}
+.nav__submenu a::after{display:none}
+.nav__submenu a:hover,.nav__submenu a.is-active{background:var(--blush);color:var(--navy)}
+.nav__submenu-all{font-weight:650;border-bottom:1px solid var(--line);margin-bottom:.2rem}
 .nav__actions{grid-column:3;grid-row:1;display:flex;align-items:center;gap:.9rem;justify-self:end}
 .iconbtn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-width:44px;min-height:44px;padding:.5rem;border:0;background:transparent;text-decoration:none;font-size:.875rem}
 .iconbtn:hover{background:var(--blush)}
@@ -438,7 +447,7 @@ html[dir=ltr] .ov--side .ov__panel{--slide:1}
 /* Responsive layouts; no separate mobile product data or gallery state. */
 @media(min-width:1600px){.shop__layout{grid-template-columns:230px minmax(0,1fr)}.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(max-width:1200px){
- .nav__inner{gap:.75rem}.nav__menu{gap:.42rem}.nav__menu a{font-size:.82rem}
+ .nav__inner{gap:.7rem}.nav__menu{gap:.75rem}.nav__menu a{font-size:.88rem}
  .hero{min-height:570px}.hero__copy{padding:3rem}.hero__title{font-size:4.4rem}
  .shop__layout{grid-template-columns:190px minmax(0,1fr);gap:1.7rem}.grid{gap:2.2rem 1rem}
  .product-detail{gap:2rem;grid-template-columns:1fr 1fr}.product-gallery{grid-template-columns:1fr;position:static}
@@ -455,6 +464,13 @@ html[dir=ltr] .ov--side .ov__panel{--slide:1}
  .nav__close{display:grid;position:absolute;top:1.2rem;inset-inline-end:1.2rem}
  .nav__menu a{font:500 1.45rem/1.3 var(--serif);padding-block:1.05rem;border-bottom:1px solid var(--line);white-space:normal}
  .nav__menu a::after{display:none}
+ .nav__item{display:block;width:100%;align-self:auto;border-bottom:1px solid var(--line)}
+ .nav__item--has-submenu>a{display:block;border-bottom:0}
+ .nav__submenu{position:static;display:none;min-width:0;padding:0 .65rem .8rem;margin:0;border:0;box-shadow:none;opacity:1;visibility:visible;pointer-events:auto;transform:none!important;transition:none}
+ .nav__submenu.is-open{display:grid}
+ .nav__submenu a{font:500 1.08rem/1.3 var(--sans);padding:.72rem .8rem;border:0;background:#f7f9fa}
+ .nav__submenu a+a{margin-top:2px}
+ .nav__submenu-all{margin-bottom:.25rem;border-bottom:0!important;font-weight:700}
  .navscrim{display:block;position:fixed;inset:0;z-index:75;background:#0d1c2b80}
  .hero{min-height:540px}.hero__copy{padding:2.4rem}.hero__title{font-size:3.65rem}.hero__cta{gap:1rem}
  .trust__item{gap:.6rem;padding-inline:.5rem}.trust__t{font-size:.8125rem}.trust__d{font-size:.75rem}

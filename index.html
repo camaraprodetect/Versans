@@ -80,12 +80,29 @@
     <nav class="nav__menu" id="navmenu" aria-label="קטגוריות החנות">
       <button class="iconbtn nav__close" type="button" data-nav-close aria-label="סגירת התפריט"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
       <a href="#shop" data-cat="all" data-nav-cat="all">הכל</a>
-      <a href="#shop" data-cat="greeting" data-nav-cat="greeting">תכשיט עם ברכה</a>
+      <div class="nav__item nav__item--has-submenu" data-nav-group="greeting">
+        <a href="#shop" data-cat="greeting" data-nav-cat="greeting" data-nav-parent-toggle="greeting" aria-haspopup="true" aria-expanded="false">תכשיט עם ברכה</a>
+        <div class="nav__submenu" aria-label="תתי קטגוריות תכשיט עם ברכה">
+          <a href="#shop" data-cat="greeting" class="nav__submenu-all">כל תכשיטי הברכה</a>
+          <a href="#shop" data-cat="greeting-mom" data-nav-subcat="greeting-mom">לאמא</a>
+          <a href="#shop" data-cat="greeting-partner" data-nav-subcat="greeting-partner">לבת זוג</a>
+          <a href="#shop" data-cat="greeting-daughter" data-nav-subcat="greeting-daughter">לבת</a>
+          <a href="#shop" data-cat="greeting-sister" data-nav-subcat="greeting-sister">לאחות</a>
+        </div>
+      </div>
       <a href="#shop" data-cat="necklaces" data-nav-cat="necklaces">שרשראות</a>
       <a href="#shop" data-cat="bracelets" data-nav-cat="bracelets">צמידים</a>
       <a href="#shop" data-cat="photo-bracelets" data-nav-cat="photo-bracelets">צמיד תמונה</a>
       <a href="#shop" data-cat="watches" data-nav-cat="watches">שעונים</a>
-      <a href="#shop" data-cat="glasses" data-nav-cat="glasses">משקפיים</a>
+      <div class="nav__item nav__item--has-submenu" data-nav-group="glasses">
+        <a href="#shop" data-cat="glasses" data-nav-cat="glasses" data-nav-parent-toggle="glasses" aria-haspopup="true" aria-expanded="false">משקפיים</a>
+        <div class="nav__submenu" aria-label="תתי קטגוריות משקפיים">
+          <a href="#shop" data-cat="glasses" class="nav__submenu-all">כל המשקפיים</a>
+          <a href="#shop" data-cat="glasses-men" data-nav-subcat="glasses-men">גברים</a>
+          <a href="#shop" data-cat="glasses-women" data-nav-subcat="glasses-women">נשים</a>
+          <a href="#shop" data-cat="glasses-unisex" data-nav-subcat="glasses-unisex">יוניסקס</a>
+        </div>
+      </div>
       <a href="#shop" data-cat="gift-boxes" data-nav-cat="gift-boxes">מארזים</a>
       <a href="#shop" data-cat="custom" data-nav-cat="custom">Custom</a>
       <a href="#shop" data-cat="sets" data-nav-cat="sets">סטים</a>
@@ -466,7 +483,7 @@
 <script src="assets/i18n.js?v=20260908-delivery-v1"></script>
 <script src="assets/reviews.js?v=20260908-reviews-counts-v12"></script>
 <script src="assets/home.js?v=20260907-hero-slider-v1"></script>
-<script src="assets/store.js?v=20260913-minmax-price-v4"></script>
+<script src="assets/store.js?v=20260913-price-step-v1"></script>
 <script src="assets/auth-nav.js?v=20260905-auth-v1"></script>
 </body>
 </html>

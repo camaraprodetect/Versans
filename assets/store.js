@@ -372,6 +372,12 @@
       if (active) link.setAttribute('aria-current', 'page');
       else link.removeAttribute('aria-current');
     });
+    $$('[data-nav-subcat]').forEach(function (link) {
+      var active = link.getAttribute('data-nav-subcat') === state.filter;
+      link.classList.toggle('is-active', active);
+      if (active) link.setAttribute('aria-current', 'page');
+      else link.removeAttribute('aria-current');
+    });
   }
 
   function filterSectionHTML(key, title, bodyHtml, extraOptionsClass) {
@@ -420,11 +426,11 @@
       var priceHtml =
         '<label class="catalog-price-field">' +
           '<span class="catalog-price-label">מינימום ₪</span>' +
-          '<input class="catalog-price-input" type="number" inputmode="decimal" min="0" step="0.01" dir="ltr" data-price-min value="' + esc(selectedMin) + '" placeholder="Min">' +
+          '<input class="catalog-price-input" type="number" inputmode="decimal" min="0" step="1" dir="ltr" data-price-min value="' + esc(selectedMin) + '" placeholder="Min">' +
         '</label>' +
         '<label class="catalog-price-field">' +
           '<span class="catalog-price-label">מקסימום ₪</span>' +
-          '<input class="catalog-price-input" type="number" inputmode="decimal" min="0" step="0.01" dir="ltr" data-price-max value="' + esc(selectedMax) + '" placeholder="Max">' +
+          '<input class="catalog-price-input" type="number" inputmode="decimal" min="0" step="1" dir="ltr" data-price-max value="' + esc(selectedMax) + '" placeholder="Max">' +
         '</label>';
       sections.push(filterSectionHTML('price', 'מחיר', priceHtml, 'catalog-price-inputs'));
     }
@@ -1072,6 +1078,23 @@
       renderGrid();
       return;
     }
+    if ((el = e.target.closest('[data-nav-parent-toggle]')) && window.matchMedia('(max-width: 980px)').matches) {
+      e.preventDefault();
+      var item = el.closest('.nav__item--has-submenu');
+      var submenu = item && item.querySelector('.nav__submenu');
+      if (submenu) {
+        var willOpen = !submenu.classList.contains('is-open');
+        $$('.nav__submenu.is-open').forEach(function (menu) {
+          if (menu !== submenu) menu.classList.remove('is-open');
+        });
+        $$('[data-nav-parent-toggle][aria-expanded="true"]').forEach(function (parentLink) {
+          if (parentLink !== el) parentLink.setAttribute('aria-expanded', 'false');
+        });
+        submenu.classList.toggle('is-open', willOpen);
+        el.setAttribute('aria-expanded', String(willOpen));
+      }
+      return;
+    }
     if ((el = e.target.closest('[data-cat]'))) {
       var nextFilter = el.getAttribute('data-cat');
       var collectionChanged = state.filter !== nextFilter;
@@ -1134,6 +1157,10 @@
     $('#navmenu').classList.toggle('is-open', open);
     $('#navScrim').hidden = !open;
     $('#burger').setAttribute('aria-expanded', String(open));
+    if (!open) {
+      $$('.nav__submenu.is-open').forEach(function (menu) { menu.classList.remove('is-open'); });
+      $$('[data-nav-parent-toggle]').forEach(function (link) { link.setAttribute('aria-expanded', 'false'); });
+    }
     if (open) { document.body.classList.add('is-locked'); }
     else if (!$('.ov.is-open')) { document.body.classList.remove('is-locked'); }
   }
