@@ -79,3 +79,45 @@
     initHeroSlider();
   }
 }());
+
+
+/* SEO metadata for crawlable collection URLs such as /?cat=watches. */
+(function () {
+  'use strict';
+  var COLLECTION_SEO = {
+    greeting: ['תכשיט עם ברכה - VerSans', 'תכשיטים עם ברכה ומסר אישי מבית VerSans. מתנות מרגשות עם אפשרויות עיצוב והתאמה אישית.'],
+    'greeting-mom': ['תכשיט עם ברכה לאמא - VerSans', 'מתנות ותכשיטים עם ברכה לאמא מבית VerSans.'],
+    'greeting-partner': ['תכשיט עם ברכה לבת זוג - VerSans', 'תכשיטים ומתנות עם מסר אישי לבת הזוג מבית VerSans.'],
+    'greeting-daughter': ['תכשיט עם ברכה לבת - VerSans', 'תכשיטים ומתנות עם ברכה לבת מבית VerSans.'],
+    'greeting-sister': ['תכשיט עם ברכה לאחות - VerSans', 'תכשיטים ומתנות עם ברכה לאחות מבית VerSans.'],
+    necklaces: ['שרשראות - VerSans', 'קולקציית השרשראות של VerSans - דגמים לנשים, לגברים ומתנות עם משמעות.'],
+    bracelets: ['צמידים - VerSans', 'קולקציית הצמידים של VerSans - דגמים יוניסקס, מתנות ועיצובים ליום יום.'],
+    'photo-bracelets': ['צמידי תמונה - VerSans', 'צמידי תמונה והקרנה בעיצוב אישי מבית VerSans.'],
+    watches: ['שעונים - VerSans', 'קולקציית השעונים של VerSans - שעוני גברים, נשים ומארזי מתנה.'],
+    glasses: ['משקפי שמש - VerSans', 'קולקציית משקפי השמש של VerSans - דגמים לנשים, גברים ויוניסקס.'],
+    'glasses-men': ['משקפי שמש לגברים - VerSans', 'משקפי שמש לגברים מבית VerSans במגוון דגמים ועיצובים.'],
+    'glasses-women': ['משקפי שמש לנשים - VerSans', 'משקפי שמש לנשים מבית VerSans במגוון דגמים ועיצובים.'],
+    'glasses-unisex': ['משקפי שמש יוניסקס - VerSans', 'משקפי שמש יוניסקס מבית VerSans במגוון דגמים ועיצובים.'],
+    'gift-boxes': ['מארזי מתנה - VerSans', 'מארזי מתנה של VerSans עם תכשיטים ושעונים בעיצוב יוקרתי.'],
+    custom: ['עיצוב אישי - VerSans', 'מתנות ותכשיטים בעיצוב אישי מבית VerSans - ברכות, שמות ותמונות בהתאמה אישית.'],
+    sets: ['סטים - VerSans', 'סטים ומארזים מבית VerSans למתנה או ליום יום.']
+  };
+  function setMeta(selector, value) {
+    var el = document.querySelector(selector);
+    if (el && value) el.setAttribute('content', value);
+  }
+  try {
+    var cat = new URLSearchParams(window.location.search).get('cat');
+    var seo = COLLECTION_SEO[cat];
+    var title = seo ? seo[0] : 'VerSans - תכשיטים, שעונים, משקפי שמש ומתנות בעיצוב אישי';
+    var description = seo ? seo[1] : 'VerSans - תכשיטים, שעונים, משקפי שמש, מארזי מתנה ותכשיטים בעיצוב אישי. קנייה אונליין עם משלוח חינם.';
+    var canonical = seo ? 'https://versans.com/?cat=' + encodeURIComponent(cat) : 'https://versans.com/';
+    document.title = title;
+    setMeta('meta[name="description"]', description);
+    setMeta('meta[property="og:title"]', title);
+    setMeta('meta[property="og:description"]', description);
+    setMeta('meta[property="og:url"]', canonical);
+    var canonicalEl = document.querySelector('link[rel="canonical"]');
+    if (canonicalEl) canonicalEl.setAttribute('href', canonical);
+  } catch (e) {}
+})();

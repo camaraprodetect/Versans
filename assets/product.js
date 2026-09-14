@@ -37,6 +37,47 @@
     });
   }
   function L(obj) { return obj ? (obj.he || '') : ''; }
+  function setSeoMeta(selector, content) {
+    var el = document.querySelector(selector);
+    if (el && content) el.setAttribute('content', content);
+  }
+  function updateProductSeo() {
+    var title = L(product.title) + ' - ' + L(CFG.brand.name);
+    var description = L(product.title) + ' מבית VerSans. פרטים מלאים, מחיר, תמונות ואפשרויות בחירה בעמוד המוצר.';
+    var canonicalUrl = 'https://versans.com/product.html?id=' + encodeURIComponent(product.id);
+    var imagePath = product.cardImage || (Array.isArray(product.images) && product.images[0]) || product.hoverImage || 'images/VerSansLogoBlackJewlery.png';
+    var imageUrl = /^https?:\/\//i.test(String(imagePath)) ? String(imagePath) : 'https://versans.com/' + String(imagePath).replace(/^\//, '');
+    document.title = title;
+    setSeoMeta('meta[name="description"]', description);
+    setSeoMeta('meta[property="og:title"]', title);
+    setSeoMeta('meta[property="og:description"]', description);
+    setSeoMeta('meta[property="og:url"]', canonicalUrl);
+    setSeoMeta('meta[property="og:image"]', imageUrl);
+    var canonical = document.querySelector('link[rel="canonical"]');
+    if (canonical) canonical.setAttribute('href', canonicalUrl);
+    var ld = document.getElementById('productStructuredData');
+    if (!ld) {
+      ld = document.createElement('script');
+      ld.type = 'application/ld+json';
+      ld.id = 'productStructuredData';
+      document.head.appendChild(ld);
+    }
+    ld.textContent = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Product',
+      name: L(product.title),
+      image: [imageUrl],
+      description: description,
+      sku: product.sku || product.id,
+      brand: { '@type': 'Brand', name: 'VerSans' },
+      offers: {
+        '@type': 'Offer', url: canonicalUrl,
+        priceCurrency: (CFG.currency && CFG.currency.code) || 'ILS',
+        price: Number(product.price || 0).toFixed(2),
+        availability: 'https://schema.org/InStock'
+      }
+    });
+  }
   function money(n) {
     var v = (Math.round(Number(n || 0) * 100) / 100).toFixed(2).replace(/\.00$/, '');
     return CFG.currency.code === 'ILS' ? v + ' ' + CFG.currency.symbol : CFG.currency.symbol + v;
@@ -1299,7 +1340,7 @@
     document.documentElement.lang = 'he';
     document.documentElement.dir = 'rtl';
     document.body.dataset.productSlug = String(product.slug || product.id || '');
-    document.title = L(product.title) + ' - ' + L(CFG.brand.name);
+    updateProductSeo();
 
     $('#brandName').textContent = L(CFG.brand.name);
     $('#footBrand').textContent = L(CFG.brand.name);

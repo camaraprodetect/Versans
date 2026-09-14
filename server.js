@@ -977,6 +977,7 @@ function mimeType(filePath) {
     '.css': 'text/css; charset=utf-8',
     '.js': 'text/javascript; charset=utf-8',
     '.json': 'application/json; charset=utf-8',
+    '.xml': 'application/xml; charset=utf-8',
     '.png': 'image/png',
     '.webp': 'image/webp',
     '.jpg': 'image/jpeg',
@@ -990,7 +991,7 @@ function mimeType(filePath) {
 }
 
 function isPublicPath(pathname) {
-  if (pathname === '/' || /^\/[A-Za-z0-9_-]+\.html$/.test(pathname)) return true;
+  if (pathname === '/' || pathname === '/robots.txt' || pathname === '/sitemap.xml' || /^\/[A-Za-z0-9_-]+\.html$/.test(pathname)) return true;
   return pathname.startsWith('/assets/') || pathname.startsWith('/images/');
 }
 
