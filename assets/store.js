@@ -605,10 +605,14 @@
       hoverImg = p.collectionMedia.men.hoverImage || '';
     }
     if (img) {
+      var isMobileCatalogViewport = !big && window.matchMedia('(max-width: 700px)').matches;
       var mobileImages = !big ? mobileImagesForProduct(p, img, hoverImg) : [];
       var mobileData = mobileImages.length > 1 ? ' data-mobile-images="' + esc(encodeURIComponent(JSON.stringify(mobileImages))) + '" data-mobile-index="0"' : '';
       var html = '<img class="prod__img prod__img--main" src="' + esc(img) + '" alt="' + esc(L(p.title)) + '" loading="lazy"' + mobileData + '>';
-      if (hoverImg && hoverImg !== img) {
+      /* Desktop keeps the existing hover image exactly as before. On mobile,
+         secondary product images stay as URL strings in data-mobile-images and
+         are not requested until the shopper presses an image arrow. */
+      if (!isMobileCatalogViewport && hoverImg && hoverImg !== img) {
         html += '<img class="prod__img prod__img--hover" src="' + esc(hoverImg) + '" alt="" loading="lazy" aria-hidden="true">';
       }
       if (!big && mobileImages.length > 1) {
@@ -1113,29 +1117,9 @@
     main.src = list[index];
   }
 
-  var mobileSwipe = null;
-  document.addEventListener('touchstart', function (e) {
-    var media = e.target.closest && e.target.closest('.prod__media');
-    if (!media || getMobileImages(media).length < 2 || !e.touches || !e.touches.length) return;
-    var t0 = e.touches[0];
-    mobileSwipe = { media: media, x: t0.clientX, y: t0.clientY };
-  }, { passive: true });
-
-  document.addEventListener('touchend', function (e) {
-    if (!mobileSwipe || !e.changedTouches || !e.changedTouches.length) { mobileSwipe = null; return; }
-    var t1 = e.changedTouches[0];
-    var dx = t1.clientX - mobileSwipe.x;
-    var dy = t1.clientY - mobileSwipe.y;
-    var media = mobileSwipe.media;
-    mobileSwipe = null;
-    if (Math.abs(dx) >= 34 && Math.abs(dx) > Math.abs(dy) * 1.15) {
-      e.preventDefault();
-      /* Drag left = next image, drag right = previous image. */
-      stepMobileMedia(media, dx < 0 ? 1 : -1);
-      media.setAttribute('data-mobile-swipe-block', '1');
-      setTimeout(function () { media.removeAttribute('data-mobile-swipe-block'); }, 380);
-    }
-  }, { passive: false });
+  /* Secondary catalog images on mobile are deliberately arrow-only.
+     Keeping swipe navigation disabled prevents a touch gesture from starting
+     an image request before the shopper explicitly presses an arrow. */
 
   function toggleCatalogArrayFilter(field, key) {
     var values = Array.isArray(state.catalogFilters[field]) ? state.catalogFilters[field].slice() : [];
