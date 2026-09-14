@@ -8,6 +8,7 @@ const { URL } = require('node:url');
 const { DatabaseSync } = require('node:sqlite');
 const { createPaymentUrl, verifyPayment } = require('./api/_hyp.js');
 const { PRODUCTS } = require('./assets/products.js');
+const ROUTES = require('./assets/routes.js');
 
 const ROOT = __dirname;
 const DATA_DIR = process.env.VERSANS_DATA_DIR
@@ -27,6 +28,7 @@ const REVIEW_MEDIA_TOTAL_LIMIT = 30 * 1024 * 1024;
 const REVIEW_MEDIA_MAX_COUNT = 5;
 const REVIEW_TEXT_MAX = 1200;
 const PUBLIC_REVIEW_NAME = 'לקוח VerSans';
+const PRODUCT_BY_URL_SLUG = new Map(PRODUCTS.map((product) => [String(product.urlSlug || ''), product]));
 
 fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
 const db = new DatabaseSync(DB_PATH);
@@ -320,6 +322,21 @@ function json(res, status, payload, extraHeaders = {}) {
   res.end(body);
 }
 
+function redirect(res, location, status = 301) {
+  res.statusCode = status;
+  res.setHeader('Location', location);
+  res.setHeader('Cache-Control', status === 301 ? 'public, max-age=3600' : 'no-store');
+  res.end();
+}
+
+function productPublicPath(product) {
+  return ROUTES.productPath(product);
+}
+
+function productByUrlSlug(slug) {
+  return PRODUCT_BY_URL_SLUG.get(String(slug || '')) || null;
+}
+
 function securityHeaders(res) {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
@@ -515,7 +532,7 @@ function reviewProductPayload(productId, variant, seed) {
     title: productTitle(product),
     variantLabel,
     imageUrl,
-    href: `/product.html?id=${encodeURIComponent(safeId)}`
+    href: product ? productPublicPath(product) : '/'
   };
 }
 
@@ -990,8 +1007,17 @@ function mimeType(filePath) {
   })[ext] || 'application/octet-stream';
 }
 
+function prettyRouteFile(pathname) {
+  if (pathname === '/') return 'index.html';
+  if (ROUTES.PAGE_FILES[pathname]) return ROUTES.PAGE_FILES[pathname];
+  if (ROUTES.categoryFromPath(pathname)) return 'index.html';
+  const slug = pathname.charAt(0) === '/' ? pathname.slice(1) : pathname;
+  if (slug && productByUrlSlug(slug)) return 'product.html';
+  return null;
+}
+
 function isPublicPath(pathname) {
-  if (pathname === '/' || pathname === '/robots.txt' || pathname === '/sitemap.xml' || /^\/[A-Za-z0-9_-]+\.html$/.test(pathname)) return true;
+  if (prettyRouteFile(pathname) || pathname === '/robots.txt' || pathname === '/sitemap.xml' || /^\/[A-Za-z0-9_-]+\.html$/.test(pathname)) return true;
   return pathname.startsWith('/assets/') || pathname.startsWith('/images/');
 }
 
@@ -999,7 +1025,7 @@ function serveStatic(req, res, pathname) {
   if (req.method !== 'GET' && req.method !== 'HEAD') return false;
   if (!isPublicPath(pathname)) return false;
 
-  const rel = pathname === '/' ? 'index.html' : pathname.replace(/^\//, '');
+  const rel = prettyRouteFile(pathname) || pathname.replace(/^\//, '');
   const filePath = path.resolve(ROOT, rel);
   if (!filePath.startsWith(ROOT + path.sep)) return false;
 
@@ -1034,6 +1060,34 @@ const server = http.createServer(async (req, res) => {
   catch (_) { json(res, 400, { error: 'Bad request' }); return; }
 
   try {
+    if ((req.method === 'GET' || req.method === 'HEAD') && pathname === '/product.html' && parsed.searchParams.has('id')) {
+      const product = productById(parsed.searchParams.get('id'));
+      if (product && product.urlSlug) {
+        const targetParams = new URLSearchParams(parsed.searchParams);
+        targetParams.delete('id');
+        const query = targetParams.toString();
+        redirect(res, productPublicPath(product) + (query ? '?' + query : ''), 301);
+        return;
+      }
+    }
+
+    if ((req.method === 'GET' || req.method === 'HEAD') && (pathname === '/' || pathname === '/index.html') && parsed.searchParams.has('cat')) {
+      const category = parsed.searchParams.get('cat');
+      const target = ROUTES.COLLECTION_PATHS[category];
+      if (target) {
+        const targetParams = new URLSearchParams(parsed.searchParams);
+        targetParams.delete('cat');
+        const query = targetParams.toString();
+        redirect(res, target + (query ? '?' + query : ''), 301);
+        return;
+      }
+    }
+
+    if ((req.method === 'GET' || req.method === 'HEAD') && ROUTES.LEGACY_PAGE_PATHS[pathname]) {
+      const query = parsed.searchParams.toString();
+      redirect(res, ROUTES.LEGACY_PAGE_PATHS[pathname] + (query ? '?' + query : ''), 301);
+      return;
+    }
     if (await authApi(req, res, pathname)) return;
     if (await reviewsApi(req, res, pathname)) return;
 

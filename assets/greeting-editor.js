@@ -1,13 +1,15 @@
 (function(){
   'use strict';
   var CFG=window.STORE_CONFIG||{};
+  var ROUTES=window.VERSANS_ROUTES||null;
   var params=new URLSearchParams(window.location.search);
   var id=params.get('id');
-  var product=(window.PRODUCTS||[]).find(function(p){return p.id===id||p.slug===id;});
-  if(!product||!/^product-[1-9]$/.test(String(product.slug||''))){window.location.href='index.html#shop';return;}
+  var product=(window.PRODUCTS||[]).find(function(p){return p.id===id||p.slug===id||p.urlSlug===id;});
+  if(!product||!/^product-[1-9]$/.test(String(product.slug||''))){window.location.href='/#shop';return;}
 
   var lang='he';
   function L(v){return v?(v.he||''):'';}
+  function productPath(p){if(ROUTES&&ROUTES.productPath)return ROUTES.productPath(p);return p&&p.urlSlug?'/'+encodeURIComponent(p.urlSlug):'/';}
   var UI={
     he:{
       back:'‹ חזרה למוצר',topnote:'עיצוב ברכה אישית',langBtn:'English',introEyebrow:'ברכה אישית',introTitle:'הטקסט שלכם. העיצוב נשאר מדויק.',introText:'אפשר לערוך את הטקסט בכל תבנית. ב־Default אפשר גם לבחור צבע רקע, להעלות תמונת רקע לתוך המסגרת הפנימית עם חיתוך מותאם, לבחור גופן, צבע טקסט ואפקטים כמו Bold, צל וקונטור; בשאר התבניות העיצוב נשאר נעול כדי לשמור על תוצאה נקייה להדפסה.',preview:'תצוגה מקדימה',pngReady:'בשמירה נוצר קובץ PNG מוכן לייצור ונשמר אצלנו.',pngExists:'קיים PNG שמור עבור הברכה הזאת.',templateTitle:'תבנית',templateDesc:'בחרו את סגנון הכרטיס. בכל תבנית נפתחים רק השדות שבאמת קיימים בה.',more:'עוד תבניות',less:'הצג פחות תבניות',bgTitle:'צבע רקע',bgDesc:'זמין בתבנית Default בלבד.',chooseBg:'בחרו צבע רקע',reset:'איפוס',styleTitle:'סגנון טקסט',styleDesc:'זמין ב־Default בלבד. בחרו גופן, צבע ואפקטים שיעזרו לטקסט לבלוט.',font:'גופן',textColor:'צבע הטקסט',chooseTextColor:'בחרו צבע טקסט',eyebrowTitle:'שורה עליונה',eyebrowDesc:'מופיעה רק בתבניות שיש בהן אזור כזה.',eyebrowLabel:'לדוגמה: באהבה גדולה',titleTitle:'כותרת',titleDesc:'האזור העליון קבוע.',titleLabel:'מה יהיה רשום בכותרת?',subtitleTitle:'שורת משנה',subtitleDesc:'מופיעה רק בתבניות שיש בהן אזור נוסף מתחת לכותרת.',subtitleLabel:'לדוגמה: שלי',messageTitle:'הברכה',messageDesc:'אזור הברכה והמיקום שלו קבועים.',messageLabel:'הברכה שלכם',signatureTitle:'ממי הברכה',signatureDesc:'השורה התחתונה קבועה, ואפשר לכתוב רווחים כרגיל.',signatureLabel:'לדוגמה: אוהבת אחותך',save:'שמור ברכה וחזור למוצר',resetGreeting:'איפוס לברכה המקורית',required:'יש למלא כותרת, ברכה וממי הברכה לפני השמירה.',requiredEyebrow:'יש למלא גם את השורה העליונה בתבנית שבחרתם.',requiredSubtitle:'יש למלא גם את שורת המשנה בתבנית שבחרתם.',saving:'שומר ברכה ויוצר PNG…',creating:'יוצר קובץ PNG…',uploadOk:'הברכה נשמרה ונשלחה לייצור ✓',uploadFail:'לא הצלחנו לשמור את קובץ ה־PNG אצלנו. נסו שוב.',pngFail:'יצירת ה־PNG נכשלה',pngCreateError:'לא הצלחנו ליצור את קובץ ה־PNG. נסו שוב.',max:function(n){return 'מקסימום '+n+' תווים';},titlePlaceholder:'כותרת הברכה',messagePlaceholder:'כאן תופיע הברכה האישית שלכם.',signaturePlaceholder:'ממי הברכה',lockDefault:'ב־Default אפשר לבחור צבע או תמונת רקע, גופן, צבע ואפקטים לטקסט · המיקום והגדלים נשארים נעולים',lockOther:'המיקומים, הגופן והצבע קבועים בתבנית הזאת כדי לשמור על העיצוב',fontSample:'לאמא באהבה',bgImageLabel:'או העלו תמונה לרקע',bgImageChoose:'בחרו תמונה',bgImageRemove:'הסר תמונה',bgImageNote:'התמונה תופיע רק בתוך המסגרת הפנימית. אחרי בחירת הקובץ תוכלו להזיז ולקרב אותה לפני האישור.',bgImageReady:'תמונת הרקע מוכנה ✓',bgImageError:'לא הצלחנו לקרוא את התמונה. נסו קובץ אחר.',effects:'הבלטת טקסט',presetNone:'ללא',presetSoft:'צל עדין',presetStrong:'צל חזק',presetOutline:'קונטור',presetSticker:'בולט מאוד',boldLabel:'טקסט מודגש (Bold)',shadowStrength:'עוצמת צל',shadowColor:'צבע הצל',outlineWidth:'עובי קונטור',outlineColor:'צבע הקונטור',cropTitle:'התאמת תמונת רקע',cropDesc:'גררו את התמונה ובחרו את החיתוך שמתאים לכם. הריבוע הזה הוא האזור שיופיע בתוך המסגרת הפנימית.',cropZoom:'זום',cropCancel:'ביטול',cropApply:'אישור ושימוש בתמונה',cropTip:'טיפ: גררו את התמונה בתוך הריבוע עד שהיא נראית בדיוק כמו שאתם רוצים.'
@@ -627,7 +629,7 @@
 
   apply(state);
   $('#brandName').textContent=L(CFG.brand&&CFG.brand.name)||'VerSans';
-  $('#backLink').href='product.html?id='+encodeURIComponent(product.slug||product.id);
+  $('#backLink').href=productPath(product);
   applyUiLanguage();
   loadLocalPng().then(function(row){if(row&&state.assetId&&row.assetId===state.assetId){pngStatus.textContent=tr('pngExists');pngStatus.className='ge-png-status is-ok';}});
   if(state.hasCustomBackground){loadBackgroundLocally().then(function(blob){if(blob){setBackgroundObjectUrl(blob);if(backgroundImageStatus){backgroundImageStatus.textContent=tr('bgImageReady');backgroundImageStatus.className='ge-bg-upload-status is-ok';}}else{state.hasCustomBackground=false;render();}});}
@@ -733,7 +735,7 @@
         saveTextValue(value);
         saveGreetingOptIn();
         pngStatus.textContent=tr('uploadOk');pngStatus.className='ge-png-status is-ok';
-        setTimeout(function(){window.location.href='product.html?id='+encodeURIComponent(product.slug||product.id);},350);
+        setTimeout(function(){window.location.href=productPath(product);},350);
       }catch(uploadErr){
         pngStatus.textContent=tr('uploadFail');pngStatus.className='ge-png-status is-warn';
         btn.disabled=false;btn.textContent=tr('save');

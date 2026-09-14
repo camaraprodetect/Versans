@@ -5,6 +5,7 @@
   'use strict';
 
   var CFG = window.STORE_CONFIG;
+  var ROUTES = window.VERSANS_ROUTES || null;
   var LS = { lang: 'kw_lang', cart: 'kw_cart' };
   var PENDING_BUNDLE_KEY = 'kw_pending_love_forever_bundle';
   var lang = 'he';
@@ -24,7 +25,9 @@
 
   var params = new URLSearchParams(window.location.search);
   var id = params.get('id');
-  var product = findProduct(id) || PRODUCTS[0];
+  var pathSlug = '';
+  try { pathSlug = decodeURIComponent(window.location.pathname.replace(/^\/+|\/+$/g, '')); } catch (e) {}
+  var product = findProduct(pathSlug) || findProduct(id) || PRODUCTS[0];
   var initialColorParam = params.get('color');
   if (initialColorParam && findOption(product.colors, initialColorParam)) selectedColorId = initialColorParam;
 
@@ -37,6 +40,10 @@
     });
   }
   function L(obj) { return obj ? (obj.he || '') : ''; }
+  function productPath(productValue) {
+    if (ROUTES && ROUTES.productPath) return ROUTES.productPath(productValue);
+    return productValue && productValue.urlSlug ? '/' + encodeURIComponent(productValue.urlSlug) : '/';
+  }
   function setSeoMeta(selector, content) {
     var el = document.querySelector(selector);
     if (el && content) el.setAttribute('content', content);
@@ -44,7 +51,7 @@
   function updateProductSeo() {
     var title = L(product.title) + ' - ' + L(CFG.brand.name);
     var description = L(product.title) + ' מבית VerSans. פרטים מלאים, מחיר, תמונות ואפשרויות בחירה בעמוד המוצר.';
-    var canonicalUrl = 'https://versans.com/product.html?id=' + encodeURIComponent(product.id);
+    var canonicalUrl = 'https://versans.com' + productPath(product);
     var imagePath = product.cardImage || (Array.isArray(product.images) && product.images[0]) || product.hoverImage || 'images/VerSansLogoBlackJewlery.png';
     var imageUrl = /^https?:\/\//i.test(String(imagePath)) ? String(imagePath) : 'https://versans.com/' + String(imagePath).replace(/^\//, '');
     document.title = title;
@@ -84,7 +91,7 @@
   }
   function findProduct(productId) {
     for (var i = 0; i < PRODUCTS.length; i++) {
-      if (PRODUCTS[i].id === productId || PRODUCTS[i].slug === productId) return PRODUCTS[i];
+      if (PRODUCTS[i].id === productId || PRODUCTS[i].slug === productId || PRODUCTS[i].urlSlug === productId) return PRODUCTS[i];
     }
     return null;
   }
@@ -969,7 +976,7 @@
       status.classList.toggle('is-done', ready);
     }
     if (button) {
-      var picker = product.requiresCompanion.pickerUrl || 'necklaces.html';
+      var picker = product.requiresCompanion.pickerUrl || '/choose-necklace';
       if (!colorReady) {
         button.href = '#';
         button.setAttribute('aria-disabled', 'true');
@@ -1286,7 +1293,8 @@
       savePendingBundle(pendingItem, returnTo, packageColor);
       toast(lang === 'he' ? 'השרשרת נבחרה למארז' : 'Necklace selected for packaging');
       window.setTimeout(function () {
-        window.location.href = 'product.html?id=' + encodeURIComponent(returnTo) + '&bundleSelected=1' + (packageColor ? '&color=' + encodeURIComponent(packageColor) : '');
+        var returnProduct = findProduct(returnTo);
+        window.location.href = productPath(returnProduct) + '?bundleSelected=1' + (packageColor ? '&color=' + encodeURIComponent(packageColor) : '');
       }, 220);
       return;
     }
@@ -1333,7 +1341,7 @@
        added to the necklace price a second time on this page. */
     if (isCompanionPickerFlow()) selectedPackagingId = null;
     if (!product) {
-      window.location.href = 'index.html#shop';
+      window.location.href = '/#shop';
       return;
     }
 
@@ -1393,7 +1401,7 @@
     if (supportsCustomGreeting()) {
       if (greetingCustomizer) {
         greetingCustomizer.hidden = false;
-        $('#greetingDesignBtn').href = 'greeting-editor.html?id=' + encodeURIComponent(product.slug || product.id);
+        $('#greetingDesignBtn').href = '/greeting-editor?id=' + encodeURIComponent(product.slug || product.id);
         $('#greetingDesignBtn').textContent = greeting
           ? (lang === 'he' ? 'עריכת הברכה האישית' : 'Edit custom greeting')
           : (lang === 'he' ? 'עיצוב ברכה אישית' : 'Design a custom greeting');

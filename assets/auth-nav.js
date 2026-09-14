@@ -3,7 +3,7 @@
 
   function setLink(link, user) {
     var text = link.querySelector('[data-auth-text]');
-    link.href = user ? 'account.html' : 'login.html';
+    link.href = user ? '/account' : '/login';
     link.setAttribute('aria-label', user ? 'החשבון שלי' : 'התחברות');
     if (text) text.textContent = user ? user.name : 'התחברות';
     link.classList.toggle('is-authenticated', !!user);

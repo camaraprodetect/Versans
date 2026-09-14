@@ -2,6 +2,7 @@
   'use strict';
   var CFG = window.STORE_CONFIG;
   var PRODUCTS = window.PRODUCTS || [];
+  var ROUTES = window.VERSANS_ROUTES || null;
   var allowedIds = [
     'wife-necklace-only-01',
     'gold-clover-set-01',
@@ -43,6 +44,13 @@
     el.textContent = count;
     el.hidden = !count;
   }
+  function findProduct(id) { return PRODUCTS.find(function (product) { return product.id === id || product.slug === id || product.urlSlug === id; }) || null; }
+  function productPath(productOrId) {
+    var product = typeof productOrId === 'string' ? findProduct(productOrId) : productOrId;
+    if (ROUTES && ROUTES.productPath) return ROUTES.productPath(product);
+    return product && product.urlSlug ? '/' + encodeURIComponent(product.urlSlug) : '/';
+  }
+
   function packageOption(product) {
     if (!product || !product.giftPackaging || !Array.isArray(product.giftPackaging.options)) return null;
     return product.giftPackaging.options.find(function (option) { return option.id === packageColor; }) || null;
@@ -58,8 +66,8 @@
     );
   }
   function productHref(product) {
-    return 'product.html?id=' + encodeURIComponent(product.id) +
-      '&returnTo=' + encodeURIComponent(returnTo) +
+    return productPath(product) +
+      '?returnTo=' + encodeURIComponent(returnTo) +
       (packageColor ? '&packageColor=' + encodeURIComponent(packageColor) : '');
   }
   function combinedKey(productId) {
@@ -78,7 +86,7 @@
   function selectSimpleNecklace(product, button) {
     var packaging = packageOption(product);
     if (!packaging) {
-      window.location.href = 'product.html?id=' + encodeURIComponent(returnTo);
+      window.location.href = productPath(returnTo);
       return;
     }
     var item = {
@@ -101,7 +109,7 @@
       button.disabled = true;
     }
     window.setTimeout(function () {
-      window.location.href = 'product.html?id=' + encodeURIComponent(returnTo) + '&bundleSelected=1&color=' + encodeURIComponent(packageColor);
+      window.location.href = productPath(returnTo) + '?bundleSelected=1&color=' + encodeURIComponent(packageColor);
     }, 220);
   }
 
@@ -109,7 +117,7 @@
     document.documentElement.lang = 'he';
     document.documentElement.dir = 'rtl';
     var back = document.getElementById('backToPackage');
-    if (back) back.href = 'product.html?id=' + encodeURIComponent(returnTo) + (packageColor ? '&color=' + encodeURIComponent(packageColor) : '');
+    if (back) back.href = productPath(returnTo) + (packageColor ? '?color=' + encodeURIComponent(packageColor) : '');
 
     var packageNote = document.getElementById('necklacePickerPackageNote');
     if (packageNote) {

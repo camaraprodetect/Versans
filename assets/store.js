@@ -6,6 +6,7 @@
   'use strict';
 
   var CFG = window.STORE_CONFIG;
+  var ROUTES = window.VERSANS_ROUTES || null;
   var LS = { lang: 'kw_lang', cart: 'kw_cart', pending: 'kw_pending' };
 
   var state = {
@@ -20,10 +21,13 @@
   };
 
 
-  /* Product pages link back to a specific collection with ?cat=...#shop. */
+  /* Clean collection routes such as /watches and /glasses select the catalog filter. */
   (function applyInitialCatalogCategoryFromUrl() {
     try {
-      var requestedCategory = new URLSearchParams(window.location.search).get('cat');
+      var requestedCategory = ROUTES && ROUTES.categoryFromPath
+        ? ROUTES.categoryFromPath(window.location.pathname)
+        : null;
+      if (!requestedCategory) requestedCategory = new URLSearchParams(window.location.search).get('cat');
       var validCategories = [
         'all', 'greeting', 'greeting-mom', 'greeting-partner', 'greeting-daughter', 'greeting-sister',
         'necklaces', 'bracelets', 'photo-bracelets', 'watches',
@@ -130,6 +134,15 @@
     return CFG.currency.code === 'ILS' ? v + ' ' + CFG.currency.symbol : CFG.currency.symbol + v;
   }
   function byId(id) { for (var i = 0; i < PRODUCTS.length; i++) if (PRODUCTS[i].id === id) return PRODUCTS[i]; return null; }
+  function productPath(productOrId) {
+    var product = typeof productOrId === 'string' ? byId(productOrId) : productOrId;
+    if (ROUTES && ROUTES.productPath) return ROUTES.productPath(product);
+    return product && product.urlSlug ? '/' + encodeURIComponent(product.urlSlug) : '/';
+  }
+  function collectionPath(category) {
+    if (ROUTES && ROUTES.collectionPath) return ROUTES.collectionPath(category);
+    return category === 'all' ? '/' : '/?cat=' + encodeURIComponent(category);
+  }
   function isGlassesProduct(p) {
     var collections = p && Array.isArray(p.categories) && p.categories.length ? p.categories : [p && p.category];
     return collections.indexOf('glasses') !== -1;
@@ -687,9 +700,9 @@
       return '' +
       '<article class="prod">' +
         (badge ? '<span class="prod__badge">' + esc(badge) + '</span>' : '') +
-        '<a class="prod__media prod__link" href="product.html?id=' + encodeURIComponent(p.id) + '" aria-label="' + esc(L(p.title)) + '">' + mediaHTML(p) + '</a>' +
+        '<a class="prod__media prod__link" href="' + productPath(p) + '" aria-label="' + esc(L(p.title)) + '">' + mediaHTML(p) + '</a>' +
         '<div class="prod__body">' +
-          '<h3 class="prod__name"><a class="prod__titlelink" href="product.html?id=' + encodeURIComponent(p.id) + '">' + esc(L(p.title)) + '</a></h3>' +
+          '<h3 class="prod__name"><a class="prod__titlelink" href="' + productPath(p) + '">' + esc(L(p.title)) + '</a></h3>' +
           (isGlasses ? '' : '<p class="prod__sub">' + esc(L(p.subtitle)) + '</p>') +
           productColorMetaHTML(p) +
           '<p class="prod__price">' + (p.startingPrice ? (state.lang === 'he' ? 'החל מ־' : 'From ') : '') + money(p.price) +
@@ -697,17 +710,17 @@
           '</p>' +
           '<div class="prod__actions">' +
             ((p.necklaces && p.necklaces.length && p.boxes && p.boxes.length)
-              ? '<a class="btn btn--primary" href="product.html?id=' + encodeURIComponent(p.id) + '">' + esc(state.lang === 'he' ? 'לבחירת אפשרויות' : 'Choose options') + '</a>'
+              ? '<a class="btn btn--primary" href="' + productPath(p) + '">' + esc(state.lang === 'he' ? 'לבחירת אפשרויות' : 'Choose options') + '</a>'
               : (p.customName && p.customName.required
-                ? '<a class="btn btn--primary" href="product.html?id=' + encodeURIComponent(p.id) + '">' + esc(state.lang === 'he' ? 'לעיצוב אישי' : 'Customize') + '</a>'
+                ? '<a class="btn btn--primary" href="' + productPath(p) + '">' + esc(state.lang === 'he' ? 'לעיצוב אישי' : 'Customize') + '</a>'
                 : ((p.sizes && p.sizes.length)
-                  ? '<a class="btn btn--primary" href="product.html?id=' + encodeURIComponent(p.id) + '">' + esc(state.lang === 'he' ? 'לבחירת אורך' : 'Choose length') + '</a>'
+                  ? '<a class="btn btn--primary" href="' + productPath(p) + '">' + esc(state.lang === 'he' ? 'לבחירת אורך' : 'Choose length') + '</a>'
                   : ((p.colors && p.colors.length)
-                    ? '<a class="btn btn--primary" href="product.html?id=' + encodeURIComponent(p.id) + '">' + esc(state.lang === 'he' ? 'לבחירת צבע' : 'Choose color') + '</a>'
+                    ? '<a class="btn btn--primary" href="' + productPath(p) + '">' + esc(state.lang === 'he' ? 'לבחירת צבע' : 'Choose color') + '</a>'
                     : (p.cardMode === 'view'
-                    ? '<a class="btn btn--primary" href="product.html?id=' + encodeURIComponent(p.id) + '">' + esc(state.lang === 'he' ? 'לצפייה במוצר' : 'View product') + '</a>'
+                    ? '<a class="btn btn--primary" href="' + productPath(p) + '">' + esc(state.lang === 'he' ? 'לצפייה במוצר' : 'View product') + '</a>'
                     : '<button class="btn btn--primary" data-add="' + esc(p.id) + '">' + esc(t('card.add')) + '</button>'))))) +
-            (isGlasses ? '' : '<a class="btn btn--ghost" href="product.html?id=' + encodeURIComponent(p.id) + '">' + esc((p.cardMode === 'view') ? (state.lang === 'he' ? 'עוד תמונות' : 'More photos') : t('card.read')) + '</a>') +
+            (isGlasses ? '' : '<a class="btn btn--ghost" href="' + productPath(p) + '">' + esc((p.cardMode === 'view') ? (state.lang === 'he' ? 'עוד תמונות' : 'More photos') : t('card.read')) + '</a>') +
           '</div>' +
         '</div>' +
       '</article>';
@@ -867,7 +880,7 @@
     qty = qty || 1;
     var product = byId(id);
     if (product && ((product.necklaces && product.necklaces.length) || (product.boxes && product.boxes.length) || (product.sizes && product.sizes.length) || (product.colors && product.colors.length) || (product.customName && product.customName.required) || (product.customPhoto && product.customPhoto.required) || product.giftPackaging || product.requiresCompanion)) {
-      window.location.href = 'product.html?id=' + encodeURIComponent(id);
+      window.location.href = productPath(id);
       return;
     }
     var key = id + '|||';
@@ -1244,6 +1257,7 @@
       return;
     }
     if ((el = e.target.closest('[data-cat]'))) {
+      e.preventDefault();
       var nextFilter = el.getAttribute('data-cat');
       var collectionChanged = state.filter !== nextFilter;
       var groupKey = el.getAttribute('data-group');
@@ -1262,6 +1276,12 @@
       }
 
       if (collectionChanged) resetCatalogFilters();
+      try {
+        var targetPath = collectionPath(state.filter);
+        if (window.location.pathname !== targetPath || window.location.search) {
+          window.history.pushState({ versansCategory: state.filter }, '', targetPath + '#shop');
+        }
+      } catch (e) {}
       renderFilters();
       renderGrid();
       if (el.closest('.nav__menu')) setMenu(false);
@@ -1269,7 +1289,7 @@
       return;
     }
     if ((el = e.target.closest('[data-add]'))) { addToCart(el.getAttribute('data-add'), 1); return; }
-    if ((el = e.target.closest('[data-view]'))) { window.location.href = 'product.html?id=' + encodeURIComponent(el.getAttribute('data-view')); return; }
+    if ((el = e.target.closest('[data-view]'))) { window.location.href = productPath(el.getAttribute('data-view')); return; }
     if ((el = e.target.closest('[data-add-modal]'))) { addToCart(el.getAttribute('data-add-modal'), state.qty); closeOv('#pdpOverlay'); return; }
 
     if ((el = e.target.closest('[data-q]'))) {
@@ -1366,6 +1386,17 @@
 
   document.addEventListener('submit', function (e) {
     if (e.target.id === 'coForm') submitCheckout(e);
+  });
+
+  window.addEventListener('popstate', function () {
+    try {
+      var category = ROUTES && ROUTES.categoryFromPath ? ROUTES.categoryFromPath(window.location.pathname) : null;
+      state.filter = category || 'all';
+      state.openFilterGroup = null;
+      resetCatalogFilters();
+      renderFilters();
+      renderGrid();
+    } catch (e) {}
   });
 
   window.addEventListener('scroll', function () {

@@ -2,6 +2,7 @@
   'use strict';
 
   var FAVORITES_KEY = 'versans_favorites';
+  var ROUTES = window.VERSANS_ROUTES || null;
   var catalog = window.PRODUCTS || PRODUCTS || [];
 
   function text(value){
@@ -29,7 +30,8 @@
   }
 
   function productUrl(product){
-    return 'product.html?id=' + encodeURIComponent(product.id);
+    if (ROUTES && ROUTES.productPath) return ROUTES.productPath(product);
+    return product && product.urlSlug ? '/' + encodeURIComponent(product.urlSlug) : '/';
   }
 
   function readFavorites(){

@@ -156,7 +156,7 @@
       return;
     }
     link.hidden = false;
-    link.href = product.href || 'product.html?id=mom-heart-01';
+    link.href = product.href || '/mom-heart-necklace';
     var image = link.querySelector('.review-card__product-image');
     var title = link.querySelector('.review-card__product-title');
     var variant = link.querySelector('.review-card__product-variant');
@@ -584,7 +584,7 @@
       return;
     }
     detailProduct.hidden = false;
-    detailProduct.href = product.href || 'product.html?id=mom-heart-01';
+    detailProduct.href = product.href || '/mom-heart-necklace';
     detailProductImage.src = product.imageUrl || 'images/review-products/necklace-1.png';
     detailProductImage.alt = product.title || 'המוצר שנרכש';
     detailProductTitle.textContent = product.title || 'שרשרת לאמא עם ברכה והקדשה מרגשת';

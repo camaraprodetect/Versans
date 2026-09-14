@@ -63,8 +63,9 @@
   }
 
   function safeNext() {
-    var next = new URLSearchParams(location.search).get('next') || 'account.html';
-    if (!/^[A-Za-z0-9_./#?=&%-]+$/.test(next) || next.indexOf('//') !== -1 || next.charAt(0) === '/') return 'account.html';
+    var next = new URLSearchParams(location.search).get('next') || '/account';
+    if (!/^[A-Za-z0-9_./#?=&%-]+$/.test(next) || next.indexOf('//') !== -1) return '/account';
+    if (next.charAt(0) !== '/') next = '/' + next.replace(/^\.?\//, '');
     return next;
   }
 
@@ -76,7 +77,7 @@
   function checkAlreadyLoggedIn() {
     var page = document.body.getAttribute('data-auth-page');
     if (page !== 'login' && page !== 'register') return;
-    fetch('/api/auth/me', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (data) { if (data && data.user) location.replace('account.html'); }).catch(function () {});
+    fetch('/api/auth/me', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (data) { if (data && data.user) location.replace('/account'); }).catch(function () {});
   }
 
   function bindForm() {
@@ -120,11 +121,11 @@
     fetch('/api/auth/me', { credentials: 'same-origin', headers: { Accept: 'application/json' } })
       .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
       .then(function (data) {
-        if (!data.user) { location.replace('login.html?next=account.html'); return; }
+        if (!data.user) { location.replace('/login?next=%2Faccount'); return; }
         qs('#accountLoading').hidden = true; qs('#accountDetails').hidden = false;
         qs('#accountName').textContent = data.user.name; qs('#accountEmail').textContent = data.user.email;
         var d = new Date(data.user.createdAt); qs('#accountSince').textContent = new Intl.DateTimeFormat(lang === 'he' ? 'he-IL' : 'en-GB', { dateStyle: 'medium' }).format(d);
-      }).catch(function () { location.replace('login.html?next=account.html'); });
+      }).catch(function () { location.replace('/login?next=%2Faccount'); });
     var logout = qs('#logoutBtn'); if (logout) logout.addEventListener('click', function () {
       logout.disabled = true; post('/api/auth/logout', {}).then(function () { location.replace('index.html'); }).catch(function () { logout.disabled = false; setMessage(t('generic')); });
     });

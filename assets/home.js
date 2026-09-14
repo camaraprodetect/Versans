@@ -2,6 +2,7 @@
    The storefront is rendered in Hebrew only. */
 (function () {
   'use strict';
+  var ROUTES = window.VERSANS_ROUTES || null;
   var copy = {
     he: {
       'hero.eyebrow': 'למי שתמיד בלב',
@@ -107,11 +108,13 @@
     if (el && value) el.setAttribute('content', value);
   }
   try {
-    var cat = new URLSearchParams(window.location.search).get('cat');
+    var cat = ROUTES && ROUTES.categoryFromPath ? ROUTES.categoryFromPath(window.location.pathname) : null;
+    if (!cat) cat = new URLSearchParams(window.location.search).get('cat');
     var seo = COLLECTION_SEO[cat];
     var title = seo ? seo[0] : 'VerSans - תכשיטים, שעונים, משקפי שמש ומתנות בעיצוב אישי';
     var description = seo ? seo[1] : 'VerSans - תכשיטים, שעונים, משקפי שמש, מארזי מתנה ותכשיטים בעיצוב אישי. קנייה אונליין עם משלוח חינם.';
-    var canonical = seo ? 'https://versans.com/?cat=' + encodeURIComponent(cat) : 'https://versans.com/';
+    var canonicalPath = seo && ROUTES && ROUTES.collectionPath ? ROUTES.collectionPath(cat) : '/';
+    var canonical = 'https://versans.com' + canonicalPath;
     document.title = title;
     setMeta('meta[name="description"]', description);
     setMeta('meta[property="og:title"]', title);

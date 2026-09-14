@@ -19,7 +19,7 @@
 
 <header class="nav">
   <div class="nav__inner container">
-    <a class="brand" href="index.html">
+    <a class="brand" href="/">
       <span class="brand__logo"><img src="images/VerSansLogoBlackJewlery.png" alt="VerSans" width="800" height="800" decoding="async"></span><span class="brand__sr" data-brand aria-hidden="true" dir="ltr">VerSans</span>
     </a>
     <div class="nav__actions">
@@ -38,13 +38,13 @@
   <div class="container">
     <div class="foot__bottom" style="margin-top:0;border:0">
       <span>© <span id="year"></span> <span data-brand></span></span>
-      <span><a href="policies.html#terms">תקנון</a></span>
-      <span><a href="policies.html#cancel-request">ביטול עסקה</a></span>
+      <span><a href="/policies#terms">תקנון</a></span>
+      <span><a href="/policies#cancel-request">ביטול עסקה</a></span>
     </div>
   </div>
 </footer>
 
-<script src="assets/config.js?v=20260905-versans-v1"></script>
+<script src="assets/config.js?v=20260914-pretty-urls-v1"></script>
 <script src="assets/i18n.js?v=20260905-versans-v1"></script>
 <script>
 (function () {
@@ -74,7 +74,7 @@
       '<h1>' + (ok ? t('ty.ok.t') : t('ty.fail.t')) + '</h1>' +
       '<p>' + (ok ? t('ty.ok.d') : t('ty.fail.d')) + '</p>' +
       (ok && orderId ? '<p class="result__order">' + t('ty.order') + ': ' + orderId + '</p>' : '') +
-      '<p class="result__cta"><a class="btn btn--primary" href="index.html">' + t('ty.home') + '</a></p>';
+      '<p class="result__cta"><a class="btn btn--primary" href="/">' + t('ty.home') + '</a></p>';
     document.getElementById('result').innerHTML = html;
     if (ok) {
       try { localStorage.removeItem('kw_cart'); localStorage.removeItem('kw_pending'); } catch (e) {}

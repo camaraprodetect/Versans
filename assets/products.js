@@ -2,6 +2,7 @@ var PRODUCTS = [
   {
     "id": "mom-heart-01",
     "slug": "product-1",
+    "urlSlug": "mom-heart-necklace",
     "sku": "KW-MOM-01",
     "category": "greeting",
     "categories": [
@@ -133,6 +134,7 @@ var PRODUCTS = [
   {
     "id": "beloved-infinity-01",
     "slug": "product-5",
+    "urlSlug": "infinity-love-necklace",
     "sku": "KW-BELOVED-01",
     "category": "greeting",
     "categories": [
@@ -229,6 +231,7 @@ var PRODUCTS = [
   {
     "id": "daughter-love-01",
     "slug": "product-3",
+    "urlSlug": "daughter-love-necklace",
     "sku": "KW-DAU-01",
     "category": "greeting",
     "categories": [
@@ -333,6 +336,7 @@ var PRODUCTS = [
   {
     "id": "love-of-my-life-01",
     "slug": "product-4",
+    "urlSlug": "love-of-my-life-necklace",
     "sku": "KW-LOVE-01",
     "category": "greeting",
     "categories": [
@@ -437,6 +441,7 @@ var PRODUCTS = [
   {
     "id": "wife-love-01",
     "slug": "product-2",
+    "urlSlug": "wife-love-necklace",
     "sku": "KW-WIFE-01",
     "category": "greeting",
     "categories": [
@@ -565,6 +570,7 @@ var PRODUCTS = [
   {
     "id": "sister-love-01",
     "slug": "product-6",
+    "urlSlug": "sister-love-necklace",
     "sku": "KW-SIS-01",
     "category": "greeting",
     "categories": [
@@ -693,6 +699,7 @@ var PRODUCTS = [
   {
     "id": "wife-embrace-01",
     "slug": "product-7",
+    "urlSlug": "beloved-heart-necklace",
     "sku": "KW-WIFE-02",
     "category": "greeting",
     "categories": [
@@ -797,6 +804,7 @@ var PRODUCTS = [
   {
     "id": "mom-daughter-01",
     "slug": "product-8",
+    "urlSlug": "mom-daughter-necklace",
     "sku": "KW-MOM-02",
     "category": "greeting",
     "categories": [
@@ -925,6 +933,7 @@ var PRODUCTS = [
   {
     "id": "mom-son-gratitude-01",
     "slug": "product-9",
+    "urlSlug": "mom-son-necklace",
     "sku": "KW-MOM-03",
     "category": "greeting",
     "categories": [
@@ -1029,6 +1038,7 @@ var PRODUCTS = [
   {
     "id": "wife-necklace-only-01",
     "slug": "product-10",
+    "urlSlug": "heart-necklace-silver",
     "sku": "KW-WIFE-NECK-01",
     "category": "necklaces",
     "categories": [
@@ -1139,6 +1149,7 @@ var PRODUCTS = [
   {
     "id": "gold-clover-set-01",
     "slug": "product-11",
+    "urlSlug": "gold-clover-set",
     "sku": "KW-SET-GOLD-01",
     "category": "necklaces",
     "categories": [
@@ -1251,6 +1262,7 @@ var PRODUCTS = [
   {
     "id": "silver-clover-set-01",
     "slug": "product-12",
+    "urlSlug": "silver-clover-set",
     "sku": "KW-SET-SILVER-01",
     "category": "necklaces",
     "categories": [
@@ -1363,6 +1375,7 @@ var PRODUCTS = [
   {
     "id": "tennis-bracelet-4mm-01",
     "slug": "product-13",
+    "urlSlug": "tennis-bracelet-4mm",
     "sku": "KW-BR-013",
     "category": "bracelets",
     "categories": [
@@ -1468,6 +1481,7 @@ var PRODUCTS = [
   {
     "id": "tennis-necklace-2mm-01",
     "slug": "product-14",
+    "urlSlug": "tennis-necklace-2mm",
     "sku": "KW-NK-014",
     "category": "necklaces",
     "categories": [
@@ -1614,6 +1628,7 @@ var PRODUCTS = [
   {
     "id": "custom-name-necklace-925-01",
     "slug": "product-15",
+    "urlSlug": "custom-name-necklace",
     "sku": "KW-CUSTOM-015",
     "category": "necklaces",
     "categories": [
@@ -1823,6 +1838,7 @@ var PRODUCTS = [
   {
     "id": "four-leaf-silver-necklace-01",
     "slug": "product-16",
+    "urlSlug": "four-leaf-necklace",
     "sku": "KW-NK-016",
     "category": "necklaces",
     "categories": [
@@ -1933,6 +1949,7 @@ var PRODUCTS = [
   {
     "id": "clover-tennis-bracelet-set-01",
     "slug": "product-17",
+    "urlSlug": "clover-tennis-bracelet-set",
     "sku": "KW-BR-017",
     "category": "bracelets",
     "categories": [
@@ -2000,6 +2017,7 @@ var PRODUCTS = [
   {
     "id": "custom-heart-initial-necklace-01",
     "slug": "product-18",
+    "urlSlug": "custom-heart-initial-necklace",
     "sku": "KW-CUSTOM-018",
     "category": "necklaces",
     "categories": [
@@ -2159,6 +2177,7 @@ var PRODUCTS = [
   {
     "id": "love-forever-rose-gift-box-01",
     "slug": "product-19",
+    "urlSlug": "love-forever-rose-gift-box",
     "sku": "VS-GIFT-019",
     "category": "gift-boxes",
     "categories": [
@@ -2261,7 +2280,7 @@ var PRODUCTS = [
         "four-leaf-silver-necklace-01",
         "custom-heart-initial-necklace-01"
       ],
-      "pickerUrl": "necklaces.html",
+      "pickerUrl": "/choose-necklace",
       "heading": {
         "he": "הוסף שרשרת - חובה",
         "en": "Add a necklace - required"
@@ -2279,6 +2298,7 @@ var PRODUCTS = [
   {
     "id": "forever-with-you-heart-gift-set-01",
     "slug": "product-20",
+    "urlSlug": "forever-with-you-gift-set",
     "sku": "VS-GIFT-020",
     "category": "gift-boxes",
     "categories": [
@@ -2367,6 +2387,7 @@ var PRODUCTS = [
   {
     "id": "custom-photo-projection-bracelet-01",
     "slug": "product-21",
+    "urlSlug": "photo-projection-bracelet",
     "sku": "VS-BRACE-PHOTO-021",
     "category": "photo-bracelets",
     "categories": [
@@ -2568,6 +2589,7 @@ var PRODUCTS = [
   {
     "id": "caterside-retro-round-crystal-smoke",
     "slug": "product-22",
+    "urlSlug": "retro-round-crystal-smoke-sunglasses",
     "sku": "VS-SG-022",
     "category": "glasses",
     "categories": [
@@ -2639,6 +2661,7 @@ var PRODUCTS = [
   {
     "id": "caterside-retro-round-black",
     "slug": "product-23",
+    "urlSlug": "retro-round-black-sunglasses",
     "sku": "VS-SG-023",
     "category": "glasses",
     "categories": [
@@ -2710,6 +2733,7 @@ var PRODUCTS = [
   {
     "id": "caterside-retro-round-black-fade",
     "slug": "product-24",
+    "urlSlug": "retro-round-black-fade-sunglasses",
     "sku": "VS-SG-024",
     "category": "glasses",
     "categories": [
@@ -2781,6 +2805,7 @@ var PRODUCTS = [
   {
     "id": "caterside-square-black-amber",
     "slug": "product-25",
+    "urlSlug": "square-black-amber-sunglasses",
     "sku": "VS-SG-025",
     "category": "glasses",
     "categories": [
@@ -2852,6 +2877,7 @@ var PRODUCTS = [
   {
     "id": "caterside-square-blue-lens",
     "slug": "product-26",
+    "urlSlug": "square-blue-lens-sunglasses",
     "sku": "VS-SG-026",
     "category": "glasses",
     "categories": [
@@ -2923,6 +2949,7 @@ var PRODUCTS = [
   {
     "id": "caterside-square-black",
     "slug": "product-27",
+    "urlSlug": "square-black-sunglasses",
     "sku": "VS-SG-027",
     "category": "glasses",
     "categories": [
@@ -2994,6 +3021,7 @@ var PRODUCTS = [
   {
     "id": "caterside-square-green-lens",
     "slug": "product-28",
+    "urlSlug": "square-green-lens-sunglasses",
     "sku": "VS-SG-028",
     "category": "glasses",
     "categories": [
@@ -3065,6 +3093,7 @@ var PRODUCTS = [
   {
     "id": "caterside-square-crystal-silver",
     "slug": "product-29",
+    "urlSlug": "square-crystal-silver-sunglasses",
     "sku": "VS-SG-029",
     "category": "glasses",
     "categories": [
@@ -3136,6 +3165,7 @@ var PRODUCTS = [
   {
     "id": "caterside-square-tortoise",
     "slug": "product-30",
+    "urlSlug": "square-tortoise-sunglasses",
     "sku": "VS-SG-030",
     "category": "glasses",
     "categories": [
@@ -3207,6 +3237,7 @@ var PRODUCTS = [
   {
     "id": "caterside-square-champagne-brown",
     "slug": "product-31",
+    "urlSlug": "square-champagne-brown-sunglasses",
     "sku": "VS-SG-031",
     "category": "glasses",
     "categories": [
@@ -3278,6 +3309,7 @@ var PRODUCTS = [
   {
     "id": "caterside-square-olive-green",
     "slug": "product-32",
+    "urlSlug": "square-olive-green-sunglasses",
     "sku": "VS-SG-032",
     "category": "glasses",
     "categories": [
@@ -3349,6 +3381,7 @@ var PRODUCTS = [
   {
     "id": "caterside-square-smoke-olive",
     "slug": "product-33",
+    "urlSlug": "square-smoke-olive-sunglasses",
     "sku": "VS-SG-033",
     "category": "glasses",
     "categories": [
@@ -3420,6 +3453,7 @@ var PRODUCTS = [
   {
     "id": "caterside-square-crystal-graphite",
     "slug": "product-34",
+    "urlSlug": "square-crystal-graphite-sunglasses",
     "sku": "VS-SG-034",
     "category": "glasses",
     "categories": [
@@ -3491,6 +3525,7 @@ var PRODUCTS = [
   {
     "id": "caterside-punk-square-crystal-smoke-amber",
     "slug": "product-35",
+    "urlSlug": "punk-square-crystal-smoke-amber-sunglasses",
     "sku": "VS-SG-035",
     "category": "glasses",
     "categories": [
@@ -3562,6 +3597,7 @@ var PRODUCTS = [
   {
     "id": "caterside-punk-square-black",
     "slug": "product-36",
+    "urlSlug": "punk-square-black-sunglasses",
     "sku": "VS-SG-036",
     "category": "glasses",
     "categories": [
@@ -3633,6 +3669,7 @@ var PRODUCTS = [
   {
     "id": "caterside-punk-square-crystal-tortoise-honey",
     "slug": "product-37",
+    "urlSlug": "punk-square-crystal-tortoise-honey-sunglasses",
     "sku": "VS-SG-037",
     "category": "glasses",
     "categories": [
@@ -3704,6 +3741,7 @@ var PRODUCTS = [
   {
     "id": "caterside-punk-square-amber-brown",
     "slug": "product-38",
+    "urlSlug": "punk-square-amber-brown-sunglasses",
     "sku": "VS-SG-038",
     "category": "glasses",
     "categories": [
@@ -3775,6 +3813,7 @@ var PRODUCTS = [
   {
     "id": "caterside-punk-square-clear-black",
     "slug": "product-39",
+    "urlSlug": "punk-square-clear-black-sunglasses",
     "sku": "VS-SG-039",
     "category": "glasses",
     "categories": [
@@ -3846,6 +3885,7 @@ var PRODUCTS = [
   {
     "id": "caterside-polygon-jet-black",
     "slug": "product-40",
+    "urlSlug": "polygon-jet-black-sunglasses",
     "sku": "VS-SG-040",
     "category": "glasses",
     "categories": [
@@ -3917,6 +3957,7 @@ var PRODUCTS = [
   {
     "id": "caterside-polygon-crystal-ice-blue",
     "slug": "product-41",
+    "urlSlug": "polygon-crystal-ice-blue-sunglasses",
     "sku": "VS-SG-041",
     "category": "glasses",
     "categories": [
@@ -3988,6 +4029,7 @@ var PRODUCTS = [
   {
     "id": "caterside-polygon-black-electric-blue",
     "slug": "product-42",
+    "urlSlug": "polygon-black-electric-blue-sunglasses",
     "sku": "VS-SG-042",
     "category": "glasses",
     "categories": [
@@ -4059,6 +4101,7 @@ var PRODUCTS = [
   {
     "id": "caterside-polygon-olive-green",
     "slug": "product-43",
+    "urlSlug": "polygon-olive-green-sunglasses",
     "sku": "VS-SG-043",
     "category": "glasses",
     "categories": [
@@ -4130,6 +4173,7 @@ var PRODUCTS = [
   {
     "id": "caterside-polygon-black-champagne",
     "slug": "product-44",
+    "urlSlug": "polygon-black-champagne-sunglasses",
     "sku": "VS-SG-044",
     "category": "glasses",
     "categories": [
@@ -4201,6 +4245,7 @@ var PRODUCTS = [
   {
     "id": "caterside-women-luxe-tortoise-sky-blue",
     "slug": "product-45",
+    "urlSlug": "oversized-square-tortoise-sky-blue-sunglasses",
     "sku": "VS-SG-045",
     "category": "glasses",
     "categories": [
@@ -4270,6 +4315,7 @@ var PRODUCTS = [
   {
     "id": "caterside-women-luxe-tortoise-blush-rose",
     "slug": "product-46",
+    "urlSlug": "oversized-square-tortoise-blush-rose-sunglasses",
     "sku": "VS-SG-046",
     "category": "glasses",
     "categories": [
@@ -4339,6 +4385,7 @@ var PRODUCTS = [
   {
     "id": "caterside-women-luxe-tortoise-caramel-brown",
     "slug": "product-47",
+    "urlSlug": "oversized-square-tortoise-caramel-brown-sunglasses",
     "sku": "VS-SG-047",
     "category": "glasses",
     "categories": [
@@ -4408,6 +4455,7 @@ var PRODUCTS = [
   {
     "id": "caterside-women-luxe-black-smoke",
     "slug": "product-48",
+    "urlSlug": "oversized-square-black-smoke-sunglasses",
     "sku": "VS-SG-048",
     "category": "glasses",
     "categories": [
@@ -4477,6 +4525,7 @@ var PRODUCTS = [
   {
     "id": "caterside-women-luxe-black-champagne",
     "slug": "product-49",
+    "urlSlug": "oversized-square-black-champagne-sunglasses",
     "sku": "VS-SG-049",
     "category": "glasses",
     "categories": [
@@ -4546,6 +4595,7 @@ var PRODUCTS = [
   {
     "id": "caterside-women-luxe-tortoise-honey-yellow",
     "slug": "product-50",
+    "urlSlug": "oversized-square-tortoise-honey-yellow-sunglasses",
     "sku": "VS-SG-050",
     "category": "glasses",
     "categories": [
@@ -4615,6 +4665,7 @@ var PRODUCTS = [
   {
     "id": "caterside-women-luxe-tortoise-silver-smoke",
     "slug": "product-51",
+    "urlSlug": "oversized-square-tortoise-silver-smoke-sunglasses",
     "sku": "VS-SG-051",
     "category": "glasses",
     "categories": [
@@ -4684,6 +4735,7 @@ var PRODUCTS = [
   {
     "id": "caterside-women-luxe-black-amber-gold",
     "slug": "product-52",
+    "urlSlug": "oversized-square-black-amber-gold-sunglasses",
     "sku": "VS-SG-052",
     "category": "glasses",
     "categories": [
@@ -4753,6 +4805,7 @@ var PRODUCTS = [
   {
     "id": "caterside-women-luxe-tortoise-sage-green",
     "slug": "product-53",
+    "urlSlug": "oversized-square-tortoise-sage-green-sunglasses",
     "sku": "VS-SG-053",
     "category": "glasses",
     "categories": [
@@ -4822,6 +4875,7 @@ var PRODUCTS = [
   {
     "id": "versans-women-oversized-pilot-tortoise-brown-gradient",
     "slug": "product-54",
+    "urlSlug": "oversized-pilot-tortoise-brown-gradient-sunglasses",
     "sku": "VS-SG-054",
     "category": "glasses",
     "categories": [
@@ -4891,6 +4945,7 @@ var PRODUCTS = [
   {
     "id": "versans-women-oversized-pilot-rose-smoke-gradient",
     "slug": "product-55",
+    "urlSlug": "oversized-pilot-rose-smoke-gradient-sunglasses",
     "sku": "VS-SG-055",
     "category": "glasses",
     "categories": [
@@ -4960,6 +5015,7 @@ var PRODUCTS = [
   {
     "id": "versans-women-oversized-pilot-tortoise-blue-gradient",
     "slug": "product-56",
+    "urlSlug": "oversized-pilot-tortoise-blue-gradient-sunglasses",
     "sku": "VS-SG-056",
     "category": "glasses",
     "categories": [
@@ -5029,6 +5085,7 @@ var PRODUCTS = [
   {
     "id": "versans-women-oversized-pilot-black-smoke",
     "slug": "product-57",
+    "urlSlug": "oversized-pilot-black-smoke-sunglasses",
     "sku": "VS-SG-057",
     "category": "glasses",
     "categories": [
@@ -5098,6 +5155,7 @@ var PRODUCTS = [
   {
     "id": "versans-women-pearl-oval-double-tea",
     "slug": "product-58",
+    "urlSlug": "pearl-oval-double-tea-sunglasses",
     "sku": "VS-SG-058",
     "category": "glasses",
     "categories": [
@@ -5167,6 +5225,7 @@ var PRODUCTS = [
   {
     "id": "versans-women-pearl-oval-pink-blush",
     "slug": "product-59",
+    "urlSlug": "pearl-oval-pink-blush-sunglasses",
     "sku": "VS-SG-059",
     "category": "glasses",
     "categories": [
@@ -5236,6 +5295,7 @@ var PRODUCTS = [
   {
     "id": "versans-women-pearl-oval-lilac-gradient",
     "slug": "product-60",
+    "urlSlug": "pearl-oval-lilac-gradient-sunglasses",
     "sku": "VS-SG-060",
     "category": "glasses",
     "categories": [
@@ -5305,6 +5365,7 @@ var PRODUCTS = [
   {
     "id": "versans-women-korean-oval-tortoise-blue",
     "slug": "product-61",
+    "urlSlug": "korean-oval-tortoise-blue-sunglasses",
     "sku": "VS-SG-061",
     "category": "glasses",
     "categories": [
@@ -5374,6 +5435,7 @@ var PRODUCTS = [
   {
     "id": "versans-women-korean-oval-tortoise-champagne",
     "slug": "product-62",
+    "urlSlug": "korean-oval-tortoise-champagne-sunglasses",
     "sku": "VS-SG-062",
     "category": "glasses",
     "categories": [
@@ -5443,6 +5505,7 @@ var PRODUCTS = [
   {
     "id": "versans-women-korean-oval-tortoise-green",
     "slug": "product-63",
+    "urlSlug": "korean-oval-tortoise-green-sunglasses",
     "sku": "VS-SG-063",
     "category": "glasses",
     "categories": [
@@ -5512,6 +5575,7 @@ var PRODUCTS = [
   {
     "id": "versans-women-korean-oval-gold-black",
     "slug": "product-64",
+    "urlSlug": "korean-oval-gold-black-sunglasses",
     "sku": "VS-SG-064",
     "category": "glasses",
     "categories": [
@@ -5581,6 +5645,7 @@ var PRODUCTS = [
   {
     "id": "versans-women-narrow-cat-eye-champagne-tea",
     "slug": "product-65",
+    "urlSlug": "narrow-cat-eye-champagne-tea-sunglasses",
     "sku": "VS-SG-065",
     "category": "glasses",
     "categories": [
@@ -5650,6 +5715,7 @@ var PRODUCTS = [
   {
     "id": "versans-women-narrow-cat-eye-tortoise-smoke",
     "slug": "product-66",
+    "urlSlug": "narrow-cat-eye-tortoise-smoke-sunglasses",
     "sku": "VS-SG-066",
     "category": "glasses",
     "categories": [
@@ -5719,6 +5785,7 @@ var PRODUCTS = [
   {
     "id": "versans-women-metal-oval-tea-tortoise",
     "slug": "product-67",
+    "urlSlug": "metal-oval-tea-tortoise-sunglasses",
     "sku": "VS-SG-067",
     "category": "glasses",
     "categories": [
@@ -5788,6 +5855,7 @@ var PRODUCTS = [
   {
     "id": "versans-women-metal-oval-white-blue-gradient",
     "slug": "product-68",
+    "urlSlug": "metal-oval-white-blue-gradient-sunglasses",
     "sku": "VS-SG-068",
     "category": "glasses",
     "categories": [
@@ -5857,6 +5925,7 @@ var PRODUCTS = [
   {
     "id": "versans-women-metal-oval-black-tea-pink",
     "slug": "product-69",
+    "urlSlug": "metal-oval-black-tea-pink-sunglasses",
     "sku": "VS-SG-069",
     "category": "glasses",
     "categories": [
@@ -5926,6 +5995,7 @@ var PRODUCTS = [
   {
     "id": "versans-women-metal-oval-black-smoke",
     "slug": "product-70",
+    "urlSlug": "metal-oval-black-smoke-sunglasses",
     "sku": "VS-SG-070",
     "category": "glasses",
     "categories": [
@@ -5995,6 +6065,7 @@ var PRODUCTS = [
   {
     "id": "versans-unisex-star-rectangle-black-smoke",
     "slug": "product-71",
+    "urlSlug": "star-rectangle-black-smoke-sunglasses",
     "sku": "VS-SG-071",
     "category": "glasses",
     "categories": [
@@ -6072,6 +6143,7 @@ var PRODUCTS = [
   {
     "id": "versans-unisex-star-rectangle-black-brown",
     "slug": "product-72",
+    "urlSlug": "star-rectangle-black-brown-sunglasses",
     "sku": "VS-SG-072",
     "category": "glasses",
     "categories": [
@@ -6149,6 +6221,7 @@ var PRODUCTS = [
   {
     "id": "versans-unisex-star-rectangle-black-ice-blue",
     "slug": "product-73",
+    "urlSlug": "star-rectangle-black-ice-blue-sunglasses",
     "sku": "VS-SG-073",
     "category": "glasses",
     "categories": [
@@ -6226,6 +6299,7 @@ var PRODUCTS = [
   {
     "id": "versans-unisex-star-rectangle-black-champagne",
     "slug": "product-74",
+    "urlSlug": "star-rectangle-black-champagne-sunglasses",
     "sku": "VS-SG-074",
     "category": "glasses",
     "categories": [
@@ -6303,6 +6377,7 @@ var PRODUCTS = [
   {
     "id": "versans-unisex-star-rectangle-crystal-smoke",
     "slug": "product-75",
+    "urlSlug": "star-rectangle-crystal-smoke-sunglasses",
     "sku": "VS-SG-075",
     "category": "glasses",
     "categories": [
@@ -6380,6 +6455,7 @@ var PRODUCTS = [
   {
     "id": "watch-hannah-martin-01",
     "slug": "product-76",
+    "urlSlug": "hannah-martin-40mm-gift-set",
     "sku": "VS-WATCH-01",
     "category": "watches",
     "categories": [
@@ -6507,6 +6583,7 @@ var PRODUCTS = [
   {
     "id": "watch-ice-silver-01",
     "slug": "product-77",
+    "urlSlug": "ice-silver-watch",
     "sku": "VS-WATCH-02",
     "category": "watches",
     "categories": [
@@ -6575,6 +6652,7 @@ var PRODUCTS = [
   {
     "id": "watch-ice-gold-01",
     "slug": "product-78",
+    "urlSlug": "ice-gold-watch",
     "sku": "VS-WATCH-03",
     "category": "watches",
     "categories": [
@@ -6643,6 +6721,7 @@ var PRODUCTS = [
   {
     "id": "watch-chrono-royal-01",
     "slug": "product-79",
+    "urlSlug": "chrono-royal-watch",
     "sku": "VS-WATCH-04",
     "category": "watches",
     "categories": [
@@ -6763,6 +6842,7 @@ var PRODUCTS = [
   {
     "id": "watch-luna-date-01",
     "slug": "product-80",
+    "urlSlug": "luna-date-watch",
     "sku": "VS-WATCH-05",
     "category": "watches",
     "categories": [
@@ -6893,6 +6973,7 @@ var PRODUCTS = [
   {
     "id": "watch-royal-day-01",
     "slug": "product-84",
+    "urlSlug": "royal-day-watch",
     "sku": "VS-WATCH-09",
     "category": "watches",
     "categories": [
@@ -7013,6 +7094,7 @@ var PRODUCTS = [
   {
     "id": "watch-royal-day-black-01",
     "slug": "product-81",
+    "urlSlug": "royal-day-black-watch",
     "sku": "VS-WATCH-06",
     "category": "watches",
     "categories": [
@@ -7123,6 +7205,7 @@ var PRODUCTS = [
   {
     "id": "watch-royal-day-silver-01",
     "slug": "product-82",
+    "urlSlug": "royal-day-silver-watch",
     "sku": "VS-WATCH-07",
     "category": "watches",
     "categories": [
@@ -7223,6 +7306,7 @@ var PRODUCTS = [
   {
     "id": "watch-royal-day-gold-01",
     "slug": "product-83",
+    "urlSlug": "royal-day-gold-watch",
     "sku": "VS-WATCH-08",
     "category": "watches",
     "categories": [
@@ -7343,6 +7427,7 @@ var PRODUCTS = [
   {
     "id": "watch-olevs-gift-white-01",
     "slug": "product-85",
+    "urlSlug": "olevs-white-gift-set-watch",
     "sku": "VS-WATCH-10",
     "category": "watches",
     "categories": [
@@ -7409,6 +7494,7 @@ var PRODUCTS = [
   {
     "id": "watch-olevs-gift-pink-01",
     "slug": "product-86",
+    "urlSlug": "olevs-pink-gift-set-watch",
     "sku": "VS-WATCH-11",
     "category": "watches",
     "categories": [
@@ -7475,6 +7561,7 @@ var PRODUCTS = [
   {
     "id": "watch-olevs-gift-cyan-01",
     "slug": "product-87",
+    "urlSlug": "olevs-light-blue-gift-set-watch",
     "sku": "VS-WATCH-12",
     "category": "watches",
     "categories": [
@@ -7541,6 +7628,7 @@ var PRODUCTS = [
   {
     "id": "watch-olevs-gift-purple-01",
     "slug": "product-88",
+    "urlSlug": "olevs-purple-gift-set-watch",
     "sku": "VS-WATCH-13",
     "category": "watches",
     "categories": [
@@ -7607,6 +7695,7 @@ var PRODUCTS = [
   {
     "id": "watch-tachymeter-pro-black-01",
     "slug": "product-89",
+    "urlSlug": "tachymeter-pro-black-watch",
     "sku": "VS-WATCH-14",
     "category": "watches",
     "categories": [
@@ -7674,6 +7763,7 @@ var PRODUCTS = [
   {
     "id": "watch-ice-supra-90",
     "slug": "product-90",
+    "urlSlug": "ice-supra-silver-watch",
     "sku": "VS-WATCH-15",
     "category": "watches",
     "categories": [
@@ -7740,6 +7830,7 @@ var PRODUCTS = [
   {
     "id": "watch-ice-supra-91",
     "slug": "product-91",
+    "urlSlug": "ice-supra-silver-gold-watch",
     "sku": "VS-WATCH-16",
     "category": "watches",
     "categories": [
@@ -7806,6 +7897,7 @@ var PRODUCTS = [
   {
     "id": "watch-ice-supra-92",
     "slug": "product-92",
+    "urlSlug": "ice-supra-black-watch",
     "sku": "VS-WATCH-17",
     "category": "watches",
     "categories": [
@@ -7872,6 +7964,7 @@ var PRODUCTS = [
   {
     "id": "watch-ice-supra-93",
     "slug": "product-93",
+    "urlSlug": "ice-supra-gold-watch",
     "sku": "VS-WATCH-18",
     "category": "watches",
     "categories": [
