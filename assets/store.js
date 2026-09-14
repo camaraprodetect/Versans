@@ -177,7 +177,7 @@
     { key: 'watches', label: 'שעונים' },
     { key: 'glasses', label: 'משקפיים' },
     { key: 'gift-boxes', label: 'מארזים' },
-    { key: 'custom', label: 'Custom' },
+    { key: 'custom', label: 'עיצוב אישי' },
     { key: 'sets', label: 'סטים' }
   ];
 
@@ -457,16 +457,28 @@
       watchesBanner.hidden = !(state.filter === 'watches' || state.filter.indexOf('watches-') === 0);
     }
 
+    var greetingCustomCollectionBanner = $('#greetingCustomCollectionBanner');
+    if (greetingCustomCollectionBanner) {
+      greetingCustomCollectionBanner.hidden = !(
+        state.filter === 'greeting' || state.filter.indexOf('greeting-') === 0 ||
+        state.filter === 'custom' || state.filter.indexOf('custom-') === 0
+      );
+    }
+
+    var giftBoxesCollectionBanner = $('#giftBoxesCollectionBanner');
+    if (giftBoxesCollectionBanner) {
+      giftBoxesCollectionBanner.hidden = !(
+        state.filter === 'gift-boxes' || state.filter.indexOf('gift-boxes-') === 0
+      );
+    }
+
     var otherCollectionsBanner = $('#otherCollectionsBanner');
     if (otherCollectionsBanner) {
       var showOtherCollectionsBanner =
         state.filter === 'all' ||
-        state.filter === 'greeting' || state.filter.indexOf('greeting-') === 0 ||
         state.filter === 'necklaces' ||
         state.filter === 'bracelets' ||
         state.filter === 'photo-bracelets' ||
-        state.filter === 'gift-boxes' ||
-        state.filter === 'custom' ||
         state.filter === 'sets';
       otherCollectionsBanner.hidden = !showOtherCollectionsBanner;
     }

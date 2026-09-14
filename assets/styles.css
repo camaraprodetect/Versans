@@ -137,10 +137,10 @@ html[dir=rtl] .nav__item--has-submenu:hover .nav__submenu,html[dir=rtl] .nav__it
 /* Collection: quiet side navigation, generous imagery, clear pricing. */
 .shop__head{display:flex;align-items:flex-end;justify-content:space-between;gap:2rem;padding-bottom:2.2rem;border-bottom:1px solid var(--line);margin-bottom:2.3rem}
 .shop__head .eyebrow{color:var(--muted);margin-bottom:.65rem}
-.glasses-collection-banner,.watches-collection-banner,.other-collections-banner{width:100%;margin:0 auto 2.3rem;text-align:center}
-.glasses-collection-banner[hidden],.watches-collection-banner[hidden],.other-collections-banner[hidden]{display:none}
-.glasses-collection-banner__picture,.watches-collection-banner__picture,.other-collections-banner__picture{display:block;width:100%;max-width:1600px;margin:0 auto}
-.glasses-collection-banner img,.watches-collection-banner img,.other-collections-banner img{display:block;width:100%;max-width:1600px;height:auto;margin:0 auto}
+.glasses-collection-banner,.watches-collection-banner,.other-collections-banner,.greeting-custom-collection-banner,.gift-boxes-collection-banner{width:100%;margin:0 auto 2.3rem;text-align:center}
+.glasses-collection-banner[hidden],.watches-collection-banner[hidden],.other-collections-banner[hidden],.greeting-custom-collection-banner[hidden],.gift-boxes-collection-banner[hidden]{display:none}
+.glasses-collection-banner__picture,.watches-collection-banner__picture,.other-collections-banner__picture,.greeting-custom-collection-banner__picture,.gift-boxes-collection-banner__picture{display:block;width:100%;max-width:1600px;margin:0 auto}
+.glasses-collection-banner img,.watches-collection-banner img,.other-collections-banner img,.greeting-custom-collection-banner img,.gift-boxes-collection-banner img{display:block;width:100%;max-width:1600px;height:auto;margin:0 auto}
 .shop__layout{display:grid;grid-template-columns:220px minmax(0,1fr);gap:3rem;align-items:start}
 .shop__sidebar{position:sticky;top:130px;padding-top:.25rem}
 .shop__filter-label{font-size:.875rem;font-weight:500;margin-bottom:.8rem}
@@ -2113,7 +2113,9 @@ body[data-product-slug="product-80"] .product-choice--color .product-choice__ima
   .home-page .shop__head .lede{margin-top:.55rem;font-size:.86rem;line-height:1.65}
   .home-page .glasses-collection-banner,
   .home-page .watches-collection-banner,
-  .home-page .other-collections-banner{margin-bottom:1.1rem;overflow:hidden;border-radius:10px}
+  .home-page .other-collections-banner,
+  .home-page .greeting-custom-collection-banner,
+  .home-page .gift-boxes-collection-banner{margin-bottom:1.1rem;overflow:hidden;border-radius:10px}
 
   /* Keep every main collection visible on the home navbar instead of hiding it in a drawer. */
   .home-page .nav{position:sticky;top:0}
@@ -2406,7 +2408,9 @@ body[data-product-slug="product-80"] .product-choice--color .product-choice__ima
   .home-page .shop>.container{display:flex;flex-direction:column}
   .home-page .glasses-collection-banner,
   .home-page .watches-collection-banner,
-  .home-page .other-collections-banner{order:1}
+  .home-page .other-collections-banner,
+  .home-page .greeting-custom-collection-banner,
+  .home-page .gift-boxes-collection-banner{order:1}
   .home-page .shop__head{order:2}
   .home-page .shop__layout{order:3}
 
@@ -2967,7 +2971,9 @@ body.site-overlay-open{overflow:hidden}
   /* On mobile, keep the old collection banner for glasses and watches. */
   .home-page .other-collections-banner{display:none!important}
   .home-page .glasses-collection-banner,
-  .home-page .watches-collection-banner{order:2;margin-top:0!important;margin-bottom:1rem!important}
+  .home-page .watches-collection-banner,
+  .home-page .greeting-custom-collection-banner,
+  .home-page .gift-boxes-collection-banner{order:2;margin-top:0!important;margin-bottom:1rem!important}
   .home-page .shop__head{order:3}
   .home-page .shop__layout{order:4}
 }
