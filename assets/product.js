@@ -21,6 +21,7 @@
   var activeImageIndex = 0;
   var CUSTOM_GREETING_ADD_PRICE = 35;
   var greetingPreviewObjectUrl = '';
+
   var params = new URLSearchParams(window.location.search);
   var id = params.get('id');
   var product = findProduct(id) || PRODUCTS[0];
@@ -1354,12 +1355,12 @@
         $('#greetingDesignBtn').href = 'greeting-editor.html?id=' + encodeURIComponent(product.slug || product.id);
         $('#greetingDesignBtn').textContent = greeting
           ? (lang === 'he' ? 'עריכת הברכה האישית' : 'Edit custom greeting')
-          : (lang === 'he' ? 'עיצוב ברכה אישית (+35 ₪)' : 'Custom greeting (+₪35)');
+          : (lang === 'he' ? 'עיצוב ברכה אישית' : 'Design a custom greeting');
         $('#greetingCustomizerEyebrow').textContent = lang === 'he' ? 'ברכה אישית' : 'Custom greeting';
         $('#greetingCustomizerTitle').textContent = lang === 'he' ? 'רוצים לכתוב את המילים שלכם?' : 'Want to use your own words?';
         $('#greetingCustomizerStatus').textContent = greeting
           ? (lang === 'he' ? 'הברכה האישית נשמרה ונוספה להזמנה בתוספת 35 ₪ ✓' : 'Your custom greeting is saved and adds ₪35 to this item ✓')
-          : (lang === 'he' ? 'הברכה המקורית כלולה במחיר. עיצוב ברכה אישית עולה 35 ₪ נוספים.' : 'The original greeting is included. A custom greeting adds ₪35.');
+          : (lang === 'he' ? 'הברכה המקורית כלולה במחיר. אפשר ליצור ברכה אישית בעיצוב משלכם.' : 'The original greeting is included. You can create your own custom greeting.');
         var removeBtn = $('#greetingRemoveBtn');
         if (removeBtn) { removeBtn.hidden = !greeting; removeBtn.textContent = lang === 'he' ? 'חזרה לברכה המקורית' : 'Use original greeting'; }
       }
@@ -1474,15 +1475,8 @@
     if (e.target.closest('#qtyPlus')) { changeQty(1); return; }
     if (e.target.closest('#addToCart')) { addToCart(); return; }
     var greetingDesignTarget = e.target.closest('#greetingDesignBtn');
-    if (greetingDesignTarget && supportsCustomGreeting() && !savedGreeting()) {
-      e.preventDefault();
-      var agreed = window.confirm(lang === 'he'
-        ? 'עיצוב ברכה אישית מוסיף 35 ₪ למחיר המוצר. להמשיך לעיצוב?'
-        : 'A custom greeting adds ₪35 to the product price. Continue to the editor?');
-      if (!agreed) return;
-      save(greetingOptInKey(), '1');
-      window.location.href = greetingDesignTarget.href;
-      return;
+    if (greetingDesignTarget && supportsCustomGreeting()) {
+      /* Price approval happens only when the greeting is saved in the editor. */
     }
     if (e.target.closest('#greetingRemoveBtn')) { removeCustomGreeting(); return; }
 

@@ -266,3 +266,22 @@ html[dir=ltr] .ge-intro,html[dir=ltr] .ge-font-option{text-align:left}html[dir=l
     right:24%!important;
   }
 }
+
+
+/* ===== Greeting price confirmation on save 2026-09-14 ===== */
+body.ge-price-confirm-open{overflow:hidden}
+.ge-price-confirm{position:fixed;inset:0;z-index:1200;display:grid;place-items:center;padding:18px}
+.ge-price-confirm[hidden]{display:none!important}
+.ge-price-confirm__backdrop{position:absolute;inset:0;background:rgba(18,22,28,.52);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.ge-price-confirm__dialog{position:relative;z-index:1;width:min(92vw,540px);padding:1.45rem 1.4rem 1.25rem;border:1px solid #e4d8cc;border-radius:24px;background:linear-gradient(180deg,#fff 0%,#fffaf6 100%);box-shadow:0 28px 90px rgba(16,24,34,.24);direction:rtl;text-align:right}
+.ge-price-confirm__eyebrow{margin:0 0 .35rem;color:#9b744d;font-size:.76rem;font-weight:800}
+.ge-price-confirm__dialog h2{margin:0;color:#142333;font-size:clamp(1.25rem,2.2vw,1.65rem);line-height:1.25}
+.ge-price-confirm__dialog p:not(.ge-price-confirm__eyebrow){margin:.65rem 0 0;color:#58646e;font-size:.95rem;line-height:1.7}
+.ge-price-confirm__price{display:inline-flex;margin-top:.78rem;padding:.38rem .72rem;border-radius:999px;background:#f4eadf;color:#8e6744;font-size:.9rem;font-weight:800}
+.ge-price-confirm__actions{display:flex;gap:.7rem;margin-top:1.15rem;flex-wrap:wrap}
+.ge-price-confirm__approve,.ge-price-confirm__cancel{min-height:48px;padding:.76rem 1.18rem;border-radius:999px;font:inherit;font-weight:800;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease}
+.ge-price-confirm__approve{border:1px solid #142333;background:linear-gradient(180deg,#20384e 0%,#142333 100%);color:#fff;box-shadow:0 12px 28px rgba(20,35,51,.22)}
+.ge-price-confirm__cancel{border:1px solid #e1d7cf;background:#fff;color:#6f5a50}
+.ge-price-confirm__approve:hover,.ge-price-confirm__cancel:hover{transform:translateY(-1px)}
+.ge-price-confirm__approve:focus-visible,.ge-price-confirm__cancel:focus-visible{outline:3px solid rgba(20,35,51,.16);outline-offset:2px}
+@media(max-width:560px){.ge-price-confirm{padding:14px}.ge-price-confirm__dialog{width:94vw;padding:1.2rem 1rem 1rem;border-radius:20px}.ge-price-confirm__actions{gap:.55rem}.ge-price-confirm__approve,.ge-price-confirm__cancel{flex:1 1 0;min-width:0;padding:.72rem .85rem}}

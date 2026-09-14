@@ -292,9 +292,23 @@
 </div>
 </div>
 
+<div class="ge-price-confirm" id="greetingPriceConfirm" hidden>
+  <div class="ge-price-confirm__backdrop" data-price-confirm-close></div>
+  <div class="ge-price-confirm__dialog" role="dialog" aria-modal="true" aria-labelledby="greetingPriceConfirmTitle" aria-describedby="greetingPriceConfirmText">
+    <p class="ge-price-confirm__eyebrow">ברכה אישית</p>
+    <h2 id="greetingPriceConfirmTitle">לאשר את הוספת הברכה?</h2>
+    <p id="greetingPriceConfirmText">הברכה המעוצבת תתווסף למוצר בתוספת של 35 ₪.</p>
+    <div class="ge-price-confirm__price">+35 ₪</div>
+    <div class="ge-price-confirm__actions">
+      <button class="ge-price-confirm__approve" id="greetingPriceConfirmApprove" type="button">אישור ושמירה</button>
+      <button class="ge-price-confirm__cancel" id="greetingPriceConfirmCancel" type="button">ביטול</button>
+    </div>
+  </div>
+</div>
+
 <script src="assets/config.js?v=20260905-versans-v1"></script>
 <script src="assets/products.js?v=20260912-glasses-v16"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-<script src="assets/greeting-editor.js?v=20260914-card-relative-v4"></script>
+<script src="assets/greeting-editor.js?v=20260914-price-confirm-v1"></script>
 </body>
 </html>

@@ -322,15 +322,42 @@ body.product-review-detail-open{overflow:hidden}
   .product-review-carousel__viewport{margin-inline:-2px;padding:.25rem 0 .55rem}
   .product-review-carousel__track{gap:10px}
   .product-review-slide{
-    flex-basis:calc(100vw - 56px);
-    width:calc(100vw - 56px);
-    min-height:120px;
-    padding:.8rem .85rem .72rem;
+    min-height:210px;
+    padding:1rem 1rem .9rem;
     border-radius:18px;
   }
-  .product-review-slide__text{font-size:.8rem;line-height:1.55}
-  .product-review-slide__reviewer{font-size:.71rem}
-  .product-review-slide__stars{font-size:.92rem}
+  .product-review-slide__top{
+    align-items:flex-start;
+    gap:.55rem;
+  }
+  .product-review-slide__reviewer{
+    flex:1 1 auto;
+    min-width:0;
+    font-size:.78rem;
+    line-height:1.35;
+  }
+  .product-review-slide__stars{
+    flex:0 0 auto;
+    font-size:.96rem;
+  }
+  .product-review-slide__text{
+    width:100%;
+    min-height:6.1em;
+    font-size:.86rem;
+    line-height:1.55;
+    -webkit-line-clamp:4;
+  }
+  .product-review-slide__footer{
+    align-items:flex-end;
+    flex-wrap:wrap;
+    row-gap:.45rem;
+  }
+  .product-review-slide__date{font-size:.68rem}
+  .product-review-slide__media-note{
+    max-width:100%;
+    white-space:normal;
+    line-height:1.35;
+  }
 }
 
 @media(prefers-reduced-motion:reduce){
@@ -340,4 +367,168 @@ body.product-review-detail-open{overflow:hidden}
   .product-review-carousel__track.is-jump-reset,
   .product-review-carousel__track.is-static{transform:none!important;transition:none!important}
   .product-review-carousel__track{width:100%;justify-content:flex-start}
+}
+
+
+/* ===== Single-card product review carousel 2026-09-14 ===== */
+.product-review-carousel__viewport{
+  overflow:hidden!important;
+  width:100%;
+  max-width:100%;
+}
+.product-review-carousel__track{
+  max-width:none!important;
+}
+.product-review-slide{
+  box-sizing:border-box!important;
+  min-width:0!important;
+  max-width:none;
+  overflow:hidden;
+}
+.product-review-slide__top,
+.product-review-slide__footer,
+.product-review-slide__text{
+  min-width:0;
+  max-width:100%;
+}
+.product-review-slide__reviewer>span:first-child{
+  min-width:0;
+  overflow-wrap:anywhere;
+}
+.product-review-slide__text{overflow-wrap:anywhere}
+.product-review-carousel__track.is-static .product-review-slide{
+  width:100%!important;
+  flex-basis:100%!important;
+  max-width:100%!important;
+}
+@media(max-width:520px){
+  .product-review-carousel{
+    width:100%;
+    min-width:0;
+    overflow:hidden;
+  }
+  .product-review-carousel__head{
+    align-items:center;
+    gap:.55rem;
+  }
+  .product-review-carousel__title{
+    min-width:0;
+    flex:1 1 auto;
+  }
+  .product-review-carousel__viewport{
+    margin-inline:0!important;
+    padding:.3rem 0 .6rem!important;
+  }
+  .product-review-carousel__track{gap:10px}
+  .product-review-slide{
+    min-height:210px;
+    padding:1rem .95rem .9rem;
+  }
+  .product-review-slide__top{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    align-items:start;
+  }
+  .product-review-slide__reviewer{
+    font-size:.78rem;
+    line-height:1.35;
+  }
+  .product-review-slide__stars{font-size:.96rem}
+  .product-review-slide__text{
+    min-height:6.1em;
+    font-size:.86rem;
+    line-height:1.55;
+    -webkit-line-clamp:4;
+  }
+  .product-review-slide__footer{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:.45rem .65rem;
+  }
+}
+
+/* ===== Compact mobile review card; full review still opens existing X modal ===== */
+@media(max-width:520px){
+  .product-review-slide{
+    min-height:158px!important;
+    height:158px!important;
+    max-height:158px!important;
+    padding:.78rem .9rem .7rem!important;
+    gap:.4rem!important;
+    cursor:pointer;
+  }
+  .product-review-slide__top{
+    gap:.45rem!important;
+  }
+  .product-review-slide__reviewer{
+    font-size:.75rem!important;
+    line-height:1.25!important;
+  }
+  .product-review-slide__stars{
+    font-size:.9rem!important;
+  }
+  .product-review-slide__text{
+    min-height:0!important;
+    margin:.05rem 0 0!important;
+    font-size:.8rem!important;
+    line-height:1.42!important;
+    display:-webkit-box!important;
+    -webkit-box-orient:vertical!important;
+    -webkit-line-clamp:2!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+  .product-review-slide__footer{
+    margin-top:auto!important;
+    gap:.35rem .55rem!important;
+    row-gap:.3rem!important;
+  }
+  .product-review-slide__date{
+    font-size:.64rem!important;
+  }
+  .product-review-slide__media-note{
+    font-size:.58rem!important;
+    line-height:1.25!important;
+  }
+}
+
+/* ===== Mobile compact review cards with ellipsis 2026-09-14 ===== */
+@media(max-width:520px){
+  .product-review-slide{
+    min-height:148px!important;
+    padding:.82rem .88rem .72rem!important;
+    gap:.5rem!important;
+  }
+  .product-review-slide__top{
+    align-items:center!important;
+    gap:.5rem!important;
+  }
+  .product-review-slide__reviewer{
+    font-size:.76rem!important;
+    line-height:1.3!important;
+  }
+  .product-review-slide__stars{
+    font-size:.94rem!important;
+  }
+  .product-review-slide__text{
+    min-height:3.1em!important;
+    font-size:.84rem!important;
+    line-height:1.55!important;
+    -webkit-line-clamp:2!important;
+    line-clamp:2!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+  .product-review-slide__footer{
+    margin-top:auto!important;
+    align-items:center!important;
+    gap:.45rem!important;
+  }
+  .product-review-slide__date{font-size:.66rem!important}
+  .product-review-slide__media-note{
+    font-size:.6rem!important;
+    line-height:1.25!important;
+  }
 }

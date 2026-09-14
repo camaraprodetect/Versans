@@ -20,6 +20,9 @@
   function $(s){return document.querySelector(s);}
   function $$(s){return Array.prototype.slice.call(document.querySelectorAll(s));}
   function storageKey(){return 'kw_greeting_'+product.id;}
+  function greetingOptInKey(){return 'kw_greeting_optin_'+product.id;}
+  function hasGreetingOptIn(){try{return localStorage.getItem(greetingOptInKey())==='1';}catch(e){return false;}}
+  function saveGreetingOptIn(){try{localStorage.setItem(greetingOptInKey(),'1');}catch(e){}}
 
   var TEMPLATES={
     'template-1':{title:'Template 1',titleMax:15,messageMax:170,messageCharsPerLine:34,signatureMax:30,eyebrow:false,subtitle:false,featured:true},
@@ -218,6 +221,25 @@
   var resetOutlineColor=$('#resetOutlineColor');
   var lockNote=$('#lockNote');
   var extraTemplatesExpanded=false;
+  var priceConfirmModal=$('#greetingPriceConfirm');
+  var priceConfirmApprove=$('#greetingPriceConfirmApprove');
+  var priceConfirmCancel=$('#greetingPriceConfirmCancel');
+  var priceConfirmResolver=null;
+  var priceConfirmLastFocus=null;
+
+  function closeGreetingPriceConfirm(approved){
+    if(!priceConfirmModal||priceConfirmModal.hidden)return;
+    priceConfirmModal.hidden=true;document.body.classList.remove('ge-price-confirm-open');
+    var resolve=priceConfirmResolver;priceConfirmResolver=null;
+    if(priceConfirmLastFocus&&priceConfirmLastFocus.focus){try{priceConfirmLastFocus.focus();}catch(e){}}
+    if(resolve)resolve(!!approved);
+  }
+  function confirmGreetingPrice(){
+    if(hasGreetingOptIn())return Promise.resolve(true);
+    if(!priceConfirmModal)return Promise.resolve(false);
+    priceConfirmLastFocus=document.activeElement;priceConfirmModal.hidden=false;document.body.classList.add('ge-price-confirm-open');
+    return new Promise(function(resolve){priceConfirmResolver=resolve;setTimeout(function(){try{priceConfirmApprove.focus();}catch(e){}},10);});
+  }
   var cropSession={active:false,resolve:null,reject:null,url:'',stageSize:0,naturalWidth:0,naturalHeight:0,baseScale:1,zoom:1,offsetX:0,offsetY:0,renderWidth:0,renderHeight:0,dragging:false,pointerId:null,startX:0,startY:0,startOffsetX:0,startOffsetY:0};
 
   var TEMPLATE_EN={
@@ -678,6 +700,11 @@
     });
   });
 
+  if(priceConfirmApprove)priceConfirmApprove.addEventListener('click',function(){closeGreetingPriceConfirm(true);});
+  if(priceConfirmCancel)priceConfirmCancel.addEventListener('click',function(){closeGreetingPriceConfirm(false);});
+  if(priceConfirmModal)priceConfirmModal.addEventListener('click',function(e){if(e.target&&e.target.hasAttribute('data-price-confirm-close'))closeGreetingPriceConfirm(false);});
+  document.addEventListener('keydown',function(e){if(priceConfirmModal&&!priceConfirmModal.hidden&&e.key==='Escape'){e.preventDefault();closeGreetingPriceConfirm(false);}});
+
   $('#saveGreeting').addEventListener('click',async function(){
     readInputsIntoState();
     var t=templateDef(state.template);
@@ -690,6 +717,9 @@
     if(t.eyebrow&&!value.eyebrow){err.hidden=false;err.textContent=tr('requiredEyebrow');return;}
     if(t.subtitle&&!value.subtitle){err.hidden=false;err.textContent=tr('requiredSubtitle');return;}
 
+    var priceAccepted=await confirmGreetingPrice();
+    if(!priceAccepted)return;
+
     err.hidden=true;
     var btn=this,oldText=btn.textContent;btn.disabled=true;btn.textContent=tr('saving');
     pngStatus.textContent=tr('creating');pngStatus.className='ge-png-status';
@@ -701,6 +731,7 @@
       try{
         await uploadPng(blob,{assetId:assetId,fileName:fileName},value);
         saveTextValue(value);
+        saveGreetingOptIn();
         pngStatus.textContent=tr('uploadOk');pngStatus.className='ge-png-status is-ok';
         setTimeout(function(){window.location.href='product.html?id='+encodeURIComponent(product.slug||product.id);},350);
       }catch(uploadErr){

@@ -186,12 +186,23 @@
     if (!track || !viewport) return;
     var slides = getSlides();
     if (!slides.length) return;
+
+    /* One review card must fill the carousel viewport exactly. This prevents
+       neighbouring reviews from peeking at either side and avoids mobile
+       overflow caused by sizing cards from 100vw instead of the real panel. */
+    var viewportWidth = Math.max(1, viewport.clientWidth);
+    Array.prototype.forEach.call(slides, function (slide) {
+      slide.style.width = viewportWidth + 'px';
+      slide.style.flexBasis = viewportWidth + 'px';
+      slide.style.maxWidth = viewportWidth + 'px';
+    });
+
     var referenceSlide = slides.length > 1 ? slides[1] : slides[0];
     if (!referenceSlide) return;
     var gap = parseFloat(window.getComputedStyle(track).columnGap || window.getComputedStyle(track).gap || '0') || 0;
     var rect = referenceSlide.getBoundingClientRect();
     slideStep = rect.width + gap;
-    sideOffset = Math.max(0, (viewport.clientWidth - rect.width) / 2);
+    sideOffset = 0;
   }
 
   function applyPosition(withoutAnimation) {
@@ -261,6 +272,7 @@
     if (reviews.length === 1 || reduceMotion) {
       track.classList.add('is-static');
       track.appendChild(createSlide(reviews[0], false));
+      window.requestAnimationFrame(updateMetrics);
       return;
     }
 
