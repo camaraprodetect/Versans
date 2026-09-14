@@ -140,10 +140,7 @@ var PRODUCTS = [
       "greeting-partner",
       "custom"
     ],
-    "badge": {
-      "he": "חדש",
-      "en": "New"
-    },
+    "badge": null,
     "hoverImage": "images/products/product-5/mainproduct2.png",
     "images": [
       "images/products/product-5/mainproduct1.png"
@@ -239,10 +236,7 @@ var PRODUCTS = [
       "greeting-daughter",
       "custom"
     ],
-    "badge": {
-      "he": "חדש",
-      "en": "New"
-    },
+    "badge": null,
     "hoverImage": "images/products/product-3/mainproduct2.png",
     "images": [
       "images/products/product-3/mainproduct1.png"
@@ -346,10 +340,7 @@ var PRODUCTS = [
       "greeting-partner",
       "custom"
     ],
-    "badge": {
-      "he": "חדש",
-      "en": "New"
-    },
+    "badge": null,
     "hoverImage": "images/products/product-4/mainproduct2.png",
     "images": [
       "images/products/product-4/mainproduct1.png"
@@ -453,10 +444,7 @@ var PRODUCTS = [
       "greeting-partner",
       "custom"
     ],
-    "badge": {
-      "he": "חדש",
-      "en": "New"
-    },
+    "badge": null,
     "hoverImage": "images/products/product-2/mainproduct2.png",
     "images": [
       "images/products/product-2/mainproduct1.png"
@@ -584,10 +572,7 @@ var PRODUCTS = [
       "greeting-sister",
       "custom"
     ],
-    "badge": {
-      "he": "חדש",
-      "en": "New"
-    },
+    "badge": null,
     "hoverImage": "images/products/product-6/mainproduct2.png",
     "images": [
       "images/products/product-6/mainproduct1.png"
@@ -715,10 +700,7 @@ var PRODUCTS = [
       "greeting-partner",
       "custom"
     ],
-    "badge": {
-      "he": "חדש",
-      "en": "New"
-    },
+    "badge": null,
     "hoverImage": "images/products/product-7/mainproduct2.png",
     "images": [
       "images/products/product-7/mainproduct1.png"
@@ -822,10 +804,7 @@ var PRODUCTS = [
       "greeting-mom",
       "custom"
     ],
-    "badge": {
-      "he": "חדש",
-      "en": "New"
-    },
+    "badge": null,
     "hoverImage": "images/products/product-8/mainproduct2.png",
     "images": [
       "images/products/product-8/mainproduct1.png"
@@ -953,10 +932,7 @@ var PRODUCTS = [
       "greeting-mom",
       "custom"
     ],
-    "badge": {
-      "he": "חדש",
-      "en": "New"
-    },
+    "badge": null,
     "hoverImage": "images/products/product-9/mainproduct2.png",
     "images": [
       "images/products/product-9/mainproduct1.png"
@@ -1058,10 +1034,7 @@ var PRODUCTS = [
     "categories": [
       "necklaces"
     ],
-    "badge": {
-      "he": "חדש",
-      "en": "New"
-    },
+    "badge": null,
     "cardMode": "view",
     "hideMessageCard": true,
     "hoverImage": "images/products/product-10/product-10-2.png",
@@ -1173,10 +1146,7 @@ var PRODUCTS = [
       "bracelets",
       "sets"
     ],
-    "badge": {
-      "he": "חדש",
-      "en": "New"
-    },
+    "badge": null,
     "hoverImage": "images/products/product-11/product-11-3.png",
     "cardMode": "view",
     "hideMessageCard": true,
@@ -1288,10 +1258,7 @@ var PRODUCTS = [
       "bracelets",
       "sets"
     ],
-    "badge": {
-      "he": "חדש",
-      "en": "New"
-    },
+    "badge": null,
     "hoverImage": "images/products/product-12/product-12-3.png",
     "cardMode": "view",
     "hideMessageCard": true,
@@ -1401,10 +1368,7 @@ var PRODUCTS = [
     "categories": [
       "bracelets"
     ],
-    "badge": {
-      "he": "חדש",
-      "en": "New"
-    },
+    "badge": null,
     "hoverImage": "images/products/product-13/product-13-3.png",
     "collectionMedia": {
       "women": {
@@ -1509,10 +1473,7 @@ var PRODUCTS = [
     "categories": [
       "necklaces"
     ],
-    "badge": {
-      "he": "חדש",
-      "en": "New"
-    },
+    "badge": null,
     "cardMode": "view",
     "hideMessageCard": true,
     "hoverImage": "images/products/product-14/product-14-1.png",
@@ -1867,10 +1828,7 @@ var PRODUCTS = [
     "categories": [
       "necklaces"
     ],
-    "badge": {
-      "he": "חדש",
-      "en": "New"
-    },
+    "badge": null,
     "cardMode": "view",
     "hideMessageCard": true,
     "hoverImage": "images/products/product-16/product-16-2.png",
@@ -1981,10 +1939,7 @@ var PRODUCTS = [
       "bracelets",
       "sets"
     ],
-    "badge": {
-      "he": "חדש",
-      "en": "New"
-    },
+    "badge": null,
     "cardMode": "view",
     "hideMessageCard": true,
     "hoverImage": "images/products/product-17/product-17-hover.png",
@@ -2210,10 +2165,7 @@ var PRODUCTS = [
       "gift-boxes",
       "sets"
     ],
-    "badge": {
-      "he": "חדש",
-      "en": "New"
-    },
+    "badge": null,
     "cardMode": "view",
     "hideMessageCard": true,
     "hoverImage": "images/products/product-19/product-19-red.png",
@@ -2334,10 +2286,7 @@ var PRODUCTS = [
       "necklaces",
       "sets"
     ],
-    "badge": {
-      "he": "חדש",
-      "en": "New"
-    },
+    "badge": null,
     "cardMode": "view",
     "hideMessageCard": true,
     "hoverImage": "images/products/product-20/product-20-red.png",
@@ -6437,10 +6386,7 @@ var PRODUCTS = [
       "watches",
       "gift-boxes"
     ],
-    "badge": {
-      "he": "חדש",
-      "en": "New"
-    },
+    "badge": null,
     "cardMode": "view",
     "hideMessageCard": true,
     "images": [
@@ -6566,10 +6512,7 @@ var PRODUCTS = [
     "categories": [
       "watches"
     ],
-    "badge": {
-      "he": "חדש",
-      "en": "New"
-    },
+    "badge": null,
     "cardMode": "view",
     "hideMessageCard": true,
     "cardImage": "images/products/product-77/product-77-1.png",
@@ -6637,10 +6580,7 @@ var PRODUCTS = [
     "categories": [
       "watches"
     ],
-    "badge": {
-      "he": "חדש",
-      "en": "New"
-    },
+    "badge": null,
     "cardMode": "view",
     "hideMessageCard": true,
     "cardImage": "images/products/product-78/product-78-1.png",
@@ -6708,10 +6648,7 @@ var PRODUCTS = [
     "categories": [
       "watches"
     ],
-    "badge": {
-      "he": "חדש",
-      "en": "New"
-    },
+    "badge": null,
     "cardMode": "view",
     "hideMessageCard": true,
     "cardImage": "images/products/product-79/product-79-1.png",
@@ -6831,10 +6768,7 @@ var PRODUCTS = [
     "categories": [
       "watches"
     ],
-    "badge": {
-      "he": "חדש",
-      "en": "New"
-    },
+    "badge": null,
     "cardMode": "view",
     "hideMessageCard": true,
     "cardImage": "images/products/product-80/product-80-1.png",
@@ -6964,10 +6898,7 @@ var PRODUCTS = [
     "categories": [
       "watches"
     ],
-    "badge": {
-      "he": "חדש",
-      "en": "New"
-    },
+    "badge": null,
     "cardMode": "view",
     "hideMessageCard": true,
     "cardImage": "images/products/product-84/product-84-1.png",
@@ -7087,10 +7018,7 @@ var PRODUCTS = [
     "categories": [
       "watches"
     ],
-    "badge": {
-      "he": "חדש",
-      "en": "New"
-    },
+    "badge": null,
     "cardMode": "view",
     "hideMessageCard": true,
     "cardImage": "images/products/product-81/product-81-1.png",
@@ -7200,10 +7128,7 @@ var PRODUCTS = [
     "categories": [
       "watches"
     ],
-    "badge": {
-      "he": "חדש",
-      "en": "New"
-    },
+    "badge": null,
     "cardMode": "view",
     "hideMessageCard": true,
     "cardImage": "images/products/product-82/product-82-1.png",
@@ -7303,10 +7228,7 @@ var PRODUCTS = [
     "categories": [
       "watches"
     ],
-    "badge": {
-      "he": "חדש",
-      "en": "New"
-    },
+    "badge": null,
     "cardMode": "view",
     "hideMessageCard": true,
     "cardImage": "images/products/product-83/product-83-1.png",
@@ -7427,10 +7349,7 @@ var PRODUCTS = [
       "watches",
       "gift-boxes"
     ],
-    "badge": {
-      "he": "חדש",
-      "en": "New"
-    },
+    "badge": null,
     "cardMode": "view",
     "hideMessageCard": true,
     "cardImage": "images/products/product-85/product-85-1.png",
@@ -7496,10 +7415,7 @@ var PRODUCTS = [
       "watches",
       "gift-boxes"
     ],
-    "badge": {
-      "he": "חדש",
-      "en": "New"
-    },
+    "badge": null,
     "cardMode": "view",
     "hideMessageCard": true,
     "cardImage": "images/products/product-86/product-86-1.png",
@@ -7565,10 +7481,7 @@ var PRODUCTS = [
       "watches",
       "gift-boxes"
     ],
-    "badge": {
-      "he": "חדש",
-      "en": "New"
-    },
+    "badge": null,
     "cardMode": "view",
     "hideMessageCard": true,
     "cardImage": "images/products/product-87/product-87-1.png",
@@ -7634,10 +7547,7 @@ var PRODUCTS = [
       "watches",
       "gift-boxes"
     ],
-    "badge": {
-      "he": "חדש",
-      "en": "New"
-    },
+    "badge": null,
     "cardMode": "view",
     "hideMessageCard": true,
     "cardImage": "images/products/product-88/product-88-1.png",
@@ -7702,10 +7612,7 @@ var PRODUCTS = [
     "categories": [
       "watches"
     ],
-    "badge": {
-      "he": "חדש",
-      "en": "New"
-    },
+    "badge": null,
     "cardMode": "view",
     "hideMessageCard": true,
     "cardImage": "images/products/product-89/product-89-1.png",
@@ -7772,10 +7679,7 @@ var PRODUCTS = [
     "categories": [
       "watches"
     ],
-    "badge": {
-      "he": "חדש",
-      "en": "New"
-    },
+    "badge": null,
     "cardMode": "view",
     "hideMessageCard": true,
     "cardImage": "images/products/product-90/product-90-1.png",
@@ -7841,10 +7745,7 @@ var PRODUCTS = [
     "categories": [
       "watches"
     ],
-    "badge": {
-      "he": "חדש",
-      "en": "New"
-    },
+    "badge": null,
     "cardMode": "view",
     "hideMessageCard": true,
     "cardImage": "images/products/product-91/product-91-1.png",
@@ -7910,10 +7811,7 @@ var PRODUCTS = [
     "categories": [
       "watches"
     ],
-    "badge": {
-      "he": "חדש",
-      "en": "New"
-    },
+    "badge": null,
     "cardMode": "view",
     "hideMessageCard": true,
     "cardImage": "images/products/product-92/product-92-1.png",
@@ -7979,10 +7877,7 @@ var PRODUCTS = [
     "categories": [
       "watches"
     ],
-    "badge": {
-      "he": "חדש",
-      "en": "New"
-    },
+    "badge": null,
     "cardMode": "view",
     "hideMessageCard": true,
     "cardImage": "images/products/product-93/product-93-1.png",
