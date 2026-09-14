@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const { URL } = require('node:url');
-const { DatabaseSync } = require('node:sqlite');
+const { createDatabase } = require('./lib/database.js');
 const { createPaymentUrl, verifyPayment } = require('./api/_hyp.js');
 const { PRODUCTS } = require('./assets/products.js');
 const ROUTES = require('./assets/routes.js');
@@ -30,286 +30,7 @@ const REVIEW_TEXT_MAX = 1200;
 const PUBLIC_REVIEW_NAME = 'לקוח VerSans';
 const PRODUCT_BY_URL_SLUG = new Map(PRODUCTS.map((product) => [String(product.urlSlug || ''), product]));
 
-fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
-const db = new DatabaseSync(DB_PATH);
-db.exec(`
-  PRAGMA journal_mode = WAL;
-  PRAGMA foreign_keys = ON;
-  PRAGMA busy_timeout = 5000;
-
-  CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    email TEXT NOT NULL UNIQUE COLLATE NOCASE,
-    password_hash TEXT NOT NULL,
-    is_verified_customer INTEGER NOT NULL DEFAULT 0 CHECK (is_verified_customer IN (0,1)),
-    verified_customer_at INTEGER,
-    created_at INTEGER NOT NULL
-  );
-
-  CREATE TABLE IF NOT EXISTS sessions (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    token_hash TEXT NOT NULL UNIQUE,
-    created_at INTEGER NOT NULL,
-    expires_at INTEGER NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-  );
-
-  CREATE TABLE IF NOT EXISTS orders (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    order_ref TEXT NOT NULL UNIQUE,
-    user_id INTEGER,
-    customer_email TEXT,
-    customer_phone TEXT,
-    amount_agorot INTEGER NOT NULL,
-    currency TEXT NOT NULL DEFAULT 'ILS',
-    items_json TEXT,
-    status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','paid','failed')),
-    created_at INTEGER NOT NULL,
-    paid_at INTEGER,
-    updated_at INTEGER NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
-  );
-
-  CREATE TABLE IF NOT EXISTS reviews (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    review_name TEXT,
-    contact_phone TEXT,
-    verified_purchase INTEGER NOT NULL DEFAULT 0 CHECK (verified_purchase IN (0,1)),
-    review_product_id TEXT,
-    review_product_variant TEXT,
-    rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 5),
-    body TEXT NOT NULL,
-    review_date INTEGER,
-    image_blob BLOB,
-    image_mime TEXT,
-    status TEXT NOT NULL DEFAULT 'published' CHECK (status IN ('published','hidden')),
-    created_at INTEGER NOT NULL,
-    updated_at INTEGER NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-  );
-
-  CREATE TABLE IF NOT EXISTS review_images (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    review_id INTEGER NOT NULL,
-    sort_order INTEGER NOT NULL,
-    image_blob BLOB NOT NULL,
-    image_mime TEXT NOT NULL,
-    media_kind TEXT NOT NULL DEFAULT 'image' CHECK (media_kind IN ('image','video')),
-    created_at INTEGER NOT NULL,
-    FOREIGN KEY (review_id) REFERENCES reviews(id) ON DELETE CASCADE,
-    UNIQUE (review_id, sort_order)
-  );
-
-  CREATE TABLE IF NOT EXISTS schema_meta (
-    key TEXT PRIMARY KEY,
-    value TEXT NOT NULL
-  );
-`);
-
-// Safe in-place migration for existing SQLite databases.
-const userColumns = db.prepare('PRAGMA table_info(users)').all();
-if (!userColumns.some((column) => column.name === 'is_verified_customer')) {
-  db.exec('ALTER TABLE users ADD COLUMN is_verified_customer INTEGER NOT NULL DEFAULT 0 CHECK (is_verified_customer IN (0,1))');
-}
-if (!userColumns.some((column) => column.name === 'verified_customer_at')) {
-  db.exec('ALTER TABLE users ADD COLUMN verified_customer_at INTEGER');
-}
-
-const reviewColumns = db.prepare('PRAGMA table_info(reviews)').all();
-if (!reviewColumns.some((column) => column.name === 'review_name')) {
-  db.exec('ALTER TABLE reviews ADD COLUMN review_name TEXT');
-}
-if (!reviewColumns.some((column) => column.name === 'review_date')) {
-  db.exec('ALTER TABLE reviews ADD COLUMN review_date INTEGER');
-}
-if (!reviewColumns.some((column) => column.name === 'contact_phone')) {
-  db.exec('ALTER TABLE reviews ADD COLUMN contact_phone TEXT');
-}
-if (!reviewColumns.some((column) => column.name === 'verified_purchase')) {
-  db.exec('ALTER TABLE reviews ADD COLUMN verified_purchase INTEGER NOT NULL DEFAULT 0 CHECK (verified_purchase IN (0,1))');
-}
-if (!reviewColumns.some((column) => column.name === 'review_product_id')) {
-  db.exec('ALTER TABLE reviews ADD COLUMN review_product_id TEXT');
-}
-if (!reviewColumns.some((column) => column.name === 'review_product_variant')) {
-  db.exec('ALTER TABLE reviews ADD COLUMN review_product_variant TEXT');
-}
-
-const reviewImageColumns = db.prepare('PRAGMA table_info(review_images)').all();
-if (!reviewImageColumns.some((column) => column.name === 'media_kind')) {
-  db.exec("ALTER TABLE review_images ADD COLUMN media_kind TEXT NOT NULL DEFAULT 'image' CHECK (media_kind IN ('image','video'))");
-}
-
-db.exec(`
-  CREATE INDEX IF NOT EXISTS idx_sessions_token_hash ON sessions(token_hash);
-  CREATE INDEX IF NOT EXISTS idx_sessions_expires_at ON sessions(expires_at);
-  CREATE INDEX IF NOT EXISTS idx_orders_ref ON orders(order_ref);
-  CREATE INDEX IF NOT EXISTS idx_orders_user_status ON orders(user_id, status);
-  CREATE INDEX IF NOT EXISTS idx_reviews_status_created_at ON reviews(status, created_at DESC);
-  CREATE INDEX IF NOT EXISTS idx_review_images_review_order ON review_images(review_id, sort_order);
-
-  UPDATE reviews
-  SET review_name = 'לקוח VerSans';
-
-  UPDATE reviews
-  SET review_date = created_at
-  WHERE review_date IS NULL;
-
-  UPDATE reviews
-  SET review_product_id = 'mom-heart-01'
-  WHERE review_product_id IS NULL OR review_product_id = '';
-
-  INSERT INTO review_images (review_id, sort_order, image_blob, image_mime, media_kind, created_at)
-  SELECT r.id, 0, r.image_blob, r.image_mime, 'image', r.created_at
-  FROM reviews r
-  WHERE r.image_blob IS NOT NULL
-    AND r.image_mime IS NOT NULL
-    AND NOT EXISTS (SELECT 1 FROM review_images ri WHERE ri.review_id = r.id);
-
-  INSERT INTO schema_meta (key, value) VALUES ('schema_version', '8')
-  ON CONFLICT(key) DO UPDATE SET value = excluded.value;
-`);
-
-db.prepare('DELETE FROM sessions WHERE expires_at <= ?').run(Date.now());
-
-const stmt = {
-  findUserByEmail: db.prepare(`
-    SELECT id, name, email, password_hash, is_verified_customer, verified_customer_at, created_at
-    FROM users WHERE email = ? COLLATE NOCASE LIMIT 1
-  `),
-  findPublicUserBySession: db.prepare(`
-    SELECT u.id, u.name, u.email, u.is_verified_customer, u.verified_customer_at, u.created_at
-    FROM sessions s
-    JOIN users u ON u.id = s.user_id
-    WHERE s.token_hash = ? AND s.expires_at > ?
-    LIMIT 1
-  `),
-  insertUser: db.prepare('INSERT INTO users (name, email, password_hash, created_at) VALUES (?, ?, ?, ?)'),
-  insertSession: db.prepare('INSERT INTO sessions (user_id, token_hash, created_at, expires_at) VALUES (?, ?, ?, ?)'),
-  deleteSession: db.prepare('DELETE FROM sessions WHERE token_hash = ?'),
-  deleteExpiredSessions: db.prepare('DELETE FROM sessions WHERE expires_at <= ?'),
-  listReviews: db.prepare(`
-    SELECT r.id, r.rating, r.body, r.created_at, r.updated_at,
-           COALESCE(r.review_date, r.created_at) AS review_date,
-           r.verified_purchase, r.review_product_id, r.review_product_variant,
-           (SELECT COUNT(*) FROM review_images ri WHERE ri.review_id = r.id) AS media_count
-    FROM reviews r
-    WHERE r.status = 'published'
-    ORDER BY COALESCE(r.review_date, r.created_at) DESC, r.id DESC
-    LIMIT ? OFFSET ?
-  `),
-  listReviewsByRating: db.prepare(`
-    SELECT r.id, r.rating, r.body, r.created_at, r.updated_at,
-           COALESCE(r.review_date, r.created_at) AS review_date,
-           r.verified_purchase, r.review_product_id, r.review_product_variant,
-           (SELECT COUNT(*) FROM review_images ri WHERE ri.review_id = r.id) AS media_count
-    FROM reviews r
-    WHERE r.status = 'published' AND r.rating = ?
-    ORDER BY COALESCE(r.review_date, r.created_at) DESC, r.id DESC
-    LIMIT ? OFFSET ?
-  `),
-  listReviewsByProduct: db.prepare(`
-    SELECT r.id, r.rating, r.body, r.created_at, r.updated_at,
-           COALESCE(r.review_date, r.created_at) AS review_date,
-           r.verified_purchase, r.review_product_id, r.review_product_variant,
-           (SELECT COUNT(*) FROM review_images ri WHERE ri.review_id = r.id) AS media_count
-    FROM reviews r
-    WHERE r.status = 'published' AND r.review_product_id = ?
-    ORDER BY COALESCE(r.review_date, r.created_at) DESC, r.id DESC
-    LIMIT ? OFFSET ?
-  `),
-  listReviewsByProductAndRating: db.prepare(`
-    SELECT r.id, r.rating, r.body, r.created_at, r.updated_at,
-           COALESCE(r.review_date, r.created_at) AS review_date,
-           r.verified_purchase, r.review_product_id, r.review_product_variant,
-           (SELECT COUNT(*) FROM review_images ri WHERE ri.review_id = r.id) AS media_count
-    FROM reviews r
-    WHERE r.status = 'published' AND r.review_product_id = ? AND r.rating = ?
-    ORDER BY COALESCE(r.review_date, r.created_at) DESC, r.id DESC
-    LIMIT ? OFFSET ?
-  `),
-  reviewCountByRating: db.prepare(`
-    SELECT COUNT(*) AS count
-    FROM reviews
-    WHERE status = 'published' AND rating = ?
-  `),
-  reviewSummary: db.prepare(`
-    SELECT COUNT(*) AS count,
-           COALESCE(AVG(rating), 0) AS average,
-           SUM(CASE WHEN rating = 5 THEN 1 ELSE 0 END) AS rating_5,
-           SUM(CASE WHEN rating = 4 THEN 1 ELSE 0 END) AS rating_4,
-           SUM(CASE WHEN rating = 3 THEN 1 ELSE 0 END) AS rating_3,
-           SUM(CASE WHEN rating = 2 THEN 1 ELSE 0 END) AS rating_2,
-           SUM(CASE WHEN rating = 1 THEN 1 ELSE 0 END) AS rating_1
-    FROM reviews
-    WHERE status = 'published'
-  `),
-  reviewSummaryByProduct: db.prepare(`
-    SELECT COUNT(*) AS count,
-           COALESCE(AVG(rating), 0) AS average,
-           SUM(CASE WHEN rating = 5 THEN 1 ELSE 0 END) AS rating_5,
-           SUM(CASE WHEN rating = 4 THEN 1 ELSE 0 END) AS rating_4,
-           SUM(CASE WHEN rating = 3 THEN 1 ELSE 0 END) AS rating_3,
-           SUM(CASE WHEN rating = 2 THEN 1 ELSE 0 END) AS rating_2,
-           SUM(CASE WHEN rating = 1 THEN 1 ELSE 0 END) AS rating_1
-    FROM reviews
-    WHERE status = 'published' AND review_product_id = ?
-  `),
-  reviewCountByProductAndRating: db.prepare(`
-    SELECT COUNT(*) AS count
-    FROM reviews
-    WHERE status = 'published' AND review_product_id = ? AND rating = ?
-  `),
-  insertReview: db.prepare(`
-    INSERT INTO reviews (user_id, review_name, contact_phone, verified_purchase, review_product_id, review_product_variant, rating, body, review_date, status, created_at, updated_at)
-    VALUES (?, ?, ?, 1, ?, ?, ?, ?, ?, 'published', ?, ?)
-  `),
-  insertReviewMedia: db.prepare(`
-    INSERT INTO review_images (review_id, sort_order, image_blob, image_mime, media_kind, created_at)
-    VALUES (?, ?, ?, ?, ?, ?)
-  `),
-  getReviewMedia: db.prepare(`
-    SELECT ri.image_blob, ri.image_mime, ri.media_kind
-    FROM review_images ri
-    JOIN reviews r ON r.id = ri.review_id
-    WHERE ri.review_id = ? AND ri.sort_order = ? AND r.status = 'published'
-    LIMIT 1
-  `),
-  listReviewMediaMeta: db.prepare(`
-    SELECT sort_order, image_mime, media_kind
-    FROM review_images
-    WHERE review_id = ?
-    ORDER BY sort_order
-  `),
-  insertPendingOrder: db.prepare(`
-    INSERT INTO orders (order_ref, user_id, customer_email, customer_phone, amount_agorot, currency, items_json, status, created_at, updated_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?)
-  `),
-  getOrderByRef: db.prepare(`
-    SELECT id, order_ref, user_id, amount_agorot, status FROM orders WHERE order_ref = ? LIMIT 1
-  `),
-  latestPaidOrderForUser: db.prepare(`
-    SELECT id, items_json
-    FROM orders
-    WHERE user_id = ? AND status = 'paid'
-    ORDER BY COALESCE(paid_at, created_at) DESC, id DESC
-    LIMIT 1
-  `),
-  markOrderPaid: db.prepare(`
-    UPDATE orders SET status = 'paid', paid_at = COALESCE(paid_at, ?), updated_at = ? WHERE id = ?
-  `),
-  markOrderFailed: db.prepare(`
-    UPDATE orders SET status = 'failed', updated_at = ? WHERE id = ? AND status = 'pending'
-  `),
-  markUserVerified: db.prepare(`
-    UPDATE users
-    SET is_verified_customer = 1, verified_customer_at = COALESCE(verified_customer_at, ?)
-    WHERE id = ?
-  `)
-};
+const database = createDatabase({ root: ROOT, sqlitePath: DB_PATH });
 
 function json(res, status, payload, extraHeaders = {}) {
   const body = JSON.stringify(payload);
@@ -536,8 +257,8 @@ function reviewProductPayload(productId, variant, seed) {
   };
 }
 
-function purchasedProductForUser(userId) {
-  const order = stmt.latestPaidOrderForUser.get(userId);
+async function purchasedProductForUser(userId) {
+  const order = await database.latestPaidOrderForUser(userId);
   if (!order || !order.items_json) return null;
   let items;
   try { items = JSON.parse(order.items_json); } catch (_) { return null; }
@@ -554,9 +275,9 @@ function purchasedProductForUser(userId) {
   };
 }
 
-function publicReview(row) {
+async function publicReview(row) {
   const cacheVersion = Number(row.updated_at || row.created_at || 0);
-  const meta = stmt.listReviewMediaMeta.all(row.id).slice(0, REVIEW_MEDIA_MAX_COUNT);
+  const meta = (await database.listReviewMediaMeta(row.id)).slice(0, REVIEW_MEDIA_MAX_COUNT);
   const media = meta.map((entry, index) => ({
     kind: entry.media_kind === 'video' || String(entry.image_mime || '').startsWith('video/') ? 'video' : 'image',
     mime: entry.image_mime || null,
@@ -592,16 +313,16 @@ function getSessionToken(req) {
   return parseCookies(req.headers.cookie)[SESSION_COOKIE] || '';
 }
 
-function getCurrentUser(req) {
+async function getCurrentUser(req) {
   const token = getSessionToken(req);
   if (!token || token.length < 20) return null;
-  return stmt.findPublicUserBySession.get(tokenHash(token), Date.now()) || null;
+  return await database.findPublicUserBySession(tokenHash(token), Date.now()) || null;
 }
 
-function createSession(userId, req) {
+async function createSession(userId, req) {
   const token = crypto.randomBytes(32).toString('base64url');
   const now = Date.now();
-  stmt.insertSession.run(userId, tokenHash(token), now, now + SESSION_TTL_MS);
+  await database.insertSession(userId, tokenHash(token), now, now + SESSION_TTL_MS);
   return sessionCookie(token, req);
 }
 
@@ -679,7 +400,7 @@ async function authApi(req, res, pathname) {
   }
 
   if (pathname === '/api/auth/me' && req.method === 'GET') {
-    json(res, 200, { ok: true, user: safeUser(getCurrentUser(req)) });
+    json(res, 200, { ok: true, user: safeUser(await getCurrentUser(req)) });
     return true;
   }
 
@@ -705,25 +426,24 @@ async function authApi(req, res, pathname) {
       json(res, 400, { ok: false, error: 'invalid_password' });
       return true;
     }
-    if (stmt.findUserByEmail.get(email)) {
+    if (await database.findUserByEmail(email)) {
       json(res, 409, { ok: false, error: 'email_exists' });
       return true;
     }
 
     let userId;
     try {
-      const result = stmt.insertUser.run(name, email, hashPassword(password), Date.now());
-      userId = Number(result.lastInsertRowid);
+      userId = await database.insertUser(name, email, hashPassword(password), Date.now());
     } catch (err) {
-      if (String(err && err.message).includes('UNIQUE')) {
+      if (err && (err.code === '23505' || String(err.message || '').toUpperCase().includes('UNIQUE'))) {
         json(res, 409, { ok: false, error: 'email_exists' });
         return true;
       }
       throw err;
     }
 
-    const cookie = createSession(userId, req);
-    const user = stmt.findUserByEmail.get(email);
+    const cookie = await createSession(userId, req);
+    const user = await database.findUserByEmail(email);
     json(res, 201, { ok: true, user: safeUser(user) }, { 'Set-Cookie': cookie });
     return true;
   }
@@ -736,7 +456,7 @@ async function authApi(req, res, pathname) {
     const body = await readJsonBody(req);
     const email = normalizeEmail(body.email);
     const password = String(body.password || '');
-    const user = validEmail(email) ? stmt.findUserByEmail.get(email) : null;
+    const user = validEmail(email) ? await database.findUserByEmail(email) : null;
 
     if (!user || !verifyPassword(password, user.password_hash)) {
       json(res, 401, { ok: false, error: 'invalid_credentials' });
@@ -744,15 +464,15 @@ async function authApi(req, res, pathname) {
     }
 
     const oldToken = getSessionToken(req);
-    if (oldToken) stmt.deleteSession.run(tokenHash(oldToken));
-    const cookie = createSession(user.id, req);
+    if (oldToken) await database.deleteSession(tokenHash(oldToken));
+    const cookie = await createSession(user.id, req);
     json(res, 200, { ok: true, user: safeUser(user) }, { 'Set-Cookie': cookie });
     return true;
   }
 
   if (pathname === '/api/auth/logout' && req.method === 'POST') {
     const token = getSessionToken(req);
-    if (token) stmt.deleteSession.run(tokenHash(token));
+    if (token) await database.deleteSession(tokenHash(token));
     json(res, 200, { ok: true }, { 'Set-Cookie': clearSessionCookie(req) });
     return true;
   }
@@ -782,22 +502,22 @@ async function reviewsApi(req, res, pathname) {
     let rows = [];
     let summaryRow = { count: 0, average: 0, rating_5: 0, rating_4: 0, rating_3: 0, rating_2: 0, rating_1: 0 };
     if (!invalidProductFilter) {
-      if (productFilter && rating) rows = stmt.listReviewsByProductAndRating.all(productFilter, rating, limit, offset);
-      else if (productFilter) rows = stmt.listReviewsByProduct.all(productFilter, limit, offset);
-      else if (rating) rows = stmt.listReviewsByRating.all(rating, limit, offset);
-      else rows = stmt.listReviews.all(limit, offset);
-      summaryRow = productFilter ? (stmt.reviewSummaryByProduct.get(productFilter) || summaryRow) : (stmt.reviewSummary.get() || summaryRow);
+      if (productFilter && rating) rows = await database.listReviewsByProductAndRating(productFilter, rating, limit, offset);
+      else if (productFilter) rows = await database.listReviewsByProduct(productFilter, limit, offset);
+      else if (rating) rows = await database.listReviewsByRating(rating, limit, offset);
+      else rows = await database.listReviews(limit, offset);
+      summaryRow = productFilter ? ((await database.reviewSummaryByProduct(productFilter)) || summaryRow) : ((await database.reviewSummary()) || summaryRow);
     }
 
-    const reviews = rows.map((row) => publicReview(row));
+    const reviews = await Promise.all(rows.map((row) => publicReview(row)));
     const count = Number(summaryRow.count || 0);
     const average = Number(summaryRow.average || 0);
     const resultCount = invalidProductFilter
       ? 0
       : (rating
         ? Number((productFilter
-          ? (stmt.reviewCountByProductAndRating.get(productFilter, rating) || { count: 0 })
-          : (stmt.reviewCountByRating.get(rating) || { count: 0 })).count || 0)
+          ? ((await database.reviewCountByProductAndRating(productFilter, rating)) || { count: 0 })
+          : ((await database.reviewCountByRating(rating)) || { count: 0 })).count || 0)
         : count);
     const ratingCounts = {
       5: Number(summaryRow.rating_5 || 0),
@@ -833,7 +553,7 @@ async function reviewsApi(req, res, pathname) {
       json(res, 404, { ok: false, error: 'media_not_found' });
       return true;
     }
-    const row = stmt.getReviewMedia.get(reviewId, sortOrder);
+    const row = await database.getReviewMedia(reviewId, sortOrder);
     if (!row || !row.image_blob) {
       json(res, 404, { ok: false, error: 'media_not_found' });
       return true;
@@ -888,7 +608,7 @@ async function reviewsApi(req, res, pathname) {
       json(res, 403, { ok: false, error: 'origin_not_allowed' });
       return true;
     }
-    const user = getCurrentUser(req);
+    const user = await getCurrentUser(req);
     if (!user) {
       json(res, 401, { ok: false, error: 'login_required' });
       return true;
@@ -937,22 +657,24 @@ async function reviewsApi(req, res, pathname) {
 
     const now = Date.now();
     let id;
-    const purchasedProduct = purchasedProductForUser(user.id) || { id: 'mom-heart-01', variant: null };
-    db.exec('BEGIN IMMEDIATE');
-    try {
-      const result = stmt.insertReview.run(
-        user.id, PUBLIC_REVIEW_NAME, phone, purchasedProduct.id, purchasedProduct.variant,
-        rating, text, reviewDate, now, now
-      );
-      id = Number(result.lastInsertRowid);
-      media.forEach((entry, index) => {
-        stmt.insertReviewMedia.run(id, index, entry.buffer, entry.mime, entry.kind, now);
+    const purchasedProduct = (await purchasedProductForUser(user.id)) || { id: 'mom-heart-01', variant: null };
+    await database.transaction(async (tx) => {
+      id = await tx.insertReview({
+        userId: user.id,
+        reviewName: PUBLIC_REVIEW_NAME,
+        contactPhone: phone,
+        reviewProductId: purchasedProduct.id,
+        reviewProductVariant: purchasedProduct.variant,
+        rating,
+        body: text,
+        reviewDate,
+        createdAt: now,
+        updatedAt: now
       });
-      db.exec('COMMIT');
-    } catch (err) {
-      try { db.exec('ROLLBACK'); } catch (_) {}
-      throw err;
-    }
+      for (const [index, entry] of media.entries()) {
+        await tx.insertReviewMedia(id, index, entry.buffer, entry.mime, entry.kind, now);
+      }
+    });
 
     const mediaPayload = media.map((entry, index) => ({
       kind: entry.kind,
@@ -1096,7 +818,7 @@ const server = http.createServer(async (req, res) => {
     if (pathname === '/api/create-payment' && req.method === 'POST') {
       const body = await readJsonBody(req);
       const result = await createPaymentUrl(body);
-      const currentUser = getCurrentUser(req);
+      const currentUser = await getCurrentUser(req);
       const customer = body && body.customer ? body.customer : {};
       const customerEmail = normalizeEmail(customer.email);
       const customerPhone = normalizePhone(customer.phone) || null;
@@ -1105,22 +827,22 @@ const server = http.createServer(async (req, res) => {
 
       let linkedUserId = currentUser ? Number(currentUser.id) : null;
       if (!linkedUserId && validEmail(customerEmail)) {
-        const existingUser = stmt.findUserByEmail.get(customerEmail);
+        const existingUser = await database.findUserByEmail(customerEmail);
         if (existingUser) linkedUserId = Number(existingUser.id);
       }
 
       const now = Date.now();
-      stmt.insertPendingOrder.run(
-        String(result.order || ''),
-        linkedUserId,
-        validEmail(customerEmail) ? customerEmail : null,
+      await database.insertPendingOrder({
+        orderRef: String(result.order || ''),
+        userId: linkedUserId,
+        customerEmail: validEmail(customerEmail) ? customerEmail : null,
         customerPhone,
         amountAgorot,
-        String(result.currency || 'ILS'),
-        JSON.stringify(Array.isArray(body.items) ? body.items : []),
-        now,
-        now
-      );
+        currency: String(result.currency || 'ILS'),
+        itemsJson: JSON.stringify(Array.isArray(body.items) ? body.items : []),
+        createdAt: now,
+        updatedAt: now
+      });
       json(res, 200, result);
       return;
     }
@@ -1130,7 +852,7 @@ const server = http.createServer(async (req, res) => {
       const result = await verifyPayment(query);
       let verifiedCustomer = false;
       const orderRef = String(result.order || query.Order || '').trim();
-      const order = orderRef ? stmt.getOrderByRef.get(orderRef) : null;
+      const order = orderRef ? await database.getOrderByRef(orderRef) : null;
 
       if (order) {
         if (result.ok) {
@@ -1138,21 +860,16 @@ const server = http.createServer(async (req, res) => {
           const amountMatches = returnedAmount === null || returnedAmount === Number(order.amount_agorot);
           if (amountMatches) {
             const now = Date.now();
-            db.exec('BEGIN IMMEDIATE');
-            try {
-              stmt.markOrderPaid.run(now, now, order.id);
+            await database.transaction(async (tx) => {
+              await tx.markOrderPaid(now, order.id);
               if (order.user_id) {
-                stmt.markUserVerified.run(now, order.user_id);
+                await tx.markUserVerified(now, order.user_id);
                 verifiedCustomer = true;
               }
-              db.exec('COMMIT');
-            } catch (err) {
-              try { db.exec('ROLLBACK'); } catch (_) {}
-              throw err;
-            }
+            });
           }
         } else {
-          stmt.markOrderFailed.run(Date.now(), order.id);
+          await database.markOrderFailed(Date.now(), order.id);
         }
       }
 
@@ -1179,20 +896,29 @@ res.end('404 - Not found');
   }
 });
 
-setInterval(() => {
-  try { stmt.deleteExpiredSessions.run(Date.now()); } catch (err) { console.error('Session cleanup failed:', err); }
+setInterval(async () => {
+  try { await database.deleteExpiredSessions(Date.now()); } catch (err) { console.error('Session cleanup failed:', err); }
 }, 60 * 60 * 1000).unref();
 
-server.listen(PORT, HOST, () => {
-  console.log(`VerSans running on http://${HOST}:${PORT}`);
-  console.log(`SQLite: ${DB_PATH}`);
-});
+async function start() {
+  await database.init();
+  server.listen(PORT, HOST, () => {
+    console.log(`VerSans running on http://${HOST}:${PORT}`);
+    console.log(`Database backend: ${database.backend}`);
+    if (database.backend === 'sqlite') console.log(`SQLite: ${DB_PATH}`);
+  });
+}
 
-function shutdown() {
-  server.close(() => {
-    try { db.close(); } catch (_) {}
+async function shutdown() {
+  server.close(async () => {
+    try { await database.close(); } catch (_) {}
     process.exit(0);
   });
 }
 process.on('SIGINT', shutdown);
 process.on('SIGTERM', shutdown);
+
+start().catch((err) => {
+  console.error('Failed to initialize VerSans database:', err);
+  process.exit(1);
+});

@@ -2,15 +2,21 @@
   "name": "versans-store",
   "version": "1.0.0",
   "private": true,
-  "description": "VerSans jewellery store with SQLite accounts, database-backed reviews, HYP checkout and greeting PNG storage",
+  "description": "VerSans jewellery store with Render PostgreSQL/SQLite fallback, database-backed reviews, HYP checkout and greeting PNG storage",
   "engines": {
     "node": ">=22.5.0"
   },
-  "dependencies": {},
+  "dependencies": {
+    "pg": "^8.23.0"
+  },
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
     "data:backup": "node scripts/backup-data.js",
-    "data:export": "node scripts/export-data.js"
+    "data:export": "node scripts/export-data.js",
+    "db:migrate:postgres": "node scripts/migrate-sqlite-to-postgres.js",
+    "db:verify:postgres": "node scripts/migrate-sqlite-to-postgres.js --verify-only",
+    "db:status": "node scripts/db-status.js",
+    "test:db": "node --test tests/database-store.test.js tests/server-database-adapter.test.js tests/postgres-migration.test.js"
   }
 }

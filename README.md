@@ -165,3 +165,28 @@ npm run data:export
 - Clicking a review opens a large review viewer. Reviews with multiple media items have previous/next navigation.
 - Review attachments support up to 5 combined images/videos. Images: PNG/JPG/WebP. Videos: MP4/WebM, up to 20MB per video and 30MB total media per review.
 - Review video BLOBs are stored in SQLite together with media MIME/type metadata and are included in `npm run data:export` for future database migration.
+
+## Render PostgreSQL migration
+
+Production can use Render PostgreSQL by setting `DATABASE_URL`. Without it, VerSans keeps using the local SQLite file at `data/versans.sqlite` (or `VERSANS_DB_PATH`).
+
+### Safe migration flow
+
+1. Keep a copy of `data/versans.sqlite`. Do not delete it.
+2. Create a Render Postgres database in the same region as the VerSans web service.
+3. Install dependencies with `npm install`.
+4. For a migration launched from your own computer, temporarily set `DATABASE_URL` to Render's **External Database URL** and run:
+   `npm run db:migrate:postgres`
+5. The migration preserves explicit IDs and review BLOB bytes, resets PostgreSQL identity sequences, then compares counts and SHA-256 digests for `users`, `sessions`, `orders`, `reviews`, `review_images`, and `schema_meta`. A mismatch exits with an error.
+6. Run `npm run db:verify:postgres` with the same external URL to re-check without copying.
+7. In the Render web service Environment page, set `DATABASE_URL` to the database's **Internal Database URL** (same region).
+8. Deploy. The server log should print `Database backend: postgres`.
+9. Run/inspect the site: login, reviews, review images/videos, and checkout/order verification.
+
+### Rollback
+
+Remove `DATABASE_URL` from the web service and redeploy to make the server use SQLite again. Keep the original SQLite file until PostgreSQL has been verified in production.
+
+### Greeting assets
+
+The custom greeting editor's PNG upload is currently a separate Google Drive/IndexedDB storage flow and is not stored in `versans.sqlite`; this PostgreSQL migration therefore does not move those Drive files. It does move every record that actually exists in the SQLite database, including all review media BLOBs.
