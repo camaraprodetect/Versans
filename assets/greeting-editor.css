@@ -116,3 +116,153 @@ html[dir=ltr] .ge-intro,html[dir=ltr] .ge-font-option{text-align:left}html[dir=l
 .ge-modal-open{overflow:hidden}
 .ge-crop-modal{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:18px}.ge-crop-backdrop{position:absolute;inset:0;background:rgba(12,14,18,.55)}.ge-crop-dialog{position:relative;z-index:1;width:min(92vw,560px);background:#fff;border:1px solid #d9dfe2;box-shadow:0 26px 70px rgba(18,22,28,.22);padding:1.15rem}.ge-crop-head{display:grid;gap:.3rem;margin-bottom:1rem}.ge-crop-head h2{margin:0;font-size:1.22rem}.ge-crop-head p{margin:0;color:#6e767d;font-size:.86rem;line-height:1.6}.ge-crop-stage{position:relative;width:min(100%,360px);aspect-ratio:1;margin:0 auto;border:1px solid #d4d9dd;background:#f2f4f6;overflow:hidden;touch-action:none;cursor:grab;user-select:none}.ge-crop-stage.is-dragging{cursor:grabbing}.ge-crop-stage img{position:absolute;max-width:none;max-height:none;will-change:left,top,width,height}.ge-crop-frame{position:absolute;inset:0;border:2px solid rgba(255,255,255,.92);box-shadow:0 0 0 999px rgba(20,23,28,.35) inset,0 0 0 1px rgba(0,0,0,.06);pointer-events:none}.ge-crop-tip{margin:.75rem 0 0;color:#6e767d;font-size:.76rem;line-height:1.55;text-align:center}.ge-crop-actions{margin-top:1rem}.ge-crop-zoom-output{min-width:58px;text-align:end}
 @media(max-width:560px){.ge-crop-dialog{padding:1rem}.ge-crop-stage{width:100%}}
+
+
+/* ===== Device-consistent 1:1 greeting preview 2026-09-14 v4 =====
+   The card remains a normal responsive square. Typography is sized from the
+   card itself (cqw), not the viewport, so desktop/mobile preserve identical
+   proportions and html2canvas exports the same design at either size. */
+.ge-card{container-type:inline-size}
+
+.ge-card--template-1 .ge-card__title{font-size:7.3684cqw!important}
+.ge-card--template-1 .ge-card__message{font-size:2.8947cqw!important;line-height:1.55!important}
+.ge-card--template-1 .ge-card__signature{font-size:5.2632cqw!important}
+.ge-card--template-1 .ge-card__message.ge-message-dense{font-size:2.6316cqw!important;line-height:1.47!important}
+.ge-card--template-1 .ge-card__message.ge-message-very-dense{font-size:2.4342cqw!important;line-height:1.4!important}
+
+.ge-card--template-2 .ge-card__title{font-size:7.6316cqw!important}
+.ge-card--template-2 .ge-card__message{font-size:2.7632cqw!important;line-height:1.58!important}
+.ge-card--template-2 .ge-card__signature{font-size:5cqw!important}
+
+.ge-card--template-4 .ge-card__title{font-size:7.1053cqw!important}
+.ge-card--template-4 .ge-card__message{font-size:2.8947cqw!important;line-height:1.48!important}
+.ge-card--template-4 .ge-card__signature{font-size:4.7368cqw!important}
+
+.ge-card--template-5 .ge-card__title{font-size:7.2368cqw!important}
+.ge-card--template-5 .ge-card__message{font-size:2.8947cqw!important;line-height:1.48!important}
+.ge-card--template-5 .ge-card__signature{font-size:4.7368cqw!important}
+
+.ge-card--template-6 .ge-card__title{font-size:7.1053cqw!important}
+.ge-card--template-6 .ge-card__message{font-size:2.8947cqw!important;line-height:1.48!important}
+.ge-card--template-6 .ge-card__signature{font-size:4.6053cqw!important}
+
+.ge-card--template-7 .ge-card__title{font-size:7.2368cqw!important}
+.ge-card--template-7 .ge-card__message{font-size:2.8947cqw!important;line-height:1.48!important}
+.ge-card--template-7 .ge-card__signature{font-size:4.7368cqw!important}
+
+.ge-card--template-8 .ge-card__title{font-size:7.2368cqw!important}
+.ge-card--template-8 .ge-card__message{font-size:2.8947cqw!important;line-height:1.48!important}
+.ge-card--template-8 .ge-card__signature{font-size:4.7368cqw!important}
+
+.ge-card--template-9 .ge-card__title{font-size:7.3684cqw!important}
+.ge-card--template-9 .ge-card__message{font-size:2.8947cqw!important;line-height:1.47!important}
+.ge-card--template-9 .ge-card__signature{font-size:4.7368cqw!important}
+
+.ge-card--template-10 .ge-card__title{font-size:7.3684cqw!important}
+.ge-card--template-10 .ge-card__message{font-size:2.8947cqw!important;line-height:1.47!important}
+.ge-card--template-10 .ge-card__signature{font-size:4.7368cqw!important}
+
+.ge-card--template-11 .ge-card__title{font-size:7.3684cqw!important}
+.ge-card--template-11 .ge-card__message{font-size:2.8947cqw!important;line-height:1.47!important}
+.ge-card--template-11 .ge-card__signature{font-size:4.7368cqw!important}
+
+.ge-card--template-12 .ge-card__title{font-size:7.3684cqw!important}
+.ge-card--template-12 .ge-card__message{font-size:2.8947cqw!important;line-height:1.47!important}
+.ge-card--template-12 .ge-card__signature{font-size:4.7368cqw!important}
+
+.ge-card--template-13 .ge-card__title{font-size:7.3684cqw!important}
+.ge-card--template-13 .ge-card__message{font-size:2.8947cqw!important;line-height:1.47!important}
+.ge-card--template-13 .ge-card__signature{font-size:4.7368cqw!important}
+
+.ge-card--template-15 .ge-card__title{font-size:7.2368cqw!important}
+.ge-card--template-15 .ge-card__message{font-size:2.8289cqw!important;line-height:1.47!important}
+.ge-card--template-15 .ge-card__signature{font-size:4.6053cqw!important}
+
+.ge-card--template-17 .ge-card__title{font-size:7.1053cqw!important}
+.ge-card--template-17 .ge-card__message{font-size:2.7632cqw!important;line-height:1.47!important}
+.ge-card--template-17 .ge-card__signature{font-size:4.6053cqw!important}
+
+/* Override the old phone-only font shrinking; the card now scales itself. */
+@media(max-width:560px){
+  .ge-card--template-1 .ge-card__title{font-size:7.3684cqw!important;line-height:1.08!important}
+  .ge-card--template-1 .ge-card__message{font-size:2.8947cqw!important;line-height:1.55!important}
+  .ge-card--template-1 .ge-card__signature{font-size:5.2632cqw!important;line-height:1.16!important}
+  .ge-card--template-2 .ge-card__title{font-size:7.6316cqw!important;line-height:1.06!important}
+  .ge-card--template-2 .ge-card__message{font-size:2.7632cqw!important;line-height:1.58!important}
+  .ge-card--template-2 .ge-card__signature{font-size:5cqw!important;line-height:1.15!important}
+}
+
+/* ===== Smaller centered desktop greeting preview 2026-09-14 ===== */
+@media(min-width:981px){
+  .ge-preview-panel .ge-card{
+    width:90%!important;
+    margin-inline:auto!important;
+  }
+  .ge-preview-panel .ge-preview-head,
+  .ge-preview-panel .ge-lock-note,
+  .ge-preview-panel .ge-png-tools{
+    width:90%;
+    margin-inline:auto;
+  }
+  .ge-preview-panel .ge-preview-head{margin-bottom:.8rem}
+}
+
+/* ===== Cream & Gold template mobile balance fix 2026-09-14 ===== */
+@media(max-width:560px){
+  .ge-card--template-2 .ge-card__title{
+    top:10.2%!important;
+    left:23%!important;
+    right:23%!important;
+    font-size:9cqw!important;
+    line-height:1.05!important;
+  }
+  .ge-card--template-2 .ge-card__message{
+    top:50.6%!important;
+    bottom:21.2%!important;
+    left:10.5%!important;
+    right:10.5%!important;
+    font-size:3.05cqw!important;
+    line-height:1.52!important;
+  }
+  .ge-card--template-2 .ge-card__signature{
+    bottom:5.6%!important;
+    left:14%!important;
+    right:14%!important;
+    font-size:5.5cqw!important;
+    line-height:1.12!important;
+  }
+}
+
+/* ===== Default template mobile clipping fix 2026-09-14 =====
+   Preserve the exact layout/PNG proportions while giving Hebrew glyphs
+   enough room so they are not cropped on narrow phone previews. */
+@media(max-width:560px){
+  .ge-card--template-1 .ge-card__title,
+  .ge-card--template-1 .ge-card__message,
+  .ge-card--template-1 .ge-card__signature{
+    overflow:visible!important;
+  }
+  .ge-card--template-1 .ge-card__title{
+    left:9%!important;
+    right:9%!important;
+  }
+  .ge-card--template-1 .ge-card__message{
+    left:10.5%!important;
+    right:10.5%!important;
+  }
+  .ge-card--template-1 .ge-card__signature{
+    left:9.5%!important;
+    right:9.5%!important;
+  }
+}
+
+
+/* ===== Cream & Gold title forced smaller on phones/tablets 2026-09-14 v2 ===== */
+@media(max-width:700px){
+  .ge-card.ge-card--template-2 .ge-card__title{
+    font-size:6.9cqw!important;
+    line-height:1.04!important;
+    left:24%!important;
+    right:24%!important;
+  }
+}

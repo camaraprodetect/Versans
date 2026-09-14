@@ -20,6 +20,23 @@
   };
 
 
+  /* Product pages link back to a specific collection with ?cat=...#shop. */
+  (function applyInitialCatalogCategoryFromUrl() {
+    try {
+      var requestedCategory = new URLSearchParams(window.location.search).get('cat');
+      var validCategories = [
+        'all', 'greeting', 'greeting-mom', 'greeting-partner', 'greeting-daughter', 'greeting-sister',
+        'necklaces', 'bracelets', 'photo-bracelets', 'watches',
+        'glasses', 'glasses-men', 'glasses-women', 'glasses-unisex',
+        'gift-boxes', 'custom', 'sets'
+      ];
+      if (requestedCategory && validCategories.indexOf(requestedCategory) !== -1) {
+        state.filter = requestedCategory;
+      }
+    } catch (e) {}
+  })();
+
+
   var catalogBatchesShown = 1;
   var catalogPagingKey = '';
   var catalogResizeTimer = null;
@@ -537,7 +554,7 @@
   }
 
   function scrollCatalogTop() {
-    var shop = $('#shop');
+    var shop = window.matchMedia('(max-width: 700px)').matches ? $('#shopTitle') : $('#shop');
     if (!shop) return;
     var nav = $('#nav');
     var navHeight = nav ? Math.ceil(nav.getBoundingClientRect().height) : 0;

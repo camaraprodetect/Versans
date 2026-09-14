@@ -1304,12 +1304,17 @@
     $('#footBrand').textContent = L(CFG.brand.name);
     $('#footBrandBottom').textContent = L(CFG.brand.name);
 
-    $('#navShop').textContent = lang === 'he' ? 'החנות' : 'Shop';
-    $('#navHow').textContent = lang === 'he' ? 'איך זה עובד' : 'How it works';
-    $('#navFaq').textContent = lang === 'he' ? 'שאלות נפוצות' : 'FAQ';
-    $('#navContact').textContent = lang === 'he' ? 'צרו קשר' : 'Contact';
+    var navShop = $('#navShop');
+    var navHow = $('#navHow');
+    var navFaq = $('#navFaq');
+    var navContact = $('#navContact');
+    if (navShop) navShop.textContent = lang === 'he' ? 'החנות' : 'Shop';
+    if (navHow) navHow.textContent = lang === 'he' ? 'איך זה עובד' : 'How it works';
+    if (navFaq) navFaq.textContent = lang === 'he' ? 'שאלות נפוצות' : 'FAQ';
+    if (navContact) navContact.textContent = lang === 'he' ? 'צרו קשר' : 'Contact';
 
-    $('#crumbCurrent').textContent = L(product.title);
+    var crumbCurrent = $('#crumbCurrent');
+    if (crumbCurrent) crumbCurrent.textContent = L(product.title);
     $('#productTitle').textContent = L(product.title);
     $('#productSubtitle').textContent = L(product.subtitle);
 
@@ -1436,6 +1441,10 @@
     $('#navmenu').classList.toggle('is-open', open);
     $('#navScrim').hidden = !open;
     $('#burger').setAttribute('aria-expanded', String(open));
+    if (!open) {
+      $$('.nav__submenu.is-open').forEach(function (menu) { menu.classList.remove('is-open'); });
+      $$('[data-nav-parent-toggle]').forEach(function (link) { link.setAttribute('aria-expanded', 'false'); });
+    }
     document.body.classList.toggle('is-locked', open);
   }
 
@@ -1476,6 +1485,36 @@
       return;
     }
     if (e.target.closest('#greetingRemoveBtn')) { removeCustomGreeting(); return; }
+
+    var navParentToggle = e.target.closest('[data-nav-parent-toggle]');
+    if (navParentToggle && window.matchMedia('(max-width: 980px)').matches) {
+      e.preventDefault();
+      var navItem = navParentToggle.closest('.nav__item--has-submenu');
+      var navSubmenu = navItem && navItem.querySelector('.nav__submenu');
+      if (navSubmenu) {
+        var willOpen = !navSubmenu.classList.contains('is-open');
+        $$('.nav__submenu.is-open').forEach(function (menu) {
+          if (menu !== navSubmenu) menu.classList.remove('is-open');
+        });
+        $$('[data-nav-parent-toggle][aria-expanded="true"]').forEach(function (link) {
+          if (link !== navParentToggle) link.setAttribute('aria-expanded', 'false');
+        });
+        navSubmenu.classList.toggle('is-open', willOpen);
+        navParentToggle.setAttribute('aria-expanded', String(willOpen));
+      }
+      return;
+    }
+
+    var mobileCategoryLink = e.target.closest('.nav__menu a[data-cat]');
+    if (mobileCategoryLink && window.matchMedia('(max-width: 700px)').matches) {
+      e.preventDefault();
+      setMenu(false);
+      var mobileCategoryUrl = new URL(mobileCategoryLink.href, window.location.href);
+      mobileCategoryUrl.hash = 'shopTitle';
+      window.location.href = mobileCategoryUrl.href;
+      return;
+    }
+
     if (e.target.closest('#burger')) { setMenu(!$('#navmenu').classList.contains('is-open')); return; }
     if (e.target.closest('#navScrim, [data-nav-close]') || e.target.closest('.nav__menu a')) { setMenu(false); }
   });
