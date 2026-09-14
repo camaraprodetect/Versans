@@ -1017,7 +1017,7 @@ function prettyRouteFile(pathname) {
 }
 
 function isPublicPath(pathname) {
-  if (prettyRouteFile(pathname) || pathname === '/robots.txt' || pathname === '/sitemap.xml' || /^\/[A-Za-z0-9_-]+\.html$/.test(pathname)) return true;
+  if (prettyRouteFile(pathname) || pathname === '/robots.txt' || pathname === '/sitemap.xml' || pathname === '/favicon.ico' || /^\/[A-Za-z0-9_-]+\.html$/.test(pathname)) return true;
   return pathname.startsWith('/assets/') || pathname.startsWith('/images/');
 }
 
