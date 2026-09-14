@@ -21,6 +21,11 @@ const PORT = Number(process.env.PORT || 3000);
 const HOST = process.env.HOST || '0.0.0.0';
 const SESSION_COOKIE = 'versans_session';
 const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000;
+const VISITOR_COOKIE = 'versans_visitor';
+const VISITOR_TTL_MS = 90 * 24 * 60 * 60 * 1000;
+const PRESENCE_RETENTION_MS = 90 * 24 * 60 * 60 * 1000;
+const ONLINE_WINDOW_MS = 75 * 1000;
+const ADMIN_EMAIL = 'camaraprodetect@gmail.com';
 const BODY_LIMIT = 48 * 1024 * 1024;
 const REVIEW_IMAGE_LIMIT = 2 * 1024 * 1024;
 const REVIEW_VIDEO_LIMIT = 20 * 1024 * 1024;
@@ -376,6 +381,281 @@ function sameOriginAllowed(req) {
   } catch (_) {
     return false;
   }
+}
+
+
+function compactText(value, max = 160) {
+  const text = String(value == null ? '' : value).replace(/[\u0000-\u001f\u007f]+/g, ' ').replace(/\s+/g, ' ').trim();
+  return text ? text.slice(0, max) : null;
+}
+
+function safePresencePath(value) {
+  const text = String(value || '/').trim();
+  try {
+    const parsed = new URL(text, 'https://versans.local');
+    const pathname = parsed.pathname || '/';
+    return pathname.startsWith('/') ? pathname.slice(0, 320) : '/';
+  } catch (_) {
+    return '/';
+  }
+}
+
+function safePresenceReferrer(value) {
+  const text = String(value || '').trim();
+  if (!text) return null;
+  try {
+    const parsed = new URL(text);
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return null;
+    return `${parsed.protocol}//${parsed.host}${parsed.pathname}`.slice(0, 500);
+  } catch (_) {
+    return null;
+  }
+}
+
+function safePresenceDimension(value) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return null;
+  return Math.max(0, Math.min(10000, Math.round(number)));
+}
+
+function getVisitorId(req) {
+  const id = parseCookies(req.headers.cookie)[VISITOR_COOKIE] || '';
+  return /^[0-9a-f]{8}-[0-9a-f-]{27,40}$/i.test(id) ? id : '';
+}
+
+function visitorCookie(visitorId, req) {
+  const secure = process.env.NODE_ENV === 'production' || String(req.headers['x-forwarded-proto'] || '').split(',')[0].trim() === 'https';
+  return `${VISITOR_COOKIE}=${encodeURIComponent(visitorId)}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${Math.floor(VISITOR_TTL_MS / 1000)}${secure ? '; Secure' : ''}`;
+}
+
+function timeZoneParts(date, timeZone) {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone, year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23'
+  }).formatToParts(date);
+  const out = {};
+  for (const part of parts) if (part.type !== 'literal') out[part.type] = Number(part.value);
+  return out;
+}
+
+function timeZoneOffsetMs(date, timeZone) {
+  const p = timeZoneParts(date, timeZone);
+  const representedAsUtc = Date.UTC(p.year, p.month - 1, p.day, p.hour, p.minute, p.second);
+  return representedAsUtc - Math.floor(date.getTime() / 1000) * 1000;
+}
+
+function israelStartOfDayMs(now) {
+  const timeZone = 'Asia/Jerusalem';
+  const p = timeZoneParts(new Date(now), timeZone);
+  const localMidnightAsUtc = Date.UTC(p.year, p.month - 1, p.day, 0, 0, 0);
+  let guess = localMidnightAsUtc - timeZoneOffsetMs(new Date(localMidnightAsUtc), timeZone);
+  guess = localMidnightAsUtc - timeZoneOffsetMs(new Date(guess), timeZone);
+  return guess;
+}
+
+function adminRangeStart(range, now) {
+  if (range === 'online') return now - ONLINE_WINDOW_MS;
+  if (range === 'today') return israelStartOfDayMs(now);
+  if (range === '3d') return now - 3 * 24 * 60 * 60 * 1000;
+  if (range === '7d') return now - 7 * 24 * 60 * 60 * 1000;
+  if (range === '30d') return now - 30 * 24 * 60 * 60 * 1000;
+  return null;
+}
+
+function presencePayload(body, visitorId, userId, now) {
+  const kind = body && body.kind === 'pageview' ? 'pageview' : 'heartbeat';
+  return {
+    visitorId,
+    userId: userId == null ? null : Number(userId),
+    kind,
+    now,
+    path: safePresencePath(body && body.path),
+    title: compactText(body && body.title, 180),
+    referrer: safePresenceReferrer(body && body.referrer),
+    utmSource: compactText(body && body.utmSource, 120),
+    utmMedium: compactText(body && body.utmMedium, 120),
+    utmCampaign: compactText(body && body.utmCampaign, 160),
+    utmTerm: compactText(body && body.utmTerm, 160),
+    utmContent: compactText(body && body.utmContent, 160),
+    language: compactText(body && body.language, 32),
+    browser: compactText(body && body.browser, 64),
+    os: compactText(body && body.os, 64),
+    deviceType: compactText(body && body.deviceType, 24),
+    screenWidth: safePresenceDimension(body && body.screenWidth),
+    screenHeight: safePresenceDimension(body && body.screenHeight),
+    viewportWidth: safePresenceDimension(body && body.viewportWidth),
+    viewportHeight: safePresenceDimension(body && body.viewportHeight)
+  };
+}
+
+function visitorSummary(row, now) {
+  const visitorId = String(row.visitor_id || '');
+  const guestName = `Guest #${visitorId.replace(/-/g, '').slice(-6).toUpperCase() || 'UNKNOWN'}`;
+  return {
+    visitorId,
+    userId: row.user_id == null ? null : Number(row.user_id),
+    name: row.name || guestName,
+    email: row.email || null,
+    phone: row.known_phone || null,
+    isLoggedIn: Number(row.is_authenticated || 0) === 1,
+    isVerifiedCustomer: Number(row.is_verified_customer || 0) === 1,
+    firstSeen: Number(row.first_seen || 0),
+    lastSeen: Number(row.last_seen || 0),
+    online: Number(row.last_seen || 0) >= now - ONLINE_WINDOW_MS,
+    currentPath: row.current_path || '/',
+    entryPath: row.entry_path || '/',
+    lastTitle: row.last_title || null,
+    referrer: row.referrer || null,
+    utm: {
+      source: row.utm_source || null,
+      medium: row.utm_medium || null,
+      campaign: row.utm_campaign || null,
+      term: row.utm_term || null,
+      content: row.utm_content || null
+    },
+    language: row.language || null,
+    browser: row.browser || null,
+    os: row.os || null,
+    deviceType: row.device_type || null,
+    screen: { width: row.screen_width == null ? null : Number(row.screen_width), height: row.screen_height == null ? null : Number(row.screen_height) },
+    viewport: { width: row.viewport_width == null ? null : Number(row.viewport_width), height: row.viewport_height == null ? null : Number(row.viewport_height) },
+    pageViewCount: Number(row.page_view_count || 0)
+  };
+}
+
+async function getAdminUser(req) {
+  const user = await getCurrentUser(req);
+  return user && normalizeEmail(user.email) === ADMIN_EMAIL ? user : null;
+}
+
+async function presenceApi(req, res, pathname) {
+  if (pathname !== '/api/presence') return false;
+  if (req.method !== 'POST') {
+    json(res, 405, { ok: false, error: 'method_not_allowed' });
+    return true;
+  }
+  if (!sameOriginAllowed(req)) {
+    json(res, 403, { ok: false, error: 'forbidden_origin' });
+    return true;
+  }
+  const body = await readJsonBody(req);
+  const existingVisitorId = getVisitorId(req);
+  const visitorId = existingVisitorId || crypto.randomUUID();
+  const currentUser = await getCurrentUser(req);
+  const now = Date.now();
+  await database.recordPresence(presencePayload(body, visitorId, currentUser ? currentUser.id : null, now));
+  const headers = existingVisitorId ? {} : { 'Set-Cookie': visitorCookie(visitorId, req) };
+  json(res, 200, { ok: true, onlineWindowMs: ONLINE_WINDOW_MS }, headers);
+  return true;
+}
+
+async function adminApi(req, res, pathname, parsed) {
+  if (!pathname.startsWith('/api/admin/')) return false;
+  const admin = await getAdminUser(req);
+  if (!admin) {
+    json(res, 403, { ok: false, error: 'admin_required' });
+    return true;
+  }
+
+  if (pathname === '/api/admin/visitors' && req.method === 'GET') {
+    const range = String(parsed.searchParams.get('range') || 'online');
+    const now = Date.now();
+    const since = adminRangeStart(range, now);
+    if (since == null) {
+      json(res, 400, { ok: false, error: 'invalid_range' });
+      return true;
+    }
+    const requestedLimit = Number(parsed.searchParams.get('limit') || 500);
+    const limit = Number.isInteger(requestedLimit) ? Math.max(1, Math.min(500, requestedLimit)) : 500;
+    const [count, rows] = await Promise.all([
+      database.countPresenceVisitorsSince(since),
+      database.listPresenceVisitors(since, limit)
+    ]);
+    json(res, 200, {
+      ok: true,
+      range,
+      count,
+      onlineWindowMs: ONLINE_WINDOW_MS,
+      visitors: rows.map((row) => visitorSummary(row, now))
+    });
+    return true;
+  }
+
+  const detailMatch = /^\/api\/admin\/visitors\/([0-9a-f-]{8,64})$/i.exec(pathname);
+  if (detailMatch && req.method === 'GET') {
+    const result = await database.getPresenceVisitor(detailMatch[1], 250);
+    if (!result) {
+      json(res, 404, { ok: false, error: 'visitor_not_found' });
+      return true;
+    }
+    const visitor = visitorSummary(result.visitor, Date.now());
+    visitor.account = result.visitor.user_id == null ? null : {
+      id: Number(result.visitor.user_id),
+      name: result.visitor.name || null,
+      email: result.visitor.email || null,
+      phone: result.visitor.known_phone || null,
+      createdAt: result.visitor.user_created_at == null ? null : Number(result.visitor.user_created_at),
+      verifiedCustomer: Number(result.visitor.is_verified_customer || 0) === 1,
+      verifiedCustomerAt: result.visitor.verified_customer_at == null ? null : Number(result.visitor.verified_customer_at),
+      orderCount: Number(result.visitor.order_count || 0),
+      paidOrderCount: Number(result.visitor.paid_order_count || 0),
+      reviewCount: Number(result.visitor.review_count || 0),
+      lastOrderAt: result.visitor.last_order_at == null ? null : Number(result.visitor.last_order_at),
+      sessionCreatedAt: result.visitor.session_created_at == null ? null : Number(result.visitor.session_created_at),
+      sessionExpiresAt: result.visitor.session_expires_at == null ? null : Number(result.visitor.session_expires_at)
+    };
+    const pageViews = result.pageViews.map((view) => ({
+      id: Number(view.id),
+      userId: view.user_id == null ? null : Number(view.user_id),
+      path: view.path,
+      title: view.title || null,
+      referrer: view.referrer || null,
+      utm: {
+        source: view.utm_source || null,
+        medium: view.utm_medium || null,
+        campaign: view.utm_campaign || null,
+        term: view.utm_term || null,
+        content: view.utm_content || null
+      },
+      viewedAt: Number(view.viewed_at)
+    }));
+    json(res, 200, { ok: true, visitor, pageViews });
+    return true;
+  }
+
+  json(res, 405, { ok: false, error: 'method_not_allowed' });
+  return true;
+}
+
+async function adminPage(req, res, pathname) {
+  if ((pathname !== '/admin' && pathname !== '/admin.html') || (req.method !== 'GET' && req.method !== 'HEAD')) return false;
+  const currentUser = await getCurrentUser(req);
+  if (!currentUser) {
+    redirect(res, '/login', 302);
+    return true;
+  }
+  if (normalizeEmail(currentUser.email) !== ADMIN_EMAIL) {
+    res.statusCode = 403;
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+    res.setHeader('Cache-Control', 'no-store');
+    res.setHeader('X-Robots-Tag', 'noindex, nofollow');
+    res.end('403 - Admin access required');
+    return true;
+  }
+  const filePath = path.join(ROOT, 'admin.html');
+  let stat;
+  try { stat = fs.statSync(filePath); } catch (_) {
+    json(res, 500, { ok: false, error: 'admin_page_missing' });
+    return true;
+  }
+  res.statusCode = 200;
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.setHeader('Cache-Control', 'no-store');
+  res.setHeader('X-Robots-Tag', 'noindex, nofollow');
+  res.setHeader('Content-Length', stat.size);
+  if (req.method === 'HEAD') res.end();
+  else fs.createReadStream(filePath).pipe(res);
+  return true;
 }
 
 const attempts = new Map();
@@ -812,6 +1092,9 @@ const server = http.createServer(async (req, res) => {
       redirect(res, ROUTES.LEGACY_PAGE_PATHS[pathname] + (query ? '?' + query : ''), 301);
       return;
     }
+    if (await adminPage(req, res, pathname)) return;
+    if (await presenceApi(req, res, pathname)) return;
+    if (await adminApi(req, res, pathname, parsed)) return;
     if (await authApi(req, res, pathname)) return;
     if (await reviewsApi(req, res, pathname)) return;
 
@@ -900,8 +1183,13 @@ setInterval(async () => {
   try { await database.deleteExpiredSessions(Date.now()); } catch (err) { console.error('Session cleanup failed:', err); }
 }, 60 * 60 * 1000).unref();
 
+setInterval(async () => {
+  try { await database.cleanupPresence(Date.now() - PRESENCE_RETENTION_MS); } catch (err) { console.error('Presence cleanup failed:', err); }
+}, 6 * 60 * 60 * 1000).unref();
+
 async function start() {
   await database.init();
+  await database.cleanupPresence(Date.now() - PRESENCE_RETENTION_MS);
   server.listen(PORT, HOST, () => {
     console.log(`VerSans running on http://${HOST}:${PORT}`);
     console.log(`Database backend: ${database.backend}`);

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#142333">
+  <title>VerSans Admin - Online Visitors</title>
+  <link rel="stylesheet" href="/assets/admin.css?v=20260915-admin-v1">
+</head>
+<body class="admin-body">
+  <header class="admin-topbar">
+    <a class="admin-brand" href="/" aria-label="חזרה ל-VerSans"><span>VerSans</span><small>ADMIN</small></a>
+    <div class="admin-topbar__actions">
+      <span class="admin-live-dot" aria-hidden="true"></span>
+      <span>Visitor Analytics</span>
+      <a href="/">לאתר</a>
+    </div>
+  </header>
+
+  <main class="admin-shell">
+    <section class="admin-intro">
+      <div>
+        <p class="admin-eyebrow">REAL-TIME ANALYTICS</p>
+        <h1>מבקרים באתר</h1>
+        <p>צפייה בזמן אמת ובהיסטוריית המבקרים של VerSans. המערכת אינה שומרת כתובות IP.</p>
+      </div>
+      <button class="admin-refresh" id="refreshVisitors" type="button">רענון עכשיו</button>
+    </section>
+
+    <section class="admin-metrics" aria-label="סיכום מבקרים">
+      <article class="admin-metric admin-metric--primary">
+        <span>Online עכשיו</span>
+        <strong id="onlineCount">—</strong>
+        <small>פעילים ב-75 השניות האחרונות</small>
+      </article>
+      <article class="admin-metric">
+        <span id="selectedRangeLabel">Online עכשיו</span>
+        <strong id="visitorCount">—</strong>
+        <small>מבקרים ייחודיים בטווח הנבחר</small>
+      </article>
+    </section>
+
+    <nav class="admin-ranges" aria-label="טווח זמן">
+      <button type="button" data-range="online" class="is-active">Online עכשיו</button>
+      <button type="button" data-range="today">היום</button>
+      <button type="button" data-range="3d">3 ימים</button>
+      <button type="button" data-range="7d">7 ימים</button>
+      <button type="button" data-range="30d">30 ימים</button>
+    </nav>
+
+    <section class="admin-content">
+      <div class="admin-list-card">
+        <div class="admin-list-head">
+          <div>
+            <h2>מבקרים</h2>
+            <p id="listStatus" aria-live="polite">טוען נתונים…</p>
+          </div>
+        </div>
+        <div id="visitorList" class="visitor-list" aria-live="polite"></div>
+      </div>
+
+      <aside id="visitorDetails" class="visitor-details" hidden aria-live="polite">
+        <div class="visitor-details__head">
+          <div>
+            <span class="visitor-details__kicker">פרטי מבקר</span>
+            <h2 id="detailsName">—</h2>
+          </div>
+          <button type="button" id="closeDetails" aria-label="סגירת פרטים">×</button>
+        </div>
+        <div id="detailsBody"></div>
+      </aside>
+    </section>
+  </main>
+
+  <script src="/assets/admin.js?v=20260915-admin-v1"></script>
+</body>
+</html>
