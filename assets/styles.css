@@ -2415,6 +2415,16 @@ body[data-product-slug="product-80"] .product-choice--color .product-choice__ima
 }
 .shop__layout:has(.filters[hidden]) .shop__sidebar{z-index:12}
 
+/* Wide-desktop catalog filters: keep them permanently open so the toggle never overlaps the products. */
+@media(min-width:1400px){
+  .shop__layout{grid-template-columns:300px minmax(0,1fr);gap:2.4rem}
+  .shop__sidebar{position:sticky;top:130px;align-self:start;max-height:calc(100vh - 150px);overflow-y:auto;padding-inline-end:.55rem;background:#fff;z-index:10}
+  .shop__filter-label{display:block;margin-bottom:.9rem}
+  .shop__filter-toggle{display:none!important}
+  .filters,
+  .filters[hidden]{display:flex!important;flex-direction:column;align-items:stretch;gap:1.1rem;padding-top:0;overflow:visible}
+}
+
 /* ===== Mobile home header & collection banner order refresh 2026-09-13 ===== */
 @media(max-width:700px){
   /* Put the collection banner above the collection title/copy. */
