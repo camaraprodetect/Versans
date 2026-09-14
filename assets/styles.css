@@ -3454,3 +3454,62 @@ body.site-overlay-open{overflow:hidden}
   }
   .product-back-to-shop svg{width:17px;height:17px}
 }
+
+/* ===== Desktop/laptop catalog filter row fix 2026-09-14 =====
+   Keep the filter control in its own full-width row above the products.
+   Mobile (<=700px) keeps its existing behavior. */
+@media(min-width:701px){
+  .home-page .shop__layout{
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:stretch!important;
+    gap:1.25rem!important;
+    grid-template-columns:none!important;
+  }
+  .home-page .shop__sidebar,
+  .home-page .shop__layout:has(.filters[hidden]) .shop__sidebar{
+    position:static!important;
+    top:auto!important;
+    width:100%!important;
+    max-height:none!important;
+    overflow:visible!important;
+    padding:0!important;
+    margin:0!important;
+    background:transparent!important;
+    z-index:auto!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:flex-start!important;
+  }
+  .home-page .shop__filter-label{display:none!important}
+  .home-page .shop__filter-toggle,
+  .home-page .shop__layout:has(.filters[hidden]) .shop__filter-toggle{
+    display:flex!important;
+    position:relative!important;
+    width:auto!important;
+    min-width:108px!important;
+    min-height:42px!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:.35rem!important;
+    padding:.5rem .85rem!important;
+    border:1px solid var(--line)!important;
+    background:#fff!important;
+    z-index:1!important;
+  }
+  .home-page .filters{
+    width:100%!important;
+    margin-top:.9rem!important;
+    padding:1rem!important;
+    border:1px solid var(--line)!important;
+    background:#fff!important;
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:1rem!important;
+    overflow:visible!important;
+  }
+  .home-page .filters[hidden]{display:none!important}
+  .home-page .catalog-filter-clear{grid-column:1/-1!important}
+  .home-page .catalog-filter-section{min-width:0!important;padding:0!important;border-top:0!important}
+  .home-page .grid{width:100%!important}
+}
