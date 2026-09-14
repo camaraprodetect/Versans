@@ -1003,6 +1003,8 @@ function mimeType(filePath) {
     '.gif': 'image/gif',
     '.ico': 'image/x-icon',
     '.txt': 'text/plain; charset=utf-8',
+    '.ttf': 'font/ttf',
+    '.woff': 'font/woff',
     '.woff2': 'font/woff2'
   })[ext] || 'application/octet-stream';
 }
