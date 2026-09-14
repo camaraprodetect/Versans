@@ -3585,3 +3585,18 @@ body.site-overlay-open{overflow:hidden}
     background:#fff!important;
   }
 }
+/* ===== Mobile filter order fix 2026-09-15 =====
+   On phones the filter belongs with the collection, after every promo/banner and the collection heading, before the product grid. */
+@media(max-width:700px){
+  .home-page .shop>.container{display:flex!important;flex-direction:column!important}
+  .home-page .mobile-entry-banner{order:1!important}
+  .home-page .glasses-collection-banner,
+  .home-page .watches-collection-banner,
+  .home-page .other-collections-banner,
+  .home-page .greeting-custom-collection-banner,
+  .home-page .gift-boxes-collection-banner{order:2!important}
+  .home-page .shop__head{order:3!important}
+  .home-page .shop__filter-row{order:4!important;width:100%!important;margin-top:0!important}
+  .home-page .shop__layout{order:5!important;width:100%!important}
+}
+
