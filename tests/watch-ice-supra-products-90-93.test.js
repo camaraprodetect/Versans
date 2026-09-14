@@ -15,7 +15,7 @@ for (const [slug, title] of expected) {
   const p = PRODUCTS.find(x => x.slug === slug);
   assert(p, `${slug} should exist`);
   assert.strictEqual(p.title.he, title, `${slug} Hebrew title should match`);
-  assert(!p.title.he.includes('—'), `${slug} title must not contain an em dash`);
+  assert(!p.title.he.includes('-'), `${slug} title must not contain an em dash`);
   assert.strictEqual(p.price, 549.9, `${slug} price should be 549.90`);
   assert.strictEqual(p.category, 'watches', `${slug} should be in watches`);
   assert(Array.isArray(p.categories) && p.categories.includes('watches'), `${slug} should include watches category`);

@@ -1,6 +1,6 @@
 /* ============================================================================
    לוגיקת החנות
-   אין צורך לגעת בקובץ הזה כדי להוסיף מוצרים — רק ב-products.js
+   אין צורך לגעת בקובץ הזה כדי להוסיף מוצרים - רק ב-products.js
    ============================================================================ */
 (function () {
   'use strict';
@@ -828,7 +828,7 @@
     if (glassesPairs > 0) {
       return {
         amount: glassesBundle,
-        label: state.lang === 'he' ? 'מבצע משקפיים — 2 ב־249.90 ₪' : 'Sunglasses offer — 2 for ₪249.90',
+        label: state.lang === 'he' ? 'מבצע משקפיים - 2 ב־249.90 ₪' : 'Sunglasses offer - 2 for ₪249.90',
         type: 'glasses-bundle'
       };
     }
@@ -979,7 +979,7 @@
       if (l.customPhoto) { var photoLabel = l.p.customPhoto && L(l.p.customPhoto.cartLabel); meta.push((photoLabel || (state.lang === 'he' ? 'תמונה אישית' : 'Custom photo')) + ' ✓'); }
       if (l.greeting) meta.push(state.lang === 'he' ? 'ברכה אישית (+35 ₪)' : 'Custom greeting (+₪35)');
       var combinedTitle = L(l.p.title) + (l.packaging ? (state.lang === 'he' ? ' + מארז LOVE FOREVER' : ' + LOVE FOREVER packaging') : '');
-      return '<div class="sum"><span>' + esc(combinedTitle + (meta.length ? ' — ' + meta.join(' · ') : '')) + ' × ' + l.qty + '</span><span>' + money(l.unitPrice * l.qty) + '</span></div>';
+      return '<div class="sum"><span>' + esc(combinedTitle + (meta.length ? ' - ' + meta.join(' · ') : '')) + ' × ' + l.qty + '</span><span>' + money(l.unitPrice * l.qty) + '</span></div>';
     }).join('') +
     '<div class="sum" style="margin-top:.6rem"><span>' + esc(t('cart.subtotal')) + '</span><span>' + money(s) + '</span></div>' +
     (discount > 0 ? '<div class="sum sum--discount"><span>' + esc(promo.label) + '</span><span>−' + money(discount) + '</span></div>' : '') +

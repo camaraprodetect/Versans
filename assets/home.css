@@ -201,7 +201,7 @@
 }
 
 
-/* Hero image loop — starts with the original hero and crossfades every 6 seconds. */
+/* Hero image loop - starts with the original hero and crossfades every 6 seconds. */
 .home-page .hero--full .hero__visual[data-hero-slider]{
   position:relative;
   overflow:hidden;

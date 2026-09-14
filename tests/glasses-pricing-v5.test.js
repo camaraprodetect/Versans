@@ -25,7 +25,7 @@ let order = priceOrder([{ id, qty: 2 }], 'he');
 assert.strictEqual(order.subtotal, 279.8);
 assert.strictEqual(order.discount, 29.9);
 assert.strictEqual(order.total, 249.9);
-assert.strictEqual(order.discountLabel, 'מבצע משקפיים — 2 ב־249.90 ₪');
+assert.strictEqual(order.discountLabel, 'מבצע משקפיים - 2 ב־249.90 ₪');
 
 order = priceOrder([{ id, qty: 3 }], 'he');
 assert.strictEqual(order.total, 389.8);

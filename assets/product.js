@@ -1,5 +1,5 @@
 /* ============================================================================
-   דף מוצר מלא — בחירת שרשרת + בחירת קופסה + מחיר דינמי
+   דף מוצר מלא - בחירת שרשרת + בחירת קופסה + מחיר דינמי
    ============================================================================ */
 (function () {
   'use strict';
@@ -921,7 +921,7 @@
     var ready = colorReady && companionReady();
     block.hidden = false;
     block.style.display = '';
-    if (heading) heading.textContent = L(product.requiresCompanion.heading) || (lang === 'he' ? 'הוסף שרשרת — חובה' : 'Add a necklace — required');
+    if (heading) heading.textContent = L(product.requiresCompanion.heading) || (lang === 'he' ? 'הוסף שרשרת - חובה' : 'Add a necklace - required');
     if (description) description.textContent = L(product.requiresCompanion.description) || '';
     if (status) {
       status.textContent = ready ? (lang === 'he' ? 'נוספה למארז ✓' : 'Added to packaging ✓') : (colorReady ? (lang === 'he' ? 'חובה' : 'Required') : (lang === 'he' ? 'בחרו צבע קודם' : 'Choose a color first'));
@@ -1057,13 +1057,13 @@
       } else if (requiresCompanion() && !companionReady()) {
         addBtn.textContent = lang === 'he' ? 'נא להוסיף שרשרת למארז' : 'Please add a necklace to the packaging';
       } else if (requiresCompanion() && companionReady()) {
-        addBtn.textContent = (lang === 'he' ? 'הוספה לסל — ' : 'Add to cart — ') + money(currentUnitPrice * qty);
+        addBtn.textContent = (lang === 'he' ? 'הוספה לסל - ' : 'Add to cart - ') + money(currentUnitPrice * qty);
       } else if (isCompanionPickerFlow()) {
-        addBtn.textContent = (lang === 'he' ? 'הוסף שרשרת למארז — ' : 'Add necklace to packaging — ') + money(currentUnitPrice * qty);
+        addBtn.textContent = (lang === 'he' ? 'הוסף שרשרת למארז - ' : 'Add necklace to packaging - ') + money(currentUnitPrice * qty);
       } else if (isGlassesProduct(product)) {
-        addBtn.textContent = (lang === 'he' ? 'הוספה לסל — ' : 'Add to cart — ') + glassesPriceDisplay(currentUnitPrice, qty);
+        addBtn.textContent = (lang === 'he' ? 'הוספה לסל - ' : 'Add to cart - ') + glassesPriceDisplay(currentUnitPrice, qty);
       } else {
-        addBtn.textContent = (lang === 'he' ? 'הוספה לסל — ' : 'Add to cart — ') + money(currentUnitPrice * qty);
+        addBtn.textContent = (lang === 'he' ? 'הוספה לסל - ' : 'Add to cart - ') + money(currentUnitPrice * qty);
       }
     }
     if (minusBtn) minusBtn.disabled = !ready;
@@ -1299,7 +1299,7 @@
     document.documentElement.lang = 'he';
     document.documentElement.dir = 'rtl';
     document.body.dataset.productSlug = String(product.slug || product.id || '');
-    document.title = L(product.title) + ' — ' + L(CFG.brand.name);
+    document.title = L(product.title) + ' - ' + L(CFG.brand.name);
 
     $('#brandName').textContent = L(CFG.brand.name);
     $('#footBrand').textContent = L(CFG.brand.name);
@@ -1404,8 +1404,8 @@
     $('#productAfterText').textContent = product.afterText
       ? L(product.afterText)
       : (lang === 'he'
-        ? 'השרשרת שתבחרו, הקופסה שתבחרו וכרטיס המסר מגיעים יחד — בלי שתצטרכו להרכיב, להדפיס או לארוז שום דבר.'
-        : 'Your chosen necklace, chosen gift box and printed message card arrive together — ready to give.');
+        ? 'השרשרת שתבחרו, הקופסה שתבחרו וכרטיס המסר מגיעים יחד - בלי שתצטרכו להרכיב, להדפיס או לארוז שום דבר.'
+        : 'Your chosen necklace, chosen gift box and printed message card arrive together - ready to give.');
 
     renderFooterContact();
 

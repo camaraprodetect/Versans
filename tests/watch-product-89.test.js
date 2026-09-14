@@ -7,7 +7,7 @@ const root = path.resolve(__dirname, '..');
 const p = PRODUCTS.find(x => x.slug === 'product-89');
 assert(p, 'product-89 should exist');
 assert.strictEqual(p.title.he, 'שעון טכימטר פרו - צבע שחור', 'Hebrew title should match');
-assert(!p.title.he.includes('—'), 'Hebrew title must not contain an em dash');
+assert(!p.title.he.includes('-'), 'Hebrew title must not contain an em dash');
 assert.strictEqual(p.price, 419.9, 'product-89 price should be 419.90');
 assert.strictEqual(p.category, 'watches', 'product-89 should be in watches');
 assert(Array.isArray(p.categories) && p.categories.includes('watches'), 'product-89 should include watches category');

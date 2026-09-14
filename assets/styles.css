@@ -1,4 +1,4 @@
-/* VerSans / VerSans — Editorial storefront
+/* VerSans / VerSans - Editorial storefront
    Shared visual system for storefront, product pages, checkout and customer care. */
 :root{
   --ink:#17232f;--muted:#67717b;--paper:#fff;--blush:#f2f4f6;--blush-deep:#e9edf0;--line:#dce1e5;
@@ -634,7 +634,7 @@ html[dir=ltr] .ov--side .ov__panel{--slide:1}
 @media(max-width:640px){.product-swatch-choice{width:64px!important;height:64px!important;min-width:64px!important;flex-basis:64px!important}}
 
 
-/* Product 21 — full-width color rows (AliExpress-style selector) */
+/* Product 21 - full-width color rows (AliExpress-style selector) */
 .product-color-row-grid{display:grid!important;grid-template-columns:1fr!important;gap:.75rem!important}
 .product-color-row-choice{width:100%!important;min-height:88px!important;padding:1rem 1.1rem!important;border-radius:0!important;background:#fff!important}
 .product-color-row-choice .product-color-choice__label{display:grid;grid-template-columns:auto 1fr;align-items:center;column-gap:.75rem;row-gap:.1rem}
@@ -682,7 +682,7 @@ html[dir=ltr] .ov--side .ov__panel{--slide:1}
 @media (max-width:560px){.product-delivery{margin-top:-.55rem;padding:.68rem .72rem}.cart-split-note{font-size:.75rem}}
 
 
-/* ===== Product page visual refresh — lively / premium ===== */
+/* ===== Product page visual refresh - lively / premium ===== */
 body.product-page-body{
   background:
     radial-gradient(circle at 8% 14%, rgba(243,199,182,.28), transparent 24%),
@@ -1252,7 +1252,7 @@ body.product-review-detail-open{overflow:hidden}
   .product-review-detail__stage{min-height:280px}
 }
 
-/* ===== Product page visual refresh v2 — brighter, clearer, multi-accent ===== */
+/* ===== Product page visual refresh v2 - brighter, clearer, multi-accent ===== */
 body.product-page-body{
   --p-font:'Rubik','Assistant',Arial,sans-serif;
   --sans:'Rubik','Assistant',Arial,sans-serif;
@@ -1664,7 +1664,7 @@ body.product-page-body h4{
   .product-page-body .product-purchase{padding:.6rem}
 }
 
-/* Safe product details accordion — HTML only; product rendering logic remains untouched. */
+/* Safe product details accordion - HTML only; product rendering logic remains untouched. */
 .product-details-accordion{margin-top:1.5rem;border:1px solid #e3e8ed;border-radius:18px;background:#fff;overflow:hidden;box-shadow:0 8px 20px rgba(20,35,51,.04)}
 .product-details-summary{display:flex;align-items:center;justify-content:space-between;gap:1rem;min-height:58px;padding:.95rem 1.05rem;cursor:pointer;list-style:none;font-weight:800;color:#203548;user-select:none}
 .product-details-summary::-webkit-details-marker{display:none}

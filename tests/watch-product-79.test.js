@@ -6,7 +6,7 @@ const { PRODUCTS } = require('../assets/products.js');
 const p = PRODUCTS.find(x => x.slug === 'product-79');
 assert(p, 'product-79 should exist');
 assert.strictEqual(p.title.he, 'שעון כרונו רויאל', 'Hebrew title should match');
-assert(!p.title.he.includes('—'), 'Hebrew title must not contain an em dash');
+assert(!p.title.he.includes('-'), 'Hebrew title must not contain an em dash');
 assert.strictEqual(p.colorDisplay, 'image-choice', 'color selector should use image choices');
 assert.strictEqual(p.colors.length, 5, 'should have 5 image-based color choices');
 for (const c of p.colors) {

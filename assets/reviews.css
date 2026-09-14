@@ -1,4 +1,4 @@
-/* VerSans Reviews — isolated styles so the review UI never falls back to browser defaults. */
+/* VerSans Reviews - isolated styles so the review UI never falls back to browser defaults. */
 .home-page{
   --review-navy:#142333;
   --review-navy-hover:#1d3145;
@@ -615,7 +615,7 @@ body.review-modal-open{overflow:hidden}
   border:1px solid #d4e0d6;
 }
 
-/* Review cards v8 — fixed, editorial card proportions + purchased product row */
+/* Review cards v8 - fixed, editorial card proportions + purchased product row */
 .home-page .reviews__grid{
   align-items:stretch;
   grid-auto-rows:620px;
@@ -779,7 +779,7 @@ body.review-modal-open{overflow:hidden}
   .home-page .review-card__text{-webkit-line-clamp:6}
 }
 
-/* Review cards v9 — compact masonry layout inspired by modern review galleries */
+/* Review cards v9 - compact masonry layout inspired by modern review galleries */
 .home-page .reviews>.container{
   width:min(100% - 56px,1680px);
 }
@@ -961,7 +961,7 @@ body.review-modal-open{overflow:hidden}
   .home-page .review-card__image{max-height:520px}
 }
 
-/* Reviews v10 — progressive batches, clickable review viewer and video media */
+/* Reviews v10 - progressive batches, clickable review viewer and video media */
 .home-page .reviews__load-more-wrap{
   display:flex;
   justify-content:center;

@@ -207,7 +207,7 @@ var PRODUCTS = [
     },
     "details": {
       "he": [
-        "דגם שרשרת אחד — product-1-3",
+        "דגם שרשרת אחד - product-1-3",
         "בחירה בין קופסה רגילה לקופסה אדומה עם תאורה",
         "הקופסה האדומה מוסיפה ₪10 למחיר",
         "כרטיס המסר מודפס ומגיע בתוך הקופסה",
@@ -998,7 +998,7 @@ var PRODUCTS = [
       "en": "To My Dear Mom"
     },
     "cardMessage": {
-      "he": "על כל המילים שלפעמים לא נאמרות, אני חייב לומר לך: אני אוהב אותך, אמא. על כל הפעמים ששכחתי להודות לך, על כל הדברים המיוחדים שאת עושה. מה שאני היום — זה בזכותך. אין מילים שיכולות לתאר את האהבה, ההקרבה והדאגה האינסופית שלך. אני יודע שלגדל ילד זה לא דבר פשוט ואין לי דרך באמת להחזיר לך על כל מה שעשית עבורי. לא משנה לאן אלך בחיים, את תמיד תהיי בליבי, חלק ממי שאני.",
+      "he": "על כל המילים שלפעמים לא נאמרות, אני חייב לומר לך: אני אוהב אותך, אמא. על כל הפעמים ששכחתי להודות לך, על כל הדברים המיוחדים שאת עושה. מה שאני היום - זה בזכותך. אין מילים שיכולות לתאר את האהבה, ההקרבה והדאגה האינסופית שלך. אני יודע שלגדל ילד זה לא דבר פשוט ואין לי דרך באמת להחזיר לך על כל מה שעשית עבורי. לא משנה לאן אלך בחיים, את תמיד תהיי בליבי, חלק ממי שאני.",
       "en": "For all the words that sometimes go unsaid, I have to tell you: I love you, Mom. For all the times I forgot to thank you, for all the special things you do. Who I am today is because of you. There are no words that can describe your love, sacrifice and endless care. I know raising a child is not easy, and there is no way I can truly repay you for everything you have done for me. No matter where I go in life, you will always be in my heart, a part of who I am."
     },
     "signature": {
@@ -1050,8 +1050,8 @@ var PRODUCTS = [
       "en": "Heart Necklace for Her - 925 Sterling Silver Plating"
     },
     "subtitle": {
-      "he": "שרשרת בלבד בציפוי Sterling Silver 925 — לחצו לצפייה בעוד תמונות",
-      "en": "Necklace only, with 925 Sterling Silver plating — tap to view more photos"
+      "he": "שרשרת בלבד בציפוי Sterling Silver 925 - לחצו לצפייה בעוד תמונות",
+      "en": "Necklace only, with 925 Sterling Silver plating - tap to view more photos"
     },
     "cardTitle": {
       "he": "שרשרת לבבות עדינה",
@@ -1163,7 +1163,7 @@ var PRODUCTS = [
     },
     "subtitle": {
       "he": "סט תואם בציפוי Sterling Silver 925, בצבע זהב, עם שיבוצי אבנים נוצצות",
-      "en": "925 Sterling Silver plating in a gold color — a matching necklace and bracelet set with sparkling stones"
+      "en": "925 Sterling Silver plating in a gold color - a matching necklace and bracelet set with sparkling stones"
     },
     "cardTitle": {
       "he": "סט תלתן זהב",
@@ -1395,8 +1395,8 @@ var PRODUCTS = [
       "en": "Unisex 4mm Cubic Zirconia Tennis Bracelet"
     },
     "subtitle": {
-      "he": "צמיד טניס יוניסקס לנשים ולגברים — לבחירה באורך 17 או 19 ס״מ",
-      "en": "A unisex 4mm tennis bracelet for women and men — choose 17cm or 19cm"
+      "he": "צמיד טניס יוניסקס לנשים ולגברים - לבחירה באורך 17 או 19 ס״מ",
+      "en": "A unisex 4mm tennis bracelet for women and men - choose 17cm or 19cm"
     },
     "sizes": [
       {
@@ -1443,7 +1443,7 @@ var PRODUCTS = [
         "סוגר מתקפל",
         "משקל משוער: כ־10 גרם",
         "בסיס מתכתי מסוג נחושת לפי מפרט הספק",
-        "עיצוב יוניסקס — מתאים לנשים ולגברים",
+        "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ללבוש יומיומי, אירועים ומתנה"
       ],
       "en": [
@@ -1452,7 +1452,7 @@ var PRODUCTS = [
         "Fold-over clasp",
         "Approximate weight: 10g",
         "Copper metal base according to supplier specifications",
-        "Unisex design — suitable for women and men",
+        "Unisex design - suitable for women and men",
         "Suitable for daily wear, events and gifting"
       ]
     },
@@ -1501,8 +1501,8 @@ var PRODUCTS = [
       "en": "Unisex 2mm Cubic Zirconia Tennis Necklace"
     },
     "subtitle": {
-      "he": "יוניסקס לנשים ולגברים · רוחב 2 מ״מ — לבחירה באורך 40 או 45 ס״מ",
-      "en": "Unisex for women and men · 2mm width — choose 40cm or 45cm length"
+      "he": "יוניסקס לנשים ולגברים · רוחב 2 מ״מ - לבחירה באורך 40 או 45 ס״מ",
+      "en": "Unisex for women and men · 2mm width - choose 40cm or 45cm length"
     },
     "sizes": [
       {
@@ -1544,14 +1544,14 @@ var PRODUCTS = [
     },
     "details": {
       "he": [
-        "שרשרת טניס יוניסקס ברוחב 2 מ״מ — מתאימה לנשים ולגברים",
+        "שרשרת טניס יוניסקס ברוחב 2 מ״מ - מתאימה לנשים ולגברים",
         "לבחירה בשני אורכים: 40 ס״מ או 45 ס״מ",
         "עיצוב משובץ ונוצץ במראה נקי ואלגנטי",
         "מתאימה ללבוש יומיומי, ערב ומתנה",
         "המחיר מתעדכן אוטומטית לפי האורך שנבחר"
       ],
       "en": [
-        "Unisex 2mm tennis necklace — suitable for women and men",
+        "Unisex 2mm tennis necklace - suitable for women and men",
         "Available in two lengths: 40cm or 45cm",
         "Sparkling stone-set design with a clean, elegant look",
         "Suitable for everyday wear, evenings and gifting",
@@ -1559,8 +1559,8 @@ var PRODUCTS = [
       ]
     },
     "afterText": {
-      "he": "הרוחב קבוע על 2 מ״מ. בחרו רק את האורך הרצוי — 40 או 45 ס״מ — והוסיפו לסל.",
-      "en": "The width is fixed at 2mm. Simply choose the preferred length — 40cm or 45cm — and add it to cart."
+      "he": "הרוחב קבוע על 2 מ״מ. בחרו רק את האורך הרצוי - 40 או 45 ס״מ - והוסיפו לסל.",
+      "en": "The width is fixed at 2mm. Simply choose the preferred length - 40cm or 45cm - and add it to cart."
     },
     "giftPackaging": {
       "optional": true,
@@ -1751,7 +1751,7 @@ var PRODUCTS = [
     },
     "details": {
       "he": [
-        "שרשרת שם בהתאמה אישית — מיוצרת לפי השם שתקלידו",
+        "שרשרת שם בהתאמה אישית - מיוצרת לפי השם שתקלידו",
         "חומר: ציפוי Sterling Silver 925",
         "לבחירה בארבעה אורכים: 35, 40, 45 או 50 ס״מ",
         "צבע לבחירה ללא תוספת מחיר: Rose Gold, Steel Color או Gold",
@@ -1759,7 +1759,7 @@ var PRODUCTS = [
         "מוצר בהתאמה אישית מיוצר במיוחד לפי פרטי ההזמנה"
       ],
       "en": [
-        "Custom name necklace — made according to the name you enter",
+        "Custom name necklace - made according to the name you enter",
         "Material: 925 Sterling Silver Plating",
         "Available in four lengths: 35, 40, 45 or 50 cm",
         "Color choice at no extra cost: Rose Gold, Steel Color or Gold",
@@ -1874,7 +1874,7 @@ var PRODUCTS = [
         "Silver-tone Zircon / Cubic Zirconia stone accents",
         "Approximate weight: 10g according to supplier specifications",
         "A delicate design suitable for everyday wear, evenings and gifting",
-        "Women’s item — included in Mom, Wife, Daughter and Sister collections"
+        "Women’s item - included in Mom, Wife, Daughter and Sister collections"
       ]
     },
     "afterText": {
@@ -1959,7 +1959,7 @@ var PRODUCTS = [
       "en": "Two sparkling silver-tone bracelets designed to be worn together or separately"
     },
     "cardTitle": {
-      "he": "סט 2 צמידים — תלתן + טניס",
+      "he": "סט 2 צמידים - תלתן + טניס",
       "en": "2-Piece Clover + Tennis Bracelet Set"
     },
     "cardMessage": {
@@ -1977,7 +1977,7 @@ var PRODUCTS = [
         "הסט כולל צמיד תלתן משובץ וצמיד טניס",
         "גוון התכשיטים: כסוף",
         "מתאים לענידה יחד או בנפרד",
-        "מוצר לנשים — מופיע בקולקציות לאמא, לאישה, לבת ולאחות"
+        "מוצר לנשים - מופיע בקולקציות לאמא, לאישה, לבת ולאחות"
       ],
       "en": [
         "Price includes both bracelets together",
@@ -1985,12 +1985,12 @@ var PRODUCTS = [
         "Tennis bracelet set with Cubic Zirconia stones",
         "Made from Stainless Steel according to the supplier specification",
         "Elegant silver-tone finish for stacked or separate wear",
-        "Women’s item — included in Mom, Wife, Daughter and Sister collections"
+        "Women’s item - included in Mom, Wife, Daughter and Sister collections"
       ]
     },
     "afterText": {
-      "he": "סט של שני צמידים תואמים במחיר אחד — צמיד תלתן עדין וצמיד טניס נוצץ.",
-      "en": "A matching two-bracelet set for one price — a delicate clover bracelet and a sparkling tennis bracelet."
+      "he": "סט של שני צמידים תואמים במחיר אחד - צמיד תלתן עדין וצמיד טניס נוצץ.",
+      "en": "A matching two-bracelet set for one price - a delicate clover bracelet and a sparkling tennis bracelet."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -2182,8 +2182,8 @@ var PRODUCTS = [
       "en": "LOVE FOREVER Rose Jewelry Gift Box"
     },
     "subtitle": {
-      "he": "מארז LOVE FOREVER עם ורדים וחלון שקוף — לבחירה בוורוד, אדום או שחור. השרשרת אינה כלולה",
-      "en": "LOVE FOREVER rose gift packaging with a clear window — choose Pink, Red or Black. Necklace not included"
+      "he": "מארז LOVE FOREVER עם ורדים וחלון שקוף - לבחירה בוורוד, אדום או שחור. השרשרת אינה כלולה",
+      "en": "LOVE FOREVER rose gift packaging with a clear window - choose Pink, Red or Black. Necklace not included"
     },
     "colors": [
       {
@@ -2233,7 +2233,7 @@ var PRODUCTS = [
         "מכסה עם חלון שקוף להצגת המתנה",
         "לבחירה בשלושה צבעים: ורוד, אדום או שחור",
         "כולל קופסת תכשיט ושקית מתנה תואמת לפי עיצוב המארז",
-        "המחיר הוא עבור המארז בלבד — השרשרת אינה כלולה",
+        "המחיר הוא עבור המארז בלבד - השרשרת אינה כלולה",
         "בחרו שרשרת דרך כפתור ״הוסף שרשרת״, חזרו לעמוד המארז ואז לחצו ״הוספה לסל״ כדי להוסיף אותם יחד כפריט אחד"
       ],
       "en": [
@@ -2242,7 +2242,7 @@ var PRODUCTS = [
         "Clear display window on the gift-box lid",
         "Available in three colors: Pink, Red or Black",
         "Includes the jewelry gift box and matching gift bag according to the set design",
-        "The price is for the packaging only — the necklace is not included",
+        "The price is for the packaging only - the necklace is not included",
         "Choose a necklace through the Add necklace flow, return to the packaging page, then press Add to cart to add them together as one item"
       ]
     },
@@ -2263,8 +2263,8 @@ var PRODUCTS = [
       ],
       "pickerUrl": "necklaces.html",
       "heading": {
-        "he": "הוסף שרשרת — חובה",
-        "en": "Add a necklace — required"
+        "he": "הוסף שרשרת - חובה",
+        "en": "Add a necklace - required"
       },
       "description": {
         "he": "המארז אינו מגיע עם שרשרת. בחרו אחת מהשרשראות המתאימות והיא תתווסף למארז יחד עם העיצוב, המידה או הצבע שבחרתם.",
@@ -2302,8 +2302,8 @@ var PRODUCTS = [
       "en": "Forever With You Heart Gift Set - Roses & Heart Necklace"
     },
     "subtitle": {
-      "he": "מארז לב רומנטי עם ורדים ושרשרת לב — לבחירה בוורוד או אדום",
-      "en": "Romantic heart-shaped rose gift set with a heart necklace — choose Pink or Red"
+      "he": "מארז לב רומנטי עם ורדים ושרשרת לב - לבחירה בוורוד או אדום",
+      "en": "Romantic heart-shaped rose gift set with a heart necklace - choose Pink or Red"
     },
     "colors": [
       {
@@ -2396,8 +2396,8 @@ var PRODUCTS = [
       "en": "Custom Photo Projection Bracelet - Unisex"
     },
     "subtitle": {
-      "he": "בחרו צבע חרוזים חיצוניים, צבע חרוז מרכזי וצורה — והעלו תמונה אישית",
-      "en": "Choose outer beads, center bead color and shape — then upload your personal photo"
+      "he": "בחרו צבע חרוזים חיצוניים, צבע חרוז מרכזי וצורה - והעלו תמונה אישית",
+      "en": "Choose outer beads, center bead color and shape - then upload your personal photo"
     },
     "necklaceHeading": {
       "he": "בחרו צורת חרוז מרכזי",
@@ -2543,7 +2543,7 @@ var PRODUCTS = [
         "צבע חרוז מרכזי: שחור או סילבר",
         "צורת חרוז מרכזי: לב או עגול",
         "התאמה מתכווננת באמצעות שרוך משיכה",
-        "מתאים לנשים ולגברים — Unisex",
+        "מתאים לנשים ולגברים - Unisex",
         "יש להעלות תמונה לפני הוספת המוצר לסל"
       ],
       "en": [
@@ -2552,7 +2552,7 @@ var PRODUCTS = [
         "Center bead color: Black or Silver",
         "Center bead shape: Heart or Round",
         "Adjustable pull-cord fit",
-        "Suitable for women and men — Unisex",
+        "Suitable for women and men - Unisex",
         "A photo must be uploaded before adding the item to cart"
       ]
     },
@@ -2611,7 +2611,7 @@ var PRODUCTS = [
         "עיצוב רטרו עגול-אובלי עם מסגרת קומפקטית",
         "עדשות עם הגנת UV400 לשימוש בשמש",
         "מסגרת קלה ונוחה לשימוש יומיומי",
-        "עיצוב יוניסקס — מתאים לנשים ולגברים",
+        "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, חופשות, נהיגה ולוקים אופנתיים",
         "מחיר: 139.90 ₪ | מבצע משקפיים: 2 ב־249.90 ₪",
         "גוון: מסגרת טורטויס עם זרועות זהב ועדשות ירוק-מרווה"
@@ -2682,7 +2682,7 @@ var PRODUCTS = [
         "עיצוב רטרו עגול-אובלי עם מסגרת קומפקטית",
         "עדשות עם הגנת UV400 לשימוש בשמש",
         "מסגרת קלה ונוחה לשימוש יומיומי",
-        "עיצוב יוניסקס — מתאים לנשים ולגברים",
+        "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, חופשות, נהיגה ולוקים אופנתיים",
         "מחיר: 139.90 ₪ | מבצע משקפיים: 2 ב־249.90 ₪",
         "גוון: שחור מלא עם עדשות כהות"
@@ -2753,7 +2753,7 @@ var PRODUCTS = [
         "עיצוב רטרו עגול-אובלי עם מסגרת קומפקטית",
         "עדשות עם הגנת UV400 לשימוש בשמש",
         "מסגרת קלה ונוחה לשימוש יומיומי",
-        "עיצוב יוניסקס — מתאים לנשים ולגברים",
+        "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, חופשות, נהיגה ולוקים אופנתיים",
         "מחיר: 139.90 ₪ | מבצע משקפיים: 2 ב־249.90 ₪",
         "גוון: שחור עם מעבר שקוף ועדשות Gradient"
@@ -2824,7 +2824,7 @@ var PRODUCTS = [
         "עיצוב מרובע-רטרו עם נוכחות נקייה ומודרנית",
         "עדשות עם הגנת UV400 לשימוש בשמש",
         "מבנה קל ונוח לשימוש יומיומי",
-        "עיצוב יוניסקס — מתאים לנשים ולגברים",
+        "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, טיולים, יציאות ולוקים אופנתיים",
         "מחיר: 139.90 ₪ | מבצע משקפיים: 2 ב־249.90 ₪",
         "גוון: שחור עם מעבר אמבר בתחתית המסגרת"
@@ -2895,7 +2895,7 @@ var PRODUCTS = [
         "עיצוב מרובע-רטרו עם נוכחות נקייה ומודרנית",
         "עדשות עם הגנת UV400 לשימוש בשמש",
         "מבנה קל ונוח לשימוש יומיומי",
-        "עיצוב יוניסקס — מתאים לנשים ולגברים",
+        "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, טיולים, יציאות ולוקים אופנתיים",
         "מחיר: 139.90 ₪ | מבצע משקפיים: 2 ב־249.90 ₪",
         "גוון: מסגרת שחורה ועדשות כחולות"
@@ -2966,7 +2966,7 @@ var PRODUCTS = [
         "עיצוב מרובע-רטרו עם נוכחות נקייה ומודרנית",
         "עדשות עם הגנת UV400 לשימוש בשמש",
         "מבנה קל ונוח לשימוש יומיומי",
-        "עיצוב יוניסקס — מתאים לנשים ולגברים",
+        "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, טיולים, יציאות ולוקים אופנתיים",
         "מחיר: 139.90 ₪ | מבצע משקפיים: 2 ב־249.90 ₪",
         "גוון: שחור מלא עם עדשות כהות"
@@ -3037,7 +3037,7 @@ var PRODUCTS = [
         "עיצוב מרובע-רטרו עם נוכחות נקייה ומודרנית",
         "עדשות עם הגנת UV400 לשימוש בשמש",
         "מבנה קל ונוח לשימוש יומיומי",
-        "עיצוב יוניסקס — מתאים לנשים ולגברים",
+        "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, טיולים, יציאות ולוקים אופנתיים",
         "מחיר: 139.90 ₪ | מבצע משקפיים: 2 ב־249.90 ₪",
         "גוון: מסגרת שחורה ועדשות ירוקות"
@@ -3108,7 +3108,7 @@ var PRODUCTS = [
         "עיצוב מרובע-רטרו עם נוכחות נקייה ומודרנית",
         "עדשות עם הגנת UV400 לשימוש בשמש",
         "מבנה קל ונוח לשימוש יומיומי",
-        "עיצוב יוניסקס — מתאים לנשים ולגברים",
+        "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, טיולים, יציאות ולוקים אופנתיים",
         "מחיר: 139.90 ₪ | מבצע משקפיים: 2 ב־249.90 ₪",
         "גוון: מסגרת שקופה ועדשות בגוון כסוף"
@@ -3179,7 +3179,7 @@ var PRODUCTS = [
         "עיצוב מרובע-רטרו עם נוכחות נקייה ומודרנית",
         "עדשות עם הגנת UV400 לשימוש בשמש",
         "מבנה קל ונוח לשימוש יומיומי",
-        "עיצוב יוניסקס — מתאים לנשים ולגברים",
+        "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, טיולים, יציאות ולוקים אופנתיים",
         "מחיר: 139.90 ₪ | מבצע משקפיים: 2 ב־249.90 ₪",
         "גוון: Tortoise חום עם עדשות כהות"
@@ -3250,7 +3250,7 @@ var PRODUCTS = [
         "עיצוב מרובע-רטרו עם קווים נקיים ונוכחות מודרנית",
         "עדשות עם הגנת UV400",
         "מסגרת קלה ונוחה לשימוש יומיומי",
-        "עיצוב יוניסקס — מתאים לנשים ולגברים",
+        "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, נהיגה, טיולים ולוקים אופנתיים",
         "מחיר: 139.90 ₪ | מבצע משקפיים: 2 ב־249.90 ₪",
         "גוון: מסגרת שמפניה שקופה עם עדשות חומות"
@@ -3321,7 +3321,7 @@ var PRODUCTS = [
         "עיצוב מרובע-רטרו עם קווים נקיים ונוכחות מודרנית",
         "עדשות עם הגנת UV400",
         "מסגרת קלה ונוחה לשימוש יומיומי",
-        "עיצוב יוניסקס — מתאים לנשים ולגברים",
+        "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, נהיגה, טיולים ולוקים אופנתיים",
         "מחיר: 139.90 ₪ | מבצע משקפיים: 2 ב־249.90 ₪",
         "גוון: מסגרת ירוק זית שקופה עם עדשות תואמות"
@@ -3392,7 +3392,7 @@ var PRODUCTS = [
         "עיצוב מרובע-רטרו עם קווים נקיים ונוכחות מודרנית",
         "עדשות עם הגנת UV400",
         "מסגרת קלה ונוחה לשימוש יומיומי",
-        "עיצוב יוניסקס — מתאים לנשים ולגברים",
+        "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, נהיגה, טיולים ולוקים אופנתיים",
         "מחיר: 139.90 ₪ | מבצע משקפיים: 2 ב־249.90 ₪",
         "גוון: קריסטל מעושן עם עדשות זית ופרטי זהב"
@@ -3463,7 +3463,7 @@ var PRODUCTS = [
         "עיצוב מרובע-רטרו עם קווים נקיים ונוכחות מודרנית",
         "עדשות עם הגנת UV400",
         "מסגרת קלה ונוחה לשימוש יומיומי",
-        "עיצוב יוניסקס — מתאים לנשים ולגברים",
+        "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, נהיגה, טיולים ולוקים אופנתיים",
         "מחיר: 139.90 ₪ | מבצע משקפיים: 2 ב־249.90 ₪",
         "גוון: מסגרת אפור-קריסטל עם עדשות גרפיט כהות"
@@ -3534,7 +3534,7 @@ var PRODUCTS = [
         "עיצוב punk square עם מסגרת עבה ומראה רטרו מודרני",
         "עדשות עם הגנת UV400",
         "מסגרת קלה ונוחה לשימוש יומיומי",
-        "עיצוב יוניסקס — מתאים לנשים ולגברים",
+        "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, נסיעות, בילויים ולוקים אופנתיים",
         "מחיר: 139.90 ₪ | מבצע משקפיים: 2 ב־249.90 ₪",
         "גוון: קריסטל מעושן עם נגיעות ענבר ועדשות אפורות בהירות"
@@ -3605,7 +3605,7 @@ var PRODUCTS = [
         "עיצוב punk square עם מסגרת עבה ומראה רטרו מודרני",
         "עדשות עם הגנת UV400",
         "מסגרת קלה ונוחה לשימוש יומיומי",
-        "עיצוב יוניסקס — מתאים לנשים ולגברים",
+        "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, נסיעות, בילויים ולוקים אופנתיים",
         "מחיר: 139.90 ₪ | מבצע משקפיים: 2 ב־249.90 ₪",
         "גוון: מסגרת שחורה מלאה עם עדשות כהות"
@@ -3676,7 +3676,7 @@ var PRODUCTS = [
         "עיצוב punk square עם מסגרת עבה ומראה רטרו מודרני",
         "עדשות עם הגנת UV400",
         "מסגרת קלה ונוחה לשימוש יומיומי",
-        "עיצוב יוניסקס — מתאים לנשים ולגברים",
+        "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, נסיעות, בילויים ולוקים אופנתיים",
         "מחיר: 139.90 ₪ | מבצע משקפיים: 2 ב־249.90 ₪",
         "גוון: חזית שקופה, זרועות טורטויס ועדשות בגוון דבש"
@@ -3747,7 +3747,7 @@ var PRODUCTS = [
         "עיצוב punk square עם מסגרת עבה ומראה רטרו מודרני",
         "עדשות עם הגנת UV400",
         "מסגרת קלה ונוחה לשימוש יומיומי",
-        "עיצוב יוניסקס — מתאים לנשים ולגברים",
+        "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, נסיעות, בילויים ולוקים אופנתיים",
         "מחיר: 139.90 ₪ | מבצע משקפיים: 2 ב־249.90 ₪",
         "גוון: מסגרת ענבר-חום עם עדשות חומות"
@@ -3818,7 +3818,7 @@ var PRODUCTS = [
         "עיצוב punk square עם מסגרת עבה ומראה רטרו מודרני",
         "עדשות עם הגנת UV400",
         "מסגרת קלה ונוחה לשימוש יומיומי",
-        "עיצוב יוניסקס — מתאים לנשים ולגברים",
+        "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, נסיעות, בילויים ולוקים אופנתיים",
         "מחיר: 139.90 ₪ | מבצע משקפיים: 2 ב־249.90 ₪",
         "גוון: חזית שקופה, זרועות שחורות ועדשות כהות"
@@ -3889,7 +3889,7 @@ var PRODUCTS = [
         "עיצוב polygon גיאומטרי עם מסגרת מודגשת ועכשווית",
         "עדשות עם הגנת UV400",
         "מסגרת קלה ונוחה לשימוש יומיומי",
-        "עיצוב יוניסקס — מתאים לנשים ולגברים",
+        "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, נסיעות, בילויים ולוקים אופנתיים",
         "מחיר: 139.90 ₪ | מבצע משקפיים: 2 ב־249.90 ₪",
         "גוון: מסגרת שחורה מבריקה עם עדשות כהות"
@@ -3960,7 +3960,7 @@ var PRODUCTS = [
         "עיצוב polygon גיאומטרי עם מסגרת קלילה ומלאת סטייל",
         "עדשות עם הגנת UV400",
         "מסגרת קלה ונוחה לשימוש יומיומי",
-        "עיצוב יוניסקס — מתאים לנשים ולגברים",
+        "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, חופשות, בילויים ולוקים קיציים",
         "מחיר: 139.90 ₪ | מבצע משקפיים: 2 ב־249.90 ₪",
         "גוון: מסגרת שקופה עם עדשות כחול-קרח"
@@ -4031,7 +4031,7 @@ var PRODUCTS = [
         "עיצוב polygon גיאומטרי עם מסגרת מודגשת",
         "עדשות עם הגנת UV400",
         "מסגרת קלה ונוחה לשימוש יומיומי",
-        "עיצוב יוניסקס — מתאים לנשים ולגברים",
+        "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, נסיעות, בילויים ולוקים בולטים",
         "מחיר: 139.90 ₪ | מבצע משקפיים: 2 ב־249.90 ₪",
         "גוון: מסגרת שחורה עם עדשות כחולות בוהקות"
@@ -4102,7 +4102,7 @@ var PRODUCTS = [
         "עיצוב polygon גיאומטרי עם קווים חדים ונקיים",
         "עדשות עם הגנת UV400",
         "מסגרת קלה ונוחה לשימוש יומיומי",
-        "עיצוב יוניסקס — מתאים לנשים ולגברים",
+        "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, טיולים, חופשות ולוקים אופנתיים",
         "מחיר: 139.90 ₪ | מבצע משקפיים: 2 ב־249.90 ₪",
         "גוון: מסגרת שקופה בגוון ירוק-זית עם עדשות כהות"
@@ -4173,7 +4173,7 @@ var PRODUCTS = [
         "עיצוב polygon גיאומטרי עם מסגרת עבה ומראה מעודכן",
         "עדשות עם הגנת UV400",
         "מסגרת קלה ונוחה לשימוש יומיומי",
-        "עיצוב יוניסקס — מתאים לנשים ולגברים",
+        "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, בילויים, חופשות ולוקים אופנתיים",
         "מחיר: 139.90 ₪ | מבצע משקפיים: 2 ב־249.90 ₪",
         "גוון: מסגרת שחורה עם עדשות בהירות בגוון שמפניה"
@@ -4218,7 +4218,7 @@ var PRODUCTS = [
     ],
     "price": 139.9,
     "title": {
-      "he": "משקפי שמש Oversized Square — Tortoise Sky Blue",
+      "he": "משקפי שמש Oversized Square - Tortoise Sky Blue",
       "en": "Oversized Square Tortoise Sky Blue Sunglasses"
     },
     "subtitle": {
@@ -4287,7 +4287,7 @@ var PRODUCTS = [
     ],
     "price": 139.9,
     "title": {
-      "he": "משקפי שמש Oversized Square — Tortoise Blush Rose",
+      "he": "משקפי שמש Oversized Square - Tortoise Blush Rose",
       "en": "Oversized Square Tortoise Blush Rose Sunglasses"
     },
     "subtitle": {
@@ -4356,7 +4356,7 @@ var PRODUCTS = [
     ],
     "price": 139.9,
     "title": {
-      "he": "משקפי שמש Oversized Square — Tortoise Caramel Brown",
+      "he": "משקפי שמש Oversized Square - Tortoise Caramel Brown",
       "en": "Oversized Square Tortoise Caramel Brown Sunglasses"
     },
     "subtitle": {
@@ -4425,7 +4425,7 @@ var PRODUCTS = [
     ],
     "price": 139.9,
     "title": {
-      "he": "משקפי שמש Oversized Square — Black Smoke",
+      "he": "משקפי שמש Oversized Square - Black Smoke",
       "en": "Oversized Square Black Smoke Sunglasses"
     },
     "subtitle": {
@@ -4494,7 +4494,7 @@ var PRODUCTS = [
     ],
     "price": 139.9,
     "title": {
-      "he": "משקפי שמש Oversized Square — Black Champagne",
+      "he": "משקפי שמש Oversized Square - Black Champagne",
       "en": "Oversized Square Black Champagne Sunglasses"
     },
     "subtitle": {
@@ -4563,7 +4563,7 @@ var PRODUCTS = [
     ],
     "price": 139.9,
     "title": {
-      "he": "משקפי שמש Oversized Square — Tortoise Honey Yellow",
+      "he": "משקפי שמש Oversized Square - Tortoise Honey Yellow",
       "en": "Oversized Square Tortoise Honey Yellow Sunglasses"
     },
     "subtitle": {
@@ -4632,7 +4632,7 @@ var PRODUCTS = [
     ],
     "price": 139.9,
     "title": {
-      "he": "משקפי שמש Oversized Square — Tortoise Silver Smoke",
+      "he": "משקפי שמש Oversized Square - Tortoise Silver Smoke",
       "en": "Oversized Square Tortoise Silver Smoke Sunglasses"
     },
     "subtitle": {
@@ -4701,7 +4701,7 @@ var PRODUCTS = [
     ],
     "price": 139.9,
     "title": {
-      "he": "משקפי שמש Oversized Square — Black Amber Gold",
+      "he": "משקפי שמש Oversized Square - Black Amber Gold",
       "en": "Oversized Square Black Amber Gold Sunglasses"
     },
     "subtitle": {
@@ -4770,7 +4770,7 @@ var PRODUCTS = [
     ],
     "price": 139.9,
     "title": {
-      "he": "משקפי שמש Oversized Square — Tortoise Sage Green",
+      "he": "משקפי שמש Oversized Square - Tortoise Sage Green",
       "en": "Oversized Square Tortoise Sage Green Sunglasses"
     },
     "subtitle": {
@@ -4839,7 +4839,7 @@ var PRODUCTS = [
     ],
     "price": 139.9,
     "title": {
-      "he": "משקפי שמש Oversized Pilot — Tortoise Brown Gradient",
+      "he": "משקפי שמש Oversized Pilot - Tortoise Brown Gradient",
       "en": "Oversized Pilot Tortoise Brown Gradient Sunglasses"
     },
     "subtitle": {
@@ -4908,7 +4908,7 @@ var PRODUCTS = [
     ],
     "price": 139.9,
     "title": {
-      "he": "משקפי שמש Oversized Pilot — Rose Smoke Gradient",
+      "he": "משקפי שמש Oversized Pilot - Rose Smoke Gradient",
       "en": "Oversized Pilot Rose Smoke Gradient Sunglasses"
     },
     "subtitle": {
@@ -4977,7 +4977,7 @@ var PRODUCTS = [
     ],
     "price": 139.9,
     "title": {
-      "he": "משקפי שמש Oversized Pilot — Tortoise Blue Gradient",
+      "he": "משקפי שמש Oversized Pilot - Tortoise Blue Gradient",
       "en": "Oversized Pilot Tortoise Blue Gradient Sunglasses"
     },
     "subtitle": {
@@ -5046,7 +5046,7 @@ var PRODUCTS = [
     ],
     "price": 139.9,
     "title": {
-      "he": "משקפי שמש Oversized Pilot — Black Smoke",
+      "he": "משקפי שמש Oversized Pilot - Black Smoke",
       "en": "Oversized Pilot Black Smoke Sunglasses"
     },
     "subtitle": {
@@ -5115,7 +5115,7 @@ var PRODUCTS = [
     ],
     "price": 139.9,
     "title": {
-      "he": "משקפי שמש Pearl Oval — Double Tea",
+      "he": "משקפי שמש Pearl Oval - Double Tea",
       "en": "Pearl Oval Double Tea Sunglasses"
     },
     "subtitle": {
@@ -5184,7 +5184,7 @@ var PRODUCTS = [
     ],
     "price": 139.9,
     "title": {
-      "he": "משקפי שמש Pearl Oval — Pink Blush",
+      "he": "משקפי שמש Pearl Oval - Pink Blush",
       "en": "Pearl Oval Pink Blush Sunglasses"
     },
     "subtitle": {
@@ -5253,7 +5253,7 @@ var PRODUCTS = [
     ],
     "price": 139.9,
     "title": {
-      "he": "משקפי שמש Pearl Oval — Lilac Gradient",
+      "he": "משקפי שמש Pearl Oval - Lilac Gradient",
       "en": "Pearl Oval Lilac Gradient Sunglasses"
     },
     "subtitle": {
@@ -5322,7 +5322,7 @@ var PRODUCTS = [
     ],
     "price": 139.9,
     "title": {
-      "he": "משקפי שמש Korean Oval — Tortoise Blue",
+      "he": "משקפי שמש Korean Oval - Tortoise Blue",
       "en": "Korean Oval Tortoise Blue Sunglasses"
     },
     "subtitle": {
@@ -5391,7 +5391,7 @@ var PRODUCTS = [
     ],
     "price": 139.9,
     "title": {
-      "he": "משקפי שמש Korean Oval — Champagne",
+      "he": "משקפי שמש Korean Oval - Champagne",
       "en": "Korean Oval Champagne Sunglasses"
     },
     "subtitle": {
@@ -5460,7 +5460,7 @@ var PRODUCTS = [
     ],
     "price": 139.9,
     "title": {
-      "he": "משקפי שמש Korean Oval — Tortoise Green",
+      "he": "משקפי שמש Korean Oval - Tortoise Green",
       "en": "Korean Oval Tortoise Green Sunglasses"
     },
     "subtitle": {
@@ -5529,7 +5529,7 @@ var PRODUCTS = [
     ],
     "price": 139.9,
     "title": {
-      "he": "משקפי שמש Korean Oval — Gold Black",
+      "he": "משקפי שמש Korean Oval - Gold Black",
       "en": "Korean Oval Gold Black Sunglasses"
     },
     "subtitle": {
@@ -5598,7 +5598,7 @@ var PRODUCTS = [
     ],
     "price": 139.9,
     "title": {
-      "he": "משקפי שמש Narrow Cat Eye — Champagne Tea",
+      "he": "משקפי שמש Narrow Cat Eye - Champagne Tea",
       "en": "Narrow Cat Eye Champagne Tea Sunglasses"
     },
     "subtitle": {
@@ -5667,7 +5667,7 @@ var PRODUCTS = [
     ],
     "price": 139.9,
     "title": {
-      "he": "משקפי שמש Narrow Cat Eye — Tortoise Smoke",
+      "he": "משקפי שמש Narrow Cat Eye - Tortoise Smoke",
       "en": "Narrow Cat Eye Tortoise Smoke Sunglasses"
     },
     "subtitle": {
@@ -5736,7 +5736,7 @@ var PRODUCTS = [
     ],
     "price": 139.9,
     "title": {
-      "he": "משקפי שמש Metal Oval — Tea Tortoise",
+      "he": "משקפי שמש Metal Oval - Tea Tortoise",
       "en": "Metal Oval Tea Tortoise Sunglasses"
     },
     "subtitle": {
@@ -5805,7 +5805,7 @@ var PRODUCTS = [
     ],
     "price": 139.9,
     "title": {
-      "he": "משקפי שמש Metal Oval — White Blue Gradient",
+      "he": "משקפי שמש Metal Oval - White Blue Gradient",
       "en": "Metal Oval White Blue Gradient Sunglasses"
     },
     "subtitle": {
@@ -5874,7 +5874,7 @@ var PRODUCTS = [
     ],
     "price": 139.9,
     "title": {
-      "he": "משקפי שמש Metal Oval — Black Tea Pink",
+      "he": "משקפי שמש Metal Oval - Black Tea Pink",
       "en": "Metal Oval Black Tea Pink Sunglasses"
     },
     "subtitle": {
@@ -5943,7 +5943,7 @@ var PRODUCTS = [
     ],
     "price": 139.9,
     "title": {
-      "he": "משקפי שמש Metal Oval — Black Smoke",
+      "he": "משקפי שמש Metal Oval - Black Smoke",
       "en": "Metal Oval Black Smoke Sunglasses"
     },
     "subtitle": {
@@ -6014,7 +6014,7 @@ var PRODUCTS = [
     ],
     "price": 139.9,
     "title": {
-      "he": "משקפי שמש Star Rectangle — Black Smoke",
+      "he": "משקפי שמש Star Rectangle - Black Smoke",
       "en": "Star Rectangle Black Smoke Sunglasses"
     },
     "subtitle": {
@@ -6041,7 +6041,7 @@ var PRODUCTS = [
         "צירים משולשים ליציבות טובה יותר של הזרועות",
         "מידה: 53-12-140 מ״מ",
         "משקל משוער: כ־46 גרם",
-        "עיצוב יוניסקס — מתאים לנשים ולגברים",
+        "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, נהיגה, בילויים ולוקים אופנתיים",
         "מחיר: 139.90 ₪ | מבצע משקפיים: 2 ב־249.90 ₪",
         "גוון: שחור עם עדשות עשן כהות"
@@ -6091,7 +6091,7 @@ var PRODUCTS = [
     ],
     "price": 139.9,
     "title": {
-      "he": "משקפי שמש Star Rectangle — Black Brown",
+      "he": "משקפי שמש Star Rectangle - Black Brown",
       "en": "Star Rectangle Black Brown Sunglasses"
     },
     "subtitle": {
@@ -6118,7 +6118,7 @@ var PRODUCTS = [
         "צירים משולשים ליציבות טובה יותר של הזרועות",
         "מידה: 53-12-140 מ״מ",
         "משקל משוער: כ־46 גרם",
-        "עיצוב יוניסקס — מתאים לנשים ולגברים",
+        "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, נהיגה, בילויים ולוקים אופנתיים",
         "מחיר: 139.90 ₪ | מבצע משקפיים: 2 ב־249.90 ₪",
         "גוון: שחור עם עדשות חומות"
@@ -6168,7 +6168,7 @@ var PRODUCTS = [
     ],
     "price": 139.9,
     "title": {
-      "he": "משקפי שמש Star Rectangle — Black Ice Blue",
+      "he": "משקפי שמש Star Rectangle - Black Ice Blue",
       "en": "Star Rectangle Black Ice Blue Sunglasses"
     },
     "subtitle": {
@@ -6195,7 +6195,7 @@ var PRODUCTS = [
         "צירים משולשים ליציבות טובה יותר של הזרועות",
         "מידה: 53-12-140 מ״מ",
         "משקל משוער: כ־46 גרם",
-        "עיצוב יוניסקס — מתאים לנשים ולגברים",
+        "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, נהיגה, בילויים ולוקים אופנתיים",
         "מחיר: 139.90 ₪ | מבצע משקפיים: 2 ב־249.90 ₪",
         "גוון: שחור עם עדשות כחול-קרח"
@@ -6245,7 +6245,7 @@ var PRODUCTS = [
     ],
     "price": 139.9,
     "title": {
-      "he": "משקפי שמש Star Rectangle — Black Champagne",
+      "he": "משקפי שמש Star Rectangle - Black Champagne",
       "en": "Star Rectangle Black Champagne Sunglasses"
     },
     "subtitle": {
@@ -6272,7 +6272,7 @@ var PRODUCTS = [
         "צירים משולשים ליציבות טובה יותר של הזרועות",
         "מידה: 53-12-140 מ״מ",
         "משקל משוער: כ־46 גרם",
-        "עיצוב יוניסקס — מתאים לנשים ולגברים",
+        "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, נהיגה, בילויים ולוקים אופנתיים",
         "מחיר: 139.90 ₪ | מבצע משקפיים: 2 ב־249.90 ₪",
         "גוון: מסגרת שחורה עם עדשות שמפניה בהירות"
@@ -6322,7 +6322,7 @@ var PRODUCTS = [
     ],
     "price": 139.9,
     "title": {
-      "he": "משקפי שמש Star Rectangle — Crystal Smoke",
+      "he": "משקפי שמש Star Rectangle - Crystal Smoke",
       "en": "Star Rectangle Crystal Smoke Sunglasses"
     },
     "subtitle": {
@@ -6349,7 +6349,7 @@ var PRODUCTS = [
         "צירים משולשים ליציבות טובה יותר של הזרועות",
         "מידה: 53-12-140 מ״מ",
         "משקל משוער: כ־46 גרם",
-        "עיצוב יוניסקס — מתאים לנשים ולגברים",
+        "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, נהיגה, בילויים ולוקים אופנתיים",
         "מחיר: 139.90 ₪ | מבצע משקפיים: 2 ב־249.90 ₪",
         "גוון: מסגרת שקופה עם עדשות עשן כהות"
@@ -6438,8 +6438,8 @@ var PRODUCTS = [
       ]
     },
     "afterText": {
-      "he": "השעון, המארז, הרצועה הנוספת והאביזרים המצורפים מגיעים יחד — מוכן למתנה בלי שתצטרכו לארוז בעצמכם.",
-      "en": "The watch, gift box, extra strap and included accessories arrive together — ready to gift."
+      "he": "השעון, המארז, הרצועה הנוספת והאביזרים המצורפים מגיעים יחד - מוכן למתנה בלי שתצטרכו לארוז בעצמכם.",
+      "en": "The watch, gift box, extra strap and included accessories arrive together - ready to gift."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -6525,7 +6525,7 @@ var PRODUCTS = [
     "price": 429.9,
     "title": {
       "he": "שעון אייס - צבע כסף",
-      "en": "ICE Silver Watch — Black Dial"
+      "en": "ICE Silver Watch - Black Dial"
     },
     "subtitle": {
       "he": "שעון ICE בגימור כסף עם לוח שחור מנצנץ, מנגנון קוורץ ורצועת מתכת.",
@@ -6548,7 +6548,7 @@ var PRODUCTS = [
         "קוטר לוח בטווח 40–44 מ״מ למראה בולט ואלגנטי",
         "מנגנון Quartz מדויק לשימוש יום־יומי",
         "רצועת מתכת ברוחב 20–24 מ״מ עם סגירה נסתרת בלחיצה",
-        "עמידות למים 3Bar — מתאימה להתזות, גשם ושטיפת ידיים; לא לשחייה או צלילה",
+        "עמידות למים 3Bar - מתאימה להתזות, גשם ושטיפת ידיים; לא לשחייה או צלילה",
         "מחוגים זוהרים לקריאה נוחה יותר בתאורה חלשה",
         "זכוכית Hardlex עמידה לשריטות בשימוש רגיל",
         "עובי גוף כ־11 מ״מ ורצועה באורך של עד כ־9 אינץ׳"
@@ -6564,8 +6564,8 @@ var PRODUCTS = [
       ]
     },
     "afterText": {
-      "he": "שעון ICE כסוף עם לוח שחור מנצנץ — מראה יוקרתי שמתאים גם ליום־יום וגם לאירועים.",
-      "en": "A silver ICE watch with a glittering black dial — a premium look for both everyday wear and special occasions."
+      "he": "שעון ICE כסוף עם לוח שחור מנצנץ - מראה יוקרתי שמתאים גם ליום־יום וגם לאירועים.",
+      "en": "A silver ICE watch with a glittering black dial - a premium look for both everyday wear and special occasions."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -6593,7 +6593,7 @@ var PRODUCTS = [
     "price": 429.9,
     "title": {
       "he": "שעון אייס - צבע זהב",
-      "en": "ICE Gold Watch — Black Dial"
+      "en": "ICE Gold Watch - Black Dial"
     },
     "subtitle": {
       "he": "שעון ICE בגימור זהב עם לוח שחור מנצנץ, מנגנון קוורץ ורצועת מתכת.",
@@ -6616,7 +6616,7 @@ var PRODUCTS = [
         "קוטר לוח בטווח 40–44 מ״מ למראה בולט ואלגנטי",
         "מנגנון Quartz מדויק לשימוש יום־יומי",
         "רצועת מתכת ברוחב 20–24 מ״מ עם סגירה נסתרת בלחיצה",
-        "עמידות למים 3Bar — מתאימה להתזות, גשם ושטיפת ידיים; לא לשחייה או צלילה",
+        "עמידות למים 3Bar - מתאימה להתזות, גשם ושטיפת ידיים; לא לשחייה או צלילה",
         "מחוגים זוהרים לקריאה נוחה יותר בתאורה חלשה",
         "זכוכית Hardlex עמידה לשריטות בשימוש רגיל",
         "עובי גוף כ־11 מ״מ ורצועה באורך של עד כ־9 אינץ׳"
@@ -6632,8 +6632,8 @@ var PRODUCTS = [
       ]
     },
     "afterText": {
-      "he": "שעון ICE בגוון זהב עם לוח שחור מנצנץ — מראה יוקרתי שמתאים גם ליום־יום וגם לאירועים.",
-      "en": "A gold ICE watch with a glittering black dial — a premium look for both everyday wear and special occasions."
+      "he": "שעון ICE בגוון זהב עם לוח שחור מנצנץ - מראה יוקרתי שמתאים גם ליום־יום וגם לאירועים.",
+      "en": "A gold ICE watch with a glittering black dial - a premium look for both everyday wear and special occasions."
     },
     "deliveryBusinessDays": {
       "min": 9,

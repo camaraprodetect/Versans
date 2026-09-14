@@ -39,14 +39,14 @@
     if (page === 'login') {
       setText('#authTitle', 'loginTitle'); setText('#authLead', 'loginLead'); setText('[for="email"]', 'email'); setText('[for="password"]', 'password'); setText('#authSubmitText', 'login');
       setText('#switchPrefix', 'newHere'); setText('#switchLink', 'createNow');
-      document.title = t('loginTitle') + ' — VerSans';
+      document.title = t('loginTitle') + ' - VerSans';
     } else if (page === 'register') {
       setText('#authTitle', 'registerTitle'); setText('#authLead', 'registerLead'); setText('[for="name"]', 'name'); setText('[for="email"]', 'email'); setText('[for="password"]', 'password'); setText('[for="confirmPassword"]', 'confirm'); setText('#passwordHint', 'passHint'); setText('#authSubmitText', 'register');
       setText('#switchPrefix', 'already'); setText('#switchLink', 'loginNow');
-      document.title = t('registerTitle') + ' — VerSans';
+      document.title = t('registerTitle') + ' - VerSans';
     } else if (page === 'account') {
       setText('#authTitle', 'accountTitle'); setText('#authLead', 'accountLead'); setText('#labelName', 'accountName'); setText('#labelEmail', 'accountEmail'); setText('#labelSince', 'memberSince'); setText('#logoutText', 'logout'); setText('#shopText', 'shop');
-      document.title = t('accountTitle') + ' — VerSans';
+      document.title = t('accountTitle') + ' - VerSans';
     }
     var langBtn = qs('#authLangBtn'); if (langBtn) langBtn.textContent = lang === 'he' ? 'English' : 'עברית';
     Array.prototype.forEach.call(document.querySelectorAll('[data-password-toggle]'), function (btn) { btn.textContent = t('show'); });

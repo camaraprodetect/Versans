@@ -4,7 +4,7 @@
 .ge-main{max-width:1480px;margin:auto;padding:clamp(24px,4vw,58px) clamp(16px,4vw,56px) 70px}.ge-intro{max-width:800px;margin:0 auto 2.4rem;text-align:center}.ge-intro>span{text-transform:uppercase;letter-spacing:.08em;font-size:.75rem;color:#8a765a}.ge-intro h1{font-size:clamp(2rem,4vw,3.8rem);line-height:1.08;margin:.5rem 0 .8rem;letter-spacing:-.04em}.ge-intro p{margin:0;color:var(--muted);line-height:1.8;font-size:.96rem}
 .ge-layout{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(380px,.82fr);gap:clamp(22px,4vw,56px);align-items:start}.ge-preview-panel{position:sticky;top:98px}.ge-preview-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem;font-size:.85rem}.ge-preview-head span{color:#889198}
 .ge-card{position:relative;aspect-ratio:1/1;width:100%;overflow:hidden;background-position:center;background-size:cover;background-repeat:no-repeat;color:#111;border:1px solid #ece8df;box-shadow:0 22px 70px rgba(28,31,34,.08);isolation:isolate}.ge-card__eyebrow,.ge-card__title,.ge-card__subtitle,.ge-card__message,.ge-card__signature{position:absolute;text-align:center;color:#111;overflow:hidden;overflow-wrap:break-word;direction:rtl;z-index:3}.ge-card__mask{display:none;position:absolute;z-index:2;pointer-events:none}.ge-card__title,.ge-card__eyebrow,.ge-card__subtitle,.ge-card__signature{white-space:nowrap;text-overflow:clip}.ge-card__message{white-space:pre-line}
-/* Default — improved clean layout with customizable background. */
+/* Default - improved clean layout with customizable background. */
 .ge-card--template-1{--greeting-bg:#f7f4ed;--greeting-text:#111111;--greeting-font:"Noto Serif Hebrew",Georgia,serif;--default-frame-color:#aa9169;--default-frame-soft:rgba(170,145,105,.35);background-color:var(--greeting-bg);background-image:radial-gradient(circle at 18% 14%,rgba(255,255,255,.26),transparent 28%),radial-gradient(circle at 82% 78%,rgba(255,255,255,.18),transparent 31%),linear-gradient(135deg,rgba(255,255,255,.12),rgba(0,0,0,.025));border-color:var(--default-frame-soft)}
 .ge-card--template-1::before{content:"";position:absolute;inset:3.6%;border:1px solid var(--default-frame-soft);pointer-events:none;z-index:2}
 .ge-card__default-bg{display:none;position:absolute;inset:3.6%;z-index:0;background-size:cover;background-position:center;background-repeat:no-repeat;pointer-events:none}
@@ -16,75 +16,75 @@
 .ge-card--template-1 .ge-card__message.ge-message-very-dense{font-size:clamp(12px,1.38vw,18.5px);line-height:1.4}
 .ge-card--template-2{background-image:url('../images/greeting-templates/template-2.png')}.ge-card--template-2 .ge-card__title{top:10.5%;left:25%;right:25%;height:13.5%;display:grid;place-items:center;font-family:var(--serif);font-size:clamp(27px,4.5vw,58px);font-weight:700;line-height:1.06}.ge-card--template-2 .ge-card__message{top:51.5%;bottom:22.5%;left:12.5%;right:12.5%;display:flex;align-items:flex-start;justify-content:center;font-family:var(--serif);font-size:clamp(13px,1.52vw,21px);line-height:1.58}.ge-card--template-2 .ge-card__signature{bottom:7.8%;left:18%;right:18%;height:auto;display:grid;place-items:center;font-family:var(--serif);font-size:clamp(19px,2.8vw,38px);font-weight:600;line-height:1.15}
 
-/* Template 4 — terracotta botanical. Independent layout tuned to this artwork. */
+/* Template 4 - terracotta botanical. Independent layout tuned to this artwork. */
 .ge-card--template-4{background-image:url('../images/greeting-templates/template-4.png')}
 .ge-card--template-4 .ge-card__title{top:10.5%;left:20%;right:20%;height:12%;display:grid;place-items:center;font-family:var(--serif);font-size:clamp(26px,4.25vw,54px);font-weight:700;line-height:1.08}
 .ge-card--template-4 .ge-card__message{top:50.2%;bottom:17.5%;left:13.5%;right:13.5%;height:auto;display:flex;align-items:flex-start;justify-content:center;font-family:var(--serif);font-size:clamp(14px,1.65vw,22px);line-height:1.48}
 .ge-card--template-4 .ge-card__signature{top:83.5%;left:18%;right:18%;height:7.5%;display:grid;place-items:center;font-family:var(--serif);font-size:clamp(19px,2.75vw,36px);font-weight:600;line-height:1.12}
 
-/* Template 5 — green & gold florals. Independent layout. */
+/* Template 5 - green & gold florals. Independent layout. */
 .ge-card--template-5{background-image:url('../images/greeting-templates/template-5.png')}
 .ge-card--template-5 .ge-card__title{top:10.5%;left:22%;right:22%;height:12%;display:grid;place-items:center;font-family:var(--serif);font-size:clamp(26px,4.3vw,55px);font-weight:700;line-height:1.07}
 .ge-card--template-5 .ge-card__message{top:51.2%;bottom:17.8%;left:14%;right:14%;height:auto;display:flex;align-items:flex-start;justify-content:center;font-family:var(--serif);font-size:clamp(14px,1.65vw,22px);line-height:1.48}
 .ge-card--template-5 .ge-card__signature{top:83%;left:18%;right:18%;height:7.5%;display:grid;place-items:center;font-family:var(--serif);font-size:clamp(19px,2.75vw,36px);font-weight:600;line-height:1.12}
 
-/* Template 6 — lavender ribbon. Independent layout with extra floral clearance. */
+/* Template 6 - lavender ribbon. Independent layout with extra floral clearance. */
 .ge-card--template-6{background-image:url('../images/greeting-templates/template-6.png')}
 .ge-card--template-6 .ge-card__title{top:11.5%;left:24%;right:24%;height:11.5%;display:grid;place-items:center;font-family:var(--serif);font-size:clamp(26px,4.2vw,54px);font-weight:700;line-height:1.07}
 .ge-card--template-6 .ge-card__message{top:52.2%;bottom:20.8%;left:15%;right:15%;height:auto;display:flex;align-items:flex-start;justify-content:center;font-family:var(--serif);font-size:clamp(14px,1.62vw,22px);line-height:1.48}
 .ge-card--template-6 .ge-card__signature{top:80.8%;left:19%;right:19%;height:7.5%;display:grid;place-items:center;font-family:var(--serif);font-size:clamp(19px,2.7vw,35px);font-weight:600;line-height:1.12}
 
 
-/* Template 7 — blue & gold modern corners. Independent layout. */
+/* Template 7 - blue & gold modern corners. Independent layout. */
 .ge-card--template-7{background-image:url('../images/greeting-templates/template-7.png')}
 .ge-card--template-7 .ge-card__title{top:10.8%;left:23%;right:23%;height:12%;display:grid;place-items:center;font-family:var(--serif);font-size:clamp(26px,4.25vw,55px);font-weight:700;line-height:1.07}
 .ge-card--template-7 .ge-card__message{top:52.8%;bottom:20.8%;left:14%;right:14%;height:auto;display:flex;align-items:flex-start;justify-content:center;font-family:var(--serif);font-size:clamp(14px,1.62vw,22px);line-height:1.48}
 .ge-card--template-7 .ge-card__signature{top:81.2%;left:18%;right:18%;height:7%;display:grid;place-items:center;font-family:var(--serif);font-size:clamp(19px,2.7vw,36px);font-weight:600;line-height:1.12}
 
-/* Template 8 — soft ivory botanical. Independent layout. */
+/* Template 8 - soft ivory botanical. Independent layout. */
 .ge-card--template-8{background-image:url('../images/greeting-templates/template-8.png')}
 .ge-card--template-8 .ge-card__title{top:10.2%;left:22%;right:22%;height:12%;display:grid;place-items:center;font-family:var(--serif);font-size:clamp(26px,4.25vw,55px);font-weight:700;line-height:1.07}
 .ge-card--template-8 .ge-card__message{top:52.2%;bottom:20.5%;left:13.5%;right:13.5%;height:auto;display:flex;align-items:flex-start;justify-content:center;font-family:var(--serif);font-size:clamp(14px,1.64vw,22px);line-height:1.48}
 .ge-card--template-8 .ge-card__signature{top:81.7%;left:18%;right:18%;height:7%;display:grid;place-items:center;font-family:var(--serif);font-size:clamp(19px,2.72vw,36px);font-weight:600;line-height:1.12}
 
-/* Template 9 — sage ribbon & white florals. Independent layout. */
+/* Template 9 - sage ribbon & white florals. Independent layout. */
 .ge-card--template-9{background-image:url('../images/greeting-templates/template-9.png')}
 .ge-card--template-9 .ge-card__title{top:11.6%;left:25%;right:25%;height:11.5%;display:grid;place-items:center;font-family:var(--serif);font-size:clamp(27px,4.35vw,56px);font-weight:700;line-height:1.06}
 .ge-card--template-9 .ge-card__message{top:53.7%;bottom:19.8%;left:14%;right:14%;height:auto;display:flex;align-items:flex-start;justify-content:center;font-family:var(--serif);font-size:clamp(14px,1.64vw,22px);line-height:1.47}
 .ge-card--template-9 .ge-card__signature{top:82.1%;left:19%;right:19%;height:7%;display:grid;place-items:center;font-family:var(--serif);font-size:clamp(19px,2.72vw,36px);font-weight:600;line-height:1.11}
 
-/* Template 10 — blush ribbon & coral florals. Independent layout. */
+/* Template 10 - blush ribbon & coral florals. Independent layout. */
 .ge-card--template-10{background-image:url('../images/greeting-templates/template-10.png')}
 .ge-card--template-10 .ge-card__title{top:11.8%;left:25%;right:25%;height:11.5%;display:grid;place-items:center;font-family:var(--serif);font-size:clamp(27px,4.35vw,56px);font-weight:700;line-height:1.06}
 .ge-card--template-10 .ge-card__message{top:54.1%;bottom:19%;left:14.2%;right:14.2%;height:auto;display:flex;align-items:flex-start;justify-content:center;font-family:var(--serif);font-size:clamp(14px,1.64vw,22px);line-height:1.47}
 .ge-card--template-10 .ge-card__signature{top:82.6%;left:19%;right:19%;height:7%;display:grid;place-items:center;font-family:var(--serif);font-size:clamp(19px,2.72vw,36px);font-weight:600;line-height:1.11}
 
-/* Template 11 — powder blue ribbon. Independent layout. */
+/* Template 11 - powder blue ribbon. Independent layout. */
 .ge-card--template-11{background-image:url('../images/greeting-templates/template-11.png')}
 .ge-card--template-11 .ge-card__title{top:11.6%;left:25%;right:25%;height:11.5%;display:grid;place-items:center;font-family:var(--serif);font-size:clamp(27px,4.35vw,56px);font-weight:700;line-height:1.06}
 .ge-card--template-11 .ge-card__message{top:53.8%;bottom:19.2%;left:14%;right:14%;height:auto;display:flex;align-items:flex-start;justify-content:center;font-family:var(--serif);font-size:clamp(14px,1.64vw,22px);line-height:1.47}
 .ge-card--template-11 .ge-card__signature{top:82.4%;left:19%;right:19%;height:7%;display:grid;place-items:center;font-family:var(--serif);font-size:clamp(19px,2.72vw,36px);font-weight:600;line-height:1.11}
 
-/* Template 12 — champagne ribbon. Independent layout. */
+/* Template 12 - champagne ribbon. Independent layout. */
 .ge-card--template-12{background-image:url('../images/greeting-templates/template-12.png')}
 .ge-card--template-12 .ge-card__title{top:11.5%;left:25%;right:25%;height:11.5%;display:grid;place-items:center;font-family:var(--serif);font-size:clamp(27px,4.3vw,56px);font-weight:700;line-height:1.06}
 .ge-card--template-12 .ge-card__message{top:53.5%;bottom:20.1%;left:14%;right:14%;height:auto;display:flex;align-items:flex-start;justify-content:center;font-family:var(--serif);font-size:clamp(14px,1.63vw,22px);line-height:1.47}
 .ge-card--template-12 .ge-card__signature{top:81.9%;left:19%;right:19%;height:7%;display:grid;place-items:center;font-family:var(--serif);font-size:clamp(19px,2.7vw,36px);font-weight:600;line-height:1.11}
 
-/* Template 13 — muted teal florals. Independent layout. */
+/* Template 13 - muted teal florals. Independent layout. */
 .ge-card--template-13{background-image:url('../images/greeting-templates/template-13.png')}
 .ge-card--template-13 .ge-card__title{top:11.5%;left:25%;right:25%;height:11.5%;display:grid;place-items:center;font-family:var(--serif);font-size:clamp(27px,4.3vw,56px);font-weight:700;line-height:1.06}
 .ge-card--template-13 .ge-card__message{top:53.2%;bottom:20.2%;left:14.5%;right:14.5%;height:auto;display:flex;align-items:flex-start;justify-content:center;font-family:var(--serif);font-size:clamp(14px,1.62vw,22px);line-height:1.47}
 .ge-card--template-13 .ge-card__signature{top:81.8%;left:19%;right:19%;height:7%;display:grid;place-items:center;font-family:var(--serif);font-size:clamp(19px,2.7vw,36px);font-weight:600;line-height:1.11}
 
-/* Template 15 — blush lace & florals. Independent layout with more corner clearance. */
+/* Template 15 - blush lace & florals. Independent layout with more corner clearance. */
 .ge-card--template-15{background-image:url('../images/greeting-templates/template-15.png')}
 .ge-card--template-15 .ge-card__title{top:11.2%;left:26%;right:26%;height:11.5%;display:grid;place-items:center;font-family:var(--serif);font-size:clamp(27px,4.25vw,55px);font-weight:700;line-height:1.06}
 .ge-card--template-15 .ge-card__message{top:53.8%;bottom:21%;left:15%;right:15%;height:auto;display:flex;align-items:flex-start;justify-content:center;font-family:var(--serif);font-size:clamp(14px,1.6vw,21.5px);line-height:1.47}
 .ge-card--template-15 .ge-card__signature{top:80.7%;left:20%;right:20%;height:7%;display:grid;place-items:center;font-family:var(--serif);font-size:clamp(19px,2.68vw,35px);font-weight:600;line-height:1.11}
 
 
-/* Template 17 — pearl & gold luxury florals. Independent layout. */
+/* Template 17 - pearl & gold luxury florals. Independent layout. */
 .ge-card--template-17{background-image:url('../images/greeting-templates/template-17.png')}
 .ge-card--template-17 .ge-card__title{top:11.3%;left:27%;right:27%;height:11.5%;display:grid;place-items:center;font-family:var(--serif);font-size:clamp(27px,4.2vw,54px);font-weight:700;line-height:1.06}
 .ge-card--template-17 .ge-card__message{top:53.6%;bottom:19.5%;left:15.5%;right:15.5%;height:auto;display:flex;align-items:flex-start;justify-content:center;font-family:var(--serif);font-size:clamp(14px,1.58vw,21px);line-height:1.47}

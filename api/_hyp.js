@@ -231,7 +231,7 @@ function priceOrder(items, lang) {
   const useGlassesBundle = glassesPairs > 0;
   const discount = useGlassesBundle ? glassesBundleDiscount : secondItemDiscount;
   const discountLabel = useGlassesBundle
-    ? (lang === 'he' ? 'מבצע משקפיים — 2 ב־249.90 ₪' : 'Sunglasses offer — 2 for ₪249.90')
+    ? (lang === 'he' ? 'מבצע משקפיים - 2 ב־249.90 ₪' : 'Sunglasses offer - 2 for ₪249.90')
     : (lang === 'he' ? '25% הנחה על המוצר השני' : '25% off the second item');
 
   const freeOver = STORE_CONFIG.shipping.freeOver;

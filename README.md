@@ -1,4 +1,4 @@
-# VerSans — חנות עם Login / Register / Logout ב-SQLite
+# VerSans - חנות עם Login / Register / Logout ב-SQLite
 
 הפרויקט כולל את החנות, סליקת HYP, עורך הברכות ומערכת חשבונות אמיתית עם SQLite.
 
@@ -6,16 +6,16 @@
 
 נוספו:
 
-- `register.html` — יצירת חשבון
-- `login.html` — התחברות
-- `account.html` — פרטי החשבון + Logout
-- `server.js` — שרת Node שמגיש את האתר, מטפל ב-auth ובנתיבי הסליקה
-- `data/versans.sqlite` — נוצר אוטומטית בהרצה הראשונה
+- `register.html` - יצירת חשבון
+- `login.html` - התחברות
+- `account.html` - פרטי החשבון + Logout
+- `server.js` - שרת Node שמגיש את האתר, מטפל ב-auth ובנתיבי הסליקה
+- `data/versans.sqlite` - נוצר אוטומטית בהרצה הראשונה
 - `assets/auth.js`, `assets/auth.css`, `assets/auth-nav.js`
 
 האבטחה כוללת:
 
-- הסיסמאות נשמרות כ-`scrypt` hash עם salt — לא כטקסט גלוי.
+- הסיסמאות נשמרות כ-`scrypt` hash עם salt - לא כטקסט גלוי.
 - Session אקראי נשמר ב-SQLite והדפדפן מקבל Cookie מסוג `HttpOnly` + `SameSite=Lax`.
 - ב-production/HTTPS העוגייה מסומנת גם `Secure`.
 - Logout מוחק את ה-session מהמסד וגם את ה-cookie.
@@ -62,7 +62,7 @@ VERSANS_DB_PATH=/data/versans.sqlite
 
 זה שימושי במיוחד בהעלאה לשרת עם Persistent Disk.
 
-## העלאה לאוויר — חשוב
+## העלאה לאוויר - חשוב
 
 SQLite כקובץ מקומי צריך שרת עם דיסק קבוע. לכן לגרסה הזאת מומלץ להשתמש בשרת Node/VPS או שירות שמאפשר **Persistent Disk / Volume**.
 
@@ -104,7 +104,7 @@ GET  /api/verify-payment
 
 שמירת PNG דרך Google Apps Script נשארה כפי שהייתה. ההגדרה נמצאת ב-`assets/config.js` תחת `greetingStorage.appsScriptUrl`.
 
-## ביקורות לקוחות — לקוחות מאומתים בלבד
+## ביקורות לקוחות - לקוחות מאומתים בלבד
 
 עמוד הבית כולל מערכת ביקורות שמחוברת ל-SQLite:
 
