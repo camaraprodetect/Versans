@@ -19,6 +19,80 @@
     qty: 1
   };
 
+
+  var catalogBatchesShown = 1;
+  var catalogPagingKey = '';
+  var catalogResizeTimer = null;
+
+  /* TESTABLE: catalog paging helpers */
+  function catalogRowsPerBatch() {
+    return 10;
+  }
+  function catalogColumnCount(grid) {
+    var template = (getComputedStyle(grid).gridTemplateColumns || '').trim();
+    if (!template || template === 'none') return window.matchMedia('(max-width: 700px)').matches ? 2 : 3;
+    var columns = template.split(/\s+/).filter(Boolean).length;
+    return Math.max(1, columns || 1);
+  }
+  function catalogPageSize(grid) {
+    return catalogRowsPerBatch() * catalogColumnCount(grid);
+  }
+  function catalogVisibleCount(grid, batches) {
+    return catalogPageSize(grid) * Math.max(1, Number(batches) || 1);
+  }
+  function catalogHasMore(total, visible) {
+    return Number(visible) < Number(total);
+  }
+  /* END TESTABLE: catalog paging helpers */
+
+  function catalogPagingContextKey(grid) {
+    return [
+      state.filter,
+      JSON.stringify(state.catalogFilters || {}),
+      window.matchMedia('(max-width: 700px)').matches ? 'mobile' : 'desktop',
+      catalogColumnCount(grid)
+    ].join('|');
+  }
+
+  function ensureCatalogLoadMore(grid) {
+    var wrap = $('#catalogLoadMoreWrap');
+    if (wrap) return wrap;
+    wrap = document.createElement('div');
+    wrap.id = 'catalogLoadMoreWrap';
+    wrap.className = 'catalog-load-more';
+    wrap.hidden = true;
+    wrap.innerHTML = '<button class="catalog-load-more__btn" type="button" data-catalog-load-less hidden>' +
+      '<span>פחות מוצרים</span>' +
+      '</button>' +
+      '<button class="catalog-load-more__btn" type="button" data-catalog-load-more>' +
+      '<span>עוד מוצרים</span>' +
+      '</button>';
+    grid.insertAdjacentElement('afterend', wrap);
+    return wrap;
+  }
+
+  function renderCatalogLoadMore(grid, total, visible) {
+    var wrap = ensureCatalogLoadMore(grid);
+    var hasMore = catalogHasMore(total, visible);
+    var hasLess = catalogBatchesShown > 1 && Number(total) > 0;
+    wrap.hidden = !hasMore && !hasLess;
+    wrap.classList.toggle('catalog-load-more--both', hasMore && hasLess);
+
+    var moreButton = $('[data-catalog-load-more]', wrap);
+    if (moreButton) {
+      moreButton.hidden = !hasMore;
+      moreButton.setAttribute('aria-hidden', hasMore ? 'false' : 'true');
+      moreButton.disabled = !hasMore;
+    }
+
+    var lessButton = $('[data-catalog-load-less]', wrap);
+    if (lessButton) {
+      lessButton.hidden = !hasLess;
+      lessButton.setAttribute('aria-hidden', hasLess ? 'false' : 'true');
+      lessButton.disabled = !hasLess;
+    }
+  }
+
   /* ---------- עזרים ------------------------------------------------------ */
   function read(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function save(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
@@ -290,6 +364,27 @@
     });
   }
 
+  /* Stable shuffle for the "all" collection. It deliberately uses a fixed
+     seed so loading more products, resizing, or re-rendering filters does not
+     make cards jump to new positions while the shopper is browsing. */
+  var ALL_CATALOG_SHUFFLE_SEED = 20260914;
+  function allCatalogShuffleKey(p) {
+    var text = String(ALL_CATALOG_SHUFFLE_SEED) + ':' + String((p && (p.id || p.slug)) || '');
+    var h = 2166136261;
+    for (var i = 0; i < text.length; i++) {
+      h ^= text.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return h >>> 0;
+  }
+  function shuffleAllProductsStable(list) {
+    return list.slice().sort(function (a, b) {
+      var d = allCatalogShuffleKey(a) - allCatalogShuffleKey(b);
+      if (d) return d;
+      return String(a.id || a.slug || '').localeCompare(String(b.id || b.slug || ''));
+    });
+  }
+
   /* ---------- שפה -------------------------------------------------------- */
   function applyLang() {
     var html = document.documentElement;
@@ -536,11 +631,24 @@
     var list = currentCollectionProducts().filter(function (p) {
       return matchesCatalogFilters(p);
     });
-    list = shuffleGlassesWithinList(list);
+    list = state.filter === 'all' ? shuffleAllProductsStable(list) : shuffleGlassesWithinList(list);
 
-    if (!list.length) { grid.innerHTML = '<p class="empty">' + esc(t('shop.empty')) + '</p>'; return; }
+    var pagingKey = catalogPagingContextKey(grid);
+    if (pagingKey !== catalogPagingKey) {
+      catalogPagingKey = pagingKey;
+      catalogBatchesShown = 1;
+    }
 
-    grid.innerHTML = list.map(function (p) {
+    if (!list.length) {
+      grid.innerHTML = '<p class="empty">' + esc(t('shop.empty')) + '</p>';
+      renderCatalogLoadMore(grid, 0, 0);
+      return;
+    }
+
+    var visibleCount = catalogVisibleCount(grid, catalogBatchesShown);
+    var visibleList = list.slice(0, visibleCount);
+
+    grid.innerHTML = visibleList.map(function (p) {
       var badge = L(p.badge);
       var isGlasses = isGlassesProduct(p);
       return '' +
@@ -571,6 +679,8 @@
         '</div>' +
       '</article>';
     }).join('');
+
+    renderCatalogLoadMore(grid, list.length, visibleList.length);
   }
 
   /* ---------- מודאל מוצר ------------------------------------------------- */
@@ -1051,6 +1161,20 @@
   document.addEventListener('click', function (e) {
     var el;
 
+    if ((el = e.target.closest('[data-catalog-load-more]'))) {
+      e.preventDefault();
+      catalogBatchesShown += 1;
+      renderGrid();
+      return;
+    }
+
+    if ((el = e.target.closest('[data-catalog-load-less]'))) {
+      e.preventDefault();
+      catalogBatchesShown = Math.max(1, catalogBatchesShown - 1);
+      renderGrid();
+      return;
+    }
+
     if ((el = e.target.closest('[data-mobile-slide]'))) {
       e.preventDefault();
       stepMobileMedia(el.closest('.prod__media'), el.getAttribute('data-mobile-slide') === 'next' ? 1 : -1);
@@ -1164,17 +1288,57 @@
     if (e.target.closest('.nav__menu a')) { setMenu(false); }
   });
 
+  function resetNavMenuScroll(navmenu) {
+    if (!navmenu) return;
+    navmenu.scrollTop = 0;
+    navmenu.scrollLeft = 0;
+    if (typeof navmenu.scrollTo === 'function') navmenu.scrollTo(0, 0);
+  }
+
   function setMenu(open) {
-    $('#navmenu').classList.toggle('is-open', open);
+    var navmenu = $('#navmenu');
+
+    // Reset before changing visibility too. Mobile browsers can otherwise restore
+    // the drawer's previous internal scroll position when it becomes visible.
+    resetNavMenuScroll(navmenu);
+
+    navmenu.classList.toggle('is-open', open);
     $('#navScrim').hidden = !open;
     $('#burger').setAttribute('aria-expanded', String(open));
+
+    if (open) {
+      resetNavMenuScroll(navmenu);
+      requestAnimationFrame(function () {
+        resetNavMenuScroll(navmenu);
+        requestAnimationFrame(function () { resetNavMenuScroll(navmenu); });
+      });
+      // Safari/Chrome on mobile may restore the old scroll after the drawer
+      // transition/layout settles, so reset again after those points.
+      [40, 140, 320].forEach(function (delay) {
+        window.setTimeout(function () {
+          if (navmenu.classList.contains('is-open')) resetNavMenuScroll(navmenu);
+        }, delay);
+      });
+    }
+
     if (!open) {
+      resetNavMenuScroll(navmenu);
       $$('.nav__submenu.is-open').forEach(function (menu) { menu.classList.remove('is-open'); });
       $$('[data-nav-parent-toggle]').forEach(function (link) { link.setAttribute('aria-expanded', 'false'); });
     }
     if (open) { document.body.classList.add('is-locked'); }
     else if (!$('.ov.is-open')) { document.body.classList.remove('is-locked'); }
   }
+
+  (function keepMobileDrawerAtTopAfterOpen() {
+    var navmenu = $('#navmenu');
+    if (!navmenu) return;
+    navmenu.addEventListener('transitionend', function (e) {
+      if (e.propertyName === 'transform' && navmenu.classList.contains('is-open')) {
+        resetNavMenuScroll(navmenu);
+      }
+    });
+  })();
 
   document.addEventListener('keydown', function (e) {
     var mobileArrow = e.target.closest && e.target.closest('[data-mobile-slide]');
@@ -1194,6 +1358,14 @@
   window.addEventListener('scroll', function () {
     $('#nav').classList.toggle('is-stuck', window.scrollY > 10);
   }, { passive: true });
+
+  window.addEventListener('resize', function () {
+    window.clearTimeout(catalogResizeTimer);
+    catalogResizeTimer = window.setTimeout(function () {
+      if ($('#grid')) renderGrid();
+    }, 140);
+  }, { passive: true });
+
 
   /* ---------- אתחול ------------------------------------------------------ */
   var y = $('#year'); if (y) y.textContent = new Date().getFullYear();
