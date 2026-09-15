@@ -42,3 +42,13 @@ test('admin script contains every page renderer and protected endpoint', () => {
     assert.match(js, new RegExp(`function\\s+${utility}\\b`));
   }
 });
+
+
+test('admin assets use a fresh deployment version and are never cached by the server', () => {
+  const server = fs.readFileSync(path.join(root, 'server.js'), 'utf8');
+  assert.match(html, /admin\.css\?v=20260916-admin-v3/);
+  assert.match(html, /admin\.js\?v=20260916-admin-v3/);
+  assert.match(server, /pathname === ['"]\/assets\/admin\.js['"]/);
+  assert.match(server, /pathname === ['"]\/assets\/admin\.css['"]/);
+  assert.match(server, /Cache-Control['"], ['"]no-store['"]/);
+});

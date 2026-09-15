@@ -1219,7 +1219,10 @@ function serveStatic(req, res, pathname) {
 
   res.statusCode = 200;
   res.setHeader('Content-Type', mimeType(filePath));
-  if (path.extname(filePath).toLowerCase() === '.html') {
+  const isAdminAsset = pathname === '/assets/admin.js' || pathname === '/assets/admin.css';
+  if (isAdminAsset) {
+    res.setHeader('Cache-Control', 'no-store');
+  } else if (path.extname(filePath).toLowerCase() === '.html') {
     res.setHeader('Cache-Control', 'no-cache');
   } else {
     res.setHeader('Cache-Control', 'public, max-age=3600');
