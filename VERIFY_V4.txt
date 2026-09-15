@@ -1,0 +1,16 @@
+VERSANS MOBILE PRODUCT MENU FIX V4
+
+Extract THIS ZIP directly into:
+C:\Users\oshri\OneDrive\Desktop\versans-store
+
+Choose Replace/Overwrite for existing files.
+
+After extraction, run in PowerShell from versans-store:
+Select-String -Path .\product.html -Pattern "VERSANS-PRODUCT-MOBILE-NAV-FIX-V4|data-nav-cat=\"custom\">עיצוב אישי"
+
+You must see the VERSANS-PRODUCT-MOBILE-NAV-FIX-V4 marker.
+
+Files replaced:
+- product.html
+- assets\styles.css
+- assets\product.js
