@@ -5,74 +5,66 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
   <meta name="theme-color" content="#142333">
-  <title>VerSans Admin - Online Visitors</title>
-  <link rel="stylesheet" href="/assets/admin.css?v=20260915-admin-v1">
+  <title>VerSans Admin</title>
+  <link rel="stylesheet" href="/assets/admin.css?v=20260916-admin-v2">
 </head>
 <body class="admin-body">
-  <header class="admin-topbar">
-    <a class="admin-brand" href="/" aria-label="חזרה ל-VerSans"><span>VerSans</span><small>ADMIN</small></a>
-    <div class="admin-topbar__actions">
-      <span class="admin-live-dot" aria-hidden="true"></span>
-      <span>Visitor Analytics</span>
-      <a href="/">לאתר</a>
-    </div>
-  </header>
-
-  <main class="admin-shell">
-    <section class="admin-intro">
-      <div>
-        <p class="admin-eyebrow">REAL-TIME ANALYTICS</p>
-        <h1>מבקרים באתר</h1>
-        <p>צפייה בזמן אמת ובהיסטוריית המבקרים של VerSans. המערכת אינה שומרת כתובות IP.</p>
-      </div>
-      <button class="admin-refresh" id="refreshVisitors" type="button">רענון עכשיו</button>
-    </section>
-
-    <section class="admin-metrics" aria-label="סיכום מבקרים">
-      <article class="admin-metric admin-metric--primary">
-        <span>Online עכשיו</span>
-        <strong id="onlineCount">—</strong>
-        <small>פעילים ב-75 השניות האחרונות</small>
-      </article>
-      <article class="admin-metric">
-        <span id="selectedRangeLabel">Online עכשיו</span>
-        <strong id="visitorCount">—</strong>
-        <small>מבקרים ייחודיים בטווח הנבחר</small>
-      </article>
-    </section>
-
-    <nav class="admin-ranges" aria-label="טווח זמן">
-      <button type="button" data-range="online" class="is-active">Online עכשיו</button>
-      <button type="button" data-range="today">היום</button>
-      <button type="button" data-range="3d">3 ימים</button>
-      <button type="button" data-range="7d">7 ימים</button>
-      <button type="button" data-range="30d">30 ימים</button>
-    </nav>
-
-    <section class="admin-content">
-      <div class="admin-list-card">
-        <div class="admin-list-head">
-          <div>
-            <h2>מבקרים</h2>
-            <p id="listStatus" aria-live="polite">טוען נתונים…</p>
-          </div>
-        </div>
-        <div id="visitorList" class="visitor-list" aria-live="polite"></div>
+  <div class="admin-app">
+    <aside class="admin-sidebar" id="adminSidebar" aria-label="ניווט אדמין">
+      <div class="admin-sidebar__top">
+        <a class="admin-brand" href="/admin/dashboard" aria-label="VerSans Admin">
+          <span class="admin-brand__mark">VS</span>
+          <span class="admin-brand__text"><strong>VerSans</strong><small>ADMIN PANEL</small></span>
+        </a>
+        <button class="admin-sidebar__close" id="adminSidebarClose" type="button" aria-label="סגירת תפריט">×</button>
       </div>
 
-      <aside id="visitorDetails" class="visitor-details" hidden aria-live="polite">
-        <div class="visitor-details__head">
-          <div>
-            <span class="visitor-details__kicker">פרטי מבקר</span>
-            <h2 id="detailsName">—</h2>
-          </div>
-          <button type="button" id="closeDetails" aria-label="סגירת פרטים">×</button>
-        </div>
-        <div id="detailsBody"></div>
-      </aside>
-    </section>
-  </main>
+      <nav class="admin-nav">
+        <a href="/admin/dashboard" data-admin-page="dashboard"><span class="admin-nav__icon">⌂</span><span>Dashboard</span></a>
+        <a href="/admin/visitors" data-admin-page="visitors"><span class="admin-nav__icon">◎</span><span>מבקרים</span></a>
+        <a href="/admin/sales" data-admin-page="sales"><span class="admin-nav__icon">₪</span><span>מכירות</span></a>
+        <a href="/admin/orders" data-admin-page="orders"><span class="admin-nav__icon">▤</span><span>הזמנות</span></a>
+        <a href="/admin/products" data-admin-page="products"><span class="admin-nav__icon">◇</span><span>מוצרים</span></a>
+        <a href="/admin/customers" data-admin-page="customers"><span class="admin-nav__icon">♙</span><span>לקוחות</span></a>
+        <a href="/admin/traffic" data-admin-page="traffic"><span class="admin-nav__icon">↗</span><span>תנועה לאתר</span></a>
+        <a href="/admin/reviews" data-admin-page="reviews"><span class="admin-nav__icon">★</span><span>ביקורות</span></a>
+      </nav>
 
-  <script src="/assets/admin.js?v=20260915-admin-v1"></script>
+      <div class="admin-sidebar__footer">
+        <p>VerSans Analytics</p>
+        <span>קריאה וניתוח בלבד</span>
+        <a href="/">חזרה לאתר ↗</a>
+      </div>
+    </aside>
+
+    <div class="admin-sidebar-backdrop" id="adminSidebarBackdrop" hidden></div>
+
+    <section class="admin-workspace">
+      <header class="admin-header">
+        <div class="admin-header__left">
+          <button class="admin-mobile-nav" id="adminMobileNav" type="button" aria-label="פתיחת ניווט" aria-controls="adminSidebar" aria-expanded="false">☰</button>
+          <div>
+            <p class="admin-header__eyebrow">VERSANS ANALYTICS</p>
+            <h1 id="adminPageTitle">Dashboard</h1>
+            <p id="adminPageSubtitle">טוען נתונים…</p>
+          </div>
+        </div>
+        <div class="admin-header__actions">
+          <span class="admin-live"><i></i>LIVE</span>
+          <button class="admin-icon-button" id="adminRefresh" type="button" title="רענון">↻</button>
+          <a class="admin-site-link" href="/">לאתר</a>
+        </div>
+      </header>
+
+      <main class="admin-main">
+        <div id="adminContent" class="admin-content" aria-live="polite">
+          <div class="admin-page-loading"><span></span><p>טוען את נתוני הניהול…</p></div>
+        </div>
+      </main>
+    </section>
+  </div>
+
+  <div class="admin-toast" id="adminToast" role="status" aria-live="polite" hidden></div>
+  <script src="/assets/admin.js?v=20260916-admin-v2"></script>
 </body>
 </html>

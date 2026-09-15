@@ -13,3 +13,9 @@ test('server uses shared async database store instead of direct node:sqlite stat
   assert.match(serverSource, /await database\.init\(\)/);
   assert.match(serverSource, /await database\.transaction\(/);
 });
+
+test('server keeps visitor identities for lifetime while cleaning only old page views', () => {
+  assert.match(serverSource, /cleanupPresencePageViews/);
+  assert.doesNotMatch(serverSource, /database\.cleanupPresence\(/);
+  assert.match(serverSource, /VISITOR_TTL_MS\s*=\s*400\s*\*\s*24/);
+});

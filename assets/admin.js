@@ -1,87 +1,495 @@
 (function () {
   'use strict';
 
-  var state = { range: 'online', selectedVisitorId: null, loading: false };
-  var rangeLabels = { online: 'Online עכשיו', today: 'היום', '3d': '3 ימים אחרונים', '7d': '7 ימים אחרונים', '30d': '30 ימים אחרונים' };
-  var visitorCount = document.getElementById('visitorCount');
-  var onlineCount = document.getElementById('onlineCount');
-  var selectedRangeLabel = document.getElementById('selectedRangeLabel');
-  var visitorList = document.getElementById('visitorList');
-  var listStatus = document.getElementById('listStatus');
-  var visitorDetails = document.getElementById('visitorDetails');
-  var detailsName = document.getElementById('detailsName');
-  var detailsBody = document.getElementById('detailsBody');
+  var content = document.getElementById('adminContent');
+  var pageTitle = document.getElementById('adminPageTitle');
+  var pageSubtitle = document.getElementById('adminPageSubtitle');
+  var refreshButton = document.getElementById('adminRefresh');
+  var sidebar = document.getElementById('adminSidebar');
+  var sidebarClose = document.getElementById('adminSidebarClose');
+  var sidebarBackdrop = document.getElementById('adminSidebarBackdrop');
+  var mobileNav = document.getElementById('adminMobileNav');
+  var toast = document.getElementById('adminToast');
 
-  function dateTime(value) {
-    if (!value) return '—';
-    try { return new Intl.DateTimeFormat('he-IL', { timeZone: 'Asia/Jerusalem', dateStyle: 'short', timeStyle: 'medium' }).format(new Date(value)); }
-    catch (_) { return '—'; }
+  var pageMeta = {
+    dashboard: ['Dashboard', 'תמונה מהירה של המכירות, המבקרים והלקוחות של VerSans'],
+    visitors: ['מבקרים', 'מי נמצא באתר, מי ביקר בעבר ואיך הוא השתמש באתר'],
+    sales: ['מכירות', 'נתוני הכנסות ומוצרים על בסיס הזמנות ששולמו בלבד'],
+    orders: ['הזמנות', 'צפייה בהזמנות וסטטוסים ללא פעולות שינוי'],
+    products: ['מוצרים', 'ביצועי המוצרים לפי מכירות ששולמו'],
+    customers: ['לקוחות', 'משתמשים רשומים, רכישות והוצאות מצטברות'],
+    traffic: ['תנועה לאתר', 'עמודים, מקורות הגעה, מכשירים ודפדפנים'],
+    reviews: ['ביקורות', 'דירוגים, מוצרים מובילים וביקורות אחרונות']
+  };
+
+  var rangeOptions = [
+    { value: 'today', label: 'היום' },
+    { value: '7d', label: '7 ימים' },
+    { value: '30d', label: '30 ימים' },
+    { value: 'all', label: 'כל הזמנים' }
+  ];
+
+  var visitorRangeOptions = [
+    { value: 'online', label: 'Online עכשיו' },
+    { value: 'today', label: 'היום' },
+    { value: '3d', label: '3 ימים' },
+    { value: '7d', label: '7 ימים' },
+    { value: '30d', label: '30 ימים' },
+    { value: 'all', label: 'כל הזמנים' }
+  ];
+
+  var state = {
+    page: currentPage(),
+    ranges: { dashboard: '30d', sales: '30d', orders: '30d', products: '30d', traffic: '30d', reviews: '30d', visitors: 'online' },
+    ordersStatus: 'paid',
+    offsets: { visitors: 0, orders: 0, products: 0, customers: 0 },
+    selectedVisitorId: null,
+    requestVersion: 0
+  };
+
+  function currentPage() {
+    var path = window.location.pathname.replace(/\/+$/, '');
+    if (path === '/admin' || path === '/admin.html' || path === '/admin/dashboard') return 'dashboard';
+    var match = /^\/admin\/(visitors|sales|orders|products|customers|traffic|reviews)$/.exec(path);
+    return match ? match[1] : 'dashboard';
   }
-
-  function relative(value) {
-    if (!value) return '—';
-    var seconds = Math.max(0, Math.round((Date.now() - value) / 1000));
-    if (seconds < 60) return 'לפני ' + seconds + ' שנ׳';
-    var minutes = Math.round(seconds / 60);
-    if (minutes < 60) return 'לפני ' + minutes + ' דק׳';
-    var hours = Math.round(minutes / 60);
-    if (hours < 24) return 'לפני ' + hours + ' שעות';
-    return dateTime(value);
-  }
-
-  function text(value) { return value == null || value === '' ? '—' : String(value); }
 
   function make(tag, className, value) {
     var node = document.createElement(tag);
     if (className) node.className = className;
-    if (value != null) node.textContent = value;
+    if (value !== undefined && value !== null) node.textContent = String(value);
     return node;
+  }
+
+  function append(parent) {
+    for (var i = 1; i < arguments.length; i += 1) {
+      var child = arguments[i];
+      if (child === null || child === undefined) continue;
+      parent.appendChild(child instanceof Node ? child : document.createTextNode(String(child)));
+    }
+    return parent;
+  }
+
+  function text(value, fallback) {
+    if (value === null || value === undefined || value === '') return fallback === undefined ? '—' : fallback;
+    return String(value);
+  }
+
+  function numberFmt(value) {
+    var n = Number(value || 0);
+    return new Intl.NumberFormat('he-IL').format(Number.isFinite(n) ? n : 0);
+  }
+
+  function moneyAgorot(value) {
+    var n = Number(value || 0) / 100;
+    if (!Number.isFinite(n)) n = 0;
+    return new Intl.NumberFormat('he-IL', { style: 'currency', currency: 'ILS', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+  }
+
+  function dateTime(value) {
+    if (!value) return '—';
+    try {
+      return new Intl.DateTimeFormat('he-IL', {
+        timeZone: 'Asia/Jerusalem', dateStyle: 'short', timeStyle: 'short'
+      }).format(new Date(Number(value)));
+    } catch (_) {
+      return '—';
+    }
+  }
+
+  function dateOnly(value) {
+    if (!value) return '—';
+    try {
+      return new Intl.DateTimeFormat('he-IL', { timeZone: 'Asia/Jerusalem', dateStyle: 'short' }).format(new Date(Number(value)));
+    } catch (_) {
+      return '—';
+    }
+  }
+
+  function relative(value) {
+    if (!value) return '—';
+    var delta = Math.max(0, Date.now() - Number(value));
+    var seconds = Math.round(delta / 1000);
+    if (seconds < 60) return 'לפני ' + Math.max(1, seconds) + ' שנ׳';
+    var minutes = Math.round(seconds / 60);
+    if (minutes < 60) return 'לפני ' + minutes + ' דק׳';
+    var hours = Math.round(minutes / 60);
+    if (hours < 24) return 'לפני ' + hours + ' שעות';
+    var days = Math.round(hours / 24);
+    if (days < 7) return 'לפני ' + days + ' ימים';
+    return dateTime(value);
   }
 
   async function api(url) {
     var response = await fetch(url, { credentials: 'same-origin', headers: { Accept: 'application/json' } });
-    if (response.status === 403) {
-      location.href = '/login';
+    if (response.status === 401 || response.status === 403) {
+      window.location.href = '/login';
       throw new Error('admin_required');
     }
-    if (!response.ok) throw new Error('request_failed_' + response.status);
+    if (!response.ok) {
+      var errorBody = null;
+      try { errorBody = await response.json(); } catch (_) { errorBody = null; }
+      throw new Error(errorBody && errorBody.error ? errorBody.error : 'request_failed_' + response.status);
+    }
     return response.json();
   }
 
-  function renderVisitors(items) {
-    visitorList.replaceChildren();
-    if (!items.length) {
-      visitorList.appendChild(make('div', 'visitor-empty', 'אין מבקרים בטווח הזה עדיין.'));
-      return;
-    }
-    items.forEach(function (visitor) {
-      var row = make('button', 'visitor-row' + (state.selectedVisitorId === visitor.visitorId ? ' is-selected' : ''));
-      row.type = 'button';
-      row.dataset.visitorId = visitor.visitorId;
+  function showToast(message) {
+    if (!toast) return;
+    toast.textContent = message;
+    toast.hidden = false;
+    window.clearTimeout(showToast.timer);
+    showToast.timer = window.setTimeout(function () { toast.hidden = true; }, 2600);
+  }
 
-      var main = make('div', 'visitor-main');
-      var nameLine = make('div', 'visitor-name-line');
-      nameLine.appendChild(make('span', 'visitor-name', visitor.name));
-      if (visitor.online) nameLine.appendChild(make('span', 'online-badge', 'Online'));
-      main.appendChild(nameLine);
-      main.appendChild(make('span', 'visitor-sub', visitor.email || (visitor.isLoggedIn ? 'משתמש מחובר' : 'אורח')));
+  function setPageMeta(title, subtitle) {
+    pageTitle.textContent = title;
+    pageSubtitle.textContent = subtitle;
+  }
 
-      var page = make('div', 'visitor-cell visitor-page');
-      page.appendChild(make('strong', '', visitor.currentPath || '/'));
-      page.appendChild(make('small', '', visitor.lastTitle || 'עמוד נוכחי'));
+  function setLoading() {
+    var box = make('div', 'admin-page-loading');
+    box.appendChild(make('span'));
+    box.appendChild(make('p', '', 'טוען נתונים…'));
+    content.replaceChildren(box);
+  }
 
-      var device = make('div', 'visitor-cell visitor-device');
-      device.appendChild(make('strong', '', [visitor.browser, visitor.os].filter(Boolean).join(' · ') || 'לא ידוע'));
-      device.appendChild(make('small', '', visitor.deviceType || 'מכשיר'));
+  function setError(error) {
+    var card = make('div', 'admin-card');
+    var body = make('div', 'admin-error');
+    body.appendChild(make('strong', '', 'לא ניתן לטעון את הנתונים כרגע.'));
+    body.appendChild(make('div', 'admin-table__muted', text(error && error.message, 'שגיאה לא ידועה')));
+    card.appendChild(body);
+    content.replaceChildren(card);
+  }
 
-      var seen = make('div', 'visitor-cell');
-      seen.appendChild(make('strong', '', relative(visitor.lastSeen)));
-      seen.appendChild(make('small', '', visitor.pageViewCount + ' צפיות'));
+  function card(title, subtitle, body, action) {
+    var node = make('section', 'admin-card');
+    var head = make('div', 'admin-card__head');
+    var titleBox = make('div');
+    titleBox.appendChild(make('h2', '', title));
+    if (subtitle) titleBox.appendChild(make('p', '', subtitle));
+    head.appendChild(titleBox);
+    if (action) head.appendChild(action);
+    node.appendChild(head);
+    var cardBody = make('div', 'admin-card__body');
+    if (body) cardBody.appendChild(body);
+    node.appendChild(cardBody);
+    return node;
+  }
 
-      row.append(main, page, device, seen, make('span', 'visitor-chevron', '‹'));
-      row.addEventListener('click', function () { openVisitor(visitor.visitorId); });
-      visitorList.appendChild(row);
+  function renderKpis(items) {
+    var grid = make('div', 'admin-kpi-grid');
+    items.forEach(function (item) {
+      var node = make('article', 'admin-kpi' + (item.primary ? ' admin-kpi--primary' : ''));
+      var label = make('div', 'admin-kpi__label');
+      label.appendChild(make('span', '', item.label));
+      label.appendChild(make('i', 'admin-kpi__dot' + (item.tone ? ' admin-kpi__dot--' + item.tone : '')));
+      node.appendChild(label);
+      node.appendChild(make('strong', 'admin-kpi__value', item.value));
+      if (item.hint) node.appendChild(make('span', 'admin-kpi__hint', item.hint));
+      grid.appendChild(node);
     });
+    return grid;
+  }
+
+  function renderRangeFilter(current, options, onChange) {
+    var group = make('div', 'admin-filter-group');
+    (options || rangeOptions).forEach(function (option) {
+      var button = make('button', option.value === current ? 'is-active' : '', option.label);
+      button.type = 'button';
+      button.dataset.range = option.value;
+      button.addEventListener('click', function () {
+        if (option.value === current) return;
+        onChange(option.value);
+      });
+      group.appendChild(button);
+    });
+    return group;
+  }
+
+  function renderStatusFilter(current, onChange) {
+    var options = [
+      { value: 'paid', label: 'Paid' },
+      { value: 'pending', label: 'Pending' },
+      { value: 'failed', label: 'Failed' },
+      { value: 'all', label: 'הכל' }
+    ];
+    var group = make('div', 'admin-filter-group');
+    options.forEach(function (option) {
+      var button = make('button', option.value === current ? 'is-active' : '', option.label);
+      button.type = 'button';
+      button.addEventListener('click', function () { if (option.value !== current) onChange(option.value); });
+      group.appendChild(button);
+    });
+    return group;
+  }
+
+  function cellPrimary(primary, secondary, mono) {
+    var box = make('div');
+    box.appendChild(make('span', mono ? 'admin-table__strong admin-table__mono' : 'admin-table__strong', text(primary)));
+    if (secondary) box.appendChild(make('small', 'admin-table__muted', secondary));
+    return box;
+  }
+
+  function badge(label, type) {
+    return make('span', 'admin-badge admin-badge--' + (type || 'neutral'), label);
+  }
+
+  function statusBadge(status) {
+    var value = String(status || 'unknown');
+    if (value === 'paid') return badge('Paid', 'paid');
+    if (value === 'pending') return badge('Pending', 'pending');
+    if (value === 'failed') return badge('Failed', 'failed');
+    return badge(value, 'neutral');
+  }
+
+  function renderTable(options) {
+    var wrapper = make('section', 'admin-table-card');
+    var head = make('div', 'admin-table-head');
+    var titles = make('div');
+    titles.appendChild(make('h2', '', options.title || 'טבלה'));
+    if (options.subtitle) titles.appendChild(make('p', '', options.subtitle));
+    head.appendChild(titles);
+    if (options.action) head.appendChild(options.action);
+    wrapper.appendChild(head);
+
+    if (!options.rows || !options.rows.length) {
+      wrapper.appendChild(make('div', 'admin-empty', options.emptyText || 'אין נתונים להצגה.'));
+      return wrapper;
+    }
+
+    var scroll = make('div', 'admin-table-wrap');
+    var table = make('table', 'admin-table');
+    var thead = make('thead');
+    var trHead = make('tr');
+    options.columns.forEach(function (column) { trHead.appendChild(make('th', '', column.label)); });
+    thead.appendChild(trHead);
+    table.appendChild(thead);
+
+    var tbody = make('tbody');
+    options.rows.forEach(function (row) {
+      var tr = make('tr', options.rowClass ? options.rowClass(row) : '');
+      if (options.onRowClick) {
+        tr.tabIndex = 0;
+        tr.addEventListener('click', function () { options.onRowClick(row, tr); });
+        tr.addEventListener('keydown', function (event) {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            options.onRowClick(row, tr);
+          }
+        });
+      }
+      options.columns.forEach(function (column) {
+        var td = make('td');
+        var rendered = column.render ? column.render(row) : row[column.key];
+        if (rendered instanceof Node) td.appendChild(rendered);
+        else td.textContent = text(rendered);
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    scroll.appendChild(table);
+    wrapper.appendChild(scroll);
+    return wrapper;
+  }
+
+  function renderPagination(options) {
+    var count = Number(options.count || 0);
+    var limit = Number(options.limit || 50);
+    var offset = Number(options.offset || 0);
+    var pagination = make('div', 'admin-pagination');
+    var prev = make('button', '', 'הקודם');
+    var next = make('button', '', 'הבא');
+    prev.type = next.type = 'button';
+    prev.disabled = offset <= 0;
+    next.disabled = offset + limit >= count;
+    prev.addEventListener('click', function () { options.onChange(Math.max(0, offset - limit)); });
+    next.addEventListener('click', function () { options.onChange(offset + limit); });
+    var first = count ? offset + 1 : 0;
+    var last = Math.min(count, offset + limit);
+    pagination.append(prev, make('span', '', numberFmt(first) + '–' + numberFmt(last) + ' מתוך ' + numberFmt(count)), next);
+    return pagination;
+  }
+
+  function renderSalesChart(dailySales) {
+    var wrap = make('div');
+    var rows = Array.isArray(dailySales) ? dailySales : [];
+    if (!rows.length) {
+      wrap.appendChild(make('div', 'admin-chart-empty', 'אין מכירות ששולמו בטווח שנבחר.'));
+      return wrap;
+    }
+    var max = Math.max.apply(null, rows.map(function (row) { return Number(row.revenueAgorot || 0); }).concat([1]));
+    var chart = make('div', 'admin-chart');
+    rows.forEach(function (row) {
+      var bar = make('div', 'admin-chart__bar');
+      var ratio = Number(row.revenueAgorot || 0) / max;
+      bar.style.height = Math.max(3, Math.round(ratio * 100)) + '%';
+      bar.title = row.date + ' · ' + moneyAgorot(row.revenueAgorot) + ' · ' + numberFmt(row.orders) + ' הזמנות';
+      bar.appendChild(make('span', '', moneyAgorot(row.revenueAgorot)));
+      chart.appendChild(bar);
+    });
+    wrap.appendChild(chart);
+    var axis = make('div', 'admin-chart-axis');
+    axis.appendChild(make('span', '', rows[0].date));
+    if (rows.length > 2) axis.appendChild(make('span', '', rows[Math.floor(rows.length / 2)].date));
+    axis.appendChild(make('span', '', rows[rows.length - 1].date));
+    wrap.appendChild(axis);
+    return wrap;
+  }
+
+  function productCell(product) {
+    var box = make('div', 'admin-product-cell');
+    if (product.image) {
+      var img = document.createElement('img');
+      img.className = 'admin-product-thumb';
+      img.src = product.image.charAt(0) === '/' ? product.image : '/' + product.image;
+      img.alt = '';
+      img.loading = 'lazy';
+      box.appendChild(img);
+    } else {
+      box.appendChild(make('div', 'admin-product-thumb'));
+    }
+    var nameBox = make('div');
+    if (product.href) {
+      var link = make('a', 'admin-card__link', text(product.name, product.id));
+      link.href = product.href;
+      link.target = '_blank';
+      link.rel = 'noopener';
+      nameBox.appendChild(link);
+    } else {
+      nameBox.appendChild(make('strong', 'admin-table__strong', text(product.name, product.id)));
+    }
+    nameBox.appendChild(make('small', 'admin-table__muted admin-table__mono', text(product.id)));
+    box.appendChild(nameBox);
+    return box;
+  }
+
+  function orderItemsSummary(order) {
+    var items = Array.isArray(order.items) ? order.items : [];
+    var box = make('div');
+    if (!items.length) return make('span', 'admin-table__muted', 'אין פירוט מוצרים');
+    box.appendChild(make('span', 'admin-table__strong', numberFmt(order.units || 0) + ' יחידות'));
+    var preview = items.slice(0, 2).map(function (item) { return item.name + ' ×' + item.qty; }).join(' · ');
+    if (items.length > 2) preview += ' +' + (items.length - 2);
+    box.appendChild(make('small', 'admin-table__muted', preview));
+    return box;
+  }
+
+  function ordersTable(rows, title, subtitle) {
+    return renderTable({
+      title: title || 'הזמנות',
+      subtitle: subtitle || '',
+      rows: rows || [],
+      emptyText: 'אין הזמנות בטווח הזה.',
+      columns: [
+        { label: 'הזמנה', render: function (row) { return cellPrimary(row.orderRef, '#' + row.id, true); } },
+        { label: 'לקוח', render: function (row) { return cellPrimary(row.customerName || row.customerEmail || 'אורח', row.customerEmail || ''); } },
+        { label: 'טלפון', render: function (row) { return text(row.customerPhone); } },
+        { label: 'מוצרים', render: orderItemsSummary },
+        { label: 'סכום', render: function (row) { return make('strong', 'admin-table__strong', moneyAgorot(row.amountAgorot)); } },
+        { label: 'תאריך', render: function (row) { return cellPrimary(dateTime(row.paidAt || row.createdAt), row.paidAt ? 'שולם' : 'נוצר'); } },
+        { label: 'סטטוס', render: function (row) { return statusBadge(row.status); } }
+      ]
+    });
+  }
+
+  function topProductsTable(rows, title, subtitle) {
+    return renderTable({
+      title: title || 'המוצרים הנמכרים ביותר',
+      subtitle: subtitle || 'לפי כמות יחידות בהזמנות Paid',
+      rows: rows || [],
+      emptyText: 'אין עדיין מוצרים שנמכרו בטווח הזה.',
+      columns: [
+        { label: '#', render: function (row) { return make('span', 'admin-rank', row.rank); } },
+        { label: 'מוצר', render: productCell },
+        { label: 'יחידות', render: function (row) { return numberFmt(row.unitsSold); } },
+        { label: 'הזמנות Paid', render: function (row) { return numberFmt(row.paidOrderCount); } },
+        { label: 'מכירות ברוטו', render: function (row) { return make('strong', 'admin-table__strong', moneyAgorot(row.grossSalesAgorot)); } },
+        { label: 'נתוני מחיר', render: function (row) { return row.reconstructedRows ? badge(numberFmt(row.reconstructedRows) + ' משוחזר', 'pending') : badge('Snapshot', 'verified'); } }
+      ]
+    });
+  }
+
+  function quickLinks() {
+    var body = make('div', 'admin-quick-links');
+    [
+      ['/admin/visitors', 'מבקרים', 'Online + Lifetime'],
+      ['/admin/sales', 'מכירות', 'Paid בלבד'],
+      ['/admin/orders', 'הזמנות', 'כל הסטטוסים'],
+      ['/admin/products', 'מוצרים', 'דירוג מכירות'],
+      ['/admin/customers', 'לקוחות', 'הוצאות והזמנות'],
+      ['/admin/traffic', 'תנועה', 'מקורות ועמודים'],
+      ['/admin/reviews', 'ביקורות', 'דירוגים']
+    ].forEach(function (item) {
+      var link = make('a', 'admin-quick-link');
+      link.href = item[0];
+      var labels = make('span');
+      labels.appendChild(make('strong', '', item[1]));
+      labels.appendChild(make('small', 'admin-table__muted', item[2]));
+      link.append(labels, make('span', '', '‹'));
+      body.appendChild(link);
+    });
+    return body;
+  }
+
+  async function renderDashboardPage() {
+    var range = state.ranges.dashboard;
+    var data = await api('/api/admin/overview?range=' + encodeURIComponent(range));
+    var frag = document.createDocumentFragment();
+    var toolbar = make('div', 'admin-toolbar');
+    toolbar.appendChild(renderRangeFilter(range, rangeOptions, function (next) {
+      state.ranges.dashboard = next;
+      renderCurrentPage();
+    }));
+    toolbar.appendChild(make('span', 'admin-toolbar-note', 'מכירות והכנסות מחושבות מ־Paid בלבד'));
+    frag.appendChild(toolbar);
+    frag.appendChild(renderKpis([
+      { label: 'הכנסות Paid', value: moneyAgorot(data.revenueAgorot), hint: 'בטווח שנבחר', primary: true, tone: 'green' },
+      { label: 'הזמנות Paid', value: numberFmt(data.orderCount), hint: 'הזמנות ששולמו' },
+      { label: 'ממוצע להזמנה', value: moneyAgorot(data.averageOrderAgorot), hint: 'AOV' },
+      { label: 'יחידות שנמכרו', value: numberFmt(data.unitsSold), hint: 'מכל המוצרים' },
+      { label: 'Online עכשיו', value: numberFmt(data.visitors && data.visitors.online), hint: 'מבקרים פעילים', tone: 'green' },
+      { label: 'מבקרים היום', value: numberFmt(data.visitors && data.visitors.today), hint: 'Visitor IDs ייחודיים' },
+      { label: 'מבקרים Lifetime', value: numberFmt(data.visitors && data.visitors.lifetime), hint: 'מהרגע שהשמירה הופעלה' },
+      { label: 'משתמשים רשומים', value: numberFmt(data.users && data.users.registeredUsers), hint: numberFmt(data.users && data.users.payingCustomers) + ' לקוחות שילמו' }
+    ]));
+
+    var grid = make('div', 'admin-grid-2');
+    grid.appendChild(card('מגמת מכירות', 'הכנסה יומית מהזמנות Paid', renderSalesChart(data.dailySales)));
+    grid.appendChild(card('קיצורי דרך', 'גישה מהירה לכל נתוני החנות', quickLinks()));
+    frag.appendChild(grid);
+    frag.appendChild(topProductsTable((data.topProducts || []).slice(0, 5), 'Top Products', 'המוצרים המובילים בטווח שנבחר'));
+    frag.appendChild(ordersTable(data.recentOrders || [], 'הזמנות Paid אחרונות', 'הזמנות אחרונות בכל הזמנים'));
+    content.replaceChildren(frag);
+  }
+
+  function visitorsTable(data, onSelect) {
+    var table = renderTable({
+      title: 'רשימת מבקרים',
+      subtitle: numberFmt(data.count) + ' מבקרים בטווח שנבחר',
+      rows: data.visitors || [],
+      emptyText: 'אין מבקרים בטווח הזה עדיין.',
+      rowClass: function (row) { return 'admin-visitor-row' + (state.selectedVisitorId === row.visitorId ? ' is-selected' : ''); },
+      onRowClick: onSelect,
+      columns: [
+        { label: 'מבקר', render: function (row) {
+          var box = cellPrimary(row.name, row.email || (row.isLoggedIn ? 'משתמש מחובר' : 'אורח'));
+          if (row.online) box.appendChild(badge('Online', 'online'));
+          return box;
+        } },
+        { label: 'טלפון', render: function (row) { return text(row.phone); } },
+        { label: 'עמוד נוכחי', render: function (row) { return cellPrimary(row.currentPath || '/', row.lastTitle || ''); } },
+        { label: 'מכשיר', render: function (row) { return cellPrimary([row.browser, row.os].filter(Boolean).join(' · ') || 'לא ידוע', row.deviceType || ''); } },
+        { label: 'נראה לאחרונה', render: function (row) { return cellPrimary(relative(row.lastSeen), numberFmt(row.pageViewCount) + ' צפיות'); } }
+      ]
+    });
+    table.appendChild(renderPagination({
+      count: data.count, limit: data.limit, offset: data.offset,
+      onChange: function (offset) { state.offsets.visitors = offset; state.selectedVisitorId = null; renderCurrentPage(); }
+    }));
+    return table;
   }
 
   function detailItem(label, value) {
@@ -91,105 +499,403 @@
     return item;
   }
 
-  function section(title, items) {
-    var node = make('section', 'detail-section');
-    node.appendChild(make('h3', '', title));
+  function detailSection(title, pairs) {
+    var section = make('section', 'detail-section');
+    section.appendChild(make('h3', '', title));
     var grid = make('div', 'detail-grid');
-    items.forEach(function (pair) { grid.appendChild(detailItem(pair[0], pair[1])); });
-    node.appendChild(grid);
+    pairs.forEach(function (pair) { grid.appendChild(detailItem(pair[0], pair[1])); });
+    section.appendChild(grid);
+    return section;
+  }
+
+  function emptyVisitorDetails() {
+    var panel = make('aside', 'admin-card visitor-details');
+    var body = make('div', 'admin-empty', 'לחץ על מבקר בטבלה כדי לראות את כל הפרטים שנשמרו עליו.');
+    panel.appendChild(body);
+    return panel;
+  }
+
+  async function loadVisitorDetail(panel, visitorId) {
+    panel.replaceChildren(make('div', 'admin-page-loading', 'טוען פרטי מבקר…'));
+    try {
+      var data = await api('/api/admin/visitors/' + encodeURIComponent(visitorId));
+      var v = data.visitor;
+      var head = make('div', 'visitor-details__head');
+      var heading = make('div');
+      heading.appendChild(make('span', 'visitor-details__kicker', 'VISITOR DETAILS'));
+      heading.appendChild(make('h2', '', v.name));
+      var close = make('button', '', '×');
+      close.type = 'button';
+      close.addEventListener('click', function () {
+        state.selectedVisitorId = null;
+        panel.replaceChildren(make('div', 'admin-empty', 'לחץ על מבקר בטבלה כדי לראות פרטים.'));
+        Array.prototype.forEach.call(document.querySelectorAll('.admin-visitor-row'), function (row) { row.classList.remove('is-selected'); });
+      });
+      head.append(heading, close);
+      panel.replaceChildren(head);
+      panel.appendChild(detailSection('זהות', [
+        ['Visitor ID', v.visitorId], ['User ID', v.userId], ['שם', v.name], ['אימייל', v.email], ['טלפון', v.phone], ['מחובר לחשבון', v.isLoggedIn ? 'כן' : 'לא']
+      ]));
+      panel.appendChild(detailSection('פעילות', [
+        ['Online', v.online ? 'כן' : 'לא'], ['נראה לאחרונה', dateTime(v.lastSeen)], ['כניסה ראשונה', dateTime(v.firstSeen)], ['עמוד נוכחי', v.currentPath], ['עמוד כניסה', v.entryPath], ['סה״כ צפיות', numberFmt(v.pageViewCount)]
+      ]));
+      panel.appendChild(detailSection('מכשיר', [
+        ['סוג מכשיר', v.deviceType], ['דפדפן', v.browser], ['מערכת הפעלה', v.os], ['שפה', v.language], ['מסך', v.screen && v.screen.width ? v.screen.width + '×' + v.screen.height : null], ['Viewport', v.viewport && v.viewport.width ? v.viewport.width + '×' + v.viewport.height : null]
+      ]));
+      panel.appendChild(detailSection('מקור הגעה', [
+        ['Referrer', v.referrer], ['UTM Source', v.utm && v.utm.source], ['UTM Medium', v.utm && v.utm.medium], ['UTM Campaign', v.utm && v.utm.campaign], ['UTM Term', v.utm && v.utm.term], ['UTM Content', v.utm && v.utm.content]
+      ]));
+      if (v.account) {
+        panel.appendChild(detailSection('חשבון VerSans', [
+          ['Account ID', v.account.id], ['נוצר', dateTime(v.account.createdAt)], ['לקוח מאומת', v.account.verifiedCustomer ? 'כן' : 'לא'], ['הזמנות', numberFmt(v.account.orderCount)], ['Paid', numberFmt(v.account.paidOrderCount)], ['ביקורות', numberFmt(v.account.reviewCount)], ['הזמנה אחרונה', dateTime(v.account.lastOrderAt)], ['Session בתוקף עד', dateTime(v.account.sessionExpiresAt)]
+        ]));
+      }
+      var historySection = make('section', 'detail-section');
+      historySection.appendChild(make('h3', '', 'היסטוריית עמודים'));
+      var history = make('div', 'history');
+      if (!data.pageViews || !data.pageViews.length) history.appendChild(make('p', 'detail-note', 'אין צפיות שמורות.'));
+      (data.pageViews || []).forEach(function (view) {
+        var item = make('div', 'history-item');
+        item.appendChild(make('strong', '', view.path));
+        item.appendChild(make('span', '', (view.title ? view.title + ' · ' : '') + dateTime(view.viewedAt)));
+        history.appendChild(item);
+      });
+      historySection.appendChild(history);
+      panel.appendChild(historySection);
+    } catch (error) {
+      panel.replaceChildren(make('div', 'admin-error', 'לא ניתן לטעון את פרטי המבקר.'));
+    }
+  }
+
+  async function renderVisitorsPage() {
+    var range = state.ranges.visitors;
+    var offset = state.offsets.visitors;
+    var mainPromise = api('/api/admin/visitors?range=' + encodeURIComponent(range) + '&limit=50&offset=' + offset);
+    var onlinePromise = range === 'online' && offset === 0 ? mainPromise : api('/api/admin/visitors?range=online&limit=1&offset=0');
+    var todayPromise = range === 'today' && offset === 0 ? mainPromise : api('/api/admin/visitors?range=today&limit=1&offset=0');
+    var result = await Promise.all([mainPromise, onlinePromise, todayPromise]);
+    var data = result[0];
+    var online = result[1];
+    var today = result[2];
+
+    var frag = document.createDocumentFragment();
+    var toolbar = make('div', 'admin-toolbar');
+    toolbar.appendChild(renderRangeFilter(range, visitorRangeOptions, function (next) {
+      state.ranges.visitors = next;
+      state.offsets.visitors = 0;
+      state.selectedVisitorId = null;
+      renderCurrentPage();
+    }));
+    var more = make('button', 'admin-more-link', range === 'all' ? 'מציג את כל המבקרים' : 'הצג את כל המבקרים ›');
+    more.type = 'button';
+    more.disabled = range === 'all';
+    more.addEventListener('click', function () {
+      state.ranges.visitors = 'all';
+      state.offsets.visitors = 0;
+      renderCurrentPage();
+    });
+    toolbar.appendChild(more);
+    frag.appendChild(toolbar);
+    frag.appendChild(renderKpis([
+      { label: 'Online עכשיו', value: numberFmt(online.count), hint: 'מבקרים פעילים', primary: true, tone: 'green' },
+      { label: 'מבקרים היום', value: numberFmt(today.count), hint: 'Visitor IDs ייחודיים' },
+      { label: 'בטווח שנבחר', value: numberFmt(data.count), hint: visitorRangeOptions.filter(function (item) { return item.value === range; })[0].label },
+      { label: 'כל הזמנים', value: numberFmt(data.lifetimeCount), hint: 'Lifetime מרגע הפעלת השמירה' }
+    ]));
+    frag.appendChild(make('div', 'admin-privacy-note', 'פרטיות: מערכת המבקרים אינה שומרת כתובות IP. נשמרים רק Visitor ID ונתוני שימוש בסיסיים הדרושים לניתוח האתר.'));
+
+    var grid = make('div', 'admin-visitor-grid');
+    var detailPanel = emptyVisitorDetails();
+    var table = visitorsTable(data, function (visitor, row) {
+      state.selectedVisitorId = visitor.visitorId;
+      Array.prototype.forEach.call(document.querySelectorAll('.admin-visitor-row'), function (item) { item.classList.remove('is-selected'); });
+      row.classList.add('is-selected');
+      loadVisitorDetail(detailPanel, visitor.visitorId);
+    });
+    grid.append(table, detailPanel);
+    frag.appendChild(grid);
+    content.replaceChildren(frag);
+    if (state.selectedVisitorId) loadVisitorDetail(detailPanel, state.selectedVisitorId);
+  }
+
+  async function renderSalesPage() {
+    var range = state.ranges.sales;
+    var data = await api('/api/admin/sales?range=' + encodeURIComponent(range));
+    var frag = document.createDocumentFragment();
+    var toolbar = make('div', 'admin-toolbar');
+    toolbar.appendChild(renderRangeFilter(range, rangeOptions, function (next) { state.ranges.sales = next; renderCurrentPage(); }));
+    toolbar.appendChild(make('span', 'admin-toolbar-note', 'Pending ו־Failed אינם נכללים בנתוני המכירות'));
+    frag.appendChild(toolbar);
+    frag.appendChild(renderKpis([
+      { label: 'הכנסות Paid', value: moneyAgorot(data.revenueAgorot), hint: 'סכום הזמנות ששולמו', primary: true, tone: 'green' },
+      { label: 'הזמנות Paid', value: numberFmt(data.orderCount), hint: 'מספר עסקאות' },
+      { label: 'ממוצע להזמנה', value: moneyAgorot(data.averageOrderAgorot), hint: 'Average Order Value' },
+      { label: 'יחידות שנמכרו', value: numberFmt(data.unitsSold), hint: 'סה״כ פריטים' }
+    ]));
+    frag.appendChild(card('גרף מכירות', 'הכנסות יומיות מהזמנות Paid בלבד', renderSalesChart(data.dailySales)));
+    frag.appendChild(topProductsTable(data.topProducts || [], 'המוצרים הנמכרים ביותר', 'מדורג לפי מספר יחידות שנמכרו'));
+    frag.appendChild(ordersTable(data.recentOrders || [], 'הזמנות אחרונות', 'Paid בטווח שנבחר'));
+    content.replaceChildren(frag);
+  }
+
+  async function renderOrdersPage() {
+    var range = state.ranges.orders;
+    var status = state.ordersStatus;
+    var offset = state.offsets.orders;
+    var url = '/api/admin/orders?status=' + encodeURIComponent(status) + '&range=' + encodeURIComponent(range) + '&limit=50&offset=' + offset;
+    var data = await api(url);
+    var frag = document.createDocumentFragment();
+    var toolbar = make('div', 'admin-toolbar');
+    var filters = make('div');
+    filters.appendChild(renderStatusFilter(status, function (next) { state.ordersStatus = next; state.offsets.orders = 0; renderCurrentPage(); }));
+    filters.appendChild(renderRangeFilter(range, rangeOptions, function (next) { state.ranges.orders = next; state.offsets.orders = 0; renderCurrentPage(); }));
+    toolbar.appendChild(filters);
+    toolbar.appendChild(make('span', 'admin-toolbar-note', 'צפייה בלבד — אין שינוי סטטוסים דרך ה־Admin'));
+    frag.appendChild(toolbar);
+    frag.appendChild(renderKpis([
+      { label: 'הזמנות בתצוגה', value: numberFmt(data.count), hint: status === 'all' ? 'כל הסטטוסים' : status, primary: status === 'paid', tone: status === 'paid' ? 'green' : 'amber' },
+      { label: 'עמוד', value: numberFmt(Math.floor(data.offset / data.limit) + 1), hint: numberFmt(data.limit) + ' רשומות בעמוד' }
+    ]));
+    var table = ordersTable(data.orders || [], 'כל ההזמנות', numberFmt(data.count) + ' תוצאות');
+    table.appendChild(renderPagination({ count: data.count, limit: data.limit, offset: data.offset, onChange: function (next) { state.offsets.orders = next; renderCurrentPage(); } }));
+    frag.appendChild(table);
+    content.replaceChildren(frag);
+  }
+
+  async function renderProductsPage() {
+    var range = state.ranges.products;
+    var offset = state.offsets.products;
+    var data = await api('/api/admin/products?range=' + encodeURIComponent(range) + '&limit=50&offset=' + offset);
+    var frag = document.createDocumentFragment();
+    var toolbar = make('div', 'admin-toolbar');
+    toolbar.appendChild(renderRangeFilter(range, rangeOptions, function (next) { state.ranges.products = next; state.offsets.products = 0; renderCurrentPage(); }));
+    toolbar.appendChild(make('span', 'admin-toolbar-note', 'מוצרים ללא מכירת Paid בטווח לא יוצגו'));
+    frag.appendChild(toolbar);
+    frag.appendChild(renderKpis([
+      { label: 'מוצרים שנמכרו', value: numberFmt(data.count), hint: 'מוצרים ייחודיים עם Paid', primary: true },
+      { label: 'עמוד', value: numberFmt(Math.floor(data.offset / data.limit) + 1), hint: 'דירוג לפי יחידות' }
+    ]));
+    var table = topProductsTable(data.products || [], 'ביצועי מוצרים', 'כמות, מספר הזמנות והכנסה ברוטו לכל מוצר');
+    table.appendChild(renderPagination({ count: data.count, limit: data.limit, offset: data.offset, onChange: function (next) { state.offsets.products = next; renderCurrentPage(); } }));
+    frag.appendChild(table);
+    content.replaceChildren(frag);
+  }
+
+  async function renderCustomersPage() {
+    var offset = state.offsets.customers;
+    var data = await api('/api/admin/customers?limit=50&offset=' + offset);
+    var paying = (data.customers || []).filter(function (customer) { return customer.paidOrderCount > 0; }).length;
+    var spendOnPage = (data.customers || []).reduce(function (sum, customer) { return sum + Number(customer.paidSpendAgorot || 0); }, 0);
+    var frag = document.createDocumentFragment();
+    frag.appendChild(renderKpis([
+      { label: 'משתמשים רשומים', value: numberFmt(data.count), hint: 'סה״כ חשבונות', primary: true },
+      { label: 'לקוחות משלמים בעמוד', value: numberFmt(paying), hint: 'לפחות הזמנת Paid אחת' },
+      { label: 'Paid spend בעמוד', value: moneyAgorot(spendOnPage), hint: 'סכום הוצאות המשתמשים המוצגים' }
+    ]));
+    var table = renderTable({
+      title: 'לקוחות ומשתמשים',
+      subtitle: 'ממוינים לפי סכום הוצאות Paid',
+      rows: data.customers || [],
+      emptyText: 'אין עדיין משתמשים רשומים.',
+      columns: [
+        { label: 'לקוח', render: function (row) { return cellPrimary(row.name || row.email, row.email); } },
+        { label: 'User ID', render: function (row) { return make('span', 'admin-table__mono', '#' + row.id); } },
+        { label: 'טלפון', render: function (row) { return text(row.phone); } },
+        { label: 'הזמנות Paid', render: function (row) { return numberFmt(row.paidOrderCount); } },
+        { label: 'סה״כ הוצאות', render: function (row) { return make('strong', 'admin-table__strong', moneyAgorot(row.paidSpendAgorot)); } },
+        { label: 'Paid אחרון', render: function (row) { return dateTime(row.lastPaidAt); } },
+        { label: 'נרשם', render: function (row) { return dateOnly(row.createdAt); } },
+        { label: 'לקוח מאומת', render: function (row) { return row.verifiedCustomer ? badge('מאומת', 'verified') : badge('לא', 'neutral'); } }
+      ]
+    });
+    table.appendChild(renderPagination({ count: data.count, limit: data.limit, offset: data.offset, onChange: function (next) { state.offsets.customers = next; renderCurrentPage(); } }));
+    frag.appendChild(table);
+    content.replaceChildren(frag);
+  }
+
+  function statList(rows) {
+    var list = make('div', 'admin-stat-list');
+    var values = Array.isArray(rows) ? rows : [];
+    if (!values.length) {
+      list.appendChild(make('div', 'admin-empty', 'אין נתונים בטווח שנבחר.'));
+      return list;
+    }
+    var max = Math.max.apply(null, values.map(function (row) { return Number(row.count || 0); }).concat([1]));
+    values.forEach(function (row) {
+      var item = make('div', 'admin-stat-row');
+      var label = make('div', 'admin-stat-row__label');
+      label.appendChild(make('strong', '', text(row.label, '(לא ידוע)')));
+      var progress = make('div', 'admin-progress');
+      var fill = make('i');
+      fill.style.width = Math.max(2, Math.round(Number(row.count || 0) / max * 100)) + '%';
+      progress.appendChild(fill);
+      label.appendChild(progress);
+      item.append(label, make('div', 'admin-stat-row__value', numberFmt(row.count)));
+      list.appendChild(item);
+    });
+    return list;
+  }
+
+  async function renderTrafficPage() {
+    var range = state.ranges.traffic;
+    var data = await api('/api/admin/traffic?range=' + encodeURIComponent(range));
+    var frag = document.createDocumentFragment();
+    var toolbar = make('div', 'admin-toolbar');
+    toolbar.appendChild(renderRangeFilter(range, rangeOptions, function (next) { state.ranges.traffic = next; renderCurrentPage(); }));
+    toolbar.appendChild(make('span', 'admin-toolbar-note', 'ללא כתובות IP'));
+    frag.appendChild(toolbar);
+    frag.appendChild(renderKpis([
+      { label: 'צפיות בעמודים', value: numberFmt(data.pageViews), hint: 'Page views בטווח', primary: true },
+      { label: 'עמודים מובילים', value: numberFmt((data.topPages || []).length), hint: 'עד 12 תוצאות' },
+      { label: 'מקורות Referrer', value: numberFmt((data.referrers || []).length), hint: 'מקורות מזוהים' },
+      { label: 'מקורות UTM', value: numberFmt((data.utmSources || []).length), hint: 'utm_source מזוהה' }
+    ]));
+    var grids = [
+      ['עמודים נצפים', 'Top Pages', data.topPages],
+      ['עמודי כניסה', 'Entry Pages', data.entryPages],
+      ['Referrers', 'מקורות הפניה', data.referrers],
+      ['UTM Source', 'קמפיינים ומקורות', data.utmSources],
+      ['מכשירים', 'Device Type', data.devices],
+      ['דפדפנים', 'Browsers', data.browsers],
+      ['מערכות הפעלה', 'Operating Systems', data.operatingSystems]
+    ];
+    for (var i = 0; i < grids.length; i += 2) {
+      var row = make('div', 'admin-grid-even');
+      var first = grids[i];
+      row.appendChild(card(first[0], first[1], statList(first[2])));
+      if (grids[i + 1]) {
+        var second = grids[i + 1];
+        row.appendChild(card(second[0], second[1], statList(second[2])));
+      }
+      frag.appendChild(row);
+    }
+    content.replaceChildren(frag);
+  }
+
+  function stars(rating) {
+    var node = make('span', 'admin-stars');
+    var rounded = Math.round(Number(rating || 0));
+    node.textContent = '★'.repeat(Math.max(0, Math.min(5, rounded))) + '☆'.repeat(Math.max(0, 5 - rounded));
     return node;
   }
 
-  function renderDetails(data) {
-    var v = data.visitor;
-    detailsName.textContent = v.name;
-    detailsBody.replaceChildren();
-    detailsBody.appendChild(section('זהות', [
-      ['Visitor ID', v.visitorId], ['User ID', v.userId], ['שם', v.name], ['אימייל', v.email], ['טלפון', v.phone], ['מחובר לחשבון', v.isLoggedIn ? 'כן' : 'לא']
-    ]));
-    detailsBody.appendChild(section('פעילות', [
-      ['Online', v.online ? 'כן' : 'לא'], ['נראה לאחרונה', dateTime(v.lastSeen)], ['כניסה ראשונה', dateTime(v.firstSeen)], ['עמוד נוכחי', v.currentPath], ['עמוד כניסה', v.entryPath], ['סה״כ צפיות', v.pageViewCount]
-    ]));
-    detailsBody.appendChild(section('מכשיר', [
-      ['סוג מכשיר', v.deviceType], ['דפדפן', v.browser], ['מערכת הפעלה', v.os], ['שפה', v.language], ['מסך', v.screen && v.screen.width ? v.screen.width + '×' + v.screen.height : null], ['Viewport', v.viewport && v.viewport.width ? v.viewport.width + '×' + v.viewport.height : null]
-    ]));
-    detailsBody.appendChild(section('מקור הגעה', [
-      ['Referrer', v.referrer], ['UTM Source', v.utm && v.utm.source], ['UTM Medium', v.utm && v.utm.medium], ['UTM Campaign', v.utm && v.utm.campaign], ['UTM Term', v.utm && v.utm.term], ['UTM Content', v.utm && v.utm.content]
-    ]));
-
-    if (v.account) {
-      detailsBody.appendChild(section('חשבון VerSans', [
-        ['Account ID', v.account.id], ['נוצר', dateTime(v.account.createdAt)], ['לקוח מאומת', v.account.verifiedCustomer ? 'כן' : 'לא'], ['הזמנות', v.account.orderCount], ['הזמנות ששולמו', v.account.paidOrderCount], ['ביקורות', v.account.reviewCount], ['הזמנה אחרונה', dateTime(v.account.lastOrderAt)], ['Session נוצר', dateTime(v.account.sessionCreatedAt)], ['Session בתוקף עד', dateTime(v.account.sessionExpiresAt)]
-      ]));
+  function ratingDistribution(summary) {
+    var rows = [];
+    var total = Number(summary.count || 0);
+    for (var rating = 5; rating >= 1; rating -= 1) {
+      var count = Number(summary['rating' + rating] || 0);
+      rows.push({ label: rating + ' ★', count: count, percent: total ? Math.round(count / total * 100) : 0 });
     }
-
-    var historySection = make('section', 'detail-section');
-    historySection.appendChild(make('h3', '', 'היסטוריית עמודים'));
-    var history = make('div', 'history');
-    if (!data.pageViews.length) history.appendChild(make('p', 'detail-note', 'אין צפיות שמורות.'));
-    data.pageViews.forEach(function (view) {
-      var item = make('div', 'history-item');
-      item.appendChild(make('strong', '', view.path));
-      item.appendChild(make('span', '', (view.title ? view.title + ' · ' : '') + dateTime(view.viewedAt)));
-      history.appendChild(item);
+    var body = make('div', 'admin-stat-list');
+    rows.forEach(function (row) {
+      var item = make('div', 'admin-stat-row');
+      var label = make('div', 'admin-stat-row__label');
+      label.appendChild(make('strong', '', row.label));
+      var progress = make('div', 'admin-progress');
+      var fill = make('i');
+      fill.style.width = row.percent + '%';
+      progress.appendChild(fill);
+      label.appendChild(progress);
+      item.append(label, make('div', 'admin-stat-row__value', numberFmt(row.count) + ' · ' + row.percent + '%'));
+      body.appendChild(item);
     });
-    historySection.appendChild(history);
-    detailsBody.appendChild(historySection);
-    visitorDetails.hidden = false;
+    return body;
   }
 
-  async function openVisitor(visitorId) {
-    state.selectedVisitorId = visitorId;
-    Array.prototype.forEach.call(visitorList.querySelectorAll('.visitor-row'), function (row) {
-      row.classList.toggle('is-selected', row.dataset.visitorId === visitorId);
+  async function renderReviewsPage() {
+    var range = state.ranges.reviews;
+    var data = await api('/api/admin/reviews?range=' + encodeURIComponent(range) + '&limit=20');
+    var summary = data.summary || {};
+    var frag = document.createDocumentFragment();
+    var toolbar = make('div', 'admin-toolbar');
+    toolbar.appendChild(renderRangeFilter(range, rangeOptions, function (next) { state.ranges.reviews = next; renderCurrentPage(); }));
+    frag.appendChild(toolbar);
+    frag.appendChild(renderKpis([
+      { label: 'ביקורות', value: numberFmt(summary.count), hint: 'Published בטווח', primary: true },
+      { label: 'דירוג ממוצע', value: Number(summary.average || 0).toFixed(2), hint: 'מתוך 5' },
+      { label: '5 כוכבים', value: numberFmt(summary.rating5), hint: 'ביקורות מצוינות', tone: 'green' },
+      { label: '1–2 כוכבים', value: numberFmt(Number(summary.rating1 || 0) + Number(summary.rating2 || 0)), hint: 'דורש תשומת לב', tone: 'amber' }
+    ]));
+    var grid = make('div', 'admin-grid-even');
+    grid.appendChild(card('חלוקת דירוגים', '1–5 כוכבים', ratingDistribution(summary)));
+    var topBody = make('div', 'admin-stat-list');
+    if (!(data.topProducts || []).length) topBody.appendChild(make('div', 'admin-empty', 'אין נתונים.'));
+    (data.topProducts || []).forEach(function (product) {
+      var row = make('div', 'admin-stat-row');
+      var label = make('div', 'admin-stat-row__label');
+      label.appendChild(make('strong', '', product.name));
+      label.appendChild(make('small', '', Number(product.average || 0).toFixed(2) + ' ★'));
+      row.append(label, make('div', 'admin-stat-row__value', numberFmt(product.count)));
+      topBody.appendChild(row);
     });
-    visitorDetails.hidden = false;
-    detailsName.textContent = 'טוען…';
-    detailsBody.replaceChildren(make('div', 'admin-loading', 'טוען את כל הפרטים…'));
-    try {
-      var data = await api('/api/admin/visitors/' + encodeURIComponent(visitorId));
-      renderDetails(data);
-    } catch (err) {
-      detailsBody.replaceChildren(make('div', 'admin-error', 'לא ניתן לטעון את פרטי המבקר.'));
-    }
+    grid.appendChild(card('מוצרים עם הכי הרבה ביקורות', 'Published בטווח', topBody));
+    frag.appendChild(grid);
+    frag.appendChild(renderTable({
+      title: 'ביקורות אחרונות',
+      subtitle: 'עד 20 ביקורות אחרונות בטווח',
+      rows: data.recent || [],
+      emptyText: 'אין ביקורות בטווח שנבחר.',
+      columns: [
+        { label: 'לקוח', render: function (row) { return cellPrimary(row.name, row.email || ''); } },
+        { label: 'מוצר', render: function (row) { return productCell({ id: row.productId, name: row.productName, image: row.productImage, href: row.productHref }); } },
+        { label: 'דירוג', render: function (row) { return stars(row.rating); } },
+        { label: 'ביקורת', render: function (row) { return make('span', 'admin-review-body', text(row.body)); } },
+        { label: 'רכישה', render: function (row) { return row.verifiedPurchase ? badge('מאומתת', 'verified') : badge('לא מאומתת', 'neutral'); } },
+        { label: 'תאריך', render: function (row) { return dateTime(row.reviewDate); } }
+      ]
+    }));
+    content.replaceChildren(frag);
   }
 
-  async function loadVisitors() {
-    if (state.loading) return;
-    state.loading = true;
-    listStatus.textContent = 'מרענן…';
+  async function renderCurrentPage(options) {
+    options = options || {};
+    state.page = currentPage();
+    var meta = pageMeta[state.page] || pageMeta.dashboard;
+    setPageMeta(meta[0], meta[1]);
+    Array.prototype.forEach.call(document.querySelectorAll('[data-admin-page]'), function (link) {
+      link.classList.toggle('is-active', link.dataset.adminPage === state.page);
+    });
+    if (!options.keepContent) setLoading();
+    var version = ++state.requestVersion;
+    refreshButton.disabled = true;
     try {
-      var mainPromise = api('/api/admin/visitors?range=' + encodeURIComponent(state.range));
-      var onlinePromise = state.range === 'online' ? mainPromise : api('/api/admin/visitors?range=online&limit=1');
-      var results = await Promise.all([mainPromise, onlinePromise]);
-      var data = results[0];
-      var onlineData = results[1];
-      visitorCount.textContent = String(data.count);
-      onlineCount.textContent = String(onlineData.count);
-      selectedRangeLabel.textContent = rangeLabels[state.range];
-      listStatus.textContent = data.count + ' מבקרים · עודכן ' + new Intl.DateTimeFormat('he-IL', { timeStyle: 'short' }).format(new Date());
-      renderVisitors(data.visitors);
-    } catch (err) {
-      visitorList.replaceChildren(make('div', 'admin-error', 'לא ניתן לטעון נתוני מבקרים כרגע.'));
-      listStatus.textContent = 'שגיאה בטעינת הנתונים';
+      if (state.page === 'dashboard') await renderDashboardPage();
+      else if (state.page === 'visitors') await renderVisitorsPage();
+      else if (state.page === 'sales') await renderSalesPage();
+      else if (state.page === 'orders') await renderOrdersPage();
+      else if (state.page === 'products') await renderProductsPage();
+      else if (state.page === 'customers') await renderCustomersPage();
+      else if (state.page === 'traffic') await renderTrafficPage();
+      else if (state.page === 'reviews') await renderReviewsPage();
+      if (version !== state.requestVersion) return;
+    } catch (error) {
+      if (version === state.requestVersion && error.message !== 'admin_required') setError(error);
     } finally {
-      state.loading = false;
+      if (version === state.requestVersion) refreshButton.disabled = false;
     }
   }
 
-  Array.prototype.forEach.call(document.querySelectorAll('[data-range]'), function (button) {
-    button.addEventListener('click', function () {
-      state.range = button.dataset.range;
-      state.selectedVisitorId = null;
-      visitorDetails.hidden = true;
-      Array.prototype.forEach.call(document.querySelectorAll('[data-range]'), function (item) { item.classList.toggle('is-active', item === button); });
-      loadVisitors();
-    });
+  function openSidebar() {
+    sidebar.classList.add('is-open');
+    sidebarBackdrop.hidden = false;
+    mobileNav.setAttribute('aria-expanded', 'true');
+  }
+
+  function closeSidebar() {
+    sidebar.classList.remove('is-open');
+    sidebarBackdrop.hidden = true;
+    mobileNav.setAttribute('aria-expanded', 'false');
+  }
+
+  if (mobileNav) mobileNav.addEventListener('click', openSidebar);
+  if (sidebarClose) sidebarClose.addEventListener('click', closeSidebar);
+  if (sidebarBackdrop) sidebarBackdrop.addEventListener('click', closeSidebar);
+  Array.prototype.forEach.call(document.querySelectorAll('.admin-nav a'), function (link) {
+    link.addEventListener('click', closeSidebar);
+  });
+  refreshButton.addEventListener('click', function () {
+    renderCurrentPage({ keepContent: true }).then(function () { showToast('הנתונים עודכנו'); });
   });
 
-  document.getElementById('refreshVisitors').addEventListener('click', loadVisitors);
-  document.getElementById('closeDetails').addEventListener('click', function () { visitorDetails.hidden = true; state.selectedVisitorId = null; });
-
-  loadVisitors();
-  setInterval(loadVisitors, 15 * 1000);
+  renderCurrentPage();
 })();
