@@ -14,6 +14,7 @@
   var selectedBoxId = null;
   var selectedSizeId = null;
   var selectedColorId = null;
+  var unavailableNoticeTimer = null;
   var selectedPackagingId = null;
   var customNameValue = '';
   var customPhotoValue = null;
@@ -163,6 +164,36 @@
   function selectedColor() { return findOption(product.colors, selectedColorId); }
   function hasSizeOptions() { return Array.isArray(product.sizes) && product.sizes.length; }
   function hasColorOptions() { return Array.isArray(product.colors) && product.colors.length; }
+  function unavailableCombination(sizeId, colorId) {
+    if (!sizeId || !colorId || !Array.isArray(product.unavailableCombinations)) return null;
+    for (var i = 0; i < product.unavailableCombinations.length; i += 1) {
+      var combo = product.unavailableCombinations[i] || {};
+      if (combo.size === sizeId && combo.color === colorId) return combo;
+    }
+    return null;
+  }
+  function showUnavailableCombination(combo) {
+    var message = L(combo && combo.message) || (lang === 'he' ? 'השילוב הזה אינו במלאי כרגע.' : 'This combination is currently out of stock.');
+    var sizeStatus = $('#sizeStatus');
+    var colorStatus = $('#colorStatus');
+    [sizeStatus, colorStatus].forEach(function (status) {
+      if (!status) return;
+      status.textContent = message;
+      status.classList.remove('is-done');
+      status.style.color = '#b42318';
+      status.style.fontWeight = '700';
+    });
+    if (unavailableNoticeTimer) clearTimeout(unavailableNoticeTimer);
+    unavailableNoticeTimer = setTimeout(function () {
+      [sizeStatus, colorStatus].forEach(function (status) {
+        if (!status) return;
+        status.style.color = '';
+        status.style.fontWeight = '';
+      });
+      renderSizeOptions();
+      renderColorOptions();
+    }, 4200);
+  }
   function hasGiftPackaging() { return !!(product.giftPackaging && Array.isArray(product.giftPackaging.options) && product.giftPackaging.options.length); }
   function selectedPackaging() { return hasGiftPackaging() ? findOption(product.giftPackaging.options, selectedPackagingId) : null; }
   function requiresCompanion() { return !!(product.requiresCompanion && product.requiresCompanion.required && Array.isArray(product.requiresCompanion.productIds) && product.requiresCompanion.productIds.length); }
@@ -213,9 +244,11 @@
     var total = Number(necklaceProduct.price || 0);
     var box = findOption(necklaceProduct.boxes, item.box);
     var size = findOption(necklaceProduct.sizes, item.size);
+    var color = findOption(necklaceProduct.colors, item.color);
     var packaging = necklaceProduct.giftPackaging ? findOption(necklaceProduct.giftPackaging.options, selectedColorId || item.packaging) : null;
     if (box) total += Number(box.addPrice || 0);
     if (size) total += Number(size.addPrice || 0);
+    if (color) total += Number(color.addPrice || 0);
     if (packaging) total += Number(packaging.addPrice || 0);
     if (item.greeting) total += CUSTOM_GREETING_ADD_PRICE;
     return total;
@@ -224,9 +257,10 @@
     if (requiresCompanion() && companionReady()) return pendingCompanionUnitPrice();
     var box = selectedBox();
     var size = selectedSize();
+    var color = selectedColor();
     var packaging = selectedPackaging();
     var greetingExtra = savedGreeting() ? CUSTOM_GREETING_ADD_PRICE : 0;
-    return Number(product.price) + (box ? Number(box.addPrice || 0) : 0) + (size ? Number(size.addPrice || 0) : 0) + (packaging ? Number(packaging.addPrice || 0) : 0) + greetingExtra;
+    return Number(product.price) + (box ? Number(box.addPrice || 0) : 0) + (size ? Number(size.addPrice || 0) : 0) + (color ? Number(color.addPrice || 0) : 0) + (packaging ? Number(packaging.addPrice || 0) : 0) + greetingExtra;
   }
   function variantKey() {
     var greeting = savedGreeting();
@@ -237,7 +271,8 @@
     var boxReady = !hasBoxOptions() || !!selectedBox();
     var sizeReady = !hasSizeOptions() || !!selectedSize();
     var colorReady = !hasColorOptions() || !!selectedColor();
-    return necklaceReady && boxReady && sizeReady && colorReady && customNameReady() && customPhotoReady() && companionReady();
+    var combinationReady = !unavailableCombination(selectedSizeId, selectedColorId);
+    return necklaceReady && boxReady && sizeReady && colorReady && combinationReady && customNameReady() && customPhotoReady() && companionReady();
   }
   function galleryImages() {
     var images = Array.isArray(product.images) ? product.images.slice() : [];
@@ -607,8 +642,10 @@
       var swatchClass = 'product-color-swatch' + (option.swatchPattern ? ' product-color-swatch--' + esc(option.swatchPattern) : '');
       var swatchStyle = option.swatch ? ' style="background:' + esc(option.swatch) + '"' : '';
       var swatch = option.swatch ? '<span class="' + swatchClass + '"' + swatchStyle + '></span>' : '';
+      var colorPriceText = L(option.priceLabel) || (Number(option.addPrice || 0) ? '+' + money(Number(option.addPrice || 0)) : '');
+      var colorPriceHtml = colorPriceText ? '<small>' + esc(colorPriceText) + '</small>' : '';
       return '<button type="button" class="product-size-choice product-color-choice' + (colorRows ? ' product-color-row-choice' : '') + (selected ? ' is-selected' : '') + '" data-color="' + esc(option.id) + '" aria-pressed="' + selected + '">' +
-        '<span class="product-size-choice__label product-color-choice__label">' + swatch + '<strong>' + esc(label) + '</strong></span>' +
+        '<span class="product-size-choice__label product-color-choice__label">' + swatch + '<strong>' + esc(label) + '</strong>' + colorPriceHtml + '</span>' +
         '<span class="product-size-choice__check" aria-hidden="true">✓</span>' +
       '</button>';
     }).join('');
@@ -616,6 +653,51 @@
     if (status) {
       status.textContent = selectedColor() ? (lang === 'he' ? 'נבחר ✓' : 'Selected ✓') : (lang === 'he' ? 'נא לבחור' : 'Choose one');
       status.classList.toggle('is-done', !!selectedColor());
+    }
+  }
+
+  function arrangeProduct10CompactOptions() {
+    if (!product || product.slug !== 'product-10') return;
+
+    var sizeBlock = $('#sizeBlock');
+    var colorBlock = $('#colorBlock');
+    var sizeOptions = $('#sizeOptions');
+    var colorOptions = $('#colorOptions');
+    if (!sizeBlock || !colorBlock || !sizeOptions || !colorOptions) return;
+
+    sizeBlock.classList.add('product10-combined-options');
+    colorBlock.classList.add('product10-width-group');
+    sizeOptions.classList.add('product10-length-grid');
+    colorOptions.classList.add('product10-width-grid');
+
+    if (colorBlock.parentNode !== sizeBlock) sizeBlock.appendChild(colorBlock);
+
+    if (!document.getElementById('product10CompactOptionsStyle')) {
+      var style = document.createElement('style');
+      style.id = 'product10CompactOptionsStyle';
+      style.textContent = [
+        'body[data-product-slug="product-10"] #sizeBlock.product10-combined-options{padding:.85rem!important;gap:.65rem!important;margin-bottom:1rem!important;background:#eef9ff!important;border:1px solid #d7edf8!important;border-radius:18px!important}',
+        'body[data-product-slug="product-10"] #sizeBlock.product10-combined-options>.product-option-head{margin:0 0 .15rem!important}',
+        'body[data-product-slug="product-10"] #sizeBlock.product10-combined-options .product-option-step{width:26px!important;height:26px!important;border-radius:8px!important;font-size:.75rem!important}',
+        'body[data-product-slug="product-10"] #sizeBlock.product10-combined-options .product-option-head h2{font-size:1rem!important;margin:0!important}',
+        'body[data-product-slug="product-10"] #sizeBlock.product10-combined-options .product-option-status{font-size:.78rem!important}',
+        'body[data-product-slug="product-10"] #sizeOptions.product10-length-grid{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:.45rem!important}',
+        'body[data-product-slug="product-10"] #sizeOptions.product10-length-grid .product-size-choice{min-height:54px!important;padding:.48rem .58rem!important;border-radius:11px!important;gap:.35rem!important}',
+        'body[data-product-slug="product-10"] #sizeOptions.product10-length-grid .product-size-choice__label{gap:.12rem!important;font-size:.82rem!important;line-height:1.25!important}',
+        'body[data-product-slug="product-10"] #sizeOptions.product10-length-grid .product-size-choice__label small{font-size:.69rem!important}',
+        'body[data-product-slug="product-10"] #sizeOptions.product10-length-grid .product-size-choice__check{width:18px!important;height:18px!important;font-size:.65rem!important}',
+        'body[data-product-slug="product-10"] #colorBlock.product10-width-group{display:grid!important;gap:.5rem!important;margin:0!important;padding:.7rem 0 0!important;border:0!important;border-top:1px solid #d7edf8!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}',
+        'body[data-product-slug="product-10"] #colorBlock.product10-width-group>.product-option-head{margin:0!important}',
+        'body[data-product-slug="product-10"] #colorBlock.product10-width-group .product-option-step{background:#d9f2ff!important;color:#236d91!important}',
+        'body[data-product-slug="product-10"] #colorOptions.product10-width-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:.45rem!important}',
+        'body[data-product-slug="product-10"] #colorOptions.product10-width-grid .product-size-choice{min-height:50px!important;padding:.45rem .65rem!important;border-radius:11px!important}',
+        'body[data-product-slug="product-10"] #colorOptions.product10-width-grid .product-size-choice__label{flex-direction:row!important;align-items:center!important;gap:.35rem!important;font-size:.84rem!important}',
+        'body[data-product-slug="product-10"] #colorOptions.product10-width-grid .product-size-choice__label small{font-size:.7rem!important;margin-inline-start:auto!important}',
+        'body[data-product-slug="product-10"] #colorOptions.product10-width-grid .product-size-choice__check{width:18px!important;height:18px!important;font-size:.65rem!important}',
+        '@media(max-width:760px){body[data-product-slug="product-10"] #sizeOptions.product10-length-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}body[data-product-slug="product-10"] #colorOptions.product10-width-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}}',
+        '@media(max-width:430px){body[data-product-slug="product-10"] #sizeBlock.product10-combined-options{padding:.7rem!important}body[data-product-slug="product-10"] #sizeOptions.product10-length-grid .product-size-choice{min-height:50px!important;padding:.42rem .5rem!important}body[data-product-slug="product-10"] #colorOptions.product10-width-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}body[data-product-slug="product-10"] #colorOptions.product10-width-grid .product-size-choice{padding:.42rem!important}}'
+      ].join('');
+      document.head.appendChild(style);
     }
   }
 
@@ -1067,7 +1149,9 @@
       if (product.compareAt) {
         compare.hidden = false;
         var packaging = selectedPackaging();
-        var comparePrice = Number(product.compareAt) + (box ? Number(box.addPrice || 0) : 0) + (packaging ? Number(packaging.addPrice || 0) : 0) + (savedGreeting() ? CUSTOM_GREETING_ADD_PRICE : 0);
+        var selectedSizeOption = selectedSize();
+        var selectedColorOption = selectedColor();
+        var comparePrice = Number(product.compareAt) + (box ? Number(box.addPrice || 0) : 0) + (selectedSizeOption ? Number(selectedSizeOption.addPrice || 0) : 0) + (selectedColorOption ? Number(selectedColorOption.addPrice || 0) : 0) + (packaging ? Number(packaging.addPrice || 0) : 0) + (savedGreeting() ? CUSTOM_GREETING_ADD_PRICE : 0);
         compare.textContent = money(comparePrice);
 
         var discountPercent = Math.max(0, Math.round((1 - (Number(product.price) / Number(product.compareAt))) * 100));
@@ -1123,6 +1207,7 @@
     var summary = $('#selectionSummary');
     renderSizeOptions();
     renderColorOptions();
+    arrangeProduct10CompactOptions();
     renderCustomName();
     renderCustomPhoto();
     renderGiftPackaging();
@@ -1179,6 +1264,8 @@
   function selectSize(optionId) {
     var option = findOption(product.sizes, optionId);
     if (!option) return;
+    var unavailable = unavailableCombination(option.id, selectedColorId);
+    if (unavailable) { showUnavailableCombination(unavailable); return; }
     selectedSizeId = option.id;
     updateVariantImageFromSelections();
     renderSizeOptions();
@@ -1189,6 +1276,8 @@
   function selectColor(optionId) {
     var option = findOption(product.colors, optionId);
     if (!option) return;
+    var unavailable = unavailableCombination(selectedSizeId, option.id);
+    if (unavailable) { showUnavailableCombination(unavailable); return; }
     selectedColorId = option.id;
     if (requiresCompanion()) {
       var pending = readPendingBundle();

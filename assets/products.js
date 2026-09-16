@@ -1036,10 +1036,10 @@ var PRODUCTS = [
     }
   },
   {
-    "id": "wife-necklace-only-01",
+    "id": "tennis-chain-3mm-01",
     "slug": "product-10",
-    "urlSlug": "heart-necklace-silver",
-    "sku": "KW-WIFE-NECK-01",
+    "urlSlug": "tennis-chain-3mm-silver",
+    "sku": "KW-NK-010",
     "category": "necklaces",
     "categories": [
       "necklaces"
@@ -1048,28 +1048,160 @@ var PRODUCTS = [
     "cardMode": "view",
     "hideMessageCard": true,
     "hoverImage": "images/products/product-10/product-10-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-10/product-10-2.png",
+        "hoverImage": "images/products/product-10/product-10-1.png"
+      },
+      "men": {
+        "image": "images/products/product-10/product-10-2.png",
+        "hoverImage": "images/products/product-10/product-10-1.png"
+      }
+    },
     "images": [
       "images/products/product-10/product-10-1.png",
       "images/products/product-10/product-10-2.png",
       "images/products/product-10/product-10-3.png"
     ],
-    "price": 129.9,
-    "compareAt": 219.9,
+    "price": 269.9,
+    "compareAt": 369.9,
     "title": {
-      "he": "שרשרת לבבות לאישה - ציפוי Sterling Silver 925",
-      "en": "Heart Necklace for Her - 925 Sterling Silver Plating"
+      "he": "שרשרת טניס משובצת זירקוניה - צבע כסף",
+      "en": "Cubic Zirconia Tennis Chain - Silver Tone"
     },
     "subtitle": {
-      "he": "שרשרת בלבד בציפוי Sterling Silver 925 - לחצו לצפייה בעוד תמונות",
-      "en": "Necklace only, with 925 Sterling Silver plating - tap to view more photos"
+      "he": "יוניסקס לנשים ולגברים · לבחירה ברוחב 3, 4 או 5 מ״מ ובאורכים 16–24 אינץ׳",
+      "en": "Unisex for women and men · choose 3mm, 4mm or 5mm width and 16–24 inch length"
     },
+    "sizeHeading": {
+      "he": "בחרו אורך",
+      "en": "Choose length"
+    },
+    "colorHeading": {
+      "he": "בחרו רוחב",
+      "en": "Choose width"
+    },
+    "colorRequiredText": {
+      "he": "נא לבחור רוחב",
+      "en": "Please choose a width"
+    },
+    "sizes": [
+      {
+        "id": "16in",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "269.90 ₪",
+          "en": "₪269.90"
+        },
+        "label": {
+          "he": "16 אינץ׳ (40.64 ס״מ)",
+          "en": "16 in (40.64 cm)"
+        }
+      },
+      {
+        "id": "18in",
+        "addPrice": 20,
+        "priceLabel": {
+          "he": "289.90 ₪",
+          "en": "₪289.90"
+        },
+        "label": {
+          "he": "18 אינץ׳ (45.72 ס״מ)",
+          "en": "18 in (45.72 cm)"
+        }
+      },
+      {
+        "id": "20in",
+        "addPrice": 40,
+        "priceLabel": {
+          "he": "309.90 ₪",
+          "en": "₪309.90"
+        },
+        "label": {
+          "he": "20 אינץ׳ (50.80 ס״מ)",
+          "en": "20 in (50.80 cm)"
+        }
+      },
+      {
+        "id": "22in",
+        "addPrice": 60,
+        "priceLabel": {
+          "he": "329.90 ₪",
+          "en": "₪329.90"
+        },
+        "label": {
+          "he": "22 אינץ׳ (55.88 ס״מ)",
+          "en": "22 in (55.88 cm)"
+        }
+      },
+      {
+        "id": "24in",
+        "addPrice": 80,
+        "priceLabel": {
+          "he": "349.90 ₪",
+          "en": "₪349.90"
+        },
+        "label": {
+          "he": "24 אינץ׳ (60.96 ס״מ)",
+          "en": "24 in (60.96 cm)"
+        }
+      }
+    ],
+    "colors": [
+      {
+        "id": "3mm",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "ללא תוספת",
+          "en": "Included"
+        },
+        "label": {
+          "he": "3 מ״מ",
+          "en": "3 mm"
+        }
+      },
+      {
+        "id": "4mm",
+        "addPrice": 5,
+        "priceLabel": {
+          "he": "+5 ₪",
+          "en": "+₪5"
+        },
+        "label": {
+          "he": "4 מ״מ",
+          "en": "4 mm"
+        }
+      },
+      {
+        "id": "5mm",
+        "addPrice": 10,
+        "priceLabel": {
+          "he": "+10 ₪",
+          "en": "+₪10"
+        },
+        "label": {
+          "he": "5 מ״מ",
+          "en": "5 mm"
+        }
+      }
+    ],
+    "unavailableCombinations": [
+      {
+        "size": "18in",
+        "color": "4mm",
+        "message": {
+          "he": "השילוב של 18 אינץ׳ (45.72 ס״מ) עם רוחב 4 מ״מ אינו במלאי כרגע.",
+          "en": "The 18 in (45.72 cm) + 4 mm width combination is currently out of stock."
+        }
+      }
+    ],
     "cardTitle": {
-      "he": "שרשרת לבבות עדינה",
-      "en": "Delicate heart necklace"
+      "he": "שרשרת טניס משובצת זירקוניה",
+      "en": "Cubic Zirconia Tennis Chain"
     },
     "cardMessage": {
-      "he": "שרשרת עדינה בעיצוב שני לבבות משתלבים, בציפוי Sterling Silver 925. מתאימה כמתנה רומנטית או כתכשיט יומיומי אלגנטי.",
-      "en": "A delicate double-heart necklace with 925 Sterling Silver plating, perfect as a romantic gift or an elegant everyday piece."
+      "he": "שרשרת טניס משובצת אבני זירקוניה במראה יוקרתי ונקי. בחרו את האורך והרוחב שמתאימים לכם.",
+      "en": "A sparkling cubic-zirconia tennis chain with a clean premium look. Choose the length and width that suit you."
     },
     "signature": {
       "he": "",
@@ -1077,25 +1209,31 @@ var PRODUCTS = [
     },
     "details": {
       "he": [
-        "חומר המוצר: ציפוי Sterling Silver 925 לפי מפרט הספק",
-        "שרשרת עצמאית בעיצוב שני לבבות משתלבים",
-        "גוון התכשיט: כסוף",
-        "כולל 3 תמונות מוצר לצפייה בגלריה",
-        "ניתן להוסיף מארז LOVE FOREVER בצבע ורוד, אדום או שחור",
-        "מתאים למתנה לאישה או לשימוש יומיומי"
+        "שרשרת טניס יוניסקס - מתאימה לנשים ולגברים",
+        "משובצת אבני Cubic Zirconia",
+        "לבחירה ברוחב 3 מ״מ, 4 מ״מ או 5 מ״מ",
+        "לבחירה באורכים: 16, 18, 20, 22 או 24 אינץ׳, עם המרה לסנטימטרים",
+        "מחיר בסיס: 269.90 ₪ ל־16 אינץ׳ ברוחב 3 מ״מ",
+        "כל תוספת של 1 מ״מ לרוחב מוסיפה 5 ₪, וכל 2 אינץ׳ לאורך מוסיפים 20 ₪",
+        "השילוב 18 אינץ׳ עם רוחב 4 מ״מ אינו במלאי כרגע",
+        "גוון התכשיט: צבע כסף",
+        "קיימים גם דגמים בציפוי זהב 18K"
       ],
       "en": [
-        "Standalone double-heart necklace",
-        "925 Sterling Silver plating",
-        "Includes 3 product photos",
-        "Delicate shiny heart design",
-        "Suitable as a gift for her or for everyday wear",
-        "Direct add-to-cart from the product page"
+        "Unisex tennis chain suitable for women and men",
+        "Set with cubic zirconia stones",
+        "Choose 3mm, 4mm or 5mm width",
+        "Choose 16, 18, 20, 22 or 24 inch length with centimeter conversion",
+        "Base price: ₪269.90 for 16 in at 3mm width",
+        "Each extra 1mm of width adds ₪5, and each extra 2 inches of length adds ₪20",
+        "The 18 in + 4mm combination is currently out of stock",
+        "Silver-tone finish",
+        "Gold versions use 18K gold plating"
       ]
     },
     "afterText": {
-      "he": "השרשרת בציפוי Sterling Silver 925 ומגיעה כמוצר עצמאי עם גלריית תמונות מלאה, כך שתוכלו לראות אותה על הדוגמנית, בתקריב וגם כתמונת מוצר נקייה.",
-      "en": "With 925 Sterling Silver plating, this necklace is offered as a standalone product with a full image gallery so you can see it on a model, in close-up, and as a clean product shot."
+      "he": "בחרו אורך ורוחב והמחיר יתעדכן אוטומטית. לדוגמה, 22 אינץ׳ (55.88 ס״מ) ברוחב 5 מ״מ עולה 339.90 ₪. גרסאות הזהב, אם מוצגות, הן בציפוי זהב 18K.",
+      "en": "Choose a length and width and the price updates automatically. For example, 22 in (55.88 cm) at 5mm width costs ₪339.90. Gold versions, where offered, use 18K gold plating."
     },
     "giftPackaging": {
       "optional": true,
@@ -1147,18 +1285,26 @@ var PRODUCTS = [
     }
   },
   {
-    "id": "gold-clover-set-01",
+    "id": "star-tennis-bracelet-11",
     "slug": "product-11",
-    "urlSlug": "gold-clover-set",
-    "sku": "KW-SET-GOLD-01",
-    "category": "necklaces",
+    "urlSlug": "star-tennis-bracelet-6-5mm",
+    "sku": "KW-BR-011",
+    "category": "bracelets",
     "categories": [
-      "necklaces",
-      "bracelets",
-      "sets"
+      "bracelets"
     ],
     "badge": null,
     "hoverImage": "images/products/product-11/product-11-3.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-11/product-11-2.png",
+        "hoverImage": "images/products/product-11/product-11-3.png"
+      },
+      "men": {
+        "image": "images/products/product-11/product-11-1.png",
+        "hoverImage": "images/products/product-11/product-11-3.png"
+      }
+    },
     "cardMode": "view",
     "hideMessageCard": true,
     "images": [
@@ -1166,23 +1312,61 @@ var PRODUCTS = [
       "images/products/product-11/product-11-2.png",
       "images/products/product-11/product-11-3.png"
     ],
-    "price": 169.9,
-    "compareAt": 269.9,
+    "price": 189.9,
+    "compareAt": 219.9,
     "title": {
-      "he": "סט תלתן זהב - שרשרת וצמיד | ציפוי Sterling Silver 925, בצבע זהב",
-      "en": "Gold Clover Set - Necklace & Bracelet | 925 Sterling Silver Plating, Gold Color"
+      "he": "צמיד טניס כוכבים 6.5 מ״מ משובץ זירקוניה - ציפוי זהב לבן",
+      "en": "6.5mm Star Tennis Bracelet with Cubic Zirconia - White Gold Plated"
     },
     "subtitle": {
-      "he": "סט תואם בציפוי Sterling Silver 925, בצבע זהב, עם שיבוצי אבנים נוצצות",
-      "en": "925 Sterling Silver plating in a gold color - a matching necklace and bracelet set with sparkling stones"
+      "he": "צמיד יוניסקס לנשים ולגברים · לבחירה ב־7, 8 או 9 אינץ׳ (17.8, 20.32 או 22.86 ס״מ) · מצופה זהב לבן",
+      "en": "Unisex bracelet for women and men · available in 7, 8 or 9 inches (17.8, 20.32 or 22.86 cm) · white-gold plated"
     },
+    "sizes": [
+      {
+        "id": "17.8cm",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "189.90 ₪",
+          "en": "₪189.90"
+        },
+        "label": {
+          "he": "7 אינץ׳ (17.8 ס״מ)",
+          "en": "7 in (17.8 cm)"
+        }
+      },
+      {
+        "id": "20.32cm",
+        "addPrice": 10,
+        "priceLabel": {
+          "he": "199.90 ₪",
+          "en": "₪199.90"
+        },
+        "label": {
+          "he": "8 אינץ׳ (20.32 ס״מ)",
+          "en": "8 in (20.32 cm)"
+        }
+      },
+      {
+        "id": "22.86cm",
+        "addPrice": 20,
+        "priceLabel": {
+          "he": "209.90 ₪",
+          "en": "₪209.90"
+        },
+        "label": {
+          "he": "9 אינץ׳ (22.86 ס״מ)",
+          "en": "9 in (22.86 cm)"
+        }
+      }
+    ],
     "cardTitle": {
-      "he": "סט תלתן זהב",
-      "en": "Gold Clover Set"
+      "he": "צמיד טניס כוכבים 6.5 מ״מ",
+      "en": "6.5mm Star Tennis Bracelet"
     },
     "cardMessage": {
-      "he": "סט תכשיטים תואם הכולל שרשרת וצמיד, בציפוי Sterling Silver 925 ובצבע זהב, למראה אלגנטי המתאים לשימוש יומיומי.",
-      "en": "A matching necklace and bracelet set with 925 Sterling Silver plating in a gold color, designed for an elegant everyday look."
+      "he": "צמיד טניס יוניסקס במראה יוקרתי עם שיבוץ אבני זירקוניה ודוגמת כוכבים לאורך הצמיד. מתאים לנשים ולגברים ולכמה אורכים לבחירה.",
+      "en": "A premium-looking unisex tennis bracelet with cubic zirconia stones and a repeating star motif, suitable for women and men with multiple length options."
     },
     "signature": {
       "he": "",
@@ -1190,25 +1374,25 @@ var PRODUCTS = [
     },
     "details": {
       "he": [
-        "חומר המוצר: ציפוי Sterling Silver 925 לפי מפרט הספק",
-        "הסט כולל שרשרת וצמיד תואמים",
-        "צבע התכשיט: זהב",
-        "עיטור תלתן עם שיבוצי אבנים נוצצות",
-        "כולל 3 תמונות מוצר לצפייה בגלריה",
-        "ניתן להוסיף מארז LOVE FOREVER בצבע ורוד, אדום או שחור"
+        "צמיד טניס יוניסקס עם דוגמת כוכבים ושיבוץ אבני Cubic Zirconia",
+        "לבחירה באורכים: 7 אינץ׳ (17.8 ס״מ), 8 אינץ׳ (20.32 ס״מ) או 9 אינץ׳ (22.86 ס״מ)",
+        "גוון התכשיט: כסף / זהב לבן",
+        "צמיד מצופה זהב לבן",
+        "קיימות גם גרסאות בציפוי זהב",
+        "המחיר מתעדכן אוטומטית לפי האורך שנבחר"
       ],
       "en": [
-        "Includes a matching necklace and bracelet",
-        "925 Sterling Silver plating, gold color",
-        "Gold tone with sparkling stone details",
-        "No style or box selection required",
-        "Includes 3 product photos",
-        "Direct add-to-cart from the product page"
+        "Unisex tennis bracelet with a star motif and cubic zirconia stones",
+        "Available in 7 in (17.8 cm), 8 in (20.32 cm), or 9 in (22.86 cm) lengths",
+        "Silver / white-gold tone finish",
+        "White-gold plated finish",
+        "Also available in gold-plated variants",
+        "Price updates automatically according to the selected size"
       ]
     },
     "afterText": {
-      "he": "סט תואם של שרשרת וצמיד בציפוי Sterling Silver 925 ובצבע זהב, עם גלריית תמונות שמציגה את הסט יחד וגם כל פריט מקרוב.",
-      "en": "A matching necklace and bracelet set with 925 Sterling Silver plating in a gold color, with a gallery showing the set together and each piece up close."
+      "he": "הגלריה מציגה את הצמיד כתמונת מוצר, על היד ובזווית תקריב. הדגם המוצג כאן הוא בגוון כסף/זהב לבן ומצופה זהב לבן.",
+      "en": "The gallery shows the bracelet as a clean product shot, on-wrist, and in a close-up angle. The version shown here has a silver/white-gold tone and a white-gold plated finish."
     },
     "giftPackaging": {
       "optional": true,
@@ -1260,18 +1444,26 @@ var PRODUCTS = [
     }
   },
   {
-    "id": "silver-clover-set-01",
+    "id": "star-tennis-bracelet-12",
     "slug": "product-12",
-    "urlSlug": "silver-clover-set",
-    "sku": "KW-SET-SILVER-01",
-    "category": "necklaces",
+    "urlSlug": "star-tennis-bracelet-6mm-white-gold",
+    "sku": "KW-BR-012",
+    "category": "bracelets",
     "categories": [
-      "necklaces",
-      "bracelets",
-      "sets"
+      "bracelets"
     ],
     "badge": null,
     "hoverImage": "images/products/product-12/product-12-3.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-12/product-12-2.png",
+        "hoverImage": "images/products/product-12/product-12-3.png"
+      },
+      "men": {
+        "image": "images/products/product-12/product-12-1.png",
+        "hoverImage": "images/products/product-12/product-12-3.png"
+      }
+    },
     "cardMode": "view",
     "hideMessageCard": true,
     "images": [
@@ -1279,23 +1471,61 @@ var PRODUCTS = [
       "images/products/product-12/product-12-2.png",
       "images/products/product-12/product-12-3.png"
     ],
-    "price": 169.9,
-    "compareAt": 259.9,
+    "price": 189.9,
+    "compareAt": 279.9,
     "title": {
-      "he": "סט תלתן כסף - שרשרת וצמיד | ציפוי Sterling Silver 925",
-      "en": "Silver Clover Set - Necklace & Bracelet | 925 Sterling Silver Plating"
+      "he": "צמיד טניס כוכבים 6 מ״מ משובץ זירקוניה - ציפוי זהב לבן",
+      "en": "6mm Star Tennis Bracelet with Cubic Zirconia - White Gold Plated"
     },
     "subtitle": {
-      "he": "סט תואם של שרשרת וצמיד בציפוי Sterling Silver 925 עם שיבוצי אבנים נוצצות",
-      "en": "Matching necklace and bracelet set with 925 Sterling Silver plating and sparkling stones"
+      "he": "צמיד יוניסקס לנשים ולגברים · 7, 8 או 9 אינץ׳ (17.8 / 20.32 / 22.86 ס״מ) · מצופה זהב לבן",
+      "en": "Unisex bracelet for women and men · 7, 8 or 9 in (17.8 / 20.32 / 22.86 cm) · white-gold plated"
     },
+    "sizes": [
+      {
+        "id": "7in",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "189.90 ₪",
+          "en": "₪189.90"
+        },
+        "label": {
+          "he": "7 אינץ׳ (17.8 ס״מ)",
+          "en": "7 in (17.8 cm)"
+        }
+      },
+      {
+        "id": "8in",
+        "addPrice": 10,
+        "priceLabel": {
+          "he": "199.90 ₪",
+          "en": "₪199.90"
+        },
+        "label": {
+          "he": "8 אינץ׳ (20.32 ס״מ)",
+          "en": "8 in (20.32 cm)"
+        }
+      },
+      {
+        "id": "9in",
+        "addPrice": 20,
+        "priceLabel": {
+          "he": "209.90 ₪",
+          "en": "₪209.90"
+        },
+        "label": {
+          "he": "9 אינץ׳ (22.86 ס״מ)",
+          "en": "9 in (22.86 cm)"
+        }
+      }
+    ],
     "cardTitle": {
-      "he": "סט תלתן כסף",
-      "en": "Silver Clover Set"
+      "he": "צמיד טניס כוכבים 6 מ״מ",
+      "en": "6mm Star Tennis Bracelet"
     },
     "cardMessage": {
-      "he": "סט תכשיטים תואם הכולל שרשרת וצמיד, בציפוי Sterling Silver 925 ובעיצוב עדין עם שיבוצי אבנים נוצצות.",
-      "en": "A matching necklace and bracelet set with 925 Sterling Silver plating and delicate sparkling stone details."
+      "he": "צמיד טניס יוניסקס במראה יוקרתי עם שיבוץ אבני זירקוניה ודוגמת כוכבים. מתאים לנשים ולגברים ומגיע בשלושה אורכים לבחירה.",
+      "en": "A premium unisex tennis bracelet with cubic zirconia stones and a star motif, suitable for women and men and available in three lengths."
     },
     "signature": {
       "he": "",
@@ -1303,25 +1533,25 @@ var PRODUCTS = [
     },
     "details": {
       "he": [
-        "חומר המוצר: ציפוי Sterling Silver 925 לפי מפרט הספק",
-        "הסט כולל שרשרת וצמיד תואמים",
-        "צבע התכשיט: כסוף",
-        "עיטור תלתן עם שיבוצי אבנים נוצצות",
-        "כולל 3 תמונות מוצר לצפייה בגלריה",
-        "ניתן להוסיף מארז LOVE FOREVER בצבע ורוד, אדום או שחור"
+        "צמיד טניס יוניסקס עם דוגמת כוכבים ושיבוץ אבני Cubic Zirconia",
+        "לבחירה באורכים: 7, 8 או 9 אינץ׳ (17.8, 20.32 או 22.86 ס״מ)",
+        "גוון התכשיט: כסף / זהב לבן",
+        "הדגם מצופה זהב לבן",
+        "קיימות גם גרסאות מצופות זהב",
+        "המחיר מתעדכן אוטומטית לפי האורך שנבחר"
       ],
       "en": [
-        "Includes a matching necklace and bracelet",
-        "925 Sterling Silver plating",
-        "Silver finish with sparkling stone details",
-        "No style or box selection required",
-        "Includes 3 product photos",
-        "Direct add-to-cart from the product page"
+        "Unisex tennis bracelet with a star motif and cubic zirconia stones",
+        "Available in 7, 8 or 9 inches (17.8, 20.32 or 22.86 cm)",
+        "Silver / white-gold tone finish",
+        "White-gold plated finish",
+        "Also available in gold-plated variants",
+        "Price updates automatically according to the selected size"
       ]
     },
     "afterText": {
-      "he": "סט תואם של שרשרת וצמיד בציפוי Sterling Silver 925, עם גלריית תמונות שמציגה את הסט יחד וגם כל פריט מקרוב.",
-      "en": "A matching necklace and bracelet set with 925 Sterling Silver plating, with a gallery showing the set together and each piece up close."
+      "he": "הגלריה מציגה את הצמיד כתמונת מוצר, על היד ובזווית תקריב. הדגם המוצג כאן הוא בגוון כסף/זהב לבן ומצופה זהב לבן.",
+      "en": "The gallery shows the bracelet as a clean product shot, on-wrist, and in a close-up angle. The version shown here has a silver/white-gold tone with a white-gold plated finish."
     },
     "giftPackaging": {
       "optional": true,
@@ -1373,9 +1603,9 @@ var PRODUCTS = [
     }
   },
   {
-    "id": "tennis-bracelet-4mm-01",
+    "id": "tennis-bracelet-emerald-3mm-13",
     "slug": "product-13",
-    "urlSlug": "tennis-bracelet-4mm",
+    "urlSlug": "tennis-bracelet-emerald-3mm",
     "sku": "KW-BR-013",
     "category": "bracelets",
     "categories": [
@@ -1385,65 +1615,76 @@ var PRODUCTS = [
     "hoverImage": "images/products/product-13/product-13-3.png",
     "collectionMedia": {
       "women": {
-        "image": "images/products/product-13/product-13-3.png",
-        "hoverImage": "images/products/product-13/product-13-2.png"
+        "image": "images/products/product-13/product-13-2.png",
+        "hoverImage": "images/products/product-13/product-13-3.png"
       },
       "men": {
         "image": "images/products/product-13/product-13-1.png",
-        "hoverImage": "images/products/product-13/product-13-2.png"
+        "hoverImage": "images/products/product-13/product-13-3.png"
       }
     },
     "cardMode": "view",
     "hideMessageCard": true,
-    "sourceUrl": "https://he.aliexpress.com/item/1005007458567655.html",
     "images": [
       "images/products/product-13/product-13-1.png",
       "images/products/product-13/product-13-2.png",
       "images/products/product-13/product-13-3.png"
     ],
-    "price": 124.9,
-    "compareAt": 204.9,
+    "price": 229.9,
+    "compareAt": 309.9,
     "title": {
-      "he": "צמיד טניס יוניסקס 4 מ״מ משובץ זירקוניה",
-      "en": "Unisex 4mm Cubic Zirconia Tennis Bracelet"
+      "he": "צמיד טניס 3 מ״מ משובץ זירקוניה בחיתוך מרובע - ציפוי זהב לבן",
+      "en": "3mm Emerald-Cut Cubic Zirconia Tennis Bracelet - White Gold Plated"
     },
     "subtitle": {
-      "he": "צמיד טניס יוניסקס לנשים ולגברים - לבחירה באורך 17 או 19 ס״מ",
-      "en": "A unisex 4mm tennis bracelet for women and men - choose 17cm or 19cm"
+      "he": "צמיד יוניסקס לנשים ולגברים · 7, 8 או 9 אינץ׳ (17.8 / 20.32 / 22.86 ס״מ) · ציפוי זהב לבן",
+      "en": "Unisex bracelet for women and men · 7, 8 or 9 in (17.8 / 20.32 / 22.86 cm) · white gold plated"
     },
     "sizes": [
       {
-        "id": "17cm",
+        "id": "7in",
         "addPrice": 0,
         "priceLabel": {
-          "he": "124.90 ₪",
-          "en": "₪124.90"
+          "he": "229.90 ₪",
+          "en": "₪229.90"
         },
         "label": {
-          "he": "17 ס״מ",
-          "en": "17 cm"
+          "he": "7 אינץ׳ (17.8 ס״מ)",
+          "en": "7 in (17.8 cm)"
         }
       },
       {
-        "id": "19cm",
-        "addPrice": 5,
+        "id": "8in",
+        "addPrice": 10,
         "priceLabel": {
-          "he": "129.90 ₪",
-          "en": "₪129.90"
+          "he": "239.90 ₪",
+          "en": "₪239.90"
         },
         "label": {
-          "he": "19 ס״מ",
-          "en": "19 cm"
+          "he": "8 אינץ׳ (20.32 ס״מ)",
+          "en": "8 in (20.32 cm)"
+        }
+      },
+      {
+        "id": "9in",
+        "addPrice": 20,
+        "priceLabel": {
+          "he": "249.90 ₪",
+          "en": "₪249.90"
+        },
+        "label": {
+          "he": "9 אינץ׳ (22.86 ס״מ)",
+          "en": "9 in (22.86 cm)"
         }
       }
     ],
     "cardTitle": {
-      "he": "צמיד טניס יוניסקס 4 מ״מ",
-      "en": "Unisex 4mm Tennis Bracelet"
+      "he": "צמיד טניס 3 מ״מ אבנים מרובעות",
+      "en": "3mm Emerald-Cut Tennis Bracelet"
     },
     "cardMessage": {
-      "he": "",
-      "en": ""
+      "he": "צמיד טניס יוניסקס במראה יוקרתי עם שיבוץ אבני זירקוניה בחיתוך מרובע. מתאים לנשים ולגברים ומגיע בשלושה אורכים לבחירה.",
+      "en": "A premium unisex tennis bracelet with emerald-cut cubic zirconia stones, suitable for women and men and available in three lengths."
     },
     "signature": {
       "he": "",
@@ -1451,27 +1692,25 @@ var PRODUCTS = [
     },
     "details": {
       "he": [
-        "אבני Cubic Zirconia בגודל כ־4 מ״מ",
-        "לבחירה בשני אורכים: 17 ס״מ או 19 ס״מ",
-        "סוגר מתקפל",
-        "משקל משוער: כ־10 גרם",
-        "בסיס מתכתי מסוג נחושת לפי מפרט הספק",
-        "עיצוב יוניסקס - מתאים לנשים ולגברים",
-        "מתאים ללבוש יומיומי, אירועים ומתנה"
+        "צמיד טניס יוניסקס עם אבני Cubic Zirconia בחיתוך מרובע",
+        "רוחב הדגם: 3 מ״מ",
+        "לבחירה באורכים: 7, 8 או 9 אינץ׳ (17.8, 20.32 או 22.86 ס״מ)",
+        "גוון התכשיט: כסף / זהב לבן",
+        "ציפוי זהב לבן",
+        "המחיר מתעדכן אוטומטית לפי האורך שנבחר"
       ],
       "en": [
-        "Approx. 4mm cubic zirconia stones",
-        "Available in two lengths: 17cm or 19cm",
-        "Fold-over clasp",
-        "Approximate weight: 10g",
-        "Copper metal base according to supplier specifications",
-        "Unisex design - suitable for women and men",
-        "Suitable for daily wear, events and gifting"
+        "Unisex tennis bracelet with emerald-cut cubic zirconia stones",
+        "Model width: 3mm",
+        "Available in 7, 8 or 9 inches (17.8, 20.32 or 22.86 cm)",
+        "Silver / white-gold tone finish",
+        "White gold plated",
+        "Price updates automatically according to the selected size"
       ]
     },
     "afterText": {
-      "he": "בחרו את האורך שמתאים לפרק כף היד והוסיפו לסל. בגלריה מופיעות 3 תמונות של הצמיד.",
-      "en": "Choose the wrist length that suits you and add it to cart. The gallery includes 3 bracelet photos."
+      "he": "הגלריה מציגה את הצמיד כתמונת מוצר, על היד ובזווית תקריב. זהו דגם עדין ברוחב 3 מ״מ עם שיבוץ אבנים מרובעות ומראה יוקרתי.",
+      "en": "The gallery shows the bracelet as a clean product shot, on-wrist, and in a close-up angle. This is a refined 3mm model with emerald-cut stones and a premium look."
     },
     "deliveryBusinessDays": {
       "min": 9,

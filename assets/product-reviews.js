@@ -27,8 +27,13 @@
 
   var params = new URLSearchParams(window.location.search);
   var requestedId = params.get('id');
-  var product = findProduct(requestedId) || PRODUCTS[0];
-  if (!product) return;
+  var pathSlug = '';
+  try { pathSlug = decodeURIComponent(window.location.pathname.replace(/^\/+|\/+$/g, '')); } catch (_) {}
+  var product = findProduct(pathSlug) || findProduct(requestedId);
+  if (!product) {
+    root.hidden = true;
+    return;
+  }
 
   var reviews = [];
   var activeModalReview = null;
