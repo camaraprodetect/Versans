@@ -1212,28 +1212,22 @@ var PRODUCTS = [
         "שרשרת טניס יוניסקס - מתאימה לנשים ולגברים",
         "משובצת אבני Cubic Zirconia",
         "רוחב לבחירה: 3 מ״מ, 4 מ״מ או 5 מ״מ",
-        "לבחירה באורכים: 16, 18, 20, 22 או 24 אינץ׳, עם המרה לסנטימטרים",
-        "מחיר בסיס: 269.90 ₪ ל־16 אינץ׳ ברוחב 3 מ״מ",
-        "כל תוספת של 1 מ״מ לרוחב מוסיפה 5 ₪, וכל 2 אינץ׳ לאורך מוסיפים 20 ₪",
-        "השילוב 18 אינץ׳ עם רוחב 4 מ״מ אינו במלאי כרגע",
+        "לבחירה באורכים: 16, 18, 20, 22 או 24 אינץ׳",
         "גוון התכשיט: צבע כסף",
-        "קיימים גם דגמים בציפוי זהב 18K"
+        "קיימים גם דגמים בציפוי 5 שכבות זהב 18 קראט"
       ],
       "en": [
         "Unisex tennis chain suitable for women and men",
         "Set with cubic zirconia stones",
         "Choose 3mm, 4mm or 5mm width",
-        "Choose 16, 18, 20, 22 or 24 inch length with centimeter conversion",
-        "Base price: ₪269.90 for 16 in at 3mm width",
-        "Each extra 1mm of width adds ₪5, and each extra 2 inches of length adds ₪20",
-        "The 18 in + 4mm combination is currently out of stock",
+        "Choose 16, 18, 20, 22 or 24 inch length",
         "Silver-tone finish",
-        "Gold versions use 18K gold plating"
+        "Gold versions use 5 layers of 18K gold plating"
       ]
     },
     "afterText": {
-      "he": "בחרו אורך ורוחב והמחיר יתעדכן אוטומטית. לדוגמה, 22 אינץ׳ (55.88 ס״מ) ברוחב 5 מ״מ עולה 339.90 ₪. גרסאות הזהב, אם מוצגות, הן בציפוי זהב 18K.",
-      "en": "Choose a length and width and the price updates automatically. For example, 22 in (55.88 cm) at 5mm width costs ₪339.90. Gold versions, where offered, use 18K gold plating."
+      "he": "בחרו אורך ורוחב והמחיר יתעדכן אוטומטית. לדוגמה, 22 אינץ׳ (55.88 ס״מ) ברוחב 5 מ״מ עולה 339.90 ₪. גרסאות הזהב, אם מוצגות, הן בציפוי 5 שכבות זהב 18 קראט.",
+      "en": "Choose a length and width and the price updates automatically. For example, 22 in (55.88 cm) at 5mm width costs ₪339.90. Gold versions, where offered, use 5 layers of 18K gold plating."
     },
     "giftPackaging": {
       "optional": true,
@@ -1722,10 +1716,197 @@ var PRODUCTS = [
     }
   },
   {
-    "id": "tennis-necklace-2mm-01",
+    "id": "noir-black-tennis-bracelet-14",
     "slug": "product-14",
-    "urlSlug": "tennis-necklace-2mm",
-    "sku": "KW-NK-014",
+    "urlSlug": "noir-black-tennis-bracelet",
+    "sku": "KW-BR-014",
+    "category": "bracelets",
+    "categories": [
+      "bracelets"
+    ],
+    "badge": null,
+    "hoverImage": "images/products/product-14/product-14-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-14/product-14-2.png",
+        "hoverImage": "images/products/product-14/product-14-1.png"
+      },
+      "men": {
+        "image": "images/products/product-14/product-14-1.png",
+        "hoverImage": "images/products/product-14/product-14-2.png"
+      }
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "images": [
+      "images/products/product-14/product-14-1.png",
+      "images/products/product-14/product-14-2.png",
+      "images/products/product-14/product-14-3.png"
+    ],
+    "price": 189.9,
+    "compareAt": 249.9,
+    "title": {
+      "he": "צמיד טניס נואר שחור",
+      "en": "Noir Black Tennis Bracelet"
+    },
+    "subtitle": {
+      "he": "צמיד יוניסקס לנשים ולגברים · לבחירה ב־7 או 8 אינץ׳ (17.8 / 20.32 ס״מ) וברוחב 3 או 4 מ״מ",
+      "en": "Unisex bracelet for women and men · choose 7 or 8 in (17.8 / 20.32 cm) and 3mm or 4mm width"
+    },
+    "sizeHeading": {
+      "he": "בחרו אורך",
+      "en": "Choose length"
+    },
+    "colorHeading": {
+      "he": "בחרו עובי",
+      "en": "Choose width"
+    },
+    "colorRequiredText": {
+      "he": "נא לבחור עובי",
+      "en": "Please choose a width"
+    },
+    "sizes": [
+      {
+        "id": "7in",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "189.90 ₪",
+          "en": "₪189.90"
+        },
+        "label": {
+          "he": "7 אינץ׳ (17.8 ס״מ)",
+          "en": "7 in (17.8 cm)"
+        }
+      },
+      {
+        "id": "8in",
+        "addPrice": 5,
+        "priceLabel": {
+          "he": "194.90 ₪",
+          "en": "₪194.90"
+        },
+        "label": {
+          "he": "8 אינץ׳ (20.32 ס״מ)",
+          "en": "8 in (20.32 cm)"
+        }
+      }
+    ],
+    "colors": [
+      {
+        "id": "3mm",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "ללא תוספת",
+          "en": "Included"
+        },
+        "label": {
+          "he": "3 מ״מ",
+          "en": "3 mm"
+        }
+      },
+      {
+        "id": "4mm",
+        "addPrice": 5,
+        "priceLabel": {
+          "he": "+5 ₪",
+          "en": "+₪5"
+        },
+        "label": {
+          "he": "4 מ״מ",
+          "en": "4 mm"
+        }
+      }
+    ],
+    "cardTitle": {
+      "he": "צמיד טניס נואר שחור",
+      "en": "Noir Black Tennis Bracelet"
+    },
+    "cardMessage": {
+      "he": "צמיד טניס שחור במראה יוקרתי ונקי, עם בחירה של אורך ועובי להתאמה מדויקת.",
+      "en": "A sleek black tennis bracelet with a premium look and selectable length and width for a precise fit."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צמיד טניס יוניסקס לנשים ולגברים",
+        "משובץ אבני Cubic Zirconia שחורות",
+        "לבחירה ברוחב 3 מ״מ או 4 מ״מ",
+        "לבחירה באורכים: 7 אינץ׳ (17.8 ס״מ) או 8 אינץ׳ (20.32 ס״מ)",
+        "גוון התכשיט: שחור",
+        "ציפוי שחור בגימור מבריק",
+        "המחיר מתעדכן אוטומטית לפי האורך והעובי שנבחרו"
+      ],
+      "en": [
+        "Unisex tennis bracelet for women and men",
+        "Set with black cubic zirconia stones",
+        "Choose 3mm or 4mm width",
+        "Available in 7 in (17.8 cm) or 8 in (20.32 cm)",
+        "Black finish",
+        "Glossy black plated finish",
+        "Price updates automatically according to the selected length and width"
+      ]
+    },
+    "afterText": {
+      "he": "הגלריה מציגה את הצמיד כתמונת מוצר, על היד ובזווית תקריב. זהו דגם שחור במראה נקי וחד, שמתאים גם ליומיום וגם ללוק ערב.",
+      "en": "The gallery shows the bracelet as a clean product shot, on-wrist, and in a close-up angle. This black model has a sharp, clean look suited for both everyday wear and evening styling."
+    },
+    "giftPackaging": {
+      "optional": true,
+      "addOnPrice": 54.9,
+      "heading": {
+        "he": "הוספת אריזה",
+        "en": "Add gift packaging"
+      },
+      "description": {
+        "he": "אפשר להוסיף את מארז LOVE FOREVER באחד משלושה צבעים.",
+        "en": "Add the LOVE FOREVER packaging in one of three colors."
+      },
+      "options": [
+        {
+          "id": "pink",
+          "addPrice": 54.9,
+          "label": {
+            "he": "מארז ורוד",
+            "en": "Pink packaging"
+          },
+          "swatch": "#F3A3AD",
+          "image": "images/products/product-19/product-19-pink.png"
+        },
+        {
+          "id": "red",
+          "addPrice": 54.9,
+          "label": {
+            "he": "מארז אדום",
+            "en": "Red packaging"
+          },
+          "swatch": "#C8141C",
+          "image": "images/products/product-19/product-19-red.png"
+        },
+        {
+          "id": "black",
+          "addPrice": 54.9,
+          "label": {
+            "he": "מארז שחור",
+            "en": "Black packaging"
+          },
+          "swatch": "#161616",
+          "image": "images/products/product-19/product-19-black.png"
+        }
+      ]
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "flora-cuban-chain-01",
+    "slug": "product-15",
+    "urlSlug": "custom-name-necklace",
+    "sku": "KW-NK-015",
     "category": "necklaces",
     "categories": [
       "necklaces"
@@ -1733,275 +1914,106 @@ var PRODUCTS = [
     "badge": null,
     "cardMode": "view",
     "hideMessageCard": true,
-    "hoverImage": "images/products/product-14/product-14-1.png",
+    "hoverImage": "images/products/product-15/product-15-1.png",
     "collectionMedia": {
       "women": {
-        "image": "images/products/product-14/product-14-1.png",
-        "hoverImage": "images/products/product-14/product-14-3.png"
+        "image": "images/products/product-15/product-15-3.png",
+        "hoverImage": "images/products/product-15/product-15-1.png"
       },
       "men": {
-        "image": "images/products/product-14/product-14-man.png",
-        "hoverImage": "images/products/product-14/product-14-3.png"
+        "image": "images/products/product-15/product-15-3.png",
+        "hoverImage": "images/products/product-15/product-15-1.png"
       }
     },
-    "sourceUrl": "https://he.aliexpress.com/item/1005011739599747.html",
+    "sourceUrl": "https://he.aliexpress.com/item/1005009350329550.html",
     "images": [
-      "images/products/product-14/product-14-man.png",
-      "images/products/product-14/product-14-1.png",
-      "images/products/product-14/product-14-3.png",
-      "images/products/product-14/product-14-4.png"
-    ],
-    "price": 139.9,
-    "compareAt": 229.9,
-    "title": {
-      "he": "שרשרת טניס יוניסקס 2 מ״מ משובצת זירקוניה",
-      "en": "Unisex 2mm Cubic Zirconia Tennis Necklace"
-    },
-    "subtitle": {
-      "he": "יוניסקס לנשים ולגברים · רוחב 2 מ״מ - לבחירה באורך 40 או 45 ס״מ",
-      "en": "Unisex for women and men · 2mm width - choose 40cm or 45cm length"
-    },
-    "sizes": [
-      {
-        "id": "40cm",
-        "addPrice": 0,
-        "priceLabel": {
-          "he": "139.90 ₪",
-          "en": "₪139.90"
-        },
-        "label": {
-          "he": "40 ס״מ",
-          "en": "40 cm"
-        }
-      },
-      {
-        "id": "45cm",
-        "addPrice": 5,
-        "priceLabel": {
-          "he": "144.90 ₪",
-          "en": "₪144.90"
-        },
-        "label": {
-          "he": "45 ס״מ",
-          "en": "45 cm"
-        }
-      }
-    ],
-    "cardTitle": {
-      "he": "שרשרת טניס יוניסקס 2 מ״מ",
-      "en": "Unisex 2mm Tennis Necklace"
-    },
-    "cardMessage": {
-      "he": "",
-      "en": ""
-    },
-    "signature": {
-      "he": "",
-      "en": ""
-    },
-    "details": {
-      "he": [
-        "שרשרת טניס יוניסקס ברוחב 2 מ״מ - מתאימה לנשים ולגברים",
-        "לבחירה בשני אורכים: 40 ס״מ או 45 ס״מ",
-        "עיצוב משובץ ונוצץ במראה נקי ואלגנטי",
-        "מתאימה ללבוש יומיומי, ערב ומתנה",
-        "המחיר מתעדכן אוטומטית לפי האורך שנבחר"
-      ],
-      "en": [
-        "Unisex 2mm tennis necklace - suitable for women and men",
-        "Available in two lengths: 40cm or 45cm",
-        "Sparkling stone-set design with a clean, elegant look",
-        "Suitable for everyday wear, evenings and gifting",
-        "Price updates automatically according to the selected length"
-      ]
-    },
-    "afterText": {
-      "he": "הרוחב קבוע על 2 מ״מ. בחרו רק את האורך הרצוי - 40 או 45 ס״מ - והוסיפו לסל.",
-      "en": "The width is fixed at 2mm. Simply choose the preferred length - 40cm or 45cm - and add it to cart."
-    },
-    "giftPackaging": {
-      "optional": true,
-      "addOnPrice": 54.9,
-      "heading": {
-        "he": "הוספת אריזה",
-        "en": "Add gift packaging"
-      },
-      "description": {
-        "he": "אפשר להוסיף את מארז LOVE FOREVER באחד משלושה צבעים.",
-        "en": "Add the LOVE FOREVER packaging in one of three colors."
-      },
-      "options": [
-        {
-          "id": "pink",
-          "addPrice": 54.9,
-          "label": {
-            "he": "מארז ורוד",
-            "en": "Pink packaging"
-          },
-          "swatch": "#F3A3AD",
-          "image": "images/products/product-19/product-19-pink.png"
-        },
-        {
-          "id": "red",
-          "addPrice": 54.9,
-          "label": {
-            "he": "מארז אדום",
-            "en": "Red packaging"
-          },
-          "swatch": "#C8141C",
-          "image": "images/products/product-19/product-19-red.png"
-        },
-        {
-          "id": "black",
-          "addPrice": 54.9,
-          "label": {
-            "he": "מארז שחור",
-            "en": "Black packaging"
-          },
-          "swatch": "#161616",
-          "image": "images/products/product-19/product-19-black.png"
-        }
-      ]
-    },
-    "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    }
-  },
-  {
-    "id": "custom-name-necklace-925-01",
-    "slug": "product-15",
-    "urlSlug": "custom-name-necklace",
-    "sku": "KW-CUSTOM-015",
-    "category": "necklaces",
-    "categories": [
-      "necklaces",
-      "custom"
-    ],
-    "badge": {
-      "he": "CUSTOM",
-      "en": "CUSTOM"
-    },
-    "cardMode": "view",
-    "hideMessageCard": true,
-    "hoverImage": "images/products/product-15/product-15-2.png",
-    "sourceUrl": "https://he.aliexpress.com/item/1005009141099300.html",
-    "images": [
+      "images/products/product-15/product-15-3.png",
       "images/products/product-15/product-15-1.png",
-      "images/products/product-15/product-15-2.png",
-      "images/products/product-15/product-15-rose-model.png",
-      "images/products/product-15/product-15-rose.png",
-      "images/products/product-15/product-15-steel-model.png",
-      "images/products/product-15/product-15-steel.png"
+      "images/products/product-15/product-15-2.png"
     ],
-    "price": 149.9,
-    "compareAt": 249.9,
+    "price": 339.9,
+    "compareAt": 439.9,
     "title": {
-      "he": "שרשרת שם CUSTOM בהתאמה אישית - ציפוי Sterling Silver 925",
-      "en": "CUSTOM Name Necklace - 925 Sterling Silver Plating"
+      "he": "שרשרת פלורה - צבע כסף",
+      "en": "Flora Chain"
     },
     "subtitle": {
-      "he": "בחרו אורך, צבע והקלידו את השם שייוצר במיוחד עבורכם",
-      "en": "Choose a length, color and enter the name to be custom-made for you"
+      "he": "שרשרת קובנית יוניסקס לנשים ולגברים · לבחירה באורכים 16, 18, 20, 22 או 24 אינץ׳",
+      "en": "Unisex Cuban chain for women and men · choose 16, 18, 20, 22 or 24 inch lengths"
+    },
+    "sizeHeading": {
+      "he": "בחרו אורך",
+      "en": "Choose length"
     },
     "sizes": [
       {
-        "id": "35cm",
+        "id": "16in",
         "addPrice": 0,
         "priceLabel": {
-          "he": "149.90 ₪",
-          "en": "₪149.90"
+          "he": "339.90 ₪",
+          "en": "₪339.90"
         },
         "label": {
-          "he": "35 ס״מ",
-          "en": "35 cm"
+          "he": "16 אינץ׳ (40.64 ס״מ)",
+          "en": "16 in (40.64 cm)"
         }
       },
       {
-        "id": "40cm",
-        "addPrice": 5,
-        "priceLabel": {
-          "he": "154.90 ₪",
-          "en": "₪154.90"
-        },
-        "label": {
-          "he": "40 ס״מ",
-          "en": "40 cm"
-        }
-      },
-      {
-        "id": "45cm",
-        "addPrice": 10,
-        "priceLabel": {
-          "he": "159.90 ₪",
-          "en": "₪159.90"
-        },
-        "label": {
-          "he": "45 ס״מ",
-          "en": "45 cm"
-        }
-      },
-      {
-        "id": "50cm",
+        "id": "18in",
         "addPrice": 15,
         "priceLabel": {
-          "he": "164.90 ₪",
-          "en": "₪164.90"
+          "he": "354.90 ₪",
+          "en": "₪354.90"
         },
         "label": {
-          "he": "50 ס״מ",
-          "en": "50 cm"
+          "he": "18 אינץ׳ (45.72 ס״מ)",
+          "en": "18 in (45.72 cm)"
+        }
+      },
+      {
+        "id": "20in",
+        "addPrice": 30,
+        "priceLabel": {
+          "he": "369.90 ₪",
+          "en": "₪369.90"
+        },
+        "label": {
+          "he": "20 אינץ׳ (50.80 ס״מ)",
+          "en": "20 in (50.80 cm)"
+        }
+      },
+      {
+        "id": "22in",
+        "addPrice": 45,
+        "priceLabel": {
+          "he": "384.90 ₪",
+          "en": "₪384.90"
+        },
+        "label": {
+          "he": "22 אינץ׳ (55.88 ס״מ)",
+          "en": "22 in (55.88 cm)"
+        }
+      },
+      {
+        "id": "24in",
+        "addPrice": 60,
+        "priceLabel": {
+          "he": "399.90 ₪",
+          "en": "₪399.90"
+        },
+        "label": {
+          "he": "24 אינץ׳ (60.96 ס״מ)",
+          "en": "24 in (60.96 cm)"
         }
       }
     ],
-    "colors": [
-      {
-        "id": "rose-gold",
-        "label": {
-          "he": "Rose Gold",
-          "en": "Rose Gold"
-        },
-        "swatch": "#C98D7C",
-        "image": "images/products/product-15/product-15-rose.png"
-      },
-      {
-        "id": "steel-color",
-        "label": {
-          "he": "Steel Color",
-          "en": "Steel Color"
-        },
-        "swatch": "#C9CED3",
-        "image": "images/products/product-15/product-15-steel.png"
-      },
-      {
-        "id": "gold",
-        "label": {
-          "he": "Gold",
-          "en": "Gold"
-        },
-        "swatch": "#D8AA4E",
-        "image": "images/products/product-15/product-15-2.png"
-      }
-    ],
-    "customName": {
-      "required": true,
-      "maxLength": 20,
-      "label": {
-        "he": "השם שיופיע על השרשרת",
-        "en": "Name on the necklace"
-      },
-      "placeholder": {
-        "he": "לדוגמה: Audrey",
-        "en": "Example: Audrey"
-      }
-    },
     "cardTitle": {
-      "he": "שרשרת שם CUSTOM",
-      "en": "CUSTOM Name Necklace"
+      "he": "שרשרת פלורה - צבע כסף",
+      "en": "Flora Chain"
     },
     "cardMessage": {
-      "he": "",
-      "en": ""
+      "he": "שרשרת קובנית משובצת במראה יוקרתי ונוכחות מרשימה. בחרו את האורך שמתאים לכם.",
+      "en": "A statement Cuban chain with a luxurious stone-set look. Choose the length that suits you."
     },
     "signature": {
       "he": "",
@@ -2009,69 +2021,23 @@ var PRODUCTS = [
     },
     "details": {
       "he": [
-        "שרשרת שם בהתאמה אישית - מיוצרת לפי השם שתקלידו",
-        "חומר: ציפוי Sterling Silver 925",
-        "לבחירה בארבעה אורכים: 35, 40, 45 או 50 ס״מ",
-        "צבע לבחירה ללא תוספת מחיר: Rose Gold, Steel Color או Gold",
-        "המחיר מתעדכן אוטומטית לפי האורך שנבחר",
-        "מוצר בהתאמה אישית מיוצר במיוחד לפי פרטי ההזמנה"
+        "שרשרת קובנית יוניסקס - מתאימה לנשים ולגברים",
+        "משובצת אבני זירקוניה 5A במראה יוקרתי",
+        "לבחירה באורכים: 16, 18, 20, 22 או 24 אינץ׳ (40.64–60.96 ס״מ)",
+        "גוון התכשיט: צבע כסף",
+        "סגירה חזקה ונוחה לשימוש יומיומי"
       ],
       "en": [
-        "Custom name necklace - made according to the name you enter",
-        "Material: 925 Sterling Silver Plating",
-        "Available in four lengths: 35, 40, 45 or 50 cm",
-        "Color choice at no extra cost: Rose Gold, Steel Color or Gold",
-        "Price updates automatically according to the selected length",
-        "This personalized item is made specifically to your order details"
+        "Unisex Cuban chain suitable for women and men",
+        "Set with 5A zirconia stones for a luxurious look",
+        "Available in 16, 18, 20, 22 or 24 inch lengths (40.64–60.96 cm)",
+        "Silver-tone finish",
+        "Secure clasp for comfortable daily wear"
       ]
     },
     "afterText": {
-      "he": "בחרו אורך וצבע, הקלידו את השם בדיוק כפי שתרצו שיופיע על השרשרת, ורק לאחר מכן הוסיפו לסל.",
-      "en": "Choose a length and color, enter the name exactly as you want it to appear on the necklace, then add it to cart."
-    },
-    "giftPackaging": {
-      "optional": true,
-      "addOnPrice": 54.9,
-      "heading": {
-        "he": "הוספת אריזה",
-        "en": "Add gift packaging"
-      },
-      "description": {
-        "he": "אפשר להוסיף את מארז LOVE FOREVER באחד משלושה צבעים.",
-        "en": "Add the LOVE FOREVER packaging in one of three colors."
-      },
-      "options": [
-        {
-          "id": "pink",
-          "addPrice": 54.9,
-          "label": {
-            "he": "מארז ורוד",
-            "en": "Pink packaging"
-          },
-          "swatch": "#F3A3AD",
-          "image": "images/products/product-19/product-19-pink.png"
-        },
-        {
-          "id": "red",
-          "addPrice": 54.9,
-          "label": {
-            "he": "מארז אדום",
-            "en": "Red packaging"
-          },
-          "swatch": "#C8141C",
-          "image": "images/products/product-19/product-19-red.png"
-        },
-        {
-          "id": "black",
-          "addPrice": 54.9,
-          "label": {
-            "he": "מארז שחור",
-            "en": "Black packaging"
-          },
-          "swatch": "#161616",
-          "image": "images/products/product-19/product-19-black.png"
-        }
-      ]
+      "he": "בחרו את האורך הרצוי והמחיר יתעדכן אוטומטית.",
+      "en": "Choose your preferred length and the price will update automatically."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -2079,7 +2045,7 @@ var PRODUCTS = [
     }
   },
   {
-    "id": "four-leaf-silver-necklace-01",
+    "id": "flora-gold-chain-01",
     "slug": "product-16",
     "urlSlug": "four-leaf-necklace",
     "sku": "KW-NK-016",
@@ -2091,28 +2057,105 @@ var PRODUCTS = [
     "cardMode": "view",
     "hideMessageCard": true,
     "hoverImage": "images/products/product-16/product-16-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-16/product-16-1.png",
+        "hoverImage": "images/products/product-16/product-16-2.png"
+      },
+      "men": {
+        "image": "images/products/product-16/product-16-1.png",
+        "hoverImage": "images/products/product-16/product-16-2.png"
+      }
+    },
+    "sourceUrl": "https://he.aliexpress.com/item/1005009350329550.html",
     "images": [
       "images/products/product-16/product-16-1.png",
       "images/products/product-16/product-16-2.png",
       "images/products/product-16/product-16-3.png"
     ],
-    "price": 139.9,
-    "compareAt": 219.9,
+    "price": 339.9,
+    "compareAt": 439.9,
     "title": {
-      "he": "שרשרת פרח ארבעה עלים - ציפוי Sterling Silver 925",
-      "en": "Four-Leaf Flower Necklace - 925 Sterling Silver Plating"
+      "he": "שרשרת פלורה - צבע זהב",
+      "en": "Flora Chain - Gold Color"
     },
     "subtitle": {
-      "he": "שרשרת עדינה לנשים בציפוי Sterling Silver 925 עם תליון פרח משובץ ונצנוץ אלגנטי",
-      "en": "Delicate women’s silver necklace with a sparkling four-leaf flower pendant"
+      "he": "שרשרת פלורה יוניסקס לנשים ולגברים · לבחירה באורכים 16, 18, 20, 22 או 24 אינץ׳ · צבע זהב",
+      "en": "Unisex Flora chain for women and men · choose 16, 18, 20, 22 or 24 inch lengths · gold color"
     },
+    "sizeHeading": {
+      "he": "בחרו אורך",
+      "en": "Choose length"
+    },
+    "sizes": [
+      {
+        "id": "16in",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "339.90 ₪",
+          "en": "₪339.90"
+        },
+        "label": {
+          "he": "16 אינץ׳ (40.64 ס״מ)",
+          "en": "16 in (40.64 cm)"
+        }
+      },
+      {
+        "id": "18in",
+        "addPrice": 15,
+        "priceLabel": {
+          "he": "354.90 ₪",
+          "en": "₪354.90"
+        },
+        "label": {
+          "he": "18 אינץ׳ (45.72 ס״מ)",
+          "en": "18 in (45.72 cm)"
+        }
+      },
+      {
+        "id": "20in",
+        "addPrice": 30,
+        "priceLabel": {
+          "he": "369.90 ₪",
+          "en": "₪369.90"
+        },
+        "label": {
+          "he": "20 אינץ׳ (50.80 ס״מ)",
+          "en": "20 in (50.80 cm)"
+        }
+      },
+      {
+        "id": "22in",
+        "addPrice": 45,
+        "priceLabel": {
+          "he": "384.90 ₪",
+          "en": "₪384.90"
+        },
+        "label": {
+          "he": "22 אינץ׳ (55.88 ס״מ)",
+          "en": "22 in (55.88 cm)"
+        }
+      },
+      {
+        "id": "24in",
+        "addPrice": 60,
+        "priceLabel": {
+          "he": "399.90 ₪",
+          "en": "₪399.90"
+        },
+        "label": {
+          "he": "24 אינץ׳ (60.96 ס״מ)",
+          "en": "24 in (60.96 cm)"
+        }
+      }
+    ],
     "cardTitle": {
-      "he": "שרשרת פרח ארבעה עלים",
-      "en": "Four-Leaf Flower Necklace"
+      "he": "שרשרת פלורה - צבע זהב",
+      "en": "Flora Chain - Gold Color"
     },
     "cardMessage": {
-      "he": "",
-      "en": ""
+      "he": "שרשרת פלורה משובצת במראה יוקרתי ונוכחות מרשימה. בחרו את האורך שמתאים לכם.",
+      "en": "A statement Flora chain with a luxurious stone-set look. Choose the length that suits you."
     },
     "signature": {
       "he": "",
@@ -2120,69 +2163,23 @@ var PRODUCTS = [
     },
     "details": {
       "he": [
-        "חומר המוצר: ציפוי Sterling Silver 925 לפי מפרט הספק",
-        "תליון פרח/עלה בעיצוב ארבעה עלים",
-        "שיבוץ אבני Zircon / Cubic Zirconia בגוון כסוף",
-        "גוון התכשיט: כסוף",
-        "כולל 3 תמונות מוצר לצפייה בגלריה",
-        "ניתן להוסיף מארז LOVE FOREVER בצבע ורוד, אדום או שחור"
+        "שרשרת פלורה יוניסקס - מתאימה לנשים ולגברים",
+        "משובצת אבני זירקוניה 5A במראה יוקרתי",
+        "לבחירה באורכים: 16, 18, 20, 22 או 24 אינץ׳ (40.64–60.96 ס״מ)",
+        "גוון התכשיט: צבע זהב",
+        "סגירה חזקה ונוחה לשימוש יומיומי"
       ],
       "en": [
-        "925 Sterling Silver plating",
-        "Four-leaf flower / leaf pendant design",
-        "Silver-tone Zircon / Cubic Zirconia stone accents",
-        "Approximate weight: 10g according to supplier specifications",
-        "A delicate design suitable for everyday wear, evenings and gifting",
-        "Women’s item - included in Mom, Wife, Daughter and Sister collections"
+        "Unisex Flora chain suitable for women and men",
+        "Set with 5A zirconia stones for a luxurious look",
+        "Available in 16, 18, 20, 22 or 24 inch lengths (40.64–60.96 cm)",
+        "Gold-tone finish",
+        "Secure clasp for comfortable daily wear"
       ]
     },
     "afterText": {
-      "he": "שרשרת עדינה בציפוי Sterling Silver 925 עם תליון פרח ארבעה עלים משובץ, בעיצוב נקי ואלגנטי.",
-      "en": "A delicate necklace with 925 Sterling Silver plating, a sparkling four-leaf flower pendant, and an elegant, refined finish."
-    },
-    "giftPackaging": {
-      "optional": true,
-      "addOnPrice": 54.9,
-      "heading": {
-        "he": "הוספת אריזה",
-        "en": "Add gift packaging"
-      },
-      "description": {
-        "he": "אפשר להוסיף את מארז LOVE FOREVER באחד משלושה צבעים.",
-        "en": "Add the LOVE FOREVER packaging in one of three colors."
-      },
-      "options": [
-        {
-          "id": "pink",
-          "addPrice": 54.9,
-          "label": {
-            "he": "מארז ורוד",
-            "en": "Pink packaging"
-          },
-          "swatch": "#F3A3AD",
-          "image": "images/products/product-19/product-19-pink.png"
-        },
-        {
-          "id": "red",
-          "addPrice": 54.9,
-          "label": {
-            "he": "מארז אדום",
-            "en": "Red packaging"
-          },
-          "swatch": "#C8141C",
-          "image": "images/products/product-19/product-19-red.png"
-        },
-        {
-          "id": "black",
-          "addPrice": 54.9,
-          "label": {
-            "he": "מארז שחור",
-            "en": "Black packaging"
-          },
-          "swatch": "#161616",
-          "image": "images/products/product-19/product-19-black.png"
-        }
-      ]
+      "he": "בחרו את האורך הרצוי והמחיר יתעדכן אוטומטית.",
+      "en": "Choose your preferred length and the price will update automatically."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -2190,41 +2187,117 @@ var PRODUCTS = [
     }
   },
   {
-    "id": "clover-tennis-bracelet-set-01",
+    "id": "flora-rose-gold-chain-01",
     "slug": "product-17",
     "urlSlug": "clover-tennis-bracelet-set",
-    "sku": "KW-BR-017",
-    "category": "bracelets",
+    "sku": "KW-NK-017",
+    "category": "necklaces",
     "categories": [
-      "bracelets",
-      "sets"
+      "necklaces"
     ],
     "badge": null,
     "cardMode": "view",
     "hideMessageCard": true,
-    "hoverImage": "images/products/product-17/product-17-hover.png",
+    "hoverImage": "images/products/product-17/product-17-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-17/product-17-1.png",
+        "hoverImage": "images/products/product-17/product-17-2.png"
+      },
+      "men": {
+        "image": "images/products/product-17/product-17-1.png",
+        "hoverImage": "images/products/product-17/product-17-2.png"
+      }
+    },
+    "sourceUrl": "https://he.aliexpress.com/item/1005009350329550.html",
     "images": [
       "images/products/product-17/product-17-1.png",
       "images/products/product-17/product-17-2.png",
       "images/products/product-17/product-17-3.png"
     ],
-    "price": 149.9,
-    "compareAt": 239.9,
+    "price": 339.9,
+    "compareAt": 439.9,
     "title": {
-      "he": "סט 2 צמידים לנשים - צמיד תלתן + צמיד טניס",
-      "en": "Women’s 2-Piece Bracelet Set - Clover + Tennis Bracelet"
+      "he": "שרשרת פלורה - צבע רוז גולד",
+      "en": "Flora Chain - Rose Gold Color"
     },
     "subtitle": {
-      "he": "שני צמידים כסופים משובצים שנועדו לענידה יחד או בנפרד",
-      "en": "Two sparkling silver-tone bracelets designed to be worn together or separately"
+      "he": "שרשרת פלורה יוניסקס לנשים ולגברים · לבחירה באורכים 16, 18, 20, 22 או 24 אינץ׳ · צבע רוז גולד",
+      "en": "Unisex Flora chain for women and men · choose 16, 18, 20, 22 or 24 inch lengths · rose-gold color"
     },
+    "sizeHeading": {
+      "he": "בחרו אורך",
+      "en": "Choose length"
+    },
+    "sizes": [
+      {
+        "id": "16in",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "339.90 ₪",
+          "en": "₪339.90"
+        },
+        "label": {
+          "he": "16 אינץ׳ (40.64 ס״מ)",
+          "en": "16 in (40.64 cm)"
+        }
+      },
+      {
+        "id": "18in",
+        "addPrice": 15,
+        "priceLabel": {
+          "he": "354.90 ₪",
+          "en": "₪354.90"
+        },
+        "label": {
+          "he": "18 אינץ׳ (45.72 ס״מ)",
+          "en": "18 in (45.72 cm)"
+        }
+      },
+      {
+        "id": "20in",
+        "addPrice": 30,
+        "priceLabel": {
+          "he": "369.90 ₪",
+          "en": "₪369.90"
+        },
+        "label": {
+          "he": "20 אינץ׳ (50.80 ס״מ)",
+          "en": "20 in (50.80 cm)"
+        }
+      },
+      {
+        "id": "22in",
+        "addPrice": 45,
+        "priceLabel": {
+          "he": "384.90 ₪",
+          "en": "₪384.90"
+        },
+        "label": {
+          "he": "22 אינץ׳ (55.88 ס״מ)",
+          "en": "22 in (55.88 cm)"
+        }
+      },
+      {
+        "id": "24in",
+        "addPrice": 60,
+        "priceLabel": {
+          "he": "399.90 ₪",
+          "en": "₪399.90"
+        },
+        "label": {
+          "he": "24 אינץ׳ (60.96 ס״מ)",
+          "en": "24 in (60.96 cm)"
+        }
+      }
+    ],
     "cardTitle": {
-      "he": "סט 2 צמידים - תלתן + טניס",
-      "en": "2-Piece Clover + Tennis Bracelet Set"
+      "he": "שרשרת פלורה - צבע רוז גולד",
+      "en": "Flora Chain - Rose Gold Color"
     },
     "cardMessage": {
-      "he": "",
-      "en": ""
+      "he": "שרשרת פלורה משובצת במראה יוקרתי ונוכחות מרשימה בצבע רוז גולד. בחרו את האורך שמתאים לכם.",
+      "en": "A statement Flora chain with a luxurious stone-set look in rose-gold color. Choose the length that suits you."
     },
     "signature": {
       "he": "",
@@ -2232,25 +2305,23 @@ var PRODUCTS = [
     },
     "details": {
       "he": [
-        "חומר המוצר: Stainless Steel לפי מפרט הספק",
-        "המחיר כולל את שני הצמידים יחד",
-        "הסט כולל צמיד תלתן משובץ וצמיד טניס",
-        "גוון התכשיטים: כסוף",
-        "מתאים לענידה יחד או בנפרד",
-        "מוצר לנשים - מופיע בקולקציות לאמא, לאישה, לבת ולאחות"
+        "שרשרת פלורה יוניסקס - מתאימה לנשים ולגברים",
+        "משובצת אבני זירקוניה 5A במראה יוקרתי",
+        "לבחירה באורכים: 16, 18, 20, 22 או 24 אינץ׳ (40.64–60.96 ס״מ)",
+        "גוון התכשיט: רוז גולד",
+        "סגירה חזקה ונוחה לשימוש יומיומי"
       ],
       "en": [
-        "Price includes both bracelets together",
-        "Delicate chain bracelet with a sparkling clover detail",
-        "Tennis bracelet set with Cubic Zirconia stones",
-        "Made from Stainless Steel according to the supplier specification",
-        "Elegant silver-tone finish for stacked or separate wear",
-        "Women’s item - included in Mom, Wife, Daughter and Sister collections"
+        "Unisex Flora chain suitable for women and men",
+        "Set with 5A zirconia stones for a luxurious look",
+        "Available in 16, 18, 20, 22 or 24 inch lengths (40.64–60.96 cm)",
+        "Rose-gold color finish",
+        "Secure clasp for comfortable daily wear"
       ]
     },
     "afterText": {
-      "he": "סט של שני צמידים תואמים במחיר אחד - צמיד תלתן עדין וצמיד טניס נוצץ.",
-      "en": "A matching two-bracelet set for one price - a delicate clover bracelet and a sparkling tennis bracelet."
+      "he": "בחרו את האורך הרצוי והמחיר יתעדכן אוטומטית.",
+      "en": "Choose your preferred length and the price will update automatically."
     },
     "deliveryBusinessDays": {
       "min": 9,
