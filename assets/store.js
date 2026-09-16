@@ -613,6 +613,7 @@
   }
 
   function productColorMetaHTML(p) {
+    if (p && p.colorHeading && (((p.colorHeading.he || '').indexOf('רוחב') !== -1) || ((p.colorHeading.en || '').toLowerCase().indexOf('width') !== -1))) return '';
     if (!(p && Array.isArray(p.colors) && p.colors.length)) return '';
     var max = 6;
     var items = p.colors.slice(0, max).map(function (option) {

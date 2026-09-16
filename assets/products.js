@@ -1066,8 +1066,8 @@ var PRODUCTS = [
     "price": 269.9,
     "compareAt": 369.9,
     "title": {
-      "he": "שרשרת טניס משובצת זירקוניה - צבע כסף",
-      "en": "Cubic Zirconia Tennis Chain - Silver Tone"
+      "he": "שרשרת טניס קלאסית",
+      "en": "Classic Tennis Chain"
     },
     "subtitle": {
       "he": "יוניסקס לנשים ולגברים · לבחירה ברוחב 3, 4 או 5 מ״מ ובאורכים 16–24 אינץ׳",
@@ -1196,8 +1196,8 @@ var PRODUCTS = [
       }
     ],
     "cardTitle": {
-      "he": "שרשרת טניס משובצת זירקוניה",
-      "en": "Cubic Zirconia Tennis Chain"
+      "he": "שרשרת טניס קלאסית",
+      "en": "Classic Tennis Chain"
     },
     "cardMessage": {
       "he": "שרשרת טניס משובצת אבני זירקוניה במראה יוקרתי ונקי. בחרו את האורך והרוחב שמתאימים לכם.",
@@ -1211,7 +1211,7 @@ var PRODUCTS = [
       "he": [
         "שרשרת טניס יוניסקס - מתאימה לנשים ולגברים",
         "משובצת אבני Cubic Zirconia",
-        "לבחירה ברוחב 3 מ״מ, 4 מ״מ או 5 מ״מ",
+        "רוחב לבחירה: 3 מ״מ, 4 מ״מ או 5 מ״מ",
         "לבחירה באורכים: 16, 18, 20, 22 או 24 אינץ׳, עם המרה לסנטימטרים",
         "מחיר בסיס: 269.90 ₪ ל־16 אינץ׳ ברוחב 3 מ״מ",
         "כל תוספת של 1 מ״מ לרוחב מוסיפה 5 ₪, וכל 2 אינץ׳ לאורך מוסיפים 20 ₪",
@@ -1315,8 +1315,8 @@ var PRODUCTS = [
     "price": 189.9,
     "compareAt": 219.9,
     "title": {
-      "he": "צמיד טניס כוכבים 6.5 מ״מ משובץ זירקוניה - ציפוי זהב לבן",
-      "en": "6.5mm Star Tennis Bracelet with Cubic Zirconia - White Gold Plated"
+      "he": "צמיד טניס פרח",
+      "en": "Flower Tennis Bracelet"
     },
     "subtitle": {
       "he": "צמיד יוניסקס לנשים ולגברים · לבחירה ב־7, 8 או 9 אינץ׳ (17.8, 20.32 או 22.86 ס״מ) · מצופה זהב לבן",
@@ -1361,12 +1361,12 @@ var PRODUCTS = [
       }
     ],
     "cardTitle": {
-      "he": "צמיד טניס כוכבים 6.5 מ״מ",
-      "en": "6.5mm Star Tennis Bracelet"
+      "he": "צמיד טניס פרח",
+      "en": "Flower Tennis Bracelet"
     },
     "cardMessage": {
-      "he": "צמיד טניס יוניסקס במראה יוקרתי עם שיבוץ אבני זירקוניה ודוגמת כוכבים לאורך הצמיד. מתאים לנשים ולגברים ולכמה אורכים לבחירה.",
-      "en": "A premium-looking unisex tennis bracelet with cubic zirconia stones and a repeating star motif, suitable for women and men with multiple length options."
+      "he": "צמיד טניס יוניסקס במראה יוקרתי עם שיבוץ אבני זירקוניה בעיצוב פרח. מתאים לנשים ולגברים ולכמה אורכים לבחירה.",
+      "en": "A premium-looking unisex tennis bracelet with cubic zirconia stones in a flower design, suitable for women and men with multiple length options."
     },
     "signature": {
       "he": "",
@@ -1374,7 +1374,8 @@ var PRODUCTS = [
     },
     "details": {
       "he": [
-        "צמיד טניס יוניסקס עם דוגמת כוכבים ושיבוץ אבני Cubic Zirconia",
+        "צמיד טניס יוניסקס בעיצוב פרח עם שיבוץ אבני Cubic Zirconia",
+        "רוחב הדגם: 6.5 מ״מ",
         "לבחירה באורכים: 7 אינץ׳ (17.8 ס״מ), 8 אינץ׳ (20.32 ס״מ) או 9 אינץ׳ (22.86 ס״מ)",
         "גוון התכשיט: כסף / זהב לבן",
         "צמיד מצופה זהב לבן",
@@ -1382,7 +1383,8 @@ var PRODUCTS = [
         "המחיר מתעדכן אוטומטית לפי האורך שנבחר"
       ],
       "en": [
-        "Unisex tennis bracelet with a star motif and cubic zirconia stones",
+        "Unisex tennis bracelet with a flower design and cubic zirconia stones",
+        "Model width: 6.5mm",
         "Available in 7 in (17.8 cm), 8 in (20.32 cm), or 9 in (22.86 cm) lengths",
         "Silver / white-gold tone finish",
         "White-gold plated finish",
@@ -1453,15 +1455,15 @@ var PRODUCTS = [
       "bracelets"
     ],
     "badge": null,
-    "hoverImage": "images/products/product-12/product-12-3.png",
+    "hoverImage": "images/products/product-12/product-12-2.png",
     "collectionMedia": {
       "women": {
         "image": "images/products/product-12/product-12-2.png",
-        "hoverImage": "images/products/product-12/product-12-3.png"
+        "hoverImage": "images/products/product-12/product-12-2.png"
       },
       "men": {
         "image": "images/products/product-12/product-12-1.png",
-        "hoverImage": "images/products/product-12/product-12-3.png"
+        "hoverImage": "images/products/product-12/product-12-2.png"
       }
     },
     "cardMode": "view",
@@ -1474,8 +1476,8 @@ var PRODUCTS = [
     "price": 189.9,
     "compareAt": 279.9,
     "title": {
-      "he": "צמיד טניס כוכבים 6 מ״מ משובץ זירקוניה - ציפוי זהב לבן",
-      "en": "6mm Star Tennis Bracelet with Cubic Zirconia - White Gold Plated"
+      "he": "צמיד טניס כוכב",
+      "en": "Star Tennis Bracelet"
     },
     "subtitle": {
       "he": "צמיד יוניסקס לנשים ולגברים · 7, 8 או 9 אינץ׳ (17.8 / 20.32 / 22.86 ס״מ) · מצופה זהב לבן",
@@ -1520,8 +1522,8 @@ var PRODUCTS = [
       }
     ],
     "cardTitle": {
-      "he": "צמיד טניס כוכבים 6 מ״מ",
-      "en": "6mm Star Tennis Bracelet"
+      "he": "צמיד טניס כוכב",
+      "en": "Star Tennis Bracelet"
     },
     "cardMessage": {
       "he": "צמיד טניס יוניסקס במראה יוקרתי עם שיבוץ אבני זירקוניה ודוגמת כוכבים. מתאים לנשים ולגברים ומגיע בשלושה אורכים לבחירה.",
@@ -1533,7 +1535,8 @@ var PRODUCTS = [
     },
     "details": {
       "he": [
-        "צמיד טניס יוניסקס עם דוגמת כוכבים ושיבוץ אבני Cubic Zirconia",
+        "צמיד טניס יוניסקס עם דוגמת כוכב ושיבוץ אבני Cubic Zirconia",
+        "רוחב הדגם: 6 מ״מ",
         "לבחירה באורכים: 7, 8 או 9 אינץ׳ (17.8, 20.32 או 22.86 ס״מ)",
         "גוון התכשיט: כסף / זהב לבן",
         "הדגם מצופה זהב לבן",
@@ -1542,6 +1545,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Unisex tennis bracelet with a star motif and cubic zirconia stones",
+        "Model width: 6mm",
         "Available in 7, 8 or 9 inches (17.8, 20.32 or 22.86 cm)",
         "Silver / white-gold tone finish",
         "White-gold plated finish",
@@ -1612,15 +1616,15 @@ var PRODUCTS = [
       "bracelets"
     ],
     "badge": null,
-    "hoverImage": "images/products/product-13/product-13-3.png",
+    "hoverImage": "images/products/product-13/product-13-2.png",
     "collectionMedia": {
       "women": {
         "image": "images/products/product-13/product-13-2.png",
-        "hoverImage": "images/products/product-13/product-13-3.png"
+        "hoverImage": "images/products/product-13/product-13-2.png"
       },
       "men": {
         "image": "images/products/product-13/product-13-1.png",
-        "hoverImage": "images/products/product-13/product-13-3.png"
+        "hoverImage": "images/products/product-13/product-13-2.png"
       }
     },
     "cardMode": "view",
@@ -1633,8 +1637,8 @@ var PRODUCTS = [
     "price": 229.9,
     "compareAt": 309.9,
     "title": {
-      "he": "צמיד טניס 3 מ״מ משובץ זירקוניה בחיתוך מרובע - ציפוי זהב לבן",
-      "en": "3mm Emerald-Cut Cubic Zirconia Tennis Bracelet - White Gold Plated"
+      "he": "צמיד טניס אמרלד",
+      "en": "Emerald Tennis Bracelet"
     },
     "subtitle": {
       "he": "צמיד יוניסקס לנשים ולגברים · 7, 8 או 9 אינץ׳ (17.8 / 20.32 / 22.86 ס״מ) · ציפוי זהב לבן",
@@ -1679,8 +1683,8 @@ var PRODUCTS = [
       }
     ],
     "cardTitle": {
-      "he": "צמיד טניס 3 מ״מ אבנים מרובעות",
-      "en": "3mm Emerald-Cut Tennis Bracelet"
+      "he": "צמיד טניס אמרלד",
+      "en": "Emerald Tennis Bracelet"
     },
     "cardMessage": {
       "he": "צמיד טניס יוניסקס במראה יוקרתי עם שיבוץ אבני זירקוניה בחיתוך מרובע. מתאים לנשים ולגברים ומגיע בשלושה אורכים לבחירה.",
