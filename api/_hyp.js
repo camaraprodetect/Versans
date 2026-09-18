@@ -209,7 +209,8 @@ function priceOrder(items, lang) {
       price: unitPrice,
       qty: qty,
       total: Number((unitPrice * qty).toFixed(2)),
-      isGlasses: productCollections.includes('glasses')
+      isGlasses: productCollections.includes('glasses'),
+      isHats: productCollections.includes('hats')
     });
   });
 
@@ -218,9 +219,11 @@ function priceOrder(items, lang) {
   const subtotal = Number(lines.reduce((sum, l) => sum + l.total, 0).toFixed(2));
   const unitPrices = [];
   let glassesUnits = 0;
+  let hatsUnits = 0;
   lines.forEach((line) => {
     for (let i = 0; i < line.qty; i += 1) unitPrices.push(Number(line.price) || 0);
     if (line.isGlasses) glassesUnits += line.qty;
+    if (line.isHats) hatsUnits += line.qty;
   });
 
   const secondItemDiscount = unitPrices.length >= 2
@@ -228,10 +231,18 @@ function priceOrder(items, lang) {
     : 0;
   const glassesPairs = Math.floor(glassesUnits / 2);
   const glassesBundleDiscount = GLASSES_PRICING.discountForUnits(glassesUnits, 139.9);
-  const useGlassesBundle = glassesPairs > 0;
-  const discount = useGlassesBundle ? glassesBundleDiscount : secondItemDiscount;
-  const discountLabel = useGlassesBundle
-    ? (lang === 'he' ? 'מבצע משקפיים - 2 ב־249.90 ₪' : 'Sunglasses offer - 2 for ₪249.90')
+  const hatsPairs = Math.floor(hatsUnits / 2);
+  const hatsBundleDiscount = Number((hatsPairs * 39.9).toFixed(2));
+  const useBundle = glassesPairs > 0 || hatsPairs > 0;
+  const discount = useBundle
+    ? Number((glassesBundleDiscount + hatsBundleDiscount).toFixed(2))
+    : secondItemDiscount;
+
+  const bundleLabels = [];
+  if (glassesPairs > 0) bundleLabels.push(lang === 'he' ? 'מבצע משקפיים - 2 ב־249.90 ₪' : 'Sunglasses offer - 2 for ₪249.90');
+  if (hatsPairs > 0) bundleLabels.push(lang === 'he' ? 'מבצע כובעים - 2 ב־239.90 ₪' : 'Hats offer - 2 for ₪239.90');
+  const discountLabel = useBundle
+    ? bundleLabels.join(' + ')
     : (lang === 'he' ? '25% הנחה על המוצר השני' : '25% off the second item');
 
   const freeOver = STORE_CONFIG.shipping.freeOver;

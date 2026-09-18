@@ -1070,8 +1070,8 @@ var PRODUCTS = [
       "en": "Classic Tennis Chain"
     },
     "subtitle": {
-      "he": "יוניסקס לנשים ולגברים · לבחירה ברוחב 3, 4 או 5 מ״מ ובאורכים 16–24 אינץ׳",
-      "en": "Unisex for women and men · choose 3mm, 4mm or 5mm width and 16–24 inch length"
+      "he": "יוניסקס לנשים ולגברים · לבחירה ברוחב 3, 4 או 5 מ״מ ובאורכים 40–60 ס״מ",
+      "en": "Unisex for women and men · choose 3mm, 4mm or 5mm width and 40–60 cm length"
     },
     "sizeHeading": {
       "he": "בחרו אורך",
@@ -1094,8 +1094,8 @@ var PRODUCTS = [
           "en": "₪269.90"
         },
         "label": {
-          "he": "16 אינץ׳ (40.64 ס״מ)",
-          "en": "16 in (40.64 cm)"
+          "he": "40 ס״מ",
+          "en": "40 cm"
         }
       },
       {
@@ -1106,8 +1106,8 @@ var PRODUCTS = [
           "en": "₪289.90"
         },
         "label": {
-          "he": "18 אינץ׳ (45.72 ס״מ)",
-          "en": "18 in (45.72 cm)"
+          "he": "45 ס״מ",
+          "en": "45 cm"
         }
       },
       {
@@ -1118,8 +1118,8 @@ var PRODUCTS = [
           "en": "₪309.90"
         },
         "label": {
-          "he": "20 אינץ׳ (50.80 ס״מ)",
-          "en": "20 in (50.80 cm)"
+          "he": "50 ס״מ",
+          "en": "50 cm"
         }
       },
       {
@@ -1130,8 +1130,8 @@ var PRODUCTS = [
           "en": "₪329.90"
         },
         "label": {
-          "he": "22 אינץ׳ (55.88 ס״מ)",
-          "en": "22 in (55.88 cm)"
+          "he": "55 ס״מ",
+          "en": "55 cm"
         }
       },
       {
@@ -1142,8 +1142,8 @@ var PRODUCTS = [
           "en": "₪349.90"
         },
         "label": {
-          "he": "24 אינץ׳ (60.96 ס״מ)",
-          "en": "24 in (60.96 cm)"
+          "he": "60 ס״מ",
+          "en": "60 cm"
         }
       }
     ],
@@ -1190,8 +1190,8 @@ var PRODUCTS = [
         "size": "18in",
         "color": "4mm",
         "message": {
-          "he": "השילוב של 18 אינץ׳ (45.72 ס״מ) עם רוחב 4 מ״מ אינו במלאי כרגע.",
-          "en": "The 18 in (45.72 cm) + 4 mm width combination is currently out of stock."
+          "he": "השילוב של 45 ס״מ עם רוחב 4 מ״מ אינו במלאי כרגע.",
+          "en": "The 45 cm + 4 mm width combination is currently out of stock."
         }
       }
     ],
@@ -1212,7 +1212,7 @@ var PRODUCTS = [
         "שרשרת טניס יוניסקס - מתאימה לנשים ולגברים",
         "משובצת אבני Cubic Zirconia",
         "רוחב לבחירה: 3 מ״מ, 4 מ״מ או 5 מ״מ",
-        "לבחירה באורכים: 16, 18, 20, 22 או 24 אינץ׳",
+        "לבחירה באורכים: 40, 45, 50, 55 או 60 ס״מ",
         "גוון התכשיט: צבע כסף",
         "קיימים גם דגמים בציפוי 5 שכבות זהב 18 קראט"
       ],
@@ -1220,58 +1220,14 @@ var PRODUCTS = [
         "Unisex tennis chain suitable for women and men",
         "Set with cubic zirconia stones",
         "Choose 3mm, 4mm or 5mm width",
-        "Choose 16, 18, 20, 22 or 24 inch length",
+        "Choose 40, 45, 50, 55 or 60 cm length",
         "Silver-tone finish",
         "Gold versions use 5 layers of 18K gold plating"
       ]
     },
     "afterText": {
-      "he": "בחרו אורך ורוחב והמחיר יתעדכן אוטומטית. לדוגמה, 22 אינץ׳ (55.88 ס״מ) ברוחב 5 מ״מ עולה 339.90 ₪. גרסאות הזהב, אם מוצגות, הן בציפוי 5 שכבות זהב 18 קראט.",
-      "en": "Choose a length and width and the price updates automatically. For example, 22 in (55.88 cm) at 5mm width costs ₪339.90. Gold versions, where offered, use 5 layers of 18K gold plating."
-    },
-    "giftPackaging": {
-      "optional": true,
-      "addOnPrice": 54.9,
-      "heading": {
-        "he": "הוספת אריזה",
-        "en": "Add gift packaging"
-      },
-      "description": {
-        "he": "אפשר להוסיף את מארז LOVE FOREVER באחד משלושה צבעים.",
-        "en": "Add the LOVE FOREVER packaging in one of three colors."
-      },
-      "options": [
-        {
-          "id": "pink",
-          "addPrice": 54.9,
-          "label": {
-            "he": "מארז ורוד",
-            "en": "Pink packaging"
-          },
-          "swatch": "#F3A3AD",
-          "image": "images/products/product-19/product-19-pink.png"
-        },
-        {
-          "id": "red",
-          "addPrice": 54.9,
-          "label": {
-            "he": "מארז אדום",
-            "en": "Red packaging"
-          },
-          "swatch": "#C8141C",
-          "image": "images/products/product-19/product-19-red.png"
-        },
-        {
-          "id": "black",
-          "addPrice": 54.9,
-          "label": {
-            "he": "מארז שחור",
-            "en": "Black packaging"
-          },
-          "swatch": "#161616",
-          "image": "images/products/product-19/product-19-black.png"
-        }
-      ]
+      "he": "בחרו אורך ורוחב והמחיר יתעדכן אוטומטית. לדוגמה, 55 ס״מ ברוחב 5 מ״מ עולה 339.90 ₪. גרסאות הזהב, אם מוצגות, הן בציפוי 5 שכבות זהב 18 קראט.",
+      "en": "Choose a length and width and the price updates automatically. For example, 55 cm at 5mm width costs ₪339.90. Gold versions, where offered, use 5 layers of 18K gold plating."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -1313,8 +1269,8 @@ var PRODUCTS = [
       "en": "Flower Tennis Bracelet"
     },
     "subtitle": {
-      "he": "צמיד יוניסקס לנשים ולגברים · לבחירה ב־7, 8 או 9 אינץ׳ (17.8, 20.32 או 22.86 ס״מ) · מצופה זהב לבן",
-      "en": "Unisex bracelet for women and men · available in 7, 8 or 9 inches (17.8, 20.32 or 22.86 cm) · white-gold plated"
+      "he": "צמיד יוניסקס לנשים ולגברים · לבחירה ב־17, 20 או 22 ס״מ · מצופה זהב לבן",
+      "en": "Unisex bracelet for women and men · available in 17, 20 or 22 cm · white-gold plated"
     },
     "sizes": [
       {
@@ -1325,8 +1281,8 @@ var PRODUCTS = [
           "en": "₪189.90"
         },
         "label": {
-          "he": "7 אינץ׳ (17.8 ס״מ)",
-          "en": "7 in (17.8 cm)"
+          "he": "17 ס״מ",
+          "en": "17 cm"
         }
       },
       {
@@ -1337,8 +1293,8 @@ var PRODUCTS = [
           "en": "₪199.90"
         },
         "label": {
-          "he": "8 אינץ׳ (20.32 ס״מ)",
-          "en": "8 in (20.32 cm)"
+          "he": "20 ס״מ",
+          "en": "20 cm"
         }
       },
       {
@@ -1349,8 +1305,8 @@ var PRODUCTS = [
           "en": "₪209.90"
         },
         "label": {
-          "he": "9 אינץ׳ (22.86 ס״מ)",
-          "en": "9 in (22.86 cm)"
+          "he": "22 ס״מ",
+          "en": "22 cm"
         }
       }
     ],
@@ -1370,7 +1326,7 @@ var PRODUCTS = [
       "he": [
         "צמיד טניס יוניסקס בעיצוב פרח עם שיבוץ אבני Cubic Zirconia",
         "רוחב הדגם: 6.5 מ״מ",
-        "לבחירה באורכים: 7 אינץ׳ (17.8 ס״מ), 8 אינץ׳ (20.32 ס״מ) או 9 אינץ׳ (22.86 ס״מ)",
+        "לבחירה באורכים: 17 ס״מ, 20 ס״מ או 22 ס״מ",
         "גוון התכשיט: כסף / זהב לבן",
         "צמיד מצופה זהב לבן",
         "קיימות גם גרסאות בציפוי זהב",
@@ -1379,7 +1335,7 @@ var PRODUCTS = [
       "en": [
         "Unisex tennis bracelet with a flower design and cubic zirconia stones",
         "Model width: 6.5mm",
-        "Available in 7 in (17.8 cm), 8 in (20.32 cm), or 9 in (22.86 cm) lengths",
+        "Available in 17 cm, 20 cm, or 22 cm lengths",
         "Silver / white-gold tone finish",
         "White-gold plated finish",
         "Also available in gold-plated variants",
@@ -1389,50 +1345,6 @@ var PRODUCTS = [
     "afterText": {
       "he": "הגלריה מציגה את הצמיד כתמונת מוצר, על היד ובזווית תקריב. הדגם המוצג כאן הוא בגוון כסף/זהב לבן ומצופה זהב לבן.",
       "en": "The gallery shows the bracelet as a clean product shot, on-wrist, and in a close-up angle. The version shown here has a silver/white-gold tone and a white-gold plated finish."
-    },
-    "giftPackaging": {
-      "optional": true,
-      "addOnPrice": 54.9,
-      "heading": {
-        "he": "הוספת אריזה",
-        "en": "Add gift packaging"
-      },
-      "description": {
-        "he": "אפשר להוסיף את מארז LOVE FOREVER באחד משלושה צבעים.",
-        "en": "Add the LOVE FOREVER packaging in one of three colors."
-      },
-      "options": [
-        {
-          "id": "pink",
-          "addPrice": 54.9,
-          "label": {
-            "he": "מארז ורוד",
-            "en": "Pink packaging"
-          },
-          "swatch": "#F3A3AD",
-          "image": "images/products/product-19/product-19-pink.png"
-        },
-        {
-          "id": "red",
-          "addPrice": 54.9,
-          "label": {
-            "he": "מארז אדום",
-            "en": "Red packaging"
-          },
-          "swatch": "#C8141C",
-          "image": "images/products/product-19/product-19-red.png"
-        },
-        {
-          "id": "black",
-          "addPrice": 54.9,
-          "label": {
-            "he": "מארז שחור",
-            "en": "Black packaging"
-          },
-          "swatch": "#161616",
-          "image": "images/products/product-19/product-19-black.png"
-        }
-      ]
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -1474,8 +1386,8 @@ var PRODUCTS = [
       "en": "Star Tennis Bracelet"
     },
     "subtitle": {
-      "he": "צמיד יוניסקס לנשים ולגברים · 7, 8 או 9 אינץ׳ (17.8 / 20.32 / 22.86 ס״מ) · מצופה זהב לבן",
-      "en": "Unisex bracelet for women and men · 7, 8 or 9 in (17.8 / 20.32 / 22.86 cm) · white-gold plated"
+      "he": "צמיד יוניסקס לנשים ולגברים · 17, 20 או 22 ס״מ · מצופה זהב לבן",
+      "en": "Unisex bracelet for women and men · 17, 20 or 22 cm · white-gold plated"
     },
     "sizes": [
       {
@@ -1486,8 +1398,8 @@ var PRODUCTS = [
           "en": "₪189.90"
         },
         "label": {
-          "he": "7 אינץ׳ (17.8 ס״מ)",
-          "en": "7 in (17.8 cm)"
+          "he": "17 ס״מ",
+          "en": "17 cm"
         }
       },
       {
@@ -1498,8 +1410,8 @@ var PRODUCTS = [
           "en": "₪199.90"
         },
         "label": {
-          "he": "8 אינץ׳ (20.32 ס״מ)",
-          "en": "8 in (20.32 cm)"
+          "he": "20 ס״מ",
+          "en": "20 cm"
         }
       },
       {
@@ -1510,8 +1422,8 @@ var PRODUCTS = [
           "en": "₪209.90"
         },
         "label": {
-          "he": "9 אינץ׳ (22.86 ס״מ)",
-          "en": "9 in (22.86 cm)"
+          "he": "22 ס״מ",
+          "en": "22 cm"
         }
       }
     ],
@@ -1531,7 +1443,7 @@ var PRODUCTS = [
       "he": [
         "צמיד טניס יוניסקס עם דוגמת כוכב ושיבוץ אבני Cubic Zirconia",
         "רוחב הדגם: 6 מ״מ",
-        "לבחירה באורכים: 7, 8 או 9 אינץ׳ (17.8, 20.32 או 22.86 ס״מ)",
+        "לבחירה באורכים: 17, 20 או 22 ס״מ",
         "גוון התכשיט: כסף / זהב לבן",
         "הדגם מצופה זהב לבן",
         "קיימות גם גרסאות מצופות זהב",
@@ -1540,7 +1452,7 @@ var PRODUCTS = [
       "en": [
         "Unisex tennis bracelet with a star motif and cubic zirconia stones",
         "Model width: 6mm",
-        "Available in 7, 8 or 9 inches (17.8, 20.32 or 22.86 cm)",
+        "Available in 17, 20 or 22 cm",
         "Silver / white-gold tone finish",
         "White-gold plated finish",
         "Also available in gold-plated variants",
@@ -1550,50 +1462,6 @@ var PRODUCTS = [
     "afterText": {
       "he": "הגלריה מציגה את הצמיד כתמונת מוצר, על היד ובזווית תקריב. הדגם המוצג כאן הוא בגוון כסף/זהב לבן ומצופה זהב לבן.",
       "en": "The gallery shows the bracelet as a clean product shot, on-wrist, and in a close-up angle. The version shown here has a silver/white-gold tone with a white-gold plated finish."
-    },
-    "giftPackaging": {
-      "optional": true,
-      "addOnPrice": 54.9,
-      "heading": {
-        "he": "הוספת אריזה",
-        "en": "Add gift packaging"
-      },
-      "description": {
-        "he": "אפשר להוסיף את מארז LOVE FOREVER באחד משלושה צבעים.",
-        "en": "Add the LOVE FOREVER packaging in one of three colors."
-      },
-      "options": [
-        {
-          "id": "pink",
-          "addPrice": 54.9,
-          "label": {
-            "he": "מארז ורוד",
-            "en": "Pink packaging"
-          },
-          "swatch": "#F3A3AD",
-          "image": "images/products/product-19/product-19-pink.png"
-        },
-        {
-          "id": "red",
-          "addPrice": 54.9,
-          "label": {
-            "he": "מארז אדום",
-            "en": "Red packaging"
-          },
-          "swatch": "#C8141C",
-          "image": "images/products/product-19/product-19-red.png"
-        },
-        {
-          "id": "black",
-          "addPrice": 54.9,
-          "label": {
-            "he": "מארז שחור",
-            "en": "Black packaging"
-          },
-          "swatch": "#161616",
-          "image": "images/products/product-19/product-19-black.png"
-        }
-      ]
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -1635,8 +1503,8 @@ var PRODUCTS = [
       "en": "Emerald Tennis Bracelet"
     },
     "subtitle": {
-      "he": "צמיד יוניסקס לנשים ולגברים · 7, 8 או 9 אינץ׳ (17.8 / 20.32 / 22.86 ס״מ) · ציפוי זהב לבן",
-      "en": "Unisex bracelet for women and men · 7, 8 or 9 in (17.8 / 20.32 / 22.86 cm) · white gold plated"
+      "he": "צמיד יוניסקס לנשים ולגברים · 17, 20 או 22 ס״מ · ציפוי זהב לבן",
+      "en": "Unisex bracelet for women and men · 17, 20 or 22 cm · white gold plated"
     },
     "sizes": [
       {
@@ -1647,8 +1515,8 @@ var PRODUCTS = [
           "en": "₪229.90"
         },
         "label": {
-          "he": "7 אינץ׳ (17.8 ס״מ)",
-          "en": "7 in (17.8 cm)"
+          "he": "17 ס״מ",
+          "en": "17 cm"
         }
       },
       {
@@ -1659,8 +1527,8 @@ var PRODUCTS = [
           "en": "₪239.90"
         },
         "label": {
-          "he": "8 אינץ׳ (20.32 ס״מ)",
-          "en": "8 in (20.32 cm)"
+          "he": "20 ס״מ",
+          "en": "20 cm"
         }
       },
       {
@@ -1671,8 +1539,8 @@ var PRODUCTS = [
           "en": "₪249.90"
         },
         "label": {
-          "he": "9 אינץ׳ (22.86 ס״מ)",
-          "en": "9 in (22.86 cm)"
+          "he": "22 ס״מ",
+          "en": "22 cm"
         }
       }
     ],
@@ -1692,7 +1560,7 @@ var PRODUCTS = [
       "he": [
         "צמיד טניס יוניסקס עם אבני Cubic Zirconia בחיתוך מרובע",
         "רוחב הדגם: 3 מ״מ",
-        "לבחירה באורכים: 7, 8 או 9 אינץ׳ (17.8, 20.32 או 22.86 ס״מ)",
+        "לבחירה באורכים: 17, 20 או 22 ס״מ",
         "גוון התכשיט: כסף / זהב לבן",
         "ציפוי זהב לבן",
         "המחיר מתעדכן אוטומטית לפי האורך שנבחר"
@@ -1700,7 +1568,7 @@ var PRODUCTS = [
       "en": [
         "Unisex tennis bracelet with emerald-cut cubic zirconia stones",
         "Model width: 3mm",
-        "Available in 7, 8 or 9 inches (17.8, 20.32 or 22.86 cm)",
+        "Available in 17, 20 or 22 cm",
         "Silver / white-gold tone finish",
         "White gold plated",
         "Price updates automatically according to the selected size"
@@ -1746,12 +1614,12 @@ var PRODUCTS = [
     "price": 189.9,
     "compareAt": 249.9,
     "title": {
-      "he": "צמיד טניס נואר שחור",
-      "en": "Noir Black Tennis Bracelet"
+      "he": "צמיד טניס נויה שחור",
+      "en": "Noya Black Tennis Bracelet"
     },
     "subtitle": {
-      "he": "צמיד יוניסקס לנשים ולגברים · לבחירה ב־7 או 8 אינץ׳ (17.8 / 20.32 ס״מ) וברוחב 3 או 4 מ״מ",
-      "en": "Unisex bracelet for women and men · choose 7 or 8 in (17.8 / 20.32 cm) and 3mm or 4mm width"
+      "he": "צמיד יוניסקס לנשים ולגברים · לבחירה ב־17 או 20 ס״מ וברוחב 3 או 4 מ״מ",
+      "en": "Unisex bracelet for women and men · choose 17 or 20 cm and 3mm or 4mm width"
     },
     "sizeHeading": {
       "he": "בחרו אורך",
@@ -1774,8 +1642,8 @@ var PRODUCTS = [
           "en": "₪189.90"
         },
         "label": {
-          "he": "7 אינץ׳ (17.8 ס״מ)",
-          "en": "7 in (17.8 cm)"
+          "he": "17 ס״מ",
+          "en": "17 cm"
         }
       },
       {
@@ -1786,8 +1654,8 @@ var PRODUCTS = [
           "en": "₪194.90"
         },
         "label": {
-          "he": "8 אינץ׳ (20.32 ס״מ)",
-          "en": "8 in (20.32 cm)"
+          "he": "20 ס״מ",
+          "en": "20 cm"
         }
       }
     ],
@@ -1818,8 +1686,8 @@ var PRODUCTS = [
       }
     ],
     "cardTitle": {
-      "he": "צמיד טניס נואר שחור",
-      "en": "Noir Black Tennis Bracelet"
+      "he": "צמיד טניס נויה שחור",
+      "en": "Noya Black Tennis Bracelet"
     },
     "cardMessage": {
       "he": "צמיד טניס שחור במראה יוקרתי ונקי, עם בחירה של אורך ועובי להתאמה מדויקת.",
@@ -1834,7 +1702,7 @@ var PRODUCTS = [
         "צמיד טניס יוניסקס לנשים ולגברים",
         "משובץ אבני Cubic Zirconia שחורות",
         "לבחירה ברוחב 3 מ״מ או 4 מ״מ",
-        "לבחירה באורכים: 7 אינץ׳ (17.8 ס״מ) או 8 אינץ׳ (20.32 ס״מ)",
+        "לבחירה באורכים: 17 ס״מ או 20 ס״מ",
         "גוון התכשיט: שחור",
         "ציפוי שחור בגימור מבריק",
         "המחיר מתעדכן אוטומטית לפי האורך והעובי שנבחרו"
@@ -1843,7 +1711,7 @@ var PRODUCTS = [
         "Unisex tennis bracelet for women and men",
         "Set with black cubic zirconia stones",
         "Choose 3mm or 4mm width",
-        "Available in 7 in (17.8 cm) or 8 in (20.32 cm)",
+        "Available in 17 cm or 20 cm",
         "Black finish",
         "Glossy black plated finish",
         "Price updates automatically according to the selected length and width"
@@ -1852,50 +1720,6 @@ var PRODUCTS = [
     "afterText": {
       "he": "הגלריה מציגה את הצמיד כתמונת מוצר, על היד ובזווית תקריב. זהו דגם שחור במראה נקי וחד, שמתאים גם ליומיום וגם ללוק ערב.",
       "en": "The gallery shows the bracelet as a clean product shot, on-wrist, and in a close-up angle. This black model has a sharp, clean look suited for both everyday wear and evening styling."
-    },
-    "giftPackaging": {
-      "optional": true,
-      "addOnPrice": 54.9,
-      "heading": {
-        "he": "הוספת אריזה",
-        "en": "Add gift packaging"
-      },
-      "description": {
-        "he": "אפשר להוסיף את מארז LOVE FOREVER באחד משלושה צבעים.",
-        "en": "Add the LOVE FOREVER packaging in one of three colors."
-      },
-      "options": [
-        {
-          "id": "pink",
-          "addPrice": 54.9,
-          "label": {
-            "he": "מארז ורוד",
-            "en": "Pink packaging"
-          },
-          "swatch": "#F3A3AD",
-          "image": "images/products/product-19/product-19-pink.png"
-        },
-        {
-          "id": "red",
-          "addPrice": 54.9,
-          "label": {
-            "he": "מארז אדום",
-            "en": "Red packaging"
-          },
-          "swatch": "#C8141C",
-          "image": "images/products/product-19/product-19-red.png"
-        },
-        {
-          "id": "black",
-          "addPrice": 54.9,
-          "label": {
-            "he": "מארז שחור",
-            "en": "Black packaging"
-          },
-          "swatch": "#161616",
-          "image": "images/products/product-19/product-19-black.png"
-        }
-      ]
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -1938,8 +1762,8 @@ var PRODUCTS = [
       "en": "Flora Chain"
     },
     "subtitle": {
-      "he": "שרשרת קובנית יוניסקס לנשים ולגברים · לבחירה באורכים 16, 18, 20, 22 או 24 אינץ׳",
-      "en": "Unisex Cuban chain for women and men · choose 16, 18, 20, 22 or 24 inch lengths"
+      "he": "שרשרת קובנית יוניסקס לנשים ולגברים · לבחירה באורכים 40, 45, 50, 55 או 60 ס״מ",
+      "en": "Unisex Cuban chain for women and men · choose 40, 45, 50, 55 or 60 cm lengths"
     },
     "sizeHeading": {
       "he": "בחרו אורך",
@@ -1954,8 +1778,8 @@ var PRODUCTS = [
           "en": "₪339.90"
         },
         "label": {
-          "he": "16 אינץ׳ (40.64 ס״מ)",
-          "en": "16 in (40.64 cm)"
+          "he": "40 ס״מ",
+          "en": "40 cm"
         }
       },
       {
@@ -1966,8 +1790,8 @@ var PRODUCTS = [
           "en": "₪354.90"
         },
         "label": {
-          "he": "18 אינץ׳ (45.72 ס״מ)",
-          "en": "18 in (45.72 cm)"
+          "he": "45 ס״מ",
+          "en": "45 cm"
         }
       },
       {
@@ -1978,8 +1802,8 @@ var PRODUCTS = [
           "en": "₪369.90"
         },
         "label": {
-          "he": "20 אינץ׳ (50.80 ס״מ)",
-          "en": "20 in (50.80 cm)"
+          "he": "50 ס״מ",
+          "en": "50 cm"
         }
       },
       {
@@ -1990,8 +1814,8 @@ var PRODUCTS = [
           "en": "₪384.90"
         },
         "label": {
-          "he": "22 אינץ׳ (55.88 ס״מ)",
-          "en": "22 in (55.88 cm)"
+          "he": "55 ס״מ",
+          "en": "55 cm"
         }
       },
       {
@@ -2002,8 +1826,8 @@ var PRODUCTS = [
           "en": "₪399.90"
         },
         "label": {
-          "he": "24 אינץ׳ (60.96 ס״מ)",
-          "en": "24 in (60.96 cm)"
+          "he": "60 ס״מ",
+          "en": "60 cm"
         }
       }
     ],
@@ -2023,14 +1847,14 @@ var PRODUCTS = [
       "he": [
         "שרשרת קובנית יוניסקס - מתאימה לנשים ולגברים",
         "משובצת אבני זירקוניה 5A במראה יוקרתי",
-        "לבחירה באורכים: 16, 18, 20, 22 או 24 אינץ׳ (40.64–60.96 ס״מ)",
+        "לבחירה באורכים: 40, 45, 50, 55 או 60 ס״מ",
         "גוון התכשיט: צבע כסף",
         "סגירה חזקה ונוחה לשימוש יומיומי"
       ],
       "en": [
         "Unisex Cuban chain suitable for women and men",
         "Set with 5A zirconia stones for a luxurious look",
-        "Available in 16, 18, 20, 22 or 24 inch lengths (40.64–60.96 cm)",
+        "Available in 40, 45, 50, 55 or 60 cm lengths",
         "Silver-tone finish",
         "Secure clasp for comfortable daily wear"
       ]
@@ -2080,8 +1904,8 @@ var PRODUCTS = [
       "en": "Flora Chain - Gold Color"
     },
     "subtitle": {
-      "he": "שרשרת פלורה יוניסקס לנשים ולגברים · לבחירה באורכים 16, 18, 20, 22 או 24 אינץ׳ · צבע זהב",
-      "en": "Unisex Flora chain for women and men · choose 16, 18, 20, 22 or 24 inch lengths · gold color"
+      "he": "שרשרת פלורה יוניסקס לנשים ולגברים · לבחירה באורכים 40, 45, 50, 55 או 60 ס״מ · צבע זהב",
+      "en": "Unisex Flora chain for women and men · choose 40, 45, 50, 55 or 60 cm lengths · gold color"
     },
     "sizeHeading": {
       "he": "בחרו אורך",
@@ -2096,8 +1920,8 @@ var PRODUCTS = [
           "en": "₪339.90"
         },
         "label": {
-          "he": "16 אינץ׳ (40.64 ס״מ)",
-          "en": "16 in (40.64 cm)"
+          "he": "40 ס״מ",
+          "en": "40 cm"
         }
       },
       {
@@ -2108,8 +1932,8 @@ var PRODUCTS = [
           "en": "₪354.90"
         },
         "label": {
-          "he": "18 אינץ׳ (45.72 ס״מ)",
-          "en": "18 in (45.72 cm)"
+          "he": "45 ס״מ",
+          "en": "45 cm"
         }
       },
       {
@@ -2120,8 +1944,8 @@ var PRODUCTS = [
           "en": "₪369.90"
         },
         "label": {
-          "he": "20 אינץ׳ (50.80 ס״מ)",
-          "en": "20 in (50.80 cm)"
+          "he": "50 ס״מ",
+          "en": "50 cm"
         }
       },
       {
@@ -2132,8 +1956,8 @@ var PRODUCTS = [
           "en": "₪384.90"
         },
         "label": {
-          "he": "22 אינץ׳ (55.88 ס״מ)",
-          "en": "22 in (55.88 cm)"
+          "he": "55 ס״מ",
+          "en": "55 cm"
         }
       },
       {
@@ -2144,8 +1968,8 @@ var PRODUCTS = [
           "en": "₪399.90"
         },
         "label": {
-          "he": "24 אינץ׳ (60.96 ס״מ)",
-          "en": "24 in (60.96 cm)"
+          "he": "60 ס״מ",
+          "en": "60 cm"
         }
       }
     ],
@@ -2165,14 +1989,14 @@ var PRODUCTS = [
       "he": [
         "שרשרת פלורה יוניסקס - מתאימה לנשים ולגברים",
         "משובצת אבני זירקוניה 5A במראה יוקרתי",
-        "לבחירה באורכים: 16, 18, 20, 22 או 24 אינץ׳ (40.64–60.96 ס״מ)",
+        "לבחירה באורכים: 40, 45, 50, 55 או 60 ס״מ",
         "גוון התכשיט: צבע זהב",
         "סגירה חזקה ונוחה לשימוש יומיומי"
       ],
       "en": [
         "Unisex Flora chain suitable for women and men",
         "Set with 5A zirconia stones for a luxurious look",
-        "Available in 16, 18, 20, 22 or 24 inch lengths (40.64–60.96 cm)",
+        "Available in 40, 45, 50, 55 or 60 cm lengths",
         "Gold-tone finish",
         "Secure clasp for comfortable daily wear"
       ]
@@ -2222,8 +2046,8 @@ var PRODUCTS = [
       "en": "Flora Chain - Rose Gold Color"
     },
     "subtitle": {
-      "he": "שרשרת פלורה יוניסקס לנשים ולגברים · לבחירה באורכים 16, 18, 20, 22 או 24 אינץ׳ · צבע רוז גולד",
-      "en": "Unisex Flora chain for women and men · choose 16, 18, 20, 22 or 24 inch lengths · rose-gold color"
+      "he": "שרשרת פלורה יוניסקס לנשים ולגברים · לבחירה באורכים 40, 45, 50, 55 או 60 ס״מ · צבע רוז גולד",
+      "en": "Unisex Flora chain for women and men · choose 40, 45, 50, 55 or 60 cm lengths · rose-gold color"
     },
     "sizeHeading": {
       "he": "בחרו אורך",
@@ -2238,8 +2062,8 @@ var PRODUCTS = [
           "en": "₪339.90"
         },
         "label": {
-          "he": "16 אינץ׳ (40.64 ס״מ)",
-          "en": "16 in (40.64 cm)"
+          "he": "40 ס״מ",
+          "en": "40 cm"
         }
       },
       {
@@ -2250,8 +2074,8 @@ var PRODUCTS = [
           "en": "₪354.90"
         },
         "label": {
-          "he": "18 אינץ׳ (45.72 ס״מ)",
-          "en": "18 in (45.72 cm)"
+          "he": "45 ס״מ",
+          "en": "45 cm"
         }
       },
       {
@@ -2262,8 +2086,8 @@ var PRODUCTS = [
           "en": "₪369.90"
         },
         "label": {
-          "he": "20 אינץ׳ (50.80 ס״מ)",
-          "en": "20 in (50.80 cm)"
+          "he": "50 ס״מ",
+          "en": "50 cm"
         }
       },
       {
@@ -2274,8 +2098,8 @@ var PRODUCTS = [
           "en": "₪384.90"
         },
         "label": {
-          "he": "22 אינץ׳ (55.88 ס״מ)",
-          "en": "22 in (55.88 cm)"
+          "he": "55 ס״מ",
+          "en": "55 cm"
         }
       },
       {
@@ -2286,8 +2110,8 @@ var PRODUCTS = [
           "en": "₪399.90"
         },
         "label": {
-          "he": "24 אינץ׳ (60.96 ס״מ)",
-          "en": "24 in (60.96 cm)"
+          "he": "60 ס״מ",
+          "en": "60 cm"
         }
       }
     ],
@@ -2307,14 +2131,14 @@ var PRODUCTS = [
       "he": [
         "שרשרת פלורה יוניסקס - מתאימה לנשים ולגברים",
         "משובצת אבני זירקוניה 5A במראה יוקרתי",
-        "לבחירה באורכים: 16, 18, 20, 22 או 24 אינץ׳ (40.64–60.96 ס״מ)",
+        "לבחירה באורכים: 40, 45, 50, 55 או 60 ס״מ",
         "גוון התכשיט: רוז גולד",
         "סגירה חזקה ונוחה לשימוש יומיומי"
       ],
       "en": [
         "Unisex Flora chain suitable for women and men",
         "Set with 5A zirconia stones for a luxurious look",
-        "Available in 16, 18, 20, 22 or 24 inch lengths (40.64–60.96 cm)",
+        "Available in 40, 45, 50, 55 or 60 cm lengths",
         "Rose-gold color finish",
         "Secure clasp for comfortable daily wear"
       ]
@@ -2329,91 +2153,172 @@ var PRODUCTS = [
     }
   },
   {
-    "id": "custom-heart-initial-necklace-01",
+    "id": "tennis-chain-gold-18",
     "slug": "product-18",
-    "urlSlug": "custom-heart-initial-necklace",
-    "sku": "KW-CUSTOM-018",
+    "urlSlug": "classic-tennis-chain-gold",
+    "sku": "KW-NK-018",
     "category": "necklaces",
     "categories": [
-      "necklaces",
-      "custom"
+      "necklaces"
     ],
-    "badge": {
-      "he": "CUSTOM",
-      "en": "CUSTOM"
-    },
+    "badge": null,
     "cardMode": "view",
     "hideMessageCard": true,
     "hoverImage": "images/products/product-18/product-18-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-18/product-18-2.png",
+        "hoverImage": "images/products/product-18/product-18-1.png"
+      },
+      "men": {
+        "image": "images/products/product-18/product-18-2.png",
+        "hoverImage": "images/products/product-18/product-18-1.png"
+      }
+    },
     "images": [
       "images/products/product-18/product-18-1.png",
       "images/products/product-18/product-18-2.png",
-      "images/products/product-18/product-18-3.png",
-      "images/products/product-18/product-18-4.png"
+      "images/products/product-18/product-18-3.png"
     ],
-    "price": 129.9,
-    "compareAt": 209.9,
+    "price": 269.9,
+    "compareAt": 369.9,
     "title": {
-      "he": "שרשרת לב + אות אישית CUSTOM",
-      "en": "CUSTOM Heart + Initial Necklace"
+      "he": "שרשרת טניס קלאסית - צבע זהב",
+      "en": "Classic Tennis Chain - Gold Color"
     },
     "subtitle": {
-      "he": "לב + אות A–Z בהתאמה אישית · אורך 45 ס״מ + הארכה 5 ס״מ",
-      "en": "Custom heart + A–Z initial · 45cm chain + 5cm extender"
+      "he": "יוניסקס לנשים ולגברים · לבחירה ברוחב 3, 4 או 5 מ״מ ובאורכים 40–60 ס״מ · צבע זהב",
+      "en": "Unisex for women and men · choose 3mm, 4mm or 5mm width and 40–60 cm length · gold color"
     },
-    "colors": [
+    "sizeHeading": {
+      "he": "בחרו אורך",
+      "en": "Choose length"
+    },
+    "colorHeading": {
+      "he": "בחרו רוחב",
+      "en": "Choose width"
+    },
+    "colorRequiredText": {
+      "he": "נא לבחור רוחב",
+      "en": "Please choose a width"
+    },
+    "sizes": [
       {
-        "id": "gold",
-        "label": {
-          "he": "זהב",
-          "en": "Gold"
+        "id": "16in",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "269.90 ₪",
+          "en": "₪269.90"
         },
-        "swatch": "#D8AA4E",
-        "image": "images/products/product-18/product-18-1.png"
+        "label": {
+          "he": "40 ס״מ",
+          "en": "40 cm"
+        }
       },
       {
-        "id": "silver",
-        "label": {
-          "he": "כסף",
-          "en": "Silver"
+        "id": "18in",
+        "addPrice": 20,
+        "priceLabel": {
+          "he": "289.90 ₪",
+          "en": "₪289.90"
         },
-        "swatch": "#C9CED3",
-        "image": "images/products/product-18/product-18-3.png"
+        "label": {
+          "he": "45 ס״מ",
+          "en": "45 cm"
+        }
+      },
+      {
+        "id": "20in",
+        "addPrice": 40,
+        "priceLabel": {
+          "he": "309.90 ₪",
+          "en": "₪309.90"
+        },
+        "label": {
+          "he": "50 ס״מ",
+          "en": "50 cm"
+        }
+      },
+      {
+        "id": "22in",
+        "addPrice": 60,
+        "priceLabel": {
+          "he": "329.90 ₪",
+          "en": "₪329.90"
+        },
+        "label": {
+          "he": "55 ס״מ",
+          "en": "55 cm"
+        }
+      },
+      {
+        "id": "24in",
+        "addPrice": 80,
+        "priceLabel": {
+          "he": "349.90 ₪",
+          "en": "₪349.90"
+        },
+        "label": {
+          "he": "60 ס״מ",
+          "en": "60 cm"
+        }
       }
     ],
-    "customName": {
-      "required": true,
-      "maxLength": 1,
-      "lettersOnly": true,
-      "uppercase": true,
-      "heading": {
-        "he": "בחרו את האות שלכם",
-        "en": "Choose your initial"
+    "colors": [
+      {
+        "id": "3mm",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "ללא תוספת",
+          "en": "Included"
+        },
+        "label": {
+          "he": "3 מ״מ",
+          "en": "3 mm"
+        }
       },
-      "label": {
-        "he": "אות באנגלית A–Z",
-        "en": "English letter A–Z"
+      {
+        "id": "4mm",
+        "addPrice": 5,
+        "priceLabel": {
+          "he": "+5 ₪",
+          "en": "+₪5"
+        },
+        "label": {
+          "he": "4 מ״מ",
+          "en": "4 mm"
+        }
       },
-      "placeholder": {
-        "he": "לדוגמה: S",
-        "en": "Example: S"
-      },
-      "help": {
-        "he": "ניתן להזין אות אנגלית אחת בלבד. האות הופכת אוטומטית ל־CAPS LOCK.",
-        "en": "Enter one English letter only. It is automatically converted to uppercase."
-      },
-      "cartLabel": {
-        "he": "אות",
-        "en": "Initial"
+      {
+        "id": "5mm",
+        "addPrice": 10,
+        "priceLabel": {
+          "he": "+10 ₪",
+          "en": "+₪10"
+        },
+        "label": {
+          "he": "5 מ״מ",
+          "en": "5 mm"
+        }
       }
-    },
+    ],
+    "unavailableCombinations": [
+      {
+        "size": "18in",
+        "color": "4mm",
+        "message": {
+          "he": "השילוב של 45 ס״מ עם רוחב 4 מ״מ אינו במלאי כרגע.",
+          "en": "The 45 cm + 4 mm width combination is currently out of stock."
+        }
+      }
+    ],
     "cardTitle": {
-      "he": "שרשרת לב + אות אישית",
-      "en": "Heart + Initial Necklace"
+      "he": "שרשרת טניס קלאסית - צבע זהב",
+      "en": "Classic Tennis Chain - Gold Color"
     },
     "cardMessage": {
-      "he": "",
-      "en": ""
+      "he": "שרשרת טניס משובצת אבני זירקוניה במראה יוקרתי ונקי בצבע זהב. בחרו את האורך והרוחב שמתאימים לכם.",
+      "en": "A sparkling cubic-zirconia tennis chain with a clean premium look in gold color. Choose the length and width that suit you."
     },
     "signature": {
       "he": "",
@@ -2421,67 +2326,25 @@ var PRODUCTS = [
     },
     "details": {
       "he": [
-        "חומר המוצר: Zinc Alloy לפי מפרט הספק",
-        "שרשרת בהתאמה אישית עם לב ואות אנגלית אחת לבחירה: A–Z",
-        "ניתן לבחור צבע בדף המוצר: זהב או כסף",
-        "אורך השרשרת: 45 ס״מ + שרשרת הארכה של 5 ס״מ",
-        "סוג השרשרת: Link Chain",
-        "כולל 4 תמונות מוצר לצפייה בגלריה",
-        "ניתן להוסיף מארז LOVE FOREVER בצבע ורוד, אדום או שחור"
+        "שרשרת טניס יוניסקס - מתאימה לנשים ולגברים",
+        "משובצת אבני Cubic Zirconia",
+        "רוחב לבחירה: 3 מ״מ, 4 מ״מ או 5 מ״מ",
+        "לבחירה באורכים: 40, 45, 50, 55 או 60 ס״מ",
+        "גוון התכשיט: צבע זהב",
+        "מצופה ב-5 שכבות זהב 18 קראט"
       ],
       "en": [
-        "Personalized heart necklace with one English initial: A–Z",
-        "Chain length: 45cm + 5cm extender",
-        "Chain type: Link Chain"
+        "Unisex tennis chain suitable for women and men",
+        "Set with cubic zirconia stones",
+        "Choose 3mm, 4mm or 5mm width",
+        "Choose 40, 45, 50, 55 or 60 cm length",
+        "Gold-tone finish",
+        "Plated with 5 layers of 18K gold"
       ]
     },
     "afterText": {
-      "he": "בחרו זהב או כסף, הזינו אות אחת באנגלית A–Z והוסיפו לסל. האות נשמרת בהזמנה באותיות גדולות.",
-      "en": "Choose Gold or Silver, enter one English letter A–Z, and add to cart. The initial is saved in uppercase."
-    },
-    "giftPackaging": {
-      "optional": true,
-      "addOnPrice": 54.9,
-      "heading": {
-        "he": "הוספת אריזה",
-        "en": "Add gift packaging"
-      },
-      "description": {
-        "he": "אפשר להוסיף את מארז LOVE FOREVER באחד משלושה צבעים.",
-        "en": "Add the LOVE FOREVER packaging in one of three colors."
-      },
-      "options": [
-        {
-          "id": "pink",
-          "addPrice": 54.9,
-          "label": {
-            "he": "מארז ורוד",
-            "en": "Pink packaging"
-          },
-          "swatch": "#F3A3AD",
-          "image": "images/products/product-19/product-19-pink.png"
-        },
-        {
-          "id": "red",
-          "addPrice": 54.9,
-          "label": {
-            "he": "מארז אדום",
-            "en": "Red packaging"
-          },
-          "swatch": "#C8141C",
-          "image": "images/products/product-19/product-19-red.png"
-        },
-        {
-          "id": "black",
-          "addPrice": 54.9,
-          "label": {
-            "he": "מארז שחור",
-            "en": "Black packaging"
-          },
-          "swatch": "#161616",
-          "image": "images/products/product-19/product-19-black.png"
-        }
-      ]
+      "he": "בחרו אורך ורוחב והמחיר יתעדכן אוטומטית. לדוגמה, 55 ס״מ ברוחב 5 מ״מ עולה 339.90 ₪. השרשרת בצבע זהב ומצופה ב-5 שכבות זהב 18 קראט.",
+      "en": "Choose a length and width and the price updates automatically. For example, 55 cm at 5mm width costs ₪339.90. The chain has a gold-tone finish with 5 layers of 18K gold plating."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -2489,183 +2352,150 @@ var PRODUCTS = [
     }
   },
   {
-    "id": "love-forever-rose-gift-box-01",
-    "slug": "product-19",
-    "urlSlug": "love-forever-rose-gift-box",
-    "sku": "VS-GIFT-019",
-    "category": "gift-boxes",
-    "categories": [
-      "gift-boxes",
-      "sets"
-    ],
-    "badge": null,
-    "cardMode": "view",
-    "hideMessageCard": true,
-    "hoverImage": "images/products/product-19/product-19-red.png",
-    "images": [
-      "images/products/product-19/product-19-pink.png",
-      "images/products/product-19/product-19-red.png",
-      "images/products/product-19/product-19-black.png"
-    ],
-    "price": 54.9,
-    "compareAt": 0,
-    "startingPrice": true,
-    "title": {
-      "he": "מארז מתנה LOVE FOREVER עם ורדים",
-      "en": "LOVE FOREVER Rose Jewelry Gift Box"
-    },
-    "subtitle": {
-      "he": "מארז LOVE FOREVER עם ורדים וחלון שקוף - לבחירה בוורוד, אדום או שחור. השרשרת אינה כלולה",
-      "en": "LOVE FOREVER rose gift packaging with a clear window - choose Pink, Red or Black. Necklace not included"
-    },
-    "colors": [
-      {
-        "id": "pink",
-        "label": {
-          "he": "ורוד",
-          "en": "Pink"
-        },
-        "swatch": "#F3A3AD",
-        "image": "images/products/product-19/product-19-pink.png"
-      },
-      {
-        "id": "red",
-        "label": {
-          "he": "אדום",
-          "en": "Red"
-        },
-        "swatch": "#C8141C",
-        "image": "images/products/product-19/product-19-red.png"
-      },
-      {
-        "id": "black",
-        "label": {
-          "he": "שחור",
-          "en": "Black"
-        },
-        "swatch": "#161616",
-        "image": "images/products/product-19/product-19-black.png"
-      }
-    ],
-    "cardTitle": {
-      "he": "מארז LOVE FOREVER",
-      "en": "LOVE FOREVER Gift Box"
-    },
-    "cardMessage": {
-      "he": "",
-      "en": ""
-    },
-    "signature": {
-      "he": "",
-      "en": ""
-    },
-    "details": {
-      "he": [
-        "מארז מתנה רומנטי להצגת תכשיט",
-        "עיצוב LOVE FOREVER עם ורדים דקורטיביים",
-        "מכסה עם חלון שקוף להצגת המתנה",
-        "לבחירה בשלושה צבעים: ורוד, אדום או שחור",
-        "כולל קופסת תכשיט ושקית מתנה תואמת לפי עיצוב המארז",
-        "המחיר הוא עבור המארז בלבד - השרשרת אינה כלולה",
-        "בחרו שרשרת דרך כפתור ״הוסף שרשרת״, חזרו לעמוד המארז ואז לחצו ״הוספה לסל״ כדי להוסיף אותם יחד כפריט אחד"
-      ],
-      "en": [
-        "Romantic gift packaging designed to present jewelry",
-        "LOVE FOREVER design with decorative roses",
-        "Clear display window on the gift-box lid",
-        "Available in three colors: Pink, Red or Black",
-        "Includes the jewelry gift box and matching gift bag according to the set design",
-        "The price is for the packaging only - the necklace is not included",
-        "Choose a necklace through the Add necklace flow, return to the packaging page, then press Add to cart to add them together as one item"
-      ]
-    },
-    "afterText": {
-      "he": "בחרו צבע למארז ואז לחצו ״הוסף שרשרת״. אחרי שבחרתם שרשרת תחזרו לעמוד המארז, ושם לחצו ״הוספה לסל״ כדי להוסיף את השרשרת והמארז יחד כפריט אחד.",
-      "en": "Choose the packaging color and then Add necklace. After selecting the necklace, return to the packaging page and press Add to cart to add the necklace and packaging together as one item."
-    },
-    "requiresCompanion": {
-      "required": true,
-      "productIds": [
-        "wife-necklace-only-01",
-        "gold-clover-set-01",
-        "silver-clover-set-01",
-        "tennis-necklace-2mm-01",
-        "custom-name-necklace-925-01",
-        "four-leaf-silver-necklace-01",
-        "custom-heart-initial-necklace-01"
-      ],
-      "pickerUrl": "/choose-necklace",
-      "heading": {
-        "he": "הוסף שרשרת - חובה",
-        "en": "Add a necklace - required"
-      },
-      "description": {
-        "he": "המארז אינו מגיע עם שרשרת. בחרו אחת מהשרשראות המתאימות והיא תתווסף למארז יחד עם העיצוב, המידה או הצבע שבחרתם.",
-        "en": "The packaging does not include a necklace. Choose a compatible necklace and it will be attached to the packaging with the options you selected."
-      }
-    },
-    "deliveryBusinessDays": {
-      "min": 9,
-      "max": 14
-    }
-  },
-  {
-    "id": "forever-with-you-heart-gift-set-01",
+    "id": "noya-black-tennis-necklace-20",
     "slug": "product-20",
     "urlSlug": "forever-with-you-gift-set",
-    "sku": "VS-GIFT-020",
-    "category": "gift-boxes",
+    "sku": "KW-NK-020",
+    "category": "necklaces",
     "categories": [
-      "gift-boxes",
-      "necklaces",
-      "sets"
+      "necklaces"
     ],
     "badge": null,
+    "hoverImage": "images/products/product-20/product-20-red.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-20/product-20-red.png",
+        "hoverImage": "images/products/product-20/product-20-pink.png"
+      },
+      "men": {
+        "image": "images/products/product-20/product-20-red.png",
+        "hoverImage": "images/products/product-20/product-20-pink.png"
+      }
+    },
     "cardMode": "view",
     "hideMessageCard": true,
-    "hoverImage": "images/products/product-20/product-20-red.png",
     "images": [
       "images/products/product-20/product-20-pink.png",
       "images/products/product-20/product-20-red.png",
       "images/products/product-20/product-20-necklace.png"
     ],
-    "price": 159.9,
-    "compareAt": 249.9,
+    "price": 259.9,
+    "compareAt": 359.9,
     "title": {
-      "he": "מארז אהבה Forever With You - ורדים ושרשרת לב",
-      "en": "Forever With You Heart Gift Set - Roses & Heart Necklace"
+      "he": "שרשרת טניס נויה שחורה",
+      "en": "Noya Black Tennis Necklace"
     },
     "subtitle": {
-      "he": "מארז לב רומנטי עם ורדים ושרשרת לב - לבחירה בוורוד או אדום",
-      "en": "Romantic heart-shaped rose gift set with a heart necklace - choose Pink or Red"
+      "he": "שרשרת יוניסקס לנשים ולגברים · לבחירה באורך 40, 45, 50, 55 או 60 ס״מ וברוחב 3 או 4 מ״מ",
+      "en": "Unisex necklace for women and men · choose 40, 45, 50, 55 or 60 cm length and 3mm or 4mm width"
     },
-    "colors": [
+    "sizeHeading": {
+      "he": "בחרו אורך",
+      "en": "Choose length"
+    },
+    "colorHeading": {
+      "he": "בחרו עובי",
+      "en": "Choose width"
+    },
+    "colorRequiredText": {
+      "he": "נא לבחור עובי",
+      "en": "Please choose a width"
+    },
+    "sizes": [
       {
-        "id": "pink",
-        "label": {
-          "he": "ורוד",
-          "en": "Pink"
+        "id": "16in",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "259.90 ₪",
+          "en": "₪259.90"
         },
-        "swatch": "#F2A8B7",
-        "image": "images/products/product-20/product-20-pink.png"
+        "label": {
+          "he": "40 ס״מ",
+          "en": "40 cm"
+        }
       },
       {
-        "id": "red",
-        "label": {
-          "he": "אדום",
-          "en": "Red"
+        "id": "18in",
+        "addPrice": 10,
+        "priceLabel": {
+          "he": "269.90 ₪",
+          "en": "₪269.90"
         },
-        "swatch": "#C91520",
-        "image": "images/products/product-20/product-20-red.png"
+        "label": {
+          "he": "45 ס״מ",
+          "en": "45 cm"
+        }
+      },
+      {
+        "id": "20in",
+        "addPrice": 20,
+        "priceLabel": {
+          "he": "279.90 ₪",
+          "en": "₪279.90"
+        },
+        "label": {
+          "he": "50 ס״מ",
+          "en": "50 cm"
+        }
+      },
+      {
+        "id": "22in",
+        "addPrice": 30,
+        "priceLabel": {
+          "he": "289.90 ₪",
+          "en": "₪289.90"
+        },
+        "label": {
+          "he": "55 ס״מ",
+          "en": "55 cm"
+        }
+      },
+      {
+        "id": "24in",
+        "addPrice": 40,
+        "priceLabel": {
+          "he": "299.90 ₪",
+          "en": "₪299.90"
+        },
+        "label": {
+          "he": "60 ס״מ",
+          "en": "60 cm"
+        }
+      }
+    ],
+    "colors": [
+      {
+        "id": "3mm",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "ללא תוספת",
+          "en": "Included"
+        },
+        "label": {
+          "he": "3 מ״מ",
+          "en": "3 mm"
+        }
+      },
+      {
+        "id": "4mm",
+        "addPrice": 10,
+        "priceLabel": {
+          "he": "+10 ₪",
+          "en": "+₪10"
+        },
+        "label": {
+          "he": "4 מ״מ",
+          "en": "4 mm"
+        }
       }
     ],
     "cardTitle": {
-      "he": "מארז Forever With You",
-      "en": "Forever With You Gift Set"
+      "he": "שרשרת טניס נויה שחורה",
+      "en": "Noya Black Tennis Necklace"
     },
     "cardMessage": {
-      "he": "",
-      "en": ""
+      "he": "שרשרת טניס שחורה במראה יוקרתי ונקי, עם בחירה של אורך ועובי להתאמה מדויקת.",
+      "en": "A sleek black tennis necklace with a premium look and selectable length and width for a precise fit."
     },
     "signature": {
       "he": "",
@@ -2673,25 +2503,27 @@ var PRODUCTS = [
     },
     "details": {
       "he": [
-        "מארז מתנה רומנטי בצורת לב עם ורדים דקורטיביים",
-        "כולל שרשרת לב בעיצוב אלגנטי כפי שמופיע בתמונות המוצר",
-        "קופסת לב עם סרט ופפיון וכיתוב Forever with you",
-        "לבחירה בשני צבעי מארז: ורוד או אדום",
-        "מתאים למתנה לאישה, לאמא, לבת או לאחות",
-        "מגיע כמארז מוכן למתנה"
+        "שרשרת טניס יוניסקס לנשים ולגברים",
+        "משובצת אבני Cubic Zirconia שחורות",
+        "לבחירה ברוחב 3 מ״מ או 4 מ״מ",
+        "לבחירה באורכים: 40, 45, 50, 55 או 60 ס״מ",
+        "גוון התכשיט: שחור",
+        "ציפוי שחור בגימור מבריק",
+        "המחיר מתעדכן אוטומטית לפי האורך והעובי שנבחרו"
       ],
       "en": [
-        "Romantic heart-shaped gift box with decorative roses",
-        "Includes the elegant heart necklace shown in the product photos",
-        "Heart box with ribbon, bow and Forever with you lettering",
-        "Available in two gift-box colors: Pink or Red",
-        "Suitable as a gift for a partner, mom, daughter or sister",
-        "Presented as a ready-to-gift set"
+        "Unisex tennis necklace for women and men",
+        "Set with black cubic zirconia stones",
+        "Choose 3mm or 4mm width",
+        "Available in 40, 45, 50, 55 or 60 cm lengths",
+        "Black finish",
+        "Glossy black plated finish",
+        "Price updates automatically according to the selected length and width"
       ]
     },
     "afterText": {
-      "he": "בחרו ורוד או אדום והוסיפו לסל. המארז כולל את קופסת הלב עם הוורדים ואת שרשרת הלב המוצגת בתמונות.",
-      "en": "Choose Pink or Red and add it to cart. The set includes the heart-shaped rose box and the heart necklace shown in the photos."
+      "he": "בחרו אורך ורוחב והמחיר יתעדכן אוטומטית. מחיר התחלתי: 259.90 ₪ ל־40 ס״מ ברוחב 3 מ״מ.",
+      "en": "Choose a length and width and the price updates automatically. Starting price: ₪259.90 for 40 cm at 3 mm width."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -6942,7 +6774,7 @@ var PRODUCTS = [
         "עמידות למים 3Bar - מתאימה להתזות, גשם ושטיפת ידיים; לא לשחייה או צלילה",
         "מחוגים זוהרים לקריאה נוחה יותר בתאורה חלשה",
         "זכוכית Hardlex עמידה לשריטות בשימוש רגיל",
-        "עובי גוף כ־11 מ״מ ורצועה באורך של עד כ־9 אינץ׳"
+        "עובי גוף כ־11 מ״מ ורצועה באורך של עד כ־22 ס״מ"
       ],
       "en": [
         "40–44 mm dial range for a bold, refined look",
@@ -6951,7 +6783,7 @@ var PRODUCTS = [
         "3Bar water resistance for splashes, rain and hand washing; not for swimming or diving",
         "Luminous hands for easier reading in low light",
         "Hardlex dial window for everyday scratch resistance",
-        "Approx. 11 mm case thickness with a band length of up to about 9 inches"
+        "Approx. 11 mm case thickness with a band length of up to about 22 cm"
       ]
     },
     "afterText": {
@@ -7011,7 +6843,7 @@ var PRODUCTS = [
         "עמידות למים 3Bar - מתאימה להתזות, גשם ושטיפת ידיים; לא לשחייה או צלילה",
         "מחוגים זוהרים לקריאה נוחה יותר בתאורה חלשה",
         "זכוכית Hardlex עמידה לשריטות בשימוש רגיל",
-        "עובי גוף כ־11 מ״מ ורצועה באורך של עד כ־9 אינץ׳"
+        "עובי גוף כ־11 מ״מ ורצועה באורך של עד כ־22 ס״מ"
       ],
       "en": [
         "40–44 mm dial range for a bold, refined look",
@@ -7020,7 +6852,7 @@ var PRODUCTS = [
         "3Bar water resistance for splashes, rain and hand washing; not for swimming or diving",
         "Luminous hands for easier reading in low light",
         "Hardlex dial window for everyday scratch resistance",
-        "Approx. 11 mm case thickness with a band length of up to about 9 inches"
+        "Approx. 11 mm case thickness with a band length of up to about 22 cm"
       ]
     },
     "afterText": {
@@ -8341,7 +8173,2447 @@ var PRODUCTS = [
       "min": 9,
       "max": 18
     }
+  },
+  {
+    "id": "flora-tennis-bracelet-sky-blue-94",
+    "slug": "product-94",
+    "urlSlug": "flora-tennis-bracelet-sky-blue",
+    "sku": "KW-BR-094",
+    "category": "bracelets",
+    "categories": [
+      "bracelets"
+    ],
+    "badge": null,
+    "hoverImage": "images/products/product-94/product-94-hover.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-94/product-94-1.png",
+        "hoverImage": "images/products/product-94/product-94-hover.png"
+      },
+      "men": {
+        "image": "images/products/product-94/product-94-1.png",
+        "hoverImage": "images/products/product-94/product-94-hover.png"
+      }
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "images": [
+      "images/products/product-94/product-94-1.png",
+      "images/products/product-94/product-94-2.png",
+      "images/products/product-94/product-94-3.png",
+      "images/products/product-94/product-94-4.png",
+      "images/products/product-94/product-94-5.png",
+      "images/products/product-94/product-94-6.png",
+      "images/products/product-94/product-94-7.png",
+      "images/products/product-94/product-94-8.png",
+      "images/products/product-94/product-94-9.png",
+      "images/products/product-94/product-94-10.png"
+    ],
+    "price": 219.9,
+    "compareAt": 249.9,
+    "title": {
+      "he": "צמיד טניס תלתן - כחול",
+      "en": "Clover Tennis Bracelet - Blue"
+    },
+    "subtitle": {
+      "he": "צמיד טניס יוניסקס לנשים ולגברים · לבחירה ב־17 או 20 ס״מ · מרכז תלתן בצבע תכלת",
+      "en": "Unisex tennis bracelet for women and men · choose 17 or 20 cm · sky-blue clover center"
+    },
+    "sizeHeading": {
+      "he": "בחרו אורך",
+      "en": "Choose length"
+    },
+    "sizes": [
+      {
+        "id": "7in",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "219.90 ₪",
+          "en": "₪219.90"
+        },
+        "label": {
+          "he": "17 ס״מ",
+          "en": "17 cm"
+        }
+      },
+      {
+        "id": "8in",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "219.90 ₪",
+          "en": "₪219.90"
+        },
+        "label": {
+          "he": "20 ס״מ",
+          "en": "20 cm"
+        }
+      }
+    ],
+    "cardTitle": {
+      "he": "צמיד טניס תלתן - כחול",
+      "en": "Clover Tennis Bracelet - Blue"
+    },
+    "cardMessage": {
+      "he": "צמיד טניס תלתן במראה יוקרתי עם מרכז תלתן בצבע תכלת. מתאים לנשים ולגברים ולשני אורכים לבחירה.",
+      "en": "A premium clover tennis bracelet with a sky-blue clover center. Suitable for women and men with two lengths to choose from."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צמיד טניס תלתן יוניסקס לנשים ולגברים",
+        "משובץ אבני Cubic Zirconia במראה יוקרתי",
+        "מרכז תלתן בצבע תכלת",
+        "לבחירה באורכים: 17 ס״מ או 20 ס״מ",
+        "סגנון: Hiphop/Rock",
+        "סוג צמיד: Chain & Link Bracelets",
+        "סוג שרשרת: Link Chain",
+        "גוון התכשיט: כסף / זהב לבן",
+        "סוג מתכת: Copper",
+        "חומר: Cubic zirconia",
+        "דגם: ICECHARMI-119",
+        "המחיר מתעדכן אוטומטית לפי האורך שנבחר"
+      ],
+      "en": [
+        "Unisex clover tennis bracelet for women and men",
+        "Set with cubic zirconia stones for a luxurious look",
+        "Clover center color: Sky Blue",
+        "Available in 17 cm or 20 cm lengths",
+        "Style: Hiphop/Rock",
+        "Bracelet type: Chain & Link Bracelets",
+        "Chain type: Link Chain",
+        "Jewelry tone: Silver / White Gold",
+        "Metal type: Copper",
+        "Material: Cubic zirconia",
+        "Model: ICECHARMI-119",
+        "Price updates automatically according to the selected length"
+      ]
+    },
+    "afterText": {
+      "he": "הגלריה כוללת את כל ששת הווריאנטים, תמונת hover קבוצתית, תמונות תצוגה, ותמונת יד להמחשת המראה על הגוף.",
+      "en": "The gallery includes all six variants, a shared hover image, showcase photos, and an on-wrist image for wear reference."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    },
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "colorRequiredText": {
+      "he": "נא לבחור צבע",
+      "en": "Please choose a color"
+    },
+    "colors": [
+      {
+        "id": "blue",
+        "addPrice": 0,
+        "label": {
+          "he": "כחול",
+          "en": "Blue"
+        },
+        "swatch": "#22A8E8",
+        "image": "images/products/product-94/product-94-1.png"
+      },
+      {
+        "id": "pink",
+        "addPrice": 0,
+        "label": {
+          "he": "ורוד",
+          "en": "Pink"
+        },
+        "swatch": "#F3A4C4",
+        "image": "images/products/product-94/product-94-2.png"
+      },
+      {
+        "id": "gold-black",
+        "addPrice": 0,
+        "label": {
+          "he": "זהב/שחור",
+          "en": "Gold/Black"
+        },
+        "swatch": "linear-gradient(135deg,#d6af37 0 50%,#111 50% 100%)",
+        "image": "images/products/product-94/product-94-3.png"
+      },
+      {
+        "id": "green",
+        "addPrice": 0,
+        "label": {
+          "he": "ירוק",
+          "en": "Green"
+        },
+        "swatch": "#138A5B",
+        "image": "images/products/product-94/product-94-4.png"
+      },
+      {
+        "id": "black",
+        "addPrice": 0,
+        "label": {
+          "he": "שחור",
+          "en": "Black"
+        },
+        "swatch": "#111111",
+        "image": "images/products/product-94/product-94-5.png"
+      },
+      {
+        "id": "white",
+        "addPrice": 0,
+        "label": {
+          "he": "לבן",
+          "en": "White"
+        },
+        "swatch": "#F5F5F5",
+        "image": "images/products/product-94/product-94-6.png"
+      }
+    ],
+    "defaultColorId": "blue"
+  },
+  {
+    "id": "flora-tennis-bracelet-pink-95",
+    "slug": "product-95",
+    "urlSlug": "flora-tennis-bracelet-pink",
+    "sku": "KW-BR-095",
+    "category": "bracelets",
+    "categories": [
+      "bracelets"
+    ],
+    "badge": null,
+    "hoverImage": "images/products/product-95/product-95-hover.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-95/product-95-1.png",
+        "hoverImage": "images/products/product-95/product-95-hover.png"
+      },
+      "men": {
+        "image": "images/products/product-95/product-95-1.png",
+        "hoverImage": "images/products/product-95/product-95-hover.png"
+      }
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "images": [
+      "images/products/product-95/product-95-1.png",
+      "images/products/product-95/product-95-2.png",
+      "images/products/product-95/product-95-3.png",
+      "images/products/product-95/product-95-4.png",
+      "images/products/product-95/product-95-5.png",
+      "images/products/product-95/product-95-6.png",
+      "images/products/product-95/product-95-7.png",
+      "images/products/product-95/product-95-8.png",
+      "images/products/product-95/product-95-9.png",
+      "images/products/product-95/product-95-10.png"
+    ],
+    "price": 219.9,
+    "compareAt": 249.9,
+    "title": {
+      "he": "צמיד טניס תלתן - ורוד",
+      "en": "Clover Tennis Bracelet - Pink"
+    },
+    "subtitle": {
+      "he": "צמיד טניס יוניסקס לנשים ולגברים · לבחירה ב־17 או 20 ס״מ · מרכז תלתן בצבע ורוד",
+      "en": "Unisex tennis bracelet for women and men · choose 17 or 20 cm · pink clover center"
+    },
+    "sizeHeading": {
+      "he": "בחרו אורך",
+      "en": "Choose length"
+    },
+    "sizes": [
+      {
+        "id": "7in",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "219.90 ₪",
+          "en": "₪219.90"
+        },
+        "label": {
+          "he": "17 ס״מ",
+          "en": "17 cm"
+        }
+      },
+      {
+        "id": "8in",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "219.90 ₪",
+          "en": "₪219.90"
+        },
+        "label": {
+          "he": "20 ס״מ",
+          "en": "20 cm"
+        }
+      }
+    ],
+    "cardTitle": {
+      "he": "צמיד טניס תלתן - ורוד",
+      "en": "Clover Tennis Bracelet - Pink"
+    },
+    "cardMessage": {
+      "he": "צמיד טניס תלתן במראה יוקרתי עם מרכז תלתן בצבע ורוד. מתאים לנשים ולגברים ולשני אורכים לבחירה.",
+      "en": "A premium clover tennis bracelet with a pink clover center. Suitable for women and men with two lengths to choose from."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צמיד טניס תלתן יוניסקס לנשים ולגברים",
+        "משובץ אבני Cubic Zirconia במראה יוקרתי",
+        "מרכז תלתן בצבע ורוד",
+        "לבחירה באורכים: 17 ס״מ או 20 ס״מ",
+        "סגנון: Hiphop/Rock",
+        "סוג צמיד: Chain & Link Bracelets",
+        "סוג שרשרת: Link Chain",
+        "גוון התכשיט: כסף / זהב לבן",
+        "סוג מתכת: Copper",
+        "חומר: Cubic zirconia",
+        "דגם: ICECHARMI-119",
+        "המחיר מתעדכן אוטומטית לפי האורך שנבחר"
+      ],
+      "en": [
+        "Unisex clover tennis bracelet for women and men",
+        "Set with cubic zirconia stones for a luxurious look",
+        "Clover center color: Pink",
+        "Available in 17 cm or 20 cm lengths",
+        "Style: Hiphop/Rock",
+        "Bracelet type: Chain & Link Bracelets",
+        "Chain type: Link Chain",
+        "Jewelry tone: Silver / White Gold",
+        "Metal type: Copper",
+        "Material: Cubic zirconia",
+        "Model: ICECHARMI-119",
+        "Price updates automatically according to the selected length"
+      ]
+    },
+    "afterText": {
+      "he": "הגלריה כוללת את כל ששת הווריאנטים, תמונת hover קבוצתית, תמונות תצוגה, ותמונת יד להמחשת המראה על הגוף.",
+      "en": "The gallery includes all six variants, a shared hover image, showcase photos, and an on-wrist image for wear reference."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    },
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "colorRequiredText": {
+      "he": "נא לבחור צבע",
+      "en": "Please choose a color"
+    },
+    "colors": [
+      {
+        "id": "blue",
+        "addPrice": 0,
+        "label": {
+          "he": "כחול",
+          "en": "Blue"
+        },
+        "swatch": "#22A8E8",
+        "image": "images/products/product-95/product-95-2.png"
+      },
+      {
+        "id": "pink",
+        "addPrice": 0,
+        "label": {
+          "he": "ורוד",
+          "en": "Pink"
+        },
+        "swatch": "#F3A4C4",
+        "image": "images/products/product-95/product-95-1.png"
+      },
+      {
+        "id": "gold-black",
+        "addPrice": 0,
+        "label": {
+          "he": "זהב/שחור",
+          "en": "Gold/Black"
+        },
+        "swatch": "linear-gradient(135deg,#d6af37 0 50%,#111 50% 100%)",
+        "image": "images/products/product-95/product-95-3.png"
+      },
+      {
+        "id": "green",
+        "addPrice": 0,
+        "label": {
+          "he": "ירוק",
+          "en": "Green"
+        },
+        "swatch": "#138A5B",
+        "image": "images/products/product-95/product-95-4.png"
+      },
+      {
+        "id": "black",
+        "addPrice": 0,
+        "label": {
+          "he": "שחור",
+          "en": "Black"
+        },
+        "swatch": "#111111",
+        "image": "images/products/product-95/product-95-5.png"
+      },
+      {
+        "id": "white",
+        "addPrice": 0,
+        "label": {
+          "he": "לבן",
+          "en": "White"
+        },
+        "swatch": "#F5F5F5",
+        "image": "images/products/product-95/product-95-6.png"
+      }
+    ],
+    "defaultColorId": "pink"
+  },
+  {
+    "id": "flora-tennis-bracelet-black-gold-96",
+    "slug": "product-96",
+    "urlSlug": "flora-tennis-bracelet-black-gold",
+    "sku": "KW-BR-096",
+    "category": "bracelets",
+    "categories": [
+      "bracelets"
+    ],
+    "badge": null,
+    "hoverImage": "images/products/product-96/product-96-hover.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-96/product-96-1.png",
+        "hoverImage": "images/products/product-96/product-96-hover.png"
+      },
+      "men": {
+        "image": "images/products/product-96/product-96-1.png",
+        "hoverImage": "images/products/product-96/product-96-hover.png"
+      }
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "images": [
+      "images/products/product-96/product-96-1.png",
+      "images/products/product-96/product-96-2.png",
+      "images/products/product-96/product-96-3.png",
+      "images/products/product-96/product-96-4.png",
+      "images/products/product-96/product-96-5.png",
+      "images/products/product-96/product-96-6.png",
+      "images/products/product-96/product-96-7.png",
+      "images/products/product-96/product-96-8.png",
+      "images/products/product-96/product-96-9.png",
+      "images/products/product-96/product-96-10.png"
+    ],
+    "price": 219.9,
+    "compareAt": 259.9,
+    "title": {
+      "he": "צמיד טניס תלתן - שחור זהב",
+      "en": "Clover Tennis Bracelet - Black Gold"
+    },
+    "subtitle": {
+      "he": "צמיד טניס יוניסקס לנשים ולגברים · לבחירה ב־17 או 20 ס״מ · גימור זהב עם מרכז תלתן שחור",
+      "en": "Unisex tennis bracelet for women and men · choose 17 or 20 cm · gold finish with a black clover center"
+    },
+    "sizeHeading": {
+      "he": "בחרו אורך",
+      "en": "Choose length"
+    },
+    "sizes": [
+      {
+        "id": "7in",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "219.90 ₪",
+          "en": "₪219.90"
+        },
+        "label": {
+          "he": "17 ס״מ",
+          "en": "17 cm"
+        }
+      },
+      {
+        "id": "8in",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "219.90 ₪",
+          "en": "₪219.90"
+        },
+        "label": {
+          "he": "20 ס״מ",
+          "en": "20 cm"
+        }
+      }
+    ],
+    "cardTitle": {
+      "he": "צמיד טניס תלתן - שחור זהב",
+      "en": "Clover Tennis Bracelet - Black Gold"
+    },
+    "cardMessage": {
+      "he": "צמיד טניס תלתן בגימור זהב עם מרכז תלתן שחור, במראה יוקרתי ובולט. מתאים לנשים ולגברים ולשני אורכים לבחירה.",
+      "en": "A striking clover tennis bracelet in a gold finish with a black clover center. Suitable for women and men with two lengths to choose from."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צמיד טניס תלתן יוניסקס לנשים ולגברים",
+        "משובץ אבני Cubic Zirconia במראה יוקרתי",
+        "מרכז תלתן בצבע שחור",
+        "לבחירה באורכים: 17 ס״מ או 20 ס״מ",
+        "סגנון: Hiphop/Rock",
+        "סוג צמיד: Chain & Link Bracelets",
+        "סוג שרשרת: Link Chain",
+        "גוון התכשיט: זהב",
+        "סוג מתכת: Copper",
+        "חומר: Cubic zirconia",
+        "דגם: ICECHARMI-119",
+        "המחיר מתעדכן אוטומטית לפי האורך שנבחר"
+      ],
+      "en": [
+        "Unisex clover tennis bracelet for women and men",
+        "Set with cubic zirconia stones for a luxurious look",
+        "Clover center color: Black",
+        "Available in 17 cm or 20 cm lengths",
+        "Style: Hiphop/Rock",
+        "Bracelet type: Chain & Link Bracelets",
+        "Chain type: Link Chain",
+        "Jewelry tone: Gold",
+        "Metal type: Copper",
+        "Material: Cubic zirconia",
+        "Model: ICECHARMI-119",
+        "Price updates automatically according to the selected length"
+      ]
+    },
+    "afterText": {
+      "he": "הגלריה כוללת את כל ששת הווריאנטים, תמונת hover קבוצתית, תמונות תצוגה, ותמונת יד להמחשת המראה על הגוף.",
+      "en": "The gallery includes all six variants, a shared hover image, showcase photos, and an on-wrist image for wear reference."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    },
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "colorRequiredText": {
+      "he": "נא לבחור צבע",
+      "en": "Please choose a color"
+    },
+    "colors": [
+      {
+        "id": "blue",
+        "addPrice": 0,
+        "label": {
+          "he": "כחול",
+          "en": "Blue"
+        },
+        "swatch": "#22A8E8",
+        "image": "images/products/product-96/product-96-2.png"
+      },
+      {
+        "id": "pink",
+        "addPrice": 0,
+        "label": {
+          "he": "ורוד",
+          "en": "Pink"
+        },
+        "swatch": "#F3A4C4",
+        "image": "images/products/product-96/product-96-3.png"
+      },
+      {
+        "id": "gold-black",
+        "addPrice": 0,
+        "label": {
+          "he": "זהב/שחור",
+          "en": "Gold/Black"
+        },
+        "swatch": "linear-gradient(135deg,#d6af37 0 50%,#111 50% 100%)",
+        "image": "images/products/product-96/product-96-1.png"
+      },
+      {
+        "id": "green",
+        "addPrice": 0,
+        "label": {
+          "he": "ירוק",
+          "en": "Green"
+        },
+        "swatch": "#138A5B",
+        "image": "images/products/product-96/product-96-4.png"
+      },
+      {
+        "id": "black",
+        "addPrice": 0,
+        "label": {
+          "he": "שחור",
+          "en": "Black"
+        },
+        "swatch": "#111111",
+        "image": "images/products/product-96/product-96-5.png"
+      },
+      {
+        "id": "white",
+        "addPrice": 0,
+        "label": {
+          "he": "לבן",
+          "en": "White"
+        },
+        "swatch": "#F5F5F5",
+        "image": "images/products/product-96/product-96-6.png"
+      }
+    ],
+    "defaultColorId": "gold-black"
+  },
+  {
+    "id": "flora-tennis-bracelet-green-97",
+    "slug": "product-97",
+    "urlSlug": "flora-tennis-bracelet-green",
+    "sku": "KW-BR-097",
+    "category": "bracelets",
+    "categories": [
+      "bracelets"
+    ],
+    "badge": null,
+    "hoverImage": "images/products/product-97/product-97-hover.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-97/product-97-1.png",
+        "hoverImage": "images/products/product-97/product-97-hover.png"
+      },
+      "men": {
+        "image": "images/products/product-97/product-97-1.png",
+        "hoverImage": "images/products/product-97/product-97-hover.png"
+      }
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "images": [
+      "images/products/product-97/product-97-1.png",
+      "images/products/product-97/product-97-2.png",
+      "images/products/product-97/product-97-3.png",
+      "images/products/product-97/product-97-4.png",
+      "images/products/product-97/product-97-5.png",
+      "images/products/product-97/product-97-6.png",
+      "images/products/product-97/product-97-7.png",
+      "images/products/product-97/product-97-8.png",
+      "images/products/product-97/product-97-9.png",
+      "images/products/product-97/product-97-10.png"
+    ],
+    "price": 219.9,
+    "compareAt": 249.9,
+    "title": {
+      "he": "צמיד טניס תלתן - ירוק",
+      "en": "Clover Tennis Bracelet - Green"
+    },
+    "subtitle": {
+      "he": "צמיד טניס יוניסקס לנשים ולגברים · לבחירה ב־17 או 20 ס״מ · מרכז תלתן בצבע ירוק",
+      "en": "Unisex tennis bracelet for women and men · choose 17 or 20 cm · green clover center"
+    },
+    "sizeHeading": {
+      "he": "בחרו אורך",
+      "en": "Choose length"
+    },
+    "sizes": [
+      {
+        "id": "7in",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "219.90 ₪",
+          "en": "₪219.90"
+        },
+        "label": {
+          "he": "17 ס״מ",
+          "en": "17 cm"
+        }
+      },
+      {
+        "id": "8in",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "219.90 ₪",
+          "en": "₪219.90"
+        },
+        "label": {
+          "he": "20 ס״מ",
+          "en": "20 cm"
+        }
+      }
+    ],
+    "cardTitle": {
+      "he": "צמיד טניס תלתן - ירוק",
+      "en": "Clover Tennis Bracelet - Green"
+    },
+    "cardMessage": {
+      "he": "צמיד טניס תלתן במראה יוקרתי עם מרכז תלתן בצבע ירוק. מתאים לנשים ולגברים ולשני אורכים לבחירה.",
+      "en": "A premium clover tennis bracelet with a green clover center. Suitable for women and men with two lengths to choose from."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צמיד טניס תלתן יוניסקס לנשים ולגברים",
+        "משובץ אבני Cubic Zirconia במראה יוקרתי",
+        "מרכז תלתן בצבע ירוק",
+        "לבחירה באורכים: 17 ס״מ או 20 ס״מ",
+        "סגנון: Hiphop/Rock",
+        "סוג צמיד: Chain & Link Bracelets",
+        "סוג שרשרת: Link Chain",
+        "גוון התכשיט: כסף / זהב לבן",
+        "סוג מתכת: Copper",
+        "חומר: Cubic zirconia",
+        "דגם: ICECHARMI-119",
+        "המחיר מתעדכן אוטומטית לפי האורך שנבחר"
+      ],
+      "en": [
+        "Unisex clover tennis bracelet for women and men",
+        "Set with cubic zirconia stones for a luxurious look",
+        "Clover center color: Green",
+        "Available in 17 cm or 20 cm lengths",
+        "Style: Hiphop/Rock",
+        "Bracelet type: Chain & Link Bracelets",
+        "Chain type: Link Chain",
+        "Jewelry tone: Silver / White Gold",
+        "Metal type: Copper",
+        "Material: Cubic zirconia",
+        "Model: ICECHARMI-119",
+        "Price updates automatically according to the selected length"
+      ]
+    },
+    "afterText": {
+      "he": "הגלריה כוללת את כל ששת הווריאנטים, תמונת hover קבוצתית, תמונות תצוגה, ותמונת יד להמחשת המראה על הגוף.",
+      "en": "The gallery includes all six variants, a shared hover image, showcase photos, and an on-wrist image for wear reference."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    },
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "colorRequiredText": {
+      "he": "נא לבחור צבע",
+      "en": "Please choose a color"
+    },
+    "colors": [
+      {
+        "id": "blue",
+        "addPrice": 0,
+        "label": {
+          "he": "כחול",
+          "en": "Blue"
+        },
+        "swatch": "#22A8E8",
+        "image": "images/products/product-97/product-97-2.png"
+      },
+      {
+        "id": "pink",
+        "addPrice": 0,
+        "label": {
+          "he": "ורוד",
+          "en": "Pink"
+        },
+        "swatch": "#F3A4C4",
+        "image": "images/products/product-97/product-97-3.png"
+      },
+      {
+        "id": "gold-black",
+        "addPrice": 0,
+        "label": {
+          "he": "זהב/שחור",
+          "en": "Gold/Black"
+        },
+        "swatch": "linear-gradient(135deg,#d6af37 0 50%,#111 50% 100%)",
+        "image": "images/products/product-97/product-97-4.png"
+      },
+      {
+        "id": "green",
+        "addPrice": 0,
+        "label": {
+          "he": "ירוק",
+          "en": "Green"
+        },
+        "swatch": "#138A5B",
+        "image": "images/products/product-97/product-97-1.png"
+      },
+      {
+        "id": "black",
+        "addPrice": 0,
+        "label": {
+          "he": "שחור",
+          "en": "Black"
+        },
+        "swatch": "#111111",
+        "image": "images/products/product-97/product-97-5.png"
+      },
+      {
+        "id": "white",
+        "addPrice": 0,
+        "label": {
+          "he": "לבן",
+          "en": "White"
+        },
+        "swatch": "#F5F5F5",
+        "image": "images/products/product-97/product-97-6.png"
+      }
+    ],
+    "defaultColorId": "green"
+  },
+  {
+    "id": "flora-tennis-bracelet-black-silver-98",
+    "slug": "product-98",
+    "urlSlug": "flora-tennis-bracelet-black-silver",
+    "sku": "KW-BR-098",
+    "category": "bracelets",
+    "categories": [
+      "bracelets"
+    ],
+    "badge": null,
+    "hoverImage": "images/products/product-98/product-98-hover.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-98/product-98-1.png",
+        "hoverImage": "images/products/product-98/product-98-hover.png"
+      },
+      "men": {
+        "image": "images/products/product-98/product-98-1.png",
+        "hoverImage": "images/products/product-98/product-98-hover.png"
+      }
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "images": [
+      "images/products/product-98/product-98-1.png",
+      "images/products/product-98/product-98-2.png",
+      "images/products/product-98/product-98-3.png",
+      "images/products/product-98/product-98-4.png",
+      "images/products/product-98/product-98-5.png",
+      "images/products/product-98/product-98-6.png",
+      "images/products/product-98/product-98-7.png",
+      "images/products/product-98/product-98-8.png",
+      "images/products/product-98/product-98-9.png",
+      "images/products/product-98/product-98-10.png"
+    ],
+    "price": 219.9,
+    "compareAt": 249.9,
+    "title": {
+      "he": "צמיד טניס תלתן - שחור",
+      "en": "Clover Tennis Bracelet - Black"
+    },
+    "subtitle": {
+      "he": "צמיד טניס יוניסקס לנשים ולגברים · לבחירה ב־17 או 20 ס״מ · מרכז תלתן בצבע שחור",
+      "en": "Unisex tennis bracelet for women and men · choose 17 or 20 cm · black clover center"
+    },
+    "sizeHeading": {
+      "he": "בחרו אורך",
+      "en": "Choose length"
+    },
+    "sizes": [
+      {
+        "id": "7in",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "219.90 ₪",
+          "en": "₪219.90"
+        },
+        "label": {
+          "he": "17 ס״מ",
+          "en": "17 cm"
+        }
+      },
+      {
+        "id": "8in",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "219.90 ₪",
+          "en": "₪219.90"
+        },
+        "label": {
+          "he": "20 ס״מ",
+          "en": "20 cm"
+        }
+      }
+    ],
+    "cardTitle": {
+      "he": "צמיד טניס תלתן - שחור",
+      "en": "Clover Tennis Bracelet - Black"
+    },
+    "cardMessage": {
+      "he": "צמיד טניס תלתן במראה יוקרתי עם מרכז תלתן בצבע שחור. מתאים לנשים ולגברים ולשני אורכים לבחירה.",
+      "en": "A premium clover tennis bracelet with a black clover center. Suitable for women and men with two lengths to choose from."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צמיד טניס תלתן יוניסקס לנשים ולגברים",
+        "משובץ אבני Cubic Zirconia במראה יוקרתי",
+        "מרכז תלתן בצבע שחור",
+        "לבחירה באורכים: 17 ס״מ או 20 ס״מ",
+        "סגנון: Hiphop/Rock",
+        "סוג צמיד: Chain & Link Bracelets",
+        "סוג שרשרת: Link Chain",
+        "גוון התכשיט: כסף / זהב לבן",
+        "סוג מתכת: Copper",
+        "חומר: Cubic zirconia",
+        "דגם: ICECHARMI-119",
+        "המחיר מתעדכן אוטומטית לפי האורך שנבחר"
+      ],
+      "en": [
+        "Unisex clover tennis bracelet for women and men",
+        "Set with cubic zirconia stones for a luxurious look",
+        "Clover center color: Black",
+        "Available in 17 cm or 20 cm lengths",
+        "Style: Hiphop/Rock",
+        "Bracelet type: Chain & Link Bracelets",
+        "Chain type: Link Chain",
+        "Jewelry tone: Silver / White Gold",
+        "Metal type: Copper",
+        "Material: Cubic zirconia",
+        "Model: ICECHARMI-119",
+        "Price updates automatically according to the selected length"
+      ]
+    },
+    "afterText": {
+      "he": "הגלריה כוללת את כל ששת הווריאנטים, תמונת hover קבוצתית, תמונות תצוגה, ותמונת יד להמחשת המראה על הגוף.",
+      "en": "The gallery includes all six variants, a shared hover image, showcase photos, and an on-wrist image for wear reference."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    },
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "colorRequiredText": {
+      "he": "נא לבחור צבע",
+      "en": "Please choose a color"
+    },
+    "colors": [
+      {
+        "id": "blue",
+        "addPrice": 0,
+        "label": {
+          "he": "כחול",
+          "en": "Blue"
+        },
+        "swatch": "#22A8E8",
+        "image": "images/products/product-98/product-98-2.png"
+      },
+      {
+        "id": "pink",
+        "addPrice": 0,
+        "label": {
+          "he": "ורוד",
+          "en": "Pink"
+        },
+        "swatch": "#F3A4C4",
+        "image": "images/products/product-98/product-98-3.png"
+      },
+      {
+        "id": "gold-black",
+        "addPrice": 0,
+        "label": {
+          "he": "זהב/שחור",
+          "en": "Gold/Black"
+        },
+        "swatch": "linear-gradient(135deg,#d6af37 0 50%,#111 50% 100%)",
+        "image": "images/products/product-98/product-98-4.png"
+      },
+      {
+        "id": "green",
+        "addPrice": 0,
+        "label": {
+          "he": "ירוק",
+          "en": "Green"
+        },
+        "swatch": "#138A5B",
+        "image": "images/products/product-98/product-98-5.png"
+      },
+      {
+        "id": "black",
+        "addPrice": 0,
+        "label": {
+          "he": "שחור",
+          "en": "Black"
+        },
+        "swatch": "#111111",
+        "image": "images/products/product-98/product-98-1.png"
+      },
+      {
+        "id": "white",
+        "addPrice": 0,
+        "label": {
+          "he": "לבן",
+          "en": "White"
+        },
+        "swatch": "#F5F5F5",
+        "image": "images/products/product-98/product-98-6.png"
+      }
+    ],
+    "defaultColorId": "black"
+  },
+  {
+    "id": "flora-tennis-bracelet-white-99",
+    "slug": "product-99",
+    "urlSlug": "flora-tennis-bracelet-white",
+    "sku": "KW-BR-099",
+    "category": "bracelets",
+    "categories": [
+      "bracelets"
+    ],
+    "badge": null,
+    "hoverImage": "images/products/product-99/product-99-hover.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-99/product-99-1.png",
+        "hoverImage": "images/products/product-99/product-99-hover.png"
+      },
+      "men": {
+        "image": "images/products/product-99/product-99-1.png",
+        "hoverImage": "images/products/product-99/product-99-hover.png"
+      }
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "images": [
+      "images/products/product-99/product-99-1.png",
+      "images/products/product-99/product-99-2.png",
+      "images/products/product-99/product-99-3.png",
+      "images/products/product-99/product-99-4.png",
+      "images/products/product-99/product-99-5.png",
+      "images/products/product-99/product-99-6.png",
+      "images/products/product-99/product-99-7.png",
+      "images/products/product-99/product-99-8.png",
+      "images/products/product-99/product-99-9.png",
+      "images/products/product-99/product-99-10.png"
+    ],
+    "price": 219.9,
+    "compareAt": 249.9,
+    "title": {
+      "he": "צמיד טניס תלתן - לבן",
+      "en": "Clover Tennis Bracelet - White"
+    },
+    "subtitle": {
+      "he": "צמיד טניס יוניסקס לנשים ולגברים · לבחירה ב־17 או 20 ס״מ · מרכז תלתן בצבע לבן",
+      "en": "Unisex tennis bracelet for women and men · choose 17 or 20 cm · white clover center"
+    },
+    "sizeHeading": {
+      "he": "בחרו אורך",
+      "en": "Choose length"
+    },
+    "sizes": [
+      {
+        "id": "7in",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "219.90 ₪",
+          "en": "₪219.90"
+        },
+        "label": {
+          "he": "17 ס״מ",
+          "en": "17 cm"
+        }
+      },
+      {
+        "id": "8in",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "219.90 ₪",
+          "en": "₪219.90"
+        },
+        "label": {
+          "he": "20 ס״מ",
+          "en": "20 cm"
+        }
+      }
+    ],
+    "cardTitle": {
+      "he": "צמיד טניס תלתן - לבן",
+      "en": "Clover Tennis Bracelet - White"
+    },
+    "cardMessage": {
+      "he": "צמיד טניס תלתן במראה יוקרתי עם מרכז תלתן בצבע לבן. מתאים לנשים ולגברים ולשני אורכים לבחירה.",
+      "en": "A premium clover tennis bracelet with a white clover center. Suitable for women and men with two lengths to choose from."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צמיד טניס תלתן יוניסקס לנשים ולגברים",
+        "משובץ אבני Cubic Zirconia במראה יוקרתי",
+        "מרכז תלתן בצבע לבן",
+        "לבחירה באורכים: 17 ס״מ או 20 ס״מ",
+        "סגנון: Hiphop/Rock",
+        "סוג צמיד: Chain & Link Bracelets",
+        "סוג שרשרת: Link Chain",
+        "גוון התכשיט: כסף / זהב לבן",
+        "סוג מתכת: Copper",
+        "חומר: Cubic zirconia",
+        "דגם: ICECHARMI-119",
+        "המחיר מתעדכן אוטומטית לפי האורך שנבחר"
+      ],
+      "en": [
+        "Unisex clover tennis bracelet for women and men",
+        "Set with cubic zirconia stones for a luxurious look",
+        "Clover center color: White",
+        "Available in 17 cm or 20 cm lengths",
+        "Style: Hiphop/Rock",
+        "Bracelet type: Chain & Link Bracelets",
+        "Chain type: Link Chain",
+        "Jewelry tone: Silver / White Gold",
+        "Metal type: Copper",
+        "Material: Cubic zirconia",
+        "Model: ICECHARMI-119",
+        "Price updates automatically according to the selected length"
+      ]
+    },
+    "afterText": {
+      "he": "הגלריה כוללת את כל ששת הווריאנטים, תמונת hover קבוצתית, תמונות תצוגה, ותמונת יד להמחשת המראה על הגוף.",
+      "en": "The gallery includes all six variants, a shared hover image, showcase photos, and an on-wrist image for wear reference."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    },
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "colorRequiredText": {
+      "he": "נא לבחור צבע",
+      "en": "Please choose a color"
+    },
+    "colors": [
+      {
+        "id": "blue",
+        "addPrice": 0,
+        "label": {
+          "he": "כחול",
+          "en": "Blue"
+        },
+        "swatch": "#22A8E8",
+        "image": "images/products/product-99/product-99-2.png"
+      },
+      {
+        "id": "pink",
+        "addPrice": 0,
+        "label": {
+          "he": "ורוד",
+          "en": "Pink"
+        },
+        "swatch": "#F3A4C4",
+        "image": "images/products/product-99/product-99-3.png"
+      },
+      {
+        "id": "gold-black",
+        "addPrice": 0,
+        "label": {
+          "he": "זהב/שחור",
+          "en": "Gold/Black"
+        },
+        "swatch": "linear-gradient(135deg,#d6af37 0 50%,#111 50% 100%)",
+        "image": "images/products/product-99/product-99-4.png"
+      },
+      {
+        "id": "green",
+        "addPrice": 0,
+        "label": {
+          "he": "ירוק",
+          "en": "Green"
+        },
+        "swatch": "#138A5B",
+        "image": "images/products/product-99/product-99-5.png"
+      },
+      {
+        "id": "black",
+        "addPrice": 0,
+        "label": {
+          "he": "שחור",
+          "en": "Black"
+        },
+        "swatch": "#111111",
+        "image": "images/products/product-99/product-99-6.png"
+      },
+      {
+        "id": "white",
+        "addPrice": 0,
+        "label": {
+          "he": "לבן",
+          "en": "White"
+        },
+        "swatch": "#F5F5F5",
+        "image": "images/products/product-99/product-99-1.png"
+      }
+    ],
+    "defaultColorId": "white"
+  },
+  {
+    "id": "new-era-la-dodgers-gray-angels-hat-100",
+    "slug": "product-100",
+    "urlSlug": "new-era-la-dodgers-gray-angels-hat",
+    "sku": "KW-HAT-100",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-100/product-100-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-100/product-100-1.png",
+        "hoverImage": "images/products/product-100/product-100-2.png"
+      },
+      "men": {
+        "image": "images/products/product-100/product-100-1.png",
+        "hoverImage": "images/products/product-100/product-100-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-100/product-100-1.png",
+      "images/products/product-100/product-100-2.png",
+      "images/products/product-100/product-100-3.png",
+      "images/products/product-100/product-100-4.png",
+      "images/products/product-100/product-100-5.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Los Angeles Dodgers X Jon Stan - כובע מלאכים אפור",
+      "en": "New Era X Los Angeles Dodgers X Jon Stan - Gray Angels Cap"
+    },
+    "subtitle": {
+      "he": "כובע אפור עם רקמות בולטות ועיצוב LA · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Gray cap with prominent embroidery and LA design · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Los Angeles Dodgers X Jon Stan - כובע מלאכים אפור",
+      "en": "New Era X Los Angeles Dodgers X Jon Stan - Gray Angels Cap"
+    },
+    "cardMessage": {
+      "he": "כובע אפור עם רקמת LA לבנה, רקמות מלאך בצדדים ומצחייה שטוחה.",
+      "en": "Gray cap with white LA embroidery, angel embroidery on the sides, and a flat brim."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: אפור",
+        "רקמת LA לבנה בחזית",
+        "רקמות מלאך מפורטות בצידי הכובע",
+        "רקמה אחורית בסגנון Jon Stan",
+        "מצחייה שטוחה",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Gray",
+        "White LA embroidery on the front",
+        "Detailed angel embroidery on the sides",
+        "Jon Stan-style rear embroidery",
+        "Flat brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-la-dodgers-green-angels-hat-101",
+    "slug": "product-101",
+    "urlSlug": "new-era-la-dodgers-green-angels-hat",
+    "sku": "KW-HAT-101",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-101/product-101-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-101/product-101-1.png",
+        "hoverImage": "images/products/product-101/product-101-2.png"
+      },
+      "men": {
+        "image": "images/products/product-101/product-101-1.png",
+        "hoverImage": "images/products/product-101/product-101-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-101/product-101-1.png",
+      "images/products/product-101/product-101-2.png",
+      "images/products/product-101/product-101-3.png",
+      "images/products/product-101/product-101-4.png",
+      "images/products/product-101/product-101-5.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Los Angeles Dodgers X Jon Stan - כובע מלאכים ירוק",
+      "en": "New Era X Los Angeles Dodgers X Jon Stan - Green Angels Cap"
+    },
+    "subtitle": {
+      "he": "כובע ירוק עם רקמות בולטות ועיצוב LA · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Green cap with prominent embroidery and LA design · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Los Angeles Dodgers X Jon Stan - כובע מלאכים ירוק",
+      "en": "New Era X Los Angeles Dodgers X Jon Stan - Green Angels Cap"
+    },
+    "cardMessage": {
+      "he": "כובע ירוק עם רקמת LA לבנה, רקמות מלאך בצדדים ומצחייה שטוחה.",
+      "en": "Green cap with white LA embroidery, angel embroidery on the sides, and a flat brim."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: ירוק",
+        "רקמת LA לבנה בחזית",
+        "רקמות מלאך מפורטות בצידי הכובע",
+        "רקמה אחורית בסגנון Jon Stan",
+        "מצחייה שטוחה",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Green",
+        "White LA embroidery on the front",
+        "Detailed angel embroidery on the sides",
+        "Jon Stan-style rear embroidery",
+        "Flat brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-la-dodgers-brown-angels-hat-102",
+    "slug": "product-102",
+    "urlSlug": "new-era-la-dodgers-brown-angels-hat",
+    "sku": "KW-HAT-102",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-102/product-102-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-102/product-102-1.png",
+        "hoverImage": "images/products/product-102/product-102-2.png"
+      },
+      "men": {
+        "image": "images/products/product-102/product-102-1.png",
+        "hoverImage": "images/products/product-102/product-102-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-102/product-102-1.png",
+      "images/products/product-102/product-102-2.png",
+      "images/products/product-102/product-102-3.png",
+      "images/products/product-102/product-102-4.png",
+      "images/products/product-102/product-102-5.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Los Angeles Dodgers X Jon Stan - כובע מלאכים חום",
+      "en": "New Era X Los Angeles Dodgers X Jon Stan - Brown Angels Cap"
+    },
+    "subtitle": {
+      "he": "כובע חום עם רקמות בולטות ועיצוב LA · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Brown cap with prominent embroidery and LA design · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Los Angeles Dodgers X Jon Stan - כובע מלאכים חום",
+      "en": "New Era X Los Angeles Dodgers X Jon Stan - Brown Angels Cap"
+    },
+    "cardMessage": {
+      "he": "כובע חום עם רקמת LA לבנה, רקמות מלאך בצדדים ומצחייה שטוחה.",
+      "en": "Brown cap with white LA embroidery, angel embroidery on the sides, and a flat brim."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: חום",
+        "רקמת LA לבנה בחזית",
+        "רקמות מלאך מפורטות בצידי הכובע",
+        "רקמה אחורית בסגנון Jon Stan",
+        "מצחייה שטוחה",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Brown",
+        "White LA embroidery on the front",
+        "Detailed angel embroidery on the sides",
+        "Jon Stan-style rear embroidery",
+        "Flat brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-jon-stan-black-angels-hat-103",
+    "slug": "product-103",
+    "urlSlug": "new-era-jon-stan-black-angels-hat",
+    "sku": "KW-HAT-103",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-103/product-103-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-103/product-103-1.png",
+        "hoverImage": "images/products/product-103/product-103-2.png"
+      },
+      "men": {
+        "image": "images/products/product-103/product-103-1.png",
+        "hoverImage": "images/products/product-103/product-103-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-103/product-103-1.png",
+      "images/products/product-103/product-103-2.png",
+      "images/products/product-103/product-103-3.png",
+      "images/products/product-103/product-103-4.png",
+      "images/products/product-103/product-103-5.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Jon Stan - כובע מלאכים שחור",
+      "en": "New Era X Jon Stan - Black Angels Cap"
+    },
+    "subtitle": {
+      "he": "כובע שחור עם רקמות בולטות ועיצוב NY · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black cap with prominent embroidery and NY design · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Jon Stan - כובע מלאכים שחור",
+      "en": "New Era X Jon Stan - Black Angels Cap"
+    },
+    "cardMessage": {
+      "he": "כובע שחור עם רקמת NY לבנה, רקמות מלאך בצדדים ומצחייה שטוחה.",
+      "en": "Black cap with white NY embroidery, angel embroidery on the sides, and a flat brim."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: שחור",
+        "רקמת NY לבנה בחזית",
+        "רקמות מלאך מפורטות בצידי הכובע",
+        "רקמה אחורית בסגנון Jon Stan",
+        "מצחייה שטוחה",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Black",
+        "White NY embroidery on the front",
+        "Detailed angel embroidery on the sides",
+        "Jon Stan-style rear embroidery",
+        "Flat brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-jon-stan-red-angels-hat-104",
+    "slug": "product-104",
+    "urlSlug": "new-era-jon-stan-red-angels-hat",
+    "sku": "KW-HAT-104",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-104/product-104-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-104/product-104-1.png",
+        "hoverImage": "images/products/product-104/product-104-2.png"
+      },
+      "men": {
+        "image": "images/products/product-104/product-104-1.png",
+        "hoverImage": "images/products/product-104/product-104-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-104/product-104-1.png",
+      "images/products/product-104/product-104-2.png",
+      "images/products/product-104/product-104-3.png",
+      "images/products/product-104/product-104-4.png",
+      "images/products/product-104/product-104-5.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Jon Stan - כובע מלאכים אדום",
+      "en": "New Era X Jon Stan - Red Angels Cap"
+    },
+    "subtitle": {
+      "he": "כובע אדום עם רקמות בולטות ועיצוב NY · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Red cap with prominent embroidery and NY design · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Jon Stan - כובע מלאכים אדום",
+      "en": "New Era X Jon Stan - Red Angels Cap"
+    },
+    "cardMessage": {
+      "he": "כובע אדום עם רקמת NY לבנה, רקמות מלאך בצדדים ומצחייה שטוחה.",
+      "en": "Red cap with white NY embroidery, angel embroidery on the sides, and a flat brim."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: אדום",
+        "רקמת NY לבנה בחזית",
+        "רקמות מלאך מפורטות בצידי הכובע",
+        "רקמה אחורית בסגנון Jon Stan",
+        "מצחייה שטוחה",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Red",
+        "White NY embroidery on the front",
+        "Detailed angel embroidery on the sides",
+        "Jon Stan-style rear embroidery",
+        "Flat brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-jon-stan-yellow-angels-hat-105",
+    "slug": "product-105",
+    "urlSlug": "new-era-jon-stan-yellow-angels-hat",
+    "sku": "KW-HAT-105",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-105/product-105-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-105/product-105-1.png",
+        "hoverImage": "images/products/product-105/product-105-2.png"
+      },
+      "men": {
+        "image": "images/products/product-105/product-105-1.png",
+        "hoverImage": "images/products/product-105/product-105-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-105/product-105-1.png",
+      "images/products/product-105/product-105-2.png",
+      "images/products/product-105/product-105-3.png",
+      "images/products/product-105/product-105-4.png",
+      "images/products/product-105/product-105-5.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Jon Stan - כובע מלאכים צהוב",
+      "en": "New Era X Jon Stan - Yellow Angels Cap"
+    },
+    "subtitle": {
+      "he": "כובע צהוב עם רקמות בולטות ועיצוב NY · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Yellow cap with prominent embroidery and NY design · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Jon Stan - כובע מלאכים צהוב",
+      "en": "New Era X Jon Stan - Yellow Angels Cap"
+    },
+    "cardMessage": {
+      "he": "כובע צהוב עם רקמת NY לבנה, רקמות מלאך בצדדים ומצחייה שטוחה.",
+      "en": "Yellow cap with white NY embroidery, angel embroidery on the sides, and a flat brim."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: צהוב",
+        "רקמת NY לבנה בחזית",
+        "רקמות מלאך מפורטות בצידי הכובע",
+        "רקמה אחורית בסגנון Jon Stan",
+        "מצחייה שטוחה",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Yellow",
+        "White NY embroidery on the front",
+        "Detailed angel embroidery on the sides",
+        "Jon Stan-style rear embroidery",
+        "Flat brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }  ,
+  {
+    "id": "new-era-jon-stan-gray-angels-hat-106",
+    "slug": "product-106",
+    "urlSlug": "new-era-jon-stan-gray-angels-hat",
+    "sku": "KW-HAT-106",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-106/product-106-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-106/product-106-1.png",
+        "hoverImage": "images/products/product-106/product-106-2.png"
+      },
+      "men": {
+        "image": "images/products/product-106/product-106-1.png",
+        "hoverImage": "images/products/product-106/product-106-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-106/product-106-1.png",
+      "images/products/product-106/product-106-2.png",
+      "images/products/product-106/product-106-3.png",
+      "images/products/product-106/product-106-4.png",
+      "images/products/product-106/product-106-5.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Jon Stan - כובע מלאכים אפור",
+      "en": "New Era X Jon Stan - Gray Angels Cap"
+    },
+    "subtitle": {
+      "he": "כובע אפור עם רקמות בולטות ועיצוב NY · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Gray cap with prominent embroidery and NY design · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Jon Stan - כובע מלאכים אפור",
+      "en": "New Era X Jon Stan - Gray Angels Cap"
+    },
+    "cardMessage": {
+      "he": "כובע אפור עם רקמת NY לבנה, רקמות מלאך בצדדים ומצחייה שטוחה.",
+      "en": "Gray cap with white NY embroidery, angel embroidery on the sides, and a flat brim."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: אפור",
+        "רקמת NY לבנה בחזית",
+        "רקמות מלאך מפורטות בצידי הכובע",
+        "רקמה אחורית בסגנון Jon Stan",
+        "מצחייה שטוחה",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Gray",
+        "White NY embroidery on the front",
+        "Detailed angel embroidery on the sides",
+        "Jon Stan-style rear embroidery",
+        "Flat brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
   }
+  ,
+  {
+    "id": "new-era-jon-stan-brown-angels-hat-107",
+    "slug": "product-107",
+    "urlSlug": "new-era-jon-stan-brown-angels-hat",
+    "sku": "KW-HAT-107",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-107/product-107-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-107/product-107-1.png",
+        "hoverImage": "images/products/product-107/product-107-2.png"
+      },
+      "men": {
+        "image": "images/products/product-107/product-107-1.png",
+        "hoverImage": "images/products/product-107/product-107-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-107/product-107-1.png",
+      "images/products/product-107/product-107-2.png",
+      "images/products/product-107/product-107-3.png",
+      "images/products/product-107/product-107-4.png",
+      "images/products/product-107/product-107-5.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Jon Stan - כובע מלאכים חום",
+      "en": "New Era X Jon Stan - Brown Angels Cap"
+    },
+    "subtitle": {
+      "he": "כובע חום עם רקמות בולטות ועיצוב NY · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Brown cap with prominent embroidery and NY design · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Jon Stan - כובע מלאכים חום",
+      "en": "New Era X Jon Stan - Brown Angels Cap"
+    },
+    "cardMessage": {
+      "he": "כובע חום עם רקמת NY לבנה, רקמות מלאך בצדדים ומצחייה שטוחה.",
+      "en": "Brown cap with white NY embroidery, angel embroidery on the sides, and a flat brim."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: חום",
+        "רקמת NY לבנה בחזית",
+        "רקמות מלאך מפורטות בצידי הכובע",
+        "רקמה אחורית בסגנון Jon Stan",
+        "מצחייה שטוחה",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Brown",
+        "White NY embroidery on the front",
+        "Detailed angel embroidery on the sides",
+        "Jon Stan-style rear embroidery",
+        "Flat brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+  ,
+  {
+    "id": "new-era-born-raised-los-angeles-dodgers-cherub-black-angels-hat-108",
+    "slug": "product-108",
+    "urlSlug": "new-era-born-raised-los-angeles-dodgers-cherub-black-angels-hat",
+    "sku": "KW-HAT-108",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-108/product-108-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-108/product-108-1.png",
+        "hoverImage": "images/products/product-108/product-108-2.png"
+      },
+      "men": {
+        "image": "images/products/product-108/product-108-1.png",
+        "hoverImage": "images/products/product-108/product-108-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-108/product-108-1.png",
+      "images/products/product-108/product-108-2.png",
+      "images/products/product-108/product-108-3.png",
+      "images/products/product-108/product-108-4.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era x Born x Raised Los Angeles Dodgers Cherub - כובע מלאכים שחור",
+      "en": "New Era x Born x Raised Los Angeles Dodgers Cherub - Black Angels Cap"
+    },
+    "subtitle": {
+      "he": "כובע שחור עם רקמת LA לבנה ורקמות כרובים מסביב · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black cap with white LA embroidery and cherub embroidery around the cap · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era x Born x Raised Los Angeles Dodgers Cherub - כובע מלאכים שחור",
+      "en": "New Era x Born x Raised Los Angeles Dodgers Cherub - Black Angels Cap"
+    },
+    "cardMessage": {
+      "he": "כובע שחור עם רקמת LA לבנה ורקמות כרובים צבעוניות בצדדים ובחזית.",
+      "en": "Black cap with white LA embroidery and colorful cherub embroidery on the sides and front."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: שחור",
+        "רקמת LA לבנה בחזית",
+        "רקמות כרובים מפורטות בצידי הכובע ובחזית",
+        "סגירת גב מלאה עם לוגו MLB",
+        "מצחייה שטוחה",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Black",
+        "White LA embroidery on the front",
+        "Detailed cherub embroidery on the sides and front",
+        "Closed back with MLB logo",
+        "Flat brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+  ,
+  {
+    "id": "new-era-los-angeles-dodgers-mlb-mythical-royal-fitted-blue-109",
+    "slug": "product-109",
+    "urlSlug": "new-era-los-angeles-dodgers-mlb-mythical-royal-fitted-blue",
+    "sku": "KW-HAT-109",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-109/product-109-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-109/product-109-1.png",
+        "hoverImage": "images/products/product-109/product-109-2.png"
+      },
+      "men": {
+        "image": "images/products/product-109/product-109-1.png",
+        "hoverImage": "images/products/product-109/product-109-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-109/product-109-1.png",
+      "images/products/product-109/product-109-2.png",
+      "images/products/product-109/product-109-3.png",
+      "images/products/product-109/product-109-4.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Los Angeles Dodgers X MLB Mythical Royal Fitted - צבע כחול",
+      "en": "New Era X Los Angeles Dodgers X MLB Mythical Royal Fitted - Blue"
+    },
+    "subtitle": {
+      "he": "כובע כחול עם רקמת LA לבנה ורקמות מיתולוגיות מסביב · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Blue fitted cap with white LA embroidery and mythical embroidery around the cap · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Los Angeles Dodgers X MLB Mythical Royal Fitted - צבע כחול",
+      "en": "New Era X Los Angeles Dodgers X MLB Mythical Royal Fitted - Blue"
+    },
+    "cardMessage": {
+      "he": "כובע כחול עם רקמת LA לבנה ועיטורי רקמה בסגנון מיתולוגי מסביב לכובע.",
+      "en": "Blue cap with white LA embroidery and mythical-style embroidery around the cap."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: כחול",
+        "רקמת LA לבנה בחזית",
+        "רקמות מיתולוגיות לבנות בצידי הכובע ובחלק האחורי",
+        "כיתוב 1920 ורקמת New Era בצד",
+        "סגירת גב מלאה עם לוגו MLB",
+        "מצחייה שטוחה",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Blue",
+        "White LA embroidery on the front",
+        "White mythical embroidery on the sides and back",
+        "1920 embroidery and New Era logo on the side",
+        "Closed back with MLB logo",
+        "Flat brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+  ,
+  {
+    "id": "new-era-los-angeles-dodgers-mlb-mythical-royal-fitted-black-110",
+    "slug": "product-110",
+    "urlSlug": "new-era-los-angeles-dodgers-mlb-mythical-royal-fitted-black",
+    "sku": "KW-HAT-110",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-110/product-110-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-110/product-110-1.png",
+        "hoverImage": "images/products/product-110/product-110-2.png"
+      },
+      "men": {
+        "image": "images/products/product-110/product-110-1.png",
+        "hoverImage": "images/products/product-110/product-110-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-110/product-110-1.png",
+      "images/products/product-110/product-110-2.png",
+      "images/products/product-110/product-110-3.png",
+      "images/products/product-110/product-110-4.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Los Angeles Dodgers X MLB Mythical Royal Fitted - צבע שחור",
+      "en": "New Era X Los Angeles Dodgers X MLB Mythical Royal Fitted - Black"
+    },
+    "subtitle": {
+      "he": "כובע שחור עם רקמת LA לבנה ורקמות מיתולוגיות מסביב · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black fitted cap with white LA embroidery and mythical embroidery around the cap · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Los Angeles Dodgers X MLB Mythical Royal Fitted - צבע שחור",
+      "en": "New Era X Los Angeles Dodgers X MLB Mythical Royal Fitted - Black"
+    },
+    "cardMessage": {
+      "he": "כובע שחור עם רקמת LA לבנה ועיטורי רקמה בסגנון מיתולוגי מסביב לכובע.",
+      "en": "Black cap with white LA embroidery and mythical-style embroidery around the cap."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: שחור",
+        "רקמת LA לבנה בחזית",
+        "רקמות מיתולוגיות לבנות בצידי הכובע ובחלק האחורי",
+        "כיתוב 1920 ורקמת New Era בצד",
+        "סגירת גב מלאה עם לוגו MLB",
+        "מצחייה שטוחה",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Black",
+        "White LA embroidery on the front",
+        "White mythical embroidery on the sides and back",
+        "1920 embroidery and New Era logo on the side",
+        "Closed back with MLB logo",
+        "Flat brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+  ,
+  {
+    "id": "new-era-los-angeles-dodgers-mlb-mythical-royal-fitted-red-111",
+    "slug": "product-111",
+    "urlSlug": "new-era-los-angeles-dodgers-mlb-mythical-royal-fitted-red",
+    "sku": "KW-HAT-111",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-111/product-111-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-111/product-111-1.png",
+        "hoverImage": "images/products/product-111/product-111-2.png"
+      },
+      "men": {
+        "image": "images/products/product-111/product-111-1.png",
+        "hoverImage": "images/products/product-111/product-111-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-111/product-111-1.png",
+      "images/products/product-111/product-111-2.png",
+      "images/products/product-111/product-111-3.png",
+      "images/products/product-111/product-111-4.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Los Angeles Dodgers X MLB Mythical Royal Fitted - צבע אדום",
+      "en": "New Era X Los Angeles Dodgers X MLB Mythical Royal Fitted - Red"
+    },
+    "subtitle": {
+      "he": "כובע אדום עם רקמת NY לבנה ורקמות מיתולוגיות מסביב · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Red fitted cap with white NY embroidery and mythical embroidery around the cap · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Los Angeles Dodgers X MLB Mythical Royal Fitted - צבע אדום",
+      "en": "New Era X Los Angeles Dodgers X MLB Mythical Royal Fitted - Red"
+    },
+    "cardMessage": {
+      "he": "כובע אדום עם רקמת NY לבנה ועיטורי רקמה בסגנון מיתולוגי מסביב לכובע.",
+      "en": "Red cap with white NY embroidery and mythical-style embroidery around the cap."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: אדום",
+        "רקמת NY לבנה בחזית",
+        "רקמות מיתולוגיות לבנות בצידי הכובע ובחלק האחורי",
+        "כיתוב 1920 ורקמת New Era בצד",
+        "סגירת גב מלאה עם לוגו MLB",
+        "מצחייה שטוחה",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Red",
+        "White NY embroidery on the front",
+        "White mythical embroidery on the sides and back",
+        "1920 embroidery and New Era logo on the side",
+        "Closed back with MLB logo",
+        "Flat brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+
+  ,
+  {
+    "id": "nzmu-state-of-mind-x-new-york-yankees-black-112",
+    "slug": "product-112",
+    "urlSlug": "nzmu-state-of-mind-x-new-york-yankees-black",
+    "sku": "KW-HAT-112",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-112/product-112-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-112/product-112-1.png",
+        "hoverImage": "images/products/product-112/product-112-2.png"
+      },
+      "men": {
+        "image": "images/products/product-112/product-112-1.png",
+        "hoverImage": "images/products/product-112/product-112-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-112/product-112-1.png",
+      "images/products/product-112/product-112-2.png",
+      "images/products/product-112/product-112-3.png",
+      "images/products/product-112/product-112-4.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "NZMU \"State of Mind\" X New York Yankees - צבע שחור",
+      "en": "NZMU \"State of Mind\" X New York Yankees - Black"
+    },
+    "subtitle": {
+      "he": "כובע שחור עם רקמת NY לבנה ועיטורי אש ורקמות אורבניות מסביב · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black fitted cap with white NY embroidery, fire details and urban embroidery around the cap · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "NZMU \"State of Mind\" X New York Yankees - צבע שחור",
+      "en": "NZMU \"State of Mind\" X New York Yankees - Black"
+    },
+    "cardMessage": {
+      "he": "כובע שחור עם רקמת NY לבנה, גרפיקת אש ורקמות מפורטות מסביב לכובע.",
+      "en": "Black cap with white NY embroidery, fire graphics and detailed embroidery around the cap."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: שחור",
+        "רקמת NY לבנה בחזית",
+        "עיטורי אש ורקמות אורבניות בצידי הכובע",
+        "כיתוב NZMU ו־State of Mind בחלק האחורי",
+        "סגירת גב מלאה עם לוגו MLB",
+        "מצחייה שטוחה",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Black",
+        "White NY embroidery on the front",
+        "Fire details and urban embroidery on the sides",
+        "NZMU and State of Mind embroidery on the back",
+        "Closed back with MLB logo",
+        "Flat brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+
+  ,
+  {
+    "id": "nzmu-state-of-mind-x-new-york-yankees-dark-blue-113",
+    "slug": "product-113",
+    "urlSlug": "nzmu-state-of-mind-x-new-york-yankees-dark-blue",
+    "sku": "KW-HAT-113",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-113/product-113-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-113/product-113-1.png",
+        "hoverImage": "images/products/product-113/product-113-2.png"
+      },
+      "men": {
+        "image": "images/products/product-113/product-113-1.png",
+        "hoverImage": "images/products/product-113/product-113-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-113/product-113-1.png",
+      "images/products/product-113/product-113-2.png",
+      "images/products/product-113/product-113-3.png",
+      "images/products/product-113/product-113-4.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "NZMU \"State of Mind\" X New York Yankees - צבע כחול כהה",
+      "en": "NZMU \"State of Mind\" X New York Yankees - Dark Blue"
+    },
+    "subtitle": {
+      "he": "כובע כחול כהה עם רקמת NY לבנה ועיטורי אש ורקמות אורבניות מסביב · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Dark blue fitted cap with white NY embroidery, fire details and urban embroidery around the cap · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "NZMU \"State of Mind\" X New York Yankees - צבע כחול כהה",
+      "en": "NZMU \"State of Mind\" X New York Yankees - Dark Blue"
+    },
+    "cardMessage": {
+      "he": "כובע כחול כהה עם רקמת NY לבנה, גרפיקת אש ורקמות מפורטות מסביב לכובע.",
+      "en": "Dark blue cap with white NY embroidery, fire graphics and detailed embroidery around the cap."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: כחול כהה",
+        "רקמת NY לבנה בחזית",
+        "עיטורי אש ורקמות אורבניות בצידי הכובע",
+        "כיתוב NZMU ו־State of Mind בחלק האחורי",
+        "סגירת גב מלאה עם לוגו MLB",
+        "מצחייה שטוחה",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Dark Blue",
+        "White NY embroidery on the front",
+        "Fire details and urban embroidery on the sides",
+        "NZMU and State of Mind embroidery on the back",
+        "Closed back with MLB logo",
+        "Flat brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+      "id": "new-era-new-york-yankees-subway-series-rose-edition-black-114",
+      "slug": "product-114",
+      "urlSlug": "new-era-new-york-yankees-subway-series-rose-edition-black",
+      "sku": "KW-HAT-114",
+      "category": "hats",
+      "categories": [
+          "hats"
+      ],
+      "badge": {
+          "he": "2 ב־239.90 ₪",
+          "en": "2 for ₪239.90"
+      },
+      "cardMode": "view",
+      "hideMessageCard": true,
+      "hoverImage": "images/products/product-114/product-114-2.png",
+      "collectionMedia": {
+          "women": {
+              "image": "images/products/product-114/product-114-1.png",
+              "hoverImage": "images/products/product-114/product-114-2.png"
+          },
+          "men": {
+              "image": "images/products/product-114/product-114-1.png",
+              "hoverImage": "images/products/product-114/product-114-2.png"
+          }
+      },
+      "images": [
+          "images/products/product-114/product-114-1.png",
+          "images/products/product-114/product-114-2.png",
+          "images/products/product-114/product-114-3.png",
+          "images/products/product-114/product-114-4.png"
+      ],
+      "price": 139.9,
+      "title": {
+          "he": "New Era X New York Yankees X Subway Series - Rose Edition צבע שחור",
+          "en": "New Era X New York Yankees X Subway Series - Rose Edition Black"
+      },
+      "subtitle": {
+          "he": "כובע שחור עם רקמת NY לבנה, ורד אדום ופאץ' Subway Series בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+          "en": "Black cap with white NY embroidery, red rose detail and a Subway Series side patch · ₪139.90 each · all hats offer: 2 for ₪239.90"
+      },
+      "cardTitle": {
+          "he": "New Era X New York Yankees X Subway Series - Rose Edition צבע שחור",
+          "en": "New Era X New York Yankees X Subway Series - Rose Edition Black"
+      },
+      "cardMessage": {
+          "he": "כובע שחור עם רקמת NY לבנה, ורד אדום ופאץ' Subway Series בצד.",
+          "en": "Black cap with white NY embroidery, red rose detail and a Subway Series side patch."
+      },
+      "signature": {
+          "he": "",
+          "en": ""
+      },
+      "details": {
+          "he": [
+              "צבע: שחור",
+              "רקמת NY לבנה בחזית",
+              "רקמת ורד אדום בחזית",
+              "פאץ' Subway Series בצד",
+              "מצחייה שטוחה",
+              "מחיר ליחידה: 139.90 ₪",
+              "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+          ],
+          "en": [
+              "Color: Black",
+              "White NY embroidery on the front",
+              "Red rose embroidery on the front",
+              "Subway Series side patch",
+              "Flat brim",
+              "Single price: ₪139.90",
+              "All hats offer: 2 for ₪239.90"
+          ]
+      },
+      "afterText": {
+          "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+          "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+      },
+      "deliveryBusinessDays": {
+          "min": 9,
+          "max": 25
+      }
+  }
+
 ];
 
 var CATEGORIES = [
@@ -8462,10 +10734,10 @@ var CATEGORIES = [
     }
   },
   {
-    "key": "sets",
+    "key": "hats",
     "label": {
-      "he": "סטים",
-      "en": "Sets"
+      "he": "כובעים",
+      "en": "Hats"
     }
   }
 ];

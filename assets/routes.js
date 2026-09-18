@@ -23,7 +23,7 @@
     'glasses-unisex': '/glasses-unisex',
     'gift-boxes': '/gift-sets',
     custom: '/personal-design',
-    sets: '/sets'
+    hats: '/hats'
   };
 
   var PAGE_FILES = {
@@ -51,11 +51,18 @@
   }
 
   function categoryFromPath(pathname) {
-    return CATEGORY_BY_PATH[pathname || '/'] || null;
+    var path = pathname || '/';
+    if (path.length > 1 && path.charAt(path.length - 1) === '/') path = path.slice(0, -1);
+    return CATEGORY_BY_PATH[path] || null;
   }
 
   function productPath(product) {
-    if (!product || !product.urlSlug) return '/';
+    if (!product) return '/';
+    var stableSlug = String(product.slug || '');
+    if (/^product-(?:9[4-9]|[1-9]\d{2,})$/.test(stableSlug)) {
+      return '/product.html?id=' + encodeURIComponent(stableSlug);
+    }
+    if (!product.urlSlug) return '/';
     return '/' + encodeURIComponent(product.urlSlug);
   }
 

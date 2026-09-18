@@ -101,7 +101,7 @@
     'glasses-unisex': ['משקפי שמש יוניסקס - VerSans', 'משקפי שמש יוניסקס מבית VerSans במגוון דגמים ועיצובים.'],
     'gift-boxes': ['מארזי מתנה - VerSans', 'מארזי מתנה של VerSans עם תכשיטים ושעונים בעיצוב יוקרתי.'],
     custom: ['עיצוב אישי - VerSans', 'מתנות ותכשיטים בעיצוב אישי מבית VerSans - ברכות, שמות ותמונות בהתאמה אישית.'],
-    sets: ['סטים - VerSans', 'סטים ומארזים מבית VerSans למתנה או ליום יום.']
+    hats: ['כובעים - VerSans', 'כובעים מבית VerSans במגוון דגמים ועיצובים.']
   };
   function setMeta(selector, value) {
     var el = document.querySelector(selector);

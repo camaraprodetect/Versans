@@ -3773,3 +3773,49 @@ body.site-overlay-open{overflow:hidden}
     min-width:max-content;
   }
 }
+
+/* VERSANS PRODUCT GALLERY THUMB RAIL - FINAL */
+@media (min-width:1201px){
+  .product-page-body .product-gallery{
+    align-items:start!important;
+  }
+
+  .product-page-body .product-gallery__stage{
+    grid-column:2!important;
+    grid-row:1!important;
+  }
+
+  .product-page-body .product-gallery__thumbs{
+    grid-column:1!important;
+    grid-row:1!important;
+    display:flex!important;
+    flex-direction:column!important;
+    flex-wrap:nowrap!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow-y:scroll!important;
+    overflow-x:hidden!important;
+    overscroll-behavior-y:contain;
+    box-sizing:border-box!important;
+    padding-inline-end:4px!important;
+    scroll-behavior:smooth;
+    scrollbar-width:thin;
+  }
+
+  .product-page-body .product-gallery__thumbs::-webkit-scrollbar{
+    width:6px;
+  }
+
+  .product-page-body .product-gallery__thumbs::-webkit-scrollbar-thumb{
+    background:rgba(20,35,51,.3);
+    border-radius:999px;
+  }
+
+  .product-page-body .product-gallery__thumbs::-webkit-scrollbar-track{
+    background:transparent;
+  }
+
+  .product-page-body .product-thumb{
+    flex-shrink:0!important;
+  }
+}

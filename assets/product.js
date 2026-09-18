@@ -30,7 +30,11 @@
   try { pathSlug = decodeURIComponent(window.location.pathname.replace(/^\/+|\/+$/g, '')); } catch (e) {}
   var product = findProduct(pathSlug) || findProduct(id) || PRODUCTS[0];
   var initialColorParam = params.get('color');
-  if (initialColorParam && findOption(product.colors, initialColorParam)) selectedColorId = initialColorParam;
+  if (initialColorParam && findOption(product.colors, initialColorParam)) {
+    selectedColorId = initialColorParam;
+  } else if (product.defaultColorId && findOption(product.colors, product.defaultColorId)) {
+    selectedColorId = product.defaultColorId;
+  }
 
   function $(s) { return document.querySelector(s); }
   function read(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
@@ -110,6 +114,28 @@
     var total = glassesPurchaseTotal(unitPriceValue, quantity);
     if (isGlassesProduct(product) && quantity === 2) {
       return money(total) + (lang === 'he' ? ' (2 משקפיים ב־249.90 ₪)' : ' (2 sunglasses for ₪249.90)');
+    }
+    return money(total);
+  }
+
+  function isHatsProduct(p) {
+    var collections = p && Array.isArray(p.categories) && p.categories.length ? p.categories : [p && p.category];
+    return collections.indexOf('hats') !== -1;
+  }
+
+  function hatsPurchaseTotal(unitPriceValue, quantity) {
+    if (!isHatsProduct(product)) {
+      return Math.round(Number(unitPriceValue || 0) * Math.max(1, quantity || 1) * 100) / 100;
+    }
+    var q = Math.max(1, parseInt(quantity, 10) || 1);
+    return Math.round((Math.floor(q / 2) * 239.9 + (q % 2) * Number(unitPriceValue || 0)) * 100) / 100;
+  }
+
+  function hatsPriceDisplay(unitPriceValue, quantity) {
+    var q = Math.max(1, parseInt(quantity, 10) || 1);
+    var total = hatsPurchaseTotal(unitPriceValue, q);
+    if (isHatsProduct(product) && q >= 2) {
+      return money(total) + (lang === 'he' ? ' (2 כובעים ב־239.90 ₪)' : ' (2 hats for ₪239.90)');
     }
     return money(total);
   }
@@ -488,6 +514,33 @@
         ? (lang === 'he' ? 'תמונות ווידאו של המוצר' : 'Product photos and video')
         : (imgs.length > 1 ? (lang === 'he' ? 'לצפייה בעוד תמונות' : 'View more photos') : (lang === 'he' ? 'תמונת מוצר' : 'Product image'));
     }
+    scheduleGalleryThumbRailSync();
+  }
+
+
+  function syncGalleryThumbRailHeight() {
+    var rail = $('#productThumbs');
+    var stage = document.querySelector('.product-gallery__stage');
+    if (!rail || !stage) return;
+
+    if (!window.matchMedia('(min-width: 1201px)').matches || rail.hidden) {
+      rail.style.height = '';
+      rail.style.maxHeight = '';
+      return;
+    }
+
+    var stageHeight = Math.round(stage.getBoundingClientRect().height || stage.offsetHeight || 0);
+    if (!stageHeight) return;
+
+    rail.style.height = stageHeight + 'px';
+    rail.style.maxHeight = stageHeight + 'px';
+  }
+
+  function scheduleGalleryThumbRailSync() {
+    window.requestAnimationFrame(function () {
+      syncGalleryThumbRailHeight();
+      window.requestAnimationFrame(syncGalleryThumbRailHeight);
+    });
   }
 
   function renderNecklaceOptions() {
@@ -701,6 +754,85 @@
     }
   }
 
+
+function arrangeProduct18CompactOptions() {
+    if (!product || product.slug !== 'product-18') return;
+
+    var sizeBlock = $('#sizeBlock');
+    var colorBlock = $('#colorBlock');
+    var sizeOptions = $('#sizeOptions');
+    var colorOptions = $('#colorOptions');
+    if (!sizeBlock || !colorBlock || !sizeOptions || !colorOptions) return;
+
+    sizeBlock.classList.add('product10-combined-options');
+    colorBlock.classList.add('product10-width-group');
+    sizeOptions.classList.add('product10-length-grid');
+    colorOptions.classList.add('product10-width-grid');
+
+    if (colorBlock.parentNode !== sizeBlock) sizeBlock.appendChild(colorBlock);
+
+    if (!document.getElementById('product18CompactOptionsStyle')) {
+      var style = document.createElement('style');
+      style.id = 'product18CompactOptionsStyle';
+      style.textContent = [
+        'body[data-product-slug="product-18"] #sizeBlock.product10-combined-options{padding:.85rem!important;gap:.65rem!important;margin-bottom:1rem!important;background:#eef9ff!important;border:1px solid #d7edf8!important;border-radius:18px!important}',
+        'body[data-product-slug="product-18"] #sizeBlock.product10-combined-options>.product-option-head{margin:0 0 .15rem!important}',
+        'body[data-product-slug="product-18"] #sizeBlock.product10-combined-options .product-option-step{width:26px!important;height:26px!important;border-radius:8px!important;font-size:.75rem!important}',
+        'body[data-product-slug="product-18"] #sizeBlock.product10-combined-options .product-option-head h2{font-size:1rem!important;margin:0!important}',
+        'body[data-product-slug="product-18"] #sizeBlock.product10-combined-options .product-option-status{font-size:.78rem!important}',
+        'body[data-product-slug="product-18"] #sizeOptions.product10-length-grid{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:.45rem!important}',
+        'body[data-product-slug="product-18"] #sizeOptions.product10-length-grid .product-size-choice{min-height:54px!important;padding:.48rem .58rem!important;border-radius:11px!important;gap:.35rem!important}',
+        'body[data-product-slug="product-18"] #sizeOptions.product10-length-grid .product-size-choice__label{gap:.12rem!important;font-size:.82rem!important;line-height:1.25!important}',
+        'body[data-product-slug="product-18"] #sizeOptions.product10-length-grid .product-size-choice__label small{font-size:.69rem!important}',
+        'body[data-product-slug="product-18"] #sizeOptions.product10-length-grid .product-size-choice__check{width:18px!important;height:18px!important;font-size:.65rem!important}',
+        'body[data-product-slug="product-18"] #colorBlock.product10-width-group{display:grid!important;gap:.5rem!important;margin:0!important;padding:.7rem 0 0!important;border:0!important;border-top:1px solid #d7edf8!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}',
+        'body[data-product-slug="product-18"] #colorBlock.product10-width-group>.product-option-head{margin:0!important}',
+        'body[data-product-slug="product-18"] #colorBlock.product10-width-group .product-option-step{background:#d9f2ff!important;color:#236d91!important}',
+        'body[data-product-slug="product-18"] #colorOptions.product10-width-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:.45rem!important}',
+        'body[data-product-slug="product-18"] #colorOptions.product10-width-grid .product-size-choice{min-height:50px!important;padding:.45rem .65rem!important;border-radius:11px!important}',
+        'body[data-product-slug="product-18"] #colorOptions.product10-width-grid .product-size-choice__label{flex-direction:row!important;align-items:center!important;gap:.35rem!important;font-size:.84rem!important}',
+        'body[data-product-slug="product-18"] #colorOptions.product10-width-grid .product-size-choice__label small{font-size:.7rem!important;margin-inline-start:auto!important}',
+        'body[data-product-slug="product-18"] #colorOptions.product10-width-grid .product-size-choice__check{width:18px!important;height:18px!important;font-size:.65rem!important}',
+        '@media(max-width:760px){body[data-product-slug="product-18"] #sizeOptions.product10-length-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}body[data-product-slug="product-18"] #colorOptions.product10-width-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}}',
+        '@media(max-width:430px){body[data-product-slug="product-18"] #sizeBlock.product10-combined-options{padding:.7rem!important}body[data-product-slug="product-18"] #sizeOptions.product10-length-grid .product-size-choice{min-height:50px!important;padding:.42rem .5rem!important}body[data-product-slug="product-18"] #colorOptions.product10-width-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}body[data-product-slug="product-18"] #colorOptions.product10-width-grid .product-size-choice{padding:.42rem!important}}'
+      ].join('');
+      document.head.appendChild(style);
+    }
+  }
+  function arrangeCloverBraceletCompactColors() {
+    if (!product || !/^product-(?:9[4-9])$/.test(String(product.slug || ''))) return;
+
+    var colorBlock = $('#colorBlock');
+    var colorOptions = $('#colorOptions');
+    if (!colorBlock || !colorOptions) return;
+
+    colorBlock.classList.add('clover-compact-color-block');
+    colorOptions.classList.add('clover-compact-color-grid');
+
+    if (!document.getElementById('cloverCompactColorStyle')) {
+      var style = document.createElement('style');
+      style.id = 'cloverCompactColorStyle';
+      style.textContent = [
+        'body[data-product-slug^="product-9"] #colorBlock.clover-compact-color-block{padding:.7rem!important;gap:.5rem!important;margin-bottom:.8rem!important;border-radius:16px!important}',
+        'body[data-product-slug^="product-9"] #colorBlock.clover-compact-color-block>.product-option-head{margin:0 0 .15rem!important}',
+        'body[data-product-slug^="product-9"] #colorBlock.clover-compact-color-block .product-option-step{width:24px!important;height:24px!important;border-radius:7px!important;font-size:.7rem!important}',
+        'body[data-product-slug^="product-9"] #colorBlock.clover-compact-color-block .product-option-head h2{font-size:.95rem!important;margin:0!important}',
+        'body[data-product-slug^="product-9"] #colorBlock.clover-compact-color-block .product-option-status{font-size:.72rem!important}',
+        'body[data-product-slug^="product-9"] #colorOptions.clover-compact-color-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:.45rem!important}',
+        'body[data-product-slug^="product-9"] #colorOptions.clover-compact-color-grid .product-size-choice{min-height:48px!important;padding:.42rem .55rem!important;border-radius:10px!important;gap:.35rem!important}',
+        'body[data-product-slug^="product-9"] #colorOptions.clover-compact-color-grid .product-size-choice__label{flex-direction:row!important;align-items:center!important;gap:.35rem!important;font-size:.8rem!important;line-height:1.15!important}',
+        'body[data-product-slug^="product-9"] #colorOptions.clover-compact-color-grid .product-size-choice__label strong{font-size:.8rem!important;font-weight:600!important}',
+        'body[data-product-slug^="product-9"] #colorOptions.clover-compact-color-grid .product-size-choice__label small{font-size:.66rem!important;margin-inline-start:auto!important}',
+        'body[data-product-slug^="product-9"] #colorOptions.clover-compact-color-grid .product-size-choice__check{width:17px!important;height:17px!important;font-size:.6rem!important;flex:0 0 17px!important}',
+        'body[data-product-slug^="product-9"] #colorOptions.clover-compact-color-grid .product-color-swatch{width:24px!important;height:24px!important;min-width:24px!important}',
+        '@media(max-width:760px){body[data-product-slug^="product-9"] #colorOptions.clover-compact-color-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:.35rem!important}body[data-product-slug^="product-9"] #colorOptions.clover-compact-color-grid .product-size-choice{min-height:44px!important;padding:.34rem .42rem!important}body[data-product-slug^="product-9"] #colorOptions.clover-compact-color-grid .product-size-choice__label{font-size:.74rem!important}body[data-product-slug^="product-9"] #colorOptions.clover-compact-color-grid .product-color-swatch{width:21px!important;height:21px!important;min-width:21px!important}}',
+        '@media(max-width:430px){body[data-product-slug^="product-9"] #colorBlock.clover-compact-color-block{padding:.6rem!important}body[data-product-slug^="product-9"] #colorOptions.clover-compact-color-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}body[data-product-slug^="product-9"] #colorOptions.clover-compact-color-grid .product-size-choice{min-height:42px!important;padding:.32rem .4rem!important}}'
+      ].join('');
+      document.head.appendChild(style);
+    }
+  }
+
+
   function arrangeProduct14CompactOptions() {
     if (!product || product.slug !== 'product-14') return;
 
@@ -745,6 +877,50 @@
     }
   }
 
+
+function arrangeProduct20CompactOptions() {
+    if (!product || product.slug !== 'product-20') return;
+
+    var sizeBlock = $('#sizeBlock');
+    var colorBlock = $('#colorBlock');
+    var sizeOptions = $('#sizeOptions');
+    var colorOptions = $('#colorOptions');
+    if (!sizeBlock || !colorBlock || !sizeOptions || !colorOptions) return;
+
+    sizeBlock.classList.add('product20-combined-options');
+    colorBlock.classList.add('product20-width-group');
+    sizeOptions.classList.add('product20-length-grid');
+    colorOptions.classList.add('product20-width-grid');
+
+    if (colorBlock.parentNode !== sizeBlock) sizeBlock.appendChild(colorBlock);
+
+    if (!document.getElementById('product20CompactOptionsStyle')) {
+      var style = document.createElement('style');
+      style.id = 'product20CompactOptionsStyle';
+      style.textContent = [
+        'body[data-product-slug="product-20"] #sizeBlock.product20-combined-options{padding:.68rem!important;gap:.48rem!important;margin-bottom:.8rem!important;background:#eef9ff!important;border:1px solid #d7edf8!important;border-radius:16px!important}',
+        'body[data-product-slug="product-20"] #sizeBlock.product20-combined-options>.product-option-head{margin:0!important}',
+        'body[data-product-slug="product-20"] #sizeBlock.product20-combined-options .product-option-step{width:24px!important;height:24px!important;border-radius:7px!important;font-size:.72rem!important}',
+        'body[data-product-slug="product-20"] #sizeBlock.product20-combined-options .product-option-head h2{font-size:.95rem!important;margin:0!important}',
+        'body[data-product-slug="product-20"] #sizeBlock.product20-combined-options .product-option-status{font-size:.72rem!important}',
+        'body[data-product-slug="product-20"] #sizeOptions.product20-length-grid{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:.38rem!important}',
+        'body[data-product-slug="product-20"] #sizeOptions.product20-length-grid .product-size-choice{min-height:43px!important;padding:.34rem .48rem!important;border-radius:10px!important;gap:.3rem!important}',
+        'body[data-product-slug="product-20"] #sizeOptions.product20-length-grid .product-size-choice__label{gap:.08rem!important;font-size:.79rem!important;line-height:1.16!important}',
+        'body[data-product-slug="product-20"] #sizeOptions.product20-length-grid .product-size-choice__label small{font-size:.66rem!important}',
+        'body[data-product-slug="product-20"] #sizeOptions.product20-length-grid .product-size-choice__check{width:17px!important;height:17px!important;font-size:.62rem!important}',
+        'body[data-product-slug="product-20"] #colorBlock.product20-width-group{display:grid!important;gap:.4rem!important;margin:0!important;padding:.5rem 0 0!important;border:0!important;border-top:1px solid #d7edf8!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}',
+        'body[data-product-slug="product-20"] #colorBlock.product20-width-group>.product-option-head{margin:0!important}',
+        'body[data-product-slug="product-20"] #colorBlock.product20-width-group .product-option-step{background:#d9f2ff!important;color:#236d91!important}',
+        'body[data-product-slug="product-20"] #colorOptions.product20-width-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:.38rem!important}',
+        'body[data-product-slug="product-20"] #colorOptions.product20-width-grid .product-size-choice{min-height:41px!important;padding:.32rem .48rem!important;border-radius:10px!important}',
+        'body[data-product-slug="product-20"] #colorOptions.product20-width-grid .product-size-choice__label{flex-direction:row!important;align-items:center!important;gap:.3rem!important;font-size:.8rem!important}',
+        'body[data-product-slug="product-20"] #colorOptions.product20-width-grid .product-size-choice__label small{font-size:.66rem!important;margin-inline-start:auto!important}',
+        'body[data-product-slug="product-20"] #colorOptions.product20-width-grid .product-size-choice__check{width:17px!important;height:17px!important;font-size:.62rem!important}',
+        '@media(max-width:760px){body[data-product-slug="product-20"] #sizeOptions.product20-length-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}@media(max-width:430px){body[data-product-slug="product-20"] #sizeBlock.product20-combined-options{padding:.58rem!important}body[data-product-slug="product-20"] #sizeOptions.product20-length-grid .product-size-choice,body[data-product-slug="product-20"] #colorOptions.product20-width-grid .product-size-choice{min-height:39px!important;padding:.28rem .4rem!important}}'
+      ].join('');
+      document.head.appendChild(style);
+    }
+  }
   function arrangeProduct15CompactOptions() {
     if (!product || (product.slug !== 'product-15' && product.slug !== 'product-16' && product.slug !== 'product-17')) return;
 
@@ -1214,6 +1390,8 @@
         price.textContent = (lang === 'he' ? 'החל מ־' : 'From ') + money(Number(product.price) + (savedGreeting() ? CUSTOM_GREETING_ADD_PRICE : 0));
       } else if (isGlassesProduct(product)) {
         price.textContent = glassesPriceDisplay(currentUnitPrice, qty);
+      } else if (isHatsProduct(product)) {
+        price.textContent = hatsPriceDisplay(currentUnitPrice, qty);
       } else {
         price.textContent = money(currentUnitPrice);
       }
@@ -1270,6 +1448,8 @@
         addBtn.textContent = (lang === 'he' ? 'הוסף שרשרת למארז - ' : 'Add necklace to packaging - ') + money(currentUnitPrice * qty);
       } else if (isGlassesProduct(product)) {
         addBtn.textContent = (lang === 'he' ? 'הוספה לסל - ' : 'Add to cart - ') + glassesPriceDisplay(currentUnitPrice, qty);
+      } else if (isHatsProduct(product)) {
+        addBtn.textContent = (lang === 'he' ? 'הוספה לסל - ' : 'Add to cart - ') + hatsPriceDisplay(currentUnitPrice, qty);
       } else {
         addBtn.textContent = (lang === 'he' ? 'הוספה לסל - ' : 'Add to cart - ') + money(currentUnitPrice * qty);
       }
@@ -1284,7 +1464,10 @@
     renderSizeOptions();
     renderColorOptions();
     arrangeProduct10CompactOptions();
+    arrangeCloverBraceletCompactColors();
+    arrangeProduct18CompactOptions();
     arrangeProduct14CompactOptions();
+    arrangeProduct20CompactOptions();
     arrangeProduct15CompactOptions();
     renderCustomName();
     renderCustomPhoto();
@@ -1773,6 +1956,14 @@
     $('#nav').classList.toggle('is-stuck', window.scrollY > 10);
   }, { passive: true });
 
+  window.addEventListener('resize', scheduleGalleryThumbRailSync);
+  window.addEventListener('orientationchange', scheduleGalleryThumbRailSync);
+  if (typeof ResizeObserver !== 'undefined') {
+    var galleryStageObserver = new ResizeObserver(scheduleGalleryThumbRailSync);
+    var galleryStage = document.querySelector('.product-gallery__stage');
+    if (galleryStage) galleryStageObserver.observe(galleryStage);
+  }
+
   /* The selected necklace for a LOVE FOREVER package is temporary.
      If the customer leaves or reloads this package product page, clear that
      selection. Items already added to the cart are stored separately and stay
@@ -1791,4 +1982,5 @@
   $('#year').textContent = new Date().getFullYear();
   updateCartCount();
   renderProduct();
+  scheduleGalleryThumbRailSync();
 })();

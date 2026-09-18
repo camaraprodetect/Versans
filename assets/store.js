@@ -32,7 +32,7 @@
         'all', 'greeting', 'greeting-mom', 'greeting-partner', 'greeting-daughter', 'greeting-sister',
         'necklaces', 'bracelets', 'photo-bracelets', 'watches',
         'glasses', 'glasses-men', 'glasses-women', 'glasses-unisex',
-        'gift-boxes', 'custom', 'sets'
+        'gift-boxes', 'custom', 'hats'
       ];
       if (requestedCategory && validCategories.indexOf(requestedCategory) !== -1) {
         state.filter = requestedCategory;
@@ -191,7 +191,7 @@
     { key: 'glasses', label: 'משקפיים' },
     { key: 'gift-boxes', label: 'מארזים' },
     { key: 'custom', label: 'עיצוב אישי' },
-    { key: 'sets', label: 'סטים' }
+    { key: 'hats', label: 'כובעים' }
   ];
 
   var DELIVERY_RANGES = [
@@ -492,7 +492,7 @@
         state.filter === 'necklaces' ||
         state.filter === 'bracelets' ||
         state.filter === 'photo-bracelets' ||
-        state.filter === 'sets';
+        state.filter === 'hats';
       otherCollectionsBanner.hidden = !showOtherCollectionsBanner;
     }
   }
@@ -613,7 +613,6 @@
   }
 
   function productColorMetaHTML(p) {
-    if (p && p.colorHeading && ((((p.colorHeading.he || '').indexOf('רוחב') !== -1) || ((p.colorHeading.he || '').indexOf('עובי') !== -1)) || ((p.colorHeading.en || '').toLowerCase().indexOf('width') !== -1))) return '';
     if (!(p && Array.isArray(p.colors) && p.colors.length)) return '';
     var max = 6;
     var items = p.colors.slice(0, max).map(function (option) {
@@ -672,13 +671,117 @@
            '</span><span class="prod__ph-text">' + esc(msg) + '</span></div>';
   }
 
+  function renderProductCardHTML(p) {
+    var badge = L(p.badge);
+    var isGlasses = isGlassesProduct(p);
+    return '' +
+    '<article class="prod">' +
+      (badge ? '<span class="prod__badge"' +
+        (((Array.isArray(p.categories) ? p.categories : [p.category]).indexOf('hats') !== -1)
+          ? ' style="inset-inline-start:auto!important;inset-inline-end:auto!important;right:auto!important;left:16px!important;"'
+          : '') +
+        '>' + esc(badge) + '</span>' : '') +
+      '<a class="prod__media prod__link" href="' + productPath(p) + '" aria-label="' + esc(L(p.title)) + '">' + mediaHTML(p) + '</a>' +
+      '<div class="prod__body">' +
+        '<h3 class="prod__name"><a class="prod__titlelink" href="' + productPath(p) + '">' + esc(L(p.title)) + '</a></h3>' +
+        (isGlasses ? '' : '<p class="prod__sub">' + esc(L(p.subtitle)) + '</p>') +
+        productColorMetaHTML(p) +
+        '<p class="prod__price">' + (p.startingPrice ? (state.lang === 'he' ? 'החל מ־' : 'From ') : '') + money(p.price) +
+          (p.compareAt ? '<span class="prod__was">' + money(p.compareAt) + '</span>' : '') +
+        '</p>' +
+        '<div class="prod__actions">' +
+          ((p.necklaces && p.necklaces.length && p.boxes && p.boxes.length)
+            ? '<a class="btn btn--primary" href="' + productPath(p) + '">' + esc(state.lang === 'he' ? 'לבחירת אפשרויות' : 'Choose options') + '</a>'
+            : (p.customName && p.customName.required
+              ? '<a class="btn btn--primary" href="' + productPath(p) + '">' + esc(state.lang === 'he' ? 'לעיצוב אישי' : 'Customize') + '</a>'
+              : ((p.sizes && p.sizes.length)
+                ? '<a class="btn btn--primary" href="' + productPath(p) + '">' + esc(state.lang === 'he' ? 'לבחירת אורך' : 'Choose length') + '</a>'
+                : ((p.colors && p.colors.length)
+                  ? '<a class="btn btn--primary" href="' + productPath(p) + '">' + esc(state.lang === 'he' ? 'לבחירת צבע' : 'Choose color') + '</a>'
+                  : (p.cardMode === 'view'
+                  ? '<a class="btn btn--primary" href="' + productPath(p) + '">' + esc(state.lang === 'he' ? 'לצפייה במוצר' : 'View product') + '</a>'
+                  : '<button class="btn btn--primary" data-add="' + esc(p.id) + '">' + esc(t('card.add')) + '</button>'))))) +
+          (isGlasses ? '' : '<a class="btn btn--ghost" href="' + productPath(p) + '">' + esc((p.cardMode === 'view') ? (state.lang === 'he' ? 'עוד תמונות' : 'More photos') : t('card.read')) + '</a>') +
+        '</div>' +
+      '</div>' +
+    '</article>';
+  }
+
+  var ALL_COLLECTION_GROUPS = [
+    { key: 'greeting', title: 'תכשיט עם ברכה', allLabel: 'לכל מוצרי תכשיט עם ברכה' },
+    { key: 'necklaces', title: 'שרשראות', allLabel: 'לכל השרשראות' },
+    { key: 'bracelets', title: 'צמידים', allLabel: 'לכל הצמידים' },
+    { key: 'photo-bracelets', title: 'צמידי תמונה', allLabel: 'לכל צמידי התמונה' },
+    { key: 'watches', title: 'שעונים', allLabel: 'לכל השעונים' },
+    { key: 'glasses', title: 'משקפיים', allLabel: 'לכל המשקפיים' },
+    { key: 'gift-boxes', title: 'מארזים', allLabel: 'לכל המארזים' },
+    { key: 'custom', title: 'עיצוב אישי', allLabel: 'לכל מוצרי העיצוב האישי' },
+    { key: 'hats', title: 'כובעים', allLabel: 'לכל הכובעים' }
+  ];
+
+  function allCollectionGroupLimit() {
+    /* Mobile: 2 columns × 2 rows = 4 products.
+       Desktop / narrow desktop: exactly 1 row. */
+    if (window.matchMedia('(max-width: 700px)').matches) return 4;
+    if (window.matchMedia('(min-width: 1600px)').matches) return 4;
+    return 3;
+  }
+
+  function productBelongsToCollection(p, key) {
+    if (!p) return false;
+    if (key === 'glasses' && !isCurrentGlassesCollectionProduct(p)) return false;
+    var collections = Array.isArray(p.categories) && p.categories.length ? p.categories : [p.category];
+    return collections.indexOf(key) !== -1;
+  }
+
+  function renderAllCollectionGroups(grid, filteredList) {
+    var limit = allCollectionGroupLimit();
+    var sections = ALL_COLLECTION_GROUPS.map(function (group) {
+      var groupProducts = filteredList.filter(function (p) {
+        return productBelongsToCollection(p, group.key);
+      });
+      if (!groupProducts.length) return '';
+
+      groupProducts = shuffleAllProductsStable(groupProducts).slice(0, limit);
+      return '' +
+        '<section class="all-collection-group" data-all-collection-group="' + esc(group.key) + '">' +
+          '<div class="all-collection-group__head">' +
+            '<h3 class="all-collection-group__title">' + esc(group.title) + '</h3>' +
+          '</div>' +
+          '<div class="all-collection-group__products">' + groupProducts.map(renderProductCardHTML).join('') + '</div>' +
+          '<div class="all-collection-group__footer">' +
+            '<a class="all-collection-group__link" href="' + collectionPath(group.key) + '#shop" data-cat="' + esc(group.key) + '">' + esc(group.allLabel) +
+              '<span class="all-collection-group__arrow" aria-hidden="true">←</span>' +
+            '</a>' +
+          '</div>' +
+        '</section>';
+    }).filter(Boolean);
+
+    grid.classList.add('grid--collection-groups');
+    grid.innerHTML = sections.join('');
+    renderCatalogLoadMore(grid, 0, 0);
+  }
+
   function renderGrid() {
     var grid = $('#grid');
     if (!grid) return;
     var list = currentCollectionProducts().filter(function (p) {
       return matchesCatalogFilters(p);
     });
-    list = state.filter === 'all' ? shuffleAllProductsStable(list) : shuffleGlassesWithinList(list);
+
+    if (state.filter === 'all') {
+      if (!list.length) {
+        grid.classList.remove('grid--collection-groups');
+        grid.innerHTML = '<p class="empty">' + esc(t('shop.empty')) + '</p>';
+        renderCatalogLoadMore(grid, 0, 0);
+        return;
+      }
+      renderAllCollectionGroups(grid, list);
+      return;
+    }
+
+    grid.classList.remove('grid--collection-groups');
+    list = shuffleGlassesWithinList(list);
 
     var pagingKey = catalogPagingContextKey(grid);
     if (pagingKey !== catalogPagingKey) {
@@ -694,38 +797,7 @@
 
     var visibleCount = catalogVisibleCount(grid, catalogBatchesShown);
     var visibleList = list.slice(0, visibleCount);
-
-    grid.innerHTML = visibleList.map(function (p) {
-      var badge = L(p.badge);
-      var isGlasses = isGlassesProduct(p);
-      return '' +
-      '<article class="prod">' +
-        (badge ? '<span class="prod__badge">' + esc(badge) + '</span>' : '') +
-        '<a class="prod__media prod__link" href="' + productPath(p) + '" aria-label="' + esc(L(p.title)) + '">' + mediaHTML(p) + '</a>' +
-        '<div class="prod__body">' +
-          '<h3 class="prod__name"><a class="prod__titlelink" href="' + productPath(p) + '">' + esc(L(p.title)) + '</a></h3>' +
-          (isGlasses ? '' : '<p class="prod__sub">' + esc(L(p.subtitle)) + '</p>') +
-          productColorMetaHTML(p) +
-          '<p class="prod__price">' + (p.startingPrice ? (state.lang === 'he' ? 'החל מ־' : 'From ') : '') + money(p.price) +
-            (p.compareAt ? '<span class="prod__was">' + money(p.compareAt) + '</span>' : '') +
-          '</p>' +
-          '<div class="prod__actions">' +
-            ((p.necklaces && p.necklaces.length && p.boxes && p.boxes.length)
-              ? '<a class="btn btn--primary" href="' + productPath(p) + '">' + esc(state.lang === 'he' ? 'לבחירת אפשרויות' : 'Choose options') + '</a>'
-              : (p.customName && p.customName.required
-                ? '<a class="btn btn--primary" href="' + productPath(p) + '">' + esc(state.lang === 'he' ? 'לעיצוב אישי' : 'Customize') + '</a>'
-                : ((p.sizes && p.sizes.length)
-                  ? '<a class="btn btn--primary" href="' + productPath(p) + '">' + esc(state.lang === 'he' ? 'לבחירת אורך' : 'Choose length') + '</a>'
-                  : ((p.colors && p.colors.length)
-                    ? '<a class="btn btn--primary" href="' + productPath(p) + '">' + esc(state.lang === 'he' ? 'לבחירת צבע' : 'Choose color') + '</a>'
-                    : (p.cardMode === 'view'
-                    ? '<a class="btn btn--primary" href="' + productPath(p) + '">' + esc(state.lang === 'he' ? 'לצפייה במוצר' : 'View product') + '</a>'
-                    : '<button class="btn btn--primary" data-add="' + esc(p.id) + '">' + esc(t('card.add')) + '</button>'))))) +
-            (isGlasses ? '' : '<a class="btn btn--ghost" href="' + productPath(p) + '">' + esc((p.cardMode === 'view') ? (state.lang === 'he' ? 'עוד תמונות' : 'More photos') : t('card.read')) + '</a>') +
-          '</div>' +
-        '</div>' +
-      '</article>';
-    }).join('');
+    grid.innerHTML = visibleList.map(renderProductCardHTML).join('');
 
     renderCatalogLoadMore(grid, list.length, visibleList.length);
   }
@@ -832,11 +904,13 @@
     var lines = cartLines();
     var unitPrices = [];
     var glassesUnits = 0;
+    var hatsUnits = 0;
 
     lines.forEach(function (l) {
       for (var i = 0; i < l.qty; i++) unitPrices.push(Number(l.unitPrice) || 0);
       var collections = Array.isArray(l.p.categories) && l.p.categories.length ? l.p.categories : [l.p.category];
       if (collections.indexOf('glasses') !== -1) glassesUnits += l.qty;
+      if (collections.indexOf('hats') !== -1) hatsUnits += l.qty;
     });
 
     var secondItem = 0;
@@ -851,11 +925,22 @@
       ? window.VERSANS_GLASSES_PRICING.discountForUnits(glassesUnits, 139.9)
       : Math.round(glassesPairs * 29.9 * 100) / 100;
 
-    if (glassesPairs > 0) {
+    /* מבצע הכובעים: 139.90 ₪ ליחידה, כל זוג כובעים ב־239.90 ₪. */
+    var hatsPairs = Math.floor(hatsUnits / 2);
+    var hatsBundle = Math.round(hatsPairs * 39.9 * 100) / 100;
+
+    if (glassesPairs > 0 || hatsPairs > 0) {
+      var bundleLabels = [];
+      if (glassesPairs > 0) {
+        bundleLabels.push(state.lang === 'he' ? 'מבצע משקפיים - 2 ב־249.90 ₪' : 'Sunglasses offer - 2 for ₪249.90');
+      }
+      if (hatsPairs > 0) {
+        bundleLabels.push(state.lang === 'he' ? 'מבצע כובעים - 2 ב־239.90 ₪' : 'Hats offer - 2 for ₪239.90');
+      }
       return {
-        amount: glassesBundle,
-        label: state.lang === 'he' ? 'מבצע משקפיים - 2 ב־249.90 ₪' : 'Sunglasses offer - 2 for ₪249.90',
-        type: 'glasses-bundle'
+        amount: Math.round((glassesBundle + hatsBundle) * 100) / 100,
+        label: bundleLabels.join(' + '),
+        type: glassesPairs > 0 && hatsPairs > 0 ? 'multi-bundle' : (glassesPairs > 0 ? 'glasses-bundle' : 'hats-bundle')
       };
     }
     return {
