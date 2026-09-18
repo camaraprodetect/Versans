@@ -3764,7 +3764,7 @@ body.site-overlay-open{overflow:hidden}
   }
   .home-page .nav__menu a,
   .product-page-body .nav__menu a{
-    font-size:clamp(.78rem,.8vw,.96rem)!important;
+    font-size:clamp(.88rem,.9vw,1.04rem)!important;
     padding-inline:.04rem!important;
   }
   .home-page .nav__actions,
