@@ -9853,7 +9853,7 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }  ,
+  },
   {
     "id": "new-era-jon-stan-gray-angels-hat-106",
     "slug": "product-106",
@@ -9936,8 +9936,7 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-  ,
+  },
   {
     "id": "new-era-jon-stan-brown-angels-hat-107",
     "slug": "product-107",
@@ -10020,8 +10019,7 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-  ,
+  },
   {
     "id": "new-era-born-raised-los-angeles-dodgers-cherub-black-angels-hat-108",
     "slug": "product-108",
@@ -10103,8 +10101,7 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-  ,
+  },
   {
     "id": "new-era-los-angeles-dodgers-mlb-mythical-royal-fitted-blue-109",
     "slug": "product-109",
@@ -10188,8 +10185,7 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-  ,
+  },
   {
     "id": "new-era-los-angeles-dodgers-mlb-mythical-royal-fitted-black-110",
     "slug": "product-110",
@@ -10273,8 +10269,7 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-  ,
+  },
   {
     "id": "new-era-los-angeles-dodgers-mlb-mythical-royal-fitted-red-111",
     "slug": "product-111",
@@ -10358,9 +10353,7 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-
-  ,
+  },
   {
     "id": "nzmu-state-of-mind-x-new-york-yankees-black-112",
     "slug": "product-112",
@@ -10444,9 +10437,7 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-
-  ,
+  },
   {
     "id": "nzmu-state-of-mind-x-new-york-yankees-dark-blue-113",
     "slug": "product-113",
@@ -10532,86 +10523,86 @@ var PRODUCTS = [
     }
   },
   {
-      "id": "new-era-new-york-yankees-subway-series-rose-edition-black-114",
-      "slug": "product-114",
-      "urlSlug": "new-era-new-york-yankees-subway-series-rose-edition-black",
-      "sku": "KW-HAT-114",
-      "category": "hats",
-      "categories": [
-          "hats"
-      ],
-      "badge": {
-          "he": "2 ב־239.90 ₪",
-          "en": "2 for ₪239.90"
+    "id": "new-era-new-york-yankees-subway-series-rose-edition-black-114",
+    "slug": "product-114",
+    "urlSlug": "new-era-new-york-yankees-subway-series-rose-edition-black",
+    "sku": "KW-HAT-114",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-114/product-114-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-114/product-114-1.png",
+        "hoverImage": "images/products/product-114/product-114-2.png"
       },
-      "cardMode": "view",
-      "hideMessageCard": true,
-      "hoverImage": "images/products/product-114/product-114-2.png",
-      "collectionMedia": {
-          "women": {
-              "image": "images/products/product-114/product-114-1.png",
-              "hoverImage": "images/products/product-114/product-114-2.png"
-          },
-          "men": {
-              "image": "images/products/product-114/product-114-1.png",
-              "hoverImage": "images/products/product-114/product-114-2.png"
-          }
-      },
-      "images": [
-          "images/products/product-114/product-114-1.png",
-          "images/products/product-114/product-114-2.png",
-          "images/products/product-114/product-114-3.png",
-          "images/products/product-114/product-114-4.png"
-      ],
-      "price": 139.9,
-      "title": {
-          "he": "New Era X New York Yankees X Subway Series - Rose Edition צבע שחור",
-          "en": "New Era X New York Yankees X Subway Series - Rose Edition Black"
-      },
-      "subtitle": {
-          "he": "כובע שחור עם רקמת NY לבנה, ורד אדום ופאץ' Subway Series בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
-          "en": "Black cap with white NY embroidery, red rose detail and a Subway Series side patch · ₪139.90 each · all hats offer: 2 for ₪239.90"
-      },
-      "cardTitle": {
-          "he": "New Era X New York Yankees X Subway Series - Rose Edition צבע שחור",
-          "en": "New Era X New York Yankees X Subway Series - Rose Edition Black"
-      },
-      "cardMessage": {
-          "he": "כובע שחור עם רקמת NY לבנה, ורד אדום ופאץ' Subway Series בצד.",
-          "en": "Black cap with white NY embroidery, red rose detail and a Subway Series side patch."
-      },
-      "signature": {
-          "he": "",
-          "en": ""
-      },
-      "details": {
-          "he": [
-              "צבע: שחור",
-              "רקמת NY לבנה בחזית",
-              "רקמת ורד אדום בחזית",
-              "פאץ' Subway Series בצד",
-              "מצחייה שטוחה",
-              "מחיר ליחידה: 139.90 ₪",
-              "מבצע לכל הכובעים: 2 ב־239.90 ₪"
-          ],
-          "en": [
-              "Color: Black",
-              "White NY embroidery on the front",
-              "Red rose embroidery on the front",
-              "Subway Series side patch",
-              "Flat brim",
-              "Single price: ₪139.90",
-              "All hats offer: 2 for ₪239.90"
-          ]
-      },
-      "afterText": {
-          "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-          "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
-      },
-      "deliveryBusinessDays": {
-          "min": 9,
-          "max": 25
+      "men": {
+        "image": "images/products/product-114/product-114-1.png",
+        "hoverImage": "images/products/product-114/product-114-2.png"
       }
+    },
+    "images": [
+      "images/products/product-114/product-114-1.png",
+      "images/products/product-114/product-114-2.png",
+      "images/products/product-114/product-114-3.png",
+      "images/products/product-114/product-114-4.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X New York Yankees X Subway Series - Rose Edition צבע שחור",
+      "en": "New Era X New York Yankees X Subway Series - Rose Edition Black"
+    },
+    "subtitle": {
+      "he": "כובע שחור עם רקמת NY לבנה, ורד אדום ופאץ' Subway Series בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black cap with white NY embroidery, red rose detail and a Subway Series side patch · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X New York Yankees X Subway Series - Rose Edition צבע שחור",
+      "en": "New Era X New York Yankees X Subway Series - Rose Edition Black"
+    },
+    "cardMessage": {
+      "he": "כובע שחור עם רקמת NY לבנה, ורד אדום ופאץ' Subway Series בצד.",
+      "en": "Black cap with white NY embroidery, red rose detail and a Subway Series side patch."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: שחור",
+        "רקמת NY לבנה בחזית",
+        "רקמת ורד אדום בחזית",
+        "פאץ' Subway Series בצד",
+        "מצחייה שטוחה",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Black",
+        "White NY embroidery on the front",
+        "Red rose embroidery on the front",
+        "Subway Series side patch",
+        "Flat brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
   },
   {
     "id": "new-era-new-york-yankees-rose-emblem-black-115",
@@ -10693,8 +10684,7 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-  ,
+  },
   {
     "id": "new-era-new-york-yankees-rose-emblem-turquoise-pink-116",
     "slug": "product-116",
@@ -10777,8 +10767,7 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-  ,
+  },
   {
     "id": "new-era-new-york-yankees-rose-emblem-light-brown-117",
     "slug": "product-117",
@@ -10861,8 +10850,7 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-  ,
+  },
   {
     "id": "new-era-new-york-yankees-one-love-black-118",
     "slug": "product-118",
@@ -10953,8 +10941,7 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-  ,
+  },
   {
     "id": "new-era-new-york-yankees-subway-series-chrome-rose-two-tone-edition-white-119",
     "slug": "product-119",
@@ -11041,8 +11028,7 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-  ,
+  },
   {
     "id": "new-era-new-york-yankees-sakura-black-prime-edition-black-120",
     "slug": "product-120",
@@ -11127,8 +11113,7 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-  ,
+  },
   {
     "id": "new-era-new-york-yankees-camo-121",
     "slug": "product-121",
@@ -11214,8 +11199,7 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-  ,
+  },
   {
     "id": "new-era-new-york-yankees-ocean-sakura-edition-dark-blue-pink-122",
     "slug": "product-122",
@@ -11301,8 +11285,7 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-  ,
+  },
   {
     "id": "new-era-new-york-yankees-black-rose-subway-series-black-123",
     "slug": "product-123",
@@ -11387,8 +11370,7 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-  ,
+  },
   {
     "id": "new-era-47-new-york-yankees-mvp-cap-black-124",
     "slug": "product-124",
@@ -11471,8 +11453,7 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-  ,
+  },
   {
     "id": "new-era-new-york-yankees-subway-series-black-prime-edition-black-125",
     "slug": "product-125",
@@ -11558,8 +11539,7 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-  ,
+  },
   {
     "id": "new-era-mlb-new-york-yankees-world-series-1996-white-green-126",
     "slug": "product-126",
@@ -11644,8 +11624,7 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-  ,
+  },
   {
     "id": "new-era-new-york-yankees-world-series-1999-chrome-metallic-two-tone-edition-white-gray-127",
     "slug": "product-127",
@@ -11729,7 +11708,7 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }  ,
+  },
   {
     "id": "new-era-new-york-yankees-world-series-1998-chrome-gold-edition-white-blue-128",
     "slug": "product-128",
@@ -11813,9 +11792,8 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-  ,
-{
+  },
+  {
     "id": "new-era-anaheim-angels-all-star-game-2010-cupid-chrome-two-tone-edition-white-black-red-129",
     "slug": "product-129",
     "urlSlug": "new-era-anaheim-angels-all-star-game-2010-cupid-chrome-two-tone-edition-white-black-red",
@@ -11900,10 +11878,8 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-
-  ,
-{
+  },
+  {
     "id": "new-era-anaheim-angels-cupids-black-prime-edition-black-130",
     "slug": "product-130",
     "urlSlug": "new-era-anaheim-angels-cupids-black-prime-edition-black",
@@ -11986,9 +11962,8 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-  ,
-{
+  },
+  {
     "id": "new-era-anaheim-angels-all-star-game-2010-cupids-black-prime-edition-black-gold-131",
     "slug": "product-131",
     "urlSlug": "new-era-anaheim-angels-all-star-game-2010-cupids-black-prime-edition-black-gold",
@@ -12073,9 +12048,8 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-  ,
-{
+  },
+  {
     "id": "new-era-anaheim-angels-20th-anniversary-world-champions-edition-black-132",
     "slug": "product-132",
     "urlSlug": "new-era-anaheim-angels-20th-anniversary-world-champions-edition-black",
@@ -12158,9 +12132,8 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-  ,
-{
+  },
+  {
     "id": "new-era-anaheim-angels-core-classic-alternate-red-navy-133",
     "slug": "product-133",
     "urlSlug": "new-era-anaheim-angels-core-classic-alternate-red-navy",
@@ -12242,9 +12215,8 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-  ,
-{
+  },
+  {
     "id": "new-era-atlanta-braves-ocean-sakura-edition-navy-pink-134",
     "slug": "product-134",
     "urlSlug": "new-era-atlanta-braves-ocean-sakura-edition-navy-pink",
@@ -12327,9 +12299,8 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-  ,
-{
+  },
+  {
     "id": "new-era-milwaukee-bucks-chrome-white-tree-edge-two-tone-white-camo-135",
     "slug": "product-135",
     "urlSlug": "new-era-milwaukee-bucks-chrome-white-tree-edge-two-tone-white-camo",
@@ -12411,9 +12382,8 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-  ,
-{
+  },
+  {
     "id": "new-era-milwaukee-bucks-contrast-stitch-black-green-136",
     "slug": "product-136",
     "urlSlug": "new-era-milwaukee-bucks-contrast-stitch-black-green",
@@ -12495,9 +12465,8 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-  ,
-{
+  },
+  {
     "id": "new-era-milwaukee-bucks-nba-chrome-white-tree-edge-two-tone-gray-dark-green-137",
     "slug": "product-137",
     "urlSlug": "new-era-milwaukee-bucks-nba-chrome-white-tree-edge-two-tone-gray-dark-green",
@@ -12580,10 +12549,8 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-
-  ,
-{
+  },
+  {
     "id": "new-era-milwaukee-bucks-essentials-maple-green-black-138",
     "slug": "product-138",
     "urlSlug": "new-era-milwaukee-bucks-essentials-maple-green-black",
@@ -12665,9 +12632,8 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-  ,
-{
+  },
+  {
     "id": "new-era-mlb-atlanta-braves-47-mvp-wool-blend-navy-road-dark-blue-139",
     "slug": "product-139",
     "urlSlug": "new-era-mlb-atlanta-braves-47-mvp-wool-blend-navy-road-dark-blue",
@@ -12749,9 +12715,8 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-  ,
-{
+  },
+  {
     "id": "new-era-atlanta-braves-150th-anniversary-two-tone-gray-black-140",
     "slug": "product-140",
     "urlSlug": "new-era-atlanta-braves-150th-anniversary-two-tone-gray-black",
@@ -12833,9 +12798,8 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-  ,
-{
+  },
+  {
     "id": "new-era-atlanta-braves-1995-world-series-sidepatch-dark-blue-141",
     "slug": "product-141",
     "urlSlug": "new-era-atlanta-braves-1995-world-series-sidepatch-dark-blue",
@@ -12915,9 +12879,509 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
+  },
+  {
+    "id": "new-era-oakland-athletics-cupids-black-prime-edition-black-142",
+    "slug": "product-142",
+    "urlSlug": "new-era-oakland-athletics-cupids-black-prime-edition-black",
+    "sku": "KW-HAT-142",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-142/product-142-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-142/product-142-1.png",
+        "hoverImage": "images/products/product-142/product-142-2.png"
+      },
+      "men": {
+        "image": "images/products/product-142/product-142-1.png",
+        "hoverImage": "images/products/product-142/product-142-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-142/product-142-1.png",
+      "images/products/product-142/product-142-2.png",
+      "images/products/product-142/product-142-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Oakland Athletics X Cupids Black Prime Edition - צבע שחור",
+      "en": "New Era X Oakland Athletics X Cupids Black Prime Edition - Black"
+    },
+    "subtitle": {
+      "he": "כובע Oakland Athletics שחור עם רקמת A's לבנה ועיטורי קופידון בחזית, גב רשת שחור וסגירת Snapback מתכווננת · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black Oakland Athletics cap with white A's embroidery and cupid details on the front, black mesh back and an adjustable snapback closure · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Oakland Athletics X Cupids Black Prime Edition - צבע שחור",
+      "en": "New Era X Oakland Athletics X Cupids Black Prime Edition - Black"
+    },
+    "cardMessage": {
+      "he": "כובע Oakland Athletics שחור עם רקמת A's לבנה, עיטורי קופידון וגב רשת שחור.",
+      "en": "Black Oakland Athletics cap with white A's embroidery, cupid details and a black mesh back."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: שחור",
+        "כובע Oakland Athletics בגוון שחור",
+        "רקמת A's לבנה גדולה בחזית",
+        "עיטורי קופידון לבנים בחזית",
+        "גב רשת שחור",
+        "סגירת Snapback אחורית מתכווננת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Black",
+        "Black Oakland Athletics cap",
+        "Large white A's embroidery on the front",
+        "White cupid details on the front",
+        "Black mesh back",
+        "Adjustable rear snapback closure",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-oakland-athletics-navy-corduroy-special-edition-dark-blue-cream-143",
+    "slug": "product-143",
+    "urlSlug": "new-era-oakland-athletics-navy-corduroy-special-edition-dark-blue-cream",
+    "sku": "KW-HAT-143",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-143/product-143-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-143/product-143-1.png",
+        "hoverImage": "images/products/product-143/product-143-2.png"
+      },
+      "men": {
+        "image": "images/products/product-143/product-143-1.png",
+        "hoverImage": "images/products/product-143/product-143-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-143/product-143-1.png",
+      "images/products/product-143/product-143-2.png",
+      "images/products/product-143/product-143-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Oakland Athletics X Navy Corduroy Special Edition - צבע כחול כהה שמנת",
+      "en": "New Era X Oakland Athletics X Navy Corduroy Special Edition - Dark Blue Cream"
+    },
+    "subtitle": {
+      "he": "כובע Oakland Athletics בגוון כחול כהה מבד קורדרוי עם רקמת A בגוון שמנת בחזית, גב רשת שמנת וסגירת Snapback מתכווננת · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Dark blue corduroy Oakland Athletics cap with a cream A embroidery on the front, cream mesh back and an adjustable snapback closure · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Oakland Athletics X Navy Corduroy Special Edition - צבע כחול כהה שמנת",
+      "en": "New Era X Oakland Athletics X Navy Corduroy Special Edition - Dark Blue Cream"
+    },
+    "cardMessage": {
+      "he": "כובע Oakland Athletics כחול כהה מקורדרוי עם רקמת A שמנת וגב רשת בגוון שמנת.",
+      "en": "Dark blue corduroy Oakland Athletics cap with cream A embroidery and a cream mesh back."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: כחול כהה ושמנת",
+        "כובע Oakland Athletics בגוון כחול כהה",
+        "בד קורדרוי בחלק הקדמי ובמצחייה",
+        "רקמת A בגוון שמנת בחזית",
+        "גב רשת בגוון שמנת",
+        "עיטורי צד רקומים",
+        "סגירת Snapback אחורית מתכווננת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Dark blue and cream",
+        "Dark blue Oakland Athletics cap",
+        "Corduroy fabric on the front and visor",
+        "Cream A embroidery on the front",
+        "Cream mesh back",
+        "Embroidered side details",
+        "Adjustable rear snapback closure",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
   }
-
-
+  ,{
+    "id": "new-era-oakland-athletics-team-script-back-dark-green-144",
+    "slug": "product-144",
+    "urlSlug": "new-era-oakland-athletics-team-script-back-dark-green",
+    "sku": "KW-HAT-144",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-144/product-144-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-144/product-144-1.png",
+        "hoverImage": "images/products/product-144/product-144-2.png"
+      },
+      "men": {
+        "image": "images/products/product-144/product-144-1.png",
+        "hoverImage": "images/products/product-144/product-144-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-144/product-144-1.png",
+      "images/products/product-144/product-144-2.png",
+      "images/products/product-144/product-144-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Oakland Athletics X Team Script Back - צבע ירוק כהה",
+      "en": "New Era X Oakland Athletics X Team Script Back - Dark Green"
+    },
+    "subtitle": {
+      "he": "כובע Oakland Athletics בגוון ירוק כהה עם רקמת A's לבנה עם מסגרת צהובה בחזית, רקמת Athletics בגב וסגירת Snapback מתכווננת · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Dark green Oakland Athletics cap with white A's embroidery outlined in yellow on the front, Athletics script embroidery on the back and an adjustable snapback closure · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Oakland Athletics X Team Script Back - צבע ירוק כהה",
+      "en": "New Era X Oakland Athletics X Team Script Back - Dark Green"
+    },
+    "cardMessage": {
+      "he": "כובע Oakland Athletics בירוק כהה עם רקמת A's בחזית ורקמת Athletics בגב.",
+      "en": "Dark green Oakland Athletics cap with A's embroidery on the front and Athletics script embroidery on the back."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: ירוק כהה",
+        "כובע Oakland Athletics בגוון ירוק כהה",
+        "רקמת A's לבנה עם מסגרת צהובה בחזית",
+        "רקמת Athletics בגב",
+        "לוגו New Era רקום בצד",
+        "סגירת Snapback אחורית מתכווננת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Dark green",
+        "Dark green Oakland Athletics cap",
+        "White A's embroidery with yellow outline on the front",
+        "Athletics script embroidery on the back",
+        "Embroidered New Era side logo",
+        "Adjustable rear snapback closure",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+  ,{
+    "id": "new-era-oakland-athletics-1989-world-series-patch-black-145",
+    "slug": "product-145",
+    "urlSlug": "new-era-oakland-athletics-1989-world-series-patch-black",
+    "sku": "KW-HAT-145",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-145/product-145-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-145/product-145-1.png",
+        "hoverImage": "images/products/product-145/product-145-2.png"
+      },
+      "men": {
+        "image": "images/products/product-145/product-145-1.png",
+        "hoverImage": "images/products/product-145/product-145-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-145/product-145-1.png",
+      "images/products/product-145/product-145-2.png",
+      "images/products/product-145/product-145-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Oakland Athletics X 1989 World Series Patch - צבע שחור",
+      "en": "New Era X Oakland Athletics X 1989 World Series Patch - Black"
+    },
+    "subtitle": {
+      "he": "כובע Oakland Athletics בצבע שחור עם רקמת A's לבנה בחזית ופאץ' 1989 World Series בצד, כולל סגירת Snapback מתכווננת · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black Oakland Athletics cap with white A's front embroidery and a 1989 World Series side patch, featuring an adjustable snapback closure · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Oakland Athletics X 1989 World Series Patch - צבע שחור",
+      "en": "New Era X Oakland Athletics X 1989 World Series Patch - Black"
+    },
+    "cardMessage": {
+      "he": "כובע Oakland Athletics שחור עם רקמת A's ופאץ' 1989 World Series בצד.",
+      "en": "Black Oakland Athletics cap with A's embroidery and a 1989 World Series side patch."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: שחור",
+        "כובע Oakland Athletics בצבע שחור",
+        "רקמת A's לבנה בחזית",
+        "פאץ' 1989 World Series בצד",
+        "סגירת Snapback אחורית מתכווננת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Black",
+        "Black Oakland Athletics cap",
+        "White A's embroidery on the front",
+        "1989 World Series side patch",
+        "Adjustable rear snapback closure",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+  ,{
+    "id": "new-era-oakland-athletics-rickey-henderson-field-dark-green-146",
+    "slug": "product-146",
+    "urlSlug": "new-era-oakland-athletics-rickey-henderson-field-dark-green",
+    "sku": "KW-HAT-146",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-146/product-146-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-146/product-146-1.png",
+        "hoverImage": "images/products/product-146/product-146-2.png"
+      },
+      "men": {
+        "image": "images/products/product-146/product-146-1.png",
+        "hoverImage": "images/products/product-146/product-146-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-146/product-146-1.png",
+      "images/products/product-146/product-146-2.png",
+      "images/products/product-146/product-146-3.png",
+      "images/products/product-146/product-146-4.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Oakland Athletics X Rickey Henderson Field - צבע ירוק כהה",
+      "en": "New Era X Oakland Athletics X Rickey Henderson Field - Dark Green"
+    },
+    "subtitle": {
+      "he": "כובע Oakland Athletics בגוון ירוק כהה עם רקמת פיל ובייסבולים בחזית ופאץ' Rickey Henderson Field בצד, כולל סגירת Snapback מתכווננת · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Dark green Oakland Athletics cap with elephant and crossed bats embroidery on the front plus a Rickey Henderson Field side patch, featuring an adjustable snapback closure · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Oakland Athletics X Rickey Henderson Field - צבע ירוק כהה",
+      "en": "New Era X Oakland Athletics X Rickey Henderson Field - Dark Green"
+    },
+    "cardMessage": {
+      "he": "כובע Oakland Athletics בירוק כהה עם רקמת פיל בחזית ופאץ' Rickey Henderson Field בצד.",
+      "en": "Dark green Oakland Athletics cap with elephant embroidery on the front and a Rickey Henderson Field side patch."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: ירוק כהה",
+        "כובע Oakland Athletics בגוון ירוק כהה",
+        "רקמת פיל ובייסבולים בחזית",
+        "פאץ' Rickey Henderson Field בצד",
+        "לוגו New Era רקום בצד",
+        "סגירת Snapback אחורית מתכווננת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Dark green",
+        "Dark green Oakland Athletics cap",
+        "Elephant and crossed bats embroidery on the front",
+        "Rickey Henderson Field side patch",
+        "Embroidered New Era side logo",
+        "Adjustable rear snapback closure",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+  ,{
+    "id": "new-era-oakland-athletics-50th-anniversary-chrome-two-tone-edition-white-dark-green-147",
+    "slug": "product-147",
+    "urlSlug": "new-era-oakland-athletics-50th-anniversary-chrome-two-tone-edition-white-dark-green",
+    "sku": "KW-HAT-147",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-147/product-147-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-147/product-147-1.png",
+        "hoverImage": "images/products/product-147/product-147-2.png"
+      },
+      "men": {
+        "image": "images/products/product-147/product-147-1.png",
+        "hoverImage": "images/products/product-147/product-147-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-147/product-147-1.png",
+      "images/products/product-147/product-147-2.png",
+      "images/products/product-147/product-147-3.png",
+      "images/products/product-147/product-147-4.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Oakland Athletics X 50th Anniversary X Chrome Two Tone Edition - צבע לבן ירוק כהה",
+      "en": "New Era X Oakland Athletics X 50th Anniversary X Chrome Two Tone Edition - White Dark Green"
+    },
+    "subtitle": {
+      "he": "כובע Oakland Athletics במהדורת Chrome Two Tone עם כתר לבן ומצחייה ירוק כהה, רקמת פיל ובייסבולים בחזית ופאץ' 50th Anniversary בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Oakland Athletics Chrome Two Tone cap with a white crown and dark green brim, featuring elephant and crossed bats embroidery on the front plus a 50th Anniversary side patch · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Oakland Athletics X 50th Anniversary X Chrome Two Tone Edition - צבע לבן ירוק כהה",
+      "en": "New Era X Oakland Athletics X 50th Anniversary X Chrome Two Tone Edition - White Dark Green"
+    },
+    "cardMessage": {
+      "he": "כובע Oakland Athletics בלבן וירוק כהה עם רקמת פיל בחזית ופאץ' 50th Anniversary בצד.",
+      "en": "White and dark green Oakland Athletics cap with elephant embroidery on the front and a 50th Anniversary side patch."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: לבן ירוק כהה",
+        "מהדורת Chrome Two Tone של Oakland Athletics",
+        "כתר לבן עם מצחייה ירוק כהה",
+        "רקמת פיל ובייסבולים בחזית",
+        "פאץ' Oakland Athletics 50th Anniversary בצד",
+        "לוגו New Era רקום בצד",
+        "סגירת Snapback אחורית מתכווננת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: White dark green",
+        "Oakland Athletics Chrome Two Tone edition",
+        "White crown with dark green brim",
+        "Elephant and crossed bats embroidery on the front",
+        "Oakland Athletics 50th Anniversary side patch",
+        "Embroidered New Era side logo",
+        "Adjustable rear snapback closure",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
 ];
 
 var CATEGORIES = [

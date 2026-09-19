@@ -423,7 +423,7 @@
     html.dir = 'rtl';
 
     document.title = 'VerSans';
-    var ogTitle = $('meta[property="og:title"]'); if (ogTitle) ogTitle.setAttribute('content', 'VerSans');
+    var ogTitle = $('meta[property="og:title"]'); if (ogTitle) ogTitle.setAttribute('content', t('meta.title'));
     var md = $('meta[name="description"]'); if (md) md.setAttribute('content', t('meta.desc'));
 
     $$('[data-i18n]').forEach(function (el) {
@@ -732,8 +732,9 @@
     { key: 'jon-stan', title: 'New Era X Jon Stan', slugs: ['product-103', 'product-104', 'product-105', 'product-106', 'product-107'] },
     { key: 'new-york-yankees', title: 'New Era X New York Yankees', slugs: ['product-112', 'product-113', 'product-114', 'product-115', 'product-116', 'product-117', 'product-118', 'product-119', 'product-120', 'product-121', 'product-122', 'product-123', 'product-124', 'product-125', 'product-126', 'product-127', 'product-128'] },
     { key: 'anaheim-angels', title: 'New Era X Anaheim Angels', slugs: ['product-129', 'product-130', 'product-131', 'product-132', 'product-133'] },
-    { key: 'atlanta-braves', title: 'New Era X Atlanta Braves', slugs: ['product-134', 'product-139'] },
-    { key: 'milwaukee-bucks', title: 'New Era X Milwaukee Bucks', slugs: ['product-135', 'product-136', 'product-137', 'product-138'] }
+    { key: 'atlanta-braves', title: 'New Era X Atlanta Braves', slugs: ['product-134', 'product-139', 'product-140', 'product-141'] },
+    { key: 'milwaukee-bucks', title: 'New Era X Milwaukee Bucks', slugs: ['product-135', 'product-136', 'product-137', 'product-138'] },
+    { key: 'oakland-athletics', title: 'New Era X Oakland Athletics', slugs: ['product-142', 'product-143', 'product-144', 'product-145', 'product-146', 'product-147'] }
   ];
 
   function hatGroupBrowseHref(key) {
@@ -771,7 +772,9 @@
 
   function hatCarouselLoopItems(items) {
     var list = Array.prototype.slice.call(items || []);
-    return list.length ? list.concat(list, list) : [];
+    /* Repeat short groups so even a two-product collection can keep sliding
+       on desktop where three/four cards are visible at once. */
+    return list.length <= 1 ? list : list.concat(list, list, list, list);
   }
 
   function normalizeHatCarouselLoopIndex(index, originalCount) {
@@ -855,41 +858,47 @@
     return bestIndex;
   }
 
-  function jumpHatCarouselToIndex(track, index) {
+  function jumpHatCarouselToIndex(track, index, behavior) {
     if (!track) return;
     var cards = Array.prototype.slice.call(track.children || []);
+    if (!cards.length) return;
+    index = Math.max(0, Math.min(cards.length - 1, Number(index) || 0));
     var target = cards[index];
     if (!target) return;
-    var previousBehavior = track.style.scrollBehavior;
-    track.style.scrollBehavior = 'auto';
-    track.scrollLeft = target.offsetLeft || 0;
-    track.style.scrollBehavior = previousBehavior;
+    track._hatCarouselIndex = index;
+    var left = target.offsetLeft || 0;
+    if (typeof track.scrollTo === 'function') {
+      track.scrollTo({ left: left, behavior: behavior || 'auto' });
+    } else {
+      track.scrollLeft = left;
+    }
   }
 
   function normalizeHatCarouselLoop(track) {
     if (!track) return;
     var originalCount = Number(track.getAttribute('data-hat-carousel-original-count')) || 0;
     if (!originalCount) return;
-    var currentStart = hatCarouselCurrentStart(track);
-    var normalized = normalizeHatCarouselLoopIndex(currentStart, originalCount);
-    if (normalized !== currentStart) jumpHatCarouselToIndex(track, normalized);
+    var currentStart = Number.isFinite(track._hatCarouselIndex) ? track._hatCarouselIndex : hatCarouselCurrentStart(track);
+    var normalized = currentStart;
+    /* With five copies, keep the cursor around the middle copy. This avoids
+       reaching the browser's scroll boundary in very short collections. */
+    if (currentStart >= originalCount * 4) normalized = currentStart - (originalCount * 2);
+    if (currentStart < originalCount) normalized = currentStart + (originalCount * 2);
+    if (normalized !== currentStart) jumpHatCarouselToIndex(track, normalized, 'auto');
   }
 
   function scrollHatCarousel(track, direction) {
     if (!track) return;
     var cards = Array.prototype.slice.call(track.children || []);
     if (!cards.length) return;
-    var currentStart = hatCarouselCurrentStart(track);
-    var nextStart = direction < 0 ? currentStart - 1 : nextHatCarouselStart(currentStart);
+    var currentStart = Number.isFinite(track._hatCarouselIndex) ? track._hatCarouselIndex : hatCarouselCurrentStart(track);
+    var nextStart = currentStart + (direction < 0 ? -1 : 1);
     nextStart = Math.max(0, Math.min(cards.length - 1, nextStart));
-    var target = cards[nextStart];
-    if (target && typeof track.scrollTo === 'function') {
-      track.scrollTo({ left: target.offsetLeft || 0, behavior: 'smooth' });
-      window.clearTimeout(track._hatLoopResetTimer);
-      track._hatLoopResetTimer = window.setTimeout(function () {
-        normalizeHatCarouselLoop(track);
-      }, 520);
-    }
+    jumpHatCarouselToIndex(track, nextStart, 'smooth');
+    window.clearTimeout(track._hatLoopResetTimer);
+    track._hatLoopResetTimer = window.setTimeout(function () {
+      normalizeHatCarouselLoop(track);
+    }, 520);
   }
 
   function syncHatCarouselArrowCenter(carousel) {
@@ -919,7 +928,8 @@
       });
       var originalCount = Number(track.getAttribute('data-hat-carousel-original-count')) || 0;
       if (originalCount > 0) {
-        jumpHatCarouselToIndex(track, originalCount);
+        /* Start in the center copy so prev/next works immediately in both directions. */
+        jumpHatCarouselToIndex(track, originalCount * 2, 'auto');
         window.requestAnimationFrame(function () { normalizeHatCarouselLoop(track); });
       }
       if (originalCount <= 1) return;
@@ -967,9 +977,9 @@
             '<h3 class="all-collection-group__title" dir="ltr">' + esc(section.group.title) + '</h3>' +
           '</div>' +
           '<div class="hat-carousel">' +
-            '<button class="hat-carousel__arrow hat-carousel__arrow--prev" type="button" data-hat-carousel-prev aria-label="כובע קודם">‹</button>' +
+            (section.products.length > 1 ? '<button class="hat-carousel__arrow hat-carousel__arrow--prev" type="button" data-hat-carousel-prev aria-label="כובע קודם">‹</button>' : '') +
             '<div class="hat-carousel__track" data-hat-carousel-track data-hat-carousel-original-count="' + section.products.length + '" dir="ltr">' + hatCarouselLoopItems(section.products).map(renderProductCardHTML).join('') + '</div>' +
-            '<button class="hat-carousel__arrow hat-carousel__arrow--next" type="button" data-hat-carousel-next aria-label="כובע הבא">›</button>' +
+            (section.products.length > 1 ? '<button class="hat-carousel__arrow hat-carousel__arrow--next" type="button" data-hat-carousel-next aria-label="כובע הבא">›</button>' : '') +
           '</div>' +
           '<div class="hat-collection-group__footer">' +
             '<a class="hat-collection-group__all" href="' + esc(hatGroupBrowseHref(groupKey)) + '">' +
