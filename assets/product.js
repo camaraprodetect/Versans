@@ -128,16 +128,29 @@
       return Math.round(Number(unitPriceValue || 0) * Math.max(1, quantity || 1) * 100) / 100;
     }
     var q = Math.max(1, parseInt(quantity, 10) || 1);
-    return Math.round((Math.floor(q / 2) * 239.9 + (q % 2) * Number(unitPriceValue || 0)) * 100) / 100;
+    var triples = Math.floor(q / 3);
+    var remainder = q % 3;
+    var total = triples * 299.9 + (remainder === 2 ? 239.9 : (remainder === 1 ? 139.9 : 0));
+    return Math.round(total * 100) / 100;
   }
 
-  function hatsPriceDisplay(unitPriceValue, quantity) {
+  function hatsOfferLabel() {
+    return lang === 'he'
+      ? '1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪'
+      : '1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90';
+  }
+
+  function hatsPriceDisplay(unitPriceValue, quantity, includeOffer) {
     var q = Math.max(1, parseInt(quantity, 10) || 1);
     var total = hatsPurchaseTotal(unitPriceValue, q);
-    if (isHatsProduct(product) && q >= 2) {
-      return money(total) + (lang === 'he' ? ' (2 כובעים ב־239.90 ₪)' : ' (2 hats for ₪239.90)');
-    }
     return money(total);
+  }
+
+  function hatsOfferMarkup() {
+    if (lang === 'he') {
+      return '<strong>מבצע כובעים:</strong> 1 ב־139.90 ₪ <span class="promo-sep">|</span> 2 ב־239.90 ₪ <span class="promo-sep">|</span> 3 ב־299.90 ₪';
+    }
+    return '<strong>Hats offer:</strong> 1 for ₪139.90 <span class="promo-sep">|</span> 2 for ₪239.90 <span class="promo-sep">|</span> 3 for ₪299.90';
   }
   function findOption(list, optionId) {
     if (!Array.isArray(list)) return null;
@@ -1369,6 +1382,7 @@ function arrangeProduct20CompactOptions() {
     var price = $('#productPrice');
     var compare = $('#productCompare');
     var addBtn = $('#addToCart');
+    var promoLine = $('#productPromoLine');
     var minusBtn = $('#qtyMinus');
     var plusBtn = $('#qtyPlus');
 
@@ -1391,9 +1405,21 @@ function arrangeProduct20CompactOptions() {
       } else if (isGlassesProduct(product)) {
         price.textContent = glassesPriceDisplay(currentUnitPrice, qty);
       } else if (isHatsProduct(product)) {
-        price.textContent = hatsPriceDisplay(currentUnitPrice, qty);
+        price.textContent = hatsPriceDisplay(currentUnitPrice, qty, true);
       } else {
         price.textContent = money(currentUnitPrice);
+      }
+    }
+
+    if (promoLine) {
+      if (isHatsProduct(product)) {
+        promoLine.innerHTML = hatsOfferMarkup();
+        promoLine.hidden = false;
+        promoLine.classList.add('is-visible');
+      } else {
+        promoLine.hidden = true;
+        promoLine.classList.remove('is-visible');
+        promoLine.innerHTML = '';
       }
     }
 
@@ -1449,7 +1475,7 @@ function arrangeProduct20CompactOptions() {
       } else if (isGlassesProduct(product)) {
         addBtn.textContent = (lang === 'he' ? 'הוספה לסל - ' : 'Add to cart - ') + glassesPriceDisplay(currentUnitPrice, qty);
       } else if (isHatsProduct(product)) {
-        addBtn.textContent = (lang === 'he' ? 'הוספה לסל - ' : 'Add to cart - ') + hatsPriceDisplay(currentUnitPrice, qty);
+        addBtn.textContent = (lang === 'he' ? 'הוספה לסל - ' : 'Add to cart - ') + hatsPriceDisplay(currentUnitPrice, qty, false);
       } else {
         addBtn.textContent = (lang === 'he' ? 'הוספה לסל - ' : 'Add to cart - ') + money(currentUnitPrice * qty);
       }

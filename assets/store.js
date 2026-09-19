@@ -673,6 +673,9 @@
 
   function renderProductCardHTML(p) {
     var badge = L(p.badge);
+    var cardCollections = Array.isArray(p.categories) && p.categories.length ? p.categories : [p.category];
+    var isHat = cardCollections.indexOf('hats') !== -1;
+    if (isHat) badge = state.lang === 'he' ? '1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪' : '1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90';
     var isGlasses = isGlassesProduct(p);
     return '' +
     '<article class="prod">' +
@@ -1180,12 +1183,16 @@
     var unitPrices = [];
     var glassesUnits = 0;
     var hatsUnits = 0;
+    var hatsSubtotal = 0;
 
     lines.forEach(function (l) {
       for (var i = 0; i < l.qty; i++) unitPrices.push(Number(l.unitPrice) || 0);
       var collections = Array.isArray(l.p.categories) && l.p.categories.length ? l.p.categories : [l.p.category];
       if (collections.indexOf('glasses') !== -1) glassesUnits += l.qty;
-      if (collections.indexOf('hats') !== -1) hatsUnits += l.qty;
+      if (collections.indexOf('hats') !== -1) {
+        hatsUnits += l.qty;
+        hatsSubtotal += (Number(l.unitPrice) || 0) * l.qty;
+      }
     });
 
     var secondItem = 0;
@@ -1200,22 +1207,28 @@
       ? window.VERSANS_GLASSES_PRICING.discountForUnits(glassesUnits, 139.9)
       : Math.round(glassesPairs * 29.9 * 100) / 100;
 
-    /* מבצע הכובעים: 139.90 ₪ ליחידה, כל זוג כובעים ב־239.90 ₪. */
-    var hatsPairs = Math.floor(hatsUnits / 2);
-    var hatsBundle = Math.round(hatsPairs * 39.9 * 100) / 100;
+    /* מבצע הכובעים: 1 ב־139.90 ₪, 2 ב־239.90 ₪, 3 ב־299.90 ₪.
+       בכמויות גדולות יותר המבצע ממשיך בקבוצות של 3, ואז 2/1 לשארית. */
+    var hatsTriples = Math.floor(hatsUnits / 3);
+    var hatsRemainder = hatsUnits % 3;
+    var hatsPromoTotal = hatsTriples * 299.9 + (hatsRemainder === 2 ? 239.9 : (hatsRemainder === 1 ? 139.9 : 0));
+    var hatsBundle = hatsUnits > 0 ? Math.max(0, Math.round((hatsSubtotal - hatsPromoTotal) * 100) / 100) : 0;
+    var hatsPromoActive = hatsUnits >= 2 || hatsBundle > 0;
 
-    if (glassesPairs > 0 || hatsPairs > 0) {
+    if (glassesPairs > 0 || hatsPromoActive) {
       var bundleLabels = [];
       if (glassesPairs > 0) {
         bundleLabels.push(state.lang === 'he' ? 'מבצע משקפיים - 2 ב־249.90 ₪' : 'Sunglasses offer - 2 for ₪249.90');
       }
-      if (hatsPairs > 0) {
-        bundleLabels.push(state.lang === 'he' ? 'מבצע כובעים - 2 ב־239.90 ₪' : 'Hats offer - 2 for ₪239.90');
+      if (hatsPromoActive) {
+        bundleLabels.push(state.lang === 'he'
+          ? 'מבצע כובעים - 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪'
+          : 'Hats offer - 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90');
       }
       return {
         amount: Math.round((glassesBundle + hatsBundle) * 100) / 100,
         label: bundleLabels.join(' + '),
-        type: glassesPairs > 0 && hatsPairs > 0 ? 'multi-bundle' : (glassesPairs > 0 ? 'glasses-bundle' : 'hats-bundle')
+        type: glassesPairs > 0 && hatsPromoActive ? 'multi-bundle' : (glassesPairs > 0 ? 'glasses-bundle' : 'hats-bundle')
       };
     }
     return {

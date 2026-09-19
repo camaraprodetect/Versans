@@ -3921,3 +3921,28 @@ body.site-overlay-open{overflow:hidden}
     min-height:56px!important;
   }
 }
+
+
+.product-info__promo{
+  display:none;
+  margin:-.85rem 0 1rem;
+  padding:.7rem .85rem;
+  border:1px solid #d9e3ea;
+  border-radius:14px;
+  background:#f8fbfd;
+  color:#24425b;
+  font-size:.9rem;
+  line-height:1.55;
+  font-weight:600;
+}
+.product-info__promo.is-visible{display:block}
+.product-info__promo strong{font-weight:800;color:#102a43}
+.product-info__promo .promo-sep{opacity:.55;margin:0 .35rem}
+@media (max-width: 560px){
+  .product-info__promo{
+    margin:-.4rem 0 .85rem;
+    padding:.65rem .7rem;
+    font-size:.84rem;
+    line-height:1.6;
+  }
+}
