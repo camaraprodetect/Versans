@@ -54,7 +54,7 @@
     if (el && content) el.setAttribute('content', content);
   }
   function updateProductSeo() {
-    var title = L(product.title) + ' - ' + L(CFG.brand.name);
+    var title = 'VerSans';
     var description = L(product.title) + ' מבית VerSans. פרטים מלאים, מחיר, תמונות ואפשרויות בחירה בעמוד המוצר.';
     var canonicalUrl = 'https://versans.com' + productPath(product);
     var imagePath = product.cardImage || (Array.isArray(product.images) && product.images[0]) || product.hoverImage || 'images/VerSansLogoBlackJewlery.png';

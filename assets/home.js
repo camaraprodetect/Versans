@@ -111,7 +111,7 @@
     var cat = ROUTES && ROUTES.categoryFromPath ? ROUTES.categoryFromPath(window.location.pathname) : null;
     if (!cat) cat = new URLSearchParams(window.location.search).get('cat');
     var seo = COLLECTION_SEO[cat];
-    var title = seo ? seo[0] : 'VerSans - תכשיטים, שעונים, משקפי שמש ומתנות בעיצוב אישי';
+    var title = 'VerSans';
     var description = seo ? seo[1] : 'VerSans - תכשיטים, שעונים, משקפי שמש, מארזי מתנה ותכשיטים בעיצוב אישי. קנייה אונליין עם משלוח חינם.';
     var canonicalPath = seo && ROUTES && ROUTES.collectionPath ? ROUTES.collectionPath(cat) : '/';
     var canonical = 'https://versans.com' + canonicalPath;

@@ -12666,6 +12666,257 @@ var PRODUCTS = [
       "max": 25
     }
   }
+  ,
+{
+    "id": "new-era-mlb-atlanta-braves-47-mvp-wool-blend-navy-road-dark-blue-139",
+    "slug": "product-139",
+    "urlSlug": "new-era-mlb-atlanta-braves-47-mvp-wool-blend-navy-road-dark-blue",
+    "sku": "KW-HAT-139",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-139/product-139-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-139/product-139-1.png",
+        "hoverImage": "images/products/product-139/product-139-2.png"
+      },
+      "men": {
+        "image": "images/products/product-139/product-139-1.png",
+        "hoverImage": "images/products/product-139/product-139-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-139/product-139-1.png",
+      "images/products/product-139/product-139-2.png",
+      "images/products/product-139/product-139-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X MLB Atlanta Braves X '47 MVP Wool Blend Navy Road - צבע כחול כהה",
+      "en": "New Era X MLB Atlanta Braves X '47 MVP Wool Blend Navy Road - Dark Blue"
+    },
+    "subtitle": {
+      "he": "כובע Atlanta Braves בגוון כחול כהה עם רקמת A לבנה בחזית, לוגו 47 לבן בצד וסגירת רצועה מתכווננת עם אבזם זהוב בגב · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Dark blue Atlanta Braves cap with a white A embroidery on the front, a white 47 side logo and an adjustable rear strap with a gold-tone buckle · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X MLB Atlanta Braves X '47 MVP Wool Blend Navy Road - צבע כחול כהה",
+      "en": "New Era X MLB Atlanta Braves X '47 MVP Wool Blend Navy Road - Dark Blue"
+    },
+    "cardMessage": {
+      "he": "כובע Atlanta Braves כחול כהה עם רקמת A לבנה וסגירת רצועה עם אבזם זהוב.",
+      "en": "Dark blue Atlanta Braves cap with white A embroidery and a rear strap with a gold-tone buckle."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: כחול כהה",
+        "כובע Atlanta Braves בגוון כחול כהה",
+        "רקמת A לבנה גדולה בחזית",
+        "לוגו 47 לבן בצד",
+        "סגירת רצועה אחורית מתכווננת עם אבזם מתכתי זהוב",
+        "בד במראה Wool Blend",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Dark Blue",
+        "Dark blue Atlanta Braves cap",
+        "Large white A embroidery on the front",
+        "White 47 side logo",
+        "Adjustable rear strap with a gold-tone metal buckle",
+        "Wool blend-look fabric",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+  ,
+{
+    "id": "new-era-atlanta-braves-150th-anniversary-two-tone-gray-black-140",
+    "slug": "product-140",
+    "urlSlug": "new-era-atlanta-braves-150th-anniversary-two-tone-gray-black",
+    "sku": "KW-HAT-140",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-140/product-140-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-140/product-140-1.png",
+        "hoverImage": "images/products/product-140/product-140-2.png"
+      },
+      "men": {
+        "image": "images/products/product-140/product-140-1.png",
+        "hoverImage": "images/products/product-140/product-140-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-140/product-140-1.png",
+      "images/products/product-140/product-140-2.png",
+      "images/products/product-140/product-140-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Atlanta Braves 150th Anniversary Two Tone - צבע אפור שחור",
+      "en": "New Era X Atlanta Braves 150th Anniversary Two Tone - Grey Black"
+    },
+    "subtitle": {
+      "he": "כובע Atlanta Braves בגוון אפור עם מצחייה שחורה, רקמת A לבנה בחזית ופאץ' 150 שנה בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Grey Atlanta Braves cap with a black visor, a white A embroidery on the front and a 150th anniversary side patch · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Atlanta Braves 150th Anniversary Two Tone - צבע אפור שחור",
+      "en": "New Era X Atlanta Braves 150th Anniversary Two Tone - Grey Black"
+    },
+    "cardMessage": {
+      "he": "כובע Atlanta Braves אפור-שחור עם רקמת A לבנה ופאץ' 150 שנה בצד.",
+      "en": "Grey and black Atlanta Braves cap with a white A embroidery and a 150th anniversary side patch."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: אפור שחור",
+        "כובע Atlanta Braves בגוון אפור עם מצחייה שחורה",
+        "רקמת A לבנה גדולה בחזית",
+        "פאץ' 150 שנה בצד",
+        "סמל FAM מתכתי קטן בצד",
+        "סגירת Snapback אחורית מתכווננת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Grey Black",
+        "Grey Atlanta Braves cap with a black visor",
+        "Large white A embroidery on the front",
+        "150th anniversary side patch",
+        "Small metal FAM side emblem",
+        "Adjustable rear snapback closure",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+  ,
+{
+    "id": "new-era-atlanta-braves-1995-world-series-sidepatch-dark-blue-141",
+    "slug": "product-141",
+    "urlSlug": "new-era-atlanta-braves-1995-world-series-sidepatch-dark-blue",
+    "sku": "KW-HAT-141",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-141/product-141-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-141/product-141-1.png",
+        "hoverImage": "images/products/product-141/product-141-2.png"
+      },
+      "men": {
+        "image": "images/products/product-141/product-141-1.png",
+        "hoverImage": "images/products/product-141/product-141-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-141/product-141-1.png",
+      "images/products/product-141/product-141-2.png",
+      "images/products/product-141/product-141-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Atlanta Braves X 1995 World Series Sidepatch - צבע כחול כהה",
+      "en": "New Era X Atlanta Braves X 1995 World Series Sidepatch - Dark Blue"
+    },
+    "subtitle": {
+      "he": "כובע Atlanta Braves בגוון כחול כהה עם רקמת A לבנה בחזית ופאץ' 1995 World Series בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Dark blue Atlanta Braves cap with a white A embroidery on the front and a 1995 World Series side patch · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Atlanta Braves X 1995 World Series Sidepatch - צבע כחול כהה",
+      "en": "New Era X Atlanta Braves X 1995 World Series Sidepatch - Dark Blue"
+    },
+    "cardMessage": {
+      "he": "כובע Atlanta Braves כחול כהה עם רקמת A לבנה ופאץ' 1995 World Series בצד.",
+      "en": "Dark blue Atlanta Braves cap with a white A embroidery and a 1995 World Series side patch."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: כחול כהה",
+        "כובע Atlanta Braves בגוון כחול כהה",
+        "רקמת A לבנה גדולה בחזית",
+        "פאץ' 1995 World Series בצד",
+        "סגירת Snapback אחורית מתכווננת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Dark Blue",
+        "Dark blue Atlanta Braves cap",
+        "Large white A embroidery on the front",
+        "1995 World Series side patch",
+        "Adjustable rear snapback closure",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+
 
 ];
 

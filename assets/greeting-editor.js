@@ -267,7 +267,7 @@
   }
   function applyUiLanguage(){
     document.documentElement.lang='he';document.documentElement.dir='rtl';
-    document.title='עיצוב ברכה - '+(L(CFG.brand&&CFG.brand.name)||'VerSans');
+    document.title='VerSans';
     var e=$('#geLangBtn');if(e)e.textContent=tr('langBtn');
     e=$('#geTopNote');if(e)e.textContent=tr('topnote');
     e=$('#geIntroEyebrow');if(e)e.textContent=tr('introEyebrow');

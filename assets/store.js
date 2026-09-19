@@ -422,8 +422,8 @@
     html.lang = 'he';
     html.dir = 'rtl';
 
-    document.title = t('meta.title');
-    var ogTitle = $('meta[property="og:title"]'); if (ogTitle) ogTitle.setAttribute('content', t('meta.title'));
+    document.title = 'VerSans';
+    var ogTitle = $('meta[property="og:title"]'); if (ogTitle) ogTitle.setAttribute('content', 'VerSans');
     var md = $('meta[name="description"]'); if (md) md.setAttribute('content', t('meta.desc'));
 
     $$('[data-i18n]').forEach(function (el) {
@@ -732,6 +732,7 @@
     { key: 'jon-stan', title: 'New Era X Jon Stan', slugs: ['product-103', 'product-104', 'product-105', 'product-106', 'product-107'] },
     { key: 'new-york-yankees', title: 'New Era X New York Yankees', slugs: ['product-112', 'product-113', 'product-114', 'product-115', 'product-116', 'product-117', 'product-118', 'product-119', 'product-120', 'product-121', 'product-122', 'product-123', 'product-124', 'product-125', 'product-126', 'product-127', 'product-128'] },
     { key: 'anaheim-angels', title: 'New Era X Anaheim Angels', slugs: ['product-129', 'product-130', 'product-131', 'product-132', 'product-133'] },
+    { key: 'atlanta-braves', title: 'New Era X Atlanta Braves', slugs: ['product-134', 'product-139'] },
     { key: 'milwaukee-bucks', title: 'New Era X Milwaukee Bucks', slugs: ['product-135', 'product-136', 'product-137', 'product-138'] }
   ];
 
