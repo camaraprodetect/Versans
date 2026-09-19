@@ -1650,6 +1650,14 @@ function arrangeProduct20CompactOptions() {
     }
 
     var items = cart();
+    var pendingQty = 0;
+    items = items.filter(function (item) {
+      var isPendingSameProduct = item && item.id === product.id && Array.isArray(item.quickAddPending) && item.quickAddPending.length;
+      if (isPendingSameProduct) pendingQty += Math.max(1, parseInt(item.qty, 10) || 1);
+      return !isPendingSameProduct;
+    });
+    if (pendingQty > 0) qty = Math.max(qty, pendingQty);
+
     var key = variantKey();
     var found = false;
 

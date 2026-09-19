@@ -10612,6 +10612,2059 @@ var PRODUCTS = [
           "min": 9,
           "max": 25
       }
+  },
+  {
+    "id": "new-era-new-york-yankees-rose-emblem-black-115",
+    "slug": "product-115",
+    "urlSlug": "new-era-new-york-yankees-rose-emblem-black",
+    "sku": "KW-HAT-115",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-115/product-115-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-115/product-115-1.png",
+        "hoverImage": "images/products/product-115/product-115-2.png"
+      },
+      "men": {
+        "image": "images/products/product-115/product-115-1.png",
+        "hoverImage": "images/products/product-115/product-115-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-115/product-115-1.png",
+      "images/products/product-115/product-115-2.png",
+      "images/products/product-115/product-115-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era New York Yankees 'Rose Emblem' - צבע שחור",
+      "en": "New Era New York Yankees 'Rose Emblem' - Black"
+    },
+    "subtitle": {
+      "he": "כובע שחור עם רקמת NY לבנה ורקמות ורדים אדומות · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black cap with white NY embroidery and red rose embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era New York Yankees 'Rose Emblem' - צבע שחור",
+      "en": "New Era New York Yankees 'Rose Emblem' - Black"
+    },
+    "cardMessage": {
+      "he": "כובע שחור עם רקמת NY לבנה ורקמות ורדים אדומות בחזית.",
+      "en": "Black cap with white NY embroidery and red rose embroidery on the front."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: שחור",
+        "רקמת NY לבנה בחזית",
+        "רקמות ורדים אדומות בחזית",
+        "סגירת Snapback מתכווננת",
+        "מצחייה מעוקלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Black",
+        "White NY embroidery on the front",
+        "Red rose embroidery on the front",
+        "Adjustable snapback closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+  ,
+  {
+    "id": "new-era-new-york-yankees-rose-emblem-turquoise-pink-116",
+    "slug": "product-116",
+    "urlSlug": "new-era-new-york-yankees-rose-emblem-turquoise-pink",
+    "sku": "KW-HAT-116",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-116/product-116-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-116/product-116-1.png",
+        "hoverImage": "images/products/product-116/product-116-2.png"
+      },
+      "men": {
+        "image": "images/products/product-116/product-116-1.png",
+        "hoverImage": "images/products/product-116/product-116-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-116/product-116-1.png",
+      "images/products/product-116/product-116-2.png",
+      "images/products/product-116/product-116-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era New York Yankees 'Rose Emblem' - צבע טורקיז ורוד",
+      "en": "New Era New York Yankees 'Rose Emblem' - Turquoise Pink"
+    },
+    "subtitle": {
+      "he": "כובע טורקיז עם רקמת NY ורודה ורקמות ורדים אדומות · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Turquoise cap with pink NY embroidery and red rose embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era New York Yankees 'Rose Emblem' - צבע טורקיז ורוד",
+      "en": "New Era New York Yankees 'Rose Emblem' - Turquoise Pink"
+    },
+    "cardMessage": {
+      "he": "כובע טורקיז עם רקמת NY ורודה ורקמות ורדים אדומות בחזית.",
+      "en": "Turquoise cap with pink NY embroidery and red rose embroidery on the front."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: טורקיז",
+        "רקמת NY ורודה בחזית",
+        "רקמות ורדים אדומות בחזית",
+        "לוגו New Era ורוד בצד",
+        "סגירת Snapback מתכווננת",
+        "מצחייה מעוקלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Turquoise",
+        "Pink NY embroidery on the front",
+        "Red rose embroidery on the front",
+        "Pink New Era logo on the side",
+        "Adjustable snapback closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+  ,
+  {
+    "id": "new-era-new-york-yankees-rose-emblem-light-brown-117",
+    "slug": "product-117",
+    "urlSlug": "new-era-new-york-yankees-rose-emblem-light-brown",
+    "sku": "KW-HAT-117",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-117/product-117-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-117/product-117-1.png",
+        "hoverImage": "images/products/product-117/product-117-2.png"
+      },
+      "men": {
+        "image": "images/products/product-117/product-117-1.png",
+        "hoverImage": "images/products/product-117/product-117-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-117/product-117-1.png",
+      "images/products/product-117/product-117-2.png",
+      "images/products/product-117/product-117-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era New York Yankees 'Rose Emblem' - צבע חום בהיר",
+      "en": "New Era New York Yankees 'Rose Emblem' - Light Brown"
+    },
+    "subtitle": {
+      "he": "כובע חום בהיר עם רקמת NY לבנה ורקמות ורדים אדומות · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Light brown cap with white NY embroidery and red rose embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era New York Yankees 'Rose Emblem' - צבע חום בהיר",
+      "en": "New Era New York Yankees 'Rose Emblem' - Light Brown"
+    },
+    "cardMessage": {
+      "he": "כובע חום בהיר עם רקמת NY לבנה ורקמות ורדים אדומות בחזית.",
+      "en": "Light brown cap with white NY embroidery and red rose embroidery on the front."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: חום בהיר",
+        "רקמת NY לבנה בחזית",
+        "רקמות ורדים אדומות בחזית",
+        "לוגו New Era לבן בצד",
+        "סגירת Snapback מתכווננת",
+        "מצחייה מעוקלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Light Brown",
+        "White NY embroidery on the front",
+        "Red rose embroidery on the front",
+        "White New Era logo on the side",
+        "Adjustable snapback closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+  ,
+  {
+    "id": "new-era-new-york-yankees-one-love-black-118",
+    "slug": "product-118",
+    "urlSlug": "new-era-new-york-yankees-one-love-black",
+    "sku": "KW-HAT-118",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-118/product-118-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-118/product-118-1.png",
+        "hoverImage": "images/products/product-118/product-118-2.png"
+      },
+      "men": {
+        "image": "images/products/product-118/product-118-1.png",
+        "hoverImage": "images/products/product-118/product-118-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-118/product-118-1.png",
+      "images/products/product-118/product-118-2.png",
+      "images/products/product-118/product-118-3.png",
+      "images/products/product-118/product-118-4.png",
+      "images/products/product-118/product-118-5.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era New York Yankees \"One Love\" - צבע שחור",
+      "en": "New Era New York Yankees \"One Love\" - Black"
+    },
+    "subtitle": {
+      "he": "כובע שחור עם רקמת NY לבנה, ורדים אדומים, דבורה ופרטי רקמה מסביב · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black cap with white NY embroidery, red roses, a bee and detailed embroidery around the cap · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era New York Yankees \"One Love\" - צבע שחור",
+      "en": "New Era New York Yankees \"One Love\" - Black"
+    },
+    "cardMessage": {
+      "he": "כובע שחור עם רקמת NY לבנה, ורדים אדומים, דבורה וכתובת World Series Champions 27x.",
+      "en": "Black cap with white NY embroidery, red roses, a bee and World Series Champions 27x embroidery."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: שחור",
+        "רקמת NY לבנה בחזית",
+        "רקמת ורדים אדומים ודבורה בחזית",
+        "כיתוב World Series Champions 27x בחזית",
+        "פאץ' New York Fire Department בצד האחורי",
+        "רקמת Yankee Stadium 1923–2008 בצד",
+        "רקמת 1 One ולב אדום בצד",
+        "סגירת Snapback מתכווננת",
+        "מצחייה מעוקלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Black",
+        "White NY embroidery on the front",
+        "Red roses and bee embroidery on the front",
+        "World Series Champions 27x embroidery on the front",
+        "New York Fire Department patch on the rear side",
+        "Yankee Stadium 1923–2008 embroidery on the side",
+        "1 One and red heart embroidery on the side",
+        "Adjustable snapback closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+  ,
+  {
+    "id": "new-era-new-york-yankees-subway-series-chrome-rose-two-tone-edition-white-119",
+    "slug": "product-119",
+    "urlSlug": "new-era-new-york-yankees-subway-series-chrome-rose-two-tone-edition-white",
+    "sku": "KW-HAT-119",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-119/product-119-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-119/product-119-1.png",
+        "hoverImage": "images/products/product-119/product-119-2.png"
+      },
+      "men": {
+        "image": "images/products/product-119/product-119-1.png",
+        "hoverImage": "images/products/product-119/product-119-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-119/product-119-1.png",
+      "images/products/product-119/product-119-2.png",
+      "images/products/product-119/product-119-3.png",
+      "images/products/product-119/product-119-4.png",
+      "images/products/product-119/product-119-5.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X New York Yankees X Subway Series X Chrome Rose Two Tone Edition - צבע לבן",
+      "en": "New Era X New York Yankees X Subway Series X Chrome Rose Two Tone Edition - White"
+    },
+    "subtitle": {
+      "he": "כובע לבן-שחור עם רקמת NY לבנה, ורדי כרום שחור-לבן ופאץ' Subway Series · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "White and black cap with white NY embroidery, black-and-white chrome rose embroidery and a Subway Series patch · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X New York Yankees X Subway Series X Chrome Rose Two Tone Edition - צבע לבן",
+      "en": "New Era X New York Yankees X Subway Series X Chrome Rose Two Tone Edition - White"
+    },
+    "cardMessage": {
+      "he": "כובע לבן-שחור עם רקמת NY לבנה, ורדי כרום שחור-לבן ופאץ' Subway Series בצד.",
+      "en": "White and black cap with white NY embroidery, black-and-white chrome roses and a Subway Series patch on the side."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: לבן עם מצחייה שחורה",
+        "רקמת NY לבנה בחזית",
+        "רקמת ורדים שחור-לבן בחזית",
+        "פאץ' Subway Series בצד",
+        "לוגו New Era שחור בצד",
+        "סגירת Snapback מתכווננת",
+        "מצחייה מעוקלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: White with black brim",
+        "White NY embroidery on the front",
+        "Black-and-white rose embroidery on the front",
+        "Subway Series patch on the side",
+        "Black New Era logo on the side",
+        "Adjustable snapback closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+  ,
+  {
+    "id": "new-era-new-york-yankees-sakura-black-prime-edition-black-120",
+    "slug": "product-120",
+    "urlSlug": "new-era-new-york-yankees-sakura-black-prime-edition-black",
+    "sku": "KW-HAT-120",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-120/product-120-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-120/product-120-1.png",
+        "hoverImage": "images/products/product-120/product-120-2.png"
+      },
+      "men": {
+        "image": "images/products/product-120/product-120-1.png",
+        "hoverImage": "images/products/product-120/product-120-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-120/product-120-1.png",
+      "images/products/product-120/product-120-2.png",
+      "images/products/product-120/product-120-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X New York Yankees X Sakura Black Prime Edition - צבע שחור",
+      "en": "New Era X New York Yankees X Sakura Black Prime Edition - Black"
+    },
+    "subtitle": {
+      "he": "כובע שחור בסגנון trucker עם רקמת NY לבנה ופרחי סאקורה ורודים · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black trucker-style cap with white NY embroidery and pink sakura blossoms · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X New York Yankees X Sakura Black Prime Edition - צבע שחור",
+      "en": "New Era X New York Yankees X Sakura Black Prime Edition - Black"
+    },
+    "cardMessage": {
+      "he": "כובע שחור בסגנון trucker עם רקמת NY לבנה ופרחי סאקורה ורודים בחזית.",
+      "en": "Black trucker-style cap with white NY embroidery and pink sakura blossoms on the front."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: שחור",
+        "רקמת NY לבנה בחזית",
+        "רקמת פרחי סאקורה ורודים בחזית",
+        "עיצוב trucker עם גב רשת שחור",
+        "לוגו New Era לבן בצד",
+        "סגירת Snapback מתכווננת",
+        "מצחייה מעוקלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Black",
+        "White NY embroidery on the front",
+        "Pink sakura blossom embroidery on the front",
+        "Trucker design with black mesh back",
+        "White New Era logo on the side",
+        "Adjustable snapback closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+  ,
+  {
+    "id": "new-era-new-york-yankees-camo-121",
+    "slug": "product-121",
+    "urlSlug": "new-era-new-york-yankees-camo",
+    "sku": "KW-HAT-121",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-121/product-121-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-121/product-121-1.png",
+        "hoverImage": "images/products/product-121/product-121-2.png"
+      },
+      "men": {
+        "image": "images/products/product-121/product-121-1.png",
+        "hoverImage": "images/products/product-121/product-121-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-121/product-121-1.png",
+      "images/products/product-121/product-121-2.png",
+      "images/products/product-121/product-121-3.png",
+      "images/products/product-121/product-121-4.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X New York Yankees - צבע צבאי",
+      "en": "New Era X New York Yankees - Camo"
+    },
+    "subtitle": {
+      "he": "כובע ניו יורק יאנקיז בהדפס צבאי עם רקמת NY לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "New York Yankees cap in camo print with white NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X New York Yankees - צבע צבאי",
+      "en": "New Era X New York Yankees - Camo"
+    },
+    "cardMessage": {
+      "he": "כובע בהדפס צבאי עם רקמת NY לבנה, לוגו MLB אחורי ולוגו New Era בצד.",
+      "en": "Camo-print cap with white NY embroidery, MLB logo on the back and New Era logo on the side."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: צבאי",
+        "רקמת NY לבנה בחזית",
+        "הדפס camouflage בכל הכובע",
+        "לוגו MLB רקום בחלק האחורי",
+        "לוגו New Era לבן בצד",
+        "סגירת Snapback מתכווננת",
+        "מצחייה שטוחה",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Camo",
+        "White NY embroidery on the front",
+        "Camouflage print across the cap",
+        "Embroidered MLB logo on the back",
+        "White New Era logo on the side",
+        "Adjustable snapback closure",
+        "Flat brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+  ,
+  {
+    "id": "new-era-new-york-yankees-ocean-sakura-edition-dark-blue-pink-122",
+    "slug": "product-122",
+    "urlSlug": "new-era-new-york-yankees-ocean-sakura-edition-dark-blue-pink",
+    "sku": "KW-HAT-122",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-122/product-122-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-122/product-122-1.png",
+        "hoverImage": "images/products/product-122/product-122-2.png"
+      },
+      "men": {
+        "image": "images/products/product-122/product-122-1.png",
+        "hoverImage": "images/products/product-122/product-122-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-122/product-122-1.png",
+      "images/products/product-122/product-122-2.png",
+      "images/products/product-122/product-122-3.png",
+      "images/products/product-122/product-122-4.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era New York Yankees Ocean Sakura Edition - צבע כחול כהה ורוד",
+      "en": "New Era New York Yankees Ocean Sakura Edition - Dark Blue Pink"
+    },
+    "subtitle": {
+      "he": "כובע ניו יורק יאנקיז בצבע כחול כהה עם מצחייה ורודה, רקמת NY לבנה ופרחי סאקורה ורודים · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "New York Yankees cap in dark blue with a pink brim, white NY embroidery and pink sakura blossoms · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era New York Yankees Ocean Sakura Edition - צבע כחול כהה ורוד",
+      "en": "New Era New York Yankees Ocean Sakura Edition - Dark Blue Pink"
+    },
+    "cardMessage": {
+      "he": "כובע כחול כהה-ורוד עם רקמת NY לבנה, פרחי סאקורה ורודים ופאץ' Subway Series בצד.",
+      "en": "Dark blue and pink cap with white NY embroidery, pink sakura blossoms and a Subway Series patch on the side."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: כחול כהה עם מצחייה ורודה",
+        "רקמת NY לבנה בחזית",
+        "רקמת פרחי סאקורה ורודים בחזית",
+        "פאץ' Subway Series ורוד בצד",
+        "לוגו New Era ורוד בצד האחורי",
+        "סגירת Snapback מתכווננת",
+        "מצחייה מעוקלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Dark blue with pink brim",
+        "White NY embroidery on the front",
+        "Pink sakura blossom embroidery on the front",
+        "Pink Subway Series patch on the side",
+        "Pink New Era logo on the rear side",
+        "Adjustable snapback closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+  ,
+  {
+    "id": "new-era-new-york-yankees-black-rose-subway-series-black-123",
+    "slug": "product-123",
+    "urlSlug": "new-era-new-york-yankees-black-rose-subway-series-black",
+    "sku": "KW-HAT-123",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-123/product-123-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-123/product-123-1.png",
+        "hoverImage": "images/products/product-123/product-123-2.png"
+      },
+      "men": {
+        "image": "images/products/product-123/product-123-1.png",
+        "hoverImage": "images/products/product-123/product-123-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-123/product-123-1.png",
+      "images/products/product-123/product-123-2.png",
+      "images/products/product-123/product-123-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era New York Yankees Black Rose Subway Series - צבע שחור",
+      "en": "New Era New York Yankees Black Rose Subway Series - Black"
+    },
+    "subtitle": {
+      "he": "כובע שחור עם רקמת NY שחורה, עיטור ורד מונוכרומטי ופאץ' Subway Series · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black cap with black NY embroidery, monochrome rose detailing and a Subway Series patch · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era New York Yankees Black Rose Subway Series - צבע שחור",
+      "en": "New Era New York Yankees Black Rose Subway Series - Black"
+    },
+    "cardMessage": {
+      "he": "כובע שחור עם רקמת NY שחורה, עיטור ורד לבן-שחור ופאץ' Subway Series בצד.",
+      "en": "Black cap with black NY embroidery, black-and-white rose detailing and a Subway Series patch on the side."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: שחור",
+        "רקמת NY שחורה בחזית",
+        "עיטור ורד לבן-שחור בחזית",
+        "פאץ' Subway Series בצד",
+        "לוגו New Era לבן בצד האחורי",
+        "סגירת Snapback מתכווננת",
+        "מצחייה מעוקלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Black",
+        "Black NY embroidery on the front",
+        "Black-and-white rose detailing on the front",
+        "Subway Series patch on the side",
+        "White New Era logo on the rear side",
+        "Adjustable snapback closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+  ,
+  {
+    "id": "new-era-47-new-york-yankees-mvp-cap-black-124",
+    "slug": "product-124",
+    "urlSlug": "new-era-47-new-york-yankees-mvp-cap-black",
+    "sku": "KW-HAT-124",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-124/product-124-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-124/product-124-1.png",
+        "hoverImage": "images/products/product-124/product-124-2.png"
+      },
+      "men": {
+        "image": "images/products/product-124/product-124-1.png",
+        "hoverImage": "images/products/product-124/product-124-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-124/product-124-1.png",
+      "images/products/product-124/product-124-2.png",
+      "images/products/product-124/product-124-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X '47 New York Yankees MVP Cap - צבע שחור",
+      "en": "New Era X '47 New York Yankees MVP Cap - Black"
+    },
+    "subtitle": {
+      "he": "כובע ניו יורק יאנקיז שחור עם רקמת NY לבנה בסגנון MVP · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black New York Yankees MVP-style cap with white NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X '47 New York Yankees MVP Cap - צבע שחור",
+      "en": "New Era X '47 New York Yankees MVP Cap - Black"
+    },
+    "cardMessage": {
+      "he": "כובע שחור קלאסי עם רקמת NY לבנה בחזית, לוגו 47 בצד ורצועת Yankees בגב.",
+      "en": "Classic black cap with white NY embroidery on the front, a 47 logo on the side and a Yankees strap on the back."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: שחור",
+        "רקמת NY לבנה בחזית",
+        "לוגו 47 לבן בצד",
+        "רצועת סגירה עם כיתוב Yankees בגב",
+        "סגירה מתכווננת",
+        "מצחייה מעוקלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Black",
+        "White NY embroidery on the front",
+        "White 47 logo on the side",
+        "Back closure strap with Yankees script",
+        "Adjustable closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+  ,
+  {
+    "id": "new-era-new-york-yankees-subway-series-black-prime-edition-black-125",
+    "slug": "product-125",
+    "urlSlug": "new-era-new-york-yankees-subway-series-black-prime-edition-black",
+    "sku": "KW-HAT-125",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-125/product-125-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-125/product-125-1.png",
+        "hoverImage": "images/products/product-125/product-125-2.png"
+      },
+      "men": {
+        "image": "images/products/product-125/product-125-1.png",
+        "hoverImage": "images/products/product-125/product-125-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-125/product-125-1.png",
+      "images/products/product-125/product-125-2.png",
+      "images/products/product-125/product-125-3.png",
+      "images/products/product-125/product-125-4.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X New York Yankees X Subway Series Black Prime Edition - צבע שחור",
+      "en": "New Era X New York Yankees X Subway Series Black Prime Edition - Black"
+    },
+    "subtitle": {
+      "he": "כובע שחור עם רקמת NY לבנה בחזית, עיטור פריים כהה ופאץ' Subway Series אדום-שחור בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black cap with white NY embroidery, dark prime detailing and a red-black Subway Series side patch · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X New York Yankees X Subway Series Black Prime Edition - צבע שחור",
+      "en": "New Era X New York Yankees X Subway Series Black Prime Edition - Black"
+    },
+    "cardMessage": {
+      "he": "כובע שחור עם רקמת NY לבנה בחזית, עיטור כהה מסביב ללוגו ופאץ' Subway Series אדום-שחור בצד.",
+      "en": "Black cap with white NY embroidery, dark detailing around the logo and a red-black Subway Series patch on the side."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: שחור",
+        "רקמת NY לבנה בחזית",
+        "עיטור פריים כהה סביב הלוגו",
+        "פאץ' Subway Series אדום-שחור בצד",
+        "לוגו New Era לבן בצד האחורי",
+        "סגירת Snapback מתכווננת",
+        "מצחייה מעוקלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Black",
+        "White NY embroidery on the front",
+        "Dark prime detailing around the front logo",
+        "Red-black Subway Series patch on the side",
+        "White New Era logo on the rear side",
+        "Adjustable snapback closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+  ,
+  {
+    "id": "new-era-mlb-new-york-yankees-world-series-1996-white-green-126",
+    "slug": "product-126",
+    "urlSlug": "new-era-mlb-new-york-yankees-world-series-1996-white-green",
+    "sku": "KW-HAT-126",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-126/product-126-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-126/product-126-1.png",
+        "hoverImage": "images/products/product-126/product-126-2.png"
+      },
+      "men": {
+        "image": "images/products/product-126/product-126-1.png",
+        "hoverImage": "images/products/product-126/product-126-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-126/product-126-1.png",
+      "images/products/product-126/product-126-2.png",
+      "images/products/product-126/product-126-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X MLB New York Yankees World Series 1996 - צבע לבן ירוק",
+      "en": "New Era X MLB New York Yankees World Series 1996 - White Green"
+    },
+    "subtitle": {
+      "he": "כובע קורדרוי בגוון לבן-שמנת עם לוגו NY כחול כהה בחזית, מצחייה ירוקה ופאץ' World Series בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Cream corduroy cap with a dark navy NY logo on the front, a green brim and a World Series side patch · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X MLB New York Yankees World Series 1996 - צבע לבן ירוק",
+      "en": "New Era X MLB New York Yankees World Series 1996 - White Green"
+    },
+    "cardMessage": {
+      "he": "כובע קורדרוי לבן-ירוק עם רקמת NY כחולה ופאץ' World Series בצד.",
+      "en": "White-green corduroy cap with blue NY embroidery and a World Series patch on the side."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: לבן ירוק",
+        "בד קורדרוי בגוון לבן-שמנת",
+        "רקמת NY כחול כהה בחזית",
+        "מצחייה ירוקה",
+        "פאץ' World Series בצד",
+        "לוגו New Era לבן בצד האחורי",
+        "סגירת Snapback מתכווננת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: White Green",
+        "Cream corduroy fabric",
+        "Dark navy NY embroidery on the front",
+        "Green brim",
+        "World Series side patch",
+        "White New Era logo on the rear side",
+        "Adjustable snapback closure",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+  ,
+  {
+    "id": "new-era-new-york-yankees-world-series-1999-chrome-metallic-two-tone-edition-white-gray-127",
+    "slug": "product-127",
+    "urlSlug": "new-era-new-york-yankees-world-series-1999-chrome-metallic-two-tone-edition-white-gray",
+    "sku": "KW-HAT-127",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-127/product-127-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-127/product-127-1.png",
+        "hoverImage": "images/products/product-127/product-127-2.png"
+      },
+      "men": {
+        "image": "images/products/product-127/product-127-1.png",
+        "hoverImage": "images/products/product-127/product-127-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-127/product-127-1.png",
+      "images/products/product-127/product-127-2.png",
+      "images/products/product-127/product-127-3.png",
+      "images/products/product-127/product-127-4.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X New York Yankees X World Series 1999 Chrome Metallic Two Tone Edition - צבע לבן אפור",
+      "en": "New Era X New York Yankees X World Series 1999 Chrome Metallic Two Tone Edition - White Gray"
+    },
+    "subtitle": {
+      "he": "כובע בגוון לבן-שמנת עם מצחייה אפורה, רקמת NY מטאלית בגוון שמנת ופאץ' World Series 1999 בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Cream-white cap with a gray brim, metallic cream NY embroidery on the front and a 1999 World Series side patch · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X New York Yankees X World Series 1999 Chrome Metallic Two Tone Edition - צבע לבן אפור",
+      "en": "New Era X New York Yankees X World Series 1999 Chrome Metallic Two Tone Edition - White Gray"
+    },
+    "cardMessage": {
+      "he": "כובע לבן-אפור עם רקמת NY מטאלית ופאץ' World Series 1999 בצד.",
+      "en": "White-gray cap with metallic NY embroidery and a 1999 World Series side patch."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: לבן אפור",
+        "גוון לבן-שמנת עם מצחייה אפורה",
+        "רקמת NY מטאלית בגוון שמנת בחזית",
+        "פאץ' World Series 1999 בצד",
+        "לוגו New Era לבן בצד האחורי",
+        "סגירת Snapback מתכווננת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: White Gray",
+        "Cream-white crown with a gray brim",
+        "Metallic cream NY embroidery on the front",
+        "1999 World Series side patch",
+        "White New Era logo on the rear side",
+        "Adjustable snapback closure",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }  ,
+  {
+    "id": "new-era-new-york-yankees-world-series-1998-chrome-gold-edition-white-blue-128",
+    "slug": "product-128",
+    "urlSlug": "new-era-new-york-yankees-world-series-1998-chrome-gold-edition-white-blue",
+    "sku": "KW-HAT-128",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-128/product-128-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-128/product-128-1.png",
+        "hoverImage": "images/products/product-128/product-128-2.png"
+      },
+      "men": {
+        "image": "images/products/product-128/product-128-1.png",
+        "hoverImage": "images/products/product-128/product-128-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-128/product-128-1.png",
+      "images/products/product-128/product-128-2.png",
+      "images/products/product-128/product-128-3.png",
+      "images/products/product-128/product-128-4.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X New York Yankees X World Series 1998 Chrome Gold Edition - צבע לבן כחול",
+      "en": "New Era X New York Yankees X World Series 1998 Chrome Gold Edition - White Blue"
+    },
+    "subtitle": {
+      "he": "כובע בגוון לבן-שמנת עם מצחייה כחולה, רקמת NY בגוון כחול מטאלי ופאץ' World Series 1998 בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Cream-white cap with a blue brim, metallic blue NY embroidery on the front and a 1998 World Series side patch · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X New York Yankees X World Series 1998 Chrome Gold Edition - צבע לבן כחול",
+      "en": "New Era X New York Yankees X World Series 1998 Chrome Gold Edition - White Blue"
+    },
+    "cardMessage": {
+      "he": "כובע לבן-כחול עם רקמת NY מטאלית ופאץ' World Series 1998 בצד.",
+      "en": "White-blue cap with metallic NY embroidery and a 1998 World Series side patch."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: לבן כחול",
+        "גוון לבן-שמנת עם מצחייה כחולה",
+        "רקמת NY בגוון כחול מטאלי בחזית",
+        "פאץ' World Series 1998 בצד",
+        "לוגו New Era כחול בצד האחורי",
+        "סגירת Snapback מתכווננת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: White Blue",
+        "Cream-white crown with a blue brim",
+        "Metallic blue NY embroidery on the front",
+        "1998 World Series side patch",
+        "Blue New Era logo on the rear side",
+        "Adjustable snapback closure",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+  ,
+{
+    "id": "new-era-anaheim-angels-all-star-game-2010-cupid-chrome-two-tone-edition-white-black-red-129",
+    "slug": "product-129",
+    "urlSlug": "new-era-anaheim-angels-all-star-game-2010-cupid-chrome-two-tone-edition-white-black-red",
+    "sku": "KW-HAT-129",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-129/product-129-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-129/product-129-1.png",
+        "hoverImage": "images/products/product-129/product-129-2.png"
+      },
+      "men": {
+        "image": "images/products/product-129/product-129-1.png",
+        "hoverImage": "images/products/product-129/product-129-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-129/product-129-1.png",
+      "images/products/product-129/product-129-2.png",
+      "images/products/product-129/product-129-3.png",
+      "images/products/product-129/product-129-4.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Anaheim Angels X All Star Game 2010 Cupid Chrome Two Tone Edition - צבע לבן שחור אדום",
+      "en": "New Era X Anaheim Angels X All Star Game 2010 Cupid Chrome Two Tone Edition - White Black Red"
+    },
+    "subtitle": {
+      "he": "כובע בגוון לבן-שמנת עם מצחייה שחורה, רקמת A אדומה של Anaheim Angels בחזית, רקמות כרובים ופאץ' All-Star Game 2010 בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Cream-white cap with a black brim, a red Anaheim Angels A embroidery on the front, cupid embroidery details and a 2010 All-Star Game side patch · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Anaheim Angels X All Star Game 2010 Cupid Chrome Two Tone Edition - צבע לבן שחור אדום",
+      "en": "New Era X Anaheim Angels X All Star Game 2010 Cupid Chrome Two Tone Edition - White Black Red"
+    },
+    "cardMessage": {
+      "he": "כובע לבן-שחור עם לוגו Angels אדום, רקמות כרובים ופאץ' All-Star Game 2010 בצד.",
+      "en": "White-black cap with a red Angels logo, cupid embroidery and a 2010 All-Star Game side patch."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: לבן שחור אדום",
+        "גוון לבן-שמנת עם מצחייה שחורה",
+        "רקמת Anaheim Angels A אדומה בחזית",
+        "רקמות כרובים משני צדי הלוגו הקדמי",
+        "פאץ' MLB All-Star Game 2010 בצד",
+        "לוגו New Era שחור בצד האחורי",
+        "סגירת Snapback מתכווננת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: White Black Red",
+        "Cream-white crown with a black brim",
+        "Red Anaheim Angels A embroidery on the front",
+        "Cupid embroidery on both sides of the front logo",
+        "MLB All-Star Game 2010 side patch",
+        "Black New Era logo on the rear side",
+        "Adjustable snapback closure",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+
+  ,
+{
+    "id": "new-era-anaheim-angels-cupids-black-prime-edition-black-130",
+    "slug": "product-130",
+    "urlSlug": "new-era-anaheim-angels-cupids-black-prime-edition-black",
+    "sku": "KW-HAT-130",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-130/product-130-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-130/product-130-1.png",
+        "hoverImage": "images/products/product-130/product-130-2.png"
+      },
+      "men": {
+        "image": "images/products/product-130/product-130-1.png",
+        "hoverImage": "images/products/product-130/product-130-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-130/product-130-1.png",
+      "images/products/product-130/product-130-2.png",
+      "images/products/product-130/product-130-3.png",
+      "images/products/product-130/product-130-4.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Anaheim Angels X Cupids Black Prime Edition - צבע שחור",
+      "en": "New Era X Anaheim Angels X Cupids Black Prime Edition - Black"
+    },
+    "subtitle": {
+      "he": "כובע שחור בגימור פריים עם גב רשת שחור, רקמת A לבנה של Anaheim Angels בחזית ורקמות כרובים לבנות משני הצדדים · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black prime-finish cap with a black mesh back, white Anaheim Angels A embroidery on the front and white cupid embroidery on both sides · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Anaheim Angels X Cupids Black Prime Edition - צבע שחור",
+      "en": "New Era X Anaheim Angels X Cupids Black Prime Edition - Black"
+    },
+    "cardMessage": {
+      "he": "כובע שחור עם לוגו Angels לבן, רקמות כרובים לבנות וגב רשת שחור.",
+      "en": "Black cap with a white Angels logo, white cupid embroidery and a black mesh back."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: שחור",
+        "כובע שחור עם גב רשת שחור",
+        "רקמת Anaheim Angels A לבנה בחזית",
+        "רקמות כרובים לבנות משני צדי הלוגו הקדמי",
+        "לוגו New Era לבן בצד",
+        "סגירת Snapback מתכווננת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Black",
+        "Black cap with a black mesh back",
+        "White Anaheim Angels A embroidery on the front",
+        "White cupid embroidery on both sides of the front logo",
+        "White New Era logo on the side",
+        "Adjustable snapback closure",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+  ,
+{
+    "id": "new-era-anaheim-angels-all-star-game-2010-cupids-black-prime-edition-black-gold-131",
+    "slug": "product-131",
+    "urlSlug": "new-era-anaheim-angels-all-star-game-2010-cupids-black-prime-edition-black-gold",
+    "sku": "KW-HAT-131",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-131/product-131-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-131/product-131-1.png",
+        "hoverImage": "images/products/product-131/product-131-2.png"
+      },
+      "men": {
+        "image": "images/products/product-131/product-131-1.png",
+        "hoverImage": "images/products/product-131/product-131-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-131/product-131-1.png",
+      "images/products/product-131/product-131-2.png",
+      "images/products/product-131/product-131-3.png",
+      "images/products/product-131/product-131-4.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Anaheim Angels X All Star Game 2010 Cupids Black Prime Edition - צבע שחור זהב",
+      "en": "New Era X Anaheim Angels X All Star Game 2010 Cupids Black Prime Edition - Black Gold"
+    },
+    "subtitle": {
+      "he": "כובע שחור בגימור פריים עם רקמת A שחורה בחזית, הילה מוזהבת מעל הלוגו, רקמות כרובים מוזהבות ופרט All-Star Game 2010 טונאלי בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black prime-finish cap with a black Anaheim Angels A embroidery on the front, a gold halo above the logo, gold cupid embroidery details and a tonal 2010 All-Star Game side detail · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Anaheim Angels X All Star Game 2010 Cupids Black Prime Edition - צבע שחור זהב",
+      "en": "New Era X Anaheim Angels X All Star Game 2010 Cupids Black Prime Edition - Black Gold"
+    },
+    "cardMessage": {
+      "he": "כובע שחור עם לוגו Angels שחור, הילה מוזהבת ורקמות כרובים מוזהבות.",
+      "en": "Black cap with a black Angels logo, a gold halo and gold cupid embroidery."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: שחור זהב",
+        "כובע שחור בגימור פריים",
+        "רקמת Anaheim Angels A שחורה בחזית",
+        "הילה מוזהבת מעל הלוגו הקדמי",
+        "רקמות כרובים מוזהבות משני צדי הלוגו",
+        "פרט All-Star Game 2010 טונאלי בצד",
+        "סגירת Snapback מתכווננת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Black Gold",
+        "Black prime-finish cap",
+        "Black Anaheim Angels A embroidery on the front",
+        "Gold halo above the front logo",
+        "Gold cupid embroidery on both sides of the logo",
+        "Tonal All-Star Game 2010 side detail",
+        "Adjustable snapback closure",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+  ,
+{
+    "id": "new-era-anaheim-angels-20th-anniversary-world-champions-edition-black-132",
+    "slug": "product-132",
+    "urlSlug": "new-era-anaheim-angels-20th-anniversary-world-champions-edition-black",
+    "sku": "KW-HAT-132",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-132/product-132-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-132/product-132-1.png",
+        "hoverImage": "images/products/product-132/product-132-2.png"
+      },
+      "men": {
+        "image": "images/products/product-132/product-132-1.png",
+        "hoverImage": "images/products/product-132/product-132-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-132/product-132-1.png",
+      "images/products/product-132/product-132-2.png",
+      "images/products/product-132/product-132-3.png",
+      "images/products/product-132/product-132-4.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Anaheim Angels X 20th Anniversary World Champions Edition - צבע שחור",
+      "en": "New Era X Anaheim Angels X 20th Anniversary World Champions Edition - Black"
+    },
+    "subtitle": {
+      "he": "כובע שחור עם רקמת A בגווני לבן ואפור בחזית ופאץ' World Champions 20th Anniversary בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black cap with white and gray Anaheim Angels A embroidery on the front and a World Champions 20th Anniversary side patch · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Anaheim Angels X 20th Anniversary World Champions Edition - צבע שחור",
+      "en": "New Era X Anaheim Angels X 20th Anniversary World Champions Edition - Black"
+    },
+    "cardMessage": {
+      "he": "כובע שחור עם לוגו Angels לבן-אפור ופאץ' World Champions 20th Anniversary בצד.",
+      "en": "Black cap with a white-gray Angels logo and a World Champions 20th Anniversary side patch."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: שחור",
+        "כובע שחור בגימור קלאסי",
+        "רקמת Anaheim Angels A בגווני לבן ואפור בחזית",
+        "פאץ' World Champions 20th Anniversary בצד",
+        "לוגו New Era רקום בצד האחורי",
+        "סגירת Snapback מתכווננת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Black",
+        "Classic black cap",
+        "White and gray Anaheim Angels A embroidery on the front",
+        "World Champions 20th Anniversary side patch",
+        "Embroidered New Era logo on the rear side",
+        "Adjustable snapback closure",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+  ,
+{
+    "id": "new-era-anaheim-angels-core-classic-alternate-red-navy-133",
+    "slug": "product-133",
+    "urlSlug": "new-era-anaheim-angels-core-classic-alternate-red-navy",
+    "sku": "KW-HAT-133",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-133/product-133-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-133/product-133-1.png",
+        "hoverImage": "images/products/product-133/product-133-2.png"
+      },
+      "men": {
+        "image": "images/products/product-133/product-133-1.png",
+        "hoverImage": "images/products/product-133/product-133-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-133/product-133-1.png",
+      "images/products/product-133/product-133-2.png",
+      "images/products/product-133/product-133-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Anaheim Angels X Core Classic Alternate - צבע אדום כחול כהה",
+      "en": "New Era X Anaheim Angels X Core Classic Alternate - Red Navy"
+    },
+    "subtitle": {
+      "he": "כובע אדום עם מצחייה כחול כהה, רקמת Anaheim Angels A בחזית, לוגו New Era לבן בצד וסגירה מתכווננת בגב · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Red cap with a navy brim, Anaheim Angels A embroidery on the front, white New Era side logo and an adjustable back closure · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Anaheim Angels X Core Classic Alternate - צבע אדום כחול כהה",
+      "en": "New Era X Anaheim Angels X Core Classic Alternate - Red Navy"
+    },
+    "cardMessage": {
+      "he": "כובע אדום עם מצחייה כחול כהה ורקמת Anaheim Angels בחזית.",
+      "en": "Red cap with a navy brim and Anaheim Angels embroidery on the front."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: אדום כחול כהה",
+        "כיפה אדומה עם מצחייה כחול כהה",
+        "רקמת Anaheim Angels A בחזית",
+        "לוגו New Era לבן בצד",
+        "רצועת סגירה אחורית עם פאץ' Angels",
+        "סגירה מתכווננת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Red Navy",
+        "Red crown with a navy brim",
+        "Anaheim Angels A embroidery on the front",
+        "White New Era logo on the side",
+        "Rear closure strap with Angels patch",
+        "Adjustable closure",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+  ,
+{
+    "id": "new-era-atlanta-braves-ocean-sakura-edition-navy-pink-134",
+    "slug": "product-134",
+    "urlSlug": "new-era-atlanta-braves-ocean-sakura-edition-navy-pink",
+    "sku": "KW-HAT-134",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-134/product-134-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-134/product-134-1.png",
+        "hoverImage": "images/products/product-134/product-134-2.png"
+      },
+      "men": {
+        "image": "images/products/product-134/product-134-1.png",
+        "hoverImage": "images/products/product-134/product-134-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-134/product-134-1.png",
+      "images/products/product-134/product-134-2.png",
+      "images/products/product-134/product-134-3.png",
+      "images/products/product-134/product-134-4.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Atlanta Braves Ocean Sakura Edition - צבע כחול כהה ורוד",
+      "en": "New Era X Atlanta Braves Ocean Sakura Edition - Navy Pink"
+    },
+    "subtitle": {
+      "he": "כובע כחול כהה עם רקמת A בגוון שמנת בחזית, רקמות פריחת סאקורה ורודות מסביב ללוגו ובצד וסגירת Snapback מתכווננת · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Navy cap with cream A embroidery on the front, pink sakura blossom embroidery around the logo and on the side, plus an adjustable snapback closure · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Atlanta Braves Ocean Sakura Edition - צבע כחול כהה ורוד",
+      "en": "New Era X Atlanta Braves Ocean Sakura Edition - Navy Pink"
+    },
+    "cardMessage": {
+      "he": "כובע כחול כהה עם רקמת A שמנת ורקמות פריחת סאקורה ורודות.",
+      "en": "Navy cap with cream A embroidery and pink sakura blossom details."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: כחול כהה ורוד",
+        "כובע כחול כהה בגימור נקי",
+        "רקמת A בגוון שמנת בחזית",
+        "רקמות פריחת סאקורה ורודות בחזית ובצד",
+        "לוגו New Era ורוד בהיר בצד האחורי",
+        "סגירת Snapback מתכווננת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Navy Pink",
+        "Clean navy cap finish",
+        "Cream A embroidery on the front",
+        "Pink sakura blossom embroidery on the front and side",
+        "Light pink New Era logo on the rear side",
+        "Adjustable snapback closure",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+  ,
+{
+    "id": "new-era-milwaukee-bucks-chrome-white-tree-edge-two-tone-white-camo-135",
+    "slug": "product-135",
+    "urlSlug": "new-era-milwaukee-bucks-chrome-white-tree-edge-two-tone-white-camo",
+    "sku": "KW-HAT-135",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-135/product-135-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-135/product-135-1.png",
+        "hoverImage": "images/products/product-135/product-135-2.png"
+      },
+      "men": {
+        "image": "images/products/product-135/product-135-1.png",
+        "hoverImage": "images/products/product-135/product-135-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-135/product-135-1.png",
+      "images/products/product-135/product-135-2.png",
+      "images/products/product-135/product-135-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Milwaukee Bucks X Chrome White Tree Edge Two Tone - צבע לבן צבאי",
+      "en": "New Era X Milwaukee Bucks X Chrome White Tree Edge Two Tone - White Camo"
+    },
+    "subtitle": {
+      "he": "כובע לבן-שמנת של Milwaukee Bucks עם לוגו האייל בשחור וזהב, מצחייה בדוגמת צבאי ופרטי NBA בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Cream-white Milwaukee Bucks cap with black-and-gold deer logo, camouflage-pattern brim and NBA side details · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Milwaukee Bucks X Chrome White Tree Edge Two Tone - צבע לבן צבאי",
+      "en": "New Era X Milwaukee Bucks X Chrome White Tree Edge Two Tone - White Camo"
+    },
+    "cardMessage": {
+      "he": "כובע לבן-צבאי עם לוגו Milwaukee Bucks שחור-זהב ומצחייה בדוגמת קמופלאז'.",
+      "en": "White-camo cap with black-and-gold Milwaukee Bucks logo and camouflage-pattern brim."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: לבן צבאי",
+        "כובע בגוון לבן-שמנת",
+        "לוגו Milwaukee Bucks שחור-זהב בחזית",
+        "מצחייה בדוגמת צבאי בגווני ירוק וחום",
+        "פאץ' NBA שחור-זהב בצד",
+        "סגירת Snapback מתכווננת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: White Camo",
+        "Cream-white crown",
+        "Black-and-gold Milwaukee Bucks logo on the front",
+        "Camouflage-pattern brim in green and brown tones",
+        "Black-and-gold NBA side patch",
+        "Adjustable snapback closure",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+  ,
+{
+    "id": "new-era-milwaukee-bucks-contrast-stitch-black-green-136",
+    "slug": "product-136",
+    "urlSlug": "new-era-milwaukee-bucks-contrast-stitch-black-green",
+    "sku": "KW-HAT-136",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-136/product-136-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-136/product-136-1.png",
+        "hoverImage": "images/products/product-136/product-136-2.png"
+      },
+      "men": {
+        "image": "images/products/product-136/product-136-1.png",
+        "hoverImage": "images/products/product-136/product-136-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-136/product-136-1.png",
+      "images/products/product-136/product-136-2.png",
+      "images/products/product-136/product-136-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Milwaukee Bucks X Contrast Stitch - צבע שחור ירוק",
+      "en": "New Era X Milwaukee Bucks X Contrast Stitch - Black Green"
+    },
+    "subtitle": {
+      "he": "כובע שחור שטוח של Milwaukee Bucks עם תפרי קונטרסט לבנים, לוגו האייל בירוק ושמנת בחזית וסגירת Snapback בגב · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black flat-brim Milwaukee Bucks cap with white contrast stitching, green-and-cream deer logo on the front and a snapback closure at the back · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Milwaukee Bucks X Contrast Stitch - צבע שחור ירוק",
+      "en": "New Era X Milwaukee Bucks X Contrast Stitch - Black Green"
+    },
+    "cardMessage": {
+      "he": "כובע שחור עם תפרי קונטרסט לבנים ולוגו Milwaukee Bucks ירוק בחזית.",
+      "en": "Black cap with white contrast stitching and a green Milwaukee Bucks logo on the front."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: שחור ירוק",
+        "כובע שחור בגזרה שטוחה",
+        "לוגו Milwaukee Bucks ירוק-שמנת בחזית",
+        "תפרי קונטרסט לבנים בכל חלקי הכובע והמצחייה",
+        "לוגו NBA רקום בגב",
+        "סגירת Snapback מתכווננת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Black Green",
+        "Black flat-cap silhouette",
+        "Green-and-cream Milwaukee Bucks logo on the front",
+        "White contrast stitching across the crown and brim",
+        "Embroidered NBA logo on the back",
+        "Adjustable snapback closure",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+  ,
+{
+    "id": "new-era-milwaukee-bucks-nba-chrome-white-tree-edge-two-tone-gray-dark-green-137",
+    "slug": "product-137",
+    "urlSlug": "new-era-milwaukee-bucks-nba-chrome-white-tree-edge-two-tone-gray-dark-green",
+    "sku": "KW-HAT-137",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-137/product-137-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-137/product-137-1.png",
+        "hoverImage": "images/products/product-137/product-137-2.png"
+      },
+      "men": {
+        "image": "images/products/product-137/product-137-1.png",
+        "hoverImage": "images/products/product-137/product-137-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-137/product-137-1.png",
+      "images/products/product-137/product-137-2.png",
+      "images/products/product-137/product-137-3.png",
+      "images/products/product-137/product-137-4.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Milwaukee Bucks X NBA Chrome White Tree Edge Two Tone Gray - צבע ירוק כהה",
+      "en": "New Era X Milwaukee Bucks X NBA Chrome White Tree Edge Two Tone Gray - Dark Green"
+    },
+    "subtitle": {
+      "he": "כובע Milwaukee Bucks בגוון ירוק כהה עם לוגו האייל בחזית, סגירת Snapback בגב וטלאי BUCKS מאחור · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Dark green Milwaukee Bucks cap with the deer logo on the front, a snapback closure at the back and a BUCKS patch on the rear strap · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Milwaukee Bucks X NBA Chrome White Tree Edge Two Tone Gray - צבע ירוק כהה",
+      "en": "New Era X Milwaukee Bucks X NBA Chrome White Tree Edge Two Tone Gray - Dark Green"
+    },
+    "cardMessage": {
+      "he": "כובע Milwaukee Bucks ירוק כהה עם לוגו האייל בחזית וטלאי BUCKS בגב.",
+      "en": "Dark green Milwaukee Bucks cap with the deer logo on the front and a BUCKS rear patch."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: ירוק כהה",
+        "כובע Milwaukee Bucks בגוון ירוק כהה",
+        "לוגו האייל של Milwaukee Bucks רקום בחזית",
+        "לוגו New Era רקום בצד",
+        "טלאי BUCKS משולב ברצועת הסגירה האחורית",
+        "סגירת Snapback מתכווננת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Dark Green",
+        "Dark green Milwaukee Bucks cap",
+        "Embroidered Milwaukee Bucks deer logo on the front",
+        "Embroidered New Era logo on the side",
+        "BUCKS patch integrated into the rear closure strap",
+        "Adjustable snapback closure",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+
+  ,
+{
+    "id": "new-era-milwaukee-bucks-essentials-maple-green-black-138",
+    "slug": "product-138",
+    "urlSlug": "new-era-milwaukee-bucks-essentials-maple-green-black",
+    "sku": "KW-HAT-138",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪",
+      "en": "2 for ₪239.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-138/product-138-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-138/product-138-1.png",
+        "hoverImage": "images/products/product-138/product-138-2.png"
+      },
+      "men": {
+        "image": "images/products/product-138/product-138-1.png",
+        "hoverImage": "images/products/product-138/product-138-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-138/product-138-1.png",
+      "images/products/product-138/product-138-2.png",
+      "images/products/product-138/product-138-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Milwaukee Bucks X Essentials Maple Green Black - צבע ירוק שחור",
+      "en": "New Era X Milwaukee Bucks X Essentials Maple Green Black - Green Black"
+    },
+    "subtitle": {
+      "he": "כובע Milwaukee Bucks בגווני ירוק ושחור עם רשת שחורה בצדדים, לוגו האייל בחזית וסגירת Snapback מתכווננת · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Green and black Milwaukee Bucks cap with black side mesh, the Bucks deer logo on the front and an adjustable snapback closure · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Milwaukee Bucks X Essentials Maple Green Black - צבע ירוק שחור",
+      "en": "New Era X Milwaukee Bucks X Essentials Maple Green Black - Green Black"
+    },
+    "cardMessage": {
+      "he": "כובע Milwaukee Bucks ירוק-שחור עם רשת צדדית שחורה ולוגו האייל בחזית.",
+      "en": "Green-black Milwaukee Bucks cap with black side mesh and the Bucks deer logo on the front."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: ירוק שחור",
+        "כובע Milwaukee Bucks בגווני ירוק ושחור",
+        "לוגו האייל של Milwaukee Bucks רקום בחזית",
+        "פאנלים אחוריים מרשת שחורה לאוורור",
+        "תג NBA בצד ותג FAM. בצד השני",
+        "סגירת Snapback מתכווננת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Green Black",
+        "Green and black Milwaukee Bucks cap",
+        "Embroidered Milwaukee Bucks deer logo on the front",
+        "Black mesh rear panels for ventilation",
+        "NBA side patch and FAM. side detail",
+        "Adjustable snapback closure",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
   }
 
 ];
