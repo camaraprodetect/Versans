@@ -137,10 +137,10 @@ html[dir=rtl] .nav__item--has-submenu:hover .nav__submenu,html[dir=rtl] .nav__it
 /* Collection: quiet side navigation, generous imagery, clear pricing. */
 .shop__head{display:flex;align-items:flex-end;justify-content:space-between;gap:2rem;padding-bottom:2.2rem;border-bottom:1px solid var(--line);margin-bottom:2.3rem}
 .shop__head .eyebrow{color:var(--muted);margin-bottom:.65rem}
-.glasses-collection-banner,.watches-collection-banner,.other-collections-banner,.greeting-custom-collection-banner,.gift-boxes-collection-banner{width:100%;margin:0 auto 2.3rem;text-align:center}
-.glasses-collection-banner[hidden],.watches-collection-banner[hidden],.other-collections-banner[hidden],.greeting-custom-collection-banner[hidden],.gift-boxes-collection-banner[hidden]{display:none}
-.glasses-collection-banner__picture,.watches-collection-banner__picture,.other-collections-banner__picture,.greeting-custom-collection-banner__picture,.gift-boxes-collection-banner__picture{display:block;width:100%;max-width:1600px;margin:0 auto}
-.glasses-collection-banner img,.watches-collection-banner img,.other-collections-banner img,.greeting-custom-collection-banner img,.gift-boxes-collection-banner img{display:block;width:100%;max-width:1600px;height:auto;margin:0 auto}
+.glasses-collection-banner,.watches-collection-banner,.hats-collection-banner,.other-collections-banner,.greeting-custom-collection-banner,.gift-boxes-collection-banner{width:100%;margin:0 auto 2.3rem;text-align:center}
+.glasses-collection-banner[hidden],.watches-collection-banner[hidden],.hats-collection-banner[hidden],.other-collections-banner[hidden],.greeting-custom-collection-banner[hidden],.gift-boxes-collection-banner[hidden]{display:none}
+.glasses-collection-banner__picture,.watches-collection-banner__picture,.hats-collection-banner__picture,.other-collections-banner__picture,.greeting-custom-collection-banner__picture,.gift-boxes-collection-banner__picture{display:block;width:100%;max-width:1600px;margin:0 auto}
+.glasses-collection-banner img,.watches-collection-banner img,.hats-collection-banner img,.other-collections-banner img,.greeting-custom-collection-banner img,.gift-boxes-collection-banner img{display:block;width:100%;max-width:1600px;height:auto;margin:0 auto}
 .shop__layout{display:grid;grid-template-columns:220px minmax(0,1fr);gap:3rem;align-items:start}
 .shop__sidebar{position:sticky;top:130px;padding-top:.25rem}
 .shop__filter-label{font-size:.875rem;font-weight:500;margin-bottom:.8rem}
@@ -3596,9 +3596,8 @@ body.site-overlay-open{overflow:hidden}
   .home-page .greeting-custom-collection-banner,
   .home-page .gift-boxes-collection-banner{order:2!important}
   .home-page .shop__head{order:3!important}
-  .home-page .hats-all-button-wrap{order:4!important;width:100%!important}
-  .home-page .shop__filter-row{order:5!important;width:100%!important;margin-top:0!important}
-  .home-page .shop__layout{order:6!important;width:100%!important}
+  .home-page .shop__filter-row{order:4!important;width:100%!important;margin-top:0!important}
+  .home-page .shop__layout{order:5!important;width:100%!important}
 }
 
 
@@ -3818,5 +3817,107 @@ body.site-overlay-open{overflow:hidden}
 
   .product-page-body .product-thumb{
     flex-shrink:0!important;
+  }
+}
+
+
+/* ===== Mobile collection picker directly below entrance banner (V2) ===== */
+.mobile-collection-picker{display:none}
+@media(max-width:700px){
+  .home-page .shop>.container{display:flex!important;flex-direction:column!important}
+  .home-page .mobile-entry-banner{order:1!important;margin-bottom:0!important}
+  .home-page .mobile-collection-picker{
+    display:block!important;
+    order:2!important;
+    width:100vw!important;
+    max-width:none!important;
+    margin:0 calc(50% - 50vw) 1rem!important;
+    padding:.9rem 0 .75rem!important;
+    overflow:hidden!important;
+    background:#fff!important;
+    border-bottom:1px solid #e7e9ec!important;
+    position:relative!important;
+    z-index:2!important;
+  }
+  .home-page .mobile-collection-picker__track{
+    display:flex!important;
+    flex-direction:row!important;
+    flex-wrap:nowrap!important;
+    gap:.72rem!important;
+    width:100%!important;
+    padding:0 1rem .25rem!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    direction:rtl!important;
+    scroll-snap-type:x proximity!important;
+    -webkit-overflow-scrolling:touch!important;
+    scrollbar-width:none!important;
+  }
+  .home-page .mobile-collection-picker__track::-webkit-scrollbar{display:none!important}
+  .home-page .mobile-collection-picker__item{
+    display:block!important;
+    flex:0 0 88px!important;
+    width:88px!important;
+    min-width:88px!important;
+    color:#142333!important;
+    text-decoration:none!important;
+    text-align:center!important;
+    scroll-snap-align:start!important;
+    -webkit-tap-highlight-color:transparent!important;
+  }
+  .home-page .mobile-collection-picker__image{
+    display:block!important;
+    width:82px!important;
+    height:82px!important;
+    margin:0 auto .45rem!important;
+    overflow:hidden!important;
+    border:1px solid #e2e5e8!important;
+    border-radius:50%!important;
+    background:#f7f7f7!important;
+    box-shadow:0 3px 10px rgba(20,35,51,.08)!important;
+  }
+  .home-page .mobile-collection-picker__image img{
+    display:block!important;
+    width:100%!important;
+    height:100%!important;
+    object-fit:cover!important;
+  }
+  .home-page .mobile-collection-picker__label{
+    display:block!important;
+    font-size:.76rem!important;
+    font-weight:700!important;
+    line-height:1.22!important;
+    white-space:normal!important;
+  }
+  .home-page .glasses-collection-banner,
+  .home-page .watches-collection-banner,
+  .home-page .other-collections-banner,
+  .home-page .greeting-custom-collection-banner,
+  .home-page .gift-boxes-collection-banner{order:3!important}
+  .home-page .shop__head{order:4!important}
+  .home-page .shop__filter-row{order:5!important}
+  .home-page .shop__layout{order:6!important}
+}
+@media(min-width:701px){
+  .mobile-collection-picker{display:none!important}
+}
+
+/* ===== Hats mobile banner + full-catalog button position fix 2026-09-20 =====
+   Mobile sequence stays: large promo image -> collection circles -> hats banner ->
+   collection heading -> "לכל הכובעים" button -> filter -> products. */
+@media(max-width:700px){
+  .home-page .hats-collection-banner{
+    order:2!important;
+    width:100%!important;
+    margin:0 auto 1rem!important;
+  }
+  .home-page .hats-all-button-wrap{
+    order:4!important;
+    width:100%!important;
+    margin:.35rem 0 1rem!important;
+  }
+  .home-page .hats-all-button{
+    width:100%!important;
+    min-height:56px!important;
   }
 }

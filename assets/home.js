@@ -93,14 +93,12 @@
     'greeting-sister': ['תכשיט עם ברכה לאחות - VerSans', 'תכשיטים ומתנות עם ברכה לאחות מבית VerSans.'],
     necklaces: ['שרשראות - VerSans', 'קולקציית השרשראות של VerSans - דגמים לנשים, לגברים ומתנות עם משמעות.'],
     bracelets: ['צמידים - VerSans', 'קולקציית הצמידים של VerSans - דגמים יוניסקס, מתנות ועיצובים ליום יום.'],
-    'photo-bracelets': ['צמידי תמונה - VerSans', 'צמידי תמונה והקרנה בעיצוב אישי מבית VerSans.'],
+    'photo-bracelets': ['תכשיטי תמונה - VerSans', 'תכשיטי תמונה והקרנה בהתאמה אישית מבית VerSans.'],
     watches: ['שעונים - VerSans', 'קולקציית השעונים של VerSans - שעוני גברים, נשים ומארזי מתנה.'],
     glasses: ['משקפי שמש - VerSans', 'קולקציית משקפי השמש של VerSans - דגמים לנשים, גברים ויוניסקס.'],
     'glasses-men': ['משקפי שמש לגברים - VerSans', 'משקפי שמש לגברים מבית VerSans במגוון דגמים ועיצובים.'],
     'glasses-women': ['משקפי שמש לנשים - VerSans', 'משקפי שמש לנשים מבית VerSans במגוון דגמים ועיצובים.'],
     'glasses-unisex': ['משקפי שמש יוניסקס - VerSans', 'משקפי שמש יוניסקס מבית VerSans במגוון דגמים ועיצובים.'],
-    'gift-boxes': ['מארזי מתנה - VerSans', 'מארזי מתנה של VerSans עם תכשיטים ושעונים בעיצוב יוקרתי.'],
-    custom: ['עיצוב אישי - VerSans', 'מתנות ותכשיטים בעיצוב אישי מבית VerSans - ברכות, שמות ותמונות בהתאמה אישית.'],
     hats: ['כובעים - VerSans', 'כובעים מבית VerSans במגוון דגמים ועיצובים.']
   };
   function setMeta(selector, value) {
@@ -111,7 +109,7 @@
     var cat = ROUTES && ROUTES.categoryFromPath ? ROUTES.categoryFromPath(window.location.pathname) : null;
     if (!cat) cat = new URLSearchParams(window.location.search).get('cat');
     var seo = COLLECTION_SEO[cat];
-    var title = 'VerSans';
+    var title = seo ? seo[0] : 'VerSans - תכשיטים, שעונים, משקפי שמש ומתנות בעיצוב אישי';
     var description = seo ? seo[1] : 'VerSans - תכשיטים, שעונים, משקפי שמש, מארזי מתנה ותכשיטים בעיצוב אישי. קנייה אונליין עם משלוח חינם.';
     var canonicalPath = seo && ROUTES && ROUTES.collectionPath ? ROUTES.collectionPath(cat) : '/';
     var canonical = 'https://versans.com' + canonicalPath;

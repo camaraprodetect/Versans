@@ -21,8 +21,6 @@
     'glasses-men': '/glasses-men',
     'glasses-women': '/glasses-women',
     'glasses-unisex': '/glasses-unisex',
-    'gift-boxes': '/gift-sets',
-    custom: '/personal-design',
     hats: '/hats'
   };
 

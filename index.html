@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>VerSans</title>
+<title>VerSans - ורסנס | תכשיטים, שעונים, משקפי שמש ומתנות בעיצוב אישי</title>
 <meta name="description" content="VerSans (ורסנס, ורסאנס) - תכשיטים, שעונים, משקפי שמש, מארזי מתנה ותכשיטים בעיצוב אישי. קנייה אונליין עם משלוח חינם.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="VerSans">
@@ -40,7 +40,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&amp;family=Frank+Ruhl+Libre:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/styles.css?v=20260919-hats-button-order-v1">
+<link rel="stylesheet" href="assets/styles.css?v=20260920-hats-mobile-order-button-v5">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="96x96" href="/images/favicon-96.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
@@ -155,49 +155,41 @@
   outline: 2px solid currentColor;
   outline-offset: 3px;
 }
-/* Large entry point below the hats banner for a flat, non-carousel catalog. */
+/* Main button for opening the complete hats catalog. */
 .hats-all-button-wrap {
-  display: flex;
-  justify-content: center;
-  margin: 1.4rem 0 2.1rem;
+  display:flex;
+  justify-content:center;
+  margin:1.4rem 0 2.1rem;
 }
-.hats-all-button-wrap[hidden] { display: none !important; }
+.hats-all-button-wrap[hidden] { display:none !important; }
 .hats-all-button {
-  width: min(100%, 720px);
-  min-height: 68px;
-  padding: 1rem 2rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  text-decoration: none;
-  color: #fff !important;
-  background: #142333;
-  border: 1px solid #142333;
-  border-radius: 8px;
-  box-shadow: 0 12px 30px rgba(20,35,51,.24);
-  font-size: clamp(1.15rem, 2.2vw, 1.55rem);
-  font-weight: 800;
-  line-height: 1.2;
-  transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+  width:min(100%,720px);
+  min-height:68px;
+  padding:1rem 2rem;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:.55rem;
+  text-align:center;
+  text-decoration:none;
+  color:#fff !important;
+  background:#142333;
+  border:1px solid #142333;
+  border-radius:8px;
+  box-shadow:0 12px 30px rgba(20,35,51,.24);
+  font-size:clamp(1.15rem,2.2vw,1.55rem);
+  font-weight:800;
+  line-height:1.2;
+  transition:transform .18s ease,box-shadow .18s ease,background .18s ease;
 }
+.hats-all-button::after { content:"←"; font-size:1.25em; line-height:1; }
 .hats-all-button:hover {
-  transform: translateY(-2px);
-  background: #0f1d2a;
-  box-shadow: 0 15px 34px rgba(20,35,51,.3);
+  transform:translateY(-2px);
+  background:#0f1d2a;
+  box-shadow:0 15px 34px rgba(20,35,51,.3);
 }
-.hats-all-button:focus-visible { outline: 3px solid rgba(20,35,51,.28); outline-offset: 4px; }
-.hats-all-button[aria-current="page"] { box-shadow: 0 0 0 3px rgba(20,35,51,.14), 0 12px 30px rgba(20,35,51,.24); }
-#grid.grid--hats-all {
-  display: grid !important;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1.35rem 1rem;
-}
-#grid.grid--hats-all > .prod { min-width: 0 !important; width: auto !important; }
-@media (min-width: 1600px) {
-  #grid.grid--hats-all { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-}
-
+.hats-all-button:focus-visible { outline:3px solid rgba(20,35,51,.28); outline-offset:4px; }
+.hats-all-button[aria-current="page"] { box-shadow:0 0 0 3px rgba(20,35,51,.14),0 12px 30px rgba(20,35,51,.24); }
 .hat-group-page { width: 100%; }
 .hat-group-page__products {
   display: grid;
@@ -232,9 +224,8 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: .75rem;
   }
-  .hats-all-button-wrap { margin: 1rem 0 1.6rem; }
-  .hats-all-button { width: 100%; min-height: 58px; padding: .9rem 1rem; border-radius: 7px; font-size: 1.08rem; }
-  #grid.grid--hats-all { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem .65rem; }
+  .hats-all-button-wrap { margin:1rem 0 1.6rem; }
+  .hats-all-button { width:100%; min-height:58px; padding:.9rem 1rem; border-radius:7px; font-size:1.08rem; }
 }
 </style>
 </head>
@@ -312,7 +303,7 @@
       </div>
       <a href="/necklaces#shop" data-cat="necklaces" data-nav-cat="necklaces">שרשראות</a>
       <a href="/bracelets#shop" data-cat="bracelets" data-nav-cat="bracelets">צמידים</a>
-      <a href="/photo-bracelets#shop" data-cat="photo-bracelets" data-nav-cat="photo-bracelets">צמיד תמונה</a>
+      <a href="/photo-bracelets#shop" data-cat="photo-bracelets" data-nav-cat="photo-bracelets">תכשיטי תמונה</a>
       <a href="/watches#shop" data-cat="watches" data-nav-cat="watches">שעונים</a>
       <div class="nav__item nav__item--has-submenu" data-nav-group="glasses">
         <a href="/glasses#shop" data-cat="glasses" data-nav-cat="glasses" data-nav-parent-toggle="glasses" aria-haspopup="true" aria-expanded="false">משקפיים</a>
@@ -323,8 +314,6 @@
           <a href="/glasses-unisex#shop" data-cat="glasses-unisex" data-nav-subcat="glasses-unisex">יוניסקס</a>
         </div>
       </div>
-      <a href="/gift-sets#shop" data-cat="gift-boxes" data-nav-cat="gift-boxes">מארזים</a>
-      <a href="/personal-design#shop" data-cat="custom" data-nav-cat="custom">עיצוב אישי</a>
       <a href="/hats#shop" data-cat="hats" data-nav-cat="hats">כובעים</a>
     </nav>
 
@@ -373,16 +362,54 @@
 <!-- חנות -->
 <section class="section shop" id="shop" aria-labelledby="shopTitle">
   <div class="container">
-    <div class="shop__head">
-      <div><p class="eyebrow" data-i18n="shop.eyebrow">למי שחשוב לכם. גם לעצמכם.</p><h2 id="shopTitle" data-i18n="shop.title">הקולקציה שלנו</h2></div>
-      <p class="lede" data-i18n="shop.sub">תכשיטים ליום־יום, ומתנות עם מילים שנשארות.</p>
-    </div>
     <div class="mobile-entry-banner" id="mobileEntryBanner" aria-label="מבצע VerSans עד 40% הנחה">
       <img src="images/mobile-entry-promo.png" width="941" height="1672" alt="VerSans - עד 40% הנחה על כל קולקציית האתר" loading="eager" decoding="async">
       <div class="mobile-entry-banner__actions" aria-label="קישורים מהירים">
         <a class="mobile-entry-banner__cta mobile-entry-banner__cta--primary" href="#shopTitle">לגלות את הקולקציה</a>
         <a class="mobile-entry-banner__cta mobile-entry-banner__cta--secondary" href="#reviews">לביקורות הלקוחות</a>
       </div>
+    </div>
+
+    <nav class="mobile-collection-picker" aria-label="בחירת קולקציה">
+      <div class="mobile-collection-picker__track">
+        <a class="mobile-collection-picker__item" href="/#shop" data-cat="all">
+          <span class="mobile-collection-picker__image"><img src="images/mobile-collections/all.png" alt="כל הקולקציות" loading="lazy" decoding="async"></span>
+          <span class="mobile-collection-picker__label">הכל</span>
+        </a>
+        <a class="mobile-collection-picker__item" href="/message-jewelry#shop" data-cat="greeting">
+          <span class="mobile-collection-picker__image"><img src="images/mobile-collections/greeting.png" alt="תכשיט עם ברכה" loading="lazy" decoding="async"></span>
+          <span class="mobile-collection-picker__label">תכשיט עם ברכה</span>
+        </a>
+        <a class="mobile-collection-picker__item" href="/necklaces#shop" data-cat="necklaces">
+          <span class="mobile-collection-picker__image"><img src="images/mobile-collections/necklaces.png" alt="שרשראות" loading="lazy" decoding="async"></span>
+          <span class="mobile-collection-picker__label">שרשראות</span>
+        </a>
+        <a class="mobile-collection-picker__item" href="/bracelets#shop" data-cat="bracelets">
+          <span class="mobile-collection-picker__image"><img src="images/mobile-collections/bracelets.png" alt="צמידים" loading="lazy" decoding="async"></span>
+          <span class="mobile-collection-picker__label">צמידים</span>
+        </a>
+        <a class="mobile-collection-picker__item" href="/photo-bracelets#shop" data-cat="photo-bracelets">
+          <span class="mobile-collection-picker__image"><img src="images/mobile-collections/photo-jewelry.png" alt="תכשיטי תמונה" loading="lazy" decoding="async"></span>
+          <span class="mobile-collection-picker__label">תכשיטי תמונה</span>
+        </a>
+        <a class="mobile-collection-picker__item" href="/watches#shop" data-cat="watches">
+          <span class="mobile-collection-picker__image"><img src="images/mobile-collections/watches.png" alt="שעונים" loading="lazy" decoding="async"></span>
+          <span class="mobile-collection-picker__label">שעונים</span>
+        </a>
+        <a class="mobile-collection-picker__item" href="/glasses#shop" data-cat="glasses">
+          <span class="mobile-collection-picker__image"><img src="images/mobile-collections/glasses.png" alt="משקפיים" loading="lazy" decoding="async"></span>
+          <span class="mobile-collection-picker__label">משקפיים</span>
+        </a>
+        <a class="mobile-collection-picker__item" href="/hats#shop" data-cat="hats">
+          <span class="mobile-collection-picker__image"><img src="images/mobile-collections/hats.png" alt="כובעים" loading="lazy" decoding="async"></span>
+          <span class="mobile-collection-picker__label">כובעים</span>
+        </a>
+      </div>
+    </nav>
+
+    <div class="shop__head">
+      <div><p class="eyebrow" data-i18n="shop.eyebrow">למי שחשוב לכם. גם לעצמכם.</p><h2 id="shopTitle" data-i18n="shop.title">הקולקציה שלנו</h2></div>
+      <p class="lede" data-i18n="shop.sub">תכשיטים ליום־יום, ומתנות עם מילים שנשארות.</p>
     </div>
     <div class="glasses-collection-banner" id="glassesCollectionBanner" hidden aria-label="מבצע קולקציית משקפי שמש">
       <picture class="glasses-collection-banner__picture">
@@ -398,6 +425,13 @@
         <img src="images/watch-collection-banner-v2.png" width="1235" height="338" alt="קולקציית השעונים של VerSans - עד 40% הנחה על כל השעונים">
       </picture>
     </div>
+    <div class="hats-collection-banner" id="hatsCollectionBanner" hidden aria-label="מבצע קולקציית הכובעים">
+      <picture class="hats-collection-banner__picture">
+        <source media="(min-width: 1440px)" srcset="/images/hats-collection-banner-wide.png">
+        <source media="(min-width: 768px)" srcset="/images/hats-collection-banner-medium.png">
+        <img src="/images/hats-collection-banner.png" width="1600" height="600" alt="מבצע כובעים של VerSans - 2 ב־239.90 ₪, 3 ב־299.90 ₪">
+      </picture>
+    </div>
     <div class="other-collections-banner" id="otherCollectionsBanner" hidden aria-label="מבצע קולקציות VerSans">
       <picture class="other-collections-banner__picture">
         <source media="(min-width: 1440px)" srcset="images/other-collections-banner-wide.png">
@@ -405,27 +439,6 @@
         <img src="images/other-collections-banner.png" width="1235" height="338" alt="VerSans - עד 40% הנחה על הקולקציה">
       </picture>
     </div>
-
-    <div class="hats-all-button-wrap" data-hats-all-button-wrap hidden>
-      <a class="hats-all-button" href="/hats?view=all#shop" data-hats-all-button>לכל הכובעים</a>
-    </div>
-    <script>
-      (function(){
-        var path=(window.location.pathname||'/').replace(/\/+$/,'')||'/';
-        var wrap=document.querySelector('[data-hats-all-button-wrap]');
-        var button=document.querySelector('[data-hats-all-button]');
-        if(wrap && path==='/hats') {
-          wrap.hidden=false;
-          var params=new URLSearchParams(window.location.search||'');
-          var allView=params.get('view')==='all';
-          if(button) {
-            button.textContent=allView ? 'חזרה לקטגוריות' : 'לכל הכובעים';
-            button.href=allView ? '/hats#shop' : '/hats?view=all#shop';
-            if(allView) button.removeAttribute('aria-current');
-          }
-        }
-      })();
-    </script>
     <div class="greeting-custom-collection-banner" id="greetingCustomCollectionBanner" hidden aria-label="מבצע קולקציית תכשיט עם ברכה ועיצוב אישי">
       <picture class="greeting-custom-collection-banner__picture">
         <source media="(min-width: 1440px)" srcset="images/greeting-custom-collection-banner-wide.png">
@@ -439,6 +452,9 @@
         <source media="(min-width: 768px)" srcset="images/gift-boxes-collection-banner-medium.png">
         <img src="images/gift-boxes-collection-banner.png" width="1600" height="211" alt="מארזים - עד 40% הנחה על כל מארזי המתנה">
       </picture>
+    </div>
+    <div class="hats-all-button-wrap" data-hats-all-button-wrap hidden>
+      <a class="hats-all-button" href="/hats?view=all#shop" data-hats-all-button>לכל הכובעים</a>
     </div>
     <div class="shop__filter-row">
       <aside class="shop__sidebar"><p class="shop__filter-label" hidden>סינון</p><button class="shop__filter-toggle" type="button" data-catalog-filter-toggle aria-expanded="false" aria-controls="filters"><span>סינון</span><span class="shop__filter-toggle-icon" data-catalog-filter-toggle-icon aria-hidden="true">+</span></button><div class="filters" id="filters" role="group" aria-label="סינון מוצרים" hidden></div></aside>
@@ -750,14 +766,14 @@
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="assets/config.js?v=20260914-pretty-urls-v1"></script>
-<script src="assets/products.js?v=20260919-atlanta139-carousel-v6"></script>
+<script src="assets/products.js?v=20260918-hats-category-v1"></script>
 <script src="assets/routes.js?v=20260918-hats-category-v1"></script>
 <script src="assets/site-header.js?v=20260914-pretty-urls-v1"></script>
 <script src="assets/glasses-pricing.js?v=20260912-glasses-v9"></script>
 <script src="assets/i18n.js?v=20260908-delivery-v1"></script>
 <script src="assets/reviews.js?v=20260914-pretty-urls-v1"></script>
 <script src="assets/home.js?v=20260918-hats-category-v1"></script>
-<script src="assets/store.js?v=20260919-atlanta139-carousel-v6"></script>
+<script src="assets/store.js?v=20260919-hats-carousel-infinite-v3"></script>
 <script src="assets/auth-nav.js?v=20260914-pretty-urls-v1"></script>
   <script src="/assets/presence.js?v=20260915-presence-v1"></script>
 </body>

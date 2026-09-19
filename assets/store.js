@@ -32,7 +32,7 @@
         'all', 'greeting', 'greeting-mom', 'greeting-partner', 'greeting-daughter', 'greeting-sister',
         'necklaces', 'bracelets', 'photo-bracelets', 'watches',
         'glasses', 'glasses-men', 'glasses-women', 'glasses-unisex',
-        'gift-boxes', 'custom', 'hats'
+        'hats'
       ];
       if (requestedCategory && validCategories.indexOf(requestedCategory) !== -1) {
         state.filter = requestedCategory;
@@ -187,11 +187,9 @@
     { key: 'greeting', label: 'תכשיט עם ברכה' },
     { key: 'necklaces', label: 'שרשראות' },
     { key: 'bracelets', label: 'צמידים' },
-    { key: 'photo-bracelets', label: 'צמיד תמונה' },
+    { key: 'photo-bracelets', label: 'תכשיטי תמונה' },
     { key: 'watches', label: 'שעונים' },
     { key: 'glasses', label: 'משקפיים' },
-    { key: 'gift-boxes', label: 'מארזים' },
-    { key: 'custom', label: 'עיצוב אישי' },
     { key: 'hats', label: 'כובעים' }
   ];
 
@@ -471,18 +469,15 @@
       watchesBanner.hidden = !(state.filter === 'watches' || state.filter.indexOf('watches-') === 0);
     }
 
+    var hatsBanner = $('#hatsCollectionBanner');
+    if (hatsBanner) {
+      hatsBanner.hidden = !(state.filter === 'hats');
+    }
+
     var greetingCustomCollectionBanner = $('#greetingCustomCollectionBanner');
     if (greetingCustomCollectionBanner) {
       greetingCustomCollectionBanner.hidden = !(
-        state.filter === 'greeting' || state.filter.indexOf('greeting-') === 0 ||
-        state.filter === 'custom' || state.filter.indexOf('custom-') === 0
-      );
-    }
-
-    var giftBoxesCollectionBanner = $('#giftBoxesCollectionBanner');
-    if (giftBoxesCollectionBanner) {
-      giftBoxesCollectionBanner.hidden = !(
-        state.filter === 'gift-boxes' || state.filter.indexOf('gift-boxes-') === 0
+        state.filter === 'greeting' || state.filter.indexOf('greeting-') === 0
       );
     }
 
@@ -492,8 +487,7 @@
         state.filter === 'all' ||
         state.filter === 'necklaces' ||
         state.filter === 'bracelets' ||
-        state.filter === 'photo-bracelets' ||
-        state.filter === 'hats';
+        state.filter === 'photo-bracelets';
       otherCollectionsBanner.hidden = !showOtherCollectionsBanner;
     }
 
@@ -717,11 +711,9 @@
     { key: 'greeting', title: 'תכשיט עם ברכה', allLabel: 'לכל מוצרי תכשיט עם ברכה' },
     { key: 'necklaces', title: 'שרשראות', allLabel: 'לכל השרשראות' },
     { key: 'bracelets', title: 'צמידים', allLabel: 'לכל הצמידים' },
-    { key: 'photo-bracelets', title: 'צמידי תמונה', allLabel: 'לכל צמידי התמונה' },
+    { key: 'photo-bracelets', title: 'תכשיטי תמונה', allLabel: 'לכל תכשיטי התמונה' },
     { key: 'watches', title: 'שעונים', allLabel: 'לכל השעונים' },
     { key: 'glasses', title: 'משקפיים', allLabel: 'לכל המשקפיים' },
-    { key: 'gift-boxes', title: 'מארזים', allLabel: 'לכל המארזים' },
-    { key: 'custom', title: 'עיצוב אישי', allLabel: 'לכל מוצרי העיצוב האישי' },
     { key: 'hats', title: 'כובעים', allLabel: 'לכל הכובעים' }
   ];
 

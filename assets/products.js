@@ -13483,22 +13483,8 @@ var CATEGORIES = [
   {
     "key": "photo-bracelets",
     "label": {
-      "he": "צמיד עם תמונה אישית",
-      "en": "Photo Bracelet"
-    }
-  },
-  {
-    "key": "gift-boxes",
-    "label": {
-      "he": "מארזים",
-      "en": "Gift Boxes"
-    }
-  },
-  {
-    "key": "custom",
-    "label": {
-      "he": "Custom",
-      "en": "Custom"
+      "he": "תכשיטי תמונה",
+      "en": "Photo Jewelry"
     }
   },
   {
