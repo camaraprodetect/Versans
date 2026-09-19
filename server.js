@@ -9,6 +9,7 @@ const { createDatabase } = require('./lib/database.js');
 const { createPaymentUrl, verifyPayment } = require('./api/_hyp.js');
 const { PRODUCTS } = require('./assets/products.js');
 const ROUTES = require('./assets/routes.js');
+const { normalizeAdminRange, normalizeStoredOrderItems, aggregatePaidOrders } = require('./lib/admin-analytics.js');
 
 const ROOT = __dirname;
 const DATA_DIR = process.env.VERSANS_DATA_DIR
@@ -26,6 +27,7 @@ const VISITOR_TTL_MS = 90 * 24 * 60 * 60 * 1000;
 const PRESENCE_RETENTION_MS = 90 * 24 * 60 * 60 * 1000;
 const ONLINE_WINDOW_MS = 75 * 1000;
 const ADMIN_EMAIL = 'camaraprodetect@gmail.com';
+const ADMIN_PAGES = new Set(['', 'dashboard', 'visitors', 'sales', 'orders', 'products', 'customers', 'traffic', 'reviews']);
 const BODY_LIMIT = 48 * 1024 * 1024;
 const REVIEW_IMAGE_LIMIT = 2 * 1024 * 1024;
 const REVIEW_VIDEO_LIMIT = 20 * 1024 * 1024;
@@ -549,6 +551,83 @@ async function presenceApi(req, res, pathname) {
   return true;
 }
 
+function adminPagination(parsed, defaultLimit = 50) {
+  const rawLimit = Number(parsed.searchParams.get('limit') || defaultLimit);
+  const rawOffset = Number(parsed.searchParams.get('offset') || 0);
+  const limit = Number.isFinite(rawLimit) ? Math.max(1, Math.min(100, Math.trunc(rawLimit))) : defaultLimit;
+  const offset = Number.isFinite(rawOffset) ? Math.max(0, Math.trunc(rawOffset)) : 0;
+  return { limit, offset };
+}
+
+function adminProductInfo(id) {
+  const product = productById(id);
+  return {
+    id: String(id || ''),
+    name: product ? productTitle(product) : String(id || 'מוצר'),
+    image: product && Array.isArray(product.images) && product.images[0] ? '/' + product.images[0] : null,
+    href: product ? productPublicPath(product) : null
+  };
+}
+
+function adminOrderPayload(row) {
+  const items = normalizeStoredOrderItems(row.items_json, PRODUCTS);
+  return {
+    id: Number(row.id),
+    orderRef: row.order_ref,
+    userId: row.user_id == null ? null : Number(row.user_id),
+    customerName: row.user_name || null,
+    customerEmail: row.customer_email || row.user_email || null,
+    customerPhone: row.customer_phone || null,
+    amountAgorot: Number(row.amount_agorot || 0),
+    currency: row.currency || 'ILS',
+    status: row.status,
+    createdAt: Number(row.created_at || 0),
+    paidAt: row.paid_at == null ? null : Number(row.paid_at),
+    updatedAt: Number(row.updated_at || 0),
+    units: items.reduce((sum, item) => sum + Number(item.qty || 0), 0),
+    items: items.map((item) => ({
+      id: item.id,
+      name: item.name,
+      qty: item.qty,
+      unitPrice: item.unitPrice,
+      lineTotal: item.lineTotal,
+      reconstructed: item.reconstructed
+    }))
+  };
+}
+
+function adminReviewPayload(row) {
+  const info = adminProductInfo(row.review_product_id);
+  return {
+    id: Number(row.id),
+    userId: row.user_id == null ? null : Number(row.user_id),
+    name: row.review_name || row.user_name || PUBLIC_REVIEW_NAME,
+    email: row.user_email || null,
+    productId: row.review_product_id || null,
+    productName: info.name,
+    productImage: info.image,
+    productHref: info.href,
+    variant: row.review_product_variant || null,
+    rating: Number(row.rating || 0),
+    body: row.body || '',
+    verifiedPurchase: Number(row.verified_purchase || 0) === 1,
+    reviewDate: Number(row.review_date || row.created_at || 0)
+  };
+}
+
+function visitorRange(range, now) {
+  if (range === 'all') return { range, since: null };
+  const since = adminRangeStart(range, now);
+  return since == null ? null : { range, since };
+}
+
+async function adminSalesData(range, now = Date.now()) {
+  const normalized = normalizeAdminRange(range, now);
+  if (!normalized) return null;
+  const rows = await database.listOrdersForAnalytics('paid', normalized.since);
+  return aggregatePaidOrders(rows, PRODUCTS, now, normalized.range);
+}
+
 async function adminApi(req, res, pathname, parsed) {
   if (!pathname.startsWith('/api/admin/')) return false;
   const admin = await getAdminUser(req);
@@ -556,79 +635,166 @@ async function adminApi(req, res, pathname, parsed) {
     json(res, 403, { ok: false, error: 'admin_required' });
     return true;
   }
+  if (req.method !== 'GET') {
+    json(res, 405, { ok: false, error: 'method_not_allowed' });
+    return true;
+  }
 
-  if (pathname === '/api/admin/visitors' && req.method === 'GET') {
-    const range = String(parsed.searchParams.get('range') || 'online');
+  if (pathname === '/api/admin/overview') {
     const now = Date.now();
-    const since = adminRangeStart(range, now);
-    if (since == null) {
-      json(res, 400, { ok: false, error: 'invalid_range' });
-      return true;
-    }
-    const requestedLimit = Number(parsed.searchParams.get('limit') || 500);
-    const limit = Number.isInteger(requestedLimit) ? Math.max(1, Math.min(500, requestedLimit)) : 500;
-    const [count, rows] = await Promise.all([
-      database.countPresenceVisitorsSince(since),
-      database.listPresenceVisitors(since, limit)
+    const range = String(parsed.searchParams.get('range') || '30d');
+    const sales = await adminSalesData(range, now);
+    if (!sales) { json(res, 400, { ok: false, error: 'invalid_range' }); return true; }
+    const [onlineVisitors, todayVisitors, lifetimeVisitors, userCounts, recentRows] = await Promise.all([
+      database.countPresenceVisitors(now - ONLINE_WINDOW_MS),
+      database.countPresenceVisitors(israelStartOfDayMs(now)),
+      database.countPresenceVisitors(null),
+      database.adminUserCounts(),
+      database.listAdminOrders({ status: 'paid', since: null, limit: 8, offset: 0 })
     ]);
     json(res, 200, {
       ok: true,
-      range,
-      count,
-      onlineWindowMs: ONLINE_WINDOW_MS,
-      visitors: rows.map((row) => visitorSummary(row, now))
+      ...sales,
+      visitors: { online: onlineVisitors, today: todayVisitors, lifetime: lifetimeVisitors },
+      users: userCounts,
+      topProducts: sales.products.slice(0, 5),
+      recentOrders: recentRows.map(adminOrderPayload)
+    });
+    return true;
+  }
+
+  if (pathname === '/api/admin/sales') {
+    const range = String(parsed.searchParams.get('range') || '30d');
+    const sales = await adminSalesData(range);
+    if (!sales) { json(res, 400, { ok: false, error: 'invalid_range' }); return true; }
+    const normalized = normalizeAdminRange(range);
+    const recentRows = await database.listAdminOrders({ status: 'paid', since: normalized.since, limit: 12, offset: 0 });
+    json(res, 200, { ok: true, ...sales, topProducts: sales.products.slice(0, 50), recentOrders: recentRows.map(adminOrderPayload) });
+    return true;
+  }
+
+  if (pathname === '/api/admin/orders') {
+    const status = String(parsed.searchParams.get('status') || 'paid');
+    if (!['paid', 'pending', 'failed', 'all'].includes(status)) { json(res, 400, { ok: false, error: 'invalid_status' }); return true; }
+    const range = String(parsed.searchParams.get('range') || '30d');
+    const normalized = normalizeAdminRange(range);
+    if (!normalized) { json(res, 400, { ok: false, error: 'invalid_range' }); return true; }
+    const { limit, offset } = adminPagination(parsed, 50);
+    const [count, rows] = await Promise.all([
+      database.countAdminOrders({ status, since: normalized.since }),
+      database.listAdminOrders({ status, since: normalized.since, limit, offset })
+    ]);
+    json(res, 200, { ok: true, status, range, count, limit, offset, hasMore: offset + rows.length < count, orders: rows.map(adminOrderPayload) });
+    return true;
+  }
+
+  if (pathname === '/api/admin/products') {
+    const range = String(parsed.searchParams.get('range') || '30d');
+    const sales = await adminSalesData(range);
+    if (!sales) { json(res, 400, { ok: false, error: 'invalid_range' }); return true; }
+    const { limit, offset } = adminPagination(parsed, 50);
+    const products = sales.products.slice(offset, offset + limit);
+    json(res, 200, { ok: true, range, count: sales.products.length, limit, offset, hasMore: offset + products.length < sales.products.length, products });
+    return true;
+  }
+
+  if (pathname === '/api/admin/customers') {
+    const { limit, offset } = adminPagination(parsed, 50);
+    const [count, rows] = await Promise.all([database.countAdminCustomers(), database.listAdminCustomers(limit, offset)]);
+    const customers = rows.map((row) => ({
+      id: Number(row.id), name: row.name, email: row.email, phone: row.known_phone || null,
+      verifiedCustomer: Number(row.is_verified_customer || 0) === 1,
+      verifiedCustomerAt: row.verified_customer_at == null ? null : Number(row.verified_customer_at),
+      createdAt: Number(row.created_at || 0), paidOrderCount: Number(row.paid_order_count || 0),
+      paidSpendAgorot: Number(row.paid_spend_agorot || 0), lastPaidAt: row.last_paid_at == null ? null : Number(row.last_paid_at)
+    }));
+    json(res, 200, { ok: true, count, limit, offset, hasMore: offset + customers.length < count, customers });
+    return true;
+  }
+
+  if (pathname === '/api/admin/traffic') {
+    const range = String(parsed.searchParams.get('range') || '30d');
+    const normalized = normalizeAdminRange(range);
+    if (!normalized) { json(res, 400, { ok: false, error: 'invalid_range' }); return true; }
+    const data = await database.adminTrafficSummary(normalized.since);
+    json(res, 200, { ok: true, range, ...data });
+    return true;
+  }
+
+  if (pathname === '/api/admin/reviews') {
+    const range = String(parsed.searchParams.get('range') || '30d');
+    const normalized = normalizeAdminRange(range);
+    if (!normalized) { json(res, 400, { ok: false, error: 'invalid_range' }); return true; }
+    const { limit } = adminPagination(parsed, 20);
+    const data = await database.adminReviewSummary(normalized.since, limit);
+    const summary = data.summary || {};
+    const topProducts = data.topProducts.map((row) => ({ ...adminProductInfo(row.product_id), count: Number(row.count || 0), average: Number(row.average || 0) }));
+    json(res, 200, {
+      ok: true, range,
+      summary: {
+        count: Number(summary.count || 0), average: Number(summary.average || 0),
+        rating5: Number(summary.rating_5 || 0), rating4: Number(summary.rating_4 || 0), rating3: Number(summary.rating_3 || 0),
+        rating2: Number(summary.rating_2 || 0), rating1: Number(summary.rating_1 || 0)
+      },
+      topProducts,
+      recent: data.recent.map(adminReviewPayload)
+    });
+    return true;
+  }
+
+  if (pathname === '/api/admin/visitors') {
+    const range = String(parsed.searchParams.get('range') || 'online');
+    const now = Date.now();
+    const normalized = visitorRange(range, now);
+    if (!normalized) { json(res, 400, { ok: false, error: 'invalid_range' }); return true; }
+    const { limit, offset } = adminPagination(parsed, 50);
+    const [count, rows, lifetimeCount] = await Promise.all([
+      database.countPresenceVisitors(normalized.since),
+      database.listPresenceVisitors(normalized.since, limit, offset),
+      database.countPresenceVisitors(null)
+    ]);
+    json(res, 200, {
+      ok: true, range, count, lifetimeCount, limit, offset, hasMore: offset + rows.length < count,
+      onlineWindowMs: ONLINE_WINDOW_MS, visitors: rows.map((row) => visitorSummary(row, now))
     });
     return true;
   }
 
   const detailMatch = /^\/api\/admin\/visitors\/([0-9a-f-]{8,64})$/i.exec(pathname);
-  if (detailMatch && req.method === 'GET') {
+  if (detailMatch) {
     const result = await database.getPresenceVisitor(detailMatch[1], 250);
-    if (!result) {
-      json(res, 404, { ok: false, error: 'visitor_not_found' });
-      return true;
-    }
+    if (!result) { json(res, 404, { ok: false, error: 'visitor_not_found' }); return true; }
     const visitor = visitorSummary(result.visitor, Date.now());
     visitor.account = result.visitor.user_id == null ? null : {
-      id: Number(result.visitor.user_id),
-      name: result.visitor.name || null,
-      email: result.visitor.email || null,
-      phone: result.visitor.known_phone || null,
-      createdAt: result.visitor.user_created_at == null ? null : Number(result.visitor.user_created_at),
+      id: Number(result.visitor.user_id), name: result.visitor.name || null, email: result.visitor.email || null,
+      phone: result.visitor.known_phone || null, createdAt: result.visitor.user_created_at == null ? null : Number(result.visitor.user_created_at),
       verifiedCustomer: Number(result.visitor.is_verified_customer || 0) === 1,
       verifiedCustomerAt: result.visitor.verified_customer_at == null ? null : Number(result.visitor.verified_customer_at),
-      orderCount: Number(result.visitor.order_count || 0),
-      paidOrderCount: Number(result.visitor.paid_order_count || 0),
-      reviewCount: Number(result.visitor.review_count || 0),
-      lastOrderAt: result.visitor.last_order_at == null ? null : Number(result.visitor.last_order_at),
+      orderCount: Number(result.visitor.order_count || 0), paidOrderCount: Number(result.visitor.paid_order_count || 0),
+      reviewCount: Number(result.visitor.review_count || 0), lastOrderAt: result.visitor.last_order_at == null ? null : Number(result.visitor.last_order_at),
       sessionCreatedAt: result.visitor.session_created_at == null ? null : Number(result.visitor.session_created_at),
       sessionExpiresAt: result.visitor.session_expires_at == null ? null : Number(result.visitor.session_expires_at)
     };
     const pageViews = result.pageViews.map((view) => ({
-      id: Number(view.id),
-      userId: view.user_id == null ? null : Number(view.user_id),
-      path: view.path,
-      title: view.title || null,
+      id: Number(view.id), userId: view.user_id == null ? null : Number(view.user_id), path: view.path, title: view.title || null,
       referrer: view.referrer || null,
-      utm: {
-        source: view.utm_source || null,
-        medium: view.utm_medium || null,
-        campaign: view.utm_campaign || null,
-        term: view.utm_term || null,
-        content: view.utm_content || null
-      },
+      utm: { source: view.utm_source || null, medium: view.utm_medium || null, campaign: view.utm_campaign || null, term: view.utm_term || null, content: view.utm_content || null },
       viewedAt: Number(view.viewed_at)
     }));
     json(res, 200, { ok: true, visitor, pageViews });
     return true;
   }
 
-  json(res, 405, { ok: false, error: 'method_not_allowed' });
+  json(res, 404, { ok: false, error: 'admin_route_not_found' });
   return true;
 }
 
 async function adminPage(req, res, pathname) {
-  if ((pathname !== '/admin' && pathname !== '/admin.html') || (req.method !== 'GET' && req.method !== 'HEAD')) return false;
+  const isLegacy = pathname === '/admin.html';
+  const slug = pathname === '/admin' ? '' : (pathname.startsWith('/admin/') ? pathname.slice('/admin/'.length) : null);
+  if (!isLegacy && slug === null) return false;
+  if (!isLegacy && !ADMIN_PAGES.has(slug)) return false;
+  if (req.method !== 'GET' && req.method !== 'HEAD') return false;
   const currentUser = await getCurrentUser(req);
   if (!currentUser) {
     redirect(res, '/login', 302);
