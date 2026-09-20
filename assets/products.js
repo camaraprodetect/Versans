@@ -9366,8 +9366,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -9395,8 +9395,8 @@ var PRODUCTS = [
       "en": "New Era X Los Angeles Dodgers X Jon Stan - Gray Angels Cap"
     },
     "subtitle": {
-      "he": "כובע אפור עם רקמות בולטות ועיצוב LA · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Gray cap with prominent embroidery and LA design · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע אפור עם רקמות בולטות ועיצוב LA · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Gray cap with prominent embroidery and LA design · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X Los Angeles Dodgers X Jon Stan - כובע מלאכים אפור",
@@ -9418,7 +9418,7 @@ var PRODUCTS = [
         "רקמה אחורית בסגנון Jon Stan",
         "מצחייה שטוחה",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Gray",
@@ -9427,12 +9427,12 @@ var PRODUCTS = [
         "Jon Stan-style rear embroidery",
         "Flat brim",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -9449,8 +9449,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -9478,8 +9478,8 @@ var PRODUCTS = [
       "en": "New Era X Los Angeles Dodgers X Jon Stan - Green Angels Cap"
     },
     "subtitle": {
-      "he": "כובע ירוק עם רקמות בולטות ועיצוב LA · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Green cap with prominent embroidery and LA design · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע ירוק עם רקמות בולטות ועיצוב LA · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Green cap with prominent embroidery and LA design · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X Los Angeles Dodgers X Jon Stan - כובע מלאכים ירוק",
@@ -9501,7 +9501,7 @@ var PRODUCTS = [
         "רקמה אחורית בסגנון Jon Stan",
         "מצחייה שטוחה",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Green",
@@ -9510,12 +9510,12 @@ var PRODUCTS = [
         "Jon Stan-style rear embroidery",
         "Flat brim",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -9532,8 +9532,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -9561,8 +9561,8 @@ var PRODUCTS = [
       "en": "New Era X Los Angeles Dodgers X Jon Stan - Brown Angels Cap"
     },
     "subtitle": {
-      "he": "כובע חום עם רקמות בולטות ועיצוב LA · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Brown cap with prominent embroidery and LA design · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע חום עם רקמות בולטות ועיצוב LA · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Brown cap with prominent embroidery and LA design · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X Los Angeles Dodgers X Jon Stan - כובע מלאכים חום",
@@ -9584,7 +9584,7 @@ var PRODUCTS = [
         "רקמה אחורית בסגנון Jon Stan",
         "מצחייה שטוחה",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Brown",
@@ -9593,12 +9593,12 @@ var PRODUCTS = [
         "Jon Stan-style rear embroidery",
         "Flat brim",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -9615,8 +9615,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -9644,8 +9644,8 @@ var PRODUCTS = [
       "en": "New Era X Jon Stan - Black Angels Cap"
     },
     "subtitle": {
-      "he": "כובע שחור עם רקמות בולטות ועיצוב NY · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Black cap with prominent embroidery and NY design · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע שחור עם רקמות בולטות ועיצוב NY · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black cap with prominent embroidery and NY design · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X Jon Stan - כובע מלאכים שחור",
@@ -9667,7 +9667,7 @@ var PRODUCTS = [
         "רקמה אחורית בסגנון Jon Stan",
         "מצחייה שטוחה",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Black",
@@ -9676,12 +9676,12 @@ var PRODUCTS = [
         "Jon Stan-style rear embroidery",
         "Flat brim",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -9698,8 +9698,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -9727,8 +9727,8 @@ var PRODUCTS = [
       "en": "New Era X Jon Stan - Red Angels Cap"
     },
     "subtitle": {
-      "he": "כובע אדום עם רקמות בולטות ועיצוב NY · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Red cap with prominent embroidery and NY design · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע אדום עם רקמות בולטות ועיצוב NY · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Red cap with prominent embroidery and NY design · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X Jon Stan - כובע מלאכים אדום",
@@ -9750,7 +9750,7 @@ var PRODUCTS = [
         "רקמה אחורית בסגנון Jon Stan",
         "מצחייה שטוחה",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Red",
@@ -9759,12 +9759,12 @@ var PRODUCTS = [
         "Jon Stan-style rear embroidery",
         "Flat brim",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -9781,8 +9781,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -9810,8 +9810,8 @@ var PRODUCTS = [
       "en": "New Era X Jon Stan - Yellow Angels Cap"
     },
     "subtitle": {
-      "he": "כובע צהוב עם רקמות בולטות ועיצוב NY · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Yellow cap with prominent embroidery and NY design · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע צהוב עם רקמות בולטות ועיצוב NY · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Yellow cap with prominent embroidery and NY design · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X Jon Stan - כובע מלאכים צהוב",
@@ -9833,7 +9833,7 @@ var PRODUCTS = [
         "רקמה אחורית בסגנון Jon Stan",
         "מצחייה שטוחה",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Yellow",
@@ -9842,12 +9842,12 @@ var PRODUCTS = [
         "Jon Stan-style rear embroidery",
         "Flat brim",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -9864,8 +9864,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -9893,8 +9893,8 @@ var PRODUCTS = [
       "en": "New Era X Jon Stan - Gray Angels Cap"
     },
     "subtitle": {
-      "he": "כובע אפור עם רקמות בולטות ועיצוב NY · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Gray cap with prominent embroidery and NY design · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע אפור עם רקמות בולטות ועיצוב NY · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Gray cap with prominent embroidery and NY design · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X Jon Stan - כובע מלאכים אפור",
@@ -9916,7 +9916,7 @@ var PRODUCTS = [
         "רקמה אחורית בסגנון Jon Stan",
         "מצחייה שטוחה",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Gray",
@@ -9925,12 +9925,12 @@ var PRODUCTS = [
         "Jon Stan-style rear embroidery",
         "Flat brim",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -9947,8 +9947,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -9976,8 +9976,8 @@ var PRODUCTS = [
       "en": "New Era X Jon Stan - Brown Angels Cap"
     },
     "subtitle": {
-      "he": "כובע חום עם רקמות בולטות ועיצוב NY · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Brown cap with prominent embroidery and NY design · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע חום עם רקמות בולטות ועיצוב NY · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Brown cap with prominent embroidery and NY design · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X Jon Stan - כובע מלאכים חום",
@@ -9999,7 +9999,7 @@ var PRODUCTS = [
         "רקמה אחורית בסגנון Jon Stan",
         "מצחייה שטוחה",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Brown",
@@ -10008,12 +10008,12 @@ var PRODUCTS = [
         "Jon Stan-style rear embroidery",
         "Flat brim",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -10030,8 +10030,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -10058,8 +10058,8 @@ var PRODUCTS = [
       "en": "New Era x Born x Raised Los Angeles Dodgers Cherub - Black Angels Cap"
     },
     "subtitle": {
-      "he": "כובע שחור עם רקמת LA לבנה ורקמות כרובים מסביב · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Black cap with white LA embroidery and cherub embroidery around the cap · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע שחור עם רקמת LA לבנה ורקמות כרובים מסביב · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black cap with white LA embroidery and cherub embroidery around the cap · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era x Born x Raised Los Angeles Dodgers Cherub - כובע מלאכים שחור",
@@ -10081,7 +10081,7 @@ var PRODUCTS = [
         "סגירת גב מלאה עם לוגו MLB",
         "מצחייה שטוחה",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Black",
@@ -10090,12 +10090,12 @@ var PRODUCTS = [
         "Closed back with MLB logo",
         "Flat brim",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -10112,8 +10112,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -10140,8 +10140,8 @@ var PRODUCTS = [
       "en": "New Era X Los Angeles Dodgers X MLB Mythical Royal Fitted - Blue"
     },
     "subtitle": {
-      "he": "כובע כחול עם רקמת LA לבנה ורקמות מיתולוגיות מסביב · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Blue fitted cap with white LA embroidery and mythical embroidery around the cap · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע כחול עם רקמת LA לבנה ורקמות מיתולוגיות מסביב · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Blue fitted cap with white LA embroidery and mythical embroidery around the cap · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X Los Angeles Dodgers X MLB Mythical Royal Fitted - צבע כחול",
@@ -10164,7 +10164,7 @@ var PRODUCTS = [
         "סגירת גב מלאה עם לוגו MLB",
         "מצחייה שטוחה",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Blue",
@@ -10174,12 +10174,12 @@ var PRODUCTS = [
         "Closed back with MLB logo",
         "Flat brim",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -10196,8 +10196,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -10224,8 +10224,8 @@ var PRODUCTS = [
       "en": "New Era X Los Angeles Dodgers X MLB Mythical Royal Fitted - Black"
     },
     "subtitle": {
-      "he": "כובע שחור עם רקמת LA לבנה ורקמות מיתולוגיות מסביב · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Black fitted cap with white LA embroidery and mythical embroidery around the cap · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע שחור עם רקמת LA לבנה ורקמות מיתולוגיות מסביב · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black fitted cap with white LA embroidery and mythical embroidery around the cap · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X Los Angeles Dodgers X MLB Mythical Royal Fitted - צבע שחור",
@@ -10248,7 +10248,7 @@ var PRODUCTS = [
         "סגירת גב מלאה עם לוגו MLB",
         "מצחייה שטוחה",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Black",
@@ -10258,12 +10258,12 @@ var PRODUCTS = [
         "Closed back with MLB logo",
         "Flat brim",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -10280,8 +10280,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -10308,8 +10308,8 @@ var PRODUCTS = [
       "en": "New Era X Los Angeles Dodgers X MLB Mythical Royal Fitted - Red"
     },
     "subtitle": {
-      "he": "כובע אדום עם רקמת NY לבנה ורקמות מיתולוגיות מסביב · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Red fitted cap with white NY embroidery and mythical embroidery around the cap · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע אדום עם רקמת NY לבנה ורקמות מיתולוגיות מסביב · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Red fitted cap with white NY embroidery and mythical embroidery around the cap · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X Los Angeles Dodgers X MLB Mythical Royal Fitted - צבע אדום",
@@ -10332,7 +10332,7 @@ var PRODUCTS = [
         "סגירת גב מלאה עם לוגו MLB",
         "מצחייה שטוחה",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Red",
@@ -10342,12 +10342,12 @@ var PRODUCTS = [
         "Closed back with MLB logo",
         "Flat brim",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -10364,8 +10364,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -10392,8 +10392,8 @@ var PRODUCTS = [
       "en": "NZMU \"State of Mind\" X New York Yankees - Black"
     },
     "subtitle": {
-      "he": "כובע שחור עם רקמת NY לבנה ועיטורי אש ורקמות אורבניות מסביב · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Black fitted cap with white NY embroidery, fire details and urban embroidery around the cap · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע שחור עם רקמת NY לבנה ועיטורי אש ורקמות אורבניות מסביב · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black fitted cap with white NY embroidery, fire details and urban embroidery around the cap · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "NZMU \"State of Mind\" X New York Yankees - צבע שחור",
@@ -10416,7 +10416,7 @@ var PRODUCTS = [
         "סגירת גב מלאה עם לוגו MLB",
         "מצחייה שטוחה",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Black",
@@ -10426,12 +10426,12 @@ var PRODUCTS = [
         "Closed back with MLB logo",
         "Flat brim",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -10448,8 +10448,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -10476,8 +10476,8 @@ var PRODUCTS = [
       "en": "NZMU \"State of Mind\" X New York Yankees - Dark Blue"
     },
     "subtitle": {
-      "he": "כובע כחול כהה עם רקמת NY לבנה ועיטורי אש ורקמות אורבניות מסביב · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Dark blue fitted cap with white NY embroidery, fire details and urban embroidery around the cap · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע כחול כהה עם רקמת NY לבנה ועיטורי אש ורקמות אורבניות מסביב · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Dark blue fitted cap with white NY embroidery, fire details and urban embroidery around the cap · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "NZMU \"State of Mind\" X New York Yankees - צבע כחול כהה",
@@ -10500,7 +10500,7 @@ var PRODUCTS = [
         "סגירת גב מלאה עם לוגו MLB",
         "מצחייה שטוחה",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Dark Blue",
@@ -10510,12 +10510,12 @@ var PRODUCTS = [
         "Closed back with MLB logo",
         "Flat brim",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -10532,8 +10532,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -10560,8 +10560,8 @@ var PRODUCTS = [
       "en": "New Era X New York Yankees X Subway Series - Rose Edition Black"
     },
     "subtitle": {
-      "he": "כובע שחור עם רקמת NY לבנה, ורד אדום ופאץ' Subway Series בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Black cap with white NY embroidery, red rose detail and a Subway Series side patch · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע שחור עם רקמת NY לבנה, ורד אדום ופאץ' Subway Series בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black cap with white NY embroidery, red rose detail and a Subway Series side patch · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X New York Yankees X Subway Series - Rose Edition צבע שחור",
@@ -10583,7 +10583,7 @@ var PRODUCTS = [
         "פאץ' Subway Series בצד",
         "מצחייה שטוחה",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Black",
@@ -10592,12 +10592,12 @@ var PRODUCTS = [
         "Subway Series side patch",
         "Flat brim",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -10614,8 +10614,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -10641,8 +10641,8 @@ var PRODUCTS = [
       "en": "New Era New York Yankees 'Rose Emblem' - Black"
     },
     "subtitle": {
-      "he": "כובע שחור עם רקמת NY לבנה ורקמות ורדים אדומות · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Black cap with white NY embroidery and red rose embroidery · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע שחור עם רקמת NY לבנה ורקמות ורדים אדומות · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black cap with white NY embroidery and red rose embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era New York Yankees 'Rose Emblem' - צבע שחור",
@@ -10664,7 +10664,7 @@ var PRODUCTS = [
         "סגירת Snapback מתכווננת",
         "מצחייה מעוקלת",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Black",
@@ -10673,12 +10673,12 @@ var PRODUCTS = [
         "Adjustable snapback closure",
         "Curved brim",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -10695,8 +10695,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -10722,8 +10722,8 @@ var PRODUCTS = [
       "en": "New Era New York Yankees 'Rose Emblem' - Turquoise Pink"
     },
     "subtitle": {
-      "he": "כובע טורקיז עם רקמת NY ורודה ורקמות ורדים אדומות · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Turquoise cap with pink NY embroidery and red rose embroidery · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע טורקיז עם רקמת NY ורודה ורקמות ורדים אדומות · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Turquoise cap with pink NY embroidery and red rose embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era New York Yankees 'Rose Emblem' - צבע טורקיז ורוד",
@@ -10746,7 +10746,7 @@ var PRODUCTS = [
         "סגירת Snapback מתכווננת",
         "מצחייה מעוקלת",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Turquoise",
@@ -10756,12 +10756,12 @@ var PRODUCTS = [
         "Adjustable snapback closure",
         "Curved brim",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -10778,8 +10778,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -10805,8 +10805,8 @@ var PRODUCTS = [
       "en": "New Era New York Yankees 'Rose Emblem' - Light Brown"
     },
     "subtitle": {
-      "he": "כובע חום בהיר עם רקמת NY לבנה ורקמות ורדים אדומות · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Light brown cap with white NY embroidery and red rose embroidery · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע חום בהיר עם רקמת NY לבנה ורקמות ורדים אדומות · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Light brown cap with white NY embroidery and red rose embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era New York Yankees 'Rose Emblem' - צבע חום בהיר",
@@ -10829,7 +10829,7 @@ var PRODUCTS = [
         "סגירת Snapback מתכווננת",
         "מצחייה מעוקלת",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Light Brown",
@@ -10839,12 +10839,12 @@ var PRODUCTS = [
         "Adjustable snapback closure",
         "Curved brim",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -10861,8 +10861,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -10890,8 +10890,8 @@ var PRODUCTS = [
       "en": "New Era New York Yankees \"One Love\" - Black"
     },
     "subtitle": {
-      "he": "כובע שחור עם רקמת NY לבנה, ורדים אדומים, דבורה ופרטי רקמה מסביב · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Black cap with white NY embroidery, red roses, a bee and detailed embroidery around the cap · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע שחור עם רקמת NY לבנה, ורדים אדומים, דבורה ופרטי רקמה מסביב · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black cap with white NY embroidery, red roses, a bee and detailed embroidery around the cap · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era New York Yankees \"One Love\" - צבע שחור",
@@ -10917,7 +10917,7 @@ var PRODUCTS = [
         "סגירת Snapback מתכווננת",
         "מצחייה מעוקלת",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Black",
@@ -10930,12 +10930,12 @@ var PRODUCTS = [
         "Adjustable snapback closure",
         "Curved brim",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -10952,8 +10952,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -10981,8 +10981,8 @@ var PRODUCTS = [
       "en": "New Era X New York Yankees X Subway Series X Chrome Rose Two Tone Edition - White"
     },
     "subtitle": {
-      "he": "כובע לבן-שחור עם רקמת NY לבנה, ורדי כרום שחור-לבן ופאץ' Subway Series · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "White and black cap with white NY embroidery, black-and-white chrome rose embroidery and a Subway Series patch · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע לבן-שחור עם רקמת NY לבנה, ורדי כרום שחור-לבן ופאץ' Subway Series · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "White and black cap with white NY embroidery, black-and-white chrome rose embroidery and a Subway Series patch · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X New York Yankees X Subway Series X Chrome Rose Two Tone Edition - צבע לבן",
@@ -11006,7 +11006,7 @@ var PRODUCTS = [
         "סגירת Snapback מתכווננת",
         "מצחייה מעוקלת",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: White with black brim",
@@ -11017,12 +11017,12 @@ var PRODUCTS = [
         "Adjustable snapback closure",
         "Curved brim",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -11039,8 +11039,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -11066,8 +11066,8 @@ var PRODUCTS = [
       "en": "New Era X New York Yankees X Sakura Black Prime Edition - Black"
     },
     "subtitle": {
-      "he": "כובע שחור בסגנון trucker עם רקמת NY לבנה ופרחי סאקורה ורודים · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Black trucker-style cap with white NY embroidery and pink sakura blossoms · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע שחור בסגנון trucker עם רקמת NY לבנה ופרחי סאקורה ורודים · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black trucker-style cap with white NY embroidery and pink sakura blossoms · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X New York Yankees X Sakura Black Prime Edition - צבע שחור",
@@ -11091,7 +11091,7 @@ var PRODUCTS = [
         "סגירת Snapback מתכווננת",
         "מצחייה מעוקלת",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Black",
@@ -11102,12 +11102,12 @@ var PRODUCTS = [
         "Adjustable snapback closure",
         "Curved brim",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -11124,8 +11124,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -11152,8 +11152,8 @@ var PRODUCTS = [
       "en": "New Era X New York Yankees - Camo"
     },
     "subtitle": {
-      "he": "כובע ניו יורק יאנקיז בהדפס צבאי עם רקמת NY לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "New York Yankees cap in camo print with white NY embroidery · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע ניו יורק יאנקיז בהדפס צבאי עם רקמת NY לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "New York Yankees cap in camo print with white NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X New York Yankees - צבע צבאי",
@@ -11177,7 +11177,7 @@ var PRODUCTS = [
         "סגירת Snapback מתכווננת",
         "מצחייה שטוחה",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Camo",
@@ -11188,12 +11188,12 @@ var PRODUCTS = [
         "Adjustable snapback closure",
         "Flat brim",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -11210,8 +11210,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -11238,8 +11238,8 @@ var PRODUCTS = [
       "en": "New Era New York Yankees Ocean Sakura Edition - Dark Blue Pink"
     },
     "subtitle": {
-      "he": "כובע ניו יורק יאנקיז בצבע כחול כהה עם מצחייה ורודה, רקמת NY לבנה ופרחי סאקורה ורודים · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "New York Yankees cap in dark blue with a pink brim, white NY embroidery and pink sakura blossoms · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע ניו יורק יאנקיז בצבע כחול כהה עם מצחייה ורודה, רקמת NY לבנה ופרחי סאקורה ורודים · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "New York Yankees cap in dark blue with a pink brim, white NY embroidery and pink sakura blossoms · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era New York Yankees Ocean Sakura Edition - צבע כחול כהה ורוד",
@@ -11263,7 +11263,7 @@ var PRODUCTS = [
         "סגירת Snapback מתכווננת",
         "מצחייה מעוקלת",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Dark blue with pink brim",
@@ -11274,12 +11274,12 @@ var PRODUCTS = [
         "Adjustable snapback closure",
         "Curved brim",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -11296,8 +11296,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -11323,8 +11323,8 @@ var PRODUCTS = [
       "en": "New Era New York Yankees Black Rose Subway Series - Black"
     },
     "subtitle": {
-      "he": "כובע שחור עם רקמת NY שחורה, עיטור ורד מונוכרומטי ופאץ' Subway Series · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Black cap with black NY embroidery, monochrome rose detailing and a Subway Series patch · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע שחור עם רקמת NY שחורה, עיטור ורד מונוכרומטי ופאץ' Subway Series · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black cap with black NY embroidery, monochrome rose detailing and a Subway Series patch · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era New York Yankees Black Rose Subway Series - צבע שחור",
@@ -11348,7 +11348,7 @@ var PRODUCTS = [
         "סגירת Snapback מתכווננת",
         "מצחייה מעוקלת",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Black",
@@ -11359,12 +11359,12 @@ var PRODUCTS = [
         "Adjustable snapback closure",
         "Curved brim",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -11381,8 +11381,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -11408,8 +11408,8 @@ var PRODUCTS = [
       "en": "New Era X '47 New York Yankees MVP Cap - Black"
     },
     "subtitle": {
-      "he": "כובע ניו יורק יאנקיז שחור עם רקמת NY לבנה בסגנון MVP · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Black New York Yankees MVP-style cap with white NY embroidery · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע ניו יורק יאנקיז שחור עם רקמת NY לבנה בסגנון MVP · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black New York Yankees MVP-style cap with white NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X '47 New York Yankees MVP Cap - צבע שחור",
@@ -11432,7 +11432,7 @@ var PRODUCTS = [
         "סגירה מתכווננת",
         "מצחייה מעוקלת",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Black",
@@ -11442,12 +11442,12 @@ var PRODUCTS = [
         "Adjustable closure",
         "Curved brim",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -11464,8 +11464,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -11492,8 +11492,8 @@ var PRODUCTS = [
       "en": "New Era X New York Yankees X Subway Series Black Prime Edition - Black"
     },
     "subtitle": {
-      "he": "כובע שחור עם רקמת NY לבנה בחזית, עיטור פריים כהה ופאץ' Subway Series אדום-שחור בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Black cap with white NY embroidery, dark prime detailing and a red-black Subway Series side patch · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע שחור עם רקמת NY לבנה בחזית, עיטור פריים כהה ופאץ' Subway Series אדום-שחור בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black cap with white NY embroidery, dark prime detailing and a red-black Subway Series side patch · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X New York Yankees X Subway Series Black Prime Edition - צבע שחור",
@@ -11517,7 +11517,7 @@ var PRODUCTS = [
         "סגירת Snapback מתכווננת",
         "מצחייה מעוקלת",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Black",
@@ -11528,12 +11528,12 @@ var PRODUCTS = [
         "Adjustable snapback closure",
         "Curved brim",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -11550,8 +11550,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -11577,8 +11577,8 @@ var PRODUCTS = [
       "en": "New Era X MLB New York Yankees World Series 1996 - White Green"
     },
     "subtitle": {
-      "he": "כובע קורדרוי בגוון לבן-שמנת עם לוגו NY כחול כהה בחזית, מצחייה ירוקה ופאץ' World Series בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Cream corduroy cap with a dark navy NY logo on the front, a green brim and a World Series side patch · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע קורדרוי בגוון לבן-שמנת עם לוגו NY כחול כהה בחזית, מצחייה ירוקה ופאץ' World Series בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Cream corduroy cap with a dark navy NY logo on the front, a green brim and a World Series side patch · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X MLB New York Yankees World Series 1996 - צבע לבן ירוק",
@@ -11602,7 +11602,7 @@ var PRODUCTS = [
         "לוגו New Era לבן בצד האחורי",
         "סגירת Snapback מתכווננת",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: White Green",
@@ -11613,12 +11613,12 @@ var PRODUCTS = [
         "White New Era logo on the rear side",
         "Adjustable snapback closure",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -11635,8 +11635,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -11663,8 +11663,8 @@ var PRODUCTS = [
       "en": "New Era X New York Yankees X World Series 1999 Chrome Metallic Two Tone Edition - White Gray"
     },
     "subtitle": {
-      "he": "כובע בגוון לבן-שמנת עם מצחייה אפורה, רקמת NY מטאלית בגוון שמנת ופאץ' World Series 1999 בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Cream-white cap with a gray brim, metallic cream NY embroidery on the front and a 1999 World Series side patch · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע בגוון לבן-שמנת עם מצחייה אפורה, רקמת NY מטאלית בגוון שמנת ופאץ' World Series 1999 בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Cream-white cap with a gray brim, metallic cream NY embroidery on the front and a 1999 World Series side patch · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X New York Yankees X World Series 1999 Chrome Metallic Two Tone Edition - צבע לבן אפור",
@@ -11687,7 +11687,7 @@ var PRODUCTS = [
         "לוגו New Era לבן בצד האחורי",
         "סגירת Snapback מתכווננת",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: White Gray",
@@ -11697,12 +11697,12 @@ var PRODUCTS = [
         "White New Era logo on the rear side",
         "Adjustable snapback closure",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -11719,8 +11719,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -11747,8 +11747,8 @@ var PRODUCTS = [
       "en": "New Era X New York Yankees X World Series 1998 Chrome Gold Edition - White Blue"
     },
     "subtitle": {
-      "he": "כובע בגוון לבן-שמנת עם מצחייה כחולה, רקמת NY בגוון כחול מטאלי ופאץ' World Series 1998 בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Cream-white cap with a blue brim, metallic blue NY embroidery on the front and a 1998 World Series side patch · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע בגוון לבן-שמנת עם מצחייה כחולה, רקמת NY בגוון כחול מטאלי ופאץ' World Series 1998 בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Cream-white cap with a blue brim, metallic blue NY embroidery on the front and a 1998 World Series side patch · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X New York Yankees X World Series 1998 Chrome Gold Edition - צבע לבן כחול",
@@ -11771,7 +11771,7 @@ var PRODUCTS = [
         "לוגו New Era כחול בצד האחורי",
         "סגירת Snapback מתכווננת",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: White Blue",
@@ -11781,12 +11781,12 @@ var PRODUCTS = [
         "Blue New Era logo on the rear side",
         "Adjustable snapback closure",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -11803,8 +11803,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -11831,8 +11831,8 @@ var PRODUCTS = [
       "en": "New Era X Anaheim Angels X All Star Game 2010 Cupid Chrome Two Tone Edition - White Black Red"
     },
     "subtitle": {
-      "he": "כובע בגוון לבן-שמנת עם מצחייה שחורה, רקמת A אדומה של Anaheim Angels בחזית, רקמות כרובים ופאץ' All-Star Game 2010 בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Cream-white cap with a black brim, a red Anaheim Angels A embroidery on the front, cupid embroidery details and a 2010 All-Star Game side patch · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע בגוון לבן-שמנת עם מצחייה שחורה, רקמת A אדומה של Anaheim Angels בחזית, רקמות כרובים ופאץ' All-Star Game 2010 בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Cream-white cap with a black brim, a red Anaheim Angels A embroidery on the front, cupid embroidery details and a 2010 All-Star Game side patch · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X Anaheim Angels X All Star Game 2010 Cupid Chrome Two Tone Edition - צבע לבן שחור אדום",
@@ -11856,7 +11856,7 @@ var PRODUCTS = [
         "לוגו New Era שחור בצד האחורי",
         "סגירת Snapback מתכווננת",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: White Black Red",
@@ -11867,12 +11867,12 @@ var PRODUCTS = [
         "Black New Era logo on the rear side",
         "Adjustable snapback closure",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -11889,8 +11889,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -11917,8 +11917,8 @@ var PRODUCTS = [
       "en": "New Era X Anaheim Angels X Cupids Black Prime Edition - Black"
     },
     "subtitle": {
-      "he": "כובע שחור בגימור פריים עם גב רשת שחור, רקמת A לבנה של Anaheim Angels בחזית ורקמות כרובים לבנות משני הצדדים · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Black prime-finish cap with a black mesh back, white Anaheim Angels A embroidery on the front and white cupid embroidery on both sides · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע שחור בגימור פריים עם גב רשת שחור, רקמת A לבנה של Anaheim Angels בחזית ורקמות כרובים לבנות משני הצדדים · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black prime-finish cap with a black mesh back, white Anaheim Angels A embroidery on the front and white cupid embroidery on both sides · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X Anaheim Angels X Cupids Black Prime Edition - צבע שחור",
@@ -11941,7 +11941,7 @@ var PRODUCTS = [
         "לוגו New Era לבן בצד",
         "סגירת Snapback מתכווננת",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Black",
@@ -11951,12 +11951,12 @@ var PRODUCTS = [
         "White New Era logo on the side",
         "Adjustable snapback closure",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -11973,8 +11973,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -12001,8 +12001,8 @@ var PRODUCTS = [
       "en": "New Era X Anaheim Angels X All Star Game 2010 Cupids Black Prime Edition - Black Gold"
     },
     "subtitle": {
-      "he": "כובע שחור בגימור פריים עם רקמת A שחורה בחזית, הילה מוזהבת מעל הלוגו, רקמות כרובים מוזהבות ופרט All-Star Game 2010 טונאלי בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Black prime-finish cap with a black Anaheim Angels A embroidery on the front, a gold halo above the logo, gold cupid embroidery details and a tonal 2010 All-Star Game side detail · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע שחור בגימור פריים עם רקמת A שחורה בחזית, הילה מוזהבת מעל הלוגו, רקמות כרובים מוזהבות ופרט All-Star Game 2010 טונאלי בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black prime-finish cap with a black Anaheim Angels A embroidery on the front, a gold halo above the logo, gold cupid embroidery details and a tonal 2010 All-Star Game side detail · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X Anaheim Angels X All Star Game 2010 Cupids Black Prime Edition - צבע שחור זהב",
@@ -12026,7 +12026,7 @@ var PRODUCTS = [
         "פרט All-Star Game 2010 טונאלי בצד",
         "סגירת Snapback מתכווננת",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Black Gold",
@@ -12037,12 +12037,12 @@ var PRODUCTS = [
         "Tonal All-Star Game 2010 side detail",
         "Adjustable snapback closure",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -12059,8 +12059,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -12087,8 +12087,8 @@ var PRODUCTS = [
       "en": "New Era X Anaheim Angels X 20th Anniversary World Champions Edition - Black"
     },
     "subtitle": {
-      "he": "כובע שחור עם רקמת A בגווני לבן ואפור בחזית ופאץ' World Champions 20th Anniversary בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Black cap with white and gray Anaheim Angels A embroidery on the front and a World Champions 20th Anniversary side patch · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע שחור עם רקמת A בגווני לבן ואפור בחזית ופאץ' World Champions 20th Anniversary בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black cap with white and gray Anaheim Angels A embroidery on the front and a World Champions 20th Anniversary side patch · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X Anaheim Angels X 20th Anniversary World Champions Edition - צבע שחור",
@@ -12111,7 +12111,7 @@ var PRODUCTS = [
         "לוגו New Era רקום בצד האחורי",
         "סגירת Snapback מתכווננת",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Black",
@@ -12121,12 +12121,12 @@ var PRODUCTS = [
         "Embroidered New Era logo on the rear side",
         "Adjustable snapback closure",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -12143,8 +12143,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -12170,8 +12170,8 @@ var PRODUCTS = [
       "en": "New Era X Anaheim Angels X Core Classic Alternate - Red Navy"
     },
     "subtitle": {
-      "he": "כובע אדום עם מצחייה כחול כהה, רקמת Anaheim Angels A בחזית, לוגו New Era לבן בצד וסגירה מתכווננת בגב · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Red cap with a navy brim, Anaheim Angels A embroidery on the front, white New Era side logo and an adjustable back closure · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע אדום עם מצחייה כחול כהה, רקמת Anaheim Angels A בחזית, לוגו New Era לבן בצד וסגירה מתכווננת בגב · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Red cap with a navy brim, Anaheim Angels A embroidery on the front, white New Era side logo and an adjustable back closure · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X Anaheim Angels X Core Classic Alternate - צבע אדום כחול כהה",
@@ -12194,7 +12194,7 @@ var PRODUCTS = [
         "רצועת סגירה אחורית עם פאץ' Angels",
         "סגירה מתכווננת",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Red Navy",
@@ -12204,12 +12204,12 @@ var PRODUCTS = [
         "Rear closure strap with Angels patch",
         "Adjustable closure",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -12226,8 +12226,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -12254,8 +12254,8 @@ var PRODUCTS = [
       "en": "New Era X Atlanta Braves Ocean Sakura Edition - Navy Pink"
     },
     "subtitle": {
-      "he": "כובע כחול כהה עם רקמת A בגוון שמנת בחזית, רקמות פריחת סאקורה ורודות מסביב ללוגו ובצד וסגירת Snapback מתכווננת · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Navy cap with cream A embroidery on the front, pink sakura blossom embroidery around the logo and on the side, plus an adjustable snapback closure · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע כחול כהה עם רקמת A בגוון שמנת בחזית, רקמות פריחת סאקורה ורודות מסביב ללוגו ובצד וסגירת Snapback מתכווננת · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Navy cap with cream A embroidery on the front, pink sakura blossom embroidery around the logo and on the side, plus an adjustable snapback closure · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X Atlanta Braves Ocean Sakura Edition - צבע כחול כהה ורוד",
@@ -12278,7 +12278,7 @@ var PRODUCTS = [
         "לוגו New Era ורוד בהיר בצד האחורי",
         "סגירת Snapback מתכווננת",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Navy Pink",
@@ -12288,12 +12288,12 @@ var PRODUCTS = [
         "Light pink New Era logo on the rear side",
         "Adjustable snapback closure",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -12310,8 +12310,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -12337,8 +12337,8 @@ var PRODUCTS = [
       "en": "New Era X Milwaukee Bucks X Chrome White Tree Edge Two Tone - White Camo"
     },
     "subtitle": {
-      "he": "כובע לבן-שמנת של Milwaukee Bucks עם לוגו האייל בשחור וזהב, מצחייה בדוגמת צבאי ופרטי NBA בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Cream-white Milwaukee Bucks cap with black-and-gold deer logo, camouflage-pattern brim and NBA side details · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע לבן-שמנת של Milwaukee Bucks עם לוגו האייל בשחור וזהב, מצחייה בדוגמת צבאי ופרטי NBA בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Cream-white Milwaukee Bucks cap with black-and-gold deer logo, camouflage-pattern brim and NBA side details · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X Milwaukee Bucks X Chrome White Tree Edge Two Tone - צבע לבן צבאי",
@@ -12361,7 +12361,7 @@ var PRODUCTS = [
         "פאץ' NBA שחור-זהב בצד",
         "סגירת Snapback מתכווננת",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: White Camo",
@@ -12371,12 +12371,12 @@ var PRODUCTS = [
         "Black-and-gold NBA side patch",
         "Adjustable snapback closure",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -12393,8 +12393,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -12420,8 +12420,8 @@ var PRODUCTS = [
       "en": "New Era X Milwaukee Bucks X Contrast Stitch - Black Green"
     },
     "subtitle": {
-      "he": "כובע שחור שטוח של Milwaukee Bucks עם תפרי קונטרסט לבנים, לוגו האייל בירוק ושמנת בחזית וסגירת Snapback בגב · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Black flat-brim Milwaukee Bucks cap with white contrast stitching, green-and-cream deer logo on the front and a snapback closure at the back · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע שחור שטוח של Milwaukee Bucks עם תפרי קונטרסט לבנים, לוגו האייל בירוק ושמנת בחזית וסגירת Snapback בגב · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black flat-brim Milwaukee Bucks cap with white contrast stitching, green-and-cream deer logo on the front and a snapback closure at the back · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X Milwaukee Bucks X Contrast Stitch - צבע שחור ירוק",
@@ -12444,7 +12444,7 @@ var PRODUCTS = [
         "לוגו NBA רקום בגב",
         "סגירת Snapback מתכווננת",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Black Green",
@@ -12454,12 +12454,12 @@ var PRODUCTS = [
         "Embroidered NBA logo on the back",
         "Adjustable snapback closure",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -12476,8 +12476,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -12504,8 +12504,8 @@ var PRODUCTS = [
       "en": "New Era X Milwaukee Bucks X NBA Chrome White Tree Edge Two Tone Gray - Dark Green"
     },
     "subtitle": {
-      "he": "כובע Milwaukee Bucks בגוון ירוק כהה עם לוגו האייל בחזית, סגירת Snapback בגב וטלאי BUCKS מאחור · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Dark green Milwaukee Bucks cap with the deer logo on the front, a snapback closure at the back and a BUCKS patch on the rear strap · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע Milwaukee Bucks בגוון ירוק כהה עם לוגו האייל בחזית, סגירת Snapback בגב וטלאי BUCKS מאחור · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Dark green Milwaukee Bucks cap with the deer logo on the front, a snapback closure at the back and a BUCKS patch on the rear strap · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X Milwaukee Bucks X NBA Chrome White Tree Edge Two Tone Gray - צבע ירוק כהה",
@@ -12528,7 +12528,7 @@ var PRODUCTS = [
         "טלאי BUCKS משולב ברצועת הסגירה האחורית",
         "סגירת Snapback מתכווננת",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Dark Green",
@@ -12538,12 +12538,12 @@ var PRODUCTS = [
         "BUCKS patch integrated into the rear closure strap",
         "Adjustable snapback closure",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -12560,8 +12560,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -12587,8 +12587,8 @@ var PRODUCTS = [
       "en": "New Era X Milwaukee Bucks X Essentials Maple Green Black - Green Black"
     },
     "subtitle": {
-      "he": "כובע Milwaukee Bucks בגווני ירוק ושחור עם רשת שחורה בצדדים, לוגו האייל בחזית וסגירת Snapback מתכווננת · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Green and black Milwaukee Bucks cap with black side mesh, the Bucks deer logo on the front and an adjustable snapback closure · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע Milwaukee Bucks בגווני ירוק ושחור עם רשת שחורה בצדדים, לוגו האייל בחזית וסגירת Snapback מתכווננת · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Green and black Milwaukee Bucks cap with black side mesh, the Bucks deer logo on the front and an adjustable snapback closure · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X Milwaukee Bucks X Essentials Maple Green Black - צבע ירוק שחור",
@@ -12611,7 +12611,7 @@ var PRODUCTS = [
         "תג NBA בצד ותג FAM. בצד השני",
         "סגירת Snapback מתכווננת",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Green Black",
@@ -12621,12 +12621,12 @@ var PRODUCTS = [
         "NBA side patch and FAM. side detail",
         "Adjustable snapback closure",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -12643,8 +12643,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -12670,8 +12670,8 @@ var PRODUCTS = [
       "en": "New Era X MLB Atlanta Braves X '47 MVP Wool Blend Navy Road - Dark Blue"
     },
     "subtitle": {
-      "he": "כובע Atlanta Braves בגוון כחול כהה עם רקמת A לבנה בחזית, לוגו 47 לבן בצד וסגירת רצועה מתכווננת עם אבזם זהוב בגב · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Dark blue Atlanta Braves cap with a white A embroidery on the front, a white 47 side logo and an adjustable rear strap with a gold-tone buckle · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע Atlanta Braves בגוון כחול כהה עם רקמת A לבנה בחזית, לוגו 47 לבן בצד וסגירת רצועה מתכווננת עם אבזם זהוב בגב · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Dark blue Atlanta Braves cap with a white A embroidery on the front, a white 47 side logo and an adjustable rear strap with a gold-tone buckle · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X MLB Atlanta Braves X '47 MVP Wool Blend Navy Road - צבע כחול כהה",
@@ -12694,7 +12694,7 @@ var PRODUCTS = [
         "סגירת רצועה אחורית מתכווננת עם אבזם מתכתי זהוב",
         "בד במראה Wool Blend",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Dark Blue",
@@ -12704,12 +12704,12 @@ var PRODUCTS = [
         "Adjustable rear strap with a gold-tone metal buckle",
         "Wool blend-look fabric",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -12726,8 +12726,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -12753,8 +12753,8 @@ var PRODUCTS = [
       "en": "New Era X Atlanta Braves 150th Anniversary Two Tone - Grey Black"
     },
     "subtitle": {
-      "he": "כובע Atlanta Braves בגוון אפור עם מצחייה שחורה, רקמת A לבנה בחזית ופאץ' 150 שנה בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Grey Atlanta Braves cap with a black visor, a white A embroidery on the front and a 150th anniversary side patch · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע Atlanta Braves בגוון אפור עם מצחייה שחורה, רקמת A לבנה בחזית ופאץ' 150 שנה בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Grey Atlanta Braves cap with a black visor, a white A embroidery on the front and a 150th anniversary side patch · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X Atlanta Braves 150th Anniversary Two Tone - צבע אפור שחור",
@@ -12777,7 +12777,7 @@ var PRODUCTS = [
         "סמל FAM מתכתי קטן בצד",
         "סגירת Snapback אחורית מתכווננת",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Grey Black",
@@ -12787,12 +12787,12 @@ var PRODUCTS = [
         "Small metal FAM side emblem",
         "Adjustable rear snapback closure",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -12809,8 +12809,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -12836,8 +12836,8 @@ var PRODUCTS = [
       "en": "New Era X Atlanta Braves X 1995 World Series Sidepatch - Dark Blue"
     },
     "subtitle": {
-      "he": "כובע Atlanta Braves בגוון כחול כהה עם רקמת A לבנה בחזית ופאץ' 1995 World Series בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Dark blue Atlanta Braves cap with a white A embroidery on the front and a 1995 World Series side patch · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע Atlanta Braves בגוון כחול כהה עם רקמת A לבנה בחזית ופאץ' 1995 World Series בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Dark blue Atlanta Braves cap with a white A embroidery on the front and a 1995 World Series side patch · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X Atlanta Braves X 1995 World Series Sidepatch - צבע כחול כהה",
@@ -12859,7 +12859,7 @@ var PRODUCTS = [
         "פאץ' 1995 World Series בצד",
         "סגירת Snapback אחורית מתכווננת",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Dark Blue",
@@ -12868,12 +12868,12 @@ var PRODUCTS = [
         "1995 World Series side patch",
         "Adjustable rear snapback closure",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -12890,8 +12890,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -12917,8 +12917,8 @@ var PRODUCTS = [
       "en": "New Era X Oakland Athletics X Cupids Black Prime Edition - Black"
     },
     "subtitle": {
-      "he": "כובע Oakland Athletics שחור עם רקמת A's לבנה ועיטורי קופידון בחזית, גב רשת שחור וסגירת Snapback מתכווננת · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Black Oakland Athletics cap with white A's embroidery and cupid details on the front, black mesh back and an adjustable snapback closure · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע Oakland Athletics שחור עם רקמת A's לבנה ועיטורי קופידון בחזית, גב רשת שחור וסגירת Snapback מתכווננת · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black Oakland Athletics cap with white A's embroidery and cupid details on the front, black mesh back and an adjustable snapback closure · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X Oakland Athletics X Cupids Black Prime Edition - צבע שחור",
@@ -12941,7 +12941,7 @@ var PRODUCTS = [
         "גב רשת שחור",
         "סגירת Snapback אחורית מתכווננת",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Black",
@@ -12951,12 +12951,12 @@ var PRODUCTS = [
         "Black mesh back",
         "Adjustable rear snapback closure",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -12973,8 +12973,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -13000,8 +13000,8 @@ var PRODUCTS = [
       "en": "New Era X Oakland Athletics X Navy Corduroy Special Edition - Dark Blue Cream"
     },
     "subtitle": {
-      "he": "כובע Oakland Athletics בגוון כחול כהה מבד קורדרוי עם רקמת A בגוון שמנת בחזית, גב רשת שמנת וסגירת Snapback מתכווננת · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Dark blue corduroy Oakland Athletics cap with a cream A embroidery on the front, cream mesh back and an adjustable snapback closure · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע Oakland Athletics בגוון כחול כהה מבד קורדרוי עם רקמת A בגוון שמנת בחזית, גב רשת שמנת וסגירת Snapback מתכווננת · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Dark blue corduroy Oakland Athletics cap with a cream A embroidery on the front, cream mesh back and an adjustable snapback closure · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X Oakland Athletics X Navy Corduroy Special Edition - צבע כחול כהה שמנת",
@@ -13025,7 +13025,7 @@ var PRODUCTS = [
         "עיטורי צד רקומים",
         "סגירת Snapback אחורית מתכווננת",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Dark blue and cream",
@@ -13036,12 +13036,12 @@ var PRODUCTS = [
         "Embroidered side details",
         "Adjustable rear snapback closure",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -13058,8 +13058,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -13085,8 +13085,8 @@ var PRODUCTS = [
       "en": "New Era X Oakland Athletics X Team Script Back - Dark Green"
     },
     "subtitle": {
-      "he": "כובע Oakland Athletics בגוון ירוק כהה עם רקמת A's לבנה עם מסגרת צהובה בחזית, רקמת Athletics בגב וסגירת Snapback מתכווננת · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Dark green Oakland Athletics cap with white A's embroidery outlined in yellow on the front, Athletics script embroidery on the back and an adjustable snapback closure · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע Oakland Athletics בגוון ירוק כהה עם רקמת A's לבנה עם מסגרת צהובה בחזית, רקמת Athletics בגב וסגירת Snapback מתכווננת · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Dark green Oakland Athletics cap with white A's embroidery outlined in yellow on the front, Athletics script embroidery on the back and an adjustable snapback closure · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X Oakland Athletics X Team Script Back - צבע ירוק כהה",
@@ -13109,7 +13109,7 @@ var PRODUCTS = [
         "לוגו New Era רקום בצד",
         "סגירת Snapback אחורית מתכווננת",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Dark green",
@@ -13119,12 +13119,12 @@ var PRODUCTS = [
         "Embroidered New Era side logo",
         "Adjustable rear snapback closure",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -13141,8 +13141,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -13168,8 +13168,8 @@ var PRODUCTS = [
       "en": "New Era X Oakland Athletics X 1989 World Series Patch - Black"
     },
     "subtitle": {
-      "he": "כובע Oakland Athletics בצבע שחור עם רקמת A's לבנה בחזית ופאץ' 1989 World Series בצד, כולל סגירת Snapback מתכווננת · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Black Oakland Athletics cap with white A's front embroidery and a 1989 World Series side patch, featuring an adjustable snapback closure · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע Oakland Athletics בצבע שחור עם רקמת A's לבנה בחזית ופאץ' 1989 World Series בצד, כולל סגירת Snapback מתכווננת · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black Oakland Athletics cap with white A's front embroidery and a 1989 World Series side patch, featuring an adjustable snapback closure · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X Oakland Athletics X 1989 World Series Patch - צבע שחור",
@@ -13191,7 +13191,7 @@ var PRODUCTS = [
         "פאץ' 1989 World Series בצד",
         "סגירת Snapback אחורית מתכווננת",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Black",
@@ -13200,12 +13200,12 @@ var PRODUCTS = [
         "1989 World Series side patch",
         "Adjustable rear snapback closure",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -13222,8 +13222,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -13250,8 +13250,8 @@ var PRODUCTS = [
       "en": "New Era X Oakland Athletics X Rickey Henderson Field - Dark Green"
     },
     "subtitle": {
-      "he": "כובע Oakland Athletics בגוון ירוק כהה עם רקמת פיל ובייסבולים בחזית ופאץ' Rickey Henderson Field בצד, כולל סגירת Snapback מתכווננת · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Dark green Oakland Athletics cap with elephant and crossed bats embroidery on the front plus a Rickey Henderson Field side patch, featuring an adjustable snapback closure · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע Oakland Athletics בגוון ירוק כהה עם רקמת פיל ובייסבולים בחזית ופאץ' Rickey Henderson Field בצד, כולל סגירת Snapback מתכווננת · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Dark green Oakland Athletics cap with elephant and crossed bats embroidery on the front plus a Rickey Henderson Field side patch, featuring an adjustable snapback closure · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X Oakland Athletics X Rickey Henderson Field - צבע ירוק כהה",
@@ -13274,7 +13274,7 @@ var PRODUCTS = [
         "לוגו New Era רקום בצד",
         "סגירת Snapback אחורית מתכווננת",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: Dark green",
@@ -13284,12 +13284,12 @@ var PRODUCTS = [
         "Embroidered New Era side logo",
         "Adjustable rear snapback closure",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -13306,8 +13306,8 @@ var PRODUCTS = [
       "hats"
     ],
     "badge": {
-      "he": "1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
     "cardMode": "view",
     "hideMessageCard": true,
@@ -13334,8 +13334,8 @@ var PRODUCTS = [
       "en": "New Era X Oakland Athletics X 50th Anniversary X Chrome Two Tone Edition - White Dark Green"
     },
     "subtitle": {
-      "he": "כובע Oakland Athletics במהדורת Chrome Two Tone עם כתר לבן ומצחייה ירוק כהה, רקמת פיל ובייסבולים בחזית ופאץ' 50th Anniversary בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-      "en": "Oakland Athletics Chrome Two Tone cap with a white crown and dark green brim, featuring elephant and crossed bats embroidery on the front plus a 50th Anniversary side patch · ₪139.90 each · all hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+      "he": "כובע Oakland Athletics במהדורת Chrome Two Tone עם כתר לבן ומצחייה ירוק כהה, רקמת פיל ובייסבולים בחזית ופאץ' 50th Anniversary בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Oakland Athletics Chrome Two Tone cap with a white crown and dark green brim, featuring elephant and crossed bats embroidery on the front plus a 50th Anniversary side patch · ₪139.90 each · all hats offer: 2 for ₪239.90"
     },
     "cardTitle": {
       "he": "New Era X Oakland Athletics X 50th Anniversary X Chrome Two Tone Edition - צבע לבן ירוק כהה",
@@ -13359,7 +13359,7 @@ var PRODUCTS = [
         "לוגו New Era רקום בצד",
         "סגירת Snapback אחורית מתכווננת",
         "מחיר ליחידה: 139.90 ₪",
-        "מבצע לכל הכובעים: 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
       ],
       "en": [
         "Color: White dark green",
@@ -13370,12 +13370,12 @@ var PRODUCTS = [
         "Embroidered New Era side logo",
         "Adjustable rear snapback closure",
         "Single price: ₪139.90",
-        "All hats offer: 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90"
+        "All hats offer: 2 for ₪239.90"
       ]
     },
     "afterText": {
-      "he": "מבצע הכובעים: 1 ב־139.90 ₪, 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪, 3 ב־299.90 ₪. המבצע חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-      "en": "Hats offer: 1 for ₪139.90, 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90, 3 for ₪299.90. The offer applies across the hats collection and can be mixed between different hat styles."
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
     },
     "deliveryBusinessDays": {
       "min": 9,

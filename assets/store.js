@@ -469,11 +469,6 @@
       watchesBanner.hidden = !(state.filter === 'watches' || state.filter.indexOf('watches-') === 0);
     }
 
-    var hatsBanner = $('#hatsCollectionBanner');
-    if (hatsBanner) {
-      hatsBanner.hidden = !(state.filter === 'hats');
-    }
-
     var greetingCustomCollectionBanner = $('#greetingCustomCollectionBanner');
     if (greetingCustomCollectionBanner) {
       greetingCustomCollectionBanner.hidden = !(
@@ -487,7 +482,8 @@
         state.filter === 'all' ||
         state.filter === 'necklaces' ||
         state.filter === 'bracelets' ||
-        state.filter === 'photo-bracelets';
+        state.filter === 'photo-bracelets' ||
+        state.filter === 'hats';
       otherCollectionsBanner.hidden = !showOtherCollectionsBanner;
     }
 
@@ -672,16 +668,16 @@
   }
 
   function renderProductCardHTML(p) {
-    var badge = L(p.badge);
-    var cardCollections = Array.isArray(p.categories) && p.categories.length ? p.categories : [p.category];
-    var isHat = cardCollections.indexOf('hats') !== -1;
-    if (isHat) badge = state.lang === 'he' ? '1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪' : '1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90';
+    var isHat = ((Array.isArray(p.categories) ? p.categories : [p.category]).indexOf('hats') !== -1);
+    var badge = isHat
+      ? (state.lang === 'he' ? '2 ב־239.90 ₪ | 3 ב־299.90 ₪' : '2 for ₪239.90 | 3 for ₪299.90')
+      : L(p.badge);
     var isGlasses = isGlassesProduct(p);
     return '' +
     '<article class="prod">' +
       (badge ? '<span class="prod__badge"' +
-        (((Array.isArray(p.categories) ? p.categories : [p.category]).indexOf('hats') !== -1)
-          ? ' style="inset-inline-start:auto!important;inset-inline-end:auto!important;right:auto!important;left:16px!important;"'
+        (isHat
+          ? ' style="inset-inline-start:auto!important;inset-inline-end:auto!important;right:auto!important;left:10px!important;font-size:clamp(10px,2.6vw,13px)!important;line-height:1.2!important;padding:6px 8px!important;white-space:nowrap!important;"'
           : '') +
         '>' + esc(badge) + '</span>' : '') +
       '<a class="prod__media prod__link" href="' + productPath(p) + '" aria-label="' + esc(L(p.title)) + '">' + mediaHTML(p) + '</a>' +
@@ -912,6 +908,20 @@
     $$('.hat-carousel').forEach(syncHatCarouselArrowCenter);
   }
 
+  function isHatCarouselMostlyVisible(track) {
+    if (!track || !document.documentElement.contains(track)) return false;
+    var carousel = track.closest('.hat-carousel') || track;
+    var rect = carousel.getBoundingClientRect();
+    var viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+    var viewportWidth = window.innerWidth || document.documentElement.clientWidth || 0;
+    if (rect.width <= 0 || rect.height <= 0 || viewportHeight <= 0 || viewportWidth <= 0) return false;
+    var visibleWidth = Math.max(0, Math.min(rect.right, viewportWidth) - Math.max(rect.left, 0));
+    var visibleHeight = Math.max(0, Math.min(rect.bottom, viewportHeight) - Math.max(rect.top, 0));
+    var visibleArea = visibleWidth * visibleHeight;
+    var area = rect.width * rect.height;
+    return area > 0 && (visibleArea / area) >= 0.55;
+  }
+
   function initHatCarousels() {
     clearHatCarouselTimers();
     $$('[data-hat-carousel-track]').forEach(function (track) {
@@ -929,7 +939,9 @@
       }
       if (originalCount <= 1) return;
       var timer = window.setInterval(function () {
-        if (!document.hidden && document.documentElement.contains(track)) scrollHatCarousel(track, 1);
+        if (!document.hidden && document.documentElement.contains(track) && isHatCarouselMostlyVisible(track)) {
+          scrollHatCarousel(track, 1);
+        }
       }, 3000);
       hatCarouselTimers.push(timer);
     });
@@ -1183,16 +1195,12 @@
     var unitPrices = [];
     var glassesUnits = 0;
     var hatsUnits = 0;
-    var hatsSubtotal = 0;
 
     lines.forEach(function (l) {
       for (var i = 0; i < l.qty; i++) unitPrices.push(Number(l.unitPrice) || 0);
       var collections = Array.isArray(l.p.categories) && l.p.categories.length ? l.p.categories : [l.p.category];
       if (collections.indexOf('glasses') !== -1) glassesUnits += l.qty;
-      if (collections.indexOf('hats') !== -1) {
-        hatsUnits += l.qty;
-        hatsSubtotal += (Number(l.unitPrice) || 0) * l.qty;
-      }
+      if (collections.indexOf('hats') !== -1) hatsUnits += l.qty;
     });
 
     var secondItem = 0;
@@ -1207,28 +1215,22 @@
       ? window.VERSANS_GLASSES_PRICING.discountForUnits(glassesUnits, 139.9)
       : Math.round(glassesPairs * 29.9 * 100) / 100;
 
-    /* מבצע הכובעים: 1 ב־139.90 ₪, 2 ב־239.90 ₪, 3 ב־299.90 ₪.
-       בכמויות גדולות יותר המבצע ממשיך בקבוצות של 3, ואז 2/1 לשארית. */
-    var hatsTriples = Math.floor(hatsUnits / 3);
-    var hatsRemainder = hatsUnits % 3;
-    var hatsPromoTotal = hatsTriples * 299.9 + (hatsRemainder === 2 ? 239.9 : (hatsRemainder === 1 ? 139.9 : 0));
-    var hatsBundle = hatsUnits > 0 ? Math.max(0, Math.round((hatsSubtotal - hatsPromoTotal) * 100) / 100) : 0;
-    var hatsPromoActive = hatsUnits >= 2 || hatsBundle > 0;
+    /* מבצע הכובעים: 139.90 ₪ ליחידה, כל זוג כובעים ב־239.90 ₪. */
+    var hatsPairs = Math.floor(hatsUnits / 2);
+    var hatsBundle = Math.round(hatsPairs * 39.9 * 100) / 100;
 
-    if (glassesPairs > 0 || hatsPromoActive) {
+    if (glassesPairs > 0 || hatsPairs > 0) {
       var bundleLabels = [];
       if (glassesPairs > 0) {
         bundleLabels.push(state.lang === 'he' ? 'מבצע משקפיים - 2 ב־249.90 ₪' : 'Sunglasses offer - 2 for ₪249.90');
       }
-      if (hatsPromoActive) {
-        bundleLabels.push(state.lang === 'he'
-          ? 'מבצע כובעים - 1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪'
-          : 'Hats offer - 1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90');
+      if (hatsPairs > 0) {
+        bundleLabels.push(state.lang === 'he' ? 'מבצע כובעים - 2 ב־239.90 ₪' : 'Hats offer - 2 for ₪239.90');
       }
       return {
         amount: Math.round((glassesBundle + hatsBundle) * 100) / 100,
         label: bundleLabels.join(' + '),
-        type: glassesPairs > 0 && hatsPromoActive ? 'multi-bundle' : (glassesPairs > 0 ? 'glasses-bundle' : 'hats-bundle')
+        type: glassesPairs > 0 && hatsPairs > 0 ? 'multi-bundle' : (glassesPairs > 0 ? 'glasses-bundle' : 'hats-bundle')
       };
     }
     return {

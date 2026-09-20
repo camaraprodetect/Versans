@@ -128,19 +128,21 @@
       return Math.round(Number(unitPriceValue || 0) * Math.max(1, quantity || 1) * 100) / 100;
     }
     var q = Math.max(1, parseInt(quantity, 10) || 1);
-    var triples = Math.floor(q / 3);
-    var remainder = q % 3;
-    var total = triples * 299.9 + (remainder === 2 ? 239.9 : (remainder === 1 ? 139.9 : 0));
-    return Math.round(total * 100) / 100;
+    var singlePrice = Number(unitPriceValue || 0);
+    var best = Number.POSITIVE_INFINITY;
+    for (var triples = 0; triples <= Math.floor(q / 3); triples += 1) {
+      var remainingAfterTriples = q - (triples * 3);
+      for (var pairs = 0; pairs <= Math.floor(remainingAfterTriples / 2); pairs += 1) {
+        var singles = remainingAfterTriples - (pairs * 2);
+        var total = (triples * 299.9) + (pairs * 239.9) + (singles * singlePrice);
+        if (total < best) best = total;
+      }
+    }
+    if (!Number.isFinite(best)) best = singlePrice * q;
+    return Math.round(best * 100) / 100;
   }
 
-  function hatsOfferLabel() {
-    return lang === 'he'
-      ? '1 ב־139.90 ₪ | 2 ב־239.90 ₪ | 3 ב־299.90 ₪'
-      : '1 for ₪139.90 | 2 for ₪239.90 | 3 for ₪299.90';
-  }
-
-  function hatsPriceDisplay(unitPriceValue, quantity, includeOffer) {
+  function hatsPriceDisplay(unitPriceValue, quantity) {
     var q = Math.max(1, parseInt(quantity, 10) || 1);
     var total = hatsPurchaseTotal(unitPriceValue, q);
     return money(total);
@@ -148,9 +150,9 @@
 
   function hatsOfferMarkup() {
     if (lang === 'he') {
-      return '<strong>מבצע כובעים:</strong> 1 ב־139.90 ₪ <span class="promo-sep">|</span> 2 ב־239.90 ₪ <span class="promo-sep">|</span> 3 ב־299.90 ₪';
+      return '2 ב־239.90 ₪ <span style="opacity:.45; margin:0 .32rem;">|</span> 3 ב־299.90 ₪';
     }
-    return '<strong>Hats offer:</strong> 1 for ₪139.90 <span class="promo-sep">|</span> 2 for ₪239.90 <span class="promo-sep">|</span> 3 for ₪299.90';
+    return '2 for ₪239.90 <span style="opacity:.45; margin:0 .32rem;">|</span> 3 for ₪299.90';
   }
   function findOption(list, optionId) {
     if (!Array.isArray(list)) return null;
@@ -1405,7 +1407,7 @@ function arrangeProduct20CompactOptions() {
       } else if (isGlassesProduct(product)) {
         price.textContent = glassesPriceDisplay(currentUnitPrice, qty);
       } else if (isHatsProduct(product)) {
-        price.textContent = hatsPriceDisplay(currentUnitPrice, qty, true);
+        price.textContent = hatsPriceDisplay(currentUnitPrice, qty);
       } else {
         price.textContent = money(currentUnitPrice);
       }
@@ -1413,12 +1415,21 @@ function arrangeProduct20CompactOptions() {
 
     if (promoLine) {
       if (isHatsProduct(product)) {
-        promoLine.innerHTML = hatsOfferMarkup();
         promoLine.hidden = false;
-        promoLine.classList.add('is-visible');
+        promoLine.innerHTML = hatsOfferMarkup();
+        promoLine.style.display = 'inline-block';
+        promoLine.style.padding = '6px 10px';
+        promoLine.style.margin = '0 0 10px';
+        promoLine.style.borderRadius = '10px';
+        promoLine.style.background = '#ffffff';
+        promoLine.style.border = '1px solid #e5e9ef';
+        promoLine.style.color = '#17324d';
+        promoLine.style.fontSize = window.innerWidth <= 768 ? '13px' : '14px';
+        promoLine.style.fontWeight = '600';
+        promoLine.style.lineHeight = '1.35';
+        promoLine.style.whiteSpace = 'nowrap';
       } else {
         promoLine.hidden = true;
-        promoLine.classList.remove('is-visible');
         promoLine.innerHTML = '';
       }
     }
@@ -1475,7 +1486,7 @@ function arrangeProduct20CompactOptions() {
       } else if (isGlassesProduct(product)) {
         addBtn.textContent = (lang === 'he' ? 'הוספה לסל - ' : 'Add to cart - ') + glassesPriceDisplay(currentUnitPrice, qty);
       } else if (isHatsProduct(product)) {
-        addBtn.textContent = (lang === 'he' ? 'הוספה לסל - ' : 'Add to cart - ') + hatsPriceDisplay(currentUnitPrice, qty, false);
+        addBtn.textContent = (lang === 'he' ? 'הוספה לסל - ' : 'Add to cart - ') + hatsPriceDisplay(currentUnitPrice, qty);
       } else {
         addBtn.textContent = (lang === 'he' ? 'הוספה לסל - ' : 'Add to cart - ') + money(currentUnitPrice * qty);
       }
