@@ -1597,6 +1597,20 @@ function arrangeProduct20CompactOptions() {
     updatePriceAndPurchase();
   }
 
+
+
+  var addButtonSuccessTimer = null;
+  function showAddedOnProductButton() {
+    var button = $('#addToCart');
+    if (!button) return;
+    if (addButtonSuccessTimer) clearTimeout(addButtonSuccessTimer);
+    button.textContent = lang === 'he' ? 'נוסף לסל ✓' : 'Added to cart ✓';
+    addButtonSuccessTimer = setTimeout(function () {
+      addButtonSuccessTimer = null;
+      updatePriceAndPurchase();
+    }, 1200);
+  }
+
   function addToCart() {
     if (hasNecklaceOptions() && !selectedNecklace()) {
       toast(L(product.necklaceRequiredText) || (lang === 'he' ? 'נא לבחור אפשרות' : 'Please choose an option'));
@@ -1645,7 +1659,7 @@ function arrangeProduct20CompactOptions() {
       updateCartCount();
       renderRequiredCompanion();
       updatePriceAndPurchase();
-      toast(lang === 'he' ? 'השרשרת והמארז נוספו לסל' : 'Necklace and packaging added to cart');
+      showAddedOnProductButton();
       return;
     }
     if (hasCustomName() && !customNameReady()) {
@@ -1725,8 +1739,7 @@ function arrangeProduct20CompactOptions() {
 
     save(LS.cart, JSON.stringify(items));
     updateCartCount();
-    toast(lang === 'he' ? 'נוסף לסל' : 'Added to cart');
-
+    showAddedOnProductButton();
   }
 
   function renderProduct() {
@@ -1845,11 +1858,14 @@ function arrangeProduct20CompactOptions() {
     $('#footFaqLink').textContent = lang === 'he' ? 'שאלות נפוצות' : 'FAQ';
     $('#footInfoTitle').textContent = lang === 'he' ? 'מידע' : 'Information';
     $('#footContactTitle').textContent = lang === 'he' ? 'יצירת קשר' : 'Contact';
-    $('#productAfterText').textContent = product.afterText
-      ? L(product.afterText)
-      : (lang === 'he'
-        ? 'השרשרת שתבחרו, הקופסה שתבחרו וכרטיס המסר מגיעים יחד - בלי שתצטרכו להרכיב, להדפיס או לארוז שום דבר.'
-        : 'Your chosen necklace, chosen gift box and printed message card arrive together - ready to give.');
+    var productAfterText = $('#productAfterText');
+    if (productAfterText) {
+      productAfterText.textContent = product.afterText
+        ? L(product.afterText)
+        : (lang === 'he'
+          ? 'השרשרת שתבחרו, הקופסה שתבחרו וכרטיס המסר מגיעים יחד - בלי שתצטרכו להרכיב, להדפיס או לארוז שום דבר.'
+          : 'Your chosen necklace, chosen gift box and printed message card arrive together - ready to give.');
+    }
 
     renderFooterContact();
 

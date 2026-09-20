@@ -469,6 +469,31 @@
       watchesBanner.hidden = !(state.filter === 'watches' || state.filter.indexOf('watches-') === 0);
     }
 
+    /* Keep the hats promo banner independent from the generic collections banner. */
+    var hatsBanner = $('#hatsCollectionBanner');
+    if (!hatsBanner) {
+      var shopContainer = document.querySelector('.home-page .shop > .container') || document.querySelector('.shop > .container');
+      if (shopContainer) {
+        hatsBanner = document.createElement('div');
+        hatsBanner.className = 'hats-collection-banner';
+        hatsBanner.id = 'hatsCollectionBanner';
+        hatsBanner.hidden = true;
+        hatsBanner.setAttribute('aria-label', 'מבצע קולקציית הכובעים');
+        hatsBanner.innerHTML = '' +
+          '<picture class="hats-collection-banner__picture">' +
+            '<source media="(min-width: 1440px)" srcset="/images/hats-collection-banner-wide.png">' +
+            '<source media="(min-width: 768px)" srcset="/images/hats-collection-banner-medium.png">' +
+            '<img src="/images/hats-collection-banner.png" alt="מבצע כובעים של VerSans - 2 ב־239.90 ₪, 3 ב־299.90 ₪">' +
+          '</picture>';
+        var bannerAnchor = $('#otherCollectionsBanner') || $('.shop__filter-row');
+        if (bannerAnchor && bannerAnchor.parentNode === shopContainer) shopContainer.insertBefore(hatsBanner, bannerAnchor);
+        else shopContainer.appendChild(hatsBanner);
+      }
+    }
+    if (hatsBanner) {
+      hatsBanner.hidden = state.filter !== 'hats';
+    }
+
     var greetingCustomCollectionBanner = $('#greetingCustomCollectionBanner');
     if (greetingCustomCollectionBanner) {
       greetingCustomCollectionBanner.hidden = !(
@@ -482,12 +507,24 @@
         state.filter === 'all' ||
         state.filter === 'necklaces' ||
         state.filter === 'bracelets' ||
-        state.filter === 'photo-bracelets' ||
-        state.filter === 'hats';
+        state.filter === 'photo-bracelets';
       otherCollectionsBanner.hidden = !showOtherCollectionsBanner;
     }
 
     var hatsAllButtonWrap = document.querySelector('[data-hats-all-button-wrap]');
+    if (!hatsAllButtonWrap) {
+      var hatsShopContainer = document.querySelector('.home-page .shop > .container') || document.querySelector('.shop > .container');
+      if (hatsShopContainer) {
+        hatsAllButtonWrap = document.createElement('div');
+        hatsAllButtonWrap.className = 'hats-all-button-wrap';
+        hatsAllButtonWrap.setAttribute('data-hats-all-button-wrap', '');
+        hatsAllButtonWrap.hidden = true;
+        hatsAllButtonWrap.innerHTML = '<a class="hats-all-button" href="/hats?view=all#shop" data-hats-all-button>לכל הכובעים</a>';
+        var filterRow = hatsShopContainer.querySelector('.shop__filter-row');
+        if (filterRow) hatsShopContainer.insertBefore(hatsAllButtonWrap, filterRow);
+        else hatsShopContainer.appendChild(hatsAllButtonWrap);
+      }
+    }
     if (hatsAllButtonWrap) {
       hatsAllButtonWrap.hidden = state.filter !== 'hats';
     }
@@ -1258,6 +1295,8 @@
     return list[0] && list[0].id ? list[0].id : '';
   }
 
+
+
   function productNeedsQuickAddCustomization(product) {
     if (!product) return false;
 
@@ -1338,14 +1377,27 @@
     customize.focus();
   }
 
-  function addCardToCart(id, qty) {
+  function showAddedButtonState(button) {
+    if (!button) return;
+    if (button.__versansAddedTimer) clearTimeout(button.__versansAddedTimer);
+    if (!button.__versansOriginalText) button.__versansOriginalText = button.textContent;
+    button.textContent = state.lang === 'he' ? 'נוסף לסל ✓' : 'Added to cart ✓';
+    button.__versansAddedTimer = setTimeout(function () {
+      if (!button || !button.isConnected) return;
+      button.textContent = button.__versansOriginalText || (state.lang === 'he' ? 'הוסף לסל' : 'Add to cart');
+      button.__versansOriginalText = '';
+      button.__versansAddedTimer = null;
+    }, 1200);
+  }
+
+  function addCardToCart(id, qty, triggerButton) {
     qty = qty || 1;
     var product = byId(id);
     if (!product) return;
 
     if (productNeedsQuickAddCustomization(product)) {
       showQuickAddCustomizationPrompt(product);
-      return;
+      return false;
     }
 
     /* Index quick-add never navigates away for ordinary products: use the product's default/first
@@ -1409,15 +1461,16 @@
     });
     if (!found) state.cart.push(item);
     persist();
-    toast(t('card.added'));
+    showAddedButtonState(triggerButton);
+    return true;
   }
 
-  function addToCart(id, qty) {
+  function addToCart(id, qty, triggerButton) {
     qty = qty || 1;
     var product = byId(id);
     if (product && ((product.necklaces && product.necklaces.length) || (product.boxes && product.boxes.length) || (product.sizes && product.sizes.length) || (product.colors && product.colors.length) || (product.customName && product.customName.required) || (product.customPhoto && product.customPhoto.required) || product.giftPackaging || product.requiresCompanion)) {
       window.location.href = productPath(id);
-      return;
+      return false;
     }
     var key = id + '|||';
     var found = false;
@@ -1426,7 +1479,8 @@
     });
     if (!found) state.cart.push({ id: id, qty: qty, key: key });
     persist();
-    toast(t('card.added'));
+    showAddedButtonState(triggerButton);
+    return true;
   }
   function setQty(key, q) {
     if (q <= 0) {
@@ -1844,8 +1898,8 @@
       window.requestAnimationFrame(scrollCatalogTop);
       return;
     }
-    if ((el = e.target.closest('[data-card-add]'))) { e.preventDefault(); addCardToCart(el.getAttribute('data-card-add'), 1); return; }
-    if ((el = e.target.closest('[data-add]'))) { addToCart(el.getAttribute('data-add'), 1); return; }
+    if ((el = e.target.closest('[data-card-add]'))) { e.preventDefault(); addCardToCart(el.getAttribute('data-card-add'), 1, el); return; }
+    if ((el = e.target.closest('[data-add]'))) { addToCart(el.getAttribute('data-add'), 1, el); return; }
     if ((el = e.target.closest('[data-view]'))) { window.location.href = productPath(el.getAttribute('data-view')); return; }
     if ((el = e.target.closest('[data-add-modal]'))) { addToCart(el.getAttribute('data-add-modal'), state.qty); closeOv('#pdpOverlay'); return; }
 
@@ -1967,6 +2021,87 @@
     }, 140);
   }, { passive: true });
 
+
+
+  /* ---------- Mobile collection strip: real always-visible moving scrollbar ---------- */
+  function initMobileCollectionScrollbar() {
+    var picker = document.querySelector('.home-page .mobile-collection-picker');
+    var track = picker && picker.querySelector('.mobile-collection-picker__track');
+    if (!picker || !track || track.dataset.versansScrollbarBound === '1') return;
+
+    track.dataset.versansScrollbarBound = '1';
+    var raf = 0;
+
+    function clamp01(value) {
+      return Math.max(0, Math.min(1, value));
+    }
+
+    function updateMobileCollectionScrollbar() {
+      raf = 0;
+
+      var maxScroll = Math.max(0, track.scrollWidth - track.clientWidth);
+      var railWidth = Math.max(0, picker.clientWidth - 32); // 16px rail inset on each side.
+
+      if (!maxScroll || !railWidth) {
+        picker.style.setProperty('--versans-mcp-thumb-width', railWidth + 'px');
+        picker.style.setProperty('--versans-mcp-thumb-x', '0px');
+        return;
+      }
+
+      /*
+       * Do not depend on RTL scrollLeft semantics (they differ between engines).
+       * Instead, measure how far the first RTL item has physically moved from its
+       * natural right-side starting point. This works in Chrome/Android, Safari/iOS
+       * and Firefox and follows finger scrolling in real time.
+       */
+      var firstItem = track.querySelector('.mobile-collection-picker__item');
+      var progress = 0;
+
+      if (firstItem) {
+        var trackRect = track.getBoundingClientRect();
+        var firstRect = firstItem.getBoundingClientRect();
+        var computed = window.getComputedStyle(track);
+        var paddingRight = parseFloat(computed.paddingRight) || 0;
+        var naturalFirstRight = trackRect.right - paddingRight;
+        var physicalOffset = firstRect.right - naturalFirstRight;
+        progress = clamp01(physicalOffset / maxScroll);
+      } else {
+        progress = clamp01(Math.abs(track.scrollLeft) / maxScroll);
+      }
+
+      var visibleRatio = clamp01(track.clientWidth / track.scrollWidth);
+      var thumbWidth = Math.max(48, Math.round(railWidth * visibleRatio));
+      thumbWidth = Math.min(railWidth, thumbWidth);
+      var travel = Math.max(0, railWidth - thumbWidth);
+
+      /* RTL starts at the right end of the rail and moves left as the list advances. */
+      var thumbX = Math.round((1 - progress) * travel);
+
+      picker.style.setProperty('--versans-mcp-thumb-width', thumbWidth + 'px');
+      picker.style.setProperty('--versans-mcp-thumb-x', thumbX + 'px');
+    }
+
+    function scheduleMobileCollectionScrollbarUpdate() {
+      if (raf) return;
+      raf = window.requestAnimationFrame(updateMobileCollectionScrollbar);
+    }
+
+    track.addEventListener('scroll', scheduleMobileCollectionScrollbarUpdate, { passive: true });
+    track.addEventListener('touchmove', scheduleMobileCollectionScrollbarUpdate, { passive: true });
+    window.addEventListener('resize', scheduleMobileCollectionScrollbarUpdate, { passive: true });
+
+    if (window.ResizeObserver) {
+      var observer = new ResizeObserver(scheduleMobileCollectionScrollbarUpdate);
+      observer.observe(track);
+      observer.observe(picker);
+    }
+
+    updateMobileCollectionScrollbar();
+    window.setTimeout(updateMobileCollectionScrollbar, 80);
+    window.setTimeout(updateMobileCollectionScrollbar, 300);
+  }
+
+  initMobileCollectionScrollbar();
 
   /* ---------- אתחול ------------------------------------------------------ */
   var y = $('#year'); if (y) y.textContent = new Date().getFullYear();
