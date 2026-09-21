@@ -228,6 +228,265 @@
   .hats-all-button { width:100%; min-height:58px; padding:.9rem 1rem; border-radius:7px; font-size:1.08rem; }
 }
 </style>
+<style id="versans-hat-filter-compact-v2">
+.catalog-filter-options--hat-categories{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:.42rem!important;
+  align-items:center!important;
+}
+.catalog-filter-options--hat-categories .catalog-filter-option--hat-category{
+  width:auto!important;
+  min-width:0!important;
+  min-height:32px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:.38rem .68rem!important;
+  border:1px solid #d8e0e6!important;
+  border-radius:999px!important;
+  background:#fff!important;
+  color:#43515d!important;
+  text-align:center!important;
+  font-size:.77rem!important;
+  font-weight:600!important;
+  line-height:1.15!important;
+  white-space:nowrap!important;
+}
+.catalog-filter-options--hat-categories .catalog-filter-option--hat-category:hover{
+  background:#f5f7f9!important;
+  border-color:#bfcbd3!important;
+  color:#142333!important;
+}
+.catalog-filter-options--hat-categories .catalog-filter-option--hat-category.is-active{
+  background:#142333!important;
+  border-color:#142333!important;
+  color:#fff!important;
+}
+.catalog-filter-options--hat-categories .catalog-filter-option__label{
+  min-width:0!important;
+}
+@media(max-width:600px){
+  .catalog-filter-options--hat-categories{
+    gap:.36rem!important;
+  }
+  .catalog-filter-options--hat-categories .catalog-filter-option--hat-category{
+    min-height:30px!important;
+    padding:.34rem .58rem!important;
+    font-size:.73rem!important;
+  }
+}
+</style>
+<style id="versans-hat-filter-ultra-compact-v3">
+/* Compact desktop hats filter: three straight columns instead of a full-width tall panel. */
+@media(min-width:701px){
+  .home-page .shop__filter-row .filters.filters--hats,
+  .home-page .filters.filters--hats{
+    position:relative!important;
+    align-self:flex-end!important;
+    width:min(820px,100%)!important;
+    margin-top:.45rem!important;
+    padding:.58rem .65rem!important;
+    display:grid!important;
+    grid-template-columns:minmax(350px,1.4fr) minmax(250px,1fr) minmax(165px,.68fr)!important;
+    gap:.6rem!important;
+    border:1px solid #dce3e8!important;
+    border-radius:10px!important;
+    background:#fff!important;
+    overflow:visible!important;
+    box-shadow:0 8px 22px rgba(20,35,51,.055)!important;
+  }
+  .filters--hats .catalog-filter-section{
+    min-width:0!important;
+    padding:0!important;
+    margin:0!important;
+    border:0!important;
+    align-self:start!important;
+  }
+  .filters--hats .catalog-filter-title--toggle{
+    pointer-events:none!important;
+    cursor:default!important;
+    min-height:22px!important;
+    margin:0 0 .35rem!important;
+    padding:0!important;
+    font-size:.76rem!important;
+    line-height:1.1!important;
+  }
+  .filters--hats .catalog-filter-title__icon{display:none!important;}
+
+  .filters--hats .catalog-filter-options--hat-categories{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:.28rem!important;
+  }
+  .filters--hats .catalog-filter-option--hat-category{
+    width:100%!important;
+    min-width:0!important;
+    min-height:27px!important;
+    height:27px!important;
+    padding:.2rem .38rem!important;
+    border:1px solid #dbe2e7!important;
+    border-radius:7px!important;
+    background:#fff!important;
+    color:#43515d!important;
+    font-size:.62rem!important;
+    font-weight:600!important;
+    line-height:1!important;
+    white-space:nowrap!important;
+  }
+  .filters--hats .catalog-filter-option--hat-category.is-active{
+    background:#142333!important;
+    border-color:#142333!important;
+    color:#fff!important;
+  }
+
+  .filters--hats .catalog-filter-options--colors{
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:.25rem!important;
+  }
+  .filters--hats .catalog-filter-options--colors .catalog-filter-option{
+    min-height:27px!important;
+    height:27px!important;
+    padding:.18rem .3rem!important;
+    gap:.22rem!important;
+    border-radius:7px!important;
+    font-size:.65rem!important;
+  }
+  .filters--hats .catalog-filter-options--colors .catalog-filter-swatch{
+    width:12px!important;
+    height:12px!important;
+  }
+  .filters--hats .catalog-filter-options--colors .catalog-filter-option__count{
+    display:none!important;
+  }
+
+  .filters--hats .catalog-price-inputs{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:.32rem!important;
+  }
+  .filters--hats .catalog-price-field{gap:.16rem!important;}
+  .filters--hats .catalog-price-label{font-size:.62rem!important;}
+  .filters--hats .catalog-price-input{
+    height:29px!important;
+    padding:.2rem .35rem!important;
+    border-radius:7px!important;
+    font-size:.72rem!important;
+  }
+  .filters--hats .catalog-filter-clear{
+    position:static!important;
+    inset-inline-start:auto!important;
+    bottom:auto!important;
+    justify-self:start!important;
+    align-self:start!important;
+    width:auto!important;
+    min-height:24px!important;
+    margin-top:.1rem!important;
+    padding:.15rem .42rem!important;
+    border:1px solid #dbe2e7!important;
+    border-radius:7px!important;
+    background:#fff!important;
+    font-size:.64rem!important;
+    line-height:1!important;
+    white-space:nowrap!important;
+  }
+}
+@media(max-width:700px){
+  .filters--hats{gap:.55rem!important;padding:.65rem!important;}
+  .filters--hats .catalog-filter-title--toggle{margin-bottom:.35rem!important;}
+  .filters--hats .catalog-filter-options--hat-categories{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:.3rem!important;
+  }
+  .filters--hats .catalog-filter-option--hat-category{
+    min-height:30px!important;
+    padding:.25rem .4rem!important;
+    border:1px solid #dbe2e7!important;
+    border-radius:7px!important;
+    font-size:.68rem!important;
+    white-space:nowrap!important;
+  }
+}
+</style>
+<style id="versans-hats-filter-button-gap-v1">
+/* Only in the hats collection: add a small gap between the banner and filter button. */
+.shop__filter-row.shop__filter-row--hats-gap{
+  margin-top:14px!important;
+}
+@media(max-width:700px){
+  .shop__filter-row.shop__filter-row--hats-gap{
+    margin-top:12px!important;
+  }
+}
+</style>
+<style id="versans-hats-filter-fullwidth-equal-v4">
+/* Hats only: full-width filter panel, equal columns, toggle always visible. */
+@media(min-width:701px){
+  .home-page .shop__filter-row.shop__filter-row--hats-gap{
+    width:100%!important;
+    max-width:100%!important;
+    margin-left:0!important;
+    margin-right:0!important;
+    padding-inline:0!important;
+    box-sizing:border-box!important;
+  }
+  .home-page .shop__filter-row.shop__filter-row--hats-gap .shop__sidebar{
+    width:100%!important;
+    max-width:none!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:stretch!important;
+    overflow:visible!important;
+  }
+  .home-page .shop__filter-row.shop__filter-row--hats-gap .shop__filter-toggle{
+    display:flex!important;
+    visibility:visible!important;
+    opacity:1!important;
+    position:relative!important;
+    z-index:3!important;
+    align-self:flex-end!important;
+    width:auto!important;
+    min-width:108px!important;
+    margin:0!important;
+  }
+  .home-page .shop__filter-row.shop__filter-row--hats-gap .filters.filters--hats{
+    align-self:stretch!important;
+    width:100%!important;
+    max-width:none!important;
+    margin:.65rem 0 0!important;
+    padding:.72rem!important;
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:.8rem!important;
+    box-sizing:border-box!important;
+  }
+  .home-page .shop__filter-row.shop__filter-row--hats-gap .filters.filters--hats[hidden]{
+    display:none!important;
+  }
+  .home-page .filters--hats .catalog-filter-section{
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+  }
+  .home-page .filters--hats .catalog-filter-title--toggle{
+    width:100%!important;
+  }
+  .home-page .filters--hats .catalog-filter-clear{
+    grid-column:1/-1!important;
+    justify-self:start!important;
+    margin-top:.15rem!important;
+  }
+}
+@media(max-width:700px){
+  .home-page .shop__filter-row.shop__filter-row--hats-gap .shop__filter-toggle{
+    display:flex!important;
+    visibility:visible!important;
+    opacity:1!important;
+  }
+}
+</style>
 </head>
 <body class="home-page">
 <a class="skip" href="#main">דילוג לתוכן</a>
@@ -459,9 +718,6 @@
         <source media="(min-width: 768px)" srcset="images/gift-boxes-collection-banner-medium.png">
         <img src="images/gift-boxes-collection-banner.png" width="1600" height="211" alt="מארזים - עד 40% הנחה על כל מארזי המתנה">
       </picture>
-    </div>
-    <div class="hats-all-button-wrap" data-hats-all-button-wrap hidden>
-      <a class="hats-all-button" href="/hats?view=all#shop" data-hats-all-button>לכל הכובעים</a>
     </div>
     <div class="shop__filter-row">
       <aside class="shop__sidebar"><p class="shop__filter-label" hidden>סינון</p><button class="shop__filter-toggle" type="button" data-catalog-filter-toggle aria-expanded="false" aria-controls="filters"><span>סינון</span><span class="shop__filter-toggle-icon" data-catalog-filter-toggle-icon aria-hidden="true">+</span></button><div class="filters" id="filters" role="group" aria-label="סינון מוצרים" hidden></div></aside>
@@ -773,14 +1029,14 @@
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="assets/config.js?v=20260914-pretty-urls-v1"></script>
-<script src="assets/products.js?v=20260921-watch-subcats-v1"></script>
+<script src="assets/products.js?v=20260922-chicago-bulls-162-v1"></script>
 <script src="assets/routes.js?v=20260921-watch-subcats-v1"></script>
 <script src="assets/site-header.js?v=20260921-favorites-product-fix-v1"></script>
 <script src="assets/glasses-pricing.js?v=20260912-glasses-v9"></script>
 <script src="assets/i18n.js?v=20260908-delivery-v1"></script>
 <script src="assets/reviews.js?v=20260914-pretty-urls-v1"></script>
 <script src="assets/home.js?v=20260921-watch-subcats-v1"></script>
-<script src="assets/store.js?v=20260921-watch-subcats-v1"></script>
+<script src="assets/store.js?v=20260922-hats-filter-gap-v1"></script>
 <script src="assets/auth-nav.js?v=20260914-pretty-urls-v1"></script>
   <script src="/assets/presence.js?v=20260915-presence-v1"></script>
 </body>

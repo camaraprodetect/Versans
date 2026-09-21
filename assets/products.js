@@ -14254,6 +14254,815 @@ var PRODUCTS = [
   }
 
 
+  ,{
+    "id": "new-era-chicago-bulls-6x-champs-blackout-metallic-edition-black-157",
+    "slug": "product-157",
+    "urlSlug": "new-era-chicago-bulls-6x-champs-blackout-metallic-edition-black",
+    "sku": "KW-HAT-157",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-157/product-157-1.png",
+    "hoverImage": "images/products/product-157/product-157-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-157/product-157-1.png",
+        "hoverImage": "images/products/product-157/product-157-2.png"
+      },
+      "men": {
+        "image": "images/products/product-157/product-157-1.png",
+        "hoverImage": "images/products/product-157/product-157-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-157/product-157-1.png",
+      "images/products/product-157/product-157-2.png",
+      "images/products/product-157/product-157-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Chicago Bulls X 6x Champs Blackout Metallic Edition - צבע שחור",
+      "en": "New Era X Chicago Bulls X 6x Champs Blackout Metallic Edition - Black"
+    },
+    "subtitle": {
+      "he": "כובע Chicago Bulls שחור במהדורת Blackout Metallic עם רקמת שור מטאלית בחזית ופאץ' 6x Champs בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black Chicago Bulls Blackout Metallic Edition cap with metallic bull embroidery on the front and a 6x Champs side patch · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Chicago Bulls X 6x Champs Blackout Metallic Edition - צבע שחור",
+      "en": "New Era X Chicago Bulls X 6x Champs Blackout Metallic Edition - Black"
+    },
+    "cardMessage": {
+      "he": "כובע Chicago Bulls שחור עם רקמת שור מטאלית בחזית ופאץ' 6x Champs בצד.",
+      "en": "Black Chicago Bulls cap with metallic bull embroidery on the front and a 6x Champs side patch."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: שחור",
+        "מהדורת Blackout Metallic של Chicago Bulls",
+        "רקמת Chicago Bulls מטאלית בחזית",
+        "פאץ' 6x Champs רקום בצד",
+        "לוגו New Era רקום בצד",
+        "מצחייה מעוגלת",
+        "סגירת Snapback אחורית מתכווננת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Black",
+        "Chicago Bulls Blackout Metallic Edition",
+        "Metallic Chicago Bulls embroidery on the front",
+        "Embroidered 6x Champs side patch",
+        "Embroidered New Era side logo",
+        "Curved brim",
+        "Adjustable rear snapback closure",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+
+  ,{
+    "id": "new-era-chicago-bulls-chrome-two-tone-metallic-edition-white-158",
+    "slug": "product-158",
+    "urlSlug": "new-era-chicago-bulls-chrome-two-tone-metallic-edition-white",
+    "sku": "KW-HAT-158",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-158/product-158-1.png",
+    "hoverImage": "images/products/product-158/product-158-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-158/product-158-1.png",
+        "hoverImage": "images/products/product-158/product-158-2.png"
+      },
+      "men": {
+        "image": "images/products/product-158/product-158-1.png",
+        "hoverImage": "images/products/product-158/product-158-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-158/product-158-1.png",
+      "images/products/product-158/product-158-2.png",
+      "images/products/product-158/product-158-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Chicago Bulls X Chrome Two Tone Metallic Edition - צבע לבן",
+      "en": "New Era X Chicago Bulls X Chrome Two Tone Metallic Edition - White"
+    },
+    "subtitle": {
+      "he": "כובע Chicago Bulls בצבע לבן עם מצחייה שחורה במהדורת Chrome Two Tone Metallic, עם רקמת שור מטאלית בחזית · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "White Chicago Bulls Chrome Two Tone Metallic Edition cap with a black brim and metallic bull embroidery on the front · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Chicago Bulls X Chrome Two Tone Metallic Edition - צבע לבן",
+      "en": "New Era X Chicago Bulls X Chrome Two Tone Metallic Edition - White"
+    },
+    "cardMessage": {
+      "he": "כובע Chicago Bulls בצבע לבן עם מצחייה שחורה, רקמת שור מטאלית בחזית ופאץ' Chicago Bulls בצד.",
+      "en": "White Chicago Bulls cap with a black brim, metallic bull embroidery on the front and a Chicago Bulls side patch."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: לבן",
+        "גוף הכובע בצבע לבן עם מצחייה שחורה",
+        "מהדורת Chrome Two Tone Metallic של Chicago Bulls",
+        "רקמת Chicago Bulls מטאלית בחזית",
+        "פאץ' Chicago Bulls רקום בצד",
+        "לוגו New Era רקום בצד",
+        "מצחייה מעוגלת",
+        "סגירת Snapback אחורית מתכווננת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: White",
+        "White cap body with a black brim",
+        "Chicago Bulls Chrome Two Tone Metallic Edition",
+        "Metallic Chicago Bulls embroidery on the front",
+        "Embroidered Chicago Bulls side patch",
+        "Embroidered New Era side logo",
+        "Curved brim",
+        "Adjustable rear snapback closure",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+
+
+  ,{
+    "id": "new-era-chicago-bulls-nba-champions-1996-scarlet-two-tone-edition-red-159",
+    "slug": "product-159",
+    "urlSlug": "new-era-chicago-bulls-nba-champions-1996-scarlet-two-tone-edition-red",
+    "sku": "KW-HAT-159",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-159/product-159-1.png",
+    "hoverImage": "images/products/product-159/product-159-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-159/product-159-1.png",
+        "hoverImage": "images/products/product-159/product-159-2.png"
+      },
+      "men": {
+        "image": "images/products/product-159/product-159-1.png",
+        "hoverImage": "images/products/product-159/product-159-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-159/product-159-1.png",
+      "images/products/product-159/product-159-2.png",
+      "images/products/product-159/product-159-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Chicago Bulls X NBA Champions 1996 Scarlet Two Tone Edition - צבע אדום",
+      "en": "New Era X Chicago Bulls X NBA Champions 1996 Scarlet Two Tone Edition - Red"
+    },
+    "subtitle": {
+      "he": "כובע Chicago Bulls בצבע אדום עם מצחייה שחורה במהדורת NBA Champions 1996 Scarlet Two Tone, עם רקמת שור בחזית ופאץ' Champions בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Red Chicago Bulls Scarlet Two Tone Edition cap with a black brim, front bull embroidery and a Champions side patch · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Chicago Bulls X NBA Champions 1996 Scarlet Two Tone Edition - צבע אדום",
+      "en": "New Era X Chicago Bulls X NBA Champions 1996 Scarlet Two Tone Edition - Red"
+    },
+    "cardMessage": {
+      "he": "כובע Chicago Bulls אדום עם מצחייה שחורה, רקמת שור בחזית ופאץ' NBA Champions 1996 בצד.",
+      "en": "Red Chicago Bulls cap with a black brim, bull embroidery on the front and an NBA Champions 1996 side patch."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: אדום",
+        "גוף הכובע בצבע אדום עם מצחייה שחורה",
+        "מהדורת NBA Champions 1996 Scarlet Two Tone של Chicago Bulls",
+        "רקמת Chicago Bulls בחזית",
+        "פאץ' NBA Champions 1996 רקום בצד",
+        "לוגו New Era רקום בצד",
+        "מצחייה מעוגלת",
+        "סגירת Snapback אחורית מתכווננת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Red",
+        "Red cap body with a black brim",
+        "Chicago Bulls NBA Champions 1996 Scarlet Two Tone Edition",
+        "Chicago Bulls embroidery on the front",
+        "Embroidered NBA Champions 1996 side patch",
+        "Embroidered New Era side logo",
+        "Curved brim",
+        "Adjustable rear snapback closure",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+
+
+  ,{
+    "id": "new-era-chicago-bulls-nba-finals-1991-chrome-two-tone-edition-white-blue-160",
+    "slug": "product-160",
+    "urlSlug": "new-era-chicago-bulls-nba-finals-1991-chrome-two-tone-edition-white-blue",
+    "sku": "KW-HAT-160",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-160/product-160-1.png",
+    "hoverImage": "images/products/product-160/product-160-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-160/product-160-1.png",
+        "hoverImage": "images/products/product-160/product-160-2.png"
+      },
+      "men": {
+        "image": "images/products/product-160/product-160-1.png",
+        "hoverImage": "images/products/product-160/product-160-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-160/product-160-1.png",
+      "images/products/product-160/product-160-2.png",
+      "images/products/product-160/product-160-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Chicago Bulls X NBA Finals 1991 Chrome Two Tone Edition - צבע לבן תכלת",
+      "en": "New Era X Chicago Bulls X NBA Finals 1991 Chrome Two Tone Edition - White Light Blue"
+    },
+    "subtitle": {
+      "he": "כובע Chicago Bulls בצבע לבן-תכלת במהדורת NBA Finals 1991 Chrome Two Tone, עם רקמת שור בחזית ורקמת NBA Finals 1991 בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "White and light blue Chicago Bulls Chrome Two Tone Edition cap with front bull embroidery and a 1991 NBA Finals side embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Chicago Bulls X NBA Finals 1991 Chrome Two Tone Edition - צבע לבן תכלת",
+      "en": "New Era X Chicago Bulls X NBA Finals 1991 Chrome Two Tone Edition - White Light Blue"
+    },
+    "cardMessage": {
+      "he": "כובע Chicago Bulls לבן-תכלת עם רקמת שור בחזית ורקמת NBA Finals 1991 בצד.",
+      "en": "White and light blue Chicago Bulls cap with front bull embroidery and a 1991 NBA Finals side embroidery."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: לבן תכלת",
+        "גוף הכובע בצבע לבן עם מצחייה תכלת",
+        "מהדורת NBA Finals 1991 Chrome Two Tone של Chicago Bulls",
+        "רקמת Chicago Bulls בחזית",
+        "רקמת The 1991 NBA Finals בצד",
+        "לוגו New Era רקום בצד",
+        "מצחייה מעוגלת",
+        "סגירת Snapback אחורית מתכווננת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: White Light Blue",
+        "White cap body with a light blue brim",
+        "Chicago Bulls NBA Finals 1991 Chrome Two Tone Edition",
+        "Chicago Bulls embroidery on the front",
+        "The 1991 NBA Finals side embroidery",
+        "Embroidered New Era side logo",
+        "Curved brim",
+        "Adjustable rear snapback closure",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+
+
+  ,{
+    "id": "new-era-chicago-bulls-est-1966-black-on-black-metallic-outline-black-161",
+    "slug": "product-161",
+    "urlSlug": "new-era-chicago-bulls-est-1966-black-on-black-metallic-outline-black",
+    "sku": "KW-HAT-161",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-161/product-161-1.png",
+    "hoverImage": "images/products/product-161/product-161-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-161/product-161-1.png",
+        "hoverImage": "images/products/product-161/product-161-2.png"
+      },
+      "men": {
+        "image": "images/products/product-161/product-161-1.png",
+        "hoverImage": "images/products/product-161/product-161-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-161/product-161-1.png",
+      "images/products/product-161/product-161-2.png",
+      "images/products/product-161/product-161-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Chicago Bulls X Est. 1966 Black On Black Metallic Outline - צבע שחור",
+      "en": "New Era X Chicago Bulls X Est. 1966 Black On Black Metallic Outline - Black"
+    },
+    "subtitle": {
+      "he": "כובע Chicago Bulls בצבע שחור במהדורת Est. 1966 Black On Black Metallic Outline, עם רקמת שור בחזית ופאץ' Chicago Bulls Est. 1966 בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black Chicago Bulls cap from the Est. 1966 Black On Black Metallic Outline edition, with front bull embroidery and a Chicago Bulls Est. 1966 side patch · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Chicago Bulls X Est. 1966 Black On Black Metallic Outline - צבע שחור",
+      "en": "New Era X Chicago Bulls X Est. 1966 Black On Black Metallic Outline - Black"
+    },
+    "cardMessage": {
+      "he": "כובע Chicago Bulls שחור עם רקמת שור בחזית ופאץ' Chicago Bulls Est. 1966 בצד.",
+      "en": "Black Chicago Bulls cap with front bull embroidery and a Chicago Bulls Est. 1966 side patch."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: שחור",
+        "גוף הכובע והמצחייה בצבע שחור",
+        "מהדורת Est. 1966 Black On Black Metallic Outline של Chicago Bulls",
+        "רקמת Chicago Bulls בחזית בעיצוב שחור עם מסגרת אדומה מטאלית",
+        "פאץ' Chicago Bulls Est. 1966 רקום בצד",
+        "לוגו New Era רקום בצד",
+        "מצחייה מעוגלת",
+        "סגירת Snapback אחורית מתכווננת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Black",
+        "Black cap body and black brim",
+        "Chicago Bulls Est. 1966 Black On Black Metallic Outline edition",
+        "Front Chicago Bulls embroidery with a metallic red outline",
+        "Embroidered Chicago Bulls Est. 1966 side patch",
+        "Embroidered New Era side logo",
+        "Curved brim",
+        "Adjustable rear snapback closure",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+
+
+  ,{
+    "id": "new-era-chicago-bulls-back-to-back-world-champions-black-two-tone-edition-black-red-162",
+    "slug": "product-162",
+    "urlSlug": "new-era-chicago-bulls-back-to-back-world-champions-black-two-tone-edition-black-red",
+    "sku": "KW-HAT-162",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-162/product-162-1.png",
+    "hoverImage": "images/products/product-162/product-162-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-162/product-162-1.png",
+        "hoverImage": "images/products/product-162/product-162-2.png"
+      },
+      "men": {
+        "image": "images/products/product-162/product-162-1.png",
+        "hoverImage": "images/products/product-162/product-162-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-162/product-162-1.png",
+      "images/products/product-162/product-162-2.png",
+      "images/products/product-162/product-162-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Chicago Bulls X Back To Back World Champions Black Two Tone Edition - צבע שחור אדום",
+      "en": "New Era X Chicago Bulls X Back To Back World Champions Black Two Tone Edition - Black Red"
+    },
+    "subtitle": {
+      "he": "כובע Chicago Bulls בצבע שחור אדום במהדורת Back To Back World Champions Black Two Tone Edition, עם רקמת שור בחזית ופאץ' Back To Back World Champions בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black and red Chicago Bulls cap from the Back To Back World Champions Black Two Tone edition, with front bull embroidery and a Back To Back World Champions side patch · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Chicago Bulls X Back To Back World Champions Black Two Tone Edition - צבע שחור אדום",
+      "en": "New Era X Chicago Bulls X Back To Back World Champions Black Two Tone Edition - Black Red"
+    },
+    "cardMessage": {
+      "he": "כובע Chicago Bulls שחור אדום עם רקמת שור בחזית ופאץ' Back To Back World Champions בצד.",
+      "en": "Black and red Chicago Bulls cap with front bull embroidery and a Back To Back World Champions side patch."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: שחור אדום",
+        "גוף הכובע בצבע שחור עם מצחייה אדומה",
+        "מהדורת Back To Back World Champions Black Two Tone Edition של Chicago Bulls",
+        "רקמת Chicago Bulls בחזית בצבעי אדום, שחור ולבן",
+        "פאץ' Back To Back World Champions רקום בצד",
+        "לוגו New Era רקום בצד",
+        "כפתור עליון וסגירת Snapback אחורית בצבע אדום",
+        "מצחייה מעוגלת",
+        "סגירת Snapback אחורית מתכווננת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Black Red",
+        "Black cap body with a red brim",
+        "Chicago Bulls Back To Back World Champions Black Two Tone Edition",
+        "Front Chicago Bulls embroidery in red, black, and white",
+        "Embroidered Back To Back World Champions side patch",
+        "Embroidered New Era side logo",
+        "Red top button and red rear snapback closure",
+        "Curved brim",
+        "Adjustable rear snapback closure",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+
+
+  ,{
+    "id": "new-era-chicago-bulls-nba-champions-3-peat-1991-1993-two-tone-edition-white-black-red-163",
+    "slug": "product-163",
+    "urlSlug": "new-era-chicago-bulls-nba-champions-3-peat-1991-1993-two-tone-edition-white-black-red",
+    "sku": "KW-HAT-163",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-163/product-163-1.png",
+    "hoverImage": "images/products/product-163/product-163-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-163/product-163-1.png",
+        "hoverImage": "images/products/product-163/product-163-2.png"
+      },
+      "men": {
+        "image": "images/products/product-163/product-163-1.png",
+        "hoverImage": "images/products/product-163/product-163-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-163/product-163-1.png",
+      "images/products/product-163/product-163-2.png",
+      "images/products/product-163/product-163-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Chicago Bulls X NBA Champions 3-Peat 1991-1993 Two Tone Edition - צבע לבן שחור אדום",
+      "en": "New Era X Chicago Bulls X NBA Champions 3-Peat 1991-1993 Two Tone Edition - White Black Red"
+    },
+    "subtitle": {
+      "he": "כובע Chicago Bulls בצבע לבן שחור אדום במהדורת NBA Champions 3-Peat 1991-1993 Two Tone Edition, עם רקמת שור בחזית ופאץ' NBA Champions 3-Peat 1991-1993 בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "White, black, and red Chicago Bulls cap from the NBA Champions 3-Peat 1991-1993 Two Tone edition, with front bull embroidery and an NBA Champions 3-Peat 1991-1993 side patch · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Chicago Bulls X NBA Champions 3-Peat 1991-1993 Two Tone Edition - צבע לבן שחור אדום",
+      "en": "New Era X Chicago Bulls X NBA Champions 3-Peat 1991-1993 Two Tone Edition - White Black Red"
+    },
+    "cardMessage": {
+      "he": "כובע Chicago Bulls לבן שחור אדום עם רקמת שור בחזית ופאץ' NBA Champions 3-Peat 1991-1993 בצד.",
+      "en": "White, black, and red Chicago Bulls cap with front bull embroidery and an NBA Champions 3-Peat 1991-1993 side patch."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: לבן שחור אדום",
+        "גוף הכובע בצבע לבן עם מצחייה שחורה",
+        "מהדורת NBA Champions 3-Peat 1991-1993 Two Tone Edition של Chicago Bulls",
+        "רקמת Chicago Bulls בחזית בצבעי אדום, שחור ולבן",
+        "פאץ' NBA Champions 3-Peat 1991-1993 רקום בצד",
+        "לוגו New Era רקום בצד",
+        "מצחייה מעוגלת",
+        "סגירת Snapback אחורית מתכווננת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: White Black Red",
+        "White cap body with a black brim",
+        "Chicago Bulls NBA Champions 3-Peat 1991-1993 Two Tone Edition",
+        "Front Chicago Bulls embroidery in red, black, and white",
+        "Embroidered NBA Champions 3-Peat 1991-1993 side patch",
+        "Embroidered New Era side logo",
+        "Curved brim",
+        "Adjustable rear snapback closure",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+
+
+  ,{
+    "id": "new-era-chicago-bulls-three-peat-1996-1998-world-champions-metallic-edition-black-gold-164",
+    "slug": "product-164",
+    "urlSlug": "new-era-chicago-bulls-three-peat-1996-1998-world-champions-metallic-edition-black-gold",
+    "sku": "KW-HAT-164",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-164/product-164-1.png",
+    "hoverImage": "images/products/product-164/product-164-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-164/product-164-1.png",
+        "hoverImage": "images/products/product-164/product-164-2.png"
+      },
+      "men": {
+        "image": "images/products/product-164/product-164-1.png",
+        "hoverImage": "images/products/product-164/product-164-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-164/product-164-1.png",
+      "images/products/product-164/product-164-2.png",
+      "images/products/product-164/product-164-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Chicago Bulls X Three-Peat 1996-1998 World Champions Metallic Edition - צבע שחור זהב",
+      "en": "New Era X Chicago Bulls X Three-Peat 1996-1998 World Champions Metallic Edition - Black Gold"
+    },
+    "subtitle": {
+      "he": "כובע Chicago Bulls בצבע שחור זהב במהדורת Three-Peat 1996-1998 World Champions Metallic Edition, עם רקמת שור מוזהבת בחזית ופאץ' Three-Peat NBA Champions בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black and gold Chicago Bulls cap from the Three-Peat 1996-1998 World Champions Metallic Edition, with a metallic gold bull embroidery on the front and a Three-Peat NBA Champions side patch · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Chicago Bulls X Three-Peat 1996-1998 World Champions Metallic Edition - צבע שחור זהב",
+      "en": "New Era X Chicago Bulls X Three-Peat 1996-1998 World Champions Metallic Edition - Black Gold"
+    },
+    "cardMessage": {
+      "he": "כובע Chicago Bulls שחור זהב עם רקמת שור מוזהבת בחזית ופאץ' Three-Peat NBA Champions בצד.",
+      "en": "Black and gold Chicago Bulls cap with metallic gold bull embroidery on the front and a Three-Peat NBA Champions side patch."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: שחור זהב",
+        "גוף הכובע והמצחייה בצבע שחור",
+        "מהדורת Three-Peat 1996-1998 World Champions Metallic Edition של Chicago Bulls",
+        "רקמת Chicago Bulls בחזית בצבע זהב, לבן ושחור",
+        "פאץ' Three-Peat NBA Champions רקום בצד",
+        "לוגו New Era רקום בצד בצבע זהב",
+        "מצחייה מעוגלת",
+        "סגירת Snapback אחורית מתכווננת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Black Gold",
+        "Black crown and black brim",
+        "Chicago Bulls Three-Peat 1996-1998 World Champions Metallic Edition",
+        "Front Chicago Bulls embroidery in metallic gold, white, and black",
+        "Embroidered Three-Peat NBA Champions side patch",
+        "Embroidered New Era side logo in gold",
+        "Curved brim",
+        "Adjustable rear snapback closure",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+
+
+  ,{
+    "id": "new-era-chicago-bulls-6x-nba-finals-champions-two-tone-edition-white-red-165",
+    "slug": "product-165",
+    "urlSlug": "new-era-chicago-bulls-6x-nba-finals-champions-two-tone-edition-white-red",
+    "sku": "KW-HAT-165",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-165/product-165-1.png",
+    "hoverImage": "images/products/product-165/product-165-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-165/product-165-1.png",
+        "hoverImage": "images/products/product-165/product-165-2.png"
+      },
+      "men": {
+        "image": "images/products/product-165/product-165-1.png",
+        "hoverImage": "images/products/product-165/product-165-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-165/product-165-1.png",
+      "images/products/product-165/product-165-2.png",
+      "images/products/product-165/product-165-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Chicago Bulls X 6X NBA Finals Champions Two Tone Edition - צבע לבן אדום",
+      "en": "New Era X Chicago Bulls X 6X NBA Finals Champions Two Tone Edition - White Red"
+    },
+    "subtitle": {
+      "he": "כובע Chicago Bulls בצבע לבן אדום במהדורת 6X NBA Finals Champions Two Tone Edition, עם רקמת שור אדומה בחזית ופאץ' 6X Champs בצד · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "White and red Chicago Bulls cap from the 6X NBA Finals Champions Two Tone Edition, with a red bull embroidery on the front and a 6X Champs side patch · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Chicago Bulls X 6X NBA Finals Champions Two Tone Edition - צבע לבן אדום",
+      "en": "New Era X Chicago Bulls X 6X NBA Finals Champions Two Tone Edition - White Red"
+    },
+    "cardMessage": {
+      "he": "כובע Chicago Bulls לבן אדום עם רקמת שור אדומה בחזית ופאץ' 6X Champs בצד.",
+      "en": "White and red Chicago Bulls cap with a red bull embroidery on the front and a 6X Champs side patch."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: לבן אדום",
+        "גוף הכובע בצבע לבן עם מצחייה אדומה",
+        "מהדורת 6X NBA Finals Champions Two Tone Edition של Chicago Bulls",
+        "רקמת Chicago Bulls בחזית בצבע אדום, לבן ושחור",
+        "פאץ' 6X Champs רקום בצד",
+        "כפתור עליון וסגירת Snapback אחורית בצבע אדום",
+        "מצחייה שטוחה",
+        "סגירת Snapback אחורית מתכווננת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: White Red",
+        "White crown with a red brim",
+        "Chicago Bulls 6X NBA Finals Champions Two Tone Edition",
+        "Front Chicago Bulls embroidery in red, white, and black",
+        "Embroidered 6X Champs side patch",
+        "Red top button and rear snapback closure",
+        "Flat brim",
+        "Adjustable rear snapback closure",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  }
+
+
 ];
 
 var CATEGORIES = [
@@ -14382,6 +15191,9 @@ var CATEGORIES = [
       "en": "Hats"
     }
   }
+
+
+
 ];
 
 if (typeof module !== 'undefined' && module.exports) { module.exports = { PRODUCTS: PRODUCTS, CATEGORIES: CATEGORIES }; }

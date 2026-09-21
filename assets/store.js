@@ -14,8 +14,8 @@
     cart: JSON.parse(read(LS.cart) || '[]'),
     filter: 'all',
     openFilterGroup: null,
-    catalogFilters: { colors: [], priceMin: '', priceMax: '' },
-    catalogFilterSections: { colors: true, price: true },
+    catalogFilters: { hatGroups: [], colors: [], priceMin: '', priceMax: '' },
+    catalogFilterSections: { categories: true, colors: true, price: true },
     pdp: null,
     qty: 1
   };
@@ -341,7 +341,7 @@
   }
 
   function resetCatalogFilters() {
-    state.catalogFilters = { colors: [], priceMin: '', priceMax: '' };
+    state.catalogFilters = { hatGroups: [], colors: [], priceMin: '', priceMax: '' };
   }
 
   function matchesAnySelected(selected, productKeys) {
@@ -350,7 +350,15 @@
   }
 
   function matchesCatalogFilters(p) {
-    var filters = state.catalogFilters || { colors: [], priceMin: '', priceMax: '' };
+    var filters = state.catalogFilters || { hatGroups: [], colors: [], priceMin: '', priceMax: '' };
+    var selectedHatGroups = Array.isArray(filters.hatGroups) ? filters.hatGroups : [];
+    if (state.filter === 'hats' && selectedHatGroups.length) {
+      var matchesHatGroup = selectedHatGroups.some(function (groupKey) {
+        var group = HAT_COLLECTION_GROUPS.find(function (item) { return item.key === groupKey; });
+        return !!(group && p && group.slugs.indexOf(p.slug) !== -1);
+      });
+      if (!matchesHatGroup) return false;
+    }
     if (!matchesAnySelected(filters.colors, productColorKeys(p))) return false;
 
     var price = Number(p && p.price);
@@ -494,6 +502,12 @@
       hatsBanner.hidden = state.filter !== 'hats';
     }
 
+    /* Hats only: keep the filter button slightly separated from the promo banner. */
+    var shopFilterRow = $('.shop__filter-row');
+    if (shopFilterRow) {
+      shopFilterRow.classList.toggle('shop__filter-row--hats-gap', state.filter === 'hats');
+    }
+
     var greetingCustomCollectionBanner = $('#greetingCustomCollectionBanner');
     if (greetingCustomCollectionBanner) {
       greetingCustomCollectionBanner.hidden = !(
@@ -511,23 +525,9 @@
       otherCollectionsBanner.hidden = !showOtherCollectionsBanner;
     }
 
+    /* Hats now open directly on the full collection. Category selection lives inside the filter panel. */
     var hatsAllButtonWrap = document.querySelector('[data-hats-all-button-wrap]');
-    if (!hatsAllButtonWrap) {
-      var hatsShopContainer = document.querySelector('.home-page .shop > .container') || document.querySelector('.shop > .container');
-      if (hatsShopContainer) {
-        hatsAllButtonWrap = document.createElement('div');
-        hatsAllButtonWrap.className = 'hats-all-button-wrap';
-        hatsAllButtonWrap.setAttribute('data-hats-all-button-wrap', '');
-        hatsAllButtonWrap.hidden = true;
-        hatsAllButtonWrap.innerHTML = '<a class="hats-all-button" href="/hats?view=all#shop" data-hats-all-button>לכל הכובעים</a>';
-        var filterRow = hatsShopContainer.querySelector('.shop__filter-row');
-        if (filterRow) hatsShopContainer.insertBefore(hatsAllButtonWrap, filterRow);
-        else hatsShopContainer.appendChild(hatsAllButtonWrap);
-      }
-    }
-    if (hatsAllButtonWrap) {
-      hatsAllButtonWrap.hidden = state.filter !== 'hats';
-    }
+    if (hatsAllButtonWrap) hatsAllButtonWrap.remove();
   }
 
   function renderCollectionNav() {
@@ -551,7 +551,7 @@
   }
 
   function filterSectionHTML(key, title, bodyHtml, extraOptionsClass) {
-    var open = !state.catalogFilterSections || state.catalogFilterSections[key] !== false;
+    var open = state.filter === 'hats' ? true : (!state.catalogFilterSections || state.catalogFilterSections[key] !== false);
     var bodyId = 'catalogFilterBody-' + key;
     return '<section class="catalog-filter-section" data-filter-section="' + esc(key) + '">' +
       '<button type="button" class="catalog-filter-title catalog-filter-title--toggle" data-filter-section-toggle="' + esc(key) + '" aria-expanded="' + open + '" aria-controls="' + bodyId + '">' +
@@ -571,15 +571,33 @@
   function renderFilters() {
     var wrap = $('#filters');
     if (!wrap) return;
+    wrap.classList.toggle('filters--hats', state.filter === 'hats');
 
     var collectionProducts = currentCollectionProducts();
     var colors = availableColorOptions(collectionProducts);
-    var filters = state.catalogFilters || { colors: [], priceMin: '', priceMax: '' };
+    var filters = state.catalogFilters || { hatGroups: [], colors: [], priceMin: '', priceMax: '' };
+    var selectedHatGroups = filters.hatGroups || [];
     var selectedColors = filters.colors || [];
     var selectedMin = filters.priceMin == null ? '' : String(filters.priceMin);
     var selectedMax = filters.priceMax == null ? '' : String(filters.priceMax);
-    var hasActiveFilters = selectedColors.length > 0 || selectedMin !== '' || selectedMax !== '';
+    var hasActiveFilters = selectedHatGroups.length > 0 || selectedColors.length > 0 || selectedMin !== '' || selectedMax !== '';
     var sections = [];
+
+    if (state.filter === 'hats') {
+      var hatCategoryOptions = HAT_COLLECTION_GROUPS.map(function (group) {
+        var count = collectionProducts.filter(function (p) { return p && group.slugs.indexOf(p.slug) !== -1; }).length;
+        return { key: group.key, label: group.title, count: count };
+      }).filter(function (option) { return option.count > 0; });
+
+      if (hatCategoryOptions.length) {
+        sections.push(filterSectionHTML('categories', 'קטגוריה', hatCategoryOptions.map(function (option) {
+          var active = selectedHatGroups.indexOf(option.key) !== -1;
+          return '<button type="button" class="catalog-filter-option catalog-filter-option--hat-category' + (active ? ' is-active' : '') + '" data-hat-category-filter="' + esc(option.key) + '" aria-pressed="' + active + '">' +
+            '<span class="catalog-filter-option__label">' + esc(option.label) + '</span>' +
+          '</button>';
+        }).join(''), 'catalog-filter-options--hat-categories'));
+      }
+    }
 
     if (colors.length) {
       sections.push(filterSectionHTML('colors', 'צבע', colors.map(function (option) {
@@ -762,7 +780,8 @@
     { key: 'anaheim-angels', title: 'New Era X Anaheim Angels', slugs: ['product-129', 'product-130', 'product-131', 'product-132', 'product-133'] },
     { key: 'atlanta-braves', title: 'New Era X Atlanta Braves', slugs: ['product-134', 'product-139', 'product-140', 'product-141'] },
     { key: 'milwaukee-bucks', title: 'New Era X Milwaukee Bucks', slugs: ['product-135', 'product-136', 'product-137', 'product-138'] },
-    { key: 'oakland-athletics', title: 'New Era X Oakland Athletics', slugs: ['product-142', 'product-143', 'product-144', 'product-145', 'product-146', 'product-147'] }
+    { key: 'oakland-athletics', title: 'New Era X Oakland Athletics', slugs: ['product-142', 'product-143', 'product-144', 'product-145', 'product-146', 'product-147'] },
+    { key: 'chicago-bulls', title: 'New Era X Chicago Bulls', slugs: ['product-157', 'product-158', 'product-159', 'product-160', 'product-161', 'product-162', 'product-163', 'product-164', 'product-165'] }
   ];
 
   function hatGroupBrowseHref(key) {
@@ -997,12 +1016,6 @@
     grid.innerHTML = filteredList.map(renderProductCardHTML).join('');
     renderCatalogLoadMore(grid, 0, 0);
 
-    var allHatsButton = document.querySelector('[data-hats-all-button]');
-    if (allHatsButton) {
-      allHatsButton.textContent = 'חזרה לקטגוריות';
-      allHatsButton.setAttribute('href', '/hats#shop');
-      allHatsButton.removeAttribute('aria-current');
-    }
   }
 
   function renderHatCollectionGroups(grid, filteredList) {
@@ -1085,17 +1098,13 @@
       if (!list.length) {
         grid.classList.remove('grid--collection-groups');
         grid.classList.remove('grid--hat-groups');
+        grid.classList.remove('grid--hat-group-only');
+        grid.classList.remove('grid--hats-all');
         grid.innerHTML = '<p class="empty">' + esc(t('shop.empty')) + '</p>';
         renderCatalogLoadMore(grid, 0, 0);
         return;
       }
-      if (isAllHatsView(window.location.search)) {
-        renderAllHatsGrid(grid, list);
-        return;
-      }
-      var requestedHatGroup = selectedHatGroupKey(window.location.search);
-      if (requestedHatGroup) renderHatGroupOnly(grid, list, requestedHatGroup);
-      else renderHatCollectionGroups(grid, list);
+      renderAllHatsGrid(grid, list);
       return;
     }
 
@@ -1777,7 +1786,7 @@
 
     var clear = $('[data-clear-product-filters]');
     if (clear) {
-      clear.hidden = !((state.catalogFilters.colors || []).length || state.catalogFilters.priceMin !== '' || state.catalogFilters.priceMax !== '');
+      clear.hidden = !((state.catalogFilters.hatGroups || []).length || (state.catalogFilters.colors || []).length || state.catalogFilters.priceMin !== '' || state.catalogFilters.priceMax !== '');
     }
     renderGrid();
   });
@@ -1835,6 +1844,12 @@
       var sectionKey = el.getAttribute('data-filter-section-toggle');
       state.catalogFilterSections[sectionKey] = !(state.catalogFilterSections[sectionKey] !== false);
       renderFilters();
+      return;
+    }
+    if ((el = e.target.closest('[data-hat-category-filter]'))) {
+      toggleCatalogArrayFilter('hatGroups', el.getAttribute('data-hat-category-filter'));
+      renderFilters();
+      renderGrid();
       return;
     }
     if ((el = e.target.closest('[data-product-color]'))) {
