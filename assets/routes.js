@@ -17,6 +17,8 @@
     bracelets: '/bracelets',
     'photo-bracelets': '/photo-bracelets',
     watches: '/watches',
+    'watches-men': '/watches-men',
+    'watches-women': '/watches-women',
     glasses: '/glasses',
     'glasses-men': '/glasses-men',
     'glasses-women': '/glasses-women',

@@ -34,10 +34,25 @@
     return product && product.urlSlug ? '/' + encodeURIComponent(product.urlSlug) : '/';
   }
 
+  function resolveProductId(ref){
+    var value = String(ref || '').trim();
+    if (!value) return '';
+    var product = catalog.find(function(item){
+      return item && (String(item.id || '') === value || String(item.slug || '') === value || String(item.urlSlug || '') === value);
+    });
+    return product ? String(product.id || '') : value;
+  }
+
   function readFavorites(){
     try {
       var value = JSON.parse(localStorage.getItem(FAVORITES_KEY) || '[]');
-      return Array.isArray(value) ? value.filter(Boolean) : [];
+      if (!Array.isArray(value)) return [];
+      var seen = {};
+      return value.map(resolveProductId).filter(function(id){
+        if (!id || seen[id]) return false;
+        seen[id] = true;
+        return true;
+      });
     } catch (err) {
       return [];
     }
@@ -61,7 +76,19 @@
   }
 
   function currentProductId(){
-    try { return new URLSearchParams(location.search).get('id') || ''; } catch (err) { return ''; }
+    var refs = [];
+    try { refs.push(new URLSearchParams(location.search).get('id') || ''); } catch (err) {}
+    if (document.body && document.body.dataset) refs.push(document.body.dataset.productSlug || '');
+    try { refs.push(decodeURIComponent(location.pathname.replace(/^\/+|\/+$/g, ''))); } catch (err) {}
+
+    for (var i = 0; i < refs.length; i++) {
+      var ref = String(refs[i] || '').trim();
+      if (!ref || ref === 'product.html') continue;
+      var resolved = resolveProductId(ref);
+      var exists = catalog.some(function(item){ return item && String(item.id || '') === resolved; });
+      if (exists) return resolved;
+    }
+    return '';
   }
 
   function updateFavoriteUi(){

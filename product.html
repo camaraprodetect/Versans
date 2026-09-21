@@ -97,8 +97,15 @@
       </div>
       <a href="/necklaces#shop" data-cat="necklaces" data-nav-cat="necklaces">שרשראות</a>
       <a href="/bracelets#shop" data-cat="bracelets" data-nav-cat="bracelets">צמידים</a>
-      <a href="/photo-bracelets#shop" data-cat="photo-bracelets" data-nav-cat="photo-bracelets">צמיד תמונה</a>
-      <a href="/watches#shop" data-cat="watches" data-nav-cat="watches">שעונים</a>
+      <a href="/photo-bracelets#shop" data-cat="photo-bracelets" data-nav-cat="photo-bracelets">תכשיטי תמונה</a>
+      <div class="nav__item nav__item--has-submenu" data-nav-group="watches">
+        <a href="/watches#shop" data-cat="watches" data-nav-cat="watches" data-nav-parent-toggle="watches" aria-haspopup="true" aria-expanded="false">שעונים</a>
+        <div class="nav__submenu" aria-label="תתי קטגוריות שעונים">
+          <a href="/watches#shop" data-cat="watches" class="nav__submenu-all">כל השעונים</a>
+          <a href="/watches-men#shop" data-cat="watches-men" data-nav-subcat="watches-men">גברים</a>
+          <a href="/watches-women#shop" data-cat="watches-women" data-nav-subcat="watches-women">נשים</a>
+        </div>
+      </div>
       <div class="nav__item nav__item--has-submenu" data-nav-group="glasses">
         <a href="/glasses#shop" data-cat="glasses" data-nav-cat="glasses" data-nav-parent-toggle="glasses" aria-haspopup="true" aria-expanded="false">משקפיים</a>
         <div class="nav__submenu" aria-label="תתי קטגוריות משקפיים">
@@ -108,8 +115,6 @@
           <a href="/glasses-unisex#shop" data-cat="glasses-unisex" data-nav-subcat="glasses-unisex">יוניסקס</a>
         </div>
       </div>
-      <a href="/gift-sets#shop" data-cat="gift-boxes" data-nav-cat="gift-boxes">מארזים</a>
-      <a href="/personal-design#shop" data-cat="custom" data-nav-cat="custom">עיצוב אישי</a>
       <a href="/hats#shop" data-cat="hats" data-nav-cat="hats">כובעים</a>
     </nav>
 
@@ -399,9 +404,9 @@
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="assets/config.js?v=20260914-pretty-urls-v1"></script>
-<script src="assets/products.js?v=20260918-hats-category-v1"></script>
-<script src="assets/routes.js?v=20260918-hats-category-v1"></script>
-<script src="assets/site-header.js?v=20260914-pretty-urls-v1"></script>
+<script src="assets/products.js?v=20260921-watch-subcats-v1"></script>
+<script src="assets/routes.js?v=20260921-watch-subcats-v1"></script>
+<script src="assets/site-header.js?v=20260921-favorites-product-fix-v1"></script>
 <script src="assets/glasses-pricing.js?v=20260912-glasses-v9"></script>
 <script src="assets/i18n.js?v=20260905-versans-v1"></script>
 <script src="assets/product.js?v=20260920-remove-product-after-safe-v1"></script>

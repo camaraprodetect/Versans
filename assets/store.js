@@ -30,7 +30,7 @@
       if (!requestedCategory) requestedCategory = new URLSearchParams(window.location.search).get('cat');
       var validCategories = [
         'all', 'greeting', 'greeting-mom', 'greeting-partner', 'greeting-daughter', 'greeting-sister',
-        'necklaces', 'bracelets', 'photo-bracelets', 'watches',
+        'necklaces', 'bracelets', 'photo-bracelets', 'watches', 'watches-men', 'watches-women',
         'glasses', 'glasses-men', 'glasses-women', 'glasses-unisex',
         'hats'
       ];
