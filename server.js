@@ -28,6 +28,7 @@ const VISITOR_TTL_MS = 90 * 24 * 60 * 60 * 1000;
 const PRESENCE_RETENTION_MS = 90 * 24 * 60 * 60 * 1000;
 const ONLINE_WINDOW_MS = 75 * 1000;
 const ADMIN_EMAIL = 'camaraprodetect@gmail.com';
+const USER_PURGE_META_KEY = 'purge_users_except_camaraprodetect_20260922_v1';
 const ADMIN_PAGES = new Set(['', 'dashboard', 'visitors', 'sales', 'orders', 'products', 'customers', 'traffic', 'reviews']);
 const BODY_LIMIT = 48 * 1024 * 1024;
 const REVIEW_IMAGE_LIMIT = 2 * 1024 * 1024;
@@ -1709,8 +1710,28 @@ setInterval(async () => {
   try { await database.cleanupPresencePageViews(Date.now() - PRESENCE_RETENTION_MS); } catch (err) { console.error('Presence cleanup failed:', err); }
 }, 6 * 60 * 60 * 1000).unref();
 
+async function purgeNonAdminUsersOnce() {
+  const alreadyDone = await database.getSchemaMeta(USER_PURGE_META_KEY);
+  if (alreadyDone) return;
+
+  const adminUser = await database.findUserByEmail(ADMIN_EMAIL);
+  if (!adminUser) {
+    console.error(`User purge skipped: protected account ${ADMIN_EMAIL} was not found.`);
+    return;
+  }
+
+  const result = await database.deleteUsersExceptEmail(ADMIN_EMAIL);
+  await database.setSchemaMeta(USER_PURGE_META_KEY, JSON.stringify({
+    completedAt: Date.now(),
+    protectedEmail: ADMIN_EMAIL,
+    deletedUsers: Number(result && result.deletedUsers ? result.deletedUsers : 0)
+  }));
+  console.log(`One-time user purge complete: deleted ${Number(result && result.deletedUsers ? result.deletedUsers : 0)} users; kept ${ADMIN_EMAIL}.`);
+}
+
 async function start() {
   await database.init();
+  await purgeNonAdminUsersOnce();
   await database.cleanupPresencePageViews(Date.now() - PRESENCE_RETENTION_MS);
   server.listen(PORT, HOST, () => {
     console.log(`VerSans running on http://${HOST}:${PORT}`);
