@@ -174,7 +174,11 @@ function amountToAgorot(value) {
 }
 
 function checkoutMode() {
-  return String(process.env.VERSANS_CHECKOUT_MODE || 'live').trim().toLowerCase() === 'demo' ? 'demo' : 'live';
+  const raw = String(process.env.VERSANS_CHECKOUT_MODE || '')
+    .trim()
+    .toLowerCase()
+    .replace(/^[\"']|[\"']$/g, '');
+  return raw === 'live' ? 'live' : 'demo';
 }
 
 function newDemoOrderRef() {
