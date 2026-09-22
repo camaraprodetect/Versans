@@ -44,6 +44,7 @@ const MARKETING_DELIVERY_STALE_MS = 15 * 60 * 1000;
 const WELCOME_COUPON_PERCENT = 3;
 const WELCOME_COUPON_TTL_MS = 14 * 24 * 60 * 60 * 1000;
 const PASSWORD_RESET_TTL_MS = 30 * 60 * 1000;
+const PASSWORD_RESET_COOKIE = 'versans_password_reset';
 const PRODUCT_BY_URL_SLUG = new Map(PRODUCTS.map((product) => [String(product.urlSlug || ''), product]));
 
 const database = createDatabase({ root: ROOT, sqlitePath: DB_PATH });
@@ -430,6 +431,20 @@ function clearSessionCookie(req) {
 
 function getSessionToken(req) {
   return parseCookies(req.headers.cookie)[SESSION_COOKIE] || '';
+}
+
+function passwordResetCookie(token, req) {
+  const secure = process.env.NODE_ENV === 'production' || String(req.headers['x-forwarded-proto'] || '').split(',')[0].trim() === 'https';
+  return `${PASSWORD_RESET_COOKIE}=${encodeURIComponent(token)}; Path=/api/auth/reset-password; HttpOnly; SameSite=Strict; Max-Age=${Math.floor(PASSWORD_RESET_TTL_MS / 1000)}${secure ? '; Secure' : ''}`;
+}
+
+function clearPasswordResetCookie(req) {
+  const secure = process.env.NODE_ENV === 'production' || String(req.headers['x-forwarded-proto'] || '').split(',')[0].trim() === 'https';
+  return `${PASSWORD_RESET_COOKIE}=; Path=/api/auth/reset-password; HttpOnly; SameSite=Strict; Max-Age=0${secure ? '; Secure' : ''}`;
+}
+
+function getPasswordResetToken(req) {
+  return String(parseCookies(req.headers.cookie)[PASSWORD_RESET_COOKIE] || '').trim().toLowerCase();
 }
 
 async function getCurrentUser(req) {
@@ -1110,7 +1125,7 @@ function rateLimited(req, bucket, max = 10, windowMs = 10 * 60 * 1000) {
   return item.count > max;
 }
 
-async function authApi(req, res, pathname) {
+async function authApi(req, res, pathname, parsed) {
   if (!sameOriginAllowed(req)) {
     json(res, 403, { ok: false, error: 'origin_not_allowed' });
     return true;
@@ -1118,6 +1133,39 @@ async function authApi(req, res, pathname) {
 
   if (pathname === '/api/auth/me' && req.method === 'GET') {
     json(res, 200, { ok: true, user: safeUser(await getCurrentUser(req)) });
+    return true;
+  }
+
+  if (pathname === '/api/auth/reset-password-link' && req.method === 'GET') {
+    const token = String(parsed && parsed.searchParams ? parsed.searchParams.get('token') || '' : '').trim().toLowerCase();
+    if (!/^[a-f0-9]{64}$/.test(token) || !(await database.hasValidPasswordResetToken(tokenHash(token), Date.now()))) {
+      res.statusCode = 303;
+      res.setHeader('Location', '/reset-password');
+      res.setHeader('Cache-Control', 'no-store');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Referrer-Policy', 'no-referrer');
+      res.setHeader('Set-Cookie', clearPasswordResetCookie(req));
+      res.end();
+      return true;
+    }
+    res.statusCode = 303;
+    res.setHeader('Location', '/reset-password');
+    res.setHeader('Cache-Control', 'no-store');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Referrer-Policy', 'no-referrer');
+    res.setHeader('Set-Cookie', passwordResetCookie(token, req));
+    res.end();
+    return true;
+  }
+
+  if (pathname === '/api/auth/reset-password/session' && req.method === 'GET') {
+    const token = getPasswordResetToken(req);
+    const ok = /^[a-f0-9]{64}$/.test(token) && await database.hasValidPasswordResetToken(tokenHash(token), Date.now());
+    if (!ok) {
+      json(res, 400, { ok: false, error: 'invalid_or_expired_reset' }, { 'Set-Cookie': clearPasswordResetCookie(req) });
+      return true;
+    }
+    json(res, 200, { ok: true });
     return true;
   }
 
@@ -1146,7 +1194,7 @@ async function authApi(req, res, pathname) {
     const now = Date.now();
     const token = crypto.randomBytes(32).toString('hex');
     await database.createPasswordResetToken(user.id, tokenHash(token), now, now + PASSWORD_RESET_TTL_MS);
-    const resetUrl = absoluteUrl(`/reset-password?token=${encodeURIComponent(token)}`);
+    const resetUrl = absoluteUrl(`/api/auth/reset-password-link?token=${encodeURIComponent(token)}`);
     const message = passwordResetEmail({
       name: user.name,
       resetUrl,
@@ -1175,10 +1223,10 @@ async function authApi(req, res, pathname) {
       return true;
     }
     const body = await readJsonBody(req);
-    const token = String(body.token || '').trim().toLowerCase();
+    const token = getPasswordResetToken(req);
     const password = String(body.password || '');
     if (!/^[a-f0-9]{64}$/.test(token)) {
-      json(res, 400, { ok: false, error: 'invalid_or_expired_reset' });
+      json(res, 400, { ok: false, error: 'invalid_or_expired_reset' }, { 'Set-Cookie': clearPasswordResetCookie(req) });
       return true;
     }
     if (password.length < 8 || password.length > 128) {
@@ -1188,10 +1236,10 @@ async function authApi(req, res, pathname) {
 
     const result = await database.resetPasswordWithToken(tokenHash(token), hashPassword(password), Date.now());
     if (!result || !result.ok) {
-      json(res, 400, { ok: false, error: 'invalid_or_expired_reset' });
+      json(res, 400, { ok: false, error: 'invalid_or_expired_reset' }, { 'Set-Cookie': clearPasswordResetCookie(req) });
       return true;
     }
-    json(res, 200, { ok: true }, { 'Set-Cookie': clearSessionCookie(req) });
+    json(res, 200, { ok: true }, { 'Set-Cookie': [clearSessionCookie(req), clearPasswordResetCookie(req)] });
     return true;
   }
 
@@ -1615,7 +1663,7 @@ function serveStorefrontHtml(req, res, filePath, bootRoute) {
   let source;
   try { source = fs.readFileSync(filePath, 'utf8'); } catch (_) { return false; }
   const isAuthDocument = /<body[^>]+class=["'][^"']*auth-page/.test(source);
-  // Auth/reset pages need their real pathname and reset token in location.search.
+  // Auth pages keep their real pathname. Password-reset secrets are held only in an HttpOnly cookie, never in the page URL.
   // The storefront URL masker intentionally hides catalog/product routes, but must not run here.
   const body = isAuthDocument ? source : injectStorefrontRouting(source, bootRoute || htmlBootRoute(req, '/'));
   res.statusCode = 200;
@@ -1680,6 +1728,21 @@ const server = http.createServer(async (req, res) => {
   catch (_) { json(res, 400, { error: 'Bad request' }); return; }
 
   try {
+    // Backward-compatible cleanup for reset links issued before the hidden-token flow.
+    // Convert the URL token into an HttpOnly cookie and immediately redirect to a clean URL.
+    if (req.method === 'GET' && pathname === '/reset-password' && parsed.searchParams.has('token')) {
+      const legacyResetToken = String(parsed.searchParams.get('token') || '').trim().toLowerCase();
+      const validLegacyReset = /^[a-f0-9]{64}$/.test(legacyResetToken) && await database.hasValidPasswordResetToken(tokenHash(legacyResetToken), Date.now());
+      res.statusCode = 303;
+      res.setHeader('Location', '/reset-password');
+      res.setHeader('Cache-Control', 'no-store');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Referrer-Policy', 'no-referrer');
+      res.setHeader('Set-Cookie', validLegacyReset ? passwordResetCookie(legacyResetToken, req) : clearPasswordResetCookie(req));
+      res.end();
+      return;
+    }
+
     if ((req.method === 'GET' || req.method === 'HEAD') && pathname === '/product.html' && parsed.searchParams.has('id')) {
       const product = productById(parsed.searchParams.get('id'));
       if (product && product.urlSlug) {
@@ -1715,7 +1778,7 @@ const server = http.createServer(async (req, res) => {
     if (await marketingUnsubscribePage(req, res, pathname, parsed)) return;
     if (await presenceApi(req, res, pathname)) return;
     if (await adminApi(req, res, pathname, parsed)) return;
-    if (await authApi(req, res, pathname)) return;
+    if (await authApi(req, res, pathname, parsed)) return;
     if (await reviewsApi(req, res, pathname)) return;
 
     if (pathname === '/api/coupons/validate' && req.method === 'POST') {

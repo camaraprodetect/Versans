@@ -106,11 +106,18 @@
 
   function prepareResetPage() {
     if (document.body.getAttribute('data-auth-page') !== 'reset-password') return;
-    var token = new URLSearchParams(location.search).get('token') || '';
-    if (!/^[a-fA-F0-9]{64}$/.test(token)) {
-      setMessage(t('invalidReset'));
-      var submit = qs('#authSubmit'); if (submit) submit.disabled = true;
-    }
+    var submit = qs('#authSubmit');
+    if (submit) submit.disabled = true;
+    fetch('/api/auth/reset-password/session', { credentials: 'same-origin', headers: { Accept: 'application/json' } })
+      .then(function (response) { return response.json().catch(function () { return {}; }).then(function (data) { return { response: response, data: data }; }); })
+      .then(function (result) {
+        if (!result.response.ok || !result.data.ok) throw result.data;
+        if (submit) submit.disabled = false;
+      })
+      .catch(function () {
+        setMessage(t('invalidReset'));
+        if (submit) submit.disabled = true;
+      });
   }
 
   function showLoginQueryMessage() {
@@ -144,14 +151,12 @@
       }
 
       if (page === 'reset-password') {
-        var token = String(new URLSearchParams(location.search).get('token') || '').trim();
         var newPassword = String((qs('#password') || {}).value || '');
         var confirmPassword = String((qs('#confirmPassword') || {}).value || '');
-        if (!/^[a-fA-F0-9]{64}$/.test(token)) { setMessage(t('invalidReset')); return; }
         if (newPassword.length < 8) { setMessage(t('invalidPassword')); return; }
         if (newPassword !== confirmPassword) { setMessage(t('mismatch')); return; }
         setSubmitLoading(submit, submitText, true, 'savePassword');
-        post('/api/auth/reset-password', { token: token, password: newPassword }).then(function (result) {
+        post('/api/auth/reset-password', { password: newPassword }).then(function (result) {
           if (!result.response.ok || !result.data.ok) throw result.data;
           setMessage(t('passwordChanged'), true);
           window.setTimeout(function () { location.replace('/login?reset=1'); }, 1200);
