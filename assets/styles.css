@@ -4178,3 +4178,74 @@ body.site-overlay-open{overflow:hidden}
   .cart-savings-breakdown{padding:.68rem}
   .cart-discount-item{font-size:.72rem}
 }
+
+
+/* ===== Desktop promotional hero 2026-09-23 ===== */
+.desktop-hero-actions{display:none}
+@media (min-width:701px){
+  .home-page .hero.hero--full{position:relative;display:grid;grid-template-columns:1fr;min-height:0;background:#000}
+  .home-page .hero--full .hero__copy{display:none!important}
+  .home-page .hero--full .hero__visual[data-hero-slider]{
+    width:100%;
+    aspect-ratio:1916 / 821;
+    background:#000;
+  }
+  .home-page .hero--full .hero__visual[data-hero-slider] .hero__slide{
+    object-fit:cover;
+    object-position:center center;
+  }
+  .home-page .desktop-hero-actions{
+    display:flex;
+    position:absolute;
+    z-index:6;
+    top:64%;
+    left:24.4%;
+    width:min(31vw,520px);
+    transform:translate(-50%,-50%);
+    flex-direction:column;
+    align-items:stretch;
+    gap:10px;
+    direction:rtl;
+  }
+  .home-page .desktop-hero-cta{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:100%;
+    min-height:40px;
+    padding:.48rem 1rem;
+    border-radius:999px;
+    font-size:clamp(.9rem,1vw,1.05rem);
+    font-weight:800;
+    line-height:1.1;
+    text-align:center;
+    text-decoration:none;
+    letter-spacing:.01em;
+    backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
+    transition:transform .18s ease,box-shadow .18s ease,background .18s ease;
+  }
+  .home-page .desktop-hero-cta:hover{transform:translateY(-1px)}
+  .home-page .desktop-hero-cta:active{transform:scale(.985)}
+  .home-page .desktop-hero-cta--primary{
+    color:#111;
+    background:#f5f313;
+    border:1px solid #fff86a;
+    box-shadow:0 9px 26px rgba(0,0,0,.30),inset 0 1px rgba(255,255,255,.34),inset 0 -1px rgba(145,136,0,.24);
+  }
+  .home-page .desktop-hero-cta--secondary{
+    color:#fff;
+    background:linear-gradient(180deg,rgba(10,11,13,.78),rgba(3,4,5,.68));
+    border:1px solid rgba(255,255,255,.78);
+    box-shadow:0 8px 24px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.10);
+  }
+}
+@media (min-width:701px) and (max-width:1100px){
+  .home-page .desktop-hero-actions{
+    top:65%;
+    left:24.5%;
+    width:min(34vw,410px);
+    gap:8px;
+  }
+  .home-page .desktop-hero-cta{min-height:38px;padding:.44rem .85rem;font-size:.84rem}
+}
