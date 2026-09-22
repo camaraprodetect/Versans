@@ -1656,8 +1656,47 @@ const server = http.createServer(async (req, res) => {
 
     if (pathname === '/api/create-payment' && req.method === 'POST') {
       const body = await readJsonBody(req);
-      const currentUser = await getCurrentUser(req);
+      const mode = checkoutMode();
       const requestedCouponCode = normalizeCouponCode(body && body.couponCode);
+      const customer = normalizeShippingCustomer(body && body.customer);
+      const paymentBody = { ...body, customer };
+
+      // Demo checkout must never wait for HYP or the orders database. Its purpose is
+      // to exercise the real storefront -> thank-you -> Google Sheet flow without a
+      // real charge. A slow/locked database previously left the checkout button
+      // waiting forever even though demo mode itself did not need the write.
+      if (mode === 'demo') {
+        const demoCoupon = requestedCouponCode
+          ? { code: requestedCouponCode, percent: WELCOME_COUPON_PERCENT }
+          : null;
+        const result = createDemoPaymentResult(paymentBody, { coupon: demoCoupon });
+        const amountAgorot = amountToAgorot(result.total);
+        if (amountAgorot === null) throw new Error('invalid_order_total');
+        const now = Date.now();
+        const demoOrder = {
+          order_ref: String(result.order || ''),
+          customer_email: customer.email,
+          customer_phone: customer.phone || null,
+          customer_json: JSON.stringify(customer),
+          amount_agorot: amountAgorot,
+          currency: String(result.currency || 'ILS'),
+          items_json: JSON.stringify(Array.isArray(body.items) ? body.items : []),
+          status: 'paid',
+          created_at: now,
+          paid_at: now,
+          updated_at: now
+        };
+
+        json(res, 200, result);
+        setImmediate(() => {
+          sendPaidOrderToGoogleSheet(demoOrder).catch((sheetErr) => {
+            console.error(`Google demo order sync failed for ${demoOrder.order_ref}:`, sheetErr);
+          });
+        });
+        return;
+      }
+
+      const currentUser = await getCurrentUser(req);
       let coupon = null;
       if (requestedCouponCode) {
         if (!currentUser) {
@@ -1674,11 +1713,7 @@ const server = http.createServer(async (req, res) => {
       const paymentOptions = {
         coupon: coupon ? { code: coupon.code, percent: Number(coupon.discount_percent || WELCOME_COUPON_PERCENT) } : null
       };
-      const customer = normalizeShippingCustomer(body && body.customer);
-      const paymentBody = { ...body, customer };
-      const result = checkoutMode() === 'demo'
-        ? createDemoPaymentResult(paymentBody, paymentOptions)
-        : await createPaymentUrl(paymentBody, paymentOptions);
+      const result = await createPaymentUrl(paymentBody, paymentOptions);
       const customerEmail = customer.email;
       const customerPhone = customer.phone || null;
       const amountAgorot = amountToAgorot(result.total);
@@ -1719,16 +1754,22 @@ const server = http.createServer(async (req, res) => {
 
       if (mode === 'demo') {
         orderRef = String(query.Order || '').trim();
-        order = orderRef ? await database.getOrderByRef(orderRef) : null;
-        const validDemoReturn = query.versans_demo === '1' && !!order;
+        const amount = Number(query.Amount);
+        const validDemoReturn = query.versans_demo === '1'
+          && query.CCode === '0'
+          && /^VS-DEMO-[A-Z0-9-]+$/.test(orderRef)
+          && Number.isFinite(amount)
+          && amount >= 0;
         result = {
           ok: validDemoReturn,
           ccode: validDemoReturn ? '0' : '1',
           order: orderRef || null,
-          amount: order ? (Number(order.amount_agorot || 0) / 100).toFixed(2) : null,
+          amount: Number.isFinite(amount) ? amount.toFixed(2) : null,
           raw: 'demo',
           demo: true
         };
+        json(res, 200, { ...result, verifiedCustomer: false });
+        return;
       } else {
         result = await verifyPayment(query);
         orderRef = String(result.order || query.Order || '').trim();
