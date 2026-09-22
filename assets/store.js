@@ -1341,9 +1341,101 @@
       return { id: i.id, qty: i.qty, necklace: i.necklace || null, box: i.box || null, size: i.size || null, color: i.color || null, packaging: i.packaging || null, customName: i.customName || null, customPhoto: i.customPhoto || null, greeting: i.greeting || null };
     });
   }
-  function orderTotal() {
-    return pricingSummary().total;
-  }
+
+function openCheckoutGreetingAssetDb() {
+  return new Promise(function (resolve, reject) {
+    if (!window.indexedDB) { reject(new Error('IndexedDB unavailable')); return; }
+    var req = indexedDB.open('kw_greeting_assets', 2);
+    req.onupgradeneeded = function () {
+      var db = req.result;
+      if (!db.objectStoreNames.contains('pngs')) db.createObjectStore('pngs', { keyPath: 'productId' });
+      if (!db.objectStoreNames.contains('backgrounds')) db.createObjectStore('backgrounds', { keyPath: 'productId' });
+    };
+    req.onsuccess = function () { resolve(req.result); };
+    req.onerror = function () { reject(req.error || new Error('DB open failed')); };
+  });
+}
+
+function openCheckoutProductPhotoDb() {
+  return new Promise(function (resolve, reject) {
+    if (!window.indexedDB) { reject(new Error('IndexedDB unavailable')); return; }
+    var req = indexedDB.open('kw_product_photos', 1);
+    req.onupgradeneeded = function () {
+      var db = req.result;
+      if (!db.objectStoreNames.contains('photos')) db.createObjectStore('photos', { keyPath: 'productId' });
+    };
+    req.onsuccess = function () { resolve(req.result); };
+    req.onerror = function () { reject(req.error || new Error('DB open failed')); };
+  });
+}
+
+function checkoutBlobToDataUrl(blob) {
+  return new Promise(function (resolve, reject) {
+    var reader = new FileReader();
+    reader.onload = function () { resolve(String(reader.result || '')); };
+    reader.onerror = function () { reject(reader.error || new Error('File read failed')); };
+    reader.readAsDataURL(blob);
+  });
+}
+
+async function loadCheckoutGreetingAsset(productId, assetId) {
+  try {
+    var db = await openCheckoutGreetingAssetDb();
+    var row = await new Promise(function (resolve, reject) {
+      var req = db.transaction('pngs', 'readonly').objectStore('pngs').get(productId);
+      req.onsuccess = function () { resolve(req.result || null); };
+      req.onerror = function () { reject(req.error || new Error('DB read failed')); };
+    });
+    db.close();
+    if (row && row.blob && String(row.assetId || '') === String(assetId || '')) return row;
+  } catch (_) {}
+  return null;
+}
+
+async function loadCheckoutProductPhotoAsset(productId, assetId) {
+  try {
+    var db = await openCheckoutProductPhotoDb();
+    var row = await new Promise(function (resolve, reject) {
+      var req = db.transaction('photos', 'readonly').objectStore('photos').get(productId);
+      req.onsuccess = function () { resolve(req.result || null); };
+      req.onerror = function () { reject(req.error || new Error('DB read failed')); };
+    });
+    db.close();
+    if (row && row.blob && String(row.assetId || '') === String(assetId || '')) return row;
+  } catch (_) {}
+  return null;
+}
+
+async function checkoutItemsPayloadWithAssets() {
+  var items = checkoutItemsPayload();
+  return Promise.all(items.map(async function (item) {
+    var enriched = Object.assign({}, item);
+    if (enriched.greeting && enriched.greeting.assetId) {
+      var greetingRow = await loadCheckoutGreetingAsset(enriched.id, enriched.greeting.assetId);
+      if (greetingRow && greetingRow.blob) {
+        enriched.greeting = Object.assign({}, enriched.greeting, {
+          imageDataUrl: await checkoutBlobToDataUrl(greetingRow.blob),
+          imageFileName: String(enriched.greeting.pngFileName || greetingRow.fileName || enriched.greeting.fileName || '')
+        });
+      }
+    }
+    if (enriched.customPhoto && enriched.customPhoto.assetId) {
+      var photoRow = await loadCheckoutProductPhotoAsset(enriched.id, enriched.customPhoto.assetId);
+      if (photoRow && photoRow.blob) {
+        enriched.customPhoto = Object.assign({}, enriched.customPhoto, {
+          imageDataUrl: await checkoutBlobToDataUrl(photoRow.blob),
+          imageFileName: String(enriched.customPhoto.fileName || photoRow.fileName || '')
+        });
+      }
+    }
+    return enriched;
+  }));
+}
+
+function orderTotal() {
+  return pricingSummary().total;
+}
+
   function count() { return window.VERSANS_CART_STATE ? window.VERSANS_CART_STATE.count(state.cart) : cartLines().reduce(function (s, l) { return s + l.qty; }, 0); }
 
   function cardDefaultOptionId(list, preferredId) {
@@ -1836,15 +1928,18 @@
     btn.disabled = true;
     btn.textContent = t('co.paying');
 
-    fetch('/api/create-payment', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        items: checkoutItemsPayload(),
-        customer: customer,
-        lang: state.lang,
-        couponCode: state.coupon && state.coupon.code ? state.coupon.code : null
-      })
+    Promise.resolve(checkoutItemsPayloadWithAssets())
+    .then(function (itemsPayload) {
+      return fetch('/api/create-payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          items: itemsPayload,
+          customer: customer,
+          lang: state.lang,
+          couponCode: state.coupon && state.coupon.code ? state.coupon.code : null
+        })
+      });
     })
     .then(function (r) { return r.json().catch(function () { return {}; }); })
     .then(function (data) {

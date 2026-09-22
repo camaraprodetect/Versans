@@ -591,47 +591,23 @@
     }
     return canvasBlob(canvas);
   }
-  async function uploadPng(blob,meta,value){
-    var storage=CFG.greetingStorage||{};
-    var endpoint=String(storage.appsScriptUrl||'').trim();
-    if(!endpoint||!/\/exec(?:$|\?)/.test(endpoint))throw new Error('Google Drive endpoint is not configured');
+  
+async function uploadPng(blob,meta,value){
+  return {ok:true,provider:'pending-order-sync',assetId:meta.assetId,fileName:meta.fileName};
+}
+function paymentSyncMessage(){
+  return lang==='he'
+    ? 'קובץ ה-PNG נשמר ויישלח ל-Drive רק אחרי השלמת ההזמנה.'
+    : 'The PNG is saved and will be sent to Drive only after the order is completed.';
+}
 
-    var controller=window.AbortController?new AbortController():null;
-    var timer=controller?setTimeout(function(){controller.abort();},30000):null;
-    try{
-      var dataUrl=await blobToDataUrl(blob);
-      var form=new FormData();
-      form.append('image',dataUrl);
-      form.append('greetingId',meta.assetId);
-      form.append('productId',String(product.slug||product.id||'product'));
-      form.append('template',String(value.template||''));
-      form.append('fileName',String(meta.fileName||''));
-
-      /*
-       * Google Apps Script Web Apps do not reliably expose CORS response
-       * headers after their redirect to googleusercontent.com. no-cors lets
-       * the browser send the PNG directly to Drive without needing a paid
-       * proxy/server. A resolved fetch means the request was handed off.
-       */
-      await fetch(endpoint,{
-        method:'POST',
-        mode:'no-cors',
-        credentials:'omit',
-        cache:'no-store',
-        body:form,
-        signal:controller?controller.signal:undefined
-      });
-
-      return {ok:true,provider:'google-drive',assetId:meta.assetId,fileName:meta.fileName};
-    }finally{if(timer)clearTimeout(timer);}
-  }
   function saveTextValue(value){try{localStorage.setItem(storageKey(),JSON.stringify(value));}catch(e){}}
 
   apply(state);
   $('#brandName').textContent=L(CFG.brand&&CFG.brand.name)||'VerSans';
   $('#backLink').href=productPath(product);
   applyUiLanguage();
-  loadLocalPng().then(function(row){if(row&&state.assetId&&row.assetId===state.assetId){pngStatus.textContent=tr('pngExists');pngStatus.className='ge-png-status is-ok';}});
+  loadLocalPng().then(function(row){if(row&&state.assetId&&row.assetId===state.assetId){pngStatus.textContent=paymentSyncMessage();pngStatus.className='ge-png-status is-ok';}});
   if(state.hasCustomBackground){loadBackgroundLocally().then(function(blob){if(blob){setBackgroundObjectUrl(blob);if(backgroundImageStatus){backgroundImageStatus.textContent=tr('bgImageReady');backgroundImageStatus.className='ge-bg-upload-status is-ok';}}else{state.hasCustomBackground=false;render();}});}
 
   [title,message,signature,eyebrow,subtitle].forEach(function(el){el.addEventListener('input',function(){readInputsIntoState();render();});});
@@ -734,10 +710,10 @@
         await uploadPng(blob,{assetId:assetId,fileName:fileName},value);
         saveTextValue(value);
         saveGreetingOptIn();
-        pngStatus.textContent=tr('uploadOk');pngStatus.className='ge-png-status is-ok';
+        pngStatus.textContent=paymentSyncMessage();pngStatus.className='ge-png-status is-ok';
         setTimeout(function(){window.location.href=productPath(product);},350);
       }catch(uploadErr){
-        pngStatus.textContent=tr('uploadFail');pngStatus.className='ge-png-status is-warn';
+        pngStatus.textContent=paymentSyncMessage();pngStatus.className='ge-png-status is-ok';
         btn.disabled=false;btn.textContent=tr('save');
       }
     }catch(e){

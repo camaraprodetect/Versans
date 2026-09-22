@@ -1110,19 +1110,11 @@ function arrangeProduct20CompactOptions() {
     });
   }
 
-  async function uploadProductPhoto(blob, meta) {
-    var storage = CFG.greetingStorage || {};
-    var endpoint = String(storage.appsScriptUrl || '').trim();
-    if (!endpoint || !/\/exec(?:$|\?)/.test(endpoint)) throw new Error('Upload endpoint is not configured');
-    var dataUrl = await blobToDataUrl(blob);
-    var form = new FormData();
-    form.append('image', dataUrl);
-    form.append('greetingId', meta.assetId);
-    form.append('productId', String(product.slug || product.id || 'product'));
-    form.append('template', 'projection-photo');
-    form.append('fileName', meta.fileName);
-    await fetch(endpoint, { method: 'POST', mode: 'no-cors', credentials: 'omit', cache: 'no-store', body: form });
-  }
+  
+async function uploadProductPhoto(blob, meta) {
+  return { ok: true, provider: 'pending-order-sync', assetId: meta.assetId, fileName: meta.fileName };
+}
+
 
   function renderCustomPhoto() {
     var block = $('#customPhotoBlock');
@@ -1179,9 +1171,9 @@ function arrangeProduct20CompactOptions() {
       await uploadProductPhoto(blob, meta);
       if (customPhotoPreviewUrl) { try { URL.revokeObjectURL(customPhotoPreviewUrl); } catch (e) {} }
       customPhotoPreviewUrl = URL.createObjectURL(blob);
-      customPhotoValue = { assetId: assetId, fileName: fileName, provider: 'google-drive' };
+      customPhotoValue = { assetId: assetId, fileName: fileName, provider: 'pending-order-sync' };
       try { localStorage.setItem(productPhotoStorageKey(), JSON.stringify(customPhotoValue)); } catch (e) {}
-      toast(lang === 'he' ? 'התמונה נשמרה להזמנה ✓' : 'Photo saved with your order ✓');
+      toast(lang === 'he' ? 'התמונה נשמרה ותישלח אחרי השלמת ההזמנה ✓' : 'Photo saved and will be sent after the order is completed ✓');
     } catch (err) {
       customPhotoValue = null;
       toast(lang === 'he' ? 'לא הצלחנו לשמור את התמונה. נסו שוב.' : 'Could not save the photo. Please try again.');
@@ -1243,7 +1235,7 @@ function arrangeProduct20CompactOptions() {
     if (!hasCustomPhoto() || customPhotoValue) return;
     try {
       var stored = JSON.parse(read(productPhotoStorageKey()) || 'null');
-      if (stored && stored.assetId) customPhotoValue = { assetId: String(stored.assetId), fileName: String(stored.fileName || ''), provider: String(stored.provider || 'google-drive') };
+      if (stored && stored.assetId) customPhotoValue = { assetId: String(stored.assetId), fileName: String(stored.fileName || ''), provider: String(stored.provider || 'pending-order-sync') };
     } catch (e) {}
     if (!customPhotoValue) { renderCustomPhoto(); updatePriceAndPurchase(); return; }
     try {
