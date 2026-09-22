@@ -1702,23 +1702,18 @@ function orderTotal() {
   }
   function savingsBreakdownHtml(summary) {
     if (!(summary.totalSavings > 0)) return '';
-    return '' +
-      '<button class="cart-savings-toggle" type="button" data-cart-savings-toggle aria-expanded="false">' +
-        '<span>' + esc(state.lang === 'he' ? 'על מה חסכתי?' : 'How did I save?') + '</span>' +
-        '<span class="cart-savings-toggle__icon" aria-hidden="true">+</span>' +
-      '</button>' +
-      '<div class="cart-savings-breakdown" data-cart-savings-breakdown hidden>' +
-        discountRowsHtml(summary) +
-        couponRowHtml(summary) +
-        savingsHtml(summary) +
-      '</div>';
+    return '<div class="cart-savings-breakdown" data-cart-savings-breakdown>' +
+      discountRowsHtml(summary) +
+      couponRowHtml(summary) +
+      savingsHtml(summary) +
+    '</div>';
   }
   function pricingCardHtml(summary, checkout) {
     return '<div class="cart-pricing-card cart-pricing-card--compact' + (checkout ? ' cart-pricing-card--checkout' : '') + '">' +
       '<div class="sum cart-summary-subtotal"><span>' + esc(t('cart.subtotal')) + '</span><span>' + money(summary.subtotal) + '</span></div>' +
+      savingsBreakdownHtml(summary) +
       '<div class="sum cart-summary-shipping"><span>' + esc(t('cart.shipping')) + '</span><span>' + (summary.shipping ? money(summary.shipping) : esc(t('cart.free'))) + '</span></div>' +
       '<div class="sum sum--payable"><span>' + esc(state.lang === 'he' ? 'לתשלום' : 'To pay') + '</span><strong>' + money(summary.total) + '</strong></div>' +
-      savingsBreakdownHtml(summary) +
     '</div>';
   }
 
@@ -2075,18 +2070,6 @@ function orderTotal() {
   /* ---------- אירועים ---------------------------------------------------- */
   document.addEventListener('click', function (e) {
     var el;
-
-    if ((el = e.target.closest('[data-cart-savings-toggle]'))) {
-      e.preventDefault();
-      var savingsCard = el.closest('.cart-pricing-card');
-      var savingsBreakdown = savingsCard && savingsCard.querySelector('[data-cart-savings-breakdown]');
-      var willOpenSavings = !!(savingsBreakdown && savingsBreakdown.hidden);
-      if (savingsBreakdown) savingsBreakdown.hidden = !willOpenSavings;
-      el.setAttribute('aria-expanded', willOpenSavings ? 'true' : 'false');
-      var savingsIcon = el.querySelector('.cart-savings-toggle__icon');
-      if (savingsIcon) savingsIcon.textContent = willOpenSavings ? '−' : '+';
-      return;
-    }
 
     if ((el = e.target.closest('[data-catalog-load-more]'))) {
       e.preventDefault();

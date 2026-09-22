@@ -60,6 +60,7 @@
           label: label,
           priceCents: priceCents,
           effectiveCents: priceCents,
+          bundleApplied: false,
           isGlasses: !!line.isGlasses || categories.indexOf('glasses') !== -1,
           isHats: !!line.isHats || categories.indexOf('hats') !== -1
         });
@@ -70,6 +71,7 @@
 
   function distributeBundle(units, indexes, targetCents) {
     if (!indexes.length) return 0;
+    indexes.forEach(function (index) { units[index].bundleApplied = true; });
     var original = indexes.reduce(function (sum, index) { return sum + units[index].effectiveCents; }, 0);
     if (original <= targetCents) return 0;
 
@@ -142,7 +144,9 @@
     /* 2) 10% off every second item, using prices AFTER bundle promotions.
        Units are ordered high-to-low, so each pair gives 10% off the cheaper item.
        This makes mixed carts predictable and customer-friendly. */
-    var byEffectivePrice = units.map(function (_, index) { return index; }).sort(function (a, b) {
+    var byEffectivePrice = units.map(function (_, index) { return index; }).filter(function (index) {
+      return !units[index].bundleApplied;
+    }).sort(function (a, b) {
       return units[b].effectiveCents - units[a].effectiveCents || a - b;
     });
     var secondItemDiscountCents = 0;
