@@ -34,29 +34,71 @@
     return product && product.urlSlug ? '/' + encodeURIComponent(product.urlSlug) : '/';
   }
 
+  function favoriteProduct(value){
+    var key = String(value || '').trim();
+    if (!key) return null;
+    return catalog.find(function(product){
+      return product && (
+        String(product.id || '') === key ||
+        String(product.slug || '') === key ||
+        String(product.urlSlug || '') === key
+      );
+    }) || null;
+  }
+
+  function canonicalFavoriteId(value){
+    var product = favoriteProduct(value);
+    return product ? String(product.id || product.slug || product.urlSlug || '') : '';
+  }
+
   function readFavorites(){
     try {
-      var value = JSON.parse(localStorage.getItem(FAVORITES_KEY) || '[]');
-      return Array.isArray(value) ? value.filter(Boolean) : [];
+      var stored = JSON.parse(localStorage.getItem(FAVORITES_KEY) || '[]');
+      if (!Array.isArray(stored)) stored = [];
+
+      var ids = [];
+      stored.forEach(function(value){
+        var id = canonicalFavoriteId(value);
+        if (id && ids.indexOf(id) === -1) ids.push(id);
+      });
+
+      /* Heal old/stale favorites immediately. Older product URLs (especially
+         product-94+) could save the route slug, e.g. "product-181", while the
+         favorites panel looked up the catalog id. Deleted products could also
+         leave a ghost badge count. Keep storage canonical and count only real
+         catalog products so the badge and panel can never disagree. */
+      var normalizedStored = stored.map(function(value){ return String(value || ''); }).filter(Boolean);
+      var changed = normalizedStored.length !== ids.length || normalizedStored.some(function(value, index){
+        return value !== ids[index];
+      });
+      if (changed) localStorage.setItem(FAVORITES_KEY, JSON.stringify(ids));
+      return ids;
     } catch (err) {
       return [];
     }
   }
 
   function writeFavorites(ids){
-    try { localStorage.setItem(FAVORITES_KEY, JSON.stringify(ids)); } catch (err) {}
+    var clean = [];
+    (Array.isArray(ids) ? ids : []).forEach(function(value){
+      var id = canonicalFavoriteId(value);
+      if (id && clean.indexOf(id) === -1) clean.push(id);
+    });
+    try { localStorage.setItem(FAVORITES_KEY, JSON.stringify(clean)); } catch (err) {}
     updateFavoriteUi();
   }
 
   function isFavorite(id){
-    return readFavorites().indexOf(id) !== -1;
+    var canonical = canonicalFavoriteId(id);
+    return !!canonical && readFavorites().indexOf(canonical) !== -1;
   }
 
   function toggleFavorite(id){
-    if (!id) return;
+    var canonical = canonicalFavoriteId(id);
+    if (!canonical) return;
     var ids = readFavorites();
-    var index = ids.indexOf(id);
-    if (index === -1) ids.push(id); else ids.splice(index, 1);
+    var index = ids.indexOf(canonical);
+    if (index === -1) ids.push(canonical); else ids.splice(index, 1);
     writeFavorites(ids);
   }
 
@@ -67,7 +109,10 @@
         : (location.pathname + location.search + location.hash);
       var url = new URL(route || '/', location.origin);
       var id = url.searchParams.get('id') || '';
-      if (id) return id;
+      if (id) {
+        var queryProduct = favoriteProduct(id);
+        return queryProduct ? String(queryProduct.id || queryProduct.slug || '') : '';
+      }
       var slug = decodeURIComponent((url.pathname || '').replace(/^\/+|\/+$/g, ''));
       if (!slug) return '';
       var product = catalog.find(function(item){
@@ -80,8 +125,8 @@
   function updateFavoriteUi(){
     var ids = readFavorites();
     document.querySelectorAll('#favoritesCount, [data-favorites-count]').forEach(function(counter){
-      counter.textContent = String(ids.length);
-      counter.hidden = false;
+      counter.textContent = ids.length > 0 ? String(ids.length) : '';
+      counter.hidden = ids.length === 0;
     });
 
     var productButton = document.getElementById('productFavoriteBtn');

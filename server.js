@@ -11,6 +11,7 @@ const { PRODUCTS } = require('./assets/products.js');
 const ROUTES = require('./assets/routes.js');
 const { normalizeAdminRange, normalizeStoredOrderItems, aggregatePaidOrders } = require('./lib/admin-analytics.js');
 const { absoluteUrl, isEmailConfigured, productAnnouncementEmail, sendEmail, welcomeEmail } = require('./lib/email.js');
+const { sendPaidOrderToGoogleSheet } = require('./lib/google-orders.js');
 
 const ROOT = __dirname;
 const DATA_DIR = process.env.VERSANS_DATA_DIR
@@ -1434,8 +1435,9 @@ function injectStorefrontRouting(html, bootRoute) {
   const late = '<script src="/assets/url-mask.js?v=20260922-urlmask-v3"></script>';
   let out = String(html || '');
   out = out
-    .replace(/(\/?assets\/store\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20260922-yankees-league-essential-v1')
-    .replace(/(\/?assets\/site-header\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20260922-urlmask-v2')
+    .replace(/(\/?assets\/store\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20260922-yankees-batch-v4')
+    .replace(/(\/?assets\/products\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20260922-yankees-batch-v4')
+    .replace(/(\/?assets\/site-header\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20260922-favorites-sync-v1')
     .replace(/(\/?assets\/presence\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20260922-urlmask-v2');
   if (out.includes('</head>')) out = out.replace('</head>', `${early}\n</head>`);
   else out = early + out;
@@ -1662,6 +1664,21 @@ const server = http.createServer(async (req, res) => {
                 verifiedCustomer = true;
               }
             });
+
+            // Google Sheet sync is deliberately best-effort: a Sheets outage must never
+            // turn a successful customer payment into a failed checkout response.
+            // The Apps Script endpoint de-duplicates by orderRef, so refreshing the
+            // thank-you page safely retries a failed sync without creating duplicates.
+            try {
+              await sendPaidOrderToGoogleSheet({
+                ...order,
+                status: 'paid',
+                paid_at: order.paid_at || now,
+                updated_at: now
+              });
+            } catch (sheetErr) {
+              console.error(`Google order sync failed for ${order.order_ref}:`, sheetErr);
+            }
           }
         } else {
           await database.markOrderFailed(Date.now(), order.id);

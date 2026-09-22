@@ -184,9 +184,9 @@
     { key: 'purple', label: 'סגול', swatch: '#9a74ba', terms: ['סגול', 'purple', 'lavender'] },
     { key: 'gray', label: 'אפור', swatch: '#777c82', terms: ['אפור', 'gray', 'grey'] },
     { key: 'brown', label: 'חום', swatch: '#7a513d', terms: ['חום', 'brown'] },
-    { key: 'red', label: 'אדום', swatch: '#a93434', terms: ['אדום', 'red'] },
+    { key: 'red', label: 'אדום', swatch: '#a93434', terms: ['אדום', 'red', 'בורדו', 'burgundy', 'maroon'] },
     { key: 'orange', label: 'כתום', swatch: '#e87524', terms: ['כתום', 'orange'] },
-    { key: 'beige', label: 'בז׳', swatch: '#d8c6a6', terms: ['בז', 'beige'] },
+    { key: 'beige', label: 'בז׳', swatch: '#d8c6a6', terms: ['בז', 'beige', 'שמנת', 'cream', 'חאקי', 'khaki', 'taupe', 'אוף וויט', 'off white', 'off-white', 'ivory'] },
     { key: 'transparent', label: 'שקוף', swatch: 'linear-gradient(135deg,#fff 0 45%,#d9e1e7 45% 55%,#fff 55% 100%)', terms: ['שקוף', 'transparent', 'clear'] }
   ];
 
@@ -804,7 +804,7 @@
   var HAT_COLLECTION_GROUPS = [
     { key: 'los-angeles-dodgers', title: 'New Era X Los Angeles Dodgers', slugs: ['product-100', 'product-101', 'product-102', 'product-108', 'product-109', 'product-110', 'product-111'] },
     { key: 'jon-stan', title: 'New Era X Jon Stan', slugs: ['product-103', 'product-104', 'product-105', 'product-106', 'product-107'] },
-    { key: 'new-york-yankees', title: 'New Era X New York Yankees', slugs: ['product-112', 'product-113', 'product-114', 'product-115', 'product-116', 'product-117', 'product-118', 'product-119', 'product-120', 'product-121', 'product-122', 'product-123', 'product-124', 'product-125', 'product-126', 'product-127', 'product-128', 'product-166', 'product-167', 'product-168', 'product-169', 'product-170', 'product-171', 'product-172'] },
+    { key: 'new-york-yankees', title: 'New Era X New York Yankees', slugs: ['product-112', 'product-113', 'product-114', 'product-115', 'product-116', 'product-117', 'product-118', 'product-119', 'product-120', 'product-121', 'product-122', 'product-123', 'product-124', 'product-125', 'product-126', 'product-127', 'product-128', 'product-166', 'product-167', 'product-168', 'product-169', 'product-170', 'product-171', 'product-172', 'product-173', 'product-174', 'product-175', 'product-176', 'product-177', 'product-178', 'product-179', 'product-180', 'product-181', 'product-182', 'product-183'] },
     { key: 'anaheim-angels', title: 'New Era X Anaheim Angels', slugs: ['product-129', 'product-130', 'product-131', 'product-132', 'product-133'] },
     { key: 'atlanta-braves', title: 'New Era X Atlanta Braves', slugs: ['product-134', 'product-139', 'product-140', 'product-141'] },
     { key: 'milwaukee-bucks', title: 'New Era X Milwaukee Bucks', slugs: ['product-135', 'product-136', 'product-137', 'product-138'] },
@@ -1035,6 +1035,25 @@
     window.requestAnimationFrame(syncAllHatCarouselArrowCenters);
   });
 
+  function positionLeagueEssentialHats(list) {
+    var items = Array.prototype.slice.call(list || []);
+    var leagueEssential = [];
+    var otherHats = [];
+
+    items.forEach(function (p) {
+      var titleHe = p && p.title && p.title.he ? String(p.title.he) : '';
+      if (titleHe.indexOf('New Era X New York Yankees X League Essential') !== -1) leagueEssential.push(p);
+      else otherHats.push(p);
+    });
+
+    if (!leagueEssential.length || !otherHats.length) return items;
+
+    /* Keep the League Essential block a little above the middle of the hats
+       catalog: visible early, but not pinned to the very top. */
+    var insertAt = Math.max(0, Math.min(otherHats.length, Math.round(otherHats.length * 0.35)));
+    return otherHats.slice(0, insertAt).concat(leagueEssential, otherHats.slice(insertAt));
+  }
+
   function renderAllHatsGrid(grid, filteredList) {
     clearHatCarouselTimers();
     grid.classList.remove('grid--collection-groups');
@@ -1050,10 +1069,11 @@
       catalogBatchesShown = 1;
     }
 
+    var orderedList = positionLeagueEssentialHats(filteredList);
     var visibleCount = catalogVisibleCount(grid, catalogBatchesShown);
-    var visibleList = filteredList.slice(0, visibleCount);
+    var visibleList = orderedList.slice(0, visibleCount);
     grid.innerHTML = visibleList.map(renderProductCardHTML).join('');
-    renderCatalogLoadMore(grid, filteredList.length, visibleList.length);
+    renderCatalogLoadMore(grid, orderedList.length, visibleList.length);
   }
 
   function renderHatCollectionGroups(grid, filteredList) {
