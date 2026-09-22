@@ -25,6 +25,7 @@
     openFilterGroup: null,
     catalogFilters: { hatGroups: [], colors: [], priceMin: '', priceMax: '' },
     catalogFilterSections: { categories: true, colors: true, price: true },
+    coupon: null,
     pdp: null,
     qty: 1
   };
@@ -1325,13 +1326,26 @@
   function secondItemDiscount() {
     return promotionDiscount().amount;
   }
+  function couponDiscount() {
+    if (!state.coupon || !state.coupon.code || !Number(state.coupon.percent)) return 0;
+    var base = Math.max(0, subtotal() - secondItemDiscount());
+    return Math.round(base * Number(state.coupon.percent) ) / 100;
+  }
+  function normalizeCouponCode(value) {
+    return String(value == null ? '' : value).trim().toUpperCase().replace(/\s+/g, '').replace(/[^A-Z0-9-]/g, '').slice(0, 40);
+  }
+  function checkoutItemsPayload() {
+    return state.cart.map(function (i) {
+      return { id: i.id, qty: i.qty, necklace: i.necklace || null, box: i.box || null, size: i.size || null, color: i.color || null, packaging: i.packaging || null, customName: i.customName || null, customPhoto: i.customPhoto || null, greeting: i.greeting || null };
+    });
+  }
   function shippingCost() {
     var s = subtotal();
     if (!s) return 0;
     return (CFG.shipping.freeOver && s >= CFG.shipping.freeOver) ? 0 : CFG.shipping.flat;
   }
   function orderTotal() {
-    return Math.max(0, subtotal() - secondItemDiscount() + shippingCost());
+    return Math.max(0, subtotal() - secondItemDiscount() - couponDiscount() + shippingCost());
   }
   function count() { return window.VERSANS_CART_STATE ? window.VERSANS_CART_STATE.count(state.cart) : cartLines().reduce(function (s, l) { return s + l.qty; }, 0); }
 
@@ -1614,11 +1628,12 @@
     }).join('');
 
     var promo = promotionDiscount();
-    var s = subtotal(), discount = promo.amount, sh = shippingCost(), total = orderTotal();
+    var s = subtotal(), discount = promo.amount, couponAmount = couponDiscount(), sh = shippingCost(), total = orderTotal();
     foot.hidden = false;
     foot.innerHTML =
       '<div class="sum"><span>' + esc(t('cart.subtotal')) + '</span><span>' + money(s) + '</span></div>' +
       (discount > 0 ? '<div class="sum sum--discount"><span>' + esc(promo.label) + '</span><span>−' + money(discount) + '</span></div>' : '') +
+      (couponAmount > 0 && state.coupon ? '<div class="sum sum--discount sum--coupon"><span>' + esc((state.lang === 'he' ? 'קופון ' : 'Coupon ') + state.coupon.code + ' (' + state.coupon.percent + '%)') + '</span><span>−' + money(couponAmount) + '</span></div>' : '') +
       '<div class="sum"><span>' + esc(t('cart.shipping')) + '</span><span>' + (sh ? money(sh) : esc(t('cart.free'))) + '</span></div>' +
       '<p class="cart-split-note">' + esc(state.lang === 'he'
         ? 'בהזמנה הכוללת מספר פריטים, המוצרים עשויים להגיע בנפרד כדי לא לעכב את האספקה. ללא עלות נוספת.'
@@ -1630,7 +1645,7 @@
   /* ---------- קופה ------------------------------------------------------- */
   function renderSummary() {
     var promo = promotionDiscount();
-    var s = subtotal(), discount = promo.amount, sh = shippingCost(), total = orderTotal();
+    var s = subtotal(), discount = promo.amount, couponAmount = couponDiscount(), sh = shippingCost(), total = orderTotal();
     $('#coSummary').innerHTML = cartLines().map(function (l) {
       var meta = [];
       if (l.necklace) meta.push(L(l.necklace.label));
@@ -1647,8 +1662,93 @@
     }).join('') +
     '<div class="sum" style="margin-top:.6rem"><span>' + esc(t('cart.subtotal')) + '</span><span>' + money(s) + '</span></div>' +
     (discount > 0 ? '<div class="sum sum--discount"><span>' + esc(promo.label) + '</span><span>−' + money(discount) + '</span></div>' : '') +
+    (couponAmount > 0 && state.coupon ? '<div class="sum sum--discount sum--coupon"><span>' + esc((state.lang === 'he' ? 'קופון ' : 'Coupon ') + state.coupon.code + ' (' + state.coupon.percent + '%)') + '</span><span>−' + money(couponAmount) + '</span></div>' : '') +
     '<div class="sum"><span>' + esc(t('cart.shipping')) + '</span><span>' + (sh ? money(sh) : esc(t('cart.free'))) + '</span></div>' +
     '<div class="sum sum--total"><span>' + esc(t('cart.total')) + '</span><span>' + money(total) + '</span></div>';
+  }
+
+  function couponMessage(message, type) {
+    var box = $('#coCouponMessage');
+    if (!box) return;
+    box.textContent = message || '';
+    box.className = 'checkout-coupon__message' + (type ? ' is-' + type : '');
+  }
+
+  function renderCouponUi() {
+    var input = $('#coCouponCode');
+    var apply = $('#applyCouponBtn');
+    var remove = $('#removeCouponBtn');
+    if (!input) return;
+    if (state.coupon && state.coupon.code) {
+      input.value = state.coupon.code;
+      input.disabled = true;
+      if (apply) apply.hidden = true;
+      if (remove) remove.hidden = false;
+      couponMessage(state.lang === 'he'
+        ? 'הקופון הוחל בהצלחה - ' + state.coupon.percent + '% הנחה.'
+        : 'Coupon applied - ' + state.coupon.percent + '% off.', 'ok');
+    } else {
+      input.disabled = false;
+      if (apply) { apply.hidden = false; apply.disabled = false; }
+      if (remove) remove.hidden = true;
+      couponMessage('', '');
+    }
+  }
+
+  function removeCoupon() {
+    state.coupon = null;
+    var input = $('#coCouponCode');
+    if (input) input.value = '';
+    renderCouponUi();
+    renderSummary();
+    renderCart();
+  }
+
+  function couponErrorText(code) {
+    if (code === 'login_required') return state.lang === 'he' ? 'כדי להשתמש בקופון האישי צריך להתחבר לחשבון.' : 'Sign in to use your personal coupon.';
+    if (code === 'coupon_used') return state.lang === 'he' ? 'הקופון הזה כבר מומש.' : 'This coupon has already been used.';
+    if (code === 'coupon_expired') return state.lang === 'he' ? 'תוקף הקופון הסתיים.' : 'This coupon has expired.';
+    if (code === 'invalid_coupon') return state.lang === 'he' ? 'קוד הקופון לא תקין או לא שייך לחשבון הזה.' : 'This coupon is invalid or does not belong to this account.';
+    return state.lang === 'he' ? 'לא הצלחנו לבדוק את הקופון. נסו שוב.' : 'We could not validate the coupon. Please try again.';
+  }
+
+  function applyCoupon() {
+    var input = $('#coCouponCode');
+    var button = $('#applyCouponBtn');
+    if (!input || !button) return;
+    var code = normalizeCouponCode(input.value);
+    input.value = code;
+    if (!code) {
+      couponMessage(state.lang === 'he' ? 'הכניסו קוד קופון.' : 'Enter a coupon code.', 'error');
+      return;
+    }
+    button.disabled = true;
+    couponMessage(state.lang === 'he' ? 'בודקים את הקופון…' : 'Checking coupon…', 'loading');
+    fetch('/api/coupons/validate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: code, items: checkoutItemsPayload(), lang: state.lang })
+    })
+    .then(function (r) { return r.json().catch(function () { return {}; }).then(function (data) { return { ok: r.ok, data: data }; }); })
+    .then(function (result) {
+      if (!result.ok || !result.data || !result.data.ok || !result.data.coupon) throw result.data || { error: 'coupon_error' };
+      state.coupon = {
+        code: normalizeCouponCode(result.data.coupon.code),
+        percent: Number(result.data.coupon.percent) || 3,
+        expiresAt: Number(result.data.coupon.expiresAt) || 0
+      };
+      renderCouponUi();
+      renderSummary();
+      renderCart();
+    })
+    .catch(function (err) {
+      state.coupon = null;
+      input.disabled = false;
+      button.disabled = false;
+      couponMessage(couponErrorText(err && err.error), 'error');
+      renderSummary();
+      renderCart();
+    });
   }
 
   function openCheckout() {
@@ -1661,6 +1761,7 @@
       return;
     }
     renderSummary();
+    renderCouponUi();
     closeOv('#cartOverlay');
     openOv('#coOverlay');
   }
@@ -1699,11 +1800,10 @@
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        items: state.cart.map(function (i) {
-          return { id: i.id, qty: i.qty, necklace: i.necklace || null, box: i.box || null, size: i.size || null, color: i.color || null, packaging: i.packaging || null, customName: i.customName || null, customPhoto: i.customPhoto || null, greeting: i.greeting || null };
-        }),
+        items: checkoutItemsPayload(),
         customer: customer,
-        lang: state.lang
+        lang: state.lang,
+        couponCode: state.coupon && state.coupon.code ? state.coupon.code : null
       })
     })
     .then(function (r) { return r.json().catch(function () { return {}; }); })
@@ -1715,13 +1815,22 @@
         }));
         window.location.href = data.url;
       } else {
-        throw new Error((data && data.error) || 'no url');
+        var checkoutError = new Error((data && data.error) || 'no url');
+        checkoutError.code = data && data.error;
+        throw checkoutError;
       }
     })
-    .catch(function () {
+    .catch(function (err) {
       btn.disabled = false;
       btn.textContent = t('co.pay');
-      errBox.textContent = t('co.err.server');
+      if (err && ['login_required','coupon_used','coupon_expired','invalid_coupon'].indexOf(err.code) !== -1) {
+        state.coupon = null;
+        renderCouponUi();
+        renderSummary();
+        errBox.textContent = couponErrorText(err.code);
+      } else {
+        errBox.textContent = t('co.err.server');
+      }
       errBox.hidden = false;
     });
   }
@@ -1997,6 +2106,8 @@
 
     if (e.target.closest('#cartBtn')) { renderCart(); openOv('#cartOverlay'); return; }
     if (e.target.closest('#goCheckout')) { openCheckout(); return; }
+    if (e.target.closest('#applyCouponBtn')) { applyCoupon(); return; }
+    if (e.target.closest('#removeCouponBtn')) { removeCoupon(); return; }
     if (e.target.closest('[data-close]')) { closeAll(); return; }
     if (e.target.closest('#burger')) { setMenu(!$('#navmenu').classList.contains('is-open')); return; }
     if (e.target.closest('#navScrim, [data-nav-close]')) { setMenu(false); return; }

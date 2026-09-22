@@ -6,7 +6,7 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const { URL } = require('node:url');
 const { createDatabase } = require('./lib/database.js');
-const { createPaymentUrl, verifyPayment } = require('./api/_hyp.js');
+const { createPaymentUrl, verifyPayment, priceOrder } = require('./api/_hyp.js');
 const { PRODUCTS } = require('./assets/products.js');
 const ROUTES = require('./assets/routes.js');
 const { normalizeAdminRange, normalizeStoredOrderItems, aggregatePaidOrders } = require('./lib/admin-analytics.js');
@@ -39,6 +39,8 @@ const PUBLIC_REVIEW_NAME = 'לקוח VerSans';
 const TERMS_VERSION = '2026-09-22';
 const MARKETING_CATALOG_META_KEY = 'marketing_catalog_initialized_v1';
 const MARKETING_DELIVERY_STALE_MS = 15 * 60 * 1000;
+const WELCOME_COUPON_PERCENT = 3;
+const WELCOME_COUPON_TTL_MS = 14 * 24 * 60 * 60 * 1000;
 const PRODUCT_BY_URL_SLUG = new Map(PRODUCTS.map((product) => [String(product.urlSlug || ''), product]));
 
 const database = createDatabase({ root: ROOT, sqlitePath: DB_PATH });
@@ -137,6 +139,44 @@ function amountToAgorot(value) {
   if (!Number.isFinite(amount) || amount < 0) return null;
   return Math.round(amount * 100);
 }
+
+function normalizeCouponCode(value) {
+  return String(value == null ? '' : value)
+    .trim()
+    .toUpperCase()
+    .replace(/\s+/g, '')
+    .replace(/[^A-Z0-9-]/g, '')
+    .slice(0, 40);
+}
+
+function newWelcomeCouponCode() {
+  return 'VS3-' + crypto.randomBytes(6).toString('hex').toUpperCase();
+}
+
+async function createWelcomeCoupon(store, userId, createdAt) {
+  const existing = await store.getWelcomeCouponForUser(userId);
+  if (existing) return existing;
+  const now = Number(createdAt) || Date.now();
+  const code = newWelcomeCouponCode();
+  const expiresAt = now + WELCOME_COUPON_TTL_MS;
+  const id = await store.insertCoupon({
+    code,
+    userId,
+    kind: 'welcome',
+    discountPercent: WELCOME_COUPON_PERCENT,
+    createdAt: now,
+    expiresAt
+  });
+  return { id, code, user_id: userId, kind: 'welcome', discount_percent: WELCOME_COUPON_PERCENT, active: 1, created_at: now, expires_at: expiresAt, used_at: null, used_order_ref: null };
+}
+
+function couponStatus(coupon, now = Date.now()) {
+  if (!coupon || Number(coupon.active || 0) !== 1) return 'invalid_coupon';
+  if (coupon.used_at) return 'coupon_used';
+  if (!coupon.expires_at || Number(coupon.expires_at) <= Number(now)) return 'coupon_expired';
+  return 'ok';
+}
+
 
 function cleanName(value) {
   return String(value || '').replace(/\s+/g, ' ').trim();
@@ -368,7 +408,13 @@ function productMarketingImage(product) {
 
 async function sendWelcomeForUser(user) {
   if (!user || !user.id || !validEmail(user.email) || !isEmailConfigured()) return false;
-  const message = welcomeEmail({ name: user.name });
+  const coupon = await createWelcomeCoupon(database, user.id, user.created_at || Date.now());
+  const message = welcomeEmail({
+    name: user.name,
+    couponCode: coupon && coupon.code,
+    couponExpiresAt: coupon && coupon.expires_at,
+    couponPercent: coupon && coupon.discount_percent
+  });
   const result = await sendEmail({
     to: user.email,
     subject: message.subject,
@@ -1032,12 +1078,16 @@ async function authApi(req, res, pathname) {
     const createdAt = Date.now();
     let userId;
     try {
-      userId = await database.insertUser(name, email, hashPassword(password), createdAt, phone, {
-        termsAcceptedAt: createdAt,
-        termsVersion: TERMS_VERSION,
-        marketingOptIn,
-        marketingOptInAt: marketingOptIn ? createdAt : null,
-        marketingUnsubscribeToken: marketingUnsubscribeToken()
+      userId = await database.transaction(async (tx) => {
+        const insertedUserId = await tx.insertUser(name, email, hashPassword(password), createdAt, phone, {
+          termsAcceptedAt: createdAt,
+          termsVersion: TERMS_VERSION,
+          marketingOptIn,
+          marketingOptInAt: marketingOptIn ? createdAt : null,
+          marketingUnsubscribeToken: marketingUnsubscribeToken()
+        });
+        await createWelcomeCoupon(tx, insertedUserId, createdAt);
+        return insertedUserId;
       });
     } catch (err) {
       if (err && (err.code === '23505' || String(err.message || '').toUpperCase().includes('UNIQUE'))) {
@@ -1497,10 +1547,65 @@ const server = http.createServer(async (req, res) => {
     if (await authApi(req, res, pathname)) return;
     if (await reviewsApi(req, res, pathname)) return;
 
+    if (pathname === '/api/coupons/validate' && req.method === 'POST') {
+      if (!sameOriginAllowed(req)) {
+        json(res, 403, { ok: false, error: 'origin_not_allowed' });
+        return;
+      }
+      const currentUser = await getCurrentUser(req);
+      if (!currentUser) {
+        json(res, 401, { ok: false, error: 'login_required' });
+        return;
+      }
+      const body = await readJsonBody(req);
+      const code = normalizeCouponCode(body && body.code);
+      if (!code) {
+        json(res, 400, { ok: false, error: 'invalid_coupon' });
+        return;
+      }
+      const coupon = await database.getCouponForUserByCode(currentUser.id, code);
+      const status = couponStatus(coupon);
+      if (status !== 'ok') {
+        json(res, 400, { ok: false, error: status });
+        return;
+      }
+      const priced = priceOrder(Array.isArray(body.items) ? body.items : [], body.lang === 'en' ? 'en' : 'he', {
+        code: coupon.code,
+        percent: Number(coupon.discount_percent || WELCOME_COUPON_PERCENT)
+      });
+      json(res, 200, {
+        ok: true,
+        coupon: {
+          code: coupon.code,
+          percent: Number(coupon.discount_percent || WELCOME_COUPON_PERCENT),
+          expiresAt: Number(coupon.expires_at),
+          discount: priced.couponDiscount,
+          total: priced.total
+        }
+      });
+      return;
+    }
+
     if (pathname === '/api/create-payment' && req.method === 'POST') {
       const body = await readJsonBody(req);
-      const result = await createPaymentUrl(body);
       const currentUser = await getCurrentUser(req);
+      const requestedCouponCode = normalizeCouponCode(body && body.couponCode);
+      let coupon = null;
+      if (requestedCouponCode) {
+        if (!currentUser) {
+          json(res, 401, { ok: false, error: 'login_required' });
+          return;
+        }
+        coupon = await database.getCouponForUserByCode(currentUser.id, requestedCouponCode);
+        const status = couponStatus(coupon);
+        if (status !== 'ok') {
+          json(res, 400, { ok: false, error: status });
+          return;
+        }
+      }
+      const result = await createPaymentUrl(body, {
+        coupon: coupon ? { code: coupon.code, percent: Number(coupon.discount_percent || WELCOME_COUPON_PERCENT) } : null
+      });
       const customer = body && body.customer ? body.customer : {};
       const customerEmail = normalizeEmail(customer.email);
       const customerPhone = normalizePhone(customer.phone) || null;
@@ -1522,6 +1627,9 @@ const server = http.createServer(async (req, res) => {
         amountAgorot,
         currency: String(result.currency || 'ILS'),
         itemsJson: JSON.stringify(Array.isArray(body.items) ? body.items : []),
+        couponId: coupon ? Number(coupon.id) : null,
+        couponCode: coupon ? String(coupon.code) : null,
+        couponDiscountAgorot: amountToAgorot(result.couponDiscount || 0) || 0,
         createdAt: now,
         updatedAt: now
       });
@@ -1544,6 +1652,10 @@ const server = http.createServer(async (req, res) => {
             const now = Date.now();
             await database.transaction(async (tx) => {
               await tx.markOrderPaid(now, order.id);
+              if (order.coupon_id && order.user_id) {
+                const redeemed = await tx.markCouponUsed(order.coupon_id, order.user_id, order.order_ref, now);
+                if (!redeemed) console.error(`Coupon redemption warning for order ${order.order_ref}`);
+              }
               if (order.user_id) {
                 await tx.markUserVerified(now, order.user_id);
                 verifiedCustomer = true;

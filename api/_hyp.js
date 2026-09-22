@@ -50,7 +50,7 @@ function localText(value, lang) {
   return value[lang] || value.he || value.en || '';
 }
 
-function priceOrder(items, lang) {
+function priceOrder(items, lang, coupon = null) {
   if (!Array.isArray(items) || !items.length) {
     const err = new Error('Cart is empty'); err.status = 400; throw err;
   }
@@ -245,11 +245,20 @@ function priceOrder(items, lang) {
     ? bundleLabels.join(' + ')
     : (lang === 'he' ? '25% הנחה על המוצר השני' : '25% off the second item');
 
+  const couponPercent = coupon && Number(coupon.percent) > 0
+    ? Math.min(100, Math.max(0, Number(coupon.percent)))
+    : 0;
+  const couponBase = Number(Math.max(0, subtotal - discount).toFixed(2));
+  const couponDiscount = couponPercent > 0
+    ? Number((couponBase * couponPercent / 100).toFixed(2))
+    : 0;
+  const couponCode = couponDiscount > 0 ? clean(coupon.code, 40).toUpperCase() : '';
+
   const freeOver = STORE_CONFIG.shipping.freeOver;
   const shipping = (freeOver && subtotal >= freeOver) ? 0 : Number(STORE_CONFIG.shipping.flat);
-  const total = Number(Math.max(0, subtotal - discount + shipping).toFixed(2));
+  const total = Number(Math.max(0, subtotal - discount - couponDiscount + shipping).toFixed(2));
 
-  return { lines, subtotal, discount, discountLabel, shipping, total };
+  return { lines, subtotal, discount, discountLabel, couponDiscount, couponPercent, couponCode, shipping, total };
 }
 
 
@@ -257,16 +266,17 @@ function priceOrder(items, lang) {
 function invoiceRows(order) {
   const rows = order.lines.map((l, i) => `[${i}~${l.name.replace(/[~\[\]]/g, ' ')}~${l.qty}~${l.price}]`);
   if (order.discount) rows.push(`[${rows.length}~${String(order.discountLabel || 'Discount').replace(/[~\[\]]/g, ' ')}~1~-${order.discount}]`);
+  if (order.couponDiscount) rows.push(`[${rows.length}~Coupon ${String(order.couponCode || '').replace(/[~\[\]]/g, ' ')}~1~-${order.couponDiscount}]`);
   if (order.shipping) rows.push(`[${rows.length}~Shipping~1~${order.shipping}]`);
   return rows.join(';');
 }
 
 /* יוצר קישור לדף התשלום המאובטח */
-async function createPaymentUrl(body) {
+async function createPaymentUrl(body, options = {}) {
   const { Masof, KEY, PassP } = credentials();
   const lang = body.lang === 'en' ? 'en' : 'he';
   const customer = body.customer || {};
-  const order = priceOrder(body.items, lang);
+  const order = priceOrder(body.items, lang, options.coupon || null);
   const orderId = newOrderId();
   const hyp = STORE_CONFIG.hyp;
 
@@ -323,6 +333,8 @@ async function createPaymentUrl(body) {
     url: HYP_ENDPOINT + '?' + query,
     order: orderId,
     total: order.total,
+    couponDiscount: order.couponDiscount || 0,
+    couponCode: order.couponCode || '',
     currency: STORE_CONFIG.currency.code
   };
 }
