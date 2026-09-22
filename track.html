@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,follow">
+  <title>מעקב הזמנה | VerSans</title>
+  <link rel="icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/assets/track.css">
+</head>
+<body>
+  <header class="track-topbar">
+    <a class="track-brand" href="/" aria-label="VerSans">VERSANS</a>
+    <a class="track-store-link" href="/">חזרה לחנות</a>
+  </header>
+
+  <main class="track-shell">
+    <section class="track-hero">
+      <span class="track-eyebrow">VERSANS DELIVERY</span>
+      <h1>מעקב אחר ההזמנה</h1>
+      <p>הכניסו את מספר ההזמנה ואת האימייל או מספר הטלפון ששימשו בהזמנה.</p>
+    </section>
+
+    <section class="track-card" aria-labelledby="trackFormTitle">
+      <h2 id="trackFormTitle">מצאו את המשלוח שלכם</h2>
+      <form id="trackingForm" class="track-form" autocomplete="on">
+        <label>
+          <span>מספר הזמנה</span>
+          <input id="orderRef" name="order" type="text" inputmode="text" placeholder="לדוגמה VS-..." maxlength="120" required>
+        </label>
+        <label>
+          <span>אימייל או טלפון</span>
+          <input id="contact" name="contact" type="text" placeholder="האימייל או הטלפון מההזמנה" maxlength="254" required>
+        </label>
+        <button id="trackSubmit" type="submit">בדיקת סטטוס</button>
+      </form>
+      <p id="trackError" class="track-error" hidden></p>
+    </section>
+
+    <section id="trackingResult" class="track-results" hidden aria-live="polite"></section>
+
+    <section class="track-help">
+      <strong>צריכים עזרה?</strong>
+      <p>צוות VerSans כאן בשבילכם. אם פרטי המעקב עדיין לא הופיעו, ייתכן שההזמנה עדיין בהכנה.</p>
+      <a href="https://wa.me/972546296037" rel="noopener">שירות לקוחות ב-WhatsApp</a>
+    </section>
+  </main>
+
+  <script src="/assets/track.js" defer></script>
+</body>
+</html>

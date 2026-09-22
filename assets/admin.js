@@ -15,7 +15,7 @@
     dashboard: ['Dashboard', 'תמונה מהירה של המכירות, המבקרים והלקוחות של VerSans'],
     visitors: ['מבקרים', 'מי נמצא באתר, מי ביקר בעבר ואיך הוא השתמש באתר'],
     sales: ['מכירות', 'נתוני הכנסות ומוצרים על בסיס הזמנות ששולמו בלבד'],
-    orders: ['הזמנות', 'צפייה בהזמנות וסטטוסים ללא פעולות שינוי'],
+    orders: ['הזמנות', 'הזמנות, חבילות ומספרי מעקב של VerSans'],
     products: ['מוצרים', 'ביצועי המוצרים לפי מכירות ששולמו'],
     customers: ['לקוחות', 'משתמשים רשומים, רכישות והוצאות מצטברות'],
     traffic: ['תנועה לאתר', 'עמודים, מקורות הגעה, מכשירים ודפדפנים'],
@@ -132,6 +132,27 @@
       throw new Error(errorBody && errorBody.error ? errorBody.error : 'request_failed_' + response.status);
     }
     return response.json();
+  }
+
+  async function apiAction(url, method, body) {
+    var options = { method: method || 'POST', credentials: 'same-origin', headers: { Accept: 'application/json' } };
+    if (body !== undefined) {
+      options.headers['Content-Type'] = 'application/json';
+      options.body = JSON.stringify(body);
+    }
+    var response = await fetch(url, options);
+    if (response.status === 401 || response.status === 403) {
+      window.location.href = '/login';
+      throw new Error('admin_required');
+    }
+    var payload = null;
+    try { payload = await response.json(); } catch (_) { payload = null; }
+    if (!response.ok) {
+      var err = new Error(payload && (payload.message || payload.error) ? (payload.message || payload.error) : 'request_failed_' + response.status);
+      err.code = payload && payload.error;
+      throw err;
+    }
+    return payload || {};
   }
 
   function showToast(message) {
@@ -377,6 +398,115 @@
     return box;
   }
 
+  function shippingErrorMessage(error) {
+    var code = error && (error.code || error.message);
+    var map = {
+      invalid_tracking_number: 'מספר המעקב לא תקין.',
+      tracking_already_exists: 'מספר המעקב כבר קיים במערכת.',
+      select_shipment_items: 'צריך לבחור לפחות מוצר אחד לחבילה.',
+      order_not_paid: 'אפשר להוסיף משלוח רק להזמנה ששולמה.',
+      '17track_not_configured': 'חסר VERSANS_17TRACK_API_KEY ב-Render.',
+      tracking_registration_failed: '17TRACK לא קיבל את מספר המעקב. בדוק את המספר או את קוד חברת השילוח.'
+    };
+    return map[code] || text(error && error.message, 'לא ניתן לבצע את הפעולה כרגע.');
+  }
+
+  function closeShippingModal() {
+    var node = document.querySelector('.admin-shipping-modal');
+    if (node) node.remove();
+  }
+
+  function configPill(ok, label) {
+    return badge((ok ? '✓ ' : '⚠ ') + label, ok ? 'verified' : 'pending');
+  }
+
+  function shippingItemLabel(item) {
+    return text(item.productName, item.productId) + ' ×' + numberFmt(item.qty || 1);
+  }
+
+  async function openShipmentManager(order) {
+    closeShippingModal();
+    var modal = make('div', 'admin-shipping-modal');
+    var backdrop = make('button', 'admin-shipping-backdrop'); backdrop.type = 'button'; backdrop.setAttribute('aria-label', 'סגירה');
+    var panel = make('section', 'admin-shipping-panel');
+    var loading = make('div', 'admin-page-loading'); loading.appendChild(make('span')); loading.appendChild(make('p', '', 'טוען משלוחים…'));
+    panel.appendChild(loading); modal.append(backdrop, panel); document.body.appendChild(modal);
+    backdrop.addEventListener('click', closeShippingModal);
+
+    async function load() {
+      try {
+        var data = await api('/api/admin/orders/' + encodeURIComponent(order.orderRef) + '/shipments');
+        panel.replaceChildren();
+        var head = make('div', 'admin-shipping-head');
+        var headText = make('div'); headText.appendChild(make('small', '', 'ניהול משלוחים')); headText.appendChild(make('h2', '', order.orderRef));
+        var close = make('button', 'admin-shipping-close', '×'); close.type = 'button'; close.addEventListener('click', closeShippingModal);
+        head.append(headText, close); panel.appendChild(head);
+
+        var config = make('div', 'admin-shipping-config');
+        config.append(configPill(data.trackingConfigured, '17TRACK'), configPill(data.customerWhatsAppConfigured, 'WhatsApp לקוח'), configPill(data.adminWhatsAppConfigured, 'WhatsApp מנהל'));
+        panel.appendChild(config);
+        if (!data.trackingConfigured || !data.customerWhatsAppConfigured || !data.adminWhatsAppConfigured) {
+          var note = make('div', 'admin-shipping-note');
+          note.textContent = 'המערכת בנויה ומוכנה. רכיב שמסומן באזהרה דורש רק את משתני הסביבה שלו ב-Render.';
+          panel.appendChild(note);
+        }
+
+        var existing = make('div', 'admin-shipping-section'); existing.appendChild(make('h3', '', 'חבילות קיימות'));
+        if (!(data.shipments || []).length) existing.appendChild(make('p', 'admin-table__muted', 'עדיין לא הוזן מספר מעקב להזמנה הזאת.'));
+        (data.shipments || []).forEach(function (shipment) {
+          var card = make('article', 'admin-shipment-card');
+          var top = make('div', 'admin-shipment-card__top');
+          var meta = make('div'); meta.appendChild(make('strong', 'admin-table__strong admin-table__mono', shipment.trackingNumber)); meta.appendChild(make('small', 'admin-table__muted', shipment.statusLabel));
+          var actions = make('div', 'admin-shipment-actions');
+          var refresh = make('button', 'admin-small-button', 'רענון'); refresh.type = 'button';
+          refresh.disabled = !data.trackingConfigured;
+          refresh.addEventListener('click', async function () { refresh.disabled = true; try { await apiAction('/api/admin/shipments/' + shipment.id + '/refresh', 'POST'); showToast('סטטוס המשלוח עודכן'); await load(); } catch (e) { showToast(shippingErrorMessage(e)); refresh.disabled = false; } });
+          var remove = make('button', 'admin-small-button admin-small-button--danger', 'מחיקה'); remove.type = 'button';
+          remove.addEventListener('click', async function () { if (!window.confirm('למחוק את מספר המעקב מההזמנה?')) return; remove.disabled = true; try { await apiAction('/api/admin/shipments/' + shipment.id, 'DELETE'); showToast('המשלוח הוסר'); await load(); } catch (e) { showToast(shippingErrorMessage(e)); remove.disabled = false; } });
+          actions.append(refresh, remove); top.append(meta, actions); card.appendChild(top);
+          var itemLine = make('div', 'admin-shipment-items'); (shipment.items || []).forEach(function (item) { itemLine.appendChild(make('span', '', shippingItemLabel(item))); }); card.appendChild(itemLine);
+          if (shipment.latestEventAt) card.appendChild(make('small', 'admin-table__muted', 'עדכון אחרון: ' + dateTime(shipment.latestEventAt)));
+          existing.appendChild(card);
+        });
+        panel.appendChild(existing);
+
+        var addSection = make('div', 'admin-shipping-section'); addSection.appendChild(make('h3', '', 'הוספת חבילה / מספר מעקב'));
+        var form = make('form', 'admin-shipment-form');
+        var fields = make('div', 'admin-shipment-fields');
+        var trackingLabel = make('label'); trackingLabel.appendChild(make('span', '', 'מספר מעקב')); var tracking = document.createElement('input'); tracking.name = 'tracking'; tracking.placeholder = 'Tracking number'; tracking.autocomplete = 'off'; tracking.required = true; trackingLabel.appendChild(tracking);
+        var carrierLabel = make('label'); carrierLabel.appendChild(make('span', '', 'קוד חברת שילוח 17TRACK (אופציונלי)')); var carrier = document.createElement('input'); carrier.name = 'carrier'; carrier.placeholder = 'לדוגמה 3011'; carrier.inputMode = 'numeric'; carrierLabel.appendChild(carrier);
+        fields.append(trackingLabel, carrierLabel); form.appendChild(fields);
+        form.appendChild(make('strong', 'admin-shipment-products-title', 'איזה מוצרים נמצאים בחבילה?'));
+        var checks = make('div', 'admin-shipment-checks');
+        (data.items || []).forEach(function (item) { var label = make('label', 'admin-shipment-check'); var input = document.createElement('input'); input.type = 'checkbox'; input.value = item.itemIndex; input.checked = true; label.append(input, make('span', '', shippingItemLabel(item))); checks.appendChild(label); });
+        form.appendChild(checks);
+        var submit = make('button', 'admin-shipment-submit', 'הוסף והתחל מעקב'); submit.type = 'submit'; form.appendChild(submit);
+        var formError = make('div', 'admin-shipment-form-error'); formError.hidden = true; form.appendChild(formError);
+        form.addEventListener('submit', async function (event) {
+          event.preventDefault(); formError.hidden = true; submit.disabled = true; submit.textContent = 'מוסיף…';
+          var indexes = Array.prototype.slice.call(checks.querySelectorAll('input:checked')).map(function (input) { return Number(input.value); });
+          try {
+            await apiAction('/api/admin/orders/' + encodeURIComponent(order.orderRef) + '/shipments', 'POST', { trackingNumber: tracking.value.trim(), carrierCode: carrier.value.trim() || null, itemIndexes: indexes });
+            showToast('מספר המעקב נוסף'); await load();
+          } catch (e) { formError.textContent = shippingErrorMessage(e); formError.hidden = false; submit.disabled = false; submit.textContent = 'הוסף והתחל מעקב'; }
+        });
+        addSection.appendChild(form); panel.appendChild(addSection);
+      } catch (error) {
+        panel.replaceChildren();
+        var err = make('div', 'admin-error'); err.appendChild(make('strong', '', 'לא ניתן לטעון את המשלוחים.')); err.appendChild(make('div', 'admin-table__muted', shippingErrorMessage(error))); panel.appendChild(err);
+      }
+    }
+    await load();
+  }
+
+  function shippingButton(order) {
+    var button = make('button', 'admin-shipping-button', 'ניהול משלוחים');
+    button.type = 'button';
+    button.disabled = order.status !== 'paid';
+    button.addEventListener('click', function (event) { event.stopPropagation(); openShipmentManager(order); });
+    return button;
+  }
+
   function ordersTable(rows, title, subtitle) {
     return renderTable({
       title: title || 'הזמנות',
@@ -390,6 +520,7 @@
         { label: 'מוצרים', render: orderItemsSummary },
         { label: 'סכום', render: function (row) { return make('strong', 'admin-table__strong', moneyAgorot(row.amountAgorot)); } },
         { label: 'תאריך', render: function (row) { return cellPrimary(dateTime(row.paidAt || row.createdAt), row.paidAt ? 'שולם' : 'נוצר'); } },
+        { label: 'משלוח', render: shippingButton },
         { label: 'סטטוס', render: function (row) { return statusBadge(row.status); } }
       ]
     });
@@ -650,7 +781,7 @@
     filters.appendChild(renderStatusFilter(status, function (next) { state.ordersStatus = next; state.offsets.orders = 0; renderCurrentPage(); }));
     filters.appendChild(renderRangeFilter(range, rangeOptions, function (next) { state.ranges.orders = next; state.offsets.orders = 0; renderCurrentPage(); }));
     toolbar.appendChild(filters);
-    toolbar.appendChild(make('span', 'admin-toolbar-note', 'צפייה בלבד — אין שינוי סטטוסים דרך ה־Admin'));
+    toolbar.appendChild(make('span', 'admin-toolbar-note', 'סטטוס תשלום לקריאה בלבד · מספרי מעקב מנוהלים מכאן'));
     frag.appendChild(toolbar);
     frag.appendChild(renderKpis([
       { label: 'הזמנות בתצוגה', value: numberFmt(data.count), hint: status === 'all' ? 'כל הסטטוסים' : status, primary: status === 'paid', tone: status === 'paid' ? 'green' : 'amber' },

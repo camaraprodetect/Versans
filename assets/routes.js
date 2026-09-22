@@ -35,7 +35,8 @@
     '/account': 'account.html',
     '/thank-you': 'thank-you.html',
     '/greeting-editor': 'greeting-editor.html',
-    '/choose-necklace': 'necklaces.html'
+    '/choose-necklace': 'necklaces.html',
+    '/track': 'track.html'
   };
 
   var CATEGORY_BY_PATH = {};
@@ -71,7 +72,7 @@
   function pagePath(name) {
     var names = {
       policies: '/policies', login: '/login', forgotPassword: '/forgot-password', resetPassword: '/reset-password', register: '/register', account: '/account',
-      thankYou: '/thank-you', greetingEditor: '/greeting-editor', chooseNecklace: '/choose-necklace'
+      thankYou: '/thank-you', greetingEditor: '/greeting-editor', chooseNecklace: '/choose-necklace', track: '/track'
     };
     return names[name] || '/';
   }

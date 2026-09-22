@@ -12,6 +12,22 @@ const ROUTES = require('./assets/routes.js');
 const { normalizeAdminRange, normalizeStoredOrderItems, aggregatePaidOrders } = require('./lib/admin-analytics.js');
 const { absoluteUrl, isEmailConfigured, orderConfirmationEmail, passwordResetEmail, productAnnouncementEmail, sendEmail, welcomeEmail } = require('./lib/email.js');
 const { buildPaidOrderPayload, sendPaidOrderToGoogleSheet } = require('./lib/google-orders.js');
+const {
+  normalizeTrackingNumber,
+  normalizeCarrierCode,
+  is17TrackConfigured,
+  register17Track,
+  stop17Track,
+  get17TrackInfo,
+  verify17TrackSignature,
+  shipmentStatusLabel,
+  extractTrackingUpdate,
+  extract17TrackUpdates,
+  shouldNotifyStatus,
+  isWhatsAppConfigured,
+  sendCustomerShippingWhatsApp,
+  sendAdminShippingWhatsApp
+} = require('./lib/shipping.js');
 
 const ROOT = __dirname;
 const DATA_DIR = process.env.VERSANS_DATA_DIR
@@ -658,6 +674,26 @@ function readJsonBody(req) {
   });
 }
 
+function readRawBody(req, limit = BODY_LIMIT) {
+  return new Promise((resolve, reject) => {
+    let size = 0;
+    const chunks = [];
+    req.on('data', (chunk) => {
+      size += chunk.length;
+      if (size > limit) {
+        const err = new Error('Request body too large');
+        err.status = 413;
+        reject(err);
+        req.destroy();
+        return;
+      }
+      chunks.push(chunk);
+    });
+    req.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
+    req.on('error', reject);
+  });
+}
+
 function sameOriginAllowed(req) {
   const origin = req.headers.origin;
   if (!origin) return true;
@@ -913,6 +949,228 @@ async function adminSalesData(range, now = Date.now()) {
   return aggregatePaidOrders(rows, PRODUCTS, now, normalized.range);
 }
 
+
+function parseStoredCustomer(order) {
+  try {
+    const value = typeof order.customer_json === 'string' ? JSON.parse(order.customer_json || '{}') : (order.customer_json || {});
+    return value && typeof value === 'object' ? value : {};
+  } catch (_) {
+    return {};
+  }
+}
+
+function shipmentRowPayload(row, items = []) {
+  return {
+    id: Number(row.id),
+    orderId: Number(row.order_id),
+    trackingNumber: row.tracking_number,
+    carrierCode: row.carrier_code == null ? null : Number(row.carrier_code),
+    provider: row.provider || '17track',
+    status: row.status || 'registered',
+    statusLabel: shipmentStatusLabel(row.status),
+    providerStatus: row.provider_status || null,
+    subStatus: row.sub_status || null,
+    latestEvent: row.latest_event || null,
+    latestLocation: row.latest_location || null,
+    latestEventAt: row.latest_event_at == null ? null : Number(row.latest_event_at),
+    estimatedDeliveryFrom: row.estimated_delivery_from == null ? null : Number(row.estimated_delivery_from),
+    estimatedDeliveryTo: row.estimated_delivery_to == null ? null : Number(row.estimated_delivery_to),
+    registeredAt: row.registered_at == null ? null : Number(row.registered_at),
+    deliveredAt: row.delivered_at == null ? null : Number(row.delivered_at),
+    createdAt: Number(row.created_at || 0),
+    updatedAt: Number(row.updated_at || 0),
+    items: (items || []).map((item) => ({
+      itemIndex: Number(item.item_index),
+      productId: item.product_id || null,
+      productName: item.product_name || 'מוצר',
+      qty: Number(item.qty || 1)
+    }))
+  };
+}
+
+async function shipmentWithItems(row) {
+  const items = row ? await database.listShipmentItems(row.id) : [];
+  return row ? shipmentRowPayload(row, items) : null;
+}
+
+async function listOrderShipmentsPayload(orderId) {
+  const rows = await database.listShipmentsForOrder(orderId);
+  return Promise.all(rows.map(shipmentWithItems));
+}
+
+function shipmentItemSummary(items) {
+  const rows = Array.isArray(items) ? items : [];
+  if (!rows.length) return 'חבילה';
+  return rows.slice(0, 3).map((item) => `${item.product_name || 'מוצר'} ×${Number(item.qty || 1)}`).join(' · ') + (rows.length > 3 ? ` +${rows.length - 3}` : '');
+}
+
+function publicTrackingStatus(shipments) {
+  const statuses = (shipments || []).map((shipment) => shipment.status);
+  if (!statuses.length) return 'preparing';
+  if (statuses.every((status) => status === 'delivered')) return 'delivered';
+  if (statuses.includes('delivery_failed') || statuses.includes('exception')) return 'attention';
+  if (statuses.includes('out_for_delivery')) return 'out_for_delivery';
+  if (statuses.includes('ready_for_pickup')) return 'ready_for_pickup';
+  if (statuses.includes('arrived_country')) return 'arrived_country';
+  if (statuses.includes('in_transit')) return 'in_transit';
+  if (statuses.includes('info_received')) return 'info_received';
+  return 'preparing';
+}
+
+const PUBLIC_TRACKING_LABELS = {
+  preparing: 'ההזמנה בהכנה',
+  info_received: 'פרטי המשלוח התקבלו',
+  in_transit: 'ההזמנה בדרך אליכם',
+  arrived_country: 'המשלוח הגיע לישראל',
+  ready_for_pickup: 'חבילה מוכנה לאיסוף',
+  out_for_delivery: 'חבילה יצאה למסירה',
+  delivered: 'ההזמנה נמסרה',
+  attention: 'יש עדכון שדורש תשומת לב'
+};
+
+function publicTrackingContactMatches(order, contact) {
+  const raw = String(contact || '').trim();
+  if (!raw) return false;
+  if (raw.includes('@')) return normalizeEmail(raw) === normalizeEmail(order.customer_email);
+  const normalized = normalizePhone(raw);
+  return Boolean(normalized && normalized === normalizePhone(order.customer_phone));
+}
+
+async function notifyShipmentStatus(shipment, order) {
+  if (!shipment || !order || !shouldNotifyStatus(shipment.status)) return;
+  const items = await database.listShipmentItems(shipment.id);
+  const statusLabel = shipmentStatusLabel(shipment.status);
+  const now = Date.now();
+  const staleBefore = now - 15 * 60 * 1000;
+  const customer = parseStoredCustomer(order);
+  const trackingUrl = `https://versans.com/track?order=${encodeURIComponent(order.order_ref)}`;
+
+  if (isWhatsAppConfigured('customer') && order.customer_phone) {
+    const claimed = await database.claimShipmentNotification(shipment.id, 'customer', shipment.status, order.customer_phone, now, staleBefore);
+    if (claimed) {
+      try {
+        const sent = await sendCustomerShippingWhatsApp({
+          phone: order.customer_phone,
+          firstName: customer.firstName || customer.name || 'לקוח/ה',
+          orderRef: order.order_ref,
+          statusLabel,
+          trackingUrl
+        });
+        await database.markShipmentNotificationSent(shipment.id, 'customer', shipment.status, sent.id || null, Date.now());
+      } catch (error) {
+        await database.markShipmentNotificationFailed(shipment.id, 'customer', shipment.status, error && error.message, Date.now());
+      }
+    }
+  }
+
+  if (isWhatsAppConfigured('admin')) {
+    const claimed = await database.claimShipmentNotification(shipment.id, 'admin', shipment.status, 'admin', now, staleBefore);
+    if (claimed) {
+      try {
+        const sent = await sendAdminShippingWhatsApp({
+          orderRef: order.order_ref,
+          statusLabel,
+          trackingNumber: shipment.tracking_number,
+          itemSummary: shipmentItemSummary(items)
+        });
+        await database.markShipmentNotificationSent(shipment.id, 'admin', shipment.status, sent.id || null, Date.now());
+      } catch (error) {
+        await database.markShipmentNotificationFailed(shipment.id, 'admin', shipment.status, error && error.message, Date.now());
+      }
+    }
+  }
+}
+
+async function applyTrackingUpdate(update) {
+  const shipment = await database.getShipmentByTracking(update.trackingNumber);
+  if (!shipment) return { ok: false, ignored: true, trackingNumber: update.trackingNumber };
+  const now = Date.now();
+  await database.updateShipmentTracking(shipment.id, { ...update, registeredAt: shipment.registered_at || now, updatedAt: now });
+  const fresh = await database.getShipmentById(shipment.id);
+  const order = fresh ? await database.getOrderById(fresh.order_id) : null;
+  if (fresh && order) await notifyShipmentStatus(fresh, order);
+  return { ok: true, shipmentId: shipment.id, trackingNumber: update.trackingNumber, status: fresh && fresh.status };
+}
+
+async function ensureShipmentRegisteredWith17Track(shipment) {
+  if (!shipment || !is17TrackConfigured()) return false;
+  if (shipment.registered_at) return true;
+  const order = await database.getOrderById(shipment.order_id);
+  if (!order) return false;
+  const storedCustomer = parseStoredCustomer(order);
+  const countryText = String(storedCustomer.country || '').trim().toLowerCase();
+  const destinationCountry = (countryText.includes('ישראל') || countryText.includes('israel') || normalizePhone(order.customer_phone).startsWith('+972')) ? 'IL' : null;
+  const registered = await register17Track(shipment.tracking_number, shipment.carrier_code, {
+    destinationCountry,
+    destinationPostalCode: storedCustomer.zip || null
+  });
+  await database.markShipmentRegistered(shipment.id, registered.carrierCode || shipment.carrier_code || null, Date.now());
+  return true;
+}
+
+async function syncPendingTrackingRegistrations() {
+  if (!is17TrackConfigured()) return { processed: 0, failed: 0 };
+  const rows = await database.listUnregisteredShipments(100);
+  let processed = 0;
+  let failed = 0;
+  for (const shipment of rows) {
+    try { if (await ensureShipmentRegisteredWith17Track(shipment)) processed += 1; }
+    catch (error) { failed += 1; console.error(`17TRACK registration retry failed for ${shipment.tracking_number}:`, error && error.message); }
+  }
+  return { processed, failed };
+}
+
+async function publicTrackingApi(req, res, pathname, parsed) {
+  if (pathname !== '/api/tracking') return false;
+  if (req.method !== 'GET') { json(res, 405, { ok: false, error: 'method_not_allowed' }); return true; }
+  const orderRef = String(parsed.searchParams.get('order') || '').trim().slice(0, 120);
+  const contact = String(parsed.searchParams.get('contact') || '').trim().slice(0, 254);
+  if (!orderRef || !contact) { json(res, 400, { ok: false, error: 'missing_tracking_details' }); return true; }
+  const order = await database.getOrderByRef(orderRef);
+  if (!order || order.status !== 'paid' || !publicTrackingContactMatches(order, contact)) {
+    json(res, 404, { ok: false, error: 'tracking_not_found' });
+    return true;
+  }
+  const shipments = await listOrderShipmentsPayload(order.id);
+  const overall = publicTrackingStatus(shipments);
+  json(res, 200, {
+    ok: true,
+    orderRef: order.order_ref,
+    overallStatus: overall,
+    overallStatusLabel: PUBLIC_TRACKING_LABELS[overall] || 'עדכון משלוח',
+    shipments: shipments.map((shipment, index) => ({
+      packageNumber: index + 1,
+      trackingNumber: shipment.trackingNumber,
+      status: shipment.status,
+      statusLabel: shipment.statusLabel,
+      latestEventAt: shipment.latestEventAt,
+      estimatedDeliveryFrom: shipment.estimatedDeliveryFrom,
+      estimatedDeliveryTo: shipment.estimatedDeliveryTo,
+      deliveredAt: shipment.deliveredAt,
+      items: shipment.items.map((item) => ({ productName: item.productName, qty: item.qty }))
+    }))
+  });
+  return true;
+}
+
+async function trackingWebhookApi(req, res, pathname) {
+  if (pathname !== '/api/webhooks/17track') return false;
+  if (req.method !== 'POST') { json(res, 405, { ok: false, error: 'method_not_allowed' }); return true; }
+  const raw = await readRawBody(req, 2 * 1024 * 1024);
+  if (!verify17TrackSignature(raw, req.headers.sign)) {
+    json(res, 401, { ok: false, error: 'invalid_signature' });
+    return true;
+  }
+  let payload;
+  try { payload = raw ? JSON.parse(raw) : {}; }
+  catch (_) { json(res, 400, { ok: false, error: 'invalid_json' }); return true; }
+  const updates = extract17TrackUpdates(payload);
+  const results = [];
+  for (const update of updates) results.push(await applyTrackingUpdate(update));
+  json(res, 200, { ok: true, processed: results.filter((r) => r.ok).length, ignored: results.filter((r) => r.ignored).length });
+  return true;
+}
+
 async function adminApi(req, res, pathname, parsed) {
   if (!pathname.startsWith('/api/admin/')) return false;
   const admin = await getAdminUser(req);
@@ -920,6 +1178,108 @@ async function adminApi(req, res, pathname, parsed) {
     json(res, 403, { ok: false, error: 'admin_required' });
     return true;
   }
+  const shipmentOrderMatch = /^\/api\/admin\/orders\/([^/]+)\/shipments$/.exec(pathname);
+  if (shipmentOrderMatch && (req.method === 'GET' || req.method === 'POST')) {
+    let orderRef;
+    try { orderRef = decodeURIComponent(shipmentOrderMatch[1]); } catch (_) { orderRef = shipmentOrderMatch[1]; }
+    const order = await database.getOrderByRef(orderRef);
+    if (!order) { json(res, 404, { ok: false, error: 'order_not_found' }); return true; }
+    const orderItems = normalizeStoredOrderItems(order.items_json, PRODUCTS);
+
+    if (req.method === 'GET') {
+      const shipments = await listOrderShipmentsPayload(order.id);
+      json(res, 200, {
+        ok: true,
+        orderRef: order.order_ref,
+        orderStatus: order.status,
+        trackingConfigured: is17TrackConfigured(),
+        customerWhatsAppConfigured: isWhatsAppConfigured('customer'),
+        adminWhatsAppConfigured: isWhatsAppConfigured('admin'),
+        items: orderItems.map((item, itemIndex) => ({ itemIndex, productId: item.id, productName: item.name, qty: item.qty })),
+        shipments
+      });
+      return true;
+    }
+
+    if (!sameOriginAllowed(req)) { json(res, 403, { ok: false, error: 'origin_not_allowed' }); return true; }
+    if (order.status !== 'paid') { json(res, 400, { ok: false, error: 'order_not_paid' }); return true; }
+    const body = await readJsonBody(req);
+    const trackingNumber = normalizeTrackingNumber(body && body.trackingNumber);
+    const carrierCode = normalizeCarrierCode(body && body.carrierCode);
+    if (!/^[A-Za-z0-9-]{5,80}$/.test(trackingNumber)) { json(res, 400, { ok: false, error: 'invalid_tracking_number' }); return true; }
+    if (await database.getShipmentByTracking(trackingNumber)) { json(res, 409, { ok: false, error: 'tracking_already_exists' }); return true; }
+    const requestedIndexes = Array.isArray(body && body.itemIndexes) ? body.itemIndexes.map(Number).filter(Number.isInteger) : [];
+    const uniqueIndexes = Array.from(new Set(requestedIndexes)).filter((idx) => idx >= 0 && idx < orderItems.length);
+    if (!uniqueIndexes.length) { json(res, 400, { ok: false, error: 'select_shipment_items' }); return true; }
+
+    let resolvedCarrier = carrierCode;
+    let providerRegisteredAt = null;
+    if (is17TrackConfigured()) {
+      try {
+        const storedCustomer = parseStoredCustomer(order);
+        const countryText = String(storedCustomer.country || '').trim().toLowerCase();
+        const destinationCountry = (countryText.includes('ישראל') || countryText.includes('israel') || normalizePhone(order.customer_phone).startsWith('+972')) ? 'IL' : null;
+        const registered = await register17Track(trackingNumber, carrierCode, {
+          destinationCountry,
+          destinationPostalCode: storedCustomer.zip || null
+        });
+        resolvedCarrier = registered.carrierCode || carrierCode;
+        providerRegisteredAt = Date.now();
+      } catch (error) {
+        json(res, 400, { ok: false, error: 'tracking_registration_failed', message: String(error && error.message || '').slice(0, 500), code: error && error.code || null });
+        return true;
+      }
+    }
+
+    const now = Date.now();
+    let shipmentId;
+    try {
+      shipmentId = await database.transaction(async (tx) => {
+        const id = await tx.createShipment({ orderId: order.id, trackingNumber, carrierCode: resolvedCarrier, provider: '17track', status: 'registered', registeredAt: providerRegisteredAt, createdAt: now, updatedAt: now });
+        await tx.setShipmentItems(id, uniqueIndexes.map((itemIndex) => ({ itemIndex, productId: orderItems[itemIndex].id, productName: orderItems[itemIndex].name, qty: orderItems[itemIndex].qty })));
+        return id;
+      });
+    } catch (error) {
+      if (/unique|tracking_number/i.test(String(error && error.message))) { json(res, 409, { ok: false, error: 'tracking_already_exists' }); return true; }
+      throw error;
+    }
+    const shipment = await shipmentWithItems(await database.getShipmentById(shipmentId));
+    json(res, 201, { ok: true, shipment, trackingConfigured: is17TrackConfigured(), warning: is17TrackConfigured() ? null : '17track_not_configured' });
+    return true;
+  }
+
+  const shipmentDeleteMatch = /^\/api\/admin\/shipments\/(\d+)$/.exec(pathname);
+  if (shipmentDeleteMatch && req.method === 'DELETE') {
+    if (!sameOriginAllowed(req)) { json(res, 403, { ok: false, error: 'origin_not_allowed' }); return true; }
+    const shipment = await database.getShipmentById(Number(shipmentDeleteMatch[1]));
+    if (!shipment) { json(res, 404, { ok: false, error: 'shipment_not_found' }); return true; }
+    if (is17TrackConfigured()) {
+      try { await stop17Track(shipment.tracking_number, shipment.carrier_code); } catch (_) {}
+    }
+    await database.deleteShipment(shipment.id);
+    json(res, 200, { ok: true });
+    return true;
+  }
+
+  const shipmentRefreshMatch = /^\/api\/admin\/shipments\/(\d+)\/refresh$/.exec(pathname);
+  if (shipmentRefreshMatch && req.method === 'POST') {
+    if (!sameOriginAllowed(req)) { json(res, 403, { ok: false, error: 'origin_not_allowed' }); return true; }
+    if (!is17TrackConfigured()) { json(res, 503, { ok: false, error: '17track_not_configured' }); return true; }
+    let shipment = await database.getShipmentById(Number(shipmentRefreshMatch[1]));
+    if (!shipment) { json(res, 404, { ok: false, error: 'shipment_not_found' }); return true; }
+    if (!shipment.registered_at) {
+      try { await ensureShipmentRegisteredWith17Track(shipment); shipment = await database.getShipmentById(shipment.id); }
+      catch (error) { json(res, 400, { ok: false, error: 'tracking_registration_failed', message: String(error && error.message || '').slice(0, 500) }); return true; }
+    }
+    const info = await get17TrackInfo(shipment.tracking_number, shipment.carrier_code);
+    if (!info) { json(res, 404, { ok: false, error: 'tracking_info_not_found' }); return true; }
+    const update = extractTrackingUpdate(info);
+    if (update) await applyTrackingUpdate(update);
+    const fresh = await shipmentWithItems(await database.getShipmentById(shipment.id));
+    json(res, 200, { ok: true, shipment: fresh });
+    return true;
+  }
+
   if (req.method !== 'GET') {
     json(res, 405, { ok: false, error: 'method_not_allowed' });
     return true;
@@ -1776,6 +2136,8 @@ const server = http.createServer(async (req, res) => {
     }
     if (await adminPage(req, res, pathname)) return;
     if (await marketingUnsubscribePage(req, res, pathname, parsed)) return;
+    if (await trackingWebhookApi(req, res, pathname)) return;
+    if (await publicTrackingApi(req, res, pathname, parsed)) return;
     if (await presenceApi(req, res, pathname)) return;
     if (await adminApi(req, res, pathname, parsed)) return;
     if (await authApi(req, res, pathname, parsed)) return;
@@ -2037,6 +2399,10 @@ setInterval(async () => {
   try { await database.cleanupPresencePageViews(Date.now() - PRESENCE_RETENTION_MS); } catch (err) { console.error('Presence cleanup failed:', err); }
 }, 6 * 60 * 60 * 1000).unref();
 
+setInterval(async () => {
+  try { await syncPendingTrackingRegistrations(); } catch (err) { console.error('Pending 17TRACK registration sync failed:', err); }
+}, 60 * 60 * 1000).unref();
+
 async function purgeNonAdminUsersOnce() {
   const alreadyDone = await database.getSchemaMeta(USER_PURGE_META_KEY);
   if (alreadyDone) return;
@@ -2067,6 +2433,7 @@ async function start() {
     const emailStartupTimer = setTimeout(() => {
       processPendingWelcomeEmails().catch((err) => console.error('Pending welcome email processing failed:', err));
       syncMarketingCatalog().catch((err) => console.error('Marketing catalog sync failed:', err));
+      syncPendingTrackingRegistrations().catch((err) => console.error('Pending 17TRACK registration sync failed:', err));
     }, 1500);
     if (emailStartupTimer && typeof emailStartupTimer.unref === 'function') emailStartupTimer.unref();
   });
