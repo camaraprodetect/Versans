@@ -10,7 +10,7 @@ const { createPaymentUrl, verifyPayment, priceOrder } = require('./api/_hyp.js')
 const { PRODUCTS } = require('./assets/products.js');
 const ROUTES = require('./assets/routes.js');
 const { normalizeAdminRange, normalizeStoredOrderItems, aggregatePaidOrders } = require('./lib/admin-analytics.js');
-const { absoluteUrl, isEmailConfigured, orderConfirmationEmail, productAnnouncementEmail, sendEmail, welcomeEmail } = require('./lib/email.js');
+const { absoluteUrl, isEmailConfigured, orderConfirmationEmail, passwordResetEmail, productAnnouncementEmail, sendEmail, welcomeEmail } = require('./lib/email.js');
 const { buildPaidOrderPayload, sendPaidOrderToGoogleSheet } = require('./lib/google-orders.js');
 
 const ROOT = __dirname;
@@ -43,6 +43,7 @@ const MARKETING_CATALOG_META_KEY = 'marketing_catalog_initialized_v1';
 const MARKETING_DELIVERY_STALE_MS = 15 * 60 * 1000;
 const WELCOME_COUPON_PERCENT = 3;
 const WELCOME_COUPON_TTL_MS = 14 * 24 * 60 * 60 * 1000;
+const PASSWORD_RESET_TTL_MS = 30 * 60 * 1000;
 const PRODUCT_BY_URL_SLUG = new Map(PRODUCTS.map((product) => [String(product.urlSlug || ''), product]));
 
 const database = createDatabase({ root: ROOT, sqlitePath: DB_PATH });
@@ -1120,6 +1121,80 @@ async function authApi(req, res, pathname) {
     return true;
   }
 
+  if (pathname === '/api/auth/forgot-password' && req.method === 'POST') {
+    if (rateLimited(req, 'forgot-password', 5, 15 * 60 * 1000)) {
+      json(res, 429, { ok: false, error: 'too_many_attempts' });
+      return true;
+    }
+    const body = await readJsonBody(req);
+    const email = normalizeEmail(body.email);
+    if (!validEmail(email)) {
+      json(res, 400, { ok: false, error: 'invalid_email' });
+      return true;
+    }
+
+    const user = await database.findUserByEmail(email);
+    if (!user) {
+      json(res, 404, { ok: false, error: 'email_not_found' });
+      return true;
+    }
+    if (!isEmailConfigured()) {
+      json(res, 503, { ok: false, error: 'email_unavailable' });
+      return true;
+    }
+
+    const now = Date.now();
+    const token = crypto.randomBytes(32).toString('hex');
+    await database.createPasswordResetToken(user.id, tokenHash(token), now, now + PASSWORD_RESET_TTL_MS);
+    const resetUrl = absoluteUrl(`/reset-password?token=${encodeURIComponent(token)}`);
+    const message = passwordResetEmail({
+      name: user.name,
+      resetUrl,
+      expiresMinutes: Math.round(PASSWORD_RESET_TTL_MS / 60000)
+    });
+    try {
+      await sendEmail({
+        to: user.email,
+        subject: message.subject,
+        html: message.html,
+        text: message.text
+      });
+    } catch (err) {
+      console.error(`Password reset email failed for user ${user.id}:`, err && err.message ? err.message : err);
+      json(res, 502, { ok: false, error: 'email_send_failed' });
+      return true;
+    }
+
+    json(res, 200, { ok: true, message: 'reset_email_sent', email: user.email });
+    return true;
+  }
+
+  if (pathname === '/api/auth/reset-password' && req.method === 'POST') {
+    if (rateLimited(req, 'reset-password', 12, 15 * 60 * 1000)) {
+      json(res, 429, { ok: false, error: 'too_many_attempts' });
+      return true;
+    }
+    const body = await readJsonBody(req);
+    const token = String(body.token || '').trim().toLowerCase();
+    const password = String(body.password || '');
+    if (!/^[a-f0-9]{64}$/.test(token)) {
+      json(res, 400, { ok: false, error: 'invalid_or_expired_reset' });
+      return true;
+    }
+    if (password.length < 8 || password.length > 128) {
+      json(res, 400, { ok: false, error: 'invalid_password' });
+      return true;
+    }
+
+    const result = await database.resetPasswordWithToken(tokenHash(token), hashPassword(password), Date.now());
+    if (!result || !result.ok) {
+      json(res, 400, { ok: false, error: 'invalid_or_expired_reset' });
+      return true;
+    }
+    json(res, 200, { ok: true }, { 'Set-Cookie': clearSessionCookie(req) });
+    return true;
+  }
+
   if (pathname === '/api/auth/register' && req.method === 'POST') {
     if (rateLimited(req, 'register', 8)) {
       json(res, 429, { ok: false, error: 'too_many_attempts' });
@@ -1474,6 +1549,15 @@ function mimeType(filePath) {
 
 function prettyRouteFile(pathname) {
   if (pathname === '/') return 'index.html';
+  // Auth pages are real documents and must never fall through to the storefront/homepage.
+  const authPages = {
+    '/login': 'login.html',
+    '/register': 'register.html',
+    '/account': 'account.html',
+    '/forgot-password': 'forgot-password.html',
+    '/reset-password': 'reset-password.html'
+  };
+  if (authPages[pathname]) return authPages[pathname];
   // Internal document route used when leaving a masked product page for the
   // homepage/catalog. It is immediately hidden back to `/` by url-mask.js.
   if (pathname === '/shop' || pathname === '/shop/') return 'index.html';
@@ -1530,7 +1614,10 @@ function injectStorefrontRouting(html, bootRoute) {
 function serveStorefrontHtml(req, res, filePath, bootRoute) {
   let source;
   try { source = fs.readFileSync(filePath, 'utf8'); } catch (_) { return false; }
-  const body = injectStorefrontRouting(source, bootRoute || htmlBootRoute(req, '/'));
+  const isAuthDocument = /<body[^>]+class=["'][^"']*auth-page/.test(source);
+  // Auth/reset pages need their real pathname and reset token in location.search.
+  // The storefront URL masker intentionally hides catalog/product routes, but must not run here.
+  const body = isAuthDocument ? source : injectStorefrontRouting(source, bootRoute || htmlBootRoute(req, '/'));
   res.statusCode = 200;
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.setHeader('Cache-Control', 'no-cache');
@@ -1876,7 +1963,11 @@ res.end('404 - Not found');
 });
 
 setInterval(async () => {
-  try { await database.deleteExpiredSessions(Date.now()); } catch (err) { console.error('Session cleanup failed:', err); }
+  try {
+    const now = Date.now();
+    await database.deleteExpiredSessions(now);
+    await database.deleteExpiredPasswordResetTokens(now);
+  } catch (err) { console.error('Session/reset-token cleanup failed:', err); }
 }, 60 * 60 * 1000).unref();
 
 setInterval(async () => {

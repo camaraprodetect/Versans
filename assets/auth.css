@@ -218,6 +218,20 @@ html[dir="ltr"] .auth-panel{direction:ltr}
   cursor:pointer;
 }
 
+.auth-field__actions{
+  display:flex;
+  justify-content:flex-start;
+  margin-top:.05rem;
+}
+.auth-forgot-link{
+  color:#526574;
+  font-size:.78rem;
+  font-weight:600;
+  text-decoration:underline;
+  text-underline-offset:3px;
+}
+.auth-forgot-link:hover{color:#142333}
+
 .auth-password-hint{
   margin:0;
   font-size:.72rem;

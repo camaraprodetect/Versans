@@ -29,6 +29,8 @@
   var PAGE_FILES = {
     '/policies': 'policies.html',
     '/login': 'login.html',
+    '/forgot-password': 'forgot-password.html',
+    '/reset-password': 'reset-password.html',
     '/register': 'register.html',
     '/account': 'account.html',
     '/thank-you': 'thank-you.html',
@@ -68,7 +70,7 @@
 
   function pagePath(name) {
     var names = {
-      policies: '/policies', login: '/login', register: '/register', account: '/account',
+      policies: '/policies', login: '/login', forgotPassword: '/forgot-password', resetPassword: '/reset-password', register: '/register', account: '/account',
       thankYou: '/thank-you', greetingEditor: '/greeting-editor', chooseNecklace: '/choose-necklace'
     };
     return names[name] || '/';

@@ -13065,8 +13065,8 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-  ,{
+  },
+  {
     "id": "new-era-oakland-athletics-team-script-back-dark-green-144",
     "slug": "product-144",
     "urlSlug": "new-era-oakland-athletics-team-script-back-dark-green",
@@ -13148,8 +13148,8 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-  ,{
+  },
+  {
     "id": "new-era-oakland-athletics-1989-world-series-patch-black-145",
     "slug": "product-145",
     "urlSlug": "new-era-oakland-athletics-1989-world-series-patch-black",
@@ -13229,8 +13229,8 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-  ,{
+  },
+  {
     "id": "new-era-oakland-athletics-rickey-henderson-field-dark-green-146",
     "slug": "product-146",
     "urlSlug": "new-era-oakland-athletics-rickey-henderson-field-dark-green",
@@ -13313,8 +13313,8 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-  ,{
+  },
+  {
     "id": "new-era-oakland-athletics-50th-anniversary-chrome-two-tone-edition-white-dark-green-147",
     "slug": "product-147",
     "urlSlug": "new-era-oakland-athletics-50th-anniversary-chrome-two-tone-edition-white-dark-green",
@@ -13399,8 +13399,8 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-  ,{
+  },
+  {
     "id": "watch-classic-date-148",
     "slug": "product-148",
     "urlSlug": "classic-date-watch",
@@ -13492,8 +13492,8 @@ var PRODUCTS = [
         "swatch": "#c7ccd1"
       }
     ]
-  }
-  ,{
+  },
+  {
     "id": "watch-prestige-date-149",
     "slug": "product-149",
     "urlSlug": "prestige-date-watch",
@@ -13595,9 +13595,8 @@ var PRODUCTS = [
         "swatch": "#c98465"
       }
     ]
-  }
-
-  ,{
+  },
+  {
     "id": "watch-milano-chrono-150",
     "slug": "product-150",
     "urlSlug": "milano-chrono-watch",
@@ -13701,10 +13700,8 @@ var PRODUCTS = [
         "swatch": "#d4af37"
       }
     ]
-  }
-
-
-  ,{
+  },
+  {
     "id": "watch-bella-151",
     "slug": "product-151",
     "urlSlug": "bella-watch",
@@ -13802,10 +13799,8 @@ var PRODUCTS = [
         "swatch": "#c7ccd1"
       }
     ]
-  }
-
-
-  ,{
+  },
+  {
     "id": "watch-emma-152",
     "slug": "product-152",
     "urlSlug": "emma-watch",
@@ -13893,10 +13888,8 @@ var PRODUCTS = [
         "swatch": "#c7ccd1"
       }
     ]
-  }
-
-
-  ,{
+  },
+  {
     "id": "watch-may-153",
     "slug": "product-153",
     "urlSlug": "may-watch",
@@ -13984,10 +13977,8 @@ var PRODUCTS = [
         "swatch": "#c98a6b"
       }
     ]
-  }
-
-
-  ,{
+  },
+  {
     "id": "watch-liya-154",
     "slug": "product-154",
     "urlSlug": "liya-watch",
@@ -14016,9 +14007,18 @@ var PRODUCTS = [
       "he": "שעון נשים 36 מ״מ עם לוח כחול כהה מנצנץ, רצועת רשת מנירוסטה, מנגנון Quartz יפני ושלושה צבעים לבחירה.",
       "en": "Women's 36mm watch with a deep blue sparkling dial, stainless steel mesh bracelet, Japanese quartz movement and three color options."
     },
-    "cardTitle": {"he": "", "en": ""},
-    "cardMessage": {"he": "", "en": ""},
-    "signature": {"he": "", "en": ""},
+    "cardTitle": {
+      "he": "",
+      "en": ""
+    },
+    "cardMessage": {
+      "he": "",
+      "en": ""
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
     "details": {
       "he": [
         "קוטר שעון 36 מ״מ בעיצוב עגול ואלגנטי",
@@ -14054,27 +14054,34 @@ var PRODUCTS = [
     "colors": [
       {
         "id": "black",
-        "label": {"he": "שחור", "en": "Black"},
+        "label": {
+          "he": "שחור",
+          "en": "Black"
+        },
         "image": "images/products/product-154/product-154-1.png",
         "swatch": "#1d1d1f"
       },
       {
         "id": "rose-gold",
-        "label": {"he": "רוז גולד", "en": "Rose Gold"},
+        "label": {
+          "he": "רוז גולד",
+          "en": "Rose Gold"
+        },
         "image": "images/products/product-154/product-154-2.png",
         "swatch": "#c98a6b"
       },
       {
         "id": "gold",
-        "label": {"he": "זהב", "en": "Gold"},
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
         "image": "images/products/product-154/product-154-3.png",
         "swatch": "#d4af37"
       }
     ]
-  }
-
-
-  ,{
+  },
+  {
     "id": "watch-liam-white-155",
     "slug": "product-155",
     "urlSlug": "liam-white-watch",
@@ -14104,9 +14111,18 @@ var PRODUCTS = [
       "he": "שעון גברים 40 מ״מ עם לוח לבן מינימליסטי, רצועת עור, מנגנון Quartz ושלושה שילובי צבעים לבחירה.",
       "en": "Men's 40mm watch with a minimalist white dial, leather strap, quartz movement and three color combinations."
     },
-    "cardTitle": {"he": "", "en": ""},
-    "cardMessage": {"he": "", "en": ""},
-    "signature": {"he": "", "en": ""},
+    "cardTitle": {
+      "he": "",
+      "en": ""
+    },
+    "cardMessage": {
+      "he": "",
+      "en": ""
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
     "details": {
       "he": [
         "קוטר שעון 40 מ״מ בעיצוב עגול ומינימליסטי",
@@ -14144,27 +14160,34 @@ var PRODUCTS = [
     "colors": [
       {
         "id": "brown-rose-gold",
-        "label": {"he": "חום ורוז גולד", "en": "Brown & Rose Gold"},
+        "label": {
+          "he": "חום ורוז גולד",
+          "en": "Brown & Rose Gold"
+        },
         "image": "images/products/product-155/product-155-1.png",
         "swatch": "#8b4f2b"
       },
       {
         "id": "black-rose-gold",
-        "label": {"he": "שחור ורוז גולד", "en": "Black & Rose Gold"},
+        "label": {
+          "he": "שחור ורוז גולד",
+          "en": "Black & Rose Gold"
+        },
         "image": "images/products/product-155/product-155-2.png",
         "swatch": "#1d1d1f"
       },
       {
         "id": "black-silver",
-        "label": {"he": "שחור וכסף", "en": "Black & Silver"},
+        "label": {
+          "he": "שחור וכסף",
+          "en": "Black & Silver"
+        },
         "image": "images/products/product-155/product-155-3.png",
         "swatch": "#bfc3c7"
       }
     ]
-  }
-
-
-  ,{
+  },
+  {
     "id": "watch-liam-black-156",
     "slug": "product-156",
     "urlSlug": "liam-black-watch",
@@ -14194,9 +14217,18 @@ var PRODUCTS = [
       "he": "שעון יוניסקס 40 מ״מ עם לוח שחור מינימליסטי, רצועת עור, מנגנון Quartz ושלושה שילובי צבעים לבחירה.",
       "en": "Unisex 40mm watch with a minimalist black dial, leather strap, quartz movement and three color combinations."
     },
-    "cardTitle": {"he": "", "en": ""},
-    "cardMessage": {"he": "", "en": ""},
-    "signature": {"he": "", "en": ""},
+    "cardTitle": {
+      "he": "",
+      "en": ""
+    },
+    "cardMessage": {
+      "he": "",
+      "en": ""
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
     "details": {
       "he": [
         "שעון יוניסקס בעיצוב עגול ומינימליסטי",
@@ -14234,27 +14266,34 @@ var PRODUCTS = [
     "colors": [
       {
         "id": "brown-rose-gold",
-        "label": {"he": "חום ורוז גולד", "en": "Brown & Rose Gold"},
+        "label": {
+          "he": "חום ורוז גולד",
+          "en": "Brown & Rose Gold"
+        },
         "image": "images/products/product-156/product-156-1.png",
         "swatch": "#8b4f2b"
       },
       {
         "id": "black-rose-gold",
-        "label": {"he": "שחור ורוז גולד", "en": "Black & Rose Gold"},
+        "label": {
+          "he": "שחור ורוז גולד",
+          "en": "Black & Rose Gold"
+        },
         "image": "images/products/product-156/product-156-2.png",
         "swatch": "#1d1d1f"
       },
       {
         "id": "black-silver",
-        "label": {"he": "שחור וכסף", "en": "Black & Silver"},
+        "label": {
+          "he": "שחור וכסף",
+          "en": "Black & Silver"
+        },
         "image": "images/products/product-156/product-156-3.png",
         "swatch": "#bfc3c7"
       }
     ]
-  }
-
-
-  ,{
+  },
+  {
     "id": "new-era-chicago-bulls-6x-champs-blackout-metallic-edition-black-157",
     "slug": "product-157",
     "urlSlug": "new-era-chicago-bulls-6x-champs-blackout-metallic-edition-black",
@@ -14339,9 +14378,8 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-
-  ,{
+  },
+  {
     "id": "new-era-chicago-bulls-chrome-two-tone-metallic-edition-white-158",
     "slug": "product-158",
     "urlSlug": "new-era-chicago-bulls-chrome-two-tone-metallic-edition-white",
@@ -14428,10 +14466,8 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-
-
-  ,{
+  },
+  {
     "id": "new-era-chicago-bulls-nba-champions-1996-scarlet-two-tone-edition-red-159",
     "slug": "product-159",
     "urlSlug": "new-era-chicago-bulls-nba-champions-1996-scarlet-two-tone-edition-red",
@@ -14518,10 +14554,8 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-
-
-  ,{
+  },
+  {
     "id": "new-era-chicago-bulls-nba-finals-1991-chrome-two-tone-edition-white-blue-160",
     "slug": "product-160",
     "urlSlug": "new-era-chicago-bulls-nba-finals-1991-chrome-two-tone-edition-white-blue",
@@ -14608,10 +14642,8 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-
-
-  ,{
+  },
+  {
     "id": "new-era-chicago-bulls-est-1966-black-on-black-metallic-outline-black-161",
     "slug": "product-161",
     "urlSlug": "new-era-chicago-bulls-est-1966-black-on-black-metallic-outline-black",
@@ -14698,10 +14730,8 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-
-
-  ,{
+  },
+  {
     "id": "new-era-chicago-bulls-back-to-back-world-champions-black-two-tone-edition-black-red-162",
     "slug": "product-162",
     "urlSlug": "new-era-chicago-bulls-back-to-back-world-champions-black-two-tone-edition-black-red",
@@ -14790,10 +14820,8 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-
-
-  ,{
+  },
+  {
     "id": "new-era-chicago-bulls-nba-champions-3-peat-1991-1993-two-tone-edition-white-black-red-163",
     "slug": "product-163",
     "urlSlug": "new-era-chicago-bulls-nba-champions-3-peat-1991-1993-two-tone-edition-white-black-red",
@@ -14880,10 +14908,8 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-
-
-  ,{
+  },
+  {
     "id": "new-era-chicago-bulls-three-peat-1996-1998-world-champions-metallic-edition-black-gold-164",
     "slug": "product-164",
     "urlSlug": "new-era-chicago-bulls-three-peat-1996-1998-world-champions-metallic-edition-black-gold",
@@ -14970,10 +14996,8 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-
-
-  ,{
+  },
+  {
     "id": "new-era-chicago-bulls-6x-nba-finals-champions-two-tone-edition-white-red-165",
     "slug": "product-165",
     "urlSlug": "new-era-chicago-bulls-6x-nba-finals-champions-two-tone-edition-white-red",
@@ -15060,1533 +15084,3241 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-
-
-  ,{
-      "id": "new-era-new-york-yankees-league-essential-brown-166",
-      "slug": "product-166",
-      "urlSlug": "new-era-new-york-yankees-league-essential-brown",
-      "sku": "KW-HAT-166",
-      "category": "hats",
-      "categories": [
-          "hats"
-      ],
-      "badge": {
-          "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-          "en": "2 for ₪239.90 | 3 for ₪299.90"
-      },
-      "cardMode": "view",
-      "hideMessageCard": true,
-      "cardImage": "images/products/product-166/product-166-1.png",
-      "hoverImage": "images/products/product-166/product-166-2.png",
-      "collectionMedia": {
-          "women": {
-              "image": "images/products/product-166/product-166-1.png",
-              "hoverImage": "images/products/product-166/product-166-2.png"
-          },
-          "men": {
-              "image": "images/products/product-166/product-166-1.png",
-              "hoverImage": "images/products/product-166/product-166-2.png"
-          }
-      },
-      "images": [
-          "images/products/product-166/product-166-1.png",
-          "images/products/product-166/product-166-2.png",
-          "images/products/product-166/product-166-3.png"
-      ],
-      "price": 139.9,
-      "title": {
-          "he": "New Era X New York Yankees X League Essential - צבע חום",
-          "en": "New Era X New York Yankees X League Essential - Brown"
-      },
-      "subtitle": {
-          "he": "כובע New York Yankees בצבע חום עם רקמת NY לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
-          "en": "Brown New York Yankees cap with white NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
-      },
-      "cardTitle": {
-          "he": "New Era X New York Yankees X League Essential - צבע חום",
-          "en": "New Era X New York Yankees X League Essential - Brown"
-      },
-      "cardMessage": {
-          "he": "כובע New York Yankees בצבע חום עם רקמת NY לבנה, לוגו MLB מאחור ולוגו New Era בצד.",
-          "en": "Brown New York Yankees cap with white NY embroidery, with MLB logo at the back and New Era logo on the side."
-      },
-      "signature": {
-          "he": "",
-          "en": ""
-      },
-      "details": {
-          "he": [
-              "צבע: חום",
-              "רקמת NY בחזית",
-              "לוגו MLB רקום בחלק האחורי",
-              "לוגו New Era רקום בצד",
-              "סגירה אחורית מתכווננת",
-              "מצחייה מעוגלת",
-              "מחיר ליחידה: 139.90 ₪",
-              "מבצע לכל הכובעים: 2 ב־239.90 ₪"
-          ],
-          "en": [
-              "Color: Brown",
-              "NY embroidery on the front",
-              "Embroidered MLB logo on the back",
-              "Embroidered New Era logo on the side",
-              "Adjustable rear closure",
-              "Curved brim",
-              "Single price: ₪139.90",
-              "All hats offer: 2 for ₪239.90"
-          ]
-      },
-      "afterText": {
-          "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-          "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
-      },
-      "deliveryBusinessDays": {
-          "min": 9,
-          "max": 25
-      }
-  }
-
-  ,{
-      "id": "new-era-new-york-yankees-league-essential-camo-167",
-      "slug": "product-167",
-      "urlSlug": "new-era-new-york-yankees-league-essential-camo",
-      "sku": "KW-HAT-167",
-      "category": "hats",
-      "categories": [
-          "hats"
-      ],
-      "badge": {
-          "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-          "en": "2 for ₪239.90 | 3 for ₪299.90"
-      },
-      "cardMode": "view",
-      "hideMessageCard": true,
-      "cardImage": "images/products/product-167/product-167-1.png",
-      "hoverImage": "images/products/product-167/product-167-2.png",
-      "collectionMedia": {
-          "women": {
-              "image": "images/products/product-167/product-167-1.png",
-              "hoverImage": "images/products/product-167/product-167-2.png"
-          },
-          "men": {
-              "image": "images/products/product-167/product-167-1.png",
-              "hoverImage": "images/products/product-167/product-167-2.png"
-          }
-      },
-      "images": [
-          "images/products/product-167/product-167-1.png",
-          "images/products/product-167/product-167-2.png",
-          "images/products/product-167/product-167-3.png"
-      ],
-      "price": 139.9,
-      "title": {
-          "he": "New Era X New York Yankees X League Essential - צבע ירוק צבאי",
-          "en": "New Era X New York Yankees X League Essential - Camo"
-      },
-      "subtitle": {
-          "he": "כובע New York Yankees בהדפס ירוק צבאי עם רקמת NY לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
-          "en": "Camo New York Yankees cap with white NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
-      },
-      "cardTitle": {
-          "he": "New Era X New York Yankees X League Essential - צבע ירוק צבאי",
-          "en": "New Era X New York Yankees X League Essential - Camo"
-      },
-      "cardMessage": {
-          "he": "כובע New York Yankees בהדפס ירוק צבאי עם רקמת NY לבנה, לוגו MLB מאחור ולוגו New Era בצד.",
-          "en": "Camo New York Yankees cap with white NY embroidery, with MLB logo at the back and New Era logo on the side."
-      },
-      "signature": {
-          "he": "",
-          "en": ""
-      },
-      "details": {
-          "he": [
-              "צבע: ירוק צבאי",
-              "רקמת NY בחזית",
-              "לוגו MLB רקום בחלק האחורי",
-              "לוגו New Era רקום בצד",
-              "סגירה אחורית מתכווננת",
-              "מצחייה מעוגלת",
-              "מחיר ליחידה: 139.90 ₪",
-              "מבצע לכל הכובעים: 2 ב־239.90 ₪"
-          ],
-          "en": [
-              "Color: Camo",
-              "NY embroidery on the front",
-              "Embroidered MLB logo on the back",
-              "Embroidered New Era logo on the side",
-              "Adjustable rear closure",
-              "Curved brim",
-              "Single price: ₪139.90",
-              "All hats offer: 2 for ₪239.90"
-          ]
-      },
-      "afterText": {
-          "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-          "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
-      },
-      "deliveryBusinessDays": {
-          "min": 9,
-          "max": 25
-      }
-  }
-
-  ,{
-      "id": "new-era-new-york-yankees-league-essential-beige-168",
-      "slug": "product-168",
-      "urlSlug": "new-era-new-york-yankees-league-essential-beige",
-      "sku": "KW-HAT-168",
-      "category": "hats",
-      "categories": [
-          "hats"
-      ],
-      "badge": {
-          "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-          "en": "2 for ₪239.90 | 3 for ₪299.90"
-      },
-      "cardMode": "view",
-      "hideMessageCard": true,
-      "cardImage": "images/products/product-168/product-168-1.png",
-      "hoverImage": "images/products/product-168/product-168-2.png",
-      "collectionMedia": {
-          "women": {
-              "image": "images/products/product-168/product-168-1.png",
-              "hoverImage": "images/products/product-168/product-168-2.png"
-          },
-          "men": {
-              "image": "images/products/product-168/product-168-1.png",
-              "hoverImage": "images/products/product-168/product-168-2.png"
-          }
-      },
-      "images": [
-          "images/products/product-168/product-168-1.png",
-          "images/products/product-168/product-168-2.png",
-          "images/products/product-168/product-168-3.png"
-      ],
-      "price": 139.9,
-      "title": {
-          "he": "New Era X New York Yankees X League Essential - צבע בז'",
-          "en": "New Era X New York Yankees X League Essential - Beige"
-      },
-      "subtitle": {
-          "he": "כובע New York Yankees בצבע בז' עם רקמת NY כחולה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
-          "en": "Beige New York Yankees cap with blue NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
-      },
-      "cardTitle": {
-          "he": "New Era X New York Yankees X League Essential - צבע בז'",
-          "en": "New Era X New York Yankees X League Essential - Beige"
-      },
-      "cardMessage": {
-          "he": "כובע New York Yankees בצבע בז' עם רקמת NY כחולה, לוגו MLB מאחור ולוגו New Era בצד.",
-          "en": "Beige New York Yankees cap with blue NY embroidery, with MLB logo at the back and New Era logo on the side."
-      },
-      "signature": {
-          "he": "",
-          "en": ""
-      },
-      "details": {
-          "he": [
-              "צבע: בז'",
-              "רקמת NY בחזית",
-              "לוגו MLB רקום בחלק האחורי",
-              "לוגו New Era רקום בצד",
-              "סגירה אחורית מתכווננת",
-              "מצחייה מעוגלת",
-              "מחיר ליחידה: 139.90 ₪",
-              "מבצע לכל הכובעים: 2 ב־239.90 ₪"
-          ],
-          "en": [
-              "Color: Beige",
-              "NY embroidery on the front",
-              "Embroidered MLB logo on the back",
-              "Embroidered New Era logo on the side",
-              "Adjustable rear closure",
-              "Curved brim",
-              "Single price: ₪139.90",
-              "All hats offer: 2 for ₪239.90"
-          ]
-      },
-      "afterText": {
-          "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-          "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
-      },
-      "deliveryBusinessDays": {
-          "min": 9,
-          "max": 25
-      }
-  }
-
-  ,{
-      "id": "new-era-new-york-yankees-league-essential-orange-169",
-      "slug": "product-169",
-      "urlSlug": "new-era-new-york-yankees-league-essential-orange",
-      "sku": "KW-HAT-169",
-      "category": "hats",
-      "categories": [
-          "hats"
-      ],
-      "badge": {
-          "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-          "en": "2 for ₪239.90 | 3 for ₪299.90"
-      },
-      "cardMode": "view",
-      "hideMessageCard": true,
-      "cardImage": "images/products/product-169/product-169-1.png",
-      "hoverImage": "images/products/product-169/product-169-2.png",
-      "collectionMedia": {
-          "women": {
-              "image": "images/products/product-169/product-169-1.png",
-              "hoverImage": "images/products/product-169/product-169-2.png"
-          },
-          "men": {
-              "image": "images/products/product-169/product-169-1.png",
-              "hoverImage": "images/products/product-169/product-169-2.png"
-          }
-      },
-      "images": [
-          "images/products/product-169/product-169-1.png",
-          "images/products/product-169/product-169-2.png",
-          "images/products/product-169/product-169-3.png"
-      ],
-      "price": 139.9,
-      "title": {
-          "he": "New Era X New York Yankees X League Essential - צבע כתום",
-          "en": "New Era X New York Yankees X League Essential - Orange"
-      },
-      "subtitle": {
-          "he": "כובע New York Yankees בצבע כתום עם רקמת NY לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
-          "en": "Orange New York Yankees cap with white NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
-      },
-      "cardTitle": {
-          "he": "New Era X New York Yankees X League Essential - צבע כתום",
-          "en": "New Era X New York Yankees X League Essential - Orange"
-      },
-      "cardMessage": {
-          "he": "כובע New York Yankees בצבע כתום עם רקמת NY לבנה, לוגו MLB מאחור ולוגו New Era בצד.",
-          "en": "Orange New York Yankees cap with white NY embroidery, with MLB logo at the back and New Era logo on the side."
-      },
-      "signature": {
-          "he": "",
-          "en": ""
-      },
-      "details": {
-          "he": [
-              "צבע: כתום",
-              "רקמת NY בחזית",
-              "לוגו MLB רקום בחלק האחורי",
-              "לוגו New Era רקום בצד",
-              "סגירה אחורית מתכווננת",
-              "מצחייה מעוגלת",
-              "מחיר ליחידה: 139.90 ₪",
-              "מבצע לכל הכובעים: 2 ב־239.90 ₪"
-          ],
-          "en": [
-              "Color: Orange",
-              "NY embroidery on the front",
-              "Embroidered MLB logo on the back",
-              "Embroidered New Era logo on the side",
-              "Adjustable rear closure",
-              "Curved brim",
-              "Single price: ₪139.90",
-              "All hats offer: 2 for ₪239.90"
-          ]
-      },
-      "afterText": {
-          "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-          "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
-      },
-      "deliveryBusinessDays": {
-          "min": 9,
-          "max": 25
-      }
-  }
-
-  ,{
-      "id": "new-era-new-york-yankees-league-essential-black-170",
-      "slug": "product-170",
-      "urlSlug": "new-era-new-york-yankees-league-essential-black",
-      "sku": "KW-HAT-170",
-      "category": "hats",
-      "categories": [
-          "hats"
-      ],
-      "badge": {
-          "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-          "en": "2 for ₪239.90 | 3 for ₪299.90"
-      },
-      "cardMode": "view",
-      "hideMessageCard": true,
-      "cardImage": "images/products/product-170/product-170-1.png",
-      "hoverImage": "images/products/product-170/product-170-2.png",
-      "collectionMedia": {
-          "women": {
-              "image": "images/products/product-170/product-170-1.png",
-              "hoverImage": "images/products/product-170/product-170-2.png"
-          },
-          "men": {
-              "image": "images/products/product-170/product-170-1.png",
-              "hoverImage": "images/products/product-170/product-170-2.png"
-          }
-      },
-      "images": [
-          "images/products/product-170/product-170-1.png",
-          "images/products/product-170/product-170-2.png",
-          "images/products/product-170/product-170-3.png"
-      ],
-      "price": 139.9,
-      "title": {
-          "he": "New Era X New York Yankees X League Essential - צבע שחור",
-          "en": "New Era X New York Yankees X League Essential - Black"
-      },
-      "subtitle": {
-          "he": "כובע New York Yankees בצבע שחור עם רקמת NY שחורה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
-          "en": "Black New York Yankees cap with tonal black NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
-      },
-      "cardTitle": {
-          "he": "New Era X New York Yankees X League Essential - צבע שחור",
-          "en": "New Era X New York Yankees X League Essential - Black"
-      },
-      "cardMessage": {
-          "he": "כובע New York Yankees בצבע שחור עם רקמת NY שחורה, לוגו MLB מאחור ולוגו New Era בצד.",
-          "en": "Black New York Yankees cap with tonal black NY embroidery, with MLB logo at the back and New Era logo on the side."
-      },
-      "signature": {
-          "he": "",
-          "en": ""
-      },
-      "details": {
-          "he": [
-              "צבע: שחור",
-              "רקמת NY בחזית",
-              "לוגו MLB רקום בחלק האחורי",
-              "לוגו New Era רקום בצד",
-              "סגירה אחורית מתכווננת",
-              "מצחייה מעוגלת",
-              "מחיר ליחידה: 139.90 ₪",
-              "מבצע לכל הכובעים: 2 ב־239.90 ₪"
-          ],
-          "en": [
-              "Color: Black",
-              "NY embroidery on the front",
-              "Embroidered MLB logo on the back",
-              "Embroidered New Era logo on the side",
-              "Adjustable rear closure",
-              "Curved brim",
-              "Single price: ₪139.90",
-              "All hats offer: 2 for ₪239.90"
-          ]
-      },
-      "afterText": {
-          "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-          "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
-      },
-      "deliveryBusinessDays": {
-          "min": 9,
-          "max": 25
-      }
-  }
-
-
-  ,{
-      "id": "new-era-new-york-yankees-league-essential-dark-green-171",
-      "slug": "product-171",
-      "urlSlug": "new-era-new-york-yankees-league-essential-dark-green",
-      "sku": "KW-HAT-171",
-      "category": "hats",
-      "categories": [
-            "hats"
-      ],
-      "badge": {
-            "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-            "en": "2 for ₪239.90 | 3 for ₪299.90"
-      },
-      "cardMode": "view",
-      "hideMessageCard": true,
-      "cardImage": "images/products/product-171/product-171-1.png",
-      "hoverImage": "images/products/product-171/product-171-2.png",
-      "collectionMedia": {
-            "women": {
-                  "image": "images/products/product-171/product-171-1.png",
-                  "hoverImage": "images/products/product-171/product-171-2.png"
-            },
-            "men": {
-                  "image": "images/products/product-171/product-171-1.png",
-                  "hoverImage": "images/products/product-171/product-171-2.png"
-            }
-      },
-      "images": [
-            "images/products/product-171/product-171-1.png",
-            "images/products/product-171/product-171-2.png",
-            "images/products/product-171/product-171-3.png"
-      ],
-      "price": 139.9,
-      "title": {
-            "he": "New Era X New York Yankees X League Essential - צבע ירוק כהה",
-            "en": "New Era X New York Yankees X League Essential - Dark Green"
-      },
-      "subtitle": {
-            "he": "כובע New York Yankees בצבע ירוק כהה עם רקמת NY לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
-            "en": "Dark Green New York Yankees cap with white NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
-      },
-      "cardTitle": {
-            "he": "New Era X New York Yankees X League Essential - צבע ירוק כהה",
-            "en": "New Era X New York Yankees X League Essential - Dark Green"
-      },
-      "cardMessage": {
-            "he": "כובע New York Yankees בצבע ירוק כהה עם רקמת NY לבנה, לוגו MLB מאחור ולוגו New Era בצד.",
-            "en": "Dark Green New York Yankees cap with white NY embroidery, with MLB logo at the back and New Era logo on the side."
-      },
-      "signature": {
-            "he": "",
-            "en": ""
-      },
-      "details": {
-            "he": [
-                  "צבע: ירוק כהה",
-                  "רקמת NY בחזית",
-                  "לוגו MLB רקום בחלק האחורי",
-                  "לוגו New Era רקום בצד",
-                  "סגירה אחורית מתכווננת",
-                  "מצחייה מעוגלת",
-                  "מחיר ליחידה: 139.90 ₪",
-                  "מבצע לכל הכובעים: 2 ב־239.90 ₪"
-            ],
-            "en": [
-                  "Color: Dark Green",
-                  "NY embroidery on the front",
-                  "Embroidered MLB logo on the back",
-                  "Embroidered New Era logo on the side",
-                  "Adjustable rear closure",
-                  "Curved brim",
-                  "Single price: ₪139.90",
-                  "All hats offer: 2 for ₪239.90"
-            ]
-      },
-      "afterText": {
-            "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-            "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
-      },
-      "deliveryBusinessDays": {
-            "min": 9,
-            "max": 25
-      }
-}
-
-  ,{
-      "id": "new-era-new-york-yankees-league-essential-navy-172",
-      "slug": "product-172",
-      "urlSlug": "new-era-new-york-yankees-league-essential-navy",
-      "sku": "KW-HAT-172",
-      "category": "hats",
-      "categories": [
-            "hats"
-      ],
-      "badge": {
-            "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-            "en": "2 for ₪239.90 | 3 for ₪299.90"
-      },
-      "cardMode": "view",
-      "hideMessageCard": true,
-      "cardImage": "images/products/product-172/product-172-1.png",
-      "hoverImage": "images/products/product-172/product-172-2.png",
-      "collectionMedia": {
-            "women": {
-                  "image": "images/products/product-172/product-172-1.png",
-                  "hoverImage": "images/products/product-172/product-172-2.png"
-            },
-            "men": {
-                  "image": "images/products/product-172/product-172-1.png",
-                  "hoverImage": "images/products/product-172/product-172-2.png"
-            }
-      },
-      "images": [
-            "images/products/product-172/product-172-1.png",
-            "images/products/product-172/product-172-2.png",
-            "images/products/product-172/product-172-3.png"
-      ],
-      "price": 139.9,
-      "title": {
-            "he": "New Era X New York Yankees X League Essential - צבע כחול כהה",
-            "en": "New Era X New York Yankees X League Essential - Navy"
-      },
-      "subtitle": {
-            "he": "כובע New York Yankees בצבע כחול כהה עם רקמת NY לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
-            "en": "Navy New York Yankees cap with white NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
-      },
-      "cardTitle": {
-            "he": "New Era X New York Yankees X League Essential - צבע כחול כהה",
-            "en": "New Era X New York Yankees X League Essential - Navy"
-      },
-      "cardMessage": {
-            "he": "כובע New York Yankees בצבע כחול כהה עם רקמת NY לבנה, לוגו MLB מאחור ולוגו New Era בצד.",
-            "en": "Navy New York Yankees cap with white NY embroidery, with MLB logo at the back and New Era logo on the side."
-      },
-      "signature": {
-            "he": "",
-            "en": ""
-      },
-      "details": {
-            "he": [
-                  "צבע: כחול כהה",
-                  "רקמת NY בחזית",
-                  "לוגו MLB רקום בחלק האחורי",
-                  "לוגו New Era רקום בצד",
-                  "סגירה אחורית מתכווננת",
-                  "מצחייה מעוגלת",
-                  "מחיר ליחידה: 139.90 ₪",
-                  "מבצע לכל הכובעים: 2 ב־239.90 ₪"
-            ],
-            "en": [
-                  "Color: Navy",
-                  "NY embroidery on the front",
-                  "Embroidered MLB logo on the back",
-                  "Embroidered New Era logo on the side",
-                  "Adjustable rear closure",
-                  "Curved brim",
-                  "Single price: ₪139.90",
-                  "All hats offer: 2 for ₪239.90"
-            ]
-      },
-      "afterText": {
-            "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
-            "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
-      },
-      "deliveryBusinessDays": {
-            "min": 9,
-            "max": 25
-      }
-}
-
-  ,{
-      "id": "new-era-new-york-yankees-league-essential-mauve-173",
-      "slug": "product-173",
-      "urlSlug": "new-era-new-york-yankees-league-essential-mauve",
-      "sku": "KW-HAT-173",
-      "category": "hats",
-      "categories": [
-            "hats"
-      ],
-      "badge": {
-            "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-            "en": "2 for ₪239.90 | 3 for ₪299.90"
-      },
-      "cardMode": "view",
-      "hideMessageCard": true,
-      "cardImage": "images/products/product-173/product-173-1.png",
-      "hoverImage": "images/products/product-173/product-173-2.png",
-      "collectionMedia": {
-            "women": {
-                  "image": "images/products/product-173/product-173-1.png",
-                  "hoverImage": "images/products/product-173/product-173-2.png"
-            },
-            "men": {
-                  "image": "images/products/product-173/product-173-1.png",
-                  "hoverImage": "images/products/product-173/product-173-2.png"
-            }
-      },
-      "images": [
-            "images/products/product-173/product-173-1.png",
-            "images/products/product-173/product-173-2.png",
-            "images/products/product-173/product-173-3.png"
-      ],
-      "price": 139.9,
-      "title": {
-            "he": "New Era X New York Yankees X League Essential - צבע ורוד מעושן",
-            "en": "New Era X New York Yankees X League Essential - Mauve"
-      },
-      "subtitle": {
-            "he": "כובע New York Yankees בצבע ורוד מעושן עם רקמת NY לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
-            "en": "Mauve New York Yankees cap with white NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
-      },
-      "cardTitle": {
-            "he": "New Era X New York Yankees X League Essential - צבע ורוד מעושן",
-            "en": "New Era X New York Yankees X League Essential - Mauve"
-      },
-      "cardMessage": {
-            "he": "כובע New York Yankees בצבע ורוד מעושן עם רקמת NY לבנה, לוגו MLB מאחור ולוגו New Era בצד.",
-            "en": "Mauve New York Yankees cap with white NY embroidery, with MLB logo at the back and New Era logo on the side."
-      },
-      "signature": {
-            "he": "",
-            "en": ""
-      },
-      "details": {
-            "he": [
-                  "צבע: ורוד מעושן",
-                  "רקמת NY בחזית",
-                  "לוגו MLB רקום בחלק האחורי",
-                  "לוגו New Era רקום בצד",
-                  "סגירה אחורית מתכווננת",
-                  "מצחייה מעוגלת",
-                  "מחיר ליחידה: 139.90 ₪",
-                  "מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
-            ],
-            "en": [
-                  "Color: Mauve",
-                  "NY embroidery on the front",
-                  "Embroidered MLB logo on the back",
-                  "Embroidered New Era logo on the side",
-                  "Adjustable rear closure",
-                  "Curved brim",
-                  "Single price: ₪139.90",
-                  "All hats offer: 2 for ₪239.90 | 3 for ₪299.90"
-            ]
-      },
-      "afterText": {
-            "he": "מבצע הכובעים חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים: 2 ב־239.90 ₪ או 3 ב־299.90 ₪.",
-            "en": "The hats offer applies across the hats collection and can be mixed between different hat styles: 2 for ₪239.90 or 3 for ₪299.90."
-      },
-      "deliveryBusinessDays": {
-            "min": 9,
-            "max": 25
-      }
-}
-
-  ,{
-  "id": "new-era-new-york-yankees-league-essential-cream-174",
-  "slug": "product-174",
-  "urlSlug": "new-era-new-york-yankees-league-essential-cream",
-  "sku": "KW-HAT-174",
-  "category": "hats",
-  "categories": [
-    "hats"
-  ],
-  "badge": {
-    "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-    "en": "2 for ₪239.90 | 3 for ₪299.90"
   },
-  "cardMode": "view",
-  "hideMessageCard": true,
-  "cardImage": "images/products/product-174/product-174-1.png",
-  "hoverImage": "images/products/product-174/product-174-2.png",
-  "collectionMedia": {
-    "women": {
-      "image": "images/products/product-174/product-174-1.png",
-      "hoverImage": "images/products/product-174/product-174-2.png"
-    },
-    "men": {
-      "image": "images/products/product-174/product-174-1.png",
-      "hoverImage": "images/products/product-174/product-174-2.png"
-    }
-  },
-  "images": [
-    "images/products/product-174/product-174-1.png",
-    "images/products/product-174/product-174-2.png",
-    "images/products/product-174/product-174-3.png"
-  ],
-  "price": 139.9,
-  "title": {
-    "he": "New Era X New York Yankees X League Essential - צבע שמנת",
-    "en": "New Era X New York Yankees X League Essential - Cream"
-  },
-  "subtitle": {
-    "he": "כובע New York Yankees בצבע שמנת עם רקמת NY לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-    "en": "Cream New York Yankees cap with white NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90 | 3 for ₪299.90"
-  },
-  "cardTitle": {
-    "he": "New Era X New York Yankees X League Essential - צבע שמנת",
-    "en": "New Era X New York Yankees X League Essential - Cream"
-  },
-  "cardMessage": {
-    "he": "כובע New York Yankees בצבע שמנת עם רקמת NY לבנה, לוגו MLB מאחור ולוגו New Era בצד.",
-    "en": "Cream New York Yankees cap with white NY embroidery, with MLB logo at the back and New Era logo on the side."
-  },
-  "signature": {
-    "he": "",
-    "en": ""
-  },
-  "details": {
-    "he": [
-      "צבע: שמנת",
-      "רקמת NY בחזית",
-      "לוגו MLB רקום בחלק האחורי",
-      "לוגו New Era רקום בצד",
-      "סגירה אחורית מתכווננת",
-      "מצחייה מעוגלת",
-      "מחיר ליחידה: 139.90 ₪",
-      "מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
-    ],
-    "en": [
-      "Color: Cream",
-      "NY embroidery on the front",
-      "Embroidered MLB logo on the back",
-      "Embroidered New Era logo on the side",
-      "Adjustable rear closure",
-      "Curved brim",
-      "Single price: ₪139.90",
-      "All hats offer: 2 for ₪239.90 | 3 for ₪299.90"
-    ]
-  },
-  "afterText": {
-    "he": "מבצע הכובעים חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים: 2 ב־239.90 ₪ או 3 ב־299.90 ₪.",
-    "en": "The hats offer applies across the hats collection and can be mixed between different hat styles: 2 for ₪239.90 or 3 for ₪299.90."
-  },
-  "deliveryBusinessDays": {
-    "min": 9,
-    "max": 25
-  }
-}
-
-  ,{
-  "id": "new-era-new-york-yankees-league-essential-pink-175",
-  "slug": "product-175",
-  "urlSlug": "new-era-new-york-yankees-league-essential-pink",
-  "sku": "KW-HAT-175",
-  "category": "hats",
-  "categories": [
-    "hats"
-  ],
-  "badge": {
-    "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-    "en": "2 for ₪239.90 | 3 for ₪299.90"
-  },
-  "cardMode": "view",
-  "hideMessageCard": true,
-  "cardImage": "images/products/product-175/product-175-1.png",
-  "hoverImage": "images/products/product-175/product-175-2.png",
-  "collectionMedia": {
-    "women": {
-      "image": "images/products/product-175/product-175-1.png",
-      "hoverImage": "images/products/product-175/product-175-2.png"
-    },
-    "men": {
-      "image": "images/products/product-175/product-175-1.png",
-      "hoverImage": "images/products/product-175/product-175-2.png"
-    }
-  },
-  "images": [
-    "images/products/product-175/product-175-1.png",
-    "images/products/product-175/product-175-2.png",
-    "images/products/product-175/product-175-3.png"
-  ],
-  "price": 139.9,
-  "title": {
-    "he": "New Era X New York Yankees X League Essential - צבע ורוד",
-    "en": "New Era X New York Yankees X League Essential - Pink"
-  },
-  "subtitle": {
-    "he": "כובע New York Yankees בצבע ורוד עם רקמת NY לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-    "en": "Pink New York Yankees cap with white NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90 | 3 for ₪299.90"
-  },
-  "cardTitle": {
-    "he": "New Era X New York Yankees X League Essential - צבע ורוד",
-    "en": "New Era X New York Yankees X League Essential - Pink"
-  },
-  "cardMessage": {
-    "he": "כובע New York Yankees בצבע ורוד עם רקמת NY לבנה, לוגו MLB מאחור ולוגו New Era בצד.",
-    "en": "Pink New York Yankees cap with white NY embroidery, with MLB logo at the back and New Era logo on the side."
-  },
-  "signature": {
-    "he": "",
-    "en": ""
-  },
-  "details": {
-    "he": [
-      "צבע: ורוד",
-      "רקמת NY בחזית",
-      "לוגו MLB רקום בחלק האחורי",
-      "לוגו New Era רקום בצד",
-      "סגירה אחורית מתכווננת",
-      "מצחייה מעוגלת",
-      "מחיר ליחידה: 139.90 ₪",
-      "מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
-    ],
-    "en": [
-      "Color: Pink",
-      "NY embroidery on the front",
-      "Embroidered MLB logo on the back",
-      "Embroidered New Era logo on the side",
-      "Adjustable rear closure",
-      "Curved brim",
-      "Single price: ₪139.90",
-      "All hats offer: 2 for ₪239.90 | 3 for ₪299.90"
-    ]
-  },
-  "afterText": {
-    "he": "מבצע הכובעים חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים: 2 ב־239.90 ₪ או 3 ב־299.90 ₪.",
-    "en": "The hats offer applies across the hats collection and can be mixed between different hat styles: 2 for ₪239.90 or 3 for ₪299.90."
-  },
-  "deliveryBusinessDays": {
-    "min": 9,
-    "max": 25
-  }
-}
-
-  ,{
-  "id": "new-era-new-york-yankees-league-essential-gray-176",
-  "slug": "product-176",
-  "urlSlug": "new-era-new-york-yankees-league-essential-gray",
-  "sku": "KW-HAT-176",
-  "category": "hats",
-  "categories": [
-    "hats"
-  ],
-  "badge": {
-    "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-    "en": "2 for ₪239.90 | 3 for ₪299.90"
-  },
-  "cardMode": "view",
-  "hideMessageCard": true,
-  "cardImage": "images/products/product-176/product-176-1.png",
-  "hoverImage": "images/products/product-176/product-176-2.png",
-  "collectionMedia": {
-    "women": {
-      "image": "images/products/product-176/product-176-1.png",
-      "hoverImage": "images/products/product-176/product-176-2.png"
-    },
-    "men": {
-      "image": "images/products/product-176/product-176-1.png",
-      "hoverImage": "images/products/product-176/product-176-2.png"
-    }
-  },
-  "images": [
-    "images/products/product-176/product-176-1.png",
-    "images/products/product-176/product-176-2.png",
-    "images/products/product-176/product-176-3.png"
-  ],
-  "price": 139.9,
-  "title": {
-    "he": "New Era X New York Yankees X League Essential - צבע אפור",
-    "en": "New Era X New York Yankees X League Essential - Gray"
-  },
-  "subtitle": {
-    "he": "כובע New York Yankees בצבע אפור עם רקמת NY לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-    "en": "Gray New York Yankees cap with white NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90 | 3 for ₪299.90"
-  },
-  "cardTitle": {
-    "he": "New Era X New York Yankees X League Essential - צבע אפור",
-    "en": "New Era X New York Yankees X League Essential - Gray"
-  },
-  "cardMessage": {
-    "he": "כובע New York Yankees בצבע אפור עם רקמת NY לבנה, לוגו MLB מאחור ולוגו New Era בצד.",
-    "en": "Gray New York Yankees cap with white NY embroidery, with MLB logo at the back and New Era logo on the side."
-  },
-  "signature": {
-    "he": "",
-    "en": ""
-  },
-  "details": {
-    "he": [
-      "צבע: אפור",
-      "רקמת NY בחזית",
-      "לוגו MLB רקום בחלק האחורי",
-      "לוגו New Era רקום בצד",
-      "סגירה אחורית מתכווננת",
-      "מצחייה מעוגלת",
-      "מחיר ליחידה: 139.90 ₪",
-      "מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
-    ],
-    "en": [
-      "Color: Gray",
-      "NY embroidery on the front",
-      "Embroidered MLB logo on the back",
-      "Embroidered New Era logo on the side",
-      "Adjustable rear closure",
-      "Curved brim",
-      "Single price: ₪139.90",
-      "All hats offer: 2 for ₪239.90 | 3 for ₪299.90"
-    ]
-  },
-  "afterText": {
-    "he": "מבצע הכובעים חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים: 2 ב־239.90 ₪ או 3 ב־299.90 ₪.",
-    "en": "The hats offer applies across the hats collection and can be mixed between different hat styles: 2 for ₪239.90 or 3 for ₪299.90."
-  },
-  "deliveryBusinessDays": {
-    "min": 9,
-    "max": 25
-  }
-}
-
-  ,{
-  "id": "new-era-new-york-yankees-league-essential-khaki-177",
-  "slug": "product-177",
-  "urlSlug": "new-era-new-york-yankees-league-essential-khaki",
-  "sku": "KW-HAT-177",
-  "category": "hats",
-  "categories": [
-    "hats"
-  ],
-  "badge": {
-    "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-    "en": "2 for ₪239.90 | 3 for ₪299.90"
-  },
-  "cardMode": "view",
-  "hideMessageCard": true,
-  "cardImage": "images/products/product-177/product-177-1.png",
-  "hoverImage": "images/products/product-177/product-177-2.png",
-  "collectionMedia": {
-    "women": {
-      "image": "images/products/product-177/product-177-1.png",
-      "hoverImage": "images/products/product-177/product-177-2.png"
-    },
-    "men": {
-      "image": "images/products/product-177/product-177-1.png",
-      "hoverImage": "images/products/product-177/product-177-2.png"
-    }
-  },
-  "images": [
-    "images/products/product-177/product-177-1.png",
-    "images/products/product-177/product-177-2.png",
-    "images/products/product-177/product-177-3.png"
-  ],
-  "price": 139.9,
-  "title": {
-    "he": "New Era X New York Yankees X League Essential - צבע חאקי",
-    "en": "New Era X New York Yankees X League Essential - Khaki"
-  },
-  "subtitle": {
-    "he": "כובע New York Yankees בצבע חאקי עם רקמת NY לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-    "en": "Khaki New York Yankees cap with white NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90 | 3 for ₪299.90"
-  },
-  "cardTitle": {
-    "he": "New Era X New York Yankees X League Essential - צבע חאקי",
-    "en": "New Era X New York Yankees X League Essential - Khaki"
-  },
-  "cardMessage": {
-    "he": "כובע New York Yankees בצבע חאקי עם רקמת NY לבנה, לוגו MLB מאחור ולוגו New Era בצד.",
-    "en": "Khaki New York Yankees cap with white NY embroidery, with MLB logo at the back and New Era logo on the side."
-  },
-  "signature": {
-    "he": "",
-    "en": ""
-  },
-  "details": {
-    "he": [
-      "צבע: חאקי",
-      "רקמת NY בחזית",
-      "לוגו MLB רקום בחלק האחורי",
-      "לוגו New Era רקום בצד",
-      "סגירה אחורית מתכווננת",
-      "מצחייה מעוגלת",
-      "מחיר ליחידה: 139.90 ₪",
-      "מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
-    ],
-    "en": [
-      "Color: Khaki",
-      "NY embroidery on the front",
-      "Embroidered MLB logo on the back",
-      "Embroidered New Era logo on the side",
-      "Adjustable rear closure",
-      "Curved brim",
-      "Single price: ₪139.90",
-      "All hats offer: 2 for ₪239.90 | 3 for ₪299.90"
-    ]
-  },
-  "afterText": {
-    "he": "מבצע הכובעים חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים: 2 ב־239.90 ₪ או 3 ב־299.90 ₪.",
-    "en": "The hats offer applies across the hats collection and can be mixed between different hat styles: 2 for ₪239.90 or 3 for ₪299.90."
-  },
-  "deliveryBusinessDays": {
-    "min": 9,
-    "max": 25
-  }
-}
-  ,{
-  "id": "new-era-new-york-yankees-league-essential-burgundy-178",
-  "slug": "product-178",
-  "urlSlug": "new-era-new-york-yankees-league-essential-burgundy",
-  "sku": "KW-HAT-178",
-  "category": "hats",
-  "categories": [
-    "hats"
-  ],
-  "badge": {
-    "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-    "en": "2 for ₪239.90 | 3 for ₪299.90"
-  },
-  "cardMode": "view",
-  "hideMessageCard": true,
-  "cardImage": "images/products/product-178/product-178-1.png",
-  "hoverImage": "images/products/product-178/product-178-2.png",
-  "collectionMedia": {
-    "women": {
-      "image": "images/products/product-178/product-178-1.png",
-      "hoverImage": "images/products/product-178/product-178-2.png"
-    },
-    "men": {
-      "image": "images/products/product-178/product-178-1.png",
-      "hoverImage": "images/products/product-178/product-178-2.png"
-    }
-  },
-  "images": [
-    "images/products/product-178/product-178-1.png",
-    "images/products/product-178/product-178-2.png",
-    "images/products/product-178/product-178-3.png"
-  ],
-  "price": 139.9,
-  "title": {
-    "he": "New Era X New York Yankees X League Essential - צבע בורדו",
-    "en": "New Era X New York Yankees X League Essential - Burgundy"
-  },
-  "subtitle": {
-    "he": "כובע New York Yankees בצבע בורדו עם רקמת NY לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-    "en": "Burgundy New York Yankees cap with white NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90 | 3 for ₪299.90"
-  },
-  "cardTitle": {
-    "he": "New Era X New York Yankees X League Essential - צבע בורדו",
-    "en": "New Era X New York Yankees X League Essential - Burgundy"
-  },
-  "cardMessage": {
-    "he": "כובע New York Yankees בצבע בורדו עם רקמת NY לבנה, לוגו MLB מאחור ולוגו New Era בצד.",
-    "en": "Burgundy New York Yankees cap with white NY embroidery, with MLB logo at the back and New Era logo on the side."
-  },
-  "signature": {
-    "he": "",
-    "en": ""
-  },
-  "details": {
-    "he": [
-      "צבע: בורדו",
-      "רקמת NY לבנה בחזית",
-      "לוגו MLB רקום בחלק האחורי",
-      "לוגו New Era רקום בצד",
-      "סגירה אחורית מתכווננת",
-      "מצחייה מעוגלת",
-      "מחיר ליחידה: 139.90 ₪",
-      "מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
-    ],
-    "en": [
-      "Color: Burgundy",
-      "white NY embroidery on the front",
-      "Embroidered MLB logo on the back",
-      "Embroidered New Era logo on the side",
-      "Adjustable rear closure",
-      "Curved brim",
-      "Single price: ₪139.90",
-      "All hats offer: 2 for ₪239.90 | 3 for ₪299.90"
-    ]
-  },
-  "afterText": {
-    "he": "מבצע הכובעים חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים: 2 ב־239.90 ₪ או 3 ב־299.90 ₪.",
-    "en": "The hats offer applies across the hats collection and can be mixed between different hat styles: 2 for ₪239.90 or 3 for ₪299.90."
-  },
-  "deliveryBusinessDays": {
-    "min": 9,
-    "max": 25
-  }
-}
-  ,{
-  "id": "new-era-new-york-yankees-league-essential-green-179",
-  "slug": "product-179",
-  "urlSlug": "new-era-new-york-yankees-league-essential-green",
-  "sku": "KW-HAT-179",
-  "category": "hats",
-  "categories": [
-    "hats"
-  ],
-  "badge": {
-    "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-    "en": "2 for ₪239.90 | 3 for ₪299.90"
-  },
-  "cardMode": "view",
-  "hideMessageCard": true,
-  "cardImage": "images/products/product-179/product-179-1.png",
-  "hoverImage": "images/products/product-179/product-179-2.png",
-  "collectionMedia": {
-    "women": {
-      "image": "images/products/product-179/product-179-1.png",
-      "hoverImage": "images/products/product-179/product-179-2.png"
-    },
-    "men": {
-      "image": "images/products/product-179/product-179-1.png",
-      "hoverImage": "images/products/product-179/product-179-2.png"
-    }
-  },
-  "images": [
-    "images/products/product-179/product-179-1.png",
-    "images/products/product-179/product-179-2.png",
-    "images/products/product-179/product-179-3.png"
-  ],
-  "price": 139.9,
-  "title": {
-    "he": "New Era X New York Yankees X League Essential - צבע ירוק",
-    "en": "New Era X New York Yankees X League Essential - Green"
-  },
-  "subtitle": {
-    "he": "כובע New York Yankees בצבע ירוק עם רקמת NY לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-    "en": "Green New York Yankees cap with white NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90 | 3 for ₪299.90"
-  },
-  "cardTitle": {
-    "he": "New Era X New York Yankees X League Essential - צבע ירוק",
-    "en": "New Era X New York Yankees X League Essential - Green"
-  },
-  "cardMessage": {
-    "he": "כובע New York Yankees בצבע ירוק עם רקמת NY לבנה, לוגו MLB מאחור ולוגו New Era בצד.",
-    "en": "Green New York Yankees cap with white NY embroidery, with MLB logo at the back and New Era logo on the side."
-  },
-  "signature": {
-    "he": "",
-    "en": ""
-  },
-  "details": {
-    "he": [
-      "צבע: ירוק",
-      "רקמת NY לבנה בחזית",
-      "לוגו MLB רקום בחלק האחורי",
-      "לוגו New Era רקום בצד",
-      "סגירה אחורית מתכווננת",
-      "מצחייה מעוגלת",
-      "מחיר ליחידה: 139.90 ₪",
-      "מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
-    ],
-    "en": [
-      "Color: Green",
-      "white NY embroidery on the front",
-      "Embroidered MLB logo on the back",
-      "Embroidered New Era logo on the side",
-      "Adjustable rear closure",
-      "Curved brim",
-      "Single price: ₪139.90",
-      "All hats offer: 2 for ₪239.90 | 3 for ₪299.90"
-    ]
-  },
-  "afterText": {
-    "he": "מבצע הכובעים חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים: 2 ב־239.90 ₪ או 3 ב־299.90 ₪.",
-    "en": "The hats offer applies across the hats collection and can be mixed between different hat styles: 2 for ₪239.90 or 3 for ₪299.90."
-  },
-  "deliveryBusinessDays": {
-    "min": 9,
-    "max": 25
-  }
-}
-  ,{
-  "id": "new-era-new-york-yankees-league-essential-off-white-180",
-  "slug": "product-180",
-  "urlSlug": "new-era-new-york-yankees-league-essential-off-white",
-  "sku": "KW-HAT-180",
-  "category": "hats",
-  "categories": [
-    "hats"
-  ],
-  "badge": {
-    "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-    "en": "2 for ₪239.90 | 3 for ₪299.90"
-  },
-  "cardMode": "view",
-  "hideMessageCard": true,
-  "cardImage": "images/products/product-180/product-180-1.png",
-  "hoverImage": "images/products/product-180/product-180-2.png",
-  "collectionMedia": {
-    "women": {
-      "image": "images/products/product-180/product-180-1.png",
-      "hoverImage": "images/products/product-180/product-180-2.png"
-    },
-    "men": {
-      "image": "images/products/product-180/product-180-1.png",
-      "hoverImage": "images/products/product-180/product-180-2.png"
-    }
-  },
-  "images": [
-    "images/products/product-180/product-180-1.png",
-    "images/products/product-180/product-180-2.png",
-    "images/products/product-180/product-180-3.png"
-  ],
-  "price": 139.9,
-  "title": {
-    "he": "New Era X New York Yankees X League Essential - צבע אוף וויט",
-    "en": "New Era X New York Yankees X League Essential - Off White"
-  },
-  "subtitle": {
-    "he": "כובע New York Yankees בצבע אוף וויט עם רקמת NY בגוון תואם · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-    "en": "Off White New York Yankees cap with tonal NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90 | 3 for ₪299.90"
-  },
-  "cardTitle": {
-    "he": "New Era X New York Yankees X League Essential - צבע אוף וויט",
-    "en": "New Era X New York Yankees X League Essential - Off White"
-  },
-  "cardMessage": {
-    "he": "כובע New York Yankees בצבע אוף וויט עם רקמת NY בגוון תואם, לוגו MLB מאחור ולוגו New Era בצד.",
-    "en": "Off White New York Yankees cap with tonal NY embroidery, with MLB logo at the back and New Era logo on the side."
-  },
-  "signature": {
-    "he": "",
-    "en": ""
-  },
-  "details": {
-    "he": [
-      "צבע: אוף וויט",
-      "רקמת NY בגוון תואם בחזית",
-      "לוגו MLB רקום בחלק האחורי",
-      "לוגו New Era רקום בצד",
-      "סגירה אחורית מתכווננת",
-      "מצחייה מעוגלת",
-      "מחיר ליחידה: 139.90 ₪",
-      "מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
-    ],
-    "en": [
-      "Color: Off White",
-      "tonal NY embroidery on the front",
-      "Embroidered MLB logo on the back",
-      "Embroidered New Era logo on the side",
-      "Adjustable rear closure",
-      "Curved brim",
-      "Single price: ₪139.90",
-      "All hats offer: 2 for ₪239.90 | 3 for ₪299.90"
-    ]
-  },
-  "afterText": {
-    "he": "מבצע הכובעים חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים: 2 ב־239.90 ₪ או 3 ב־299.90 ₪.",
-    "en": "The hats offer applies across the hats collection and can be mixed between different hat styles: 2 for ₪239.90 or 3 for ₪299.90."
-  },
-  "deliveryBusinessDays": {
-    "min": 9,
-    "max": 25
-  }
-}
-  ,{
-  "id": "new-era-new-york-yankees-league-essential-black-181",
-  "slug": "product-181",
-  "urlSlug": "new-era-new-york-yankees-league-essential-black",
-  "sku": "KW-HAT-181",
-  "category": "hats",
-  "categories": [
-    "hats"
-  ],
-  "badge": {
-    "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-    "en": "2 for ₪239.90 | 3 for ₪299.90"
-  },
-  "cardMode": "view",
-  "hideMessageCard": true,
-  "cardImage": "images/products/product-181/product-181-1.png",
-  "hoverImage": "images/products/product-181/product-181-2.png",
-  "collectionMedia": {
-    "women": {
-      "image": "images/products/product-181/product-181-1.png",
-      "hoverImage": "images/products/product-181/product-181-2.png"
-    },
-    "men": {
-      "image": "images/products/product-181/product-181-1.png",
-      "hoverImage": "images/products/product-181/product-181-2.png"
-    }
-  },
-  "images": [
-    "images/products/product-181/product-181-1.png",
-    "images/products/product-181/product-181-2.png",
-    "images/products/product-181/product-181-3.png"
-  ],
-  "price": 139.9,
-  "title": {
-    "he": "New Era X New York Yankees X League Essential - צבע שחור",
-    "en": "New Era X New York Yankees X League Essential - Black"
-  },
-  "subtitle": {
-    "he": "כובע New York Yankees בצבע שחור עם רקמת NY לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-    "en": "Black New York Yankees cap with white NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90 | 3 for ₪299.90"
-  },
-  "cardTitle": {
-    "he": "New Era X New York Yankees X League Essential - צבע שחור",
-    "en": "New Era X New York Yankees X League Essential - Black"
-  },
-  "cardMessage": {
-    "he": "כובע New York Yankees בצבע שחור עם רקמת NY לבנה, לוגו MLB מאחור ולוגו New Era בצד.",
-    "en": "Black New York Yankees cap with white NY embroidery, with MLB logo at the back and New Era logo on the side."
-  },
-  "signature": {
-    "he": "",
-    "en": ""
-  },
-  "details": {
-    "he": [
-      "צבע: שחור",
-      "רקמת NY לבנה בחזית",
-      "לוגו MLB רקום בחלק האחורי",
-      "לוגו New Era רקום בצד",
-      "סגירה אחורית מתכווננת",
-      "מצחייה מעוגלת",
-      "מחיר ליחידה: 139.90 ₪",
-      "מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
-    ],
-    "en": [
-      "Color: Black",
-      "white NY embroidery on the front",
-      "Embroidered MLB logo on the back",
-      "Embroidered New Era logo on the side",
-      "Adjustable rear closure",
-      "Curved brim",
-      "Single price: ₪139.90",
-      "All hats offer: 2 for ₪239.90 | 3 for ₪299.90"
-    ]
-  },
-  "afterText": {
-    "he": "מבצע הכובעים חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים: 2 ב־239.90 ₪ או 3 ב־299.90 ₪.",
-    "en": "The hats offer applies across the hats collection and can be mixed between different hat styles: 2 for ₪239.90 or 3 for ₪299.90."
-  },
-  "deliveryBusinessDays": {
-    "min": 9,
-    "max": 25
-  }
-},
   {
-  "id": "new-era-new-york-yankees-league-essential-light-blue-182",
-  "slug": "product-182",
-  "urlSlug": "new-era-new-york-yankees-league-essential-light-blue",
-  "sku": "KW-HAT-182",
-  "category": "hats",
-  "categories": [
-    "hats"
-  ],
-  "badge": {
-    "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-    "en": "2 for ₪239.90 | 3 for ₪299.90"
-  },
-  "cardMode": "view",
-  "hideMessageCard": true,
-  "cardImage": "images/products/product-182/product-182-1.png",
-  "hoverImage": "images/products/product-182/product-182-2.png",
-  "collectionMedia": {
-    "women": {
-      "image": "images/products/product-182/product-182-1.png",
-      "hoverImage": "images/products/product-182/product-182-2.png"
+    "id": "new-era-new-york-yankees-league-essential-brown-166",
+    "slug": "product-166",
+    "urlSlug": "new-era-new-york-yankees-league-essential-brown",
+    "sku": "KW-HAT-166",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
-    "men": {
-      "image": "images/products/product-182/product-182-1.png",
-      "hoverImage": "images/products/product-182/product-182-2.png"
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-166/product-166-1.png",
+    "hoverImage": "images/products/product-166/product-166-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-166/product-166-1.png",
+        "hoverImage": "images/products/product-166/product-166-2.png"
+      },
+      "men": {
+        "image": "images/products/product-166/product-166-1.png",
+        "hoverImage": "images/products/product-166/product-166-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-166/product-166-1.png",
+      "images/products/product-166/product-166-2.png",
+      "images/products/product-166/product-166-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X New York Yankees X League Essential - צבע חום",
+      "en": "New Era X New York Yankees X League Essential - Brown"
+    },
+    "subtitle": {
+      "he": "כובע New York Yankees בצבע חום עם רקמת NY לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Brown New York Yankees cap with white NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X New York Yankees X League Essential - צבע חום",
+      "en": "New Era X New York Yankees X League Essential - Brown"
+    },
+    "cardMessage": {
+      "he": "כובע New York Yankees בצבע חום עם רקמת NY לבנה, לוגו MLB מאחור ולוגו New Era בצד.",
+      "en": "Brown New York Yankees cap with white NY embroidery, with MLB logo at the back and New Era logo on the side."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: חום",
+        "רקמת NY בחזית",
+        "לוגו MLB רקום בחלק האחורי",
+        "לוגו New Era רקום בצד",
+        "סגירה אחורית מתכווננת",
+        "מצחייה מעוגלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Brown",
+        "NY embroidery on the front",
+        "Embroidered MLB logo on the back",
+        "Embroidered New Era logo on the side",
+        "Adjustable rear closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
     }
   },
-  "images": [
-    "images/products/product-182/product-182-1.png",
-    "images/products/product-182/product-182-2.png",
-    "images/products/product-182/product-182-3.png"
-  ],
-  "price": 139.9,
-  "title": {
-    "he": "New Era X New York Yankees X League Essential - צבע תכלת",
-    "en": "New Era X New York Yankees X League Essential - Light Blue"
-  },
-  "subtitle": {
-    "he": "כובע New York Yankees בצבע תכלת עם רקמת NY לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-    "en": "Light Blue New York Yankees cap with white NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90 | 3 for ₪299.90"
-  },
-  "cardTitle": {
-    "he": "New Era X New York Yankees X League Essential - צבע תכלת",
-    "en": "New Era X New York Yankees X League Essential - Light Blue"
-  },
-  "cardMessage": {
-    "he": "כובע New York Yankees בצבע תכלת עם רקמת NY לבנה, לוגו MLB מאחור ולוגו New Era בצד.",
-    "en": "Light Blue New York Yankees cap with white NY embroidery, with MLB logo at the back and New Era logo on the side."
-  },
-  "signature": {
-    "he": "",
-    "en": ""
-  },
-  "details": {
-    "he": [
-      "צבע: תכלת",
-      "רקמת NY לבנה בחזית",
-      "לוגו MLB רקום בחלק האחורי",
-      "לוגו New Era רקום בצד",
-      "סגירה אחורית מתכווננת",
-      "מצחייה מעוגלת",
-      "מחיר ליחידה: 139.90 ₪",
-      "מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
-    ],
-    "en": [
-      "Color: Light Blue",
-      "white NY embroidery on the front",
-      "Embroidered MLB logo on the back",
-      "Embroidered New Era logo on the side",
-      "Adjustable rear closure",
-      "Curved brim",
-      "Single price: ₪139.90",
-      "All hats offer: 2 for ₪239.90 | 3 for ₪299.90"
-    ]
-  },
-  "afterText": {
-    "he": "מבצע הכובעים חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים: 2 ב־239.90 ₪ או 3 ב־299.90 ₪.",
-    "en": "The hats offer applies across the hats collection and can be mixed between different hat styles: 2 for ₪239.90 or 3 for ₪299.90."
-  },
-  "deliveryBusinessDays": {
-    "min": 9,
-    "max": 25
-  }
-},
   {
-  "id": "new-era-new-york-yankees-league-essential-cream-black-183",
-  "slug": "product-183",
-  "urlSlug": "new-era-new-york-yankees-league-essential-cream-black",
-  "sku": "KW-HAT-183",
-  "category": "hats",
-  "categories": [
-    "hats"
-  ],
-  "badge": {
-    "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-    "en": "2 for ₪239.90 | 3 for ₪299.90"
-  },
-  "cardMode": "view",
-  "hideMessageCard": true,
-  "cardImage": "images/products/product-183/product-183-1.png",
-  "hoverImage": "images/products/product-183/product-183-2.png",
-  "collectionMedia": {
-    "women": {
-      "image": "images/products/product-183/product-183-1.png",
-      "hoverImage": "images/products/product-183/product-183-2.png"
+    "id": "new-era-new-york-yankees-league-essential-camo-167",
+    "slug": "product-167",
+    "urlSlug": "new-era-new-york-yankees-league-essential-camo",
+    "sku": "KW-HAT-167",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
     },
-    "men": {
-      "image": "images/products/product-183/product-183-1.png",
-      "hoverImage": "images/products/product-183/product-183-2.png"
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-167/product-167-1.png",
+    "hoverImage": "images/products/product-167/product-167-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-167/product-167-1.png",
+        "hoverImage": "images/products/product-167/product-167-2.png"
+      },
+      "men": {
+        "image": "images/products/product-167/product-167-1.png",
+        "hoverImage": "images/products/product-167/product-167-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-167/product-167-1.png",
+      "images/products/product-167/product-167-2.png",
+      "images/products/product-167/product-167-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X New York Yankees X League Essential - צבע ירוק צבאי",
+      "en": "New Era X New York Yankees X League Essential - Camo"
+    },
+    "subtitle": {
+      "he": "כובע New York Yankees בהדפס ירוק צבאי עם רקמת NY לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Camo New York Yankees cap with white NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X New York Yankees X League Essential - צבע ירוק צבאי",
+      "en": "New Era X New York Yankees X League Essential - Camo"
+    },
+    "cardMessage": {
+      "he": "כובע New York Yankees בהדפס ירוק צבאי עם רקמת NY לבנה, לוגו MLB מאחור ולוגו New Era בצד.",
+      "en": "Camo New York Yankees cap with white NY embroidery, with MLB logo at the back and New Era logo on the side."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: ירוק צבאי",
+        "רקמת NY בחזית",
+        "לוגו MLB רקום בחלק האחורי",
+        "לוגו New Era רקום בצד",
+        "סגירה אחורית מתכווננת",
+        "מצחייה מעוגלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Camo",
+        "NY embroidery on the front",
+        "Embroidered MLB logo on the back",
+        "Embroidered New Era logo on the side",
+        "Adjustable rear closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
     }
   },
-  "images": [
-    "images/products/product-183/product-183-1.png",
-    "images/products/product-183/product-183-2.png",
-    "images/products/product-183/product-183-3.png"
-  ],
-  "price": 139.9,
-  "title": {
-    "he": "New Era X New York Yankees X League Essential - צבע שמנת-שחור",
-    "en": "New Era X New York Yankees X League Essential - Cream / Black"
-  },
-  "subtitle": {
-    "he": "כובע New York Yankees בצבע שמנת-שחור עם רקמת NY שחורה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
-    "en": "Cream / Black New York Yankees cap with black NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90 | 3 for ₪299.90"
-  },
-  "cardTitle": {
-    "he": "New Era X New York Yankees X League Essential - צבע שמנת-שחור",
-    "en": "New Era X New York Yankees X League Essential - Cream / Black"
-  },
-  "cardMessage": {
-    "he": "כובע New York Yankees בצבע שמנת-שחור עם רקמת NY שחורה, לוגו MLB מאחור ולוגו New Era בצד.",
-    "en": "Cream / Black New York Yankees cap with black NY embroidery, with MLB logo at the back and New Era logo on the side."
-  },
-  "signature": {
-    "he": "",
-    "en": ""
-  },
-  "details": {
-    "he": [
-      "צבע: שמנת-שחור",
-      "רקמת NY שחורה בחזית",
-      "לוגו MLB רקום בחלק האחורי",
-      "לוגו New Era רקום בצד",
-      "סגירה אחורית מתכווננת",
-      "מצחייה מעוגלת",
-      "מחיר ליחידה: 139.90 ₪",
-      "מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+  {
+    "id": "new-era-new-york-yankees-league-essential-beige-168",
+    "slug": "product-168",
+    "urlSlug": "new-era-new-york-yankees-league-essential-beige",
+    "sku": "KW-HAT-168",
+    "category": "hats",
+    "categories": [
+      "hats"
     ],
-    "en": [
-      "Color: Cream / Black",
-      "black NY embroidery on the front",
-      "Embroidered MLB logo on the back",
-      "Embroidered New Era logo on the side",
-      "Adjustable rear closure",
-      "Curved brim",
-      "Single price: ₪139.90",
-      "All hats offer: 2 for ₪239.90 | 3 for ₪299.90"
-    ]
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-168/product-168-1.png",
+    "hoverImage": "images/products/product-168/product-168-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-168/product-168-1.png",
+        "hoverImage": "images/products/product-168/product-168-2.png"
+      },
+      "men": {
+        "image": "images/products/product-168/product-168-1.png",
+        "hoverImage": "images/products/product-168/product-168-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-168/product-168-1.png",
+      "images/products/product-168/product-168-2.png",
+      "images/products/product-168/product-168-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X New York Yankees X League Essential - צבע בז'",
+      "en": "New Era X New York Yankees X League Essential - Beige"
+    },
+    "subtitle": {
+      "he": "כובע New York Yankees בצבע בז' עם רקמת NY כחולה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Beige New York Yankees cap with blue NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X New York Yankees X League Essential - צבע בז'",
+      "en": "New Era X New York Yankees X League Essential - Beige"
+    },
+    "cardMessage": {
+      "he": "כובע New York Yankees בצבע בז' עם רקמת NY כחולה, לוגו MLB מאחור ולוגו New Era בצד.",
+      "en": "Beige New York Yankees cap with blue NY embroidery, with MLB logo at the back and New Era logo on the side."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: בז'",
+        "רקמת NY בחזית",
+        "לוגו MLB רקום בחלק האחורי",
+        "לוגו New Era רקום בצד",
+        "סגירה אחורית מתכווננת",
+        "מצחייה מעוגלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Beige",
+        "NY embroidery on the front",
+        "Embroidered MLB logo on the back",
+        "Embroidered New Era logo on the side",
+        "Adjustable rear closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
   },
-  "afterText": {
-    "he": "מבצע הכובעים חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים: 2 ב־239.90 ₪ או 3 ב־299.90 ₪.",
-    "en": "The hats offer applies across the hats collection and can be mixed between different hat styles: 2 for ₪239.90 or 3 for ₪299.90."
+  {
+    "id": "new-era-new-york-yankees-league-essential-orange-169",
+    "slug": "product-169",
+    "urlSlug": "new-era-new-york-yankees-league-essential-orange",
+    "sku": "KW-HAT-169",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-169/product-169-1.png",
+    "hoverImage": "images/products/product-169/product-169-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-169/product-169-1.png",
+        "hoverImage": "images/products/product-169/product-169-2.png"
+      },
+      "men": {
+        "image": "images/products/product-169/product-169-1.png",
+        "hoverImage": "images/products/product-169/product-169-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-169/product-169-1.png",
+      "images/products/product-169/product-169-2.png",
+      "images/products/product-169/product-169-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X New York Yankees X League Essential - צבע כתום",
+      "en": "New Era X New York Yankees X League Essential - Orange"
+    },
+    "subtitle": {
+      "he": "כובע New York Yankees בצבע כתום עם רקמת NY לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Orange New York Yankees cap with white NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X New York Yankees X League Essential - צבע כתום",
+      "en": "New Era X New York Yankees X League Essential - Orange"
+    },
+    "cardMessage": {
+      "he": "כובע New York Yankees בצבע כתום עם רקמת NY לבנה, לוגו MLB מאחור ולוגו New Era בצד.",
+      "en": "Orange New York Yankees cap with white NY embroidery, with MLB logo at the back and New Era logo on the side."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: כתום",
+        "רקמת NY בחזית",
+        "לוגו MLB רקום בחלק האחורי",
+        "לוגו New Era רקום בצד",
+        "סגירה אחורית מתכווננת",
+        "מצחייה מעוגלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Orange",
+        "NY embroidery on the front",
+        "Embroidered MLB logo on the back",
+        "Embroidered New Era logo on the side",
+        "Adjustable rear closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
   },
-  "deliveryBusinessDays": {
-    "min": 9,
-    "max": 25
+  {
+    "id": "new-era-new-york-yankees-league-essential-black-170",
+    "slug": "product-170",
+    "urlSlug": "new-era-new-york-yankees-league-essential-black",
+    "sku": "KW-HAT-170",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-170/product-170-1.png",
+    "hoverImage": "images/products/product-170/product-170-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-170/product-170-1.png",
+        "hoverImage": "images/products/product-170/product-170-2.png"
+      },
+      "men": {
+        "image": "images/products/product-170/product-170-1.png",
+        "hoverImage": "images/products/product-170/product-170-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-170/product-170-1.png",
+      "images/products/product-170/product-170-2.png",
+      "images/products/product-170/product-170-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X New York Yankees X League Essential - צבע שחור",
+      "en": "New Era X New York Yankees X League Essential - Black"
+    },
+    "subtitle": {
+      "he": "כובע New York Yankees בצבע שחור עם רקמת NY שחורה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black New York Yankees cap with tonal black NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X New York Yankees X League Essential - צבע שחור",
+      "en": "New Era X New York Yankees X League Essential - Black"
+    },
+    "cardMessage": {
+      "he": "כובע New York Yankees בצבע שחור עם רקמת NY שחורה, לוגו MLB מאחור ולוגו New Era בצד.",
+      "en": "Black New York Yankees cap with tonal black NY embroidery, with MLB logo at the back and New Era logo on the side."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: שחור",
+        "רקמת NY בחזית",
+        "לוגו MLB רקום בחלק האחורי",
+        "לוגו New Era רקום בצד",
+        "סגירה אחורית מתכווננת",
+        "מצחייה מעוגלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Black",
+        "NY embroidery on the front",
+        "Embroidered MLB logo on the back",
+        "Embroidered New Era logo on the side",
+        "Adjustable rear closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-new-york-yankees-league-essential-dark-green-171",
+    "slug": "product-171",
+    "urlSlug": "new-era-new-york-yankees-league-essential-dark-green",
+    "sku": "KW-HAT-171",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-171/product-171-1.png",
+    "hoverImage": "images/products/product-171/product-171-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-171/product-171-1.png",
+        "hoverImage": "images/products/product-171/product-171-2.png"
+      },
+      "men": {
+        "image": "images/products/product-171/product-171-1.png",
+        "hoverImage": "images/products/product-171/product-171-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-171/product-171-1.png",
+      "images/products/product-171/product-171-2.png",
+      "images/products/product-171/product-171-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X New York Yankees X League Essential - צבע ירוק כהה",
+      "en": "New Era X New York Yankees X League Essential - Dark Green"
+    },
+    "subtitle": {
+      "he": "כובע New York Yankees בצבע ירוק כהה עם רקמת NY לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Dark Green New York Yankees cap with white NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X New York Yankees X League Essential - צבע ירוק כהה",
+      "en": "New Era X New York Yankees X League Essential - Dark Green"
+    },
+    "cardMessage": {
+      "he": "כובע New York Yankees בצבע ירוק כהה עם רקמת NY לבנה, לוגו MLB מאחור ולוגו New Era בצד.",
+      "en": "Dark Green New York Yankees cap with white NY embroidery, with MLB logo at the back and New Era logo on the side."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: ירוק כהה",
+        "רקמת NY בחזית",
+        "לוגו MLB רקום בחלק האחורי",
+        "לוגו New Era רקום בצד",
+        "סגירה אחורית מתכווננת",
+        "מצחייה מעוגלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Dark Green",
+        "NY embroidery on the front",
+        "Embroidered MLB logo on the back",
+        "Embroidered New Era logo on the side",
+        "Adjustable rear closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-new-york-yankees-league-essential-navy-172",
+    "slug": "product-172",
+    "urlSlug": "new-era-new-york-yankees-league-essential-navy",
+    "sku": "KW-HAT-172",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-172/product-172-1.png",
+    "hoverImage": "images/products/product-172/product-172-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-172/product-172-1.png",
+        "hoverImage": "images/products/product-172/product-172-2.png"
+      },
+      "men": {
+        "image": "images/products/product-172/product-172-1.png",
+        "hoverImage": "images/products/product-172/product-172-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-172/product-172-1.png",
+      "images/products/product-172/product-172-2.png",
+      "images/products/product-172/product-172-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X New York Yankees X League Essential - צבע כחול כהה",
+      "en": "New Era X New York Yankees X League Essential - Navy"
+    },
+    "subtitle": {
+      "he": "כובע New York Yankees בצבע כחול כהה עם רקמת NY לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Navy New York Yankees cap with white NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X New York Yankees X League Essential - צבע כחול כהה",
+      "en": "New Era X New York Yankees X League Essential - Navy"
+    },
+    "cardMessage": {
+      "he": "כובע New York Yankees בצבע כחול כהה עם רקמת NY לבנה, לוגו MLB מאחור ולוגו New Era בצד.",
+      "en": "Navy New York Yankees cap with white NY embroidery, with MLB logo at the back and New Era logo on the side."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: כחול כהה",
+        "רקמת NY בחזית",
+        "לוגו MLB רקום בחלק האחורי",
+        "לוגו New Era רקום בצד",
+        "סגירה אחורית מתכווננת",
+        "מצחייה מעוגלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Navy",
+        "NY embroidery on the front",
+        "Embroidered MLB logo on the back",
+        "Embroidered New Era logo on the side",
+        "Adjustable rear closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-new-york-yankees-league-essential-mauve-173",
+    "slug": "product-173",
+    "urlSlug": "new-era-new-york-yankees-league-essential-mauve",
+    "sku": "KW-HAT-173",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-173/product-173-1.png",
+    "hoverImage": "images/products/product-173/product-173-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-173/product-173-1.png",
+        "hoverImage": "images/products/product-173/product-173-2.png"
+      },
+      "men": {
+        "image": "images/products/product-173/product-173-1.png",
+        "hoverImage": "images/products/product-173/product-173-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-173/product-173-1.png",
+      "images/products/product-173/product-173-2.png",
+      "images/products/product-173/product-173-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X New York Yankees X League Essential - צבע ורוד מעושן",
+      "en": "New Era X New York Yankees X League Essential - Mauve"
+    },
+    "subtitle": {
+      "he": "כובע New York Yankees בצבע ורוד מעושן עם רקמת NY לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Mauve New York Yankees cap with white NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X New York Yankees X League Essential - צבע ורוד מעושן",
+      "en": "New Era X New York Yankees X League Essential - Mauve"
+    },
+    "cardMessage": {
+      "he": "כובע New York Yankees בצבע ורוד מעושן עם רקמת NY לבנה, לוגו MLB מאחור ולוגו New Era בצד.",
+      "en": "Mauve New York Yankees cap with white NY embroidery, with MLB logo at the back and New Era logo on the side."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: ורוד מעושן",
+        "רקמת NY בחזית",
+        "לוגו MLB רקום בחלק האחורי",
+        "לוגו New Era רקום בצד",
+        "סגירה אחורית מתכווננת",
+        "מצחייה מעוגלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+      ],
+      "en": [
+        "Color: Mauve",
+        "NY embroidery on the front",
+        "Embroidered MLB logo on the back",
+        "Embroidered New Era logo on the side",
+        "Adjustable rear closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90 | 3 for ₪299.90"
+      ]
+    },
+    "afterText": {
+      "he": "מבצע הכובעים חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים: 2 ב־239.90 ₪ או 3 ב־299.90 ₪.",
+      "en": "The hats offer applies across the hats collection and can be mixed between different hat styles: 2 for ₪239.90 or 3 for ₪299.90."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-new-york-yankees-league-essential-cream-174",
+    "slug": "product-174",
+    "urlSlug": "new-era-new-york-yankees-league-essential-cream",
+    "sku": "KW-HAT-174",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-174/product-174-1.png",
+    "hoverImage": "images/products/product-174/product-174-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-174/product-174-1.png",
+        "hoverImage": "images/products/product-174/product-174-2.png"
+      },
+      "men": {
+        "image": "images/products/product-174/product-174-1.png",
+        "hoverImage": "images/products/product-174/product-174-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-174/product-174-1.png",
+      "images/products/product-174/product-174-2.png",
+      "images/products/product-174/product-174-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X New York Yankees X League Essential - צבע שמנת",
+      "en": "New Era X New York Yankees X League Essential - Cream"
+    },
+    "subtitle": {
+      "he": "כובע New York Yankees בצבע שמנת עם רקמת NY לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "Cream New York Yankees cap with white NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardTitle": {
+      "he": "New Era X New York Yankees X League Essential - צבע שמנת",
+      "en": "New Era X New York Yankees X League Essential - Cream"
+    },
+    "cardMessage": {
+      "he": "כובע New York Yankees בצבע שמנת עם רקמת NY לבנה, לוגו MLB מאחור ולוגו New Era בצד.",
+      "en": "Cream New York Yankees cap with white NY embroidery, with MLB logo at the back and New Era logo on the side."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: שמנת",
+        "רקמת NY בחזית",
+        "לוגו MLB רקום בחלק האחורי",
+        "לוגו New Era רקום בצד",
+        "סגירה אחורית מתכווננת",
+        "מצחייה מעוגלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+      ],
+      "en": [
+        "Color: Cream",
+        "NY embroidery on the front",
+        "Embroidered MLB logo on the back",
+        "Embroidered New Era logo on the side",
+        "Adjustable rear closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90 | 3 for ₪299.90"
+      ]
+    },
+    "afterText": {
+      "he": "מבצע הכובעים חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים: 2 ב־239.90 ₪ או 3 ב־299.90 ₪.",
+      "en": "The hats offer applies across the hats collection and can be mixed between different hat styles: 2 for ₪239.90 or 3 for ₪299.90."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-new-york-yankees-league-essential-pink-175",
+    "slug": "product-175",
+    "urlSlug": "new-era-new-york-yankees-league-essential-pink",
+    "sku": "KW-HAT-175",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-175/product-175-1.png",
+    "hoverImage": "images/products/product-175/product-175-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-175/product-175-1.png",
+        "hoverImage": "images/products/product-175/product-175-2.png"
+      },
+      "men": {
+        "image": "images/products/product-175/product-175-1.png",
+        "hoverImage": "images/products/product-175/product-175-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-175/product-175-1.png",
+      "images/products/product-175/product-175-2.png",
+      "images/products/product-175/product-175-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X New York Yankees X League Essential - צבע ורוד",
+      "en": "New Era X New York Yankees X League Essential - Pink"
+    },
+    "subtitle": {
+      "he": "כובע New York Yankees בצבע ורוד עם רקמת NY לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "Pink New York Yankees cap with white NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardTitle": {
+      "he": "New Era X New York Yankees X League Essential - צבע ורוד",
+      "en": "New Era X New York Yankees X League Essential - Pink"
+    },
+    "cardMessage": {
+      "he": "כובע New York Yankees בצבע ורוד עם רקמת NY לבנה, לוגו MLB מאחור ולוגו New Era בצד.",
+      "en": "Pink New York Yankees cap with white NY embroidery, with MLB logo at the back and New Era logo on the side."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: ורוד",
+        "רקמת NY בחזית",
+        "לוגו MLB רקום בחלק האחורי",
+        "לוגו New Era רקום בצד",
+        "סגירה אחורית מתכווננת",
+        "מצחייה מעוגלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+      ],
+      "en": [
+        "Color: Pink",
+        "NY embroidery on the front",
+        "Embroidered MLB logo on the back",
+        "Embroidered New Era logo on the side",
+        "Adjustable rear closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90 | 3 for ₪299.90"
+      ]
+    },
+    "afterText": {
+      "he": "מבצע הכובעים חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים: 2 ב־239.90 ₪ או 3 ב־299.90 ₪.",
+      "en": "The hats offer applies across the hats collection and can be mixed between different hat styles: 2 for ₪239.90 or 3 for ₪299.90."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-new-york-yankees-league-essential-gray-176",
+    "slug": "product-176",
+    "urlSlug": "new-era-new-york-yankees-league-essential-gray",
+    "sku": "KW-HAT-176",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-176/product-176-1.png",
+    "hoverImage": "images/products/product-176/product-176-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-176/product-176-1.png",
+        "hoverImage": "images/products/product-176/product-176-2.png"
+      },
+      "men": {
+        "image": "images/products/product-176/product-176-1.png",
+        "hoverImage": "images/products/product-176/product-176-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-176/product-176-1.png",
+      "images/products/product-176/product-176-2.png",
+      "images/products/product-176/product-176-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X New York Yankees X League Essential - צבע אפור",
+      "en": "New Era X New York Yankees X League Essential - Gray"
+    },
+    "subtitle": {
+      "he": "כובע New York Yankees בצבע אפור עם רקמת NY לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "Gray New York Yankees cap with white NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardTitle": {
+      "he": "New Era X New York Yankees X League Essential - צבע אפור",
+      "en": "New Era X New York Yankees X League Essential - Gray"
+    },
+    "cardMessage": {
+      "he": "כובע New York Yankees בצבע אפור עם רקמת NY לבנה, לוגו MLB מאחור ולוגו New Era בצד.",
+      "en": "Gray New York Yankees cap with white NY embroidery, with MLB logo at the back and New Era logo on the side."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: אפור",
+        "רקמת NY בחזית",
+        "לוגו MLB רקום בחלק האחורי",
+        "לוגו New Era רקום בצד",
+        "סגירה אחורית מתכווננת",
+        "מצחייה מעוגלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+      ],
+      "en": [
+        "Color: Gray",
+        "NY embroidery on the front",
+        "Embroidered MLB logo on the back",
+        "Embroidered New Era logo on the side",
+        "Adjustable rear closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90 | 3 for ₪299.90"
+      ]
+    },
+    "afterText": {
+      "he": "מבצע הכובעים חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים: 2 ב־239.90 ₪ או 3 ב־299.90 ₪.",
+      "en": "The hats offer applies across the hats collection and can be mixed between different hat styles: 2 for ₪239.90 or 3 for ₪299.90."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-new-york-yankees-league-essential-khaki-177",
+    "slug": "product-177",
+    "urlSlug": "new-era-new-york-yankees-league-essential-khaki",
+    "sku": "KW-HAT-177",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-177/product-177-1.png",
+    "hoverImage": "images/products/product-177/product-177-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-177/product-177-1.png",
+        "hoverImage": "images/products/product-177/product-177-2.png"
+      },
+      "men": {
+        "image": "images/products/product-177/product-177-1.png",
+        "hoverImage": "images/products/product-177/product-177-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-177/product-177-1.png",
+      "images/products/product-177/product-177-2.png",
+      "images/products/product-177/product-177-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X New York Yankees X League Essential - צבע חאקי",
+      "en": "New Era X New York Yankees X League Essential - Khaki"
+    },
+    "subtitle": {
+      "he": "כובע New York Yankees בצבע חאקי עם רקמת NY לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "Khaki New York Yankees cap with white NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardTitle": {
+      "he": "New Era X New York Yankees X League Essential - צבע חאקי",
+      "en": "New Era X New York Yankees X League Essential - Khaki"
+    },
+    "cardMessage": {
+      "he": "כובע New York Yankees בצבע חאקי עם רקמת NY לבנה, לוגו MLB מאחור ולוגו New Era בצד.",
+      "en": "Khaki New York Yankees cap with white NY embroidery, with MLB logo at the back and New Era logo on the side."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: חאקי",
+        "רקמת NY בחזית",
+        "לוגו MLB רקום בחלק האחורי",
+        "לוגו New Era רקום בצד",
+        "סגירה אחורית מתכווננת",
+        "מצחייה מעוגלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+      ],
+      "en": [
+        "Color: Khaki",
+        "NY embroidery on the front",
+        "Embroidered MLB logo on the back",
+        "Embroidered New Era logo on the side",
+        "Adjustable rear closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90 | 3 for ₪299.90"
+      ]
+    },
+    "afterText": {
+      "he": "מבצע הכובעים חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים: 2 ב־239.90 ₪ או 3 ב־299.90 ₪.",
+      "en": "The hats offer applies across the hats collection and can be mixed between different hat styles: 2 for ₪239.90 or 3 for ₪299.90."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-new-york-yankees-league-essential-burgundy-178",
+    "slug": "product-178",
+    "urlSlug": "new-era-new-york-yankees-league-essential-burgundy",
+    "sku": "KW-HAT-178",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-178/product-178-1.png",
+    "hoverImage": "images/products/product-178/product-178-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-178/product-178-1.png",
+        "hoverImage": "images/products/product-178/product-178-2.png"
+      },
+      "men": {
+        "image": "images/products/product-178/product-178-1.png",
+        "hoverImage": "images/products/product-178/product-178-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-178/product-178-1.png",
+      "images/products/product-178/product-178-2.png",
+      "images/products/product-178/product-178-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X New York Yankees X League Essential - צבע בורדו",
+      "en": "New Era X New York Yankees X League Essential - Burgundy"
+    },
+    "subtitle": {
+      "he": "כובע New York Yankees בצבע בורדו עם רקמת NY לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "Burgundy New York Yankees cap with white NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardTitle": {
+      "he": "New Era X New York Yankees X League Essential - צבע בורדו",
+      "en": "New Era X New York Yankees X League Essential - Burgundy"
+    },
+    "cardMessage": {
+      "he": "כובע New York Yankees בצבע בורדו עם רקמת NY לבנה, לוגו MLB מאחור ולוגו New Era בצד.",
+      "en": "Burgundy New York Yankees cap with white NY embroidery, with MLB logo at the back and New Era logo on the side."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: בורדו",
+        "רקמת NY לבנה בחזית",
+        "לוגו MLB רקום בחלק האחורי",
+        "לוגו New Era רקום בצד",
+        "סגירה אחורית מתכווננת",
+        "מצחייה מעוגלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+      ],
+      "en": [
+        "Color: Burgundy",
+        "white NY embroidery on the front",
+        "Embroidered MLB logo on the back",
+        "Embroidered New Era logo on the side",
+        "Adjustable rear closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90 | 3 for ₪299.90"
+      ]
+    },
+    "afterText": {
+      "he": "מבצע הכובעים חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים: 2 ב־239.90 ₪ או 3 ב־299.90 ₪.",
+      "en": "The hats offer applies across the hats collection and can be mixed between different hat styles: 2 for ₪239.90 or 3 for ₪299.90."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-new-york-yankees-league-essential-green-179",
+    "slug": "product-179",
+    "urlSlug": "new-era-new-york-yankees-league-essential-green",
+    "sku": "KW-HAT-179",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-179/product-179-1.png",
+    "hoverImage": "images/products/product-179/product-179-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-179/product-179-1.png",
+        "hoverImage": "images/products/product-179/product-179-2.png"
+      },
+      "men": {
+        "image": "images/products/product-179/product-179-1.png",
+        "hoverImage": "images/products/product-179/product-179-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-179/product-179-1.png",
+      "images/products/product-179/product-179-2.png",
+      "images/products/product-179/product-179-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X New York Yankees X League Essential - צבע ירוק",
+      "en": "New Era X New York Yankees X League Essential - Green"
+    },
+    "subtitle": {
+      "he": "כובע New York Yankees בצבע ירוק עם רקמת NY לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "Green New York Yankees cap with white NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardTitle": {
+      "he": "New Era X New York Yankees X League Essential - צבע ירוק",
+      "en": "New Era X New York Yankees X League Essential - Green"
+    },
+    "cardMessage": {
+      "he": "כובע New York Yankees בצבע ירוק עם רקמת NY לבנה, לוגו MLB מאחור ולוגו New Era בצד.",
+      "en": "Green New York Yankees cap with white NY embroidery, with MLB logo at the back and New Era logo on the side."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: ירוק",
+        "רקמת NY לבנה בחזית",
+        "לוגו MLB רקום בחלק האחורי",
+        "לוגו New Era רקום בצד",
+        "סגירה אחורית מתכווננת",
+        "מצחייה מעוגלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+      ],
+      "en": [
+        "Color: Green",
+        "white NY embroidery on the front",
+        "Embroidered MLB logo on the back",
+        "Embroidered New Era logo on the side",
+        "Adjustable rear closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90 | 3 for ₪299.90"
+      ]
+    },
+    "afterText": {
+      "he": "מבצע הכובעים חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים: 2 ב־239.90 ₪ או 3 ב־299.90 ₪.",
+      "en": "The hats offer applies across the hats collection and can be mixed between different hat styles: 2 for ₪239.90 or 3 for ₪299.90."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-new-york-yankees-league-essential-off-white-180",
+    "slug": "product-180",
+    "urlSlug": "new-era-new-york-yankees-league-essential-off-white",
+    "sku": "KW-HAT-180",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-180/product-180-1.png",
+    "hoverImage": "images/products/product-180/product-180-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-180/product-180-1.png",
+        "hoverImage": "images/products/product-180/product-180-2.png"
+      },
+      "men": {
+        "image": "images/products/product-180/product-180-1.png",
+        "hoverImage": "images/products/product-180/product-180-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-180/product-180-1.png",
+      "images/products/product-180/product-180-2.png",
+      "images/products/product-180/product-180-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X New York Yankees X League Essential - צבע אוף וויט",
+      "en": "New Era X New York Yankees X League Essential - Off White"
+    },
+    "subtitle": {
+      "he": "כובע New York Yankees בצבע אוף וויט עם רקמת NY בגוון תואם · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "Off White New York Yankees cap with tonal NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardTitle": {
+      "he": "New Era X New York Yankees X League Essential - צבע אוף וויט",
+      "en": "New Era X New York Yankees X League Essential - Off White"
+    },
+    "cardMessage": {
+      "he": "כובע New York Yankees בצבע אוף וויט עם רקמת NY בגוון תואם, לוגו MLB מאחור ולוגו New Era בצד.",
+      "en": "Off White New York Yankees cap with tonal NY embroidery, with MLB logo at the back and New Era logo on the side."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: אוף וויט",
+        "רקמת NY בגוון תואם בחזית",
+        "לוגו MLB רקום בחלק האחורי",
+        "לוגו New Era רקום בצד",
+        "סגירה אחורית מתכווננת",
+        "מצחייה מעוגלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+      ],
+      "en": [
+        "Color: Off White",
+        "tonal NY embroidery on the front",
+        "Embroidered MLB logo on the back",
+        "Embroidered New Era logo on the side",
+        "Adjustable rear closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90 | 3 for ₪299.90"
+      ]
+    },
+    "afterText": {
+      "he": "מבצע הכובעים חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים: 2 ב־239.90 ₪ או 3 ב־299.90 ₪.",
+      "en": "The hats offer applies across the hats collection and can be mixed between different hat styles: 2 for ₪239.90 or 3 for ₪299.90."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-new-york-yankees-league-essential-black-181",
+    "slug": "product-181",
+    "urlSlug": "new-era-new-york-yankees-league-essential-black",
+    "sku": "KW-HAT-181",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-181/product-181-1.png",
+    "hoverImage": "images/products/product-181/product-181-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-181/product-181-1.png",
+        "hoverImage": "images/products/product-181/product-181-2.png"
+      },
+      "men": {
+        "image": "images/products/product-181/product-181-1.png",
+        "hoverImage": "images/products/product-181/product-181-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-181/product-181-1.png",
+      "images/products/product-181/product-181-2.png",
+      "images/products/product-181/product-181-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X New York Yankees X League Essential - צבע שחור",
+      "en": "New Era X New York Yankees X League Essential - Black"
+    },
+    "subtitle": {
+      "he": "כובע New York Yankees בצבע שחור עם רקמת NY לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "Black New York Yankees cap with white NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardTitle": {
+      "he": "New Era X New York Yankees X League Essential - צבע שחור",
+      "en": "New Era X New York Yankees X League Essential - Black"
+    },
+    "cardMessage": {
+      "he": "כובע New York Yankees בצבע שחור עם רקמת NY לבנה, לוגו MLB מאחור ולוגו New Era בצד.",
+      "en": "Black New York Yankees cap with white NY embroidery, with MLB logo at the back and New Era logo on the side."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: שחור",
+        "רקמת NY לבנה בחזית",
+        "לוגו MLB רקום בחלק האחורי",
+        "לוגו New Era רקום בצד",
+        "סגירה אחורית מתכווננת",
+        "מצחייה מעוגלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+      ],
+      "en": [
+        "Color: Black",
+        "white NY embroidery on the front",
+        "Embroidered MLB logo on the back",
+        "Embroidered New Era logo on the side",
+        "Adjustable rear closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90 | 3 for ₪299.90"
+      ]
+    },
+    "afterText": {
+      "he": "מבצע הכובעים חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים: 2 ב־239.90 ₪ או 3 ב־299.90 ₪.",
+      "en": "The hats offer applies across the hats collection and can be mixed between different hat styles: 2 for ₪239.90 or 3 for ₪299.90."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-new-york-yankees-league-essential-light-blue-182",
+    "slug": "product-182",
+    "urlSlug": "new-era-new-york-yankees-league-essential-light-blue",
+    "sku": "KW-HAT-182",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-182/product-182-1.png",
+    "hoverImage": "images/products/product-182/product-182-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-182/product-182-1.png",
+        "hoverImage": "images/products/product-182/product-182-2.png"
+      },
+      "men": {
+        "image": "images/products/product-182/product-182-1.png",
+        "hoverImage": "images/products/product-182/product-182-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-182/product-182-1.png",
+      "images/products/product-182/product-182-2.png",
+      "images/products/product-182/product-182-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X New York Yankees X League Essential - צבע תכלת",
+      "en": "New Era X New York Yankees X League Essential - Light Blue"
+    },
+    "subtitle": {
+      "he": "כובע New York Yankees בצבע תכלת עם רקמת NY לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "Light Blue New York Yankees cap with white NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardTitle": {
+      "he": "New Era X New York Yankees X League Essential - צבע תכלת",
+      "en": "New Era X New York Yankees X League Essential - Light Blue"
+    },
+    "cardMessage": {
+      "he": "כובע New York Yankees בצבע תכלת עם רקמת NY לבנה, לוגו MLB מאחור ולוגו New Era בצד.",
+      "en": "Light Blue New York Yankees cap with white NY embroidery, with MLB logo at the back and New Era logo on the side."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: תכלת",
+        "רקמת NY לבנה בחזית",
+        "לוגו MLB רקום בחלק האחורי",
+        "לוגו New Era רקום בצד",
+        "סגירה אחורית מתכווננת",
+        "מצחייה מעוגלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+      ],
+      "en": [
+        "Color: Light Blue",
+        "white NY embroidery on the front",
+        "Embroidered MLB logo on the back",
+        "Embroidered New Era logo on the side",
+        "Adjustable rear closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90 | 3 for ₪299.90"
+      ]
+    },
+    "afterText": {
+      "he": "מבצע הכובעים חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים: 2 ב־239.90 ₪ או 3 ב־299.90 ₪.",
+      "en": "The hats offer applies across the hats collection and can be mixed between different hat styles: 2 for ₪239.90 or 3 for ₪299.90."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-new-york-yankees-league-essential-cream-black-183",
+    "slug": "product-183",
+    "urlSlug": "new-era-new-york-yankees-league-essential-cream-black",
+    "sku": "KW-HAT-183",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-183/product-183-1.png",
+    "hoverImage": "images/products/product-183/product-183-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-183/product-183-1.png",
+        "hoverImage": "images/products/product-183/product-183-2.png"
+      },
+      "men": {
+        "image": "images/products/product-183/product-183-1.png",
+        "hoverImage": "images/products/product-183/product-183-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-183/product-183-1.png",
+      "images/products/product-183/product-183-2.png",
+      "images/products/product-183/product-183-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X New York Yankees X League Essential - צבע שמנת-שחור",
+      "en": "New Era X New York Yankees X League Essential - Cream / Black"
+    },
+    "subtitle": {
+      "he": "כובע New York Yankees בצבע שמנת-שחור עם רקמת NY שחורה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "Cream / Black New York Yankees cap with black NY embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardTitle": {
+      "he": "New Era X New York Yankees X League Essential - צבע שמנת-שחור",
+      "en": "New Era X New York Yankees X League Essential - Cream / Black"
+    },
+    "cardMessage": {
+      "he": "כובע New York Yankees בצבע שמנת-שחור עם רקמת NY שחורה, לוגו MLB מאחור ולוגו New Era בצד.",
+      "en": "Cream / Black New York Yankees cap with black NY embroidery, with MLB logo at the back and New Era logo on the side."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: שמנת-שחור",
+        "רקמת NY שחורה בחזית",
+        "לוגו MLB רקום בחלק האחורי",
+        "לוגו New Era רקום בצד",
+        "סגירה אחורית מתכווננת",
+        "מצחייה מעוגלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪ | 3 ב־299.90 ₪"
+      ],
+      "en": [
+        "Color: Cream / Black",
+        "black NY embroidery on the front",
+        "Embroidered MLB logo on the back",
+        "Embroidered New Era logo on the side",
+        "Adjustable rear closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90 | 3 for ₪299.90"
+      ]
+    },
+    "afterText": {
+      "he": "מבצע הכובעים חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים: 2 ב־239.90 ₪ או 3 ב־299.90 ₪.",
+      "en": "The hats offer applies across the hats collection and can be mixed between different hat styles: 2 for ₪239.90 or 3 for ₪299.90."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-los-angeles-dodgers-mlb-classic-gray-blue-184",
+    "slug": "product-184",
+    "urlSlug": "new-era-los-angeles-dodgers-mlb-classic-gray-blue",
+    "sku": "KW-HAT-184",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-184/product-184-1.png",
+    "hoverImage": "images/products/product-184/product-184-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-184/product-184-1.png",
+        "hoverImage": "images/products/product-184/product-184-2.png"
+      },
+      "men": {
+        "image": "images/products/product-184/product-184-1.png",
+        "hoverImage": "images/products/product-184/product-184-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-184/product-184-1.png",
+      "images/products/product-184/product-184-2.png",
+      "images/products/product-184/product-184-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Los Angeles Dodgers X MLB Classic - צבע אפור כחול",
+      "en": "New Era X Los Angeles Dodgers X MLB Classic - Gray Blue"
+    },
+    "subtitle": {
+      "he": "כובע Los Angeles Dodgers בצבע אפור עם מצחייה כחולה ורקמת LA כחולה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Gray Los Angeles Dodgers cap with a blue brim and blue LA embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Los Angeles Dodgers X MLB Classic - צבע אפור כחול",
+      "en": "New Era X Los Angeles Dodgers X MLB Classic - Gray Blue"
+    },
+    "cardMessage": {
+      "he": "כובע Los Angeles Dodgers בצבע אפור עם מצחייה כחולה, רקמת LA כחולה, לוגו MLB מאחור ולוגו New Era בצד.",
+      "en": "Gray Los Angeles Dodgers cap with a blue brim, blue LA embroidery, MLB logo at the back and New Era logo on the side."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: אפור כחול",
+        "רקמת LA בחזית",
+        "לוגו MLB רקום בחלק האחורי",
+        "לוגו New Era רקום בצד",
+        "סגירה אחורית מתכווננת",
+        "מצחייה מעוגלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Gray Blue",
+        "LA embroidery on the front",
+        "Embroidered MLB logo on the back",
+        "Embroidered New Era logo on the side",
+        "Adjustable rear closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-los-angeles-dodgers-mlb-classic-purple-185",
+    "slug": "product-185",
+    "urlSlug": "new-era-los-angeles-dodgers-mlb-classic-purple",
+    "sku": "KW-HAT-185",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-185/product-185-1.png",
+    "hoverImage": "images/products/product-185/product-185-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-185/product-185-1.png",
+        "hoverImage": "images/products/product-185/product-185-2.png"
+      },
+      "men": {
+        "image": "images/products/product-185/product-185-1.png",
+        "hoverImage": "images/products/product-185/product-185-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-185/product-185-1.png",
+      "images/products/product-185/product-185-2.png",
+      "images/products/product-185/product-185-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Los Angeles Dodgers X MLB Classic - צבע סגול",
+      "en": "New Era X Los Angeles Dodgers X MLB Classic - Purple"
+    },
+    "subtitle": {
+      "he": "כובע Los Angeles Dodgers בצבע סגול עם רקמת LA לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Purple Los Angeles Dodgers cap with white LA embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Los Angeles Dodgers X MLB Classic - צבע סגול",
+      "en": "New Era X Los Angeles Dodgers X MLB Classic - Purple"
+    },
+    "cardMessage": {
+      "he": "כובע Los Angeles Dodgers בצבע סגול עם רקמת LA לבנה, לוגו MLB מאחור ולוגו New Era בצד.",
+      "en": "Purple Los Angeles Dodgers cap with white LA embroidery, MLB logo at the back and New Era logo on the side."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: סגול",
+        "רקמת LA בחזית",
+        "לוגו MLB רקום בחלק האחורי",
+        "לוגו New Era רקום בצד",
+        "סגירה אחורית מתכווננת",
+        "מצחייה מעוגלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Purple",
+        "LA embroidery on the front",
+        "Embroidered MLB logo on the back",
+        "Embroidered New Era logo on the side",
+        "Adjustable rear closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-los-angeles-dodgers-mlb-classic-beige-navy-186",
+    "slug": "product-186",
+    "urlSlug": "new-era-los-angeles-dodgers-mlb-classic-beige-navy",
+    "sku": "KW-HAT-186",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-186/product-186-1.png",
+    "hoverImage": "images/products/product-186/product-186-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-186/product-186-1.png",
+        "hoverImage": "images/products/product-186/product-186-2.png"
+      },
+      "men": {
+        "image": "images/products/product-186/product-186-1.png",
+        "hoverImage": "images/products/product-186/product-186-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-186/product-186-1.png",
+      "images/products/product-186/product-186-2.png",
+      "images/products/product-186/product-186-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Los Angeles Dodgers X MLB Classic - צבע בז' כחול כהה",
+      "en": "New Era X Los Angeles Dodgers X MLB Classic - Beige Navy"
+    },
+    "subtitle": {
+      "he": "כובע Los Angeles Dodgers בצבע בז' עם מצחייה כחולה כהה ורקמת LA כחולה כהה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Beige Los Angeles Dodgers cap with a navy brim and navy LA embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Los Angeles Dodgers X MLB Classic - צבע בז' כחול כהה",
+      "en": "New Era X Los Angeles Dodgers X MLB Classic - Beige Navy"
+    },
+    "cardMessage": {
+      "he": "כובע Los Angeles Dodgers בצבע בז' עם מצחייה כחולה כהה, רקמת LA כחולה כהה, לוגו MLB מאחור ולוגו New Era בצד.",
+      "en": "Beige Los Angeles Dodgers cap with a navy brim, navy LA embroidery, MLB logo at the back and New Era logo on the side."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: בז' כחול כהה",
+        "רקמת LA בחזית",
+        "לוגו MLB רקום בחלק האחורי",
+        "לוגו New Era רקום בצד",
+        "סגירה אחורית מתכווננת",
+        "מצחייה מעוגלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Beige Navy",
+        "LA embroidery on the front",
+        "Embroidered MLB logo on the back",
+        "Embroidered New Era logo on the side",
+        "Adjustable rear closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-los-angeles-dodgers-mlb-classic-navy-187",
+    "slug": "product-187",
+    "urlSlug": "new-era-los-angeles-dodgers-mlb-classic-navy",
+    "sku": "KW-HAT-187",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-187/product-187-1.png",
+    "hoverImage": "images/products/product-187/product-187-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-187/product-187-1.png",
+        "hoverImage": "images/products/product-187/product-187-2.png"
+      },
+      "men": {
+        "image": "images/products/product-187/product-187-1.png",
+        "hoverImage": "images/products/product-187/product-187-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-187/product-187-1.png",
+      "images/products/product-187/product-187-2.png",
+      "images/products/product-187/product-187-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Los Angeles Dodgers X MLB Classic - צבע כחול כהה",
+      "en": "New Era X Los Angeles Dodgers X MLB Classic - Navy"
+    },
+    "subtitle": {
+      "he": "כובע Los Angeles Dodgers בצבע כחול כהה עם רקמת LA לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Navy Los Angeles Dodgers cap with white LA embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Los Angeles Dodgers X MLB Classic - צבע כחול כהה",
+      "en": "New Era X Los Angeles Dodgers X MLB Classic - Navy"
+    },
+    "cardMessage": {
+      "he": "כובע Los Angeles Dodgers בצבע כחול כהה עם רקמת LA לבנה, לוגו MLB מאחור ולוגו New Era בצד.",
+      "en": "Navy Los Angeles Dodgers cap with white LA embroidery, MLB logo at the back and New Era logo on the side."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: כחול כהה",
+        "רקמת LA בחזית",
+        "לוגו MLB רקום בחלק האחורי",
+        "לוגו New Era רקום בצד",
+        "סגירה אחורית מתכווננת",
+        "מצחייה מעוגלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Navy",
+        "LA embroidery on the front",
+        "Embroidered MLB logo on the back",
+        "Embroidered New Era logo on the side",
+        "Adjustable rear closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-los-angeles-dodgers-mlb-classic-green-188",
+    "slug": "product-188",
+    "urlSlug": "new-era-los-angeles-dodgers-mlb-classic-green",
+    "sku": "KW-HAT-188",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-188/product-188-1.png",
+    "hoverImage": "images/products/product-188/product-188-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-188/product-188-1.png",
+        "hoverImage": "images/products/product-188/product-188-2.png"
+      },
+      "men": {
+        "image": "images/products/product-188/product-188-1.png",
+        "hoverImage": "images/products/product-188/product-188-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-188/product-188-1.png",
+      "images/products/product-188/product-188-2.png",
+      "images/products/product-188/product-188-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Los Angeles Dodgers X MLB Classic - צבע ירוק",
+      "en": "New Era X Los Angeles Dodgers X MLB Classic - Green"
+    },
+    "subtitle": {
+      "he": "כובע Los Angeles Dodgers בצבע ירוק עם רקמת LA לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Green Los Angeles Dodgers cap with white LA embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Los Angeles Dodgers X MLB Classic - צבע ירוק",
+      "en": "New Era X Los Angeles Dodgers X MLB Classic - Green"
+    },
+    "cardMessage": {
+      "he": "כובע Los Angeles Dodgers בצבע ירוק עם רקמת LA לבנה, לוגו MLB מאחור ולוגו New Era בצד.",
+      "en": "Green Los Angeles Dodgers cap with white LA embroidery, MLB logo at the back and New Era logo on the side."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: ירוק",
+        "רקמת LA בחזית",
+        "לוגו MLB רקום בחלק האחורי",
+        "לוגו New Era רקום בצד",
+        "סגירה אחורית מתכווננת",
+        "מצחייה מעוגלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Green",
+        "LA embroidery on the front",
+        "Embroidered MLB logo on the back",
+        "Embroidered New Era logo on the side",
+        "Adjustable rear closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-los-angeles-dodgers-mlb-classic-blue-189",
+    "slug": "product-189",
+    "urlSlug": "new-era-los-angeles-dodgers-mlb-classic-blue",
+    "sku": "KW-HAT-189",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-189/product-189-1.png",
+    "hoverImage": "images/products/product-189/product-189-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-189/product-189-1.png",
+        "hoverImage": "images/products/product-189/product-189-2.png"
+      },
+      "men": {
+        "image": "images/products/product-189/product-189-1.png",
+        "hoverImage": "images/products/product-189/product-189-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-189/product-189-1.png",
+      "images/products/product-189/product-189-2.png",
+      "images/products/product-189/product-189-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Los Angeles Dodgers X MLB Classic - צבע כחול",
+      "en": "New Era X Los Angeles Dodgers X MLB Classic - Blue"
+    },
+    "subtitle": {
+      "he": "כובע Los Angeles Dodgers בצבע כחול עם רקמת LA לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Blue Los Angeles Dodgers cap with white LA embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Los Angeles Dodgers X MLB Classic - צבע כחול",
+      "en": "New Era X Los Angeles Dodgers X MLB Classic - Blue"
+    },
+    "cardMessage": {
+      "he": "כובע Los Angeles Dodgers בצבע כחול עם רקמת LA לבנה, לוגו MLB מאחור ולוגו New Era בצד.",
+      "en": "Blue Los Angeles Dodgers cap with white LA embroidery, MLB logo at the back and New Era logo on the side."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: כחול",
+        "רקמת LA בחזית",
+        "לוגו MLB רקום בחלק האחורי",
+        "לוגו New Era רקום בצד",
+        "סגירה אחורית מתכווננת",
+        "מצחייה מעוגלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Blue",
+        "LA embroidery on the front",
+        "Embroidered MLB logo on the back",
+        "Embroidered New Era logo on the side",
+        "Adjustable rear closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-los-angeles-dodgers-mlb-classic-black-190",
+    "slug": "product-190",
+    "urlSlug": "new-era-los-angeles-dodgers-mlb-classic-black",
+    "sku": "KW-HAT-190",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-190/product-190-1.png",
+    "hoverImage": "images/products/product-190/product-190-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-190/product-190-1.png",
+        "hoverImage": "images/products/product-190/product-190-2.png"
+      },
+      "men": {
+        "image": "images/products/product-190/product-190-1.png",
+        "hoverImage": "images/products/product-190/product-190-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-190/product-190-1.png",
+      "images/products/product-190/product-190-2.png",
+      "images/products/product-190/product-190-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Los Angeles Dodgers X MLB Classic - צבע שחור",
+      "en": "New Era X Los Angeles Dodgers X MLB Classic - Black"
+    },
+    "subtitle": {
+      "he": "כובע Los Angeles Dodgers בצבע שחור עם רקמת LA שחורה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black Los Angeles Dodgers cap with black LA embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Los Angeles Dodgers X MLB Classic - צבע שחור",
+      "en": "New Era X Los Angeles Dodgers X MLB Classic - Black"
+    },
+    "cardMessage": {
+      "he": "כובע Los Angeles Dodgers בצבע שחור עם רקמת LA שחורה, לוגו MLB מאחור ולוגו New Era בצד.",
+      "en": "Black Los Angeles Dodgers cap with black LA embroidery, MLB logo at the back and New Era logo on the side."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: שחור",
+        "רקמת LA בחזית",
+        "לוגו MLB רקום בחלק האחורי",
+        "לוגו New Era רקום בצד",
+        "סגירה אחורית מתכווננת",
+        "מצחייה מעוגלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Black",
+        "LA embroidery on the front",
+        "Embroidered MLB logo on the back",
+        "Embroidered New Era logo on the side",
+        "Adjustable rear closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-los-angeles-dodgers-mlb-classic-white-191",
+    "slug": "product-191",
+    "urlSlug": "new-era-los-angeles-dodgers-mlb-classic-white",
+    "sku": "KW-HAT-191",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-191/product-191-1.png",
+    "hoverImage": "images/products/product-191/product-191-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-191/product-191-1.png",
+        "hoverImage": "images/products/product-191/product-191-2.png"
+      },
+      "men": {
+        "image": "images/products/product-191/product-191-1.png",
+        "hoverImage": "images/products/product-191/product-191-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-191/product-191-1.png",
+      "images/products/product-191/product-191-2.png",
+      "images/products/product-191/product-191-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Los Angeles Dodgers X MLB Classic - צבע לבן",
+      "en": "New Era X Los Angeles Dodgers X MLB Classic - White"
+    },
+    "subtitle": {
+      "he": "כובע Los Angeles Dodgers בצבע לבן עם רקמת LA שחורה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "White Los Angeles Dodgers cap with black LA embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Los Angeles Dodgers X MLB Classic - צבע לבן",
+      "en": "New Era X Los Angeles Dodgers X MLB Classic - White"
+    },
+    "cardMessage": {
+      "he": "כובע Los Angeles Dodgers בצבע לבן עם רקמת LA שחורה, לוגו MLB מאחור ולוגו New Era בצד.",
+      "en": "White Los Angeles Dodgers cap with black LA embroidery, MLB logo at the back and New Era logo on the side."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: לבן",
+        "רקמת LA בחזית",
+        "לוגו MLB רקום בחלק האחורי",
+        "לוגו New Era רקום בצד",
+        "סגירה אחורית מתכווננת",
+        "מצחייה מעוגלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: White",
+        "LA embroidery on the front",
+        "Embroidered MLB logo on the back",
+        "Embroidered New Era logo on the side",
+        "Adjustable rear closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-los-angeles-dodgers-mlb-classic-red-192",
+    "slug": "product-192",
+    "urlSlug": "new-era-los-angeles-dodgers-mlb-classic-red",
+    "sku": "KW-HAT-192",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-192/product-192-1.png",
+    "hoverImage": "images/products/product-192/product-192-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-192/product-192-1.png",
+        "hoverImage": "images/products/product-192/product-192-2.png"
+      },
+      "men": {
+        "image": "images/products/product-192/product-192-1.png",
+        "hoverImage": "images/products/product-192/product-192-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-192/product-192-1.png",
+      "images/products/product-192/product-192-2.png",
+      "images/products/product-192/product-192-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Los Angeles Dodgers X MLB Classic - צבע אדום",
+      "en": "New Era X Los Angeles Dodgers X MLB Classic - Red"
+    },
+    "subtitle": {
+      "he": "כובע Los Angeles Dodgers בצבע אדום עם רקמת LA לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Red Los Angeles Dodgers cap with white LA embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Los Angeles Dodgers X MLB Classic - צבע אדום",
+      "en": "New Era X Los Angeles Dodgers X MLB Classic - Red"
+    },
+    "cardMessage": {
+      "he": "כובע Los Angeles Dodgers בצבע אדום עם רקמת LA לבנה, לוגו MLB מאחור ולוגו New Era בצד.",
+      "en": "Red Los Angeles Dodgers cap with white LA embroidery, MLB logo at the back and New Era logo on the side."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: אדום",
+        "רקמת LA בחזית",
+        "לוגו MLB רקום בחלק האחורי",
+        "לוגו New Era רקום בצד",
+        "סגירה אחורית מתכווננת",
+        "מצחייה מעוגלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Red",
+        "LA embroidery on the front",
+        "Embroidered MLB logo on the back",
+        "Embroidered New Era logo on the side",
+        "Adjustable rear closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-los-angeles-dodgers-mlb-classic-black-white-193",
+    "slug": "product-193",
+    "urlSlug": "new-era-los-angeles-dodgers-mlb-classic-black-white",
+    "sku": "KW-HAT-193",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-193/product-193-1.png",
+    "hoverImage": "images/products/product-193/product-193-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-193/product-193-1.png",
+        "hoverImage": "images/products/product-193/product-193-2.png"
+      },
+      "men": {
+        "image": "images/products/product-193/product-193-1.png",
+        "hoverImage": "images/products/product-193/product-193-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-193/product-193-1.png",
+      "images/products/product-193/product-193-2.png",
+      "images/products/product-193/product-193-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Los Angeles Dodgers X MLB Classic - צבע שחור לבן",
+      "en": "New Era X Los Angeles Dodgers X MLB Classic - Black White"
+    },
+    "subtitle": {
+      "he": "כובע Los Angeles Dodgers בצבע שחור עם רקמת LA לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black Los Angeles Dodgers cap with white LA embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Los Angeles Dodgers X MLB Classic - צבע שחור לבן",
+      "en": "New Era X Los Angeles Dodgers X MLB Classic - Black White"
+    },
+    "cardMessage": {
+      "he": "כובע Los Angeles Dodgers בצבע שחור עם רקמת LA לבנה, לוגו MLB מאחור ולוגו New Era בצד.",
+      "en": "Black Los Angeles Dodgers cap with white LA embroidery, MLB logo at the back and New Era logo on the side."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: שחור לבן",
+        "רקמת LA לבנה בחזית",
+        "לוגו MLB רקום בחלק האחורי",
+        "לוגו New Era רקום בצד",
+        "סגירה אחורית מתכווננת",
+        "מצחייה מעוגלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Black White",
+        "White LA embroidery on the front",
+        "Embroidered MLB logo on the back",
+        "Embroidered New Era logo on the side",
+        "Adjustable rear closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-los-angeles-dodgers-clean-trucker-purple-194",
+    "slug": "product-194",
+    "urlSlug": "new-era-los-angeles-dodgers-clean-trucker-purple",
+    "sku": "KW-HAT-194",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-194/product-194-1.png",
+    "hoverImage": "images/products/product-194/product-194-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-194/product-194-1.png",
+        "hoverImage": "images/products/product-194/product-194-2.png"
+      },
+      "men": {
+        "image": "images/products/product-194/product-194-1.png",
+        "hoverImage": "images/products/product-194/product-194-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-194/product-194-1.png",
+      "images/products/product-194/product-194-2.png",
+      "images/products/product-194/product-194-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Los Angeles Dodgers X Clean Trucker - צבע סגול",
+      "en": "New Era X Los Angeles Dodgers X Clean Trucker - Purple"
+    },
+    "subtitle": {
+      "he": "כובע Los Angeles Dodgers דגם Clean Trucker בצבע סגול עם רקמת LA לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Purple Los Angeles Dodgers Clean Trucker cap with white LA embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Los Angeles Dodgers X Clean Trucker - צבע סגול",
+      "en": "New Era X Los Angeles Dodgers X Clean Trucker - Purple"
+    },
+    "cardMessage": {
+      "he": "כובע Los Angeles Dodgers דגם Clean Trucker בצבע סגול עם רקמת LA לבנה, גב רשת וסגירת סנאפבק.",
+      "en": "Purple Los Angeles Dodgers Clean Trucker cap with white LA embroidery, mesh back and snapback closure."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: סגול",
+        "דגם Clean Trucker",
+        "רקמת LA לבנה בחזית",
+        "גב רשת מאוורר",
+        "לוגו MLB רקום מאחור",
+        "לוגו New Era רקום בצד",
+        "סגירת סנאפבק מתכווננת",
+        "מצחייה מעוגלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Purple",
+        "Clean Trucker model",
+        "White LA embroidery on the front",
+        "Breathable mesh back",
+        "Embroidered MLB logo on the back",
+        "Embroidered New Era logo on the side",
+        "Adjustable snapback closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-los-angeles-dodgers-clean-trucker-black-195",
+    "slug": "product-195",
+    "urlSlug": "new-era-los-angeles-dodgers-clean-trucker-black",
+    "sku": "KW-HAT-195",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-195/product-195-1.png",
+    "hoverImage": "images/products/product-195/product-195-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-195/product-195-1.png",
+        "hoverImage": "images/products/product-195/product-195-2.png"
+      },
+      "men": {
+        "image": "images/products/product-195/product-195-1.png",
+        "hoverImage": "images/products/product-195/product-195-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-195/product-195-1.png",
+      "images/products/product-195/product-195-2.png",
+      "images/products/product-195/product-195-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Los Angeles Dodgers X Clean Trucker - צבע שחור",
+      "en": "New Era X Los Angeles Dodgers X Clean Trucker - Black"
+    },
+    "subtitle": {
+      "he": "כובע Los Angeles Dodgers דגם Clean Trucker בצבע שחור מלא עם רקמת LA שחורה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black Los Angeles Dodgers Clean Trucker cap with black LA embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Los Angeles Dodgers X Clean Trucker - צבע שחור",
+      "en": "New Era X Los Angeles Dodgers X Clean Trucker - Black"
+    },
+    "cardMessage": {
+      "he": "כובע Los Angeles Dodgers דגם Clean Trucker בצבע שחור מלא עם גב רשת, רקמת LA שחורה וסגירת סנאפבק.",
+      "en": "Black Los Angeles Dodgers Clean Trucker cap with mesh back, black LA embroidery and snapback closure."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: שחור",
+        "דגם Clean Trucker",
+        "רקמת LA שחורה בחזית",
+        "גב רשת מאוורר",
+        "לוגו MLB רקום מאחור",
+        "לוגו New Era רקום בצד",
+        "סגירת סנאפבק מתכווננת",
+        "מצחייה מעוגלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Black",
+        "Clean Trucker model",
+        "Black LA embroidery on the front",
+        "Breathable mesh back",
+        "Embroidered MLB logo on the back",
+        "Embroidered New Era logo on the side",
+        "Adjustable snapback closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-los-angeles-dodgers-clean-trucker-cream-196",
+    "slug": "product-196",
+    "urlSlug": "new-era-los-angeles-dodgers-clean-trucker-cream",
+    "sku": "KW-HAT-196",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-196/product-196-1.png",
+    "hoverImage": "images/products/product-196/product-196-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-196/product-196-1.png",
+        "hoverImage": "images/products/product-196/product-196-2.png"
+      },
+      "men": {
+        "image": "images/products/product-196/product-196-1.png",
+        "hoverImage": "images/products/product-196/product-196-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-196/product-196-1.png",
+      "images/products/product-196/product-196-2.png",
+      "images/products/product-196/product-196-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Los Angeles Dodgers X Clean Trucker - צבע קרם",
+      "en": "New Era X Los Angeles Dodgers X Clean Trucker - Cream"
+    },
+    "subtitle": {
+      "he": "כובע Los Angeles Dodgers דגם Clean Trucker בצבע קרם עם רקמת LA כחולה כהה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Cream Los Angeles Dodgers Clean Trucker cap with dark blue LA embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Los Angeles Dodgers X Clean Trucker - צבע קרם",
+      "en": "New Era X Los Angeles Dodgers X Clean Trucker - Cream"
+    },
+    "cardMessage": {
+      "he": "כובע Los Angeles Dodgers דגם Clean Trucker בצבע קרם עם רקמת LA כחולה כהה, גב רשת וסגירת סנאפבק.",
+      "en": "Cream Los Angeles Dodgers Clean Trucker cap with dark blue LA embroidery, mesh back and snapback closure."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: קרם",
+        "דגם Clean Trucker",
+        "רקמת LA כחולה כהה בחזית",
+        "גב רשת מאוורר",
+        "לוגו MLB רקום מאחור",
+        "לוגו New Era רקום בצד",
+        "סגירת סנאפבק מתכווננת",
+        "מצחייה מעוגלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Cream",
+        "Clean Trucker model",
+        "Dark blue LA embroidery on the front",
+        "Breathable mesh back",
+        "Embroidered MLB logo on the back",
+        "Embroidered New Era logo on the side",
+        "Adjustable snapback closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-los-angeles-dodgers-clean-trucker-navy-197",
+    "slug": "product-197",
+    "urlSlug": "new-era-los-angeles-dodgers-clean-trucker-navy",
+    "sku": "KW-HAT-197",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-197/product-197-1.png",
+    "hoverImage": "images/products/product-197/product-197-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-197/product-197-1.png",
+        "hoverImage": "images/products/product-197/product-197-2.png"
+      },
+      "men": {
+        "image": "images/products/product-197/product-197-1.png",
+        "hoverImage": "images/products/product-197/product-197-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-197/product-197-1.png",
+      "images/products/product-197/product-197-2.png",
+      "images/products/product-197/product-197-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Los Angeles Dodgers X Clean Trucker - צבע כחול כהה",
+      "en": "New Era X Los Angeles Dodgers X Clean Trucker - Navy"
+    },
+    "subtitle": {
+      "he": "כובע Los Angeles Dodgers דגם Clean Trucker בצבע כחול כהה עם רקמת LA לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Navy Los Angeles Dodgers Clean Trucker cap with white LA embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Los Angeles Dodgers X Clean Trucker - צבע כחול כהה",
+      "en": "New Era X Los Angeles Dodgers X Clean Trucker - Navy"
+    },
+    "cardMessage": {
+      "he": "כובע Los Angeles Dodgers דגם Clean Trucker בצבע כחול כהה עם רקמת LA לבנה, גב רשת וסגירת סנאפבק.",
+      "en": "Navy Los Angeles Dodgers Clean Trucker cap with white LA embroidery, mesh back and snapback closure."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: כחול כהה",
+        "דגם Clean Trucker",
+        "רקמת LA לבנה בחזית",
+        "גב רשת מאוורר",
+        "לוגו MLB רקום מאחור",
+        "לוגו New Era רקום בצד",
+        "סגירת סנאפבק מתכווננת",
+        "מצחייה מעוגלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Navy",
+        "Clean Trucker model",
+        "White LA embroidery on the front",
+        "Breathable mesh back",
+        "Embroidered MLB logo on the back",
+        "Embroidered New Era logo on the side",
+        "Adjustable snapback closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-los-angeles-dodgers-clean-trucker-red-198",
+    "slug": "product-198",
+    "urlSlug": "new-era-los-angeles-dodgers-clean-trucker-red",
+    "sku": "KW-HAT-198",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-198/product-198-1.png",
+    "hoverImage": "images/products/product-198/product-198-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-198/product-198-1.png",
+        "hoverImage": "images/products/product-198/product-198-2.png"
+      },
+      "men": {
+        "image": "images/products/product-198/product-198-1.png",
+        "hoverImage": "images/products/product-198/product-198-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-198/product-198-1.png",
+      "images/products/product-198/product-198-2.png",
+      "images/products/product-198/product-198-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Los Angeles Dodgers X Clean Trucker - צבע אדום",
+      "en": "New Era X Los Angeles Dodgers X Clean Trucker - Red"
+    },
+    "subtitle": {
+      "he": "כובע Los Angeles Dodgers דגם Clean Trucker בצבע אדום עם רקמת LA לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Red Los Angeles Dodgers Clean Trucker cap with white LA embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Los Angeles Dodgers X Clean Trucker - צבע אדום",
+      "en": "New Era X Los Angeles Dodgers X Clean Trucker - Red"
+    },
+    "cardMessage": {
+      "he": "כובע Los Angeles Dodgers דגם Clean Trucker בצבע אדום עם רקמת LA לבנה, גב רשת וסגירת סנאפבק.",
+      "en": "Red Los Angeles Dodgers Clean Trucker cap with white LA embroidery, mesh back and snapback closure."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: אדום",
+        "דגם Clean Trucker",
+        "רקמת LA לבנה בחזית",
+        "גב רשת מאוורר",
+        "לוגו MLB רקום מאחור",
+        "לוגו New Era רקום בצד",
+        "סגירת סנאפבק מתכווננת",
+        "מצחייה מעוגלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Red",
+        "Clean Trucker model",
+        "White LA embroidery on the front",
+        "Breathable mesh back",
+        "Embroidered MLB logo on the back",
+        "Embroidered New Era logo on the side",
+        "Adjustable snapback closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-los-angeles-dodgers-clean-trucker-blue-199",
+    "slug": "product-199",
+    "urlSlug": "new-era-los-angeles-dodgers-clean-trucker-blue",
+    "sku": "KW-HAT-199",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-199/product-199-1.png",
+    "hoverImage": "images/products/product-199/product-199-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-199/product-199-1.png",
+        "hoverImage": "images/products/product-199/product-199-2.png"
+      },
+      "men": {
+        "image": "images/products/product-199/product-199-1.png",
+        "hoverImage": "images/products/product-199/product-199-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-199/product-199-1.png",
+      "images/products/product-199/product-199-2.png",
+      "images/products/product-199/product-199-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Los Angeles Dodgers X Clean Trucker - צבע כחול",
+      "en": "New Era X Los Angeles Dodgers X Clean Trucker - Blue"
+    },
+    "subtitle": {
+      "he": "כובע Los Angeles Dodgers דגם Clean Trucker בצבע כחול עם רקמת LA לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Blue Los Angeles Dodgers Clean Trucker cap with white LA embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Los Angeles Dodgers X Clean Trucker - צבע כחול",
+      "en": "New Era X Los Angeles Dodgers X Clean Trucker - Blue"
+    },
+    "cardMessage": {
+      "he": "כובע Los Angeles Dodgers דגם Clean Trucker בצבע כחול עם רקמת LA לבנה, גב רשת וסגירת סנאפבק.",
+      "en": "Blue Los Angeles Dodgers Clean Trucker cap with white LA embroidery, mesh back and snapback closure."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: כחול",
+        "דגם Clean Trucker",
+        "רקמת LA לבנה בחזית",
+        "גב רשת מאוורר",
+        "לוגו MLB רקום מאחור",
+        "לוגו New Era רקום בצד",
+        "סגירת סנאפבק מתכווננת",
+        "מצחייה מעוגלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Blue",
+        "Clean Trucker model",
+        "White LA embroidery on the front",
+        "Breathable mesh back",
+        "Embroidered MLB logo on the back",
+        "Embroidered New Era logo on the side",
+        "Adjustable snapback closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-los-angeles-dodgers-clean-trucker-black-white-200",
+    "slug": "product-200",
+    "urlSlug": "new-era-los-angeles-dodgers-clean-trucker-black-white",
+    "sku": "KW-HAT-200",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-200/product-200-1.png",
+    "hoverImage": "images/products/product-200/product-200-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-200/product-200-1.png",
+        "hoverImage": "images/products/product-200/product-200-2.png"
+      },
+      "men": {
+        "image": "images/products/product-200/product-200-1.png",
+        "hoverImage": "images/products/product-200/product-200-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-200/product-200-1.png",
+      "images/products/product-200/product-200-2.png",
+      "images/products/product-200/product-200-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Los Angeles Dodgers X Clean Trucker - צבע שחור / לבן",
+      "en": "New Era X Los Angeles Dodgers X Clean Trucker - Black / White"
+    },
+    "subtitle": {
+      "he": "כובע Los Angeles Dodgers דגם Clean Trucker בצבע שחור עם רקמת LA לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Black Los Angeles Dodgers Clean Trucker cap with white LA embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Los Angeles Dodgers X Clean Trucker - צבע שחור / לבן",
+      "en": "New Era X Los Angeles Dodgers X Clean Trucker - Black / White"
+    },
+    "cardMessage": {
+      "he": "כובע Los Angeles Dodgers דגם Clean Trucker בצבע שחור עם רקמת LA לבנה, גב רשת וסגירת סנאפבק.",
+      "en": "Black Los Angeles Dodgers Clean Trucker cap with white LA embroidery, mesh back and snapback closure."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: שחור / לבן",
+        "דגם Clean Trucker",
+        "רקמת LA לבנה בחזית",
+        "גב רשת מאוורר",
+        "לוגו MLB רקום מאחור",
+        "לוגו New Era רקום בצד",
+        "סגירת סנאפבק מתכווננת",
+        "מצחייה מעוגלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Black / White",
+        "Clean Trucker model",
+        "White LA embroidery on the front",
+        "Breathable mesh back",
+        "Embroidered MLB logo on the back",
+        "Embroidered New Era logo on the side",
+        "Adjustable snapback closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-los-angeles-dodgers-clean-trucker-white-201",
+    "slug": "product-201",
+    "urlSlug": "new-era-los-angeles-dodgers-clean-trucker-white",
+    "sku": "KW-HAT-201",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-201/product-201-1.png",
+    "hoverImage": "images/products/product-201/product-201-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-201/product-201-1.png",
+        "hoverImage": "images/products/product-201/product-201-2.png"
+      },
+      "men": {
+        "image": "images/products/product-201/product-201-1.png",
+        "hoverImage": "images/products/product-201/product-201-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-201/product-201-1.png",
+      "images/products/product-201/product-201-2.png",
+      "images/products/product-201/product-201-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Los Angeles Dodgers X Clean Trucker - צבע לבן",
+      "en": "New Era X Los Angeles Dodgers X Clean Trucker - White"
+    },
+    "subtitle": {
+      "he": "כובע Los Angeles Dodgers דגם Clean Trucker בצבע לבן עם רקמת LA לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "White Los Angeles Dodgers Clean Trucker cap with white LA embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Los Angeles Dodgers X Clean Trucker - צבע לבן",
+      "en": "New Era X Los Angeles Dodgers X Clean Trucker - White"
+    },
+    "cardMessage": {
+      "he": "כובע Los Angeles Dodgers דגם Clean Trucker בצבע לבן עם רקמת LA לבנה, גב רשת וסגירת סנאפבק.",
+      "en": "White Los Angeles Dodgers Clean Trucker cap with white LA embroidery, mesh back and snapback closure."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: לבן",
+        "דגם Clean Trucker",
+        "רקמת LA לבנה בחזית",
+        "גב רשת מאוורר",
+        "לוגו MLB רקום מאחור",
+        "לוגו New Era רקום בצד",
+        "סגירת סנאפבק מתכווננת",
+        "מצחייה מעוגלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: White",
+        "Clean Trucker model",
+        "White LA embroidery on the front",
+        "Breathable mesh back",
+        "Embroidered MLB logo on the back",
+        "Embroidered New Era logo on the side",
+        "Adjustable snapback closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-los-angeles-dodgers-clean-trucker-turquoise-202",
+    "slug": "product-202",
+    "urlSlug": "new-era-los-angeles-dodgers-clean-trucker-turquoise",
+    "sku": "KW-HAT-202",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-202/product-202-1.png",
+    "hoverImage": "images/products/product-202/product-202-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-202/product-202-1.png",
+        "hoverImage": "images/products/product-202/product-202-2.png"
+      },
+      "men": {
+        "image": "images/products/product-202/product-202-1.png",
+        "hoverImage": "images/products/product-202/product-202-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-202/product-202-1.png",
+      "images/products/product-202/product-202-2.png",
+      "images/products/product-202/product-202-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Los Angeles Dodgers X Clean Trucker - צבע טורקיז",
+      "en": "New Era X Los Angeles Dodgers X Clean Trucker - Turquoise"
+    },
+    "subtitle": {
+      "he": "כובע Los Angeles Dodgers דגם Clean Trucker בצבע טורקיז עם רקמת LA לבנה · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Turquoise Los Angeles Dodgers Clean Trucker cap with white LA embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Los Angeles Dodgers X Clean Trucker - צבע טורקיז",
+      "en": "New Era X Los Angeles Dodgers X Clean Trucker - Turquoise"
+    },
+    "cardMessage": {
+      "he": "כובע Los Angeles Dodgers דגם Clean Trucker בצבע טורקיז עם רקמת LA לבנה, גב רשת וסגירת סנאפבק.",
+      "en": "Turquoise Los Angeles Dodgers Clean Trucker cap with white LA embroidery, mesh back and snapback closure."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: טורקיז",
+        "דגם Clean Trucker",
+        "רקמת LA לבנה בחזית",
+        "גב רשת מאוורר",
+        "לוגו MLB רקום מאחור",
+        "לוגו New Era רקום בצד",
+        "סגירת סנאפבק מתכווננת",
+        "מצחייה מעוגלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Turquoise",
+        "Clean Trucker model",
+        "White LA embroidery on the front",
+        "Breathable mesh back",
+        "Embroidered MLB logo on the back",
+        "Embroidered New Era logo on the side",
+        "Adjustable snapback closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "new-era-los-angeles-dodgers-clean-trucker-cream-blue-203",
+    "slug": "product-203",
+    "urlSlug": "new-era-los-angeles-dodgers-clean-trucker-cream-blue",
+    "sku": "KW-HAT-203",
+    "category": "hats",
+    "categories": [
+      "hats"
+    ],
+    "badge": {
+      "he": "2 ב־239.90 ₪ | 3 ב־299.90 ₪",
+      "en": "2 for ₪239.90 | 3 for ₪299.90"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-203/product-203-1.png",
+    "hoverImage": "images/products/product-203/product-203-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-203/product-203-1.png",
+        "hoverImage": "images/products/product-203/product-203-2.png"
+      },
+      "men": {
+        "image": "images/products/product-203/product-203-1.png",
+        "hoverImage": "images/products/product-203/product-203-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-203/product-203-1.png",
+      "images/products/product-203/product-203-2.png",
+      "images/products/product-203/product-203-3.png"
+    ],
+    "price": 139.9,
+    "title": {
+      "he": "New Era X Los Angeles Dodgers X Clean Trucker - צבע קרם כחול",
+      "en": "New Era X Los Angeles Dodgers X Clean Trucker - Cream Blue"
+    },
+    "subtitle": {
+      "he": "כובע Los Angeles Dodgers דגם Clean Trucker בצבע קרם עם מצחייה ורקמת LA כחולות · מחיר ליחידה 139.90 ₪ · מבצע לכל הכובעים: 2 ב־239.90 ₪",
+      "en": "Cream Los Angeles Dodgers Clean Trucker cap with blue brim and blue LA embroidery · ₪139.90 each · all hats offer: 2 for ₪239.90"
+    },
+    "cardTitle": {
+      "he": "New Era X Los Angeles Dodgers X Clean Trucker - צבע קרם כחול",
+      "en": "New Era X Los Angeles Dodgers X Clean Trucker - Cream Blue"
+    },
+    "cardMessage": {
+      "he": "כובע Los Angeles Dodgers דגם Clean Trucker בצבע קרם עם מצחייה ורקמת LA כחולות, גב רשת וסגירת סנאפבק.",
+      "en": "Cream Los Angeles Dodgers Clean Trucker cap with blue brim and blue LA embroidery, mesh back and snapback closure."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צבע: קרם כחול",
+        "דגם Clean Trucker",
+        "מצחייה כחולה",
+        "רקמת LA כחולה בחזית",
+        "גב רשת מאוורר",
+        "לוגו MLB רקום מאחור",
+        "לוגו New Era רקום בצד",
+        "סגירת סנאפבק מתכווננת",
+        "מצחייה מעוגלת",
+        "מחיר ליחידה: 139.90 ₪",
+        "מבצע לכל הכובעים: 2 ב־239.90 ₪"
+      ],
+      "en": [
+        "Color: Cream Blue",
+        "Clean Trucker model",
+        "Blue brim",
+        "Blue LA embroidery on the front",
+        "Breathable mesh back",
+        "Embroidered MLB logo on the back",
+        "Embroidered New Era logo on the side",
+        "Adjustable snapback closure",
+        "Curved brim",
+        "Single price: ₪139.90",
+        "All hats offer: 2 for ₪239.90"
+      ]
+    },
+    "afterText": {
+      "he": "המבצע 2 ב־239.90 ₪ חל על כל הכובעים בקטגוריית כובעים וניתן לשלב בין דגמים שונים.",
+      "en": "The 2 for ₪239.90 offer applies across the hats collection and can be mixed between different hat styles."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
   }
-}
 ];
 
 var CATEGORIES = [
@@ -16715,9 +18447,6 @@ var CATEGORIES = [
       "en": "Hats"
     }
   }
-
-
-
 ];
 
 if (typeof module !== 'undefined' && module.exports) { module.exports = { PRODUCTS: PRODUCTS, CATEGORIES: CATEGORIES }; }

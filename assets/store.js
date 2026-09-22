@@ -802,7 +802,7 @@
 
   /* TESTABLE: hats category grouping */
   var HAT_COLLECTION_GROUPS = [
-    { key: 'los-angeles-dodgers', title: 'New Era X Los Angeles Dodgers', slugs: ['product-100', 'product-101', 'product-102', 'product-108', 'product-109', 'product-110', 'product-111'] },
+    { key: 'los-angeles-dodgers', title: 'New Era X Los Angeles Dodgers', slugs: ['product-100', 'product-101', 'product-102', 'product-108', 'product-109', 'product-110', 'product-111', 'product-184', 'product-185', 'product-186', 'product-187', 'product-188', 'product-189', 'product-190', 'product-191', 'product-192', 'product-193', 'product-194', 'product-195', 'product-196', 'product-197', 'product-198', 'product-199', 'product-200', 'product-201', 'product-202', 'product-203'] },
     { key: 'jon-stan', title: 'New Era X Jon Stan', slugs: ['product-103', 'product-104', 'product-105', 'product-106', 'product-107'] },
     { key: 'new-york-yankees', title: 'New Era X New York Yankees', slugs: ['product-112', 'product-113', 'product-114', 'product-115', 'product-116', 'product-117', 'product-118', 'product-119', 'product-120', 'product-121', 'product-122', 'product-123', 'product-124', 'product-125', 'product-126', 'product-127', 'product-128', 'product-166', 'product-167', 'product-168', 'product-169', 'product-170', 'product-171', 'product-172', 'product-173', 'product-174', 'product-175', 'product-176', 'product-177', 'product-178', 'product-179', 'product-180', 'product-181', 'product-182', 'product-183'] },
     { key: 'anaheim-angels', title: 'New Era X Anaheim Angels', slugs: ['product-129', 'product-130', 'product-131', 'product-132', 'product-133'] },
