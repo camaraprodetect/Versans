@@ -1044,9 +1044,14 @@
             <div class="field"><label for="f_last" data-i18n="co.last">שם משפחה</label><input id="f_last" name="lastName" autocomplete="family-name" required><span class="field__err"></span></div>
             <div class="field"><label for="f_email" data-i18n="co.email">אימייל</label><input id="f_email" name="email" type="email" inputmode="email" autocomplete="email" required><span class="field__err"></span></div>
             <div class="field"><label for="f_phone" data-i18n="co.phone">טלפון</label><input id="f_phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required><span class="field__err"></span></div>
-            <div class="field field--full"><label for="f_street" data-i18n="co.street">רחוב ומספר</label><input id="f_street" name="street" autocomplete="street-address" required><span class="field__err"></span></div>
+            <div class="field"><label for="f_country" data-i18n="co.country">מדינה</label><input id="f_country" name="country" autocomplete="country-name" value="ישראל" required><span class="field__err"></span></div>
             <div class="field"><label for="f_city" data-i18n="co.city">עיר</label><input id="f_city" name="city" autocomplete="address-level2" required><span class="field__err"></span></div>
-            <div class="field"><label for="f_zip" data-i18n="co.zip">מיקוד</label><input id="f_zip" name="zip" autocomplete="postal-code"><span class="field__err"></span></div>
+            <div class="field"><label for="f_street" data-i18n="co.street">רחוב</label><input id="f_street" name="street" autocomplete="address-line1" required><span class="field__err"></span></div>
+            <div class="field"><label for="f_house" data-i18n="co.house">מספר בית</label><input id="f_house" name="houseNumber" inputmode="text" required><span class="field__err"></span></div>
+            <div class="field"><label for="f_apartment" data-i18n="co.apartment">דירה</label><input id="f_apartment" name="apartment" inputmode="text"><span class="field__err"></span></div>
+            <div class="field"><label for="f_entrance" data-i18n="co.entrance">כניסה</label><input id="f_entrance" name="entrance" inputmode="text"><span class="field__err"></span></div>
+            <div class="field"><label for="f_floor" data-i18n="co.floor">קומה</label><input id="f_floor" name="floor" inputmode="text"><span class="field__err"></span></div>
+            <div class="field"><label for="f_zip" data-i18n="co.zip">מיקוד</label><input id="f_zip" name="zip" autocomplete="postal-code" inputmode="numeric" required><span class="field__err"></span></div>
             <div class="field field--full"><label for="f_notes" data-i18n="co.notes">הערה להזמנה</label><textarea id="f_notes" name="notes"></textarea></div>
           </div>
           <div class="checkout-coupon" id="checkoutCoupon">
@@ -1082,7 +1087,7 @@
 <script src="assets/site-header.js?v=20260922-hide-zero-favorites-v1"></script>
 <script src="assets/glasses-pricing.js?v=20260912-glasses-v9"></script>
 <script src="assets/pricing.js?v=20260922-pricing-savings-details-v1"></script>
-<script src="assets/i18n.js?v=20260908-delivery-v1"></script>
+<script src="assets/i18n.js?v=20260922-full-address-v1"></script>
 <script src="assets/reviews.js?v=20260914-pretty-urls-v1"></script>
 <script src="assets/home.js?v=20260921-watch-subcats-v1"></script>
 <script src="assets/store.js?v=20260922-league-position-v1"></script>

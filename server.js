@@ -136,6 +136,37 @@ function normalizePhone(value) {
   return phone;
 }
 
+
+function cleanCheckoutText(value, max = 120) {
+  return String(value == null ? '' : value).replace(/[\r\n\t]+/g, ' ').trim().slice(0, max);
+}
+
+function normalizeShippingCustomer(raw) {
+  const source = raw && typeof raw === 'object' ? raw : {};
+  const customer = {
+    firstName: cleanCheckoutText(source.firstName, 50),
+    lastName: cleanCheckoutText(source.lastName, 50),
+    email: normalizeEmail(source.email),
+    phone: normalizePhone(source.phone),
+    country: cleanCheckoutText(source.country, 60),
+    city: cleanCheckoutText(source.city, 80),
+    street: cleanCheckoutText(source.street, 100),
+    houseNumber: cleanCheckoutText(source.houseNumber, 20),
+    apartment: cleanCheckoutText(source.apartment, 20),
+    entrance: cleanCheckoutText(source.entrance, 20),
+    floor: cleanCheckoutText(source.floor, 20),
+    zip: cleanCheckoutText(source.zip, 20),
+    notes: cleanCheckoutText(source.notes, 500)
+  };
+  const required = ['firstName','lastName','email','phone','country','city','street','houseNumber','zip'];
+  if (required.some((key) => !customer[key]) || !validEmail(customer.email)) {
+    const err = new Error('missing_shipping_details');
+    err.status = 400;
+    throw err;
+  }
+  return customer;
+}
+
 function amountToAgorot(value) {
   const amount = Number(value);
   if (!Number.isFinite(amount) || amount < 0) return null;
@@ -1639,12 +1670,13 @@ const server = http.createServer(async (req, res) => {
       const paymentOptions = {
         coupon: coupon ? { code: coupon.code, percent: Number(coupon.discount_percent || WELCOME_COUPON_PERCENT) } : null
       };
+      const customer = normalizeShippingCustomer(body && body.customer);
+      const paymentBody = { ...body, customer };
       const result = checkoutMode() === 'demo'
-        ? createDemoPaymentResult(body, paymentOptions)
-        : await createPaymentUrl(body, paymentOptions);
-      const customer = body && body.customer ? body.customer : {};
-      const customerEmail = normalizeEmail(customer.email);
-      const customerPhone = normalizePhone(customer.phone) || null;
+        ? createDemoPaymentResult(paymentBody, paymentOptions)
+        : await createPaymentUrl(paymentBody, paymentOptions);
+      const customerEmail = customer.email;
+      const customerPhone = customer.phone || null;
       const amountAgorot = amountToAgorot(result.total);
       if (amountAgorot === null) throw new Error('invalid_order_total');
 
@@ -1660,6 +1692,7 @@ const server = http.createServer(async (req, res) => {
         userId: linkedUserId,
         customerEmail: validEmail(customerEmail) ? customerEmail : null,
         customerPhone,
+        customerJson: JSON.stringify(customer),
         amountAgorot,
         currency: String(result.currency || 'ILS'),
         itemsJson: JSON.stringify(Array.isArray(body.items) ? body.items : []),

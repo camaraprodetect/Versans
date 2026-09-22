@@ -34,6 +34,17 @@ function clean(value, max) {
   return String(value == null ? '' : value).replace(/[\r\n\t]+/g, ' ').trim().slice(0, max || 60);
 }
 
+
+function shippingStreet(customer) {
+  const c = customer || {};
+  const base = [clean(c.street, 60), clean(c.houseNumber, 20)].filter(Boolean).join(' ');
+  const extras = [];
+  if (c.apartment) extras.push('דירה ' + clean(c.apartment, 20));
+  if (c.entrance) extras.push('כניסה ' + clean(c.entrance, 20));
+  if (c.floor) extras.push('קומה ' + clean(c.floor, 20));
+  return [base].concat(extras).filter(Boolean).join(', ');
+}
+
 function newOrderId() {
   return 'KW-' + Date.now().toString(36).toUpperCase() + '-' +
          Math.random().toString(36).slice(2, 5).toUpperCase();
@@ -285,7 +296,7 @@ async function createPaymentUrl(body, options = {}) {
     ClientLName: clean(customer.lastName, 40),
     email: clean(customer.email, 60),
     phone: clean(customer.phone, 20),
-    street: clean(customer.street, 60),
+    street: clean(shippingStreet(customer), 100),
     city: clean(customer.city, 40),
     zip: clean(customer.zip, 12),
 
