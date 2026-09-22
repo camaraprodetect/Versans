@@ -9,6 +9,15 @@
   var ROUTES = window.VERSANS_ROUTES || null;
   var LS = { lang: 'kw_lang', cart: 'kw_cart', pending: 'kw_pending' };
 
+  function logicalPath() {
+    try { return window.VERSANS_URL_STATE && window.VERSANS_URL_STATE.path ? window.VERSANS_URL_STATE.path() : window.location.pathname; }
+    catch (e) { return window.location.pathname; }
+  }
+  function logicalSearch() {
+    try { return window.VERSANS_URL_STATE && window.VERSANS_URL_STATE.search ? window.VERSANS_URL_STATE.search() : window.location.search; }
+    catch (e) { return window.location.search; }
+  }
+
   var state = {
     lang: 'he',
     cart: JSON.parse(read(LS.cart) || '[]'),
@@ -25,9 +34,9 @@
   (function applyInitialCatalogCategoryFromUrl() {
     try {
       var requestedCategory = ROUTES && ROUTES.categoryFromPath
-        ? ROUTES.categoryFromPath(window.location.pathname)
+        ? ROUTES.categoryFromPath(logicalPath())
         : null;
-      if (!requestedCategory) requestedCategory = new URLSearchParams(window.location.search).get('cat');
+      if (!requestedCategory) requestedCategory = new URLSearchParams(logicalSearch()).get('cat');
       var validCategories = [
         'all', 'greeting', 'greeting-mom', 'greeting-partner', 'greeting-daughter', 'greeting-sister',
         'necklaces', 'bracelets', 'photo-bracelets', 'watches', 'watches-men', 'watches-women',
@@ -500,12 +509,6 @@
     }
     if (hatsBanner) {
       hatsBanner.hidden = state.filter !== 'hats';
-    }
-
-    /* Hats only: keep the filter button slightly separated from the promo banner. */
-    var shopFilterRow = $('.shop__filter-row');
-    if (shopFilterRow) {
-      shopFilterRow.classList.toggle('shop__filter-row--hats-gap', state.filter === 'hats');
     }
 
     var greetingCustomCollectionBanner = $('#greetingCustomCollectionBanner');
@@ -1903,8 +1906,26 @@
       if (collectionChanged) resetCatalogFilters();
       try {
         var targetPath = collectionPath(state.filter);
-        if (window.location.pathname !== targetPath || window.location.search) {
-          window.history.pushState({ versansCategory: state.filter }, '', targetPath + '#shop');
+        var targetRoute = targetPath + '#shop';
+        var isProductDocument = document.body && document.body.classList.contains('product-page-body');
+
+        /* On a product page the address bar is intentionally masked to `/`.
+           Pushing `/#shop` would therefore only change the hash and leave the
+           product DOM on screen. Force a real document navigation instead.
+           For `all`, use the legacy cat route so the browser makes a network
+           request even though the visible masked URL is already `/`. */
+        if (isProductDocument) {
+          if (el.closest('.nav__menu')) setMenu(false);
+          if (state.filter === 'all') {
+            window.location.assign('/?cat=all#shop');
+          } else {
+            window.location.assign(targetRoute);
+          }
+          return;
+        }
+
+        if (logicalPath() !== targetPath || logicalSearch()) {
+          window.history.pushState({ versansCategory: state.filter }, '', targetRoute);
         }
       } catch (e) {}
       renderFilters();
@@ -2016,7 +2037,7 @@
 
   window.addEventListener('popstate', function () {
     try {
-      var category = ROUTES && ROUTES.categoryFromPath ? ROUTES.categoryFromPath(window.location.pathname) : null;
+      var category = ROUTES && ROUTES.categoryFromPath ? ROUTES.categoryFromPath(logicalPath()) : null;
       state.filter = category || 'all';
       state.openFilterGroup = null;
       resetCatalogFilters();

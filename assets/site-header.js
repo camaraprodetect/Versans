@@ -34,25 +34,10 @@
     return product && product.urlSlug ? '/' + encodeURIComponent(product.urlSlug) : '/';
   }
 
-  function resolveProductId(ref){
-    var value = String(ref || '').trim();
-    if (!value) return '';
-    var product = catalog.find(function(item){
-      return item && (String(item.id || '') === value || String(item.slug || '') === value || String(item.urlSlug || '') === value);
-    });
-    return product ? String(product.id || '') : value;
-  }
-
   function readFavorites(){
     try {
       var value = JSON.parse(localStorage.getItem(FAVORITES_KEY) || '[]');
-      if (!Array.isArray(value)) return [];
-      var seen = {};
-      return value.map(resolveProductId).filter(function(id){
-        if (!id || seen[id]) return false;
-        seen[id] = true;
-        return true;
-      });
+      return Array.isArray(value) ? value.filter(Boolean) : [];
     } catch (err) {
       return [];
     }
@@ -76,19 +61,20 @@
   }
 
   function currentProductId(){
-    var refs = [];
-    try { refs.push(new URLSearchParams(location.search).get('id') || ''); } catch (err) {}
-    if (document.body && document.body.dataset) refs.push(document.body.dataset.productSlug || '');
-    try { refs.push(decodeURIComponent(location.pathname.replace(/^\/+|\/+$/g, ''))); } catch (err) {}
-
-    for (var i = 0; i < refs.length; i++) {
-      var ref = String(refs[i] || '').trim();
-      if (!ref || ref === 'product.html') continue;
-      var resolved = resolveProductId(ref);
-      var exists = catalog.some(function(item){ return item && String(item.id || '') === resolved; });
-      if (exists) return resolved;
-    }
-    return '';
+    try {
+      var route = window.VERSANS_URL_STATE && window.VERSANS_URL_STATE.full
+        ? window.VERSANS_URL_STATE.full()
+        : (location.pathname + location.search + location.hash);
+      var url = new URL(route || '/', location.origin);
+      var id = url.searchParams.get('id') || '';
+      if (id) return id;
+      var slug = decodeURIComponent((url.pathname || '').replace(/^\/+|\/+$/g, ''));
+      if (!slug) return '';
+      var product = catalog.find(function(item){
+        return item && (String(item.urlSlug || '') === slug || String(item.slug || '') === slug);
+      });
+      return product ? String(product.id || product.slug || '') : '';
+    } catch (err) { return ''; }
   }
 
   function updateFavoriteUi(){

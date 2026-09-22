@@ -1179,6 +1179,9 @@ function mimeType(filePath) {
 
 function prettyRouteFile(pathname) {
   if (pathname === '/') return 'index.html';
+  // Internal document route used when leaving a masked product page for the
+  // homepage/catalog. It is immediately hidden back to `/` by url-mask.js.
+  if (pathname === '/shop' || pathname === '/shop/') return 'index.html';
   if (ROUTES.PAGE_FILES[pathname]) return ROUTES.PAGE_FILES[pathname];
 
   // Collection URLs are SPA routes. On direct load/refresh the Node server
@@ -1195,6 +1198,56 @@ function prettyRouteFile(pathname) {
 function isPublicPath(pathname) {
   if (prettyRouteFile(pathname) || pathname === '/robots.txt' || pathname === '/sitemap.xml' || pathname === '/favicon.ico' || /^\/[A-Za-z0-9_-]+\.html$/.test(pathname)) return true;
   return pathname.startsWith('/assets/') || pathname.startsWith('/images/');
+}
+
+function htmlBootRoute(req, fallbackPathname) {
+  try {
+    const parsed = new URL(String(req.url || fallbackPathname || '/'), `http://${req.headers.host || 'localhost'}`);
+    return (parsed.pathname || '/') + (parsed.search || '');
+  } catch (_) {
+    return String(fallbackPathname || '/');
+  }
+}
+
+function safeInlineJson(value) {
+  return JSON.stringify(String(value || '/'))
+    .replace(/</g, '\\u003c')
+    .replace(/>/g, '\\u003e')
+    .replace(/&/g, '\\u0026');
+}
+
+function injectStorefrontRouting(html, bootRoute) {
+  const early = `<script>window.__VERSANS_BOOT_ROUTE__=${safeInlineJson(bootRoute)};</script><script src="/assets/route-state.js?v=20260922-product-nav-v4"></script>`;
+  const late = '<script src="/assets/url-mask.js?v=20260922-urlmask-v3"></script>';
+  let out = String(html || '');
+  out = out
+    .replace(/(\/?assets\/store\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20260922-urlmask-v2')
+    .replace(/(\/?assets\/site-header\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20260922-urlmask-v2')
+    .replace(/(\/?assets\/presence\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20260922-urlmask-v2');
+  if (out.includes('</head>')) out = out.replace('</head>', `${early}\n</head>`);
+  else out = early + out;
+  if (out.includes('</body>')) out = out.replace('</body>', `${late}\n</body>`);
+  else out += late;
+  return out;
+}
+
+function serveStorefrontHtml(req, res, filePath, bootRoute) {
+  let source;
+  try { source = fs.readFileSync(filePath, 'utf8'); } catch (_) { return false; }
+  const body = injectStorefrontRouting(source, bootRoute || htmlBootRoute(req, '/'));
+  res.statusCode = 200;
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Content-Length', Buffer.byteLength(body));
+  if (req.method === 'HEAD') res.end();
+  else res.end(body);
+  return true;
+}
+
+function wantsHtmlDocument(req) {
+  const dest = String(req.headers['sec-fetch-dest'] || '').toLowerCase();
+  const accept = String(req.headers.accept || '').toLowerCase();
+  return dest === 'document' || accept.includes('text/html') || accept === '*/*' || !accept;
 }
 
 function serveStatic(req, res, pathname) {
@@ -1216,13 +1269,13 @@ function serveStatic(req, res, pathname) {
   try { stat = fs.statSync(filePath); } catch (_) { return false; }
   if (!stat.isFile()) return false;
 
+  if (path.extname(filePath).toLowerCase() === '.html') {
+    return serveStorefrontHtml(req, res, filePath, htmlBootRoute(req, pathname));
+  }
+
   res.statusCode = 200;
   res.setHeader('Content-Type', mimeType(filePath));
-  if (path.extname(filePath).toLowerCase() === '.html') {
-    res.setHeader('Cache-Control', 'no-cache');
-  } else {
-    res.setHeader('Cache-Control', 'public, max-age=3600');
-  }
+  res.setHeader('Cache-Control', 'public, max-age=3600');
   res.setHeader('Content-Length', stat.size);
   if (req.method === 'HEAD') return void res.end();
   fs.createReadStream(filePath).pipe(res);
@@ -1231,31 +1284,6 @@ function serveStatic(req, res, pathname) {
 
 const server = http.createServer(async (req, res) => {
   securityHeaders(res);
-
-  // HARD SPA REFRESH FALLBACK FOR /hats
-  // Browser hashes such as #shop never reach Node, so /hats#shop arrives as /hats.
-  // Handle the route before any API/static routing so it cannot fall through to 404.
-  if (req.method === 'GET' || req.method === 'HEAD') {
-    const rawPath = String(req.url || '').split('?')[0];
-    if (rawPath === '/hats' || rawPath === '/hats/') {
-      const indexPath = path.resolve(ROOT, 'index.html');
-      let indexStat;
-      try { indexStat = fs.statSync(indexPath); } catch (_) { indexStat = null; }
-
-      if (indexStat && indexStat.isFile()) {
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'text/html; charset=utf-8');
-        res.setHeader('Cache-Control', 'no-cache');
-        res.setHeader('Content-Length', indexStat.size);
-        if (req.method === 'HEAD') {
-          res.end();
-        } else {
-          fs.createReadStream(indexPath).pipe(res);
-        }
-        return;
-      }
-    }
-  }
 
   let parsed;
   try {
@@ -1377,6 +1405,17 @@ if (serveStatic(req, res, pathname)) return;
 
 // אם serveStatic כבר שלח headers/response, לא שולחים תשובה נוספת
 if (res.headersSent) return;
+
+    // Storefront navigation safety net: unknown extensionless browser routes
+    // fall back to the storefront instead of producing a user-facing 404.
+    if ((req.method === 'GET' || req.method === 'HEAD') &&
+        !pathname.startsWith('/api/') &&
+        !pathname.startsWith('/admin') &&
+        !path.extname(pathname) &&
+        wantsHtmlDocument(req)) {
+      const indexPath = path.resolve(ROOT, 'index.html');
+      if (serveStorefrontHtml(req, res, indexPath, htmlBootRoute(req, pathname))) return;
+    }
 
 res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
 res.end('404 - Not found');

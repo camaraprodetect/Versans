@@ -1,10 +1,19 @@
 (function () {
   'use strict';
 
-  if (location.pathname === '/admin') return;
+  function logicalPath(){
+    try { return window.VERSANS_URL_STATE && window.VERSANS_URL_STATE.path ? window.VERSANS_URL_STATE.path() : location.pathname; }
+    catch (_) { return location.pathname || '/'; }
+  }
+  function logicalSearch(){
+    try { return window.VERSANS_URL_STATE && window.VERSANS_URL_STATE.search ? window.VERSANS_URL_STATE.search() : location.search; }
+    catch (_) { return location.search || ''; }
+  }
+
+  if (logicalPath() === '/admin' || logicalPath().indexOf('/admin/') === 0) return;
 
   var HEARTBEAT_MS = 25 * 1000;
-  var lastPath = location.pathname || '/';
+  var lastPath = logicalPath() || '/';
   var sending = false;
 
   function text(value, max) {
@@ -51,7 +60,7 @@
   }
 
   function utm() {
-    var params = new URLSearchParams(location.search || '');
+    var params = new URLSearchParams(logicalSearch() || '');
     return {
       utmSource: text(params.get('utm_source'), 120),
       utmMedium: text(params.get('utm_medium'), 120),
@@ -65,7 +74,7 @@
     var campaign = utm();
     return {
       kind: kind,
-      path: location.pathname || '/',
+      path: logicalPath() || '/',
       title: text(document.title, 180),
       referrer: text(document.referrer, 500),
       utmSource: campaign.utmSource,
@@ -97,7 +106,7 @@
   }
 
   function pageChanged() {
-    var current = location.pathname || '/';
+    var current = logicalPath() || '/';
     if (current !== lastPath) {
       lastPath = current;
       send('pageview');

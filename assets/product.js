@@ -1842,15 +1842,28 @@ function arrangeProduct20CompactOptions() {
       messageCard.hidden = true;
     }
 
-    var details = product.details && product.details.he || [];
-    $('#productDetails').innerHTML = details.map(function (detail) {
-      return '<div class="product-detail-row"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12.5l5 5L20 6.5"/></svg><span>' + esc(detail) + '</span></div>';
-    }).join('');
+    var detailsAccordion = document.querySelector('.product-details-accordion');
+    var detailsList = $('#productDetails');
+    if (isHatsProduct(product)) {
+      if (detailsAccordion) detailsAccordion.hidden = true;
+      if (detailsList) detailsList.innerHTML = '';
+    } else {
+      if (detailsAccordion) detailsAccordion.hidden = false;
+      var details = product.details && product.details.he || [];
+      if (detailsList) {
+        detailsList.innerHTML = details.map(function (detail) {
+          return '<div class="product-detail-row"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12.5l5 5L20 6.5"/></svg><span>' + esc(detail) + '</span></div>';
+        }).join('');
+      }
+    }
 
     $('#qtyValue').textContent = qty;
-    $('#assureShip').textContent = lang === 'he' ? 'משלוח עד הבית' : 'Door delivery';
-    $('#assureSecure').textContent = lang === 'he' ? 'תשלום מאובטח' : 'Secure payment';
-    $('#assureReturn').textContent = lang === 'he' ? '30 יום להחזרה' : '30-day returns';
+    var assureShip = $('#assureShip');
+    var assureSecure = $('#assureSecure');
+    var assureReturn = $('#assureReturn');
+    if (assureShip) assureShip.textContent = lang === 'he' ? 'משלוח עד הבית' : 'Door delivery';
+    if (assureSecure) assureSecure.textContent = lang === 'he' ? 'תשלום מאובטח' : 'Secure payment';
+    if (assureReturn) assureReturn.textContent = lang === 'he' ? '30 יום להחזרה' : '30-day returns';
     $('#footAbout').textContent = lang === 'he' ? 'שרשראות מתנה שמגיעות עם המילים שנשארות.' : 'Gift necklaces that arrive with words that stay.';
     $('#footShopTitle').textContent = lang === 'he' ? 'קניות' : 'Shop';
     $('#footShopLink').textContent = lang === 'he' ? 'החנות' : 'Shop';
