@@ -142,6 +142,36 @@ function amountToAgorot(value) {
   return Math.round(amount * 100);
 }
 
+function checkoutMode() {
+  return String(process.env.VERSANS_CHECKOUT_MODE || 'live').trim().toLowerCase() === 'demo' ? 'demo' : 'live';
+}
+
+function newDemoOrderRef() {
+  return 'VS-DEMO-' + Date.now().toString(36).toUpperCase() + '-' + crypto.randomBytes(3).toString('hex').toUpperCase();
+}
+
+function createDemoPaymentResult(body, options = {}) {
+  const lang = body && body.lang === 'en' ? 'en' : 'he';
+  const priced = priceOrder(body && Array.isArray(body.items) ? body.items : [], lang, options.coupon || null);
+  const orderRef = newDemoOrderRef();
+  const params = new URLSearchParams({
+    Order: orderRef,
+    Amount: priced.total.toFixed(2),
+    CCode: '0',
+    versans_demo: '1'
+  });
+
+  return {
+    url: '/thank-you?' + params.toString(),
+    order: orderRef,
+    total: priced.total,
+    couponDiscount: priced.couponDiscount || 0,
+    couponCode: priced.couponCode || '',
+    currency: 'ILS',
+    demo: true
+  };
+}
+
 function normalizeCouponCode(value) {
   return String(value == null ? '' : value)
     .trim()
@@ -1606,9 +1636,12 @@ const server = http.createServer(async (req, res) => {
           return;
         }
       }
-      const result = await createPaymentUrl(body, {
+      const paymentOptions = {
         coupon: coupon ? { code: coupon.code, percent: Number(coupon.discount_percent || WELCOME_COUPON_PERCENT) } : null
-      });
+      };
+      const result = checkoutMode() === 'demo'
+        ? createDemoPaymentResult(body, paymentOptions)
+        : await createPaymentUrl(body, paymentOptions);
       const customer = body && body.customer ? body.customer : {};
       const customerEmail = normalizeEmail(customer.email);
       const customerPhone = normalizePhone(customer.phone) || null;
@@ -1642,10 +1675,30 @@ const server = http.createServer(async (req, res) => {
 
     if (pathname === '/api/verify-payment' && req.method === 'GET') {
       const query = Object.fromEntries(parsed.searchParams.entries());
-      const result = await verifyPayment(query);
+      const mode = checkoutMode();
+      let result;
+      let orderRef;
+      let order;
+
+      if (mode === 'demo') {
+        orderRef = String(query.Order || '').trim();
+        order = orderRef ? await database.getOrderByRef(orderRef) : null;
+        const validDemoReturn = query.versans_demo === '1' && !!order;
+        result = {
+          ok: validDemoReturn,
+          ccode: validDemoReturn ? '0' : '1',
+          order: orderRef || null,
+          amount: order ? (Number(order.amount_agorot || 0) / 100).toFixed(2) : null,
+          raw: 'demo',
+          demo: true
+        };
+      } else {
+        result = await verifyPayment(query);
+        orderRef = String(result.order || query.Order || '').trim();
+        order = orderRef ? await database.getOrderByRef(orderRef) : null;
+      }
+
       let verifiedCustomer = false;
-      const orderRef = String(result.order || query.Order || '').trim();
-      const order = orderRef ? await database.getOrderByRef(orderRef) : null;
 
       if (order) {
         if (result.ok) {
