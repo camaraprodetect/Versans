@@ -1805,9 +1805,11 @@
   }
 
   function fieldError(input, msg) {
-    var f = input.closest('.field');
+    var f = input && input.closest ? input.closest('.field') : null;
+    if (!f) return !msg;
     f.classList.toggle('is-bad', !!msg);
-    $('.field__err', f).textContent = msg || '';
+    var err = $('.field__err', f);
+    if (err) err.textContent = msg || '';
     return !msg;
   }
 
