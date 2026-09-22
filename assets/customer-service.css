@@ -1,0 +1,140 @@
+/* VerSans customer-service / WhatsApp entry points */
+.versans-support-float{
+  position:fixed;
+  left:22px;
+  top:clamp(150px, 31vh, 290px);
+  bottom:auto;
+  z-index:380;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  direction:rtl;
+  font-family:inherit;
+}
+.versans-support-float[hidden]{display:none!important}
+.versans-support-float__link,
+.versans-support-footer-link,
+.nav__support-link{
+  text-decoration:none;
+}
+.versans-support-float__link{
+  min-height:52px;
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding:8px 15px 8px 10px;
+  border-radius:999px;
+  background:#25d366;
+  color:#fff;
+  font-size:14px;
+  font-weight:700;
+  line-height:1;
+  box-shadow:0 9px 28px rgba(0,0,0,.20);
+  border:1px solid rgba(255,255,255,.28);
+  transition:transform .18s ease,box-shadow .18s ease,background .18s ease;
+}
+.versans-support-float__link:hover{
+  transform:translateY(-2px);
+  box-shadow:0 12px 34px rgba(0,0,0,.24);
+  background:#20c45d;
+}
+.versans-support-float__icon,
+.versans-support-footer-link__icon,
+.nav__support-link .versans-support-icon{
+  width:34px;
+  height:34px;
+  flex:0 0 34px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+}
+.versans-support-float__icon{background:rgba(255,255,255,.16)}
+.versans-support-float__icon svg,
+.versans-support-footer-link__icon svg,
+.nav__support-link svg{
+  width:23px;
+  height:23px;
+  display:block;
+  fill:currentColor;
+}
+.versans-support-float__close{
+  position:absolute;
+  top:-10px;
+  left:-8px;
+  width:25px;
+  height:25px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  border:1px solid rgba(0,0,0,.12);
+  background:#fff;
+  color:#25313b;
+  box-shadow:0 4px 13px rgba(0,0,0,.16);
+  cursor:pointer;
+  font:600 17px/1 Arial,sans-serif;
+  padding:0;
+}
+.versans-support-float__close:hover{background:#f6f6f6}
+
+/* Footer WhatsApp button */
+.versans-support-footer-item{margin-top:7px!important}
+.versans-support-footer-link{
+  display:inline-flex!important;
+  align-items:center;
+  gap:9px;
+  min-height:40px;
+  padding:6px 11px 6px 8px!important;
+  border:1px solid rgba(37,211,102,.45);
+  border-radius:999px;
+  color:#fff!important;
+  background:rgba(37,211,102,.12);
+  direction:rtl!important;
+  unicode-bidi:normal!important;
+  font-weight:700;
+}
+.versans-support-footer-link:hover{background:rgba(37,211,102,.22)!important;text-decoration:none!important}
+.versans-support-footer-link__icon{
+  width:29px;
+  height:29px;
+  flex-basis:29px;
+  background:#25d366;
+  color:#fff;
+}
+.versans-support-footer-link__icon svg{width:18px;height:18px}
+.versans-support-footer-standalone{
+  margin-top:18px;
+  display:flex;
+  justify-content:center;
+}
+
+/* Customer service inside the mobile navigation drawer */
+.nav__support-link{display:none!important}
+@media (max-width:760px){
+  .versans-support-float{display:none!important}
+  .nav__menu .nav__support-link{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    gap:10px!important;
+    margin:7px 0 5px!important;
+    padding:11px 12px!important;
+    border:1px solid rgba(37,211,102,.34)!important;
+    border-radius:10px!important;
+    background:rgba(37,211,102,.08)!important;
+    color:inherit!important;
+    font-weight:700!important;
+  }
+  .nav__menu .nav__support-link::after{display:none!important}
+  .nav__support-link .versans-support-icon{
+    width:29px;
+    height:29px;
+    flex-basis:29px;
+    background:#25d366;
+    color:#fff;
+  }
+  .nav__support-link .versans-support-icon svg{width:18px;height:18px}
+  .versans-support-footer-link{
+    min-height:44px;
+    padding:7px 12px 7px 9px!important;
+  }
+}

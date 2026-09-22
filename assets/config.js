@@ -30,9 +30,9 @@ var STORE_CONFIG = {
 
   /* --- פרטי קשר (מופיעים בפוטר, בתקנון ובדף התודה) --------------------- */
   contact: {
-    email:     'hello@kindwords.co.il',
+    email:     'versanssupport@gmail.com',
     phone:     '',                       // לדוגמה: '050-0000000'
-    whatsapp:  '',                       // מספר בפורמט בינלאומי: '972500000000'
+    whatsapp:  '972546296037',            // מספר שירות לקוחות בפורמט בינלאומי
     instagram: '',                       // כתובת מלאה
     tiktok:    ''
   },

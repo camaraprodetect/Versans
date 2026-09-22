@@ -14,7 +14,7 @@
 
 const { STORE_CONFIG } = require('../assets/config.js');
 const { PRODUCTS } = require('../assets/products.js');
-const GLASSES_PRICING = require('../assets/glasses-pricing.js');
+const PRICING = require('../assets/pricing.js');
 
 const HYP_ENDPOINT = 'https://icom.yaad.net/p/';
 
@@ -217,55 +217,44 @@ function priceOrder(items, lang, coupon = null) {
   if (!lines.length) { const err = new Error('No valid items'); err.status = 400; throw err; }
 
   const subtotal = Number(lines.reduce((sum, l) => sum + l.total, 0).toFixed(2));
-  const unitPrices = [];
-  let glassesUnits = 0;
-  let hatsUnits = 0;
-  lines.forEach((line) => {
-    for (let i = 0; i < line.qty; i += 1) unitPrices.push(Number(line.price) || 0);
-    if (line.isGlasses) glassesUnits += line.qty;
-    if (line.isHats) hatsUnits += line.qty;
-  });
-
-  const secondItemDiscount = unitPrices.length >= 2
-    ? Number((Math.min(...unitPrices) * 0.25).toFixed(2))
-    : 0;
-  const glassesPairs = Math.floor(glassesUnits / 2);
-  const glassesBundleDiscount = GLASSES_PRICING.discountForUnits(glassesUnits, 139.9);
-  const hatsPairs = Math.floor(hatsUnits / 2);
-  const hatsBundleDiscount = Number((hatsPairs * 39.9).toFixed(2));
-  const useBundle = glassesPairs > 0 || hatsPairs > 0;
-  const discount = useBundle
-    ? Number((glassesBundleDiscount + hatsBundleDiscount).toFixed(2))
-    : secondItemDiscount;
-
-  const bundleLabels = [];
-  if (glassesPairs > 0) bundleLabels.push(lang === 'he' ? 'מבצע משקפיים - 2 ב־249.90 ₪' : 'Sunglasses offer - 2 for ₪249.90');
-  if (hatsPairs > 0) bundleLabels.push(lang === 'he' ? 'מבצע כובעים - 2 ב־239.90 ₪' : 'Hats offer - 2 for ₪239.90');
-  const discountLabel = useBundle
-    ? bundleLabels.join(' + ')
-    : (lang === 'he' ? '25% הנחה על המוצר השני' : '25% off the second item');
-
+  const freeOver = STORE_CONFIG.shipping.freeOver;
+  const shipping = (freeOver && subtotal >= freeOver) ? 0 : Number(STORE_CONFIG.shipping.flat);
   const couponPercent = coupon && Number(coupon.percent) > 0
     ? Math.min(100, Math.max(0, Number(coupon.percent)))
     : 0;
-  const couponBase = Number(Math.max(0, subtotal - discount).toFixed(2));
-  const couponDiscount = couponPercent > 0
-    ? Number((couponBase * couponPercent / 100).toFixed(2))
-    : 0;
-  const couponCode = couponDiscount > 0 ? clean(coupon.code, 40).toUpperCase() : '';
+  const priced = PRICING.calculate(lines, {
+    lang,
+    couponPercent,
+    couponCode: coupon && coupon.code ? clean(coupon.code, 40).toUpperCase() : '',
+    shipping
+  });
+  const discountLabel = (priced.discountRows || []).map((row) => row.label).join(' + ');
 
-  const freeOver = STORE_CONFIG.shipping.freeOver;
-  const shipping = (freeOver && subtotal >= freeOver) ? 0 : Number(STORE_CONFIG.shipping.flat);
-  const total = Number(Math.max(0, subtotal - discount - couponDiscount + shipping).toFixed(2));
-
-  return { lines, subtotal, discount, discountLabel, couponDiscount, couponPercent, couponCode, shipping, total };
+  return {
+    lines,
+    subtotal: priced.subtotal,
+    discount: priced.discount,
+    discountLabel,
+    discountRows: priced.discountRows || [],
+    bundleDiscount: priced.bundleDiscount,
+    secondItemDiscount: priced.secondItemDiscount,
+    couponDiscount: priced.couponDiscount,
+    couponPercent: priced.couponPercent,
+    couponCode: priced.couponCode,
+    shipping: priced.shipping,
+    total: priced.total,
+    totalSavings: priced.totalSavings
+  };
 }
 
 
 /* בונה את רשימת הפריטים לחשבונית של HYP */
 function invoiceRows(order) {
   const rows = order.lines.map((l, i) => `[${i}~${l.name.replace(/[~\[\]]/g, ' ')}~${l.qty}~${l.price}]`);
-  if (order.discount) rows.push(`[${rows.length}~${String(order.discountLabel || 'Discount').replace(/[~\[\]]/g, ' ')}~1~-${order.discount}]`);
+  (order.discountRows || []).forEach((discountRow) => {
+    if (!discountRow || !(Number(discountRow.amount) > 0)) return;
+    rows.push(`[${rows.length}~${String(discountRow.label || 'Discount').replace(/[~\[\]]/g, ' ')}~1~-${Number(discountRow.amount).toFixed(2)}]`);
+  });
   if (order.couponDiscount) rows.push(`[${rows.length}~Coupon ${String(order.couponCode || '').replace(/[~\[\]]/g, ' ')}~1~-${order.couponDiscount}]`);
   if (order.shipping) rows.push(`[${rows.length}~Shipping~1~${order.shipping}]`);
   return rows.join(';');

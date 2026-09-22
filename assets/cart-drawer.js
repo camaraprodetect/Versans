@@ -35,42 +35,64 @@
     return variantImg || (line.necklace ? line.necklace.image : ((p.images && p.images.length) ? p.images[0] : (p.cardImage || '')));
   }
 
-  function promotion(lines) {
-    var prices = [];
-    var glassesUnits = 0;
-    var hatsUnits = 0;
-    lines.forEach(function (line) {
-      for (var i = 0; i < line.qty; i += 1) prices.push(Number(line.unitPrice) || 0);
-      var categories = Array.isArray(line.p.categories) && line.p.categories.length ? line.p.categories : [line.p.category];
-      if (categories.indexOf('glasses') !== -1) glassesUnits += line.qty;
-      if (categories.indexOf('hats') !== -1) hatsUnits += line.qty;
-    });
-
-    var glassesPairs = Math.floor(glassesUnits / 2);
-    var hatsPairs = Math.floor(hatsUnits / 2);
-    if (glassesPairs > 0 || hatsPairs > 0) {
-      var glassesDiscount = window.VERSANS_GLASSES_PRICING
-        ? window.VERSANS_GLASSES_PRICING.discountForUnits(glassesUnits, 139.9)
-        : Math.round(glassesPairs * 29.9 * 100) / 100;
-      var hatsDiscount = Math.round(hatsPairs * 39.9 * 100) / 100;
-      var labels = [];
-      if (glassesPairs) labels.push(lang === 'he' ? 'מבצע משקפיים - 2 ב־249.90 ₪' : 'Sunglasses offer - 2 for ₪249.90');
-      if (hatsPairs) labels.push(lang === 'he' ? 'מבצע כובעים - 2 ב־239.90 ₪' : 'Hats offer - 2 for ₪239.90');
-      return { amount: Math.round((glassesDiscount + hatsDiscount) * 100) / 100, label: labels.join(' + ') };
+  function pricingSummary(lines) {
+    var subtotal = lines.reduce(function (sum, line) { return sum + line.unitPrice * line.qty; }, 0);
+    var shipping = subtotal && CFG.shipping ? ((CFG.shipping.freeOver && subtotal >= CFG.shipping.freeOver) ? 0 : Number(CFG.shipping.flat || 0)) : 0;
+    var pricing = window.VERSANS_PRICING;
+    if (!pricing || !pricing.calculate) {
+      return { subtotal: subtotal, discount: 0, discountRows: [], couponDiscount: 0, shipping: shipping, total: subtotal + shipping, totalSavings: 0 };
     }
-
-    if (prices.length >= 2) {
-      var cheapest = Math.min.apply(Math, prices);
-      return { amount: Math.round(cheapest * 25) / 100, label: lang === 'he' ? '25% הנחה על המוצר השני' : '25% off the second item' };
-    }
-    return { amount: 0, label: '' };
+    return pricing.calculate(lines, { lang: lang, shipping: shipping });
   }
 
-  function totals(lines) {
-    var subtotal = lines.reduce(function (sum, line) { return sum + line.unitPrice * line.qty; }, 0);
-    var promo = promotion(lines);
-    var shipping = subtotal && CFG.shipping ? ((CFG.shipping.freeOver && subtotal >= CFG.shipping.freeOver) ? 0 : Number(CFG.shipping.flat || 0)) : 0;
-    return { subtotal: subtotal, discount: promo.amount, promoLabel: promo.label, shipping: shipping, total: Math.max(0, subtotal - promo.amount + shipping) };
+  function secondItemDetailsHtml(row) {
+    if (!row || row.type !== 'second-item' || !Array.isArray(row.details) || !row.details.length) return '';
+    return '<div class="cart-discount-items">' + row.details.map(function (detail) {
+      return '<div class="cart-discount-item">' +
+        '<span class="cart-discount-item__name">' + esc(detail.label) + '</span>' +
+        '<span class="cart-discount-item__saved">−' + money(detail.amount) + '</span>' +
+      '</div>';
+    }).join('') + '</div>';
+  }
+
+  function discountRowsHtml(summary) {
+    return (summary.discountRows || []).map(function (row) {
+      var labelHtml = esc(row.label);
+      if (row.type === 'second-item' && lang === 'he') {
+        labelHtml = labelHtml.replace('כל', '<strong>כל</strong>');
+      }
+      return '<div class="cart-discount-group">' +
+        '<div class="sum sum--discount"><span>' + labelHtml + '</span><span>−' + money(row.amount) + '</span></div>' +
+        secondItemDetailsHtml(row) +
+      '</div>';
+    }).join('');
+  }
+
+  function savingsHtml(summary) {
+    if (!(summary.totalSavings > 0)) return '';
+    return '<div class="cart-savings-total"><span>' + (lang === 'he' ? 'סה״כ חסכתם' : 'Total savings') + '</span><strong>' + money(summary.totalSavings) + '</strong></div>';
+  }
+
+  function savingsBreakdownHtml(summary) {
+    if (!(summary.totalSavings > 0)) return '';
+    return '' +
+      '<button class="cart-savings-toggle" type="button" data-cart-savings-toggle aria-expanded="false">' +
+        '<span>' + (lang === 'he' ? 'על מה חסכתי?' : 'How did I save?') + '</span>' +
+        '<span class="cart-savings-toggle__icon" aria-hidden="true">+</span>' +
+      '</button>' +
+      '<div class="cart-savings-breakdown" data-cart-savings-breakdown hidden>' +
+        discountRowsHtml(summary) +
+        savingsHtml(summary) +
+      '</div>';
+  }
+
+  function pricingCardHtml(summary) {
+    return '<div class="cart-pricing-card cart-pricing-card--compact">' +
+      '<div class="sum cart-summary-subtotal"><span>' + (lang === 'he' ? 'סכום ביניים' : 'Subtotal') + '</span><span>' + money(summary.subtotal) + '</span></div>' +
+      '<div class="sum cart-summary-shipping"><span>' + (lang === 'he' ? 'משלוח' : 'Shipping') + '</span><span>' + (summary.shipping ? money(summary.shipping) : (lang === 'he' ? 'חינם' : 'Free')) + '</span></div>' +
+      '<div class="sum sum--payable"><span>' + (lang === 'he' ? 'לתשלום' : 'To pay') + '</span><strong>' + money(summary.total) + '</strong></div>' +
+      savingsBreakdownHtml(summary) +
+    '</div>';
   }
 
   function ensureDrawer() {
@@ -146,14 +168,11 @@
       '</div>';
     }).join('');
 
-    var sum = totals(lines);
+    var sum = pricingSummary(lines);
     foot.hidden = false;
     foot.innerHTML = '' +
-      '<div class="sum"><span>' + (lang === 'he' ? 'סכום ביניים' : 'Subtotal') + '</span><span>' + money(sum.subtotal) + '</span></div>' +
-      (sum.discount > 0 ? '<div class="sum sum--discount"><span>' + esc(sum.promoLabel) + '</span><span>−' + money(sum.discount) + '</span></div>' : '') +
-      '<div class="sum"><span>' + (lang === 'he' ? 'משלוח' : 'Shipping') + '</span><span>' + (sum.shipping ? money(sum.shipping) : (lang === 'he' ? 'חינם' : 'Free')) + '</span></div>' +
-      '<div class="sum sum--total"><span>' + (lang === 'he' ? 'סה״כ' : 'Total') + '</span><span>' + money(sum.total) + '</span></div>' +
-      '<button class="btn btn--primary btn--block" type="button" data-global-cart-checkout style="margin-top:1rem">' + (lang === 'he' ? 'לתשלום מאובטח' : 'Secure checkout') + '</button>';
+      pricingCardHtml(sum) +
+      '<button class="btn btn--primary btn--block cart-checkout-cta" type="button" data-global-cart-checkout>' + (lang === 'he' ? 'לתשלום מאובטח' : 'Secure checkout') + '</button>';
   }
 
   function open() {
@@ -181,6 +200,19 @@
 
     var closeButton = event.target.closest && event.target.closest('[data-global-cart-close]');
     if (closeButton) { event.preventDefault(); close(); return; }
+
+    var savingsToggle = event.target.closest && event.target.closest('[data-cart-savings-toggle]');
+    if (savingsToggle) {
+      event.preventDefault();
+      var card = savingsToggle.closest('.cart-pricing-card');
+      var breakdown = card && card.querySelector('[data-cart-savings-breakdown]');
+      var willOpen = !!(breakdown && breakdown.hidden);
+      if (breakdown) breakdown.hidden = !willOpen;
+      savingsToggle.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+      var savingsIcon = savingsToggle.querySelector('.cart-savings-toggle__icon');
+      if (savingsIcon) savingsIcon.textContent = willOpen ? '−' : '+';
+      return;
+    }
 
     var qtyButton = event.target.closest && event.target.closest('[data-global-cart-key][data-global-cart-delta]');
     if (qtyButton) {

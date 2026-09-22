@@ -1901,7 +1901,6 @@ function arrangeProduct20CompactOptions() {
     var out = [];
     if (c.email) out.push('<li><a href="mailto:' + esc(c.email) + '">' + esc(c.email) + '</a></li>');
     if (c.phone) out.push('<li><a href="tel:' + esc(c.phone.replace(/\s|-/g, '')) + '">' + esc(c.phone) + '</a></li>');
-    if (c.whatsapp) out.push('<li><a href="https://wa.me/' + esc(c.whatsapp) + '" rel="noopener">WhatsApp</a></li>');
     $('#productFootContact').innerHTML = out.join('');
   }
 

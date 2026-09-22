@@ -94,8 +94,64 @@
     };
   }
 
+  function canonicalize(items) {
+    var source = Array.isArray(items) ? items : [];
+    var candidates = source.map(function (item) {
+      if (!item || typeof item !== 'object' || !item.id) return null;
+      var qty = parseInt(item.qty, 10);
+      if (!Number.isFinite(qty) || qty <= 0) return null;
+      var copy = Object.assign({}, item);
+      copy.qty = qty;
+      return copy;
+    }).filter(Boolean);
+
+    /* If product data is unavailable, preserve positive rows rather than
+       risking a destructive cleanup. Every storefront page loads products.js
+       before this file, but this makes the state layer fail-safe. */
+    if (!PRODUCTS.length) return candidates;
+
+    /* Remove stale/invalid rows. Run a few passes so dependent products are
+       also removed if the companion line they depended on was invalid. */
+    for (var pass = 0; pass < 3; pass += 1) {
+      var filtered = candidates.filter(function (item) { return !!lineFor(item, candidates); });
+      if (filtered.length === candidates.length) {
+        candidates = filtered;
+        break;
+      }
+      candidates = filtered;
+    }
+
+    /* The same configured product must exist as one cart line only. Old
+       versions of the site could leave duplicate rows behind. */
+    var merged = [];
+    var byKey = Object.create(null);
+    candidates.forEach(function (item) {
+      var key = itemKey(item);
+      if (!key) return;
+      if (byKey[key]) {
+        byKey[key].qty += item.qty;
+        return;
+      }
+      item.key = key;
+      byKey[key] = item;
+      merged.push(item);
+    });
+    return merged;
+  }
+
+  function repairStorage() {
+    var raw = readRaw();
+    var safe = canonicalize(raw);
+    try {
+      if (JSON.stringify(raw) !== JSON.stringify(safe)) {
+        localStorage.setItem(CART_KEY, JSON.stringify(safe));
+      }
+    } catch (_) {}
+    return safe;
+  }
+
   function lines(items) {
-    var source = Array.isArray(items) ? items : readRaw();
+    var source = Array.isArray(items) ? canonicalize(items) : repairStorage();
     return source.map(function (item) { return lineFor(item, source); }).filter(Boolean);
   }
 
@@ -109,7 +165,7 @@
   }
 
   function write(items) {
-    var safe = Array.isArray(items) ? items : [];
+    var safe = canonicalize(Array.isArray(items) ? items : []);
     try { localStorage.setItem(CART_KEY, JSON.stringify(safe)); } catch (_) {}
     notify();
     return safe;
@@ -128,7 +184,7 @@
   }
 
   function setQty(key, nextQty) {
-    var items = readRaw();
+    var items = repairStorage();
     var q = parseInt(nextQty, 10) || 0;
     items = items.filter(function (item) {
       if (itemKey(item) !== key) return true;
@@ -142,8 +198,9 @@
 
   window.VERSANS_CART_STATE = {
     key: CART_KEY,
-    read: readRaw,
+    read: repairStorage,
     write: write,
+    canonicalize: canonicalize,
     lines: lines,
     count: count,
     itemKey: itemKey,
@@ -162,5 +219,6 @@
   });
   window.addEventListener('versans:cart-changed', function () { syncBadge(); });
 
+  repairStorage();
   syncBadge();
 })();
