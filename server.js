@@ -10,8 +10,8 @@ const { createPaymentUrl, verifyPayment, priceOrder } = require('./api/_hyp.js')
 const { PRODUCTS } = require('./assets/products.js');
 const ROUTES = require('./assets/routes.js');
 const { normalizeAdminRange, normalizeStoredOrderItems, aggregatePaidOrders } = require('./lib/admin-analytics.js');
-const { absoluteUrl, isEmailConfigured, productAnnouncementEmail, sendEmail, welcomeEmail } = require('./lib/email.js');
-const { sendPaidOrderToGoogleSheet } = require('./lib/google-orders.js');
+const { absoluteUrl, isEmailConfigured, orderConfirmationEmail, productAnnouncementEmail, sendEmail, welcomeEmail } = require('./lib/email.js');
+const { buildPaidOrderPayload, sendPaidOrderToGoogleSheet } = require('./lib/google-orders.js');
 
 const ROOT = __dirname;
 const DATA_DIR = process.env.VERSANS_DATA_DIR
@@ -491,6 +491,22 @@ async function sendWelcomeForUser(user) {
   });
   await database.markWelcomeEmailSent(user.id, Date.now());
   return result;
+}
+
+
+async function sendOrderConfirmationForOrder(order) {
+  if (!order || !isEmailConfigured()) return false;
+  const payload = buildPaidOrderPayload(order);
+  const to = normalizeEmail(payload.customerEmail || (payload.customer && payload.customer.email));
+  if (!validEmail(to)) return false;
+  const message = orderConfirmationEmail(payload);
+  return sendEmail({
+    to,
+    subject: message.subject,
+    html: message.html,
+    text: message.text,
+    idempotencyKey: `order-confirmation-${payload.orderRef}`
+  });
 }
 
 async function processPendingWelcomeEmails() {
@@ -1692,6 +1708,9 @@ const server = http.createServer(async (req, res) => {
           sendPaidOrderToGoogleSheet(demoOrder).catch((sheetErr) => {
             console.error(`Google demo order sync failed for ${demoOrder.order_ref}:`, sheetErr);
           });
+          sendOrderConfirmationForOrder(demoOrder).catch((emailErr) => {
+            console.error(`Demo order confirmation email failed for ${demoOrder.order_ref}:`, emailErr && emailErr.message ? emailErr.message : emailErr);
+          });
         });
         return;
       }
@@ -1800,15 +1819,21 @@ const server = http.createServer(async (req, res) => {
             // turn a successful customer payment into a failed checkout response.
             // The Apps Script endpoint de-duplicates by orderRef, so refreshing the
             // thank-you page safely retries a failed sync without creating duplicates.
+            const paidOrder = {
+              ...order,
+              status: 'paid',
+              paid_at: order.paid_at || now,
+              updated_at: now
+            };
             try {
-              await sendPaidOrderToGoogleSheet({
-                ...order,
-                status: 'paid',
-                paid_at: order.paid_at || now,
-                updated_at: now
-              });
+              await sendPaidOrderToGoogleSheet(paidOrder);
             } catch (sheetErr) {
               console.error(`Google order sync failed for ${order.order_ref}:`, sheetErr);
+            }
+            try {
+              await sendOrderConfirmationForOrder(paidOrder);
+            } catch (emailErr) {
+              console.error(`Order confirmation email failed for ${order.order_ref}:`, emailErr && emailErr.message ? emailErr.message : emailErr);
             }
           }
         } else {
