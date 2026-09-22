@@ -21,7 +21,7 @@
 
 <header class="nav">
   <div class="nav__inner container">
-    <a class="brand" href="/">
+    <a class="brand" href="/shop#top">
       <span class="brand__logo"><img src="images/VerSansLogoBlackJewlery.png" alt="VerSans" width="800" height="800" decoding="async"></span><span class="brand__sr" data-brand aria-hidden="true" dir="ltr">VerSans</span>
     </a>
     <div class="nav__actions">
@@ -76,7 +76,7 @@
       '<h1>' + (ok ? t('ty.ok.t') : t('ty.fail.t')) + '</h1>' +
       '<p>' + (ok ? t('ty.ok.d') : t('ty.fail.d')) + '</p>' +
       (ok && orderId ? '<p class="result__order">' + t('ty.order') + ': ' + orderId + '</p>' : '') +
-      '<p class="result__cta"><a class="btn btn--primary" href="/">' + t('ty.home') + '</a></p>';
+      '<p class="result__cta"><a class="btn btn--primary" href="/shop#shop">' + t('ty.home') + '</a></p>';
     document.getElementById('result').innerHTML = html;
     if (ok) {
       try { localStorage.removeItem('kw_cart'); localStorage.removeItem('kw_pending'); } catch (e) {}

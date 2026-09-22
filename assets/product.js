@@ -38,7 +38,16 @@
 
   function $(s) { return document.querySelector(s); }
   function read(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
-  function save(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  function save(k, v) {
+    try {
+      if (k === LS.cart && window.VERSANS_CART_STATE) {
+        var parsed = JSON.parse(v || '[]');
+        window.VERSANS_CART_STATE.write(Array.isArray(parsed) ? parsed : []);
+        return;
+      }
+      localStorage.setItem(k, v);
+    } catch (e) {}
+  }
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
@@ -160,6 +169,7 @@
     return null;
   }
   function cart() {
+    if (window.VERSANS_CART_STATE) return window.VERSANS_CART_STATE.read();
     try { return JSON.parse(read(LS.cart) || '[]'); } catch (e) { return []; }
   }
   function readPendingBundle() {
@@ -188,9 +198,11 @@
     return item.key || (item.id + '|' + (item.necklace || '') + '|' + (item.box || '') + '|' + (item.size || '') + '|' + (item.color || '') + '|pack:' + (item.packaging || '') + '|' + (item.customName || '') + '|p:' + (item.customPhoto && item.customPhoto.assetId || '') + '|g:' + (item.greeting ? greetingFingerprint(item.greeting) : ''));
   }
   function cartCount(items) {
+    if (window.VERSANS_CART_STATE) return window.VERSANS_CART_STATE.count(items);
     return items.reduce(function (sum, item) { return sum + (parseInt(item.qty, 10) || 0); }, 0);
   }
   function updateCartCount() {
+    if (window.VERSANS_CART_STATE) { window.VERSANS_CART_STATE.syncBadge(); return; }
     var el = $('#cartCount');
     if (!el) return;
     var n = cartCount(cart());
@@ -1749,7 +1761,7 @@ function arrangeProduct20CompactOptions() {
        added to the necklace price a second time on this page. */
     if (isCompanionPickerFlow()) selectedPackagingId = null;
     if (!product) {
-      window.location.href = '/#shop';
+      window.location.href = '/shop#shop';
       return;
     }
 
@@ -1842,20 +1854,10 @@ function arrangeProduct20CompactOptions() {
       messageCard.hidden = true;
     }
 
-    var detailsAccordion = document.querySelector('.product-details-accordion');
-    var detailsList = $('#productDetails');
-    if (isHatsProduct(product)) {
-      if (detailsAccordion) detailsAccordion.hidden = true;
-      if (detailsList) detailsList.innerHTML = '';
-    } else {
-      if (detailsAccordion) detailsAccordion.hidden = false;
-      var details = product.details && product.details.he || [];
-      if (detailsList) {
-        detailsList.innerHTML = details.map(function (detail) {
-          return '<div class="product-detail-row"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12.5l5 5L20 6.5"/></svg><span>' + esc(detail) + '</span></div>';
-        }).join('');
-      }
-    }
+    var details = product.details && product.details.he || [];
+    $('#productDetails').innerHTML = details.map(function (detail) {
+      return '<div class="product-detail-row"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12.5l5 5L20 6.5"/></svg><span>' + esc(detail) + '</span></div>';
+    }).join('');
 
     $('#qtyValue').textContent = qty;
     var assureShip = $('#assureShip');
@@ -2024,6 +2026,13 @@ function arrangeProduct20CompactOptions() {
       renderRequiredCompanion();
       updatePriceAndPurchase();
     }
+  });
+  window.addEventListener('pageshow', function () { updateCartCount(); });
+  window.addEventListener('focus', function () { updateCartCount(); });
+  window.addEventListener('versans:cart-changed', function () {
+    updateCartCount();
+    renderRequiredCompanion();
+    updatePriceAndPurchase();
   });
 
   window.addEventListener('scroll', function () {

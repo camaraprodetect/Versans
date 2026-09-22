@@ -12,7 +12,7 @@ const TABLES = [
   {
     name: 'users',
     key: 'id',
-    columns: ['id','name','email','password_hash','is_verified_customer','verified_customer_at','created_at'],
+    columns: ['id','name','email','phone','password_hash','is_verified_customer','verified_customer_at','created_at'],
     numeric: ['id','is_verified_customer','verified_customer_at','created_at']
   },
   {
@@ -88,7 +88,9 @@ function snapshotSqlite(sqlitePath) {
         continue;
       }
       const order = descriptor.key === 'key' ? 'key' : `${descriptor.key}`;
-      snapshot[descriptor.name] = db.prepare(`SELECT ${descriptor.columns.join(', ')} FROM ${descriptor.name} ORDER BY ${order}`).all();
+      const availableColumns = new Set(db.prepare(`PRAGMA table_info(${descriptor.name})`).all().map((column) => column.name));
+      const selectColumns = descriptor.columns.map((column) => availableColumns.has(column) ? column : `NULL AS ${column}`);
+      snapshot[descriptor.name] = db.prepare(`SELECT ${selectColumns.join(', ')} FROM ${descriptor.name} ORDER BY ${order}`).all();
     }
     return snapshot;
   } finally {

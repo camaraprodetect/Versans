@@ -130,21 +130,24 @@
     try {
       var rawHref = anchor.getAttribute('href') || anchor.href;
 
-      /* The product document is visually masked to `/`. A link such as /#shop
-         would therefore be treated by the browser as a same-document hash jump,
-         leaving the product DOM on screen. Route root-fragment links through the
-         dedicated /shop document route so the home/catalog document is really
-         loaded first; url-mask.js hides /shop again immediately afterwards. */
-      if (document.body && document.body.classList.contains('product-page-body') && /^\/#/.test(rawHref)) {
-        var fragment = rawHref.slice(1);
-        var documentRoute = '/shop' + fragment;
+      /* Every non-home document is visually masked to `/`. Home-section links such
+         as /#shop would otherwise become same-document hash jumps and leave the
+         current DOM (account/product/policies/etc.) on screen. Force a real load
+         through /shop, which the server maps to index.html, then url-mask.js hides
+         the route again after the storefront has initialized. */
+      var previewUrl = new URL(rawHref, location.origin + currentRoute);
+      var isHomeDocument = !!(document.body && document.body.classList.contains('home-page'));
+      var homeFragments = { '#shop':1, '#shopTitle':1, '#top':1, '#how':1, '#faq':1, '#contact':1 };
+      if (!isHomeDocument && previewUrl.origin === location.origin && previewUrl.pathname === '/' &&
+          (!previewUrl.hash || homeFragments[previewUrl.hash])) {
+        var documentRoute = '/shop' + (previewUrl.search || '') + (previewUrl.hash || '');
         event.preventDefault();
         save(documentRoute);
         location.assign(documentRoute);
         return;
       }
 
-      var url = new URL(rawHref, location.origin + currentRoute);
+      var url = previewUrl;
       if (url.origin !== location.origin) return;
       save(url.pathname + url.search + url.hash);
     } catch (_) {}

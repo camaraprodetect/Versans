@@ -701,6 +701,7 @@
         { label: 'לקוח', render: function (row) { return cellPrimary(row.name || row.email, row.email); } },
         { label: 'User ID', render: function (row) { return make('span', 'admin-table__mono', '#' + row.id); } },
         { label: 'טלפון', render: function (row) { return text(row.phone); } },
+        { label: 'דיוור', render: function (row) { return row.marketingOptIn ? badge('מאושר', 'verified') : badge('לא', 'neutral'); } },
         { label: 'הזמנות Paid', render: function (row) { return numberFmt(row.paidOrderCount); } },
         { label: 'סה״כ הוצאות', render: function (row) { return make('strong', 'admin-table__strong', moneyAgorot(row.paidSpendAgorot)); } },
         { label: 'Paid אחרון', render: function (row) { return dateTime(row.lastPaidAt); } },

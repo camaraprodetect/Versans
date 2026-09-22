@@ -5,21 +5,21 @@
     he: {
       loginTitle: 'כניסה לחשבון', loginLead: 'התחברו כדי לנהל את החשבון שלכם ב־VerSans.',
       registerTitle: 'יצירת חשבון', registerLead: 'כמה שניות ואתם בפנים. הפרטים נשמרים באופן מאובטח.',
-      email: 'אימייל', password: 'סיסמה', name: 'שם מלא', confirm: 'אימות סיסמה',
+      email: 'אימייל', phone: 'מספר טלפון', password: 'סיסמה', name: 'שם מלא', confirm: 'אימות סיסמה',
       login: 'התחברות', register: 'יצירת חשבון', show: 'הצג', hide: 'הסתר',
-      invalidCredentials: 'האימייל או הסיסמה אינם נכונים.', invalidEmail: 'יש להזין כתובת אימייל תקינה.',
+      invalidCredentials: 'האימייל או הסיסמה אינם נכונים.', invalidEmail: 'יש להזין כתובת אימייל תקינה.', invalidPhone: 'יש להזין מספר טלפון תקין.', termsRequired: 'כדי ליצור חשבון צריך לאשר את תנאי השימוש ומדיניות הפרטיות.',
       invalidName: 'יש להזין שם של לפחות 2 תווים.', invalidPassword: 'הסיסמה חייבת להכיל לפחות 8 תווים.',
       mismatch: 'הסיסמאות אינן תואמות.', exists: 'כבר קיים חשבון עם האימייל הזה.', tooMany: 'בוצעו יותר מדי ניסיונות. נסו שוב מאוחר יותר.',
       generic: 'משהו השתבש. נסו שוב.', loading: 'רק רגע…', accountTitle: 'החשבון שלי', accountLead: 'פרטי החשבון המחובר כרגע.',
-      logout: 'התנתקות', shop: 'חזרה לחנות', memberSince: 'נרשמת בתאריך', accountEmail: 'אימייל', accountName: 'שם',
+      logout: 'התנתקות', shop: 'חזרה לחנות', memberSince: 'נרשמת בתאריך', accountEmail: 'אימייל', accountPhone: 'טלפון', accountName: 'שם',
       visualTitle: 'המתנה שלכם. החשבון שלכם.', visualText: 'חשבון VerSans מאפשר לנו לזהות אתכם בצורה מאובטחת ולהוסיף בהמשך היסטוריית הזמנות, ביקורות והטבות.',
       newHere: 'עדיין אין לכם חשבון?', createNow: 'צרו חשבון', already: 'כבר רשומים?', loginNow: 'התחברו', back: 'חזרה לחנות', passHint: 'לפחות 8 תווים.'
     },
     en: {
       loginTitle: 'Sign in', loginLead: 'Sign in to manage your VerSans account.', registerTitle: 'Create account', registerLead: 'A few seconds and you are in. Your details are stored securely.',
-      email: 'Email', password: 'Password', name: 'Full name', confirm: 'Confirm password', login: 'Sign in', register: 'Create account', show: 'Show', hide: 'Hide',
-      invalidCredentials: 'The email or password is incorrect.', invalidEmail: 'Enter a valid email address.', invalidName: 'Enter a name with at least 2 characters.', invalidPassword: 'Password must be at least 8 characters.', mismatch: 'Passwords do not match.', exists: 'An account with this email already exists.', tooMany: 'Too many attempts. Try again later.', generic: 'Something went wrong. Try again.', loading: 'Please wait…',
-      accountTitle: 'My account', accountLead: 'Details for the account currently signed in.', logout: 'Log out', shop: 'Back to shop', memberSince: 'Member since', accountEmail: 'Email', accountName: 'Name',
+      email: 'Email', phone: 'Phone number', password: 'Password', name: 'Full name', confirm: 'Confirm password', login: 'Sign in', register: 'Create account', show: 'Show', hide: 'Hide',
+      invalidCredentials: 'The email or password is incorrect.', invalidEmail: 'Enter a valid email address.', invalidPhone: 'Enter a valid phone number.', termsRequired: 'You must accept the Terms of Service and Privacy Policy to create an account.', invalidName: 'Enter a name with at least 2 characters.', invalidPassword: 'Password must be at least 8 characters.', mismatch: 'Passwords do not match.', exists: 'An account with this email already exists.', tooMany: 'Too many attempts. Try again later.', generic: 'Something went wrong. Try again.', loading: 'Please wait…',
+      accountTitle: 'My account', accountLead: 'Details for the account currently signed in.', logout: 'Log out', shop: 'Back to shop', memberSince: 'Member since', accountEmail: 'Email', accountPhone: 'Phone', accountName: 'Name',
       visualTitle: 'Your gift. Your account.', visualText: 'A VerSans account securely identifies you and gives us a foundation for order history, reviews and benefits later on.',
       newHere: 'New here?', createNow: 'Create an account', already: 'Already registered?', loginNow: 'Sign in', back: 'Back to shop', passHint: 'At least 8 characters.'
     }
@@ -41,11 +41,11 @@
       setText('#switchPrefix', 'newHere'); setText('#switchLink', 'createNow');
       document.title = 'VerSans';
     } else if (page === 'register') {
-      setText('#authTitle', 'registerTitle'); setText('#authLead', 'registerLead'); setText('[for="name"]', 'name'); setText('[for="email"]', 'email'); setText('[for="password"]', 'password'); setText('[for="confirmPassword"]', 'confirm'); setText('#passwordHint', 'passHint'); setText('#authSubmitText', 'register');
+      setText('#authTitle', 'registerTitle'); setText('#authLead', 'registerLead'); setText('[for="name"]', 'name'); setText('[for="email"]', 'email'); setText('[for="phone"]', 'phone'); setText('[for="password"]', 'password'); setText('[for="confirmPassword"]', 'confirm'); setText('#passwordHint', 'passHint'); setText('#authSubmitText', 'register');
       setText('#switchPrefix', 'already'); setText('#switchLink', 'loginNow');
       document.title = 'VerSans';
     } else if (page === 'account') {
-      setText('#authTitle', 'accountTitle'); setText('#authLead', 'accountLead'); setText('#labelName', 'accountName'); setText('#labelEmail', 'accountEmail'); setText('#labelSince', 'memberSince'); setText('#logoutText', 'logout'); setText('#shopText', 'shop');
+      setText('#authTitle', 'accountTitle'); setText('#authLead', 'accountLead'); setText('#labelName', 'accountName'); setText('#labelEmail', 'accountEmail'); setText('#labelPhone', 'accountPhone'); setText('#labelSince', 'memberSince'); setText('#logoutText', 'logout'); setText('#shopText', 'shop');
       document.title = 'VerSans';
     }
     var langBtn = qs('#authLangBtn'); if (langBtn) langBtn.textContent = lang === 'he' ? 'English' : 'עברית';
@@ -59,7 +59,7 @@
   }
 
   function errorText(code) {
-    return ({ invalid_credentials: t('invalidCredentials'), invalid_email: t('invalidEmail'), invalid_name: t('invalidName'), invalid_password: t('invalidPassword'), email_exists: t('exists'), too_many_attempts: t('tooMany') })[code] || t('generic');
+    return ({ invalid_credentials: t('invalidCredentials'), invalid_email: t('invalidEmail'), invalid_phone: t('invalidPhone'), invalid_name: t('invalidName'), invalid_password: t('invalidPassword'), terms_required: t('termsRequired'), email_exists: t('exists'), too_many_attempts: t('tooMany') })[code] || t('generic');
   }
 
   function safeNext() {
@@ -93,8 +93,15 @@
       if (password.length < 8) { setMessage(t('invalidPassword')); return; }
       if (page === 'register') {
         body.name = String((qs('#name') || {}).value || '').replace(/\s+/g, ' ').trim();
+        body.phone = String((qs('#phone') || {}).value || '').trim();
+        var compactPhone = body.phone.replace(/[\s().-]+/g, '');
+        var validPhone = /^0\d{8,9}$/.test(compactPhone) || /^972\d{8,9}$/.test(compactPhone) || /^\+\d{9,15}$/.test(compactPhone);
+        body.termsAccepted = !!((qs('#termsAccepted') || {}).checked);
+        body.marketingOptIn = !!((qs('#marketingOptIn') || {}).checked);
         if (body.name.length < 2) { setMessage(t('invalidName')); return; }
+        if (!validPhone) { setMessage(t('invalidPhone')); return; }
         if (password !== String((qs('#confirmPassword') || {}).value || '')) { setMessage(t('mismatch')); return; }
+        if (!body.termsAccepted) { setMessage(t('termsRequired')); return; }
       }
       submit.disabled = true; submit.classList.add('is-loading'); submitText.textContent = t('loading');
       post(page === 'register' ? '/api/auth/register' : '/api/auth/login', body).then(function (result) {
@@ -124,6 +131,10 @@
         if (!data.user) { location.replace('/login?next=%2Faccount'); return; }
         qs('#accountLoading').hidden = true; qs('#accountDetails').hidden = false;
         qs('#accountName').textContent = data.user.name; qs('#accountEmail').textContent = data.user.email;
+        var phone = String(data.user.phone || '').trim();
+        if (lang === 'he' && /^\+972\d{9}$/.test(phone)) phone = '0' + phone.slice(4);
+        if (/^05\d{8}$/.test(phone)) phone = phone.slice(0, 3) + '-' + phone.slice(3, 6) + '-' + phone.slice(6);
+        qs('#accountPhone').textContent = phone || (lang === 'he' ? 'לא הוזן' : 'Not provided');
         var d = new Date(data.user.createdAt); qs('#accountSince').textContent = new Intl.DateTimeFormat(lang === 'he' ? 'he-IL' : 'en-GB', { dateStyle: 'medium' }).format(d);
       }).catch(function () { location.replace('/login?next=%2Faccount'); });
     var logout = qs('#logoutBtn'); if (logout) logout.addEventListener('click', function () {

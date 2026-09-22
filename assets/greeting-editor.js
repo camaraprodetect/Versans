@@ -5,7 +5,7 @@
   var params=new URLSearchParams(window.location.search);
   var id=params.get('id');
   var product=(window.PRODUCTS||[]).find(function(p){return p.id===id||p.slug===id||p.urlSlug===id;});
-  if(!product||!/^product-[1-9]$/.test(String(product.slug||''))){window.location.href='/#shop';return;}
+  if(!product||!/^product-[1-9]$/.test(String(product.slug||''))){window.location.href='/shop#shop';return;}
 
   var lang='he';
   function L(v){return v?(v.he||''):'';}

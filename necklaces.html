@@ -24,20 +24,20 @@
 <div class="bar">בחרו שרשרת למארז LOVE FOREVER</div>
 <header class="nav is-stuck" id="nav">
   <div class="nav__inner container">
-    <a class="brand" href="/#top">
+    <a class="brand" href="/shop#top">
       <span class="brand__logo"><img src="images/VerSansLogoBlackJewlery.png" alt="VerSans" width="800" height="800" decoding="async"></span>
       <span class="brand__sr" aria-hidden="true" dir="ltr">VerSans</span>
     </a>
     <nav class="nav__menu necklace-picker-nav" aria-label="ראשי">
-      <a href="/#shop">החנות</a>
-      <a href="/#how">איך זה עובד</a>
-      <a href="/#contact">צרו קשר</a>
+      <a href="/shop#shop">החנות</a>
+      <a href="/shop#how">איך זה עובד</a>
+      <a href="/shop#contact">צרו קשר</a>
     </nav>
     <div class="nav__actions">
-      <a class="iconbtn cartbtn" href="/#shop" aria-label="סל הקניות">
+      <button class="iconbtn cartbtn" id="cartBtn" data-cart-open type="button" aria-label="סל הקניות">
         <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 7h12l1.2 12.2a1.5 1.5 0 0 1-1.5 1.8H6.3a1.5 1.5 0 0 1-1.5-1.8L6 7z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></svg>
         <span class="cartbtn__n" id="cartCount" hidden>0</span>
-      </a>
+      </button>
     </div>
   </div>
 </header>
@@ -70,8 +70,10 @@
 
 <script src="assets/config.js?v=20260914-pretty-urls-v1"></script>
 <script src="assets/products.js?v=20260914-pretty-urls-v1"></script>
+<script src="/assets/cart-state.js?v=20260922-cart-sync-v1"></script>
+<script src="/assets/cart-drawer.js?v=20260922-cart-drawer-v1"></script>
 <script src="assets/routes.js?v=20260914-pretty-urls-v1"></script>
-<script src="assets/necklaces.js?v=20260914-pretty-urls-v1"></script>
+<script src="assets/necklaces.js?v=20260922-cart-sync-v1"></script>
   <script src="/assets/presence.js?v=20260915-presence-v1"></script>
 </body>
 </html>

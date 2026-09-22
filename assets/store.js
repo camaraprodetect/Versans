@@ -20,7 +20,7 @@
 
   var state = {
     lang: 'he',
-    cart: JSON.parse(read(LS.cart) || '[]'),
+    cart: window.VERSANS_CART_STATE ? window.VERSANS_CART_STATE.read() : JSON.parse(read(LS.cart) || '[]'),
     filter: 'all',
     openFilterGroup: null,
     catalogFilters: { hatGroups: [], colors: [], priceMin: '', priceMax: '' },
@@ -106,11 +106,14 @@
     var wrap = ensureCatalogLoadMore(grid);
     var hasMore = catalogHasMore(total, visible);
     var hasLess = catalogBatchesShown > 1 && Number(total) > 0;
+    var isHatsCatalog = state.filter === 'hats';
     wrap.hidden = !hasMore && !hasLess;
     wrap.classList.toggle('catalog-load-more--both', hasMore && hasLess);
 
     var moreButton = $('[data-catalog-load-more]', wrap);
     if (moreButton) {
+      var moreLabel = moreButton.querySelector('span');
+      if (moreLabel) moreLabel.textContent = isHatsCatalog ? 'עוד כובעים' : 'עוד מוצרים';
       moreButton.hidden = !hasMore;
       moreButton.setAttribute('aria-hidden', hasMore ? 'false' : 'true');
       moreButton.disabled = !hasMore;
@@ -118,6 +121,8 @@
 
     var lessButton = $('[data-catalog-load-less]', wrap);
     if (lessButton) {
+      var lessLabel = lessButton.querySelector('span');
+      if (lessLabel) lessLabel.textContent = isHatsCatalog ? 'פחות כובעים' : 'פחות מוצרים';
       lessButton.hidden = !hasLess;
       lessButton.setAttribute('aria-hidden', hasLess ? 'false' : 'true');
       lessButton.disabled = !hasLess;
@@ -179,6 +184,7 @@
     { key: 'gray', label: 'אפור', swatch: '#777c82', terms: ['אפור', 'gray', 'grey'] },
     { key: 'brown', label: 'חום', swatch: '#7a513d', terms: ['חום', 'brown'] },
     { key: 'red', label: 'אדום', swatch: '#a93434', terms: ['אדום', 'red'] },
+    { key: 'orange', label: 'כתום', swatch: '#e87524', terms: ['כתום', 'orange'] },
     { key: 'beige', label: 'בז׳', swatch: '#d8c6a6', terms: ['בז', 'beige'] },
     { key: 'transparent', label: 'שקוף', swatch: 'linear-gradient(135deg,#fff 0 45%,#d9e1e7 45% 55%,#fff 55% 100%)', terms: ['שקוף', 'transparent', 'clear'] }
   ];
@@ -574,7 +580,14 @@
   function renderFilters() {
     var wrap = $('#filters');
     if (!wrap) return;
-    wrap.classList.toggle('filters--hats', state.filter === 'hats');
+    var isHatsFilter = state.filter === 'hats';
+    wrap.classList.toggle('filters--hats', isHatsFilter);
+
+    /* Keep the hats filter row scoped only to the hats collection. This lets
+       the hats-specific layout stay exactly as wide as the collection banner
+       without affecting the filters in the other collections. */
+    var filterRow = wrap.closest('.shop__filter-row');
+    if (filterRow) filterRow.classList.toggle('shop__filter-row--hats', isHatsFilter);
 
     var collectionProducts = currentCollectionProducts();
     var colors = availableColorOptions(collectionProducts);
@@ -628,6 +641,17 @@
 
     var clearHtml = '<button type="button" class="catalog-filter-clear" data-clear-product-filters' + (hasActiveFilters ? '' : ' hidden') + '>נקה סינון</button>';
     wrap.innerHTML = sections.length ? (clearHtml + sections.join('')) : '<p class="catalog-filter-empty">אין סינונים נוספים בקטגוריה הזו.</p>';
+
+    /* The panel's open/closed state is controlled only by the real hidden
+       attribute, so the button and icon can never get out of sync with it. */
+    var filterToggle = $('[data-catalog-filter-toggle]');
+    if (filterToggle) {
+      var panelOpen = !wrap.hidden;
+      filterToggle.setAttribute('aria-expanded', panelOpen ? 'true' : 'false');
+      var filterToggleIcon = $('[data-catalog-filter-toggle-icon]', filterToggle);
+      if (filterToggleIcon) filterToggleIcon.textContent = panelOpen ? '−' : '+';
+    }
+
     renderCollectionNav();
     renderGlassesCollectionBanner();
   }
@@ -779,7 +803,7 @@
   var HAT_COLLECTION_GROUPS = [
     { key: 'los-angeles-dodgers', title: 'New Era X Los Angeles Dodgers', slugs: ['product-100', 'product-101', 'product-102', 'product-108', 'product-109', 'product-110', 'product-111'] },
     { key: 'jon-stan', title: 'New Era X Jon Stan', slugs: ['product-103', 'product-104', 'product-105', 'product-106', 'product-107'] },
-    { key: 'new-york-yankees', title: 'New Era X New York Yankees', slugs: ['product-112', 'product-113', 'product-114', 'product-115', 'product-116', 'product-117', 'product-118', 'product-119', 'product-120', 'product-121', 'product-122', 'product-123', 'product-124', 'product-125', 'product-126', 'product-127', 'product-128'] },
+    { key: 'new-york-yankees', title: 'New Era X New York Yankees', slugs: ['product-112', 'product-113', 'product-114', 'product-115', 'product-116', 'product-117', 'product-118', 'product-119', 'product-120', 'product-121', 'product-122', 'product-123', 'product-124', 'product-125', 'product-126', 'product-127', 'product-128', 'product-166', 'product-167', 'product-168', 'product-169', 'product-170', 'product-171', 'product-172'] },
     { key: 'anaheim-angels', title: 'New Era X Anaheim Angels', slugs: ['product-129', 'product-130', 'product-131', 'product-132', 'product-133'] },
     { key: 'atlanta-braves', title: 'New Era X Atlanta Braves', slugs: ['product-134', 'product-139', 'product-140', 'product-141'] },
     { key: 'milwaukee-bucks', title: 'New Era X Milwaukee Bucks', slugs: ['product-135', 'product-136', 'product-137', 'product-138'] },
@@ -1016,9 +1040,19 @@
     grid.classList.remove('grid--hat-groups');
     grid.classList.remove('grid--hat-group-only');
     grid.classList.add('grid--hats-all');
-    grid.innerHTML = filteredList.map(renderProductCardHTML).join('');
-    renderCatalogLoadMore(grid, 0, 0);
 
+    /* Hats use the same row-based paging as the rest of the catalog:
+       10 rows on both desktop and mobile, regardless of column count. */
+    var pagingKey = catalogPagingContextKey(grid) + '|hats-all';
+    if (pagingKey !== catalogPagingKey) {
+      catalogPagingKey = pagingKey;
+      catalogBatchesShown = 1;
+    }
+
+    var visibleCount = catalogVisibleCount(grid, catalogBatchesShown);
+    var visibleList = filteredList.slice(0, visibleCount);
+    grid.innerHTML = visibleList.map(renderProductCardHTML).join('');
+    renderCatalogLoadMore(grid, filteredList.length, visibleList.length);
   }
 
   function renderHatCollectionGroups(grid, filteredList) {
@@ -1299,7 +1333,7 @@
   function orderTotal() {
     return Math.max(0, subtotal() - secondItemDiscount() + shippingCost());
   }
-  function count() { return cartLines().reduce(function (s, l) { return s + l.qty; }, 0); }
+  function count() { return window.VERSANS_CART_STATE ? window.VERSANS_CART_STATE.count(state.cart) : cartLines().reduce(function (s, l) { return s + l.qty; }, 0); }
 
   function cardDefaultOptionId(list, preferredId) {
     if (!Array.isArray(list) || !list.length) return '';
@@ -1527,7 +1561,8 @@
   }
   function persist() {
     cleanupDependentItems();
-    save(LS.cart, JSON.stringify(state.cart));
+    if (window.VERSANS_CART_STATE) window.VERSANS_CART_STATE.write(state.cart);
+    else save(LS.cart, JSON.stringify(state.cart));
     renderCart();
     var n = count(), el = $('#cartCount');
     if (el) { el.textContent = n; el.hidden = n === 0; }
@@ -1807,8 +1842,26 @@
 
     if ((el = e.target.closest('[data-catalog-load-less]'))) {
       e.preventDefault();
+      var shouldRepositionAfterLess = state.filter === 'hats';
       catalogBatchesShown = Math.max(1, catalogBatchesShown - 1);
       renderGrid();
+
+      if (shouldRepositionAfterLess) {
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            var loadMoreWrap = $('#catalogLoadMoreWrap');
+            var catalogGrid = $('#grid') || $('.products') || $('.shop__grid');
+            var target = loadMoreWrap && !loadMoreWrap.hidden ? loadMoreWrap : catalogGrid;
+            if (!target) return;
+
+            var rect = target.getBoundingClientRect();
+            var viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+            var targetTop = window.scrollY + rect.top;
+            var scrollTop = Math.max(0, targetTop - Math.max(90, viewportHeight * 0.72));
+            window.scrollTo({ top: scrollTop, behavior: 'smooth' });
+          });
+        });
+      }
       return;
     }
 
@@ -1906,26 +1959,8 @@
       if (collectionChanged) resetCatalogFilters();
       try {
         var targetPath = collectionPath(state.filter);
-        var targetRoute = targetPath + '#shop';
-        var isProductDocument = document.body && document.body.classList.contains('product-page-body');
-
-        /* On a product page the address bar is intentionally masked to `/`.
-           Pushing `/#shop` would therefore only change the hash and leave the
-           product DOM on screen. Force a real document navigation instead.
-           For `all`, use the legacy cat route so the browser makes a network
-           request even though the visible masked URL is already `/`. */
-        if (isProductDocument) {
-          if (el.closest('.nav__menu')) setMenu(false);
-          if (state.filter === 'all') {
-            window.location.assign('/?cat=all#shop');
-          } else {
-            window.location.assign(targetRoute);
-          }
-          return;
-        }
-
         if (logicalPath() !== targetPath || logicalSearch()) {
-          window.history.pushState({ versansCategory: state.filter }, '', targetRoute);
+          window.history.pushState({ versansCategory: state.filter }, '', targetPath + '#shop');
         }
       } catch (e) {}
       renderFilters();
@@ -2050,6 +2085,26 @@
     $('#nav').classList.toggle('is-stuck', window.scrollY > 10);
   }, { passive: true });
 
+  function refreshCartFromStorage() {
+    try {
+      state.cart = window.VERSANS_CART_STATE ? window.VERSANS_CART_STATE.read() : JSON.parse(read(LS.cart) || '[]');
+    } catch (e) {
+      state.cart = [];
+    }
+    persist();
+  }
+
+  window.addEventListener('storage', function (event) {
+    if (event && event.key && event.key !== LS.cart) return;
+    refreshCartFromStorage();
+  });
+  window.addEventListener('pageshow', function () {
+    refreshCartFromStorage();
+  });
+  window.addEventListener('focus', function () {
+    if (window.VERSANS_CART_STATE) window.VERSANS_CART_STATE.syncBadge();
+  });
+
   window.addEventListener('resize', function () {
     window.clearTimeout(catalogResizeTimer);
     catalogResizeTimer = window.setTimeout(function () {
@@ -2143,4 +2198,10 @@
   var y = $('#year'); if (y) y.textContent = new Date().getFullYear();
   applyLang();
   persist();
+  try {
+    if (sessionStorage.getItem('versans_open_checkout_v1') === '1') {
+      sessionStorage.removeItem('versans_open_checkout_v1');
+      window.setTimeout(function () { openCheckout(); }, 60);
+    }
+  } catch (e) {}
 })();

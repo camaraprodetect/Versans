@@ -23,22 +23,23 @@
   <section class="auth-visual" aria-hidden="true"><div class="auth-visual__media"><img src="images/auth-showcase.png" alt="" loading="eager" decoding="async"></div><div class="auth-visual__content"><p class="auth-visual__eyebrow">VERSANS ACCOUNT</p><h1 id="authVisualTitle">המתנה שלכם. החשבון שלכם.</h1><p id="authVisualText">חשבון VerSans מאפשר לנו לזהות אתכם בצורה מאובטחת ולהוסיף בהמשך היסטוריית הזמנות, ביקורות והטבות.</p></div></section>
   <section class="auth-panel">
     <div class="auth-card">
-      <div class="auth-card__top"><a class="auth-card__brand" href="/" aria-label="VerSans"><span class="brand__logo"><img src="images/VerSansLogoBlackJewlery.png" alt="VerSans" width="800" height="800"></span></a><div><a class="auth-back" id="authBack" href="/">חזרה לחנות</a></div></div>
+      <div class="auth-card__top"><a class="auth-card__brand" href="/shop#top" aria-label="VerSans"><span class="brand__logo"><img src="images/VerSansLogoBlackJewlery.png" alt="VerSans" width="800" height="800"></span></a><div><a class="auth-back" id="authBack" href="/shop#shop">חזרה לחנות</a></div></div>
       <p class="auth-card__eyebrow">VERSANS</p><h2 id="authTitle">החשבון שלי</h2><p class="auth-card__lead" id="authLead">פרטי החשבון המחובר כרגע.</p>
       <p class="account-loading" id="accountLoading">טוען את החשבון…</p>
       <div id="accountDetails" hidden>
         <div class="account-card">
           <div class="account-row"><span id="labelName">שם</span><strong id="accountName"></strong></div>
           <div class="account-row"><span id="labelEmail">אימייל</span><strong id="accountEmail" dir="ltr"></strong></div>
+          <div class="account-row"><span id="labelPhone">טלפון</span><strong id="accountPhone" dir="ltr"></strong></div>
           <div class="account-row"><span id="labelSince">נרשמת בתאריך</span><strong id="accountSince"></strong></div>
         </div>
         <div class="auth-message" id="authMessage" role="status" aria-live="polite"></div>
-        <div class="account-actions"><a class="btn btn--ghost" href="/#shop"><span id="shopText">חזרה לחנות</span></a><button class="btn btn--primary" id="logoutBtn" type="button"><span id="logoutText">התנתקות</span></button></div>
+        <div class="account-actions"><a class="btn btn--ghost" href="/shop#shop"><span id="shopText">חזרה לחנות</span></a><button class="btn btn--primary" id="logoutBtn" type="button"><span id="logoutText">התנתקות</span></button></div>
       </div>
     </div>
   </section>
 </main>
-<script src="assets/auth.js?v=20260914-pretty-urls-v1"></script>
+<script src="assets/auth.js?v=20260922-account-phone-v1"></script>
   <script src="/assets/presence.js?v=20260915-presence-v1"></script>
 </body>
 </html>

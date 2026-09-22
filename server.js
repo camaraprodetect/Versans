@@ -10,6 +10,7 @@ const { createPaymentUrl, verifyPayment } = require('./api/_hyp.js');
 const { PRODUCTS } = require('./assets/products.js');
 const ROUTES = require('./assets/routes.js');
 const { normalizeAdminRange, normalizeStoredOrderItems, aggregatePaidOrders } = require('./lib/admin-analytics.js');
+const { absoluteUrl, isEmailConfigured, productAnnouncementEmail, sendEmail, welcomeEmail } = require('./lib/email.js');
 
 const ROOT = __dirname;
 const DATA_DIR = process.env.VERSANS_DATA_DIR
@@ -35,6 +36,9 @@ const REVIEW_MEDIA_TOTAL_LIMIT = 30 * 1024 * 1024;
 const REVIEW_MEDIA_MAX_COUNT = 5;
 const REVIEW_TEXT_MAX = 1200;
 const PUBLIC_REVIEW_NAME = 'לקוח VerSans';
+const TERMS_VERSION = '2026-09-22';
+const MARKETING_CATALOG_META_KEY = 'marketing_catalog_initialized_v1';
+const MARKETING_DELIVERY_STALE_MS = 15 * 60 * 1000;
 const PRODUCT_BY_URL_SLUG = new Map(PRODUCTS.map((product) => [String(product.urlSlug || ''), product]));
 
 const database = createDatabase({ root: ROOT, sqlitePath: DB_PATH });
@@ -338,10 +342,146 @@ function safeUser(user) {
     id: user.id,
     name: user.name,
     email: user.email,
+    phone: user.phone || null,
     isVerifiedCustomer: Number(user.is_verified_customer || 0) === 1,
     verifiedCustomerAt: user.verified_customer_at || null,
+    marketingOptIn: Number(user.marketing_opt_in || 0) === 1,
     createdAt: user.created_at
   } : null;
+}
+
+function marketingUnsubscribeToken() {
+  return crypto.randomBytes(32).toString('base64url');
+}
+
+function productMarketingTitle(product) {
+  if (!product) return 'מוצר חדש';
+  return String((product.title && product.title.he) || (product.cardTitle && product.cardTitle.he) || product.slug || 'מוצר חדש');
+}
+
+function productMarketingImage(product) {
+  if (!product) return '';
+  const collectionMedia = Array.isArray(product.collectionMedia) ? product.collectionMedia : [];
+  const images = Array.isArray(product.images) ? product.images : [];
+  return String(product.cardImage || collectionMedia[0] || images[0] || product.hoverImage || '');
+}
+
+async function sendWelcomeForUser(user) {
+  if (!user || !user.id || !validEmail(user.email) || !isEmailConfigured()) return false;
+  const message = welcomeEmail({ name: user.name });
+  const result = await sendEmail({
+    to: user.email,
+    subject: message.subject,
+    html: message.html,
+    text: message.text,
+    idempotencyKey: `welcome-user-${user.id}`
+  });
+  await database.markWelcomeEmailSent(user.id, Date.now());
+  return result;
+}
+
+async function processPendingWelcomeEmails() {
+  if (!isEmailConfigured()) return;
+  const rows = await database.listUsersNeedingWelcomeEmail(50);
+  for (const user of rows) {
+    try {
+      await sendWelcomeForUser(user);
+    } catch (err) {
+      console.error(`Welcome email failed for user ${user.id}:`, err && err.message ? err.message : err);
+    }
+  }
+}
+
+function marketingProductSummaries() {
+  return PRODUCTS.map((product) => ({ slug: String(product.slug || ''), title: productMarketingTitle(product) })).filter((item) => item.slug);
+}
+
+async function sendProductAnnouncementToSubscriber(user, product) {
+  const token = String(user.marketing_unsubscribe_token || '').trim();
+  if (!token) throw new Error('marketing_unsubscribe_token_missing');
+  const productUrl = absoluteUrl(productPublicPath(product));
+  const imagePath = productMarketingImage(product);
+  const imageUrl = imagePath ? absoluteUrl(imagePath) : '';
+  const unsubscribeUrl = absoluteUrl(`/email/unsubscribe?token=${encodeURIComponent(token)}`);
+  const message = productAnnouncementEmail({
+    name: user.name,
+    productTitle: productMarketingTitle(product),
+    productUrl,
+    imageUrl,
+    unsubscribeUrl
+  });
+  return sendEmail({
+    to: user.email,
+    subject: message.subject,
+    html: message.html,
+    text: message.text,
+    idempotencyKey: `new-product-${product.slug}-user-${user.id}`,
+    headers: {
+      'List-Unsubscribe': `<${unsubscribeUrl}>`,
+      'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click'
+    }
+  });
+}
+
+async function syncMarketingCatalog() {
+  const now = Date.now();
+  const summaries = marketingProductSummaries();
+  const initialized = await database.getSchemaMeta(MARKETING_CATALOG_META_KEY);
+  if (!initialized) {
+    await database.baselineMarketingAnnouncements(summaries, now);
+    await database.setSchemaMeta(MARKETING_CATALOG_META_KEY, String(now));
+    console.log(`Marketing catalog baseline created with ${summaries.length} products.`);
+    return;
+  }
+
+  for (const product of summaries) await database.ensureMarketingAnnouncement(product, now);
+  const pending = await database.listPendingMarketingAnnouncements();
+  if (!pending.length) return;
+  if (!isEmailConfigured()) {
+    console.warn(`Marketing emails pending (${pending.length}) but RESEND_API_KEY/EMAIL_FROM are not configured.`);
+    return;
+  }
+
+  const productMap = new Map(PRODUCTS.map((product) => [String(product.slug || ''), product]));
+  for (const announcement of pending) {
+    const product = productMap.get(String(announcement.product_slug || ''));
+    if (!product) {
+      await database.completeMarketingAnnouncement(announcement.product_slug, Date.now());
+      continue;
+    }
+    const subscribers = await database.listMarketingSubscribers();
+    for (const user of subscribers) {
+      const claimed = await database.claimMarketingDelivery(announcement.product_slug, user.id, Date.now(), Date.now() - MARKETING_DELIVERY_STALE_MS);
+      if (!claimed) continue;
+      try {
+        const sent = await sendProductAnnouncementToSubscriber(user, product);
+        await database.markMarketingDeliverySent(announcement.product_slug, user.id, Date.now(), sent && sent.id ? String(sent.id) : null);
+      } catch (err) {
+        await database.markMarketingDeliveryFailed(announcement.product_slug, user.id, Date.now(), err && err.message ? err.message : String(err));
+        console.error(`Marketing email failed for ${announcement.product_slug} -> user ${user.id}:`, err && err.message ? err.message : err);
+      }
+      await new Promise((resolve) => setTimeout(resolve, 650));
+    }
+    const failures = await database.marketingDeliveryFailures(announcement.product_slug);
+    if (failures === 0) await database.completeMarketingAnnouncement(announcement.product_slug, Date.now());
+  }
+}
+
+async function marketingUnsubscribePage(req, res, pathname, parsed) {
+  if (pathname !== '/email/unsubscribe') return false;
+  if (req.method !== 'GET' && req.method !== 'POST') {
+    json(res, 405, { ok: false, error: 'method_not_allowed' });
+    return true;
+  }
+  const token = String(parsed.searchParams.get('token') || '').trim();
+  const validToken = /^[A-Za-z0-9_-]{20,100}$/.test(token);
+  const changed = validToken ? await database.unsubscribeMarketingByToken(token, Date.now()) : false;
+  const title = changed ? 'הוסרת מרשימת הדיוור' : 'העדפת הדיוור עודכנה';
+  const copy = changed ? 'לא תקבלו יותר אימיילים שיווקיים מ-VerSans.' : 'הקישור כבר טופל או שאינו פעיל. לא נשלחו שינויים נוספים.';
+  const html = `<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>VerSans</title></head><body style="margin:0;background:#f4f2ef;font-family:Arial,Helvetica,sans-serif;color:#142333;"><main style="max-width:560px;margin:10vh auto;padding:20px;"><section style="background:#fff;border:1px solid #e5dfd8;border-radius:18px;padding:42px;text-align:center;box-shadow:0 12px 36px rgba(20,35,51,.08);"><div style="font-size:12px;letter-spacing:2.4px;color:#9a7440;font-weight:700;">VERSANS</div><h1 style="font-size:30px;margin:14px 0 10px;">${title}</h1><p style="color:#5d6870;line-height:1.8;">${copy}</p><a href="https://versans.com/" style="display:inline-block;margin-top:18px;padding:12px 24px;border-radius:9px;background:#142333;color:#fff;text-decoration:none;font-weight:700;">חזרה לחנות</a></section></main></body></html>`;
+  res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex, nofollow' });
+  res.end(html);
+  return true;
 }
 
 function readJsonBody(req) {
@@ -703,6 +843,7 @@ async function adminApi(req, res, pathname, parsed) {
     const [count, rows] = await Promise.all([database.countAdminCustomers(), database.listAdminCustomers(limit, offset)]);
     const customers = rows.map((row) => ({
       id: Number(row.id), name: row.name, email: row.email, phone: row.known_phone || null,
+      marketingOptIn: Number(row.marketing_opt_in || 0) === 1,
       verifiedCustomer: Number(row.is_verified_customer || 0) === 1,
       verifiedCustomerAt: row.verified_customer_at == null ? null : Number(row.verified_customer_at),
       createdAt: Number(row.created_at || 0), paidOrderCount: Number(row.paid_order_count || 0),
@@ -858,7 +999,10 @@ async function authApi(req, res, pathname) {
     const body = await readJsonBody(req);
     const name = cleanName(body.name);
     const email = normalizeEmail(body.email);
+    const phone = normalizePhone(body.phone);
     const password = String(body.password || '');
+    const termsAccepted = body.termsAccepted === true;
+    const marketingOptIn = body.marketingOptIn === true;
 
     if (name.length < 2 || name.length > 70) {
       json(res, 400, { ok: false, error: 'invalid_name' });
@@ -866,6 +1010,14 @@ async function authApi(req, res, pathname) {
     }
     if (!validEmail(email)) {
       json(res, 400, { ok: false, error: 'invalid_email' });
+      return true;
+    }
+    if (!phone) {
+      json(res, 400, { ok: false, error: 'invalid_phone' });
+      return true;
+    }
+    if (!termsAccepted) {
+      json(res, 400, { ok: false, error: 'terms_required' });
       return true;
     }
     if (password.length < 8 || password.length > 128) {
@@ -877,9 +1029,16 @@ async function authApi(req, res, pathname) {
       return true;
     }
 
+    const createdAt = Date.now();
     let userId;
     try {
-      userId = await database.insertUser(name, email, hashPassword(password), Date.now());
+      userId = await database.insertUser(name, email, hashPassword(password), createdAt, phone, {
+        termsAcceptedAt: createdAt,
+        termsVersion: TERMS_VERSION,
+        marketingOptIn,
+        marketingOptInAt: marketingOptIn ? createdAt : null,
+        marketingUnsubscribeToken: marketingUnsubscribeToken()
+      });
     } catch (err) {
       if (err && (err.code === '23505' || String(err.message || '').toUpperCase().includes('UNIQUE'))) {
         json(res, 409, { ok: false, error: 'email_exists' });
@@ -891,6 +1050,9 @@ async function authApi(req, res, pathname) {
     const cookie = await createSession(userId, req);
     const user = await database.findUserByEmail(email);
     json(res, 201, { ok: true, user: safeUser(user) }, { 'Set-Cookie': cookie });
+    setImmediate(() => {
+      sendWelcomeForUser(user).catch((err) => console.error(`Welcome email failed for user ${userId}:`, err && err.message ? err.message : err));
+    });
     return true;
   }
 
@@ -1217,11 +1379,11 @@ function safeInlineJson(value) {
 }
 
 function injectStorefrontRouting(html, bootRoute) {
-  const early = `<script>window.__VERSANS_BOOT_ROUTE__=${safeInlineJson(bootRoute)};</script><script src="/assets/route-state.js?v=20260922-product-nav-v4"></script>`;
+  const early = `<script>window.__VERSANS_BOOT_ROUTE__=${safeInlineJson(bootRoute)};</script><script src="/assets/route-state.js?v=20260922-global-home-nav-v5"></script>`;
   const late = '<script src="/assets/url-mask.js?v=20260922-urlmask-v3"></script>';
   let out = String(html || '');
   out = out
-    .replace(/(\/?assets\/store\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20260922-urlmask-v2')
+    .replace(/(\/?assets\/store\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20260922-yankees-league-essential-v1')
     .replace(/(\/?assets\/site-header\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20260922-urlmask-v2')
     .replace(/(\/?assets\/presence\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20260922-urlmask-v2');
   if (out.includes('</head>')) out = out.replace('</head>', `${early}\n</head>`);
@@ -1329,6 +1491,7 @@ const server = http.createServer(async (req, res) => {
       return;
     }
     if (await adminPage(req, res, pathname)) return;
+    if (await marketingUnsubscribePage(req, res, pathname, parsed)) return;
     if (await presenceApi(req, res, pathname)) return;
     if (await adminApi(req, res, pathname, parsed)) return;
     if (await authApi(req, res, pathname)) return;
@@ -1441,6 +1604,11 @@ async function start() {
     console.log(`VerSans running on http://${HOST}:${PORT}`);
     console.log(`Database backend: ${database.backend}`);
     if (database.backend === 'sqlite') console.log(`SQLite: ${DB_PATH}`);
+    const emailStartupTimer = setTimeout(() => {
+      processPendingWelcomeEmails().catch((err) => console.error('Pending welcome email processing failed:', err));
+      syncMarketingCatalog().catch((err) => console.error('Marketing catalog sync failed:', err));
+    }, 1500);
+    if (emailStartupTimer && typeof emailStartupTimer.unref === 'function') emailStartupTimer.unref();
   });
 }
 

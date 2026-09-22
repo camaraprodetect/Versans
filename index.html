@@ -410,17 +410,6 @@
   }
 }
 </style>
-<style id="versans-hats-filter-button-gap-v1">
-/* Only in the hats collection: add a small gap between the banner and filter button. */
-.shop__filter-row.shop__filter-row--hats-gap{
-  margin-top:14px!important;
-}
-@media(max-width:700px){
-  .shop__filter-row.shop__filter-row--hats-gap{
-    margin-top:12px!important;
-  }
-}
-</style>
 <style id="versans-hats-filter-fullwidth-equal-v4">
 /* Hats only: full-width filter panel, equal columns, toggle always visible. */
 @media(min-width:701px){
@@ -484,6 +473,54 @@
     display:flex!important;
     visibility:visible!important;
     opacity:1!important;
+  }
+}
+</style>
+
+<style id="versans-hats-filter-layout-final-v5">
+/* Final hats filter layout: same width as the banner, true hide/show, no gap above the button. */
+.home-page .shop__filter-row.shop__filter-row--hats{
+  width:100%!important;
+  max-width:100%!important;
+  margin-top:0!important;
+  margin-left:0!important;
+  margin-right:0!important;
+  padding-inline:0!important;
+  box-sizing:border-box!important;
+}
+.home-page .shop__filter-row.shop__filter-row--hats .shop__sidebar{
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  padding-top:0!important;
+}
+.home-page .shop__filter-row.shop__filter-row--hats .shop__filter-toggle{
+  margin:0!important;
+}
+.home-page .shop__filter-row.shop__filter-row--hats .filters.filters--hats{
+  width:100%!important;
+  max-width:100%!important;
+  box-sizing:border-box!important;
+}
+.home-page .shop__filter-row.shop__filter-row--hats .filters.filters--hats[hidden]{
+  display:none!important;
+}
+@media(min-width:701px){
+  .home-page .shop__filter-row.shop__filter-row--hats .filters.filters--hats:not([hidden]){
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    align-self:stretch!important;
+    margin:.65rem 0 0!important;
+    padding:.72rem!important;
+    gap:.8rem!important;
+  }
+}
+@media(max-width:700px){
+  .home-page .shop__filter-row.shop__filter-row--hats{
+    margin-top:0!important;
+  }
+  .home-page .shop__filter-row.shop__filter-row--hats .filters.filters--hats[hidden]{
+    display:none!important;
   }
 }
 </style>
@@ -1029,14 +1066,15 @@
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="assets/config.js?v=20260914-pretty-urls-v1"></script>
-<script src="assets/products.js?v=20260922-chicago-bulls-162-v1"></script>
+<script src="assets/products.js?v=20260922-yankees-league-essential-v2"></script>
+<script src="/assets/cart-state.js?v=20260922-cart-sync-v1"></script>
 <script src="assets/routes.js?v=20260921-watch-subcats-v1"></script>
 <script src="assets/site-header.js?v=20260921-favorites-product-fix-v1"></script>
 <script src="assets/glasses-pricing.js?v=20260912-glasses-v9"></script>
 <script src="assets/i18n.js?v=20260908-delivery-v1"></script>
 <script src="assets/reviews.js?v=20260914-pretty-urls-v1"></script>
 <script src="assets/home.js?v=20260921-watch-subcats-v1"></script>
-<script src="assets/store.js?v=20260922-hats-filter-gap-v1"></script>
+<script src="assets/store.js?v=20260922-hats-less-scroll-v2"></script>
 <script src="assets/auth-nav.js?v=20260914-pretty-urls-v1"></script>
   <script src="/assets/presence.js?v=20260915-presence-v1"></script>
 </body>

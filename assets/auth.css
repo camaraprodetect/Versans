@@ -225,6 +225,61 @@ html[dir="ltr"] .auth-panel{direction:ltr}
   line-height:1.55;
 }
 
+.auth-consents{
+  display:grid;
+  gap:.7rem;
+  margin-top:.1rem;
+}
+.auth-check{
+  display:flex;
+  align-items:flex-start;
+  gap:.65rem;
+  color:#53606a;
+  font-size:.78rem;
+  line-height:1.65;
+  cursor:pointer;
+}
+.auth-check input{
+  position:absolute;
+  opacity:0;
+  pointer-events:none;
+}
+.auth-check__box{
+  flex:0 0 19px;
+  width:19px;
+  height:19px;
+  margin-top:.08rem;
+  border:1px solid #bcc5cb;
+  border-radius:5px;
+  background:#fff;
+  position:relative;
+  transition:.18s ease;
+}
+.auth-check input:checked + .auth-check__box{
+  border-color:#142333;
+  background:#142333;
+}
+.auth-check input:checked + .auth-check__box::after{
+  content:'✓';
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  color:#fff;
+  font-size:13px;
+  font-weight:700;
+  line-height:1;
+}
+.auth-check input:focus-visible + .auth-check__box{
+  outline:3px solid rgba(96,119,138,.18);
+  outline-offset:2px;
+}
+.auth-check a{
+  color:#142333;
+  font-weight:600;
+  text-underline-offset:2px;
+}
+
 .auth-submit{
   margin-top:.35rem;
   width:100%;

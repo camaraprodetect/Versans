@@ -29,15 +29,19 @@
     return CFG.currency.code === 'ILS' ? v + ' ' + CFG.currency.symbol : CFG.currency.symbol + v;
   }
   function getCart() {
+    if (window.VERSANS_CART_STATE) return window.VERSANS_CART_STATE.read();
     try { return JSON.parse(localStorage.getItem('kw_cart') || '[]'); } catch (_) { return []; }
   }
   function saveCart(items) {
+    if (window.VERSANS_CART_STATE) { window.VERSANS_CART_STATE.write(items); return; }
     try { localStorage.setItem('kw_cart', JSON.stringify(items)); } catch (_) {}
   }
   function cartCount() {
+    if (window.VERSANS_CART_STATE) return window.VERSANS_CART_STATE.count(getCart());
     return getCart().reduce(function (sum, item) { return sum + (parseInt(item.qty, 10) || 0); }, 0);
   }
   function updateCartCount() {
+    if (window.VERSANS_CART_STATE) { window.VERSANS_CART_STATE.syncBadge(); return; }
     var el = document.getElementById('cartCount');
     if (!el) return;
     var count = cartCount();
@@ -171,6 +175,12 @@
   }
 
   document.getElementById('year').textContent = new Date().getFullYear();
+  window.addEventListener('pageshow', updateCartCount);
+  window.addEventListener('focus', updateCartCount);
+  window.addEventListener('versans:cart-changed', updateCartCount);
+  window.addEventListener('storage', function (event) {
+    if (!event || event.key === 'kw_cart') updateCartCount();
+  });
   updateCartCount();
   render();
 })();
