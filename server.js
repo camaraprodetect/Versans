@@ -1052,6 +1052,54 @@ function whatsappDigits(phone) {
   return normalized ? normalized.replace(/^\+/, '') : '';
 }
 
+const SHIPPING_BOT_TEST_SHIPMENT_ID = 900000001;
+const SHIPPING_BOT_TEST_TRACKING_ID = 'VERSANS-TEST-1400';
+const SHIPPING_BOT_TEST_META_KEY = 'shipping_bot_test_2026_09_23_1400_sent';
+const SHIPPING_BOT_TEST_EXPIRES_AT = Date.parse('2026-09-24T00:00:00+03:00');
+
+async function shippingBotTestPickup() {
+  if (process.env.NODE_ENV === 'test') return null;
+  if (Date.now() >= SHIPPING_BOT_TEST_EXPIRES_AT) return null;
+  const sent = await database.getSchemaMeta(SHIPPING_BOT_TEST_META_KEY);
+  if (sent) return null;
+  const customerName = 'מאור';
+  const phone = '+972546296037';
+  const digits = whatsappDigits(phone);
+  const items = [{
+    itemIndex: 0,
+    itemOrderRef: 'VS-BOT-TEST-1400-P01',
+    productId: 'shipping-bot-test',
+    productName: 'בדיקת מערכת משלוחים VerSans',
+    qty: 1
+  }];
+  const message = shippingBotMessage({ customerName, items, trackingNumber: SHIPPING_BOT_TEST_TRACKING_ID });
+  const encodedMessage = encodeURIComponent(message);
+  return {
+    shipmentId: SHIPPING_BOT_TEST_SHIPMENT_ID,
+    orderRef: 'VS-BOT-TEST-1400',
+    test: true,
+    customer: {
+      name: customerName,
+      email: 'camaraprodetect@gmail.com',
+      phone,
+      whatsappNumber: digits
+    },
+    trackingId: SHIPPING_BOT_TEST_TRACKING_ID,
+    status: 'ready_for_pickup',
+    statusLabel: 'מוכן לאיסוף',
+    latestEvent: 'בדיקת מערכת: החבילה מוכנה לאיסוף',
+    latestLocation: 'ישראל',
+    latestEventAt: Date.now(),
+    updatedAt: Date.now(),
+    items,
+    message,
+    whatsappWebUrl: `https://web.whatsapp.com/send?phone=${digits}&text=${encodedMessage}`,
+    waMeUrl: `https://wa.me/${digits}?text=${encodedMessage}`,
+    safeToSend: true,
+    issue: null
+  };
+}
+
 function shippingBotMessage({ customerName, items, trackingNumber }) {
   const safeName = String(customerName || '').trim() || 'לקוח/ה';
   const linked = Array.isArray(items) ? items : [];
@@ -1084,6 +1132,8 @@ async function shippingBotReadyPickups(limit = 200) {
   const createdAfter = Date.now() - 180 * 24 * 60 * 60 * 1000;
   const rows = await database.listShipmentsByStatus('ready_for_pickup', createdAfter, limit);
   const out = [];
+  const testPickup = await shippingBotTestPickup();
+  if (testPickup) out.push(testPickup);
   for (const shipment of rows) {
     const existingNotification = await database.getShipmentNotification(shipment.id, 'customer', 'ready_for_pickup');
     if (existingNotification && existingNotification.state === 'sent') continue;
@@ -1959,6 +2009,20 @@ async function adminApi(req, res, pathname, parsed) {
       const shipmentId = Number(entry && entry.shipmentId);
       if (!Number.isInteger(shipmentId) || shipmentId <= 0) {
         results.push({ ok: false, shipmentId: entry && entry.shipmentId || null, error: 'invalid_shipment_id' });
+        continue;
+      }
+      if (shipmentId === SHIPPING_BOT_TEST_SHIPMENT_ID) {
+        const expectedTracking = String(entry && entry.trackingId || '').trim();
+        if (expectedTracking && expectedTracking !== SHIPPING_BOT_TEST_TRACKING_ID) {
+          results.push({ ok: false, shipmentId, trackingId: expectedTracking, error: 'tracking_mismatch' });
+          continue;
+        }
+        await database.setSchemaMeta(SHIPPING_BOT_TEST_META_KEY, JSON.stringify({
+          sentAt: now,
+          trackingId: SHIPPING_BOT_TEST_TRACKING_ID,
+          messageId: String(entry && entry.messageId || 'grok-whatsapp-web')
+        }));
+        results.push({ ok: true, shipmentId, trackingId: SHIPPING_BOT_TEST_TRACKING_ID, sentAt: now, test: true });
         continue;
       }
       const shipment = await database.getShipmentById(shipmentId);
