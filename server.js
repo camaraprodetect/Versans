@@ -1139,9 +1139,16 @@ async function refreshShipmentFrom17Track(shipment, { realTime = false } = {}) {
       console.error(`17TRACK real-time refresh failed for ${shipment.tracking_number}:`, error && error.message);
     }
   }
-  if (!info) info = await get17TrackInfo(shipment.tracking_number, shipment.carrier_code);
+  if (!info) info = await get17TrackInfo(shipment.tracking_number, shipment.carrier_code, options);
   const update = info ? extractTrackingUpdate(info) : null;
-  if (update) await applyTrackingUpdate(update);
+  if (update) {
+    // Keep the carrier that was actually registered for webhook subscription.
+    // A fallback lookup may obtain richer events from an upstream carrier
+    // (common with AliExpress/Cainiao -> DSV handoffs), but that should not
+    // silently replace the subscribed last-mile carrier in our database.
+    if (shipment.carrier_code) update.carrierCode = Number(shipment.carrier_code);
+    await applyTrackingUpdate(update);
+  }
   return update;
 }
 
