@@ -22,12 +22,30 @@
     summary.appendChild(left);summary.appendChild(el('span','track-summary__order',data.orderRef));result.appendChild(summary);
     var shipments=Array.isArray(data.shipments)?data.shipments:[];
     if(!shipments.length){var empty=el('section','track-empty');empty.appendChild(el('h3','','אנחנו מכינים את ההזמנה שלכם'));empty.appendChild(el('p','','ברגע שמספר המעקב ייקלט במערכת VerSans הוא יופיע כאן אוטומטית.'));result.appendChild(empty);return}
-    shipments.forEach(function(shipment){
-      var card=el('article','track-package');var head=el('div','track-package__head');var title=el('div');title.appendChild(el('span','track-package__number','חבילה '+shipment.packageNumber));title.appendChild(el('h3','',shipment.statusLabel));head.appendChild(title);
-      var badge=el('span','track-badge'+((shipment.status==='exception'||shipment.status==='delivery_failed')?' is-attention':''),shipment.statusLabel);head.appendChild(badge);card.appendChild(head);
-      var grid=el('div','track-package__grid');grid.appendChild(detail('מספר מעקב',shipment.trackingNumber));grid.appendChild(detail('עדכון אחרון',fmtDate(shipment.latestEventAt||shipment.deliveredAt)));grid.appendChild(detail('הערכת מסירה',etaText(shipment.estimatedDeliveryFrom,shipment.estimatedDeliveryTo)));card.appendChild(grid);
-      var items=el('div','track-items');items.appendChild(el('span','','מה נמצא בחבילה'));var ul=el('ul');(shipment.items||[]).forEach(function(item){ul.appendChild(el('li','',item.productName+' ×'+item.qty))});items.appendChild(ul);card.appendChild(items);result.appendChild(card);
+
+    var orderCard=el('article','track-order');
+    var orderHead=el('div','track-order__head');
+    var title=el('div');title.appendChild(el('span','track-package__number','הזמנה אחת'));title.appendChild(el('h3','',data.overallStatusLabel));
+    orderHead.appendChild(title);orderHead.appendChild(el('span','track-badge'+((data.overallStatus==='attention')?' is-attention':''),data.overallStatusLabel));orderCard.appendChild(orderHead);
+
+    var items=el('div','track-items track-order__items');items.appendChild(el('span','','המוצרים בהזמנה'));var ul=el('ul');(data.items||[]).forEach(function(item){ul.appendChild(el('li','',item.productName+' ×'+item.qty))});items.appendChild(ul);orderCard.appendChild(items);
+
+    var timeline=el('div','track-order__timeline');
+    shipments.forEach(function(shipment,index){
+      var row=el('section','track-shipment-row');
+      var rowHead=el('div','track-shipment-row__head');
+      var rowTitle=el('div');rowTitle.appendChild(el('span','track-package__number','מספר מעקב '+(index+1)));rowTitle.appendChild(el('strong','track-shipment-row__number',shipment.trackingNumber));
+      rowHead.appendChild(rowTitle);rowHead.appendChild(el('span','track-badge'+((shipment.status==='exception'||shipment.status==='delivery_failed')?' is-attention':''),shipment.statusLabel));row.appendChild(rowHead);
+
+      var current=el('div','track-shipment-current');
+      current.appendChild(detail('מיקום אחרון',shipment.latestLocation||'המיקום האחרון טרם התקבל'));
+      current.appendChild(detail('אירוע אחרון',shipment.latestEvent||'ממתינים לעדכון מפורט מחברת השילוח'));
+      row.appendChild(current);
+
+      var grid=el('div','track-package__grid');grid.appendChild(detail('חברת שילוח',shipment.carrierName||'זיהוי אוטומטי'));grid.appendChild(detail('עדכון אחרון',fmtDate(shipment.latestEventAt||shipment.deliveredAt)));grid.appendChild(detail('הערכת מסירה',etaText(shipment.estimatedDeliveryFrom,shipment.estimatedDeliveryTo)));row.appendChild(grid);
+      timeline.appendChild(row);
     });
+    orderCard.appendChild(timeline);result.appendChild(orderCard);
   }
 
   form.addEventListener('submit',async function(event){

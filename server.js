@@ -959,12 +959,19 @@ function parseStoredCustomer(order) {
   }
 }
 
+function shipmentCarrierLabel(code) {
+  const carrier = Number(code || 0);
+  if (carrier === 100298) return 'DSV e-Commerce IL';
+  return carrier ? `חברת שילוח ${carrier}` : 'זיהוי אוטומטי';
+}
+
 function shipmentRowPayload(row, items = []) {
   return {
     id: Number(row.id),
     orderId: Number(row.order_id),
     trackingNumber: row.tracking_number,
     carrierCode: row.carrier_code == null ? null : Number(row.carrier_code),
+    carrierName: shipmentCarrierLabel(row.carrier_code),
     provider: row.provider || '17track',
     status: row.status || 'registered',
     statusLabel: shipmentStatusLabel(row.status),
@@ -1132,17 +1139,24 @@ async function publicTrackingApi(req, res, pathname, parsed) {
     return true;
   }
   const shipments = await listOrderShipmentsPayload(order.id);
+  const orderItems = normalizeStoredOrderItems(order.items_json, PRODUCTS);
   const overall = publicTrackingStatus(shipments);
   json(res, 200, {
     ok: true,
     orderRef: order.order_ref,
     overallStatus: overall,
     overallStatusLabel: PUBLIC_TRACKING_LABELS[overall] || 'עדכון משלוח',
+    itemCount: orderItems.reduce((sum, item) => sum + Number(item.qty || 1), 0),
+    items: orderItems.map((item) => ({ productId: item.id || null, productName: item.name || 'מוצר', qty: Number(item.qty || 1) })),
     shipments: shipments.map((shipment, index) => ({
       packageNumber: index + 1,
       trackingNumber: shipment.trackingNumber,
+      carrierCode: shipment.carrierCode,
+      carrierName: shipment.carrierName,
       status: shipment.status,
       statusLabel: shipment.statusLabel,
+      latestEvent: shipment.latestEvent,
+      latestLocation: shipment.latestLocation,
       latestEventAt: shipment.latestEventAt,
       estimatedDeliveryFrom: shipment.estimatedDeliveryFrom,
       estimatedDeliveryTo: shipment.estimatedDeliveryTo,
@@ -1197,7 +1211,24 @@ async function adminApi(req, res, pathname, parsed) {
     const orderItems = normalizeStoredOrderItems(order.items_json, PRODUCTS);
 
     if (req.method === 'GET') {
-      const shipments = await listOrderShipmentsPayload(order.id);
+      let shipments = await listOrderShipmentsPayload(order.id);
+      // Keep the admin useful without requiring a manual refresh every time.
+      // Registered shipments are refreshed immediately; older snapshots refresh
+      // at most once every 5 minutes when this order is opened.
+      if (is17TrackConfigured() && shipments.length) {
+        const now = Date.now();
+        for (const shipment of shipments) {
+          if (shipment.status !== 'registered' && now - Number(shipment.updatedAt || 0) < 5 * 60 * 1000) continue;
+          try {
+            const info = await get17TrackInfo(shipment.trackingNumber, shipment.carrierCode);
+            const update = info ? extractTrackingUpdate(info) : null;
+            if (update) await applyTrackingUpdate(update);
+          } catch (error) {
+            console.error(`17TRACK admin snapshot refresh failed for ${shipment.trackingNumber}:`, error && error.message);
+          }
+        }
+        shipments = await listOrderShipmentsPayload(order.id);
+      }
       json(res, 200, {
         ok: true,
         orderRef: order.order_ref,
@@ -1252,6 +1283,18 @@ async function adminApi(req, res, pathname, parsed) {
     } catch (error) {
       if (/unique|tracking_number/i.test(String(error && error.message))) { json(res, 409, { ok: false, error: 'tracking_already_exists' }); return true; }
       throw error;
+    }
+    // Pull the current 17TRACK snapshot immediately so the admin sees a real
+    // status/location instead of only "registered" after adding a number.
+    if (is17TrackConfigured()) {
+      try {
+        const created = await database.getShipmentById(shipmentId);
+        const info = created ? await get17TrackInfo(created.tracking_number, created.carrier_code) : null;
+        const update = info ? extractTrackingUpdate(info) : null;
+        if (update) await applyTrackingUpdate(update);
+      } catch (error) {
+        console.error(`Initial 17TRACK refresh failed for ${trackingNumber}:`, error && error.message);
+      }
     }
     const shipment = await shipmentWithItems(await database.getShipmentById(shipmentId));
     json(res, 201, { ok: true, shipment, trackingConfigured: is17TrackConfigured(), warning: is17TrackConfigured() ? null : '17track_not_configured' });
