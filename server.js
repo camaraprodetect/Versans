@@ -2064,13 +2064,96 @@ async function adminApi(req, res, pathname, parsed) {
     }
     const requestedLimit = Number(parsed.searchParams.get('limit') || 200);
     const limit = Number.isFinite(requestedLimit) ? Math.max(1, Math.min(500, Math.floor(requestedLimit))) : 200;
+    const inspectTracking = normalizeTrackingNumber(parsed.searchParams.get('inspectTracking'));
     let refresh = null;
+
+    // Safe diagnostics mode: inspect one exact tracking number even if its pickup
+    // notification was already marked sent. This never marks anything as sent and
+    // exists only so the pickup-detail extraction can be verified end-to-end.
+    if (inspectTracking) {
+      let shipment = await database.getShipmentByTracking(inspectTracking);
+      if (!shipment) {
+        json(res, 404, { ok: false, error: 'tracking_not_found', trackingId: inspectTracking });
+        return true;
+      }
+
+      if (String(parsed.searchParams.get('refresh') || '') === '1') {
+        try {
+          if (!shipment.registered_at) {
+            try { await ensureShipmentRegisteredWith17Track(shipment); } catch (_) {}
+            shipment = await database.getShipmentById(shipment.id) || shipment;
+          }
+          const refreshed = await refreshShipmentFrom17Track(shipment, { realTime: true });
+          refresh = { processed: refreshed ? 1 : 0, failed: 0 };
+          shipment = await database.getShipmentById(shipment.id) || shipment;
+        } catch (error) {
+          refresh = { processed: 0, failed: 1, error: String(error && error.message || '').slice(0, 500) };
+          shipment = await database.getShipmentById(shipment.id) || shipment;
+        }
+      }
+
+      const pickup = shipmentPickupDetails(shipment);
+      const existingNotification = await database.getShipmentNotification(shipment.id, 'customer', 'ready_for_pickup');
+      const order = await database.getOrderById(shipment.order_id);
+      const customer = order ? parseStoredCustomer(order) : {};
+      const linkedItems = await database.listShipmentItems(shipment.id);
+      const items = (linkedItems || []).map((item) => ({
+        itemIndex: Number(item.item_index),
+        itemOrderRef: order ? orderItemRef(order.order_ref, Number(item.item_index)) : null,
+        productId: item.product_id || null,
+        productName: item.product_name || 'מוצר',
+        qty: Number(item.qty || 1)
+      }));
+      const phone = order ? normalizePhone(order.customer_phone || customer.phone) : null;
+      const digits = whatsappDigits(phone);
+      const customerName = order
+        ? ([customer.firstName, customer.lastName].filter(Boolean).join(' ').trim() || customer.name || order.customer_email || 'לקוח/ה')
+        : 'לקוח/ה';
+      const message = shippingBotMessage({
+        customerName,
+        items,
+        trackingNumber: shipment.tracking_number,
+        pickupMessageRaw: pickup.message,
+        pickupLocation: pickup.location
+      });
+
+      json(res, 200, {
+        ok: true,
+        pickupPatchVersion: '2026-09-24-final-v1',
+        inspect: true,
+        generatedAt: Date.now(),
+        source: 'versans_database',
+        refresh,
+        shipment: {
+          shipmentId: Number(shipment.id),
+          orderRef: order && order.order_ref || null,
+          trackingId: shipment.tracking_number,
+          status: shipment.status,
+          statusLabel: shipmentStatusLabel(shipment.status),
+          notificationState: existingNotification && existingNotification.state || null,
+          latestEvent: shipment.latest_event || null,
+          latestLocation: shipment.latest_location || null,
+          latestEventAt: shipment.latest_event_at == null ? null : Number(shipment.latest_event_at),
+          pickupMessageRaw: pickup.message,
+          pickupLocation: pickup.location,
+          pickupSource: pickup.source,
+          pickupEventAt: pickup.eventAt,
+          items,
+          message,
+          whatsappWebUrl: digits ? `https://web.whatsapp.com/send?phone=${digits}&text=${encodeURIComponent(message)}` : null,
+          safeToSend: Boolean(digits && items.length)
+        }
+      });
+      return true;
+    }
+
     if (String(parsed.searchParams.get('refresh') || '') === '1') {
       refresh = await syncActiveShipmentTracking();
     }
     const shipments = await shippingBotReadyPickups(limit);
     json(res, 200, {
       ok: true,
+      pickupPatchVersion: '2026-09-24-final-v1',
       generatedAt: Date.now(),
       source: 'versans_database',
       note: 'Tracking snapshots are refreshed by VerSans in the background. Use ?refresh=1 only when an immediate provider refresh is required.',
