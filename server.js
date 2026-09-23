@@ -2097,7 +2097,79 @@ async function adminApi(req, res, pathname, parsed) {
     const requestedLimit = Number(parsed.searchParams.get('limit') || 200);
     const limit = Number.isFinite(requestedLimit) ? Math.max(1, Math.min(500, Math.floor(requestedLimit))) : 200;
     const inspectTracking = normalizeTrackingNumber(parsed.searchParams.get('inspectTracking'));
+    const fakePickup = String(parsed.searchParams.get('fakePickup') || '') === '1';
     let refresh = null;
+
+    // Safe fake diagnostics mode. This returns a synthetic ready-for-pickup
+    // shipment without writing to the database, without entering the real
+    // ready-pickups queue, and without allowing WhatsApp send/mark-sent.
+    if (fakePickup) {
+      const fakeMessage = shippingBotMessage({
+        customerName: 'לקוח בדיקה',
+        items: [
+          {
+            itemIndex: 0,
+            itemOrderRef: 'VS-FAKE-PICKUP-P01',
+            productId: 'fake-product-001',
+            productName: 'מוצר בדיקה VerSans',
+            qty: 1
+          }
+        ],
+        trackingNumber: 'VERSANS-FAKE-PICKUP-001',
+        pickupMessageRaw: 'החבילה ממתינה לאיסוף בנקודת בדיקה: לוקר VerSans Test, הרצל 12, ראשון לציון. קוד איסוף: 482913. שעות פעילות: 08:00-20:00.',
+        pickupLocation: 'לוקר VerSans Test, הרצל 12, ראשון לציון'
+      });
+
+      json(res, 200, {
+        ok: true,
+        pickupPatchVersion: '2026-09-24-final-v3-fake-test',
+        inspect: true,
+        fake: true,
+        generatedAt: Date.now(),
+        source: 'synthetic_test_only',
+        shipment: {
+          shipmentId: null,
+          orderRef: 'VS-FAKE-PICKUP',
+          trackingId: 'VERSANS-FAKE-PICKUP-001',
+          status: 'ready_for_pickup',
+          statusLabel: shipmentStatusLabel('ready_for_pickup'),
+          notificationState: null,
+          latestEvent: 'Ready for pickup at collection point',
+          latestLocation: 'לוקר VerSans Test, הרצל 12, ראשון לציון',
+          latestEventAt: Date.now(),
+          isReadyForPickup: true,
+          pickupMessageRaw: 'החבילה ממתינה לאיסוף בנקודת בדיקה: לוקר VerSans Test, הרצל 12, ראשון לציון. קוד איסוף: 482913. שעות פעילות: 08:00-20:00.',
+          pickupLocation: 'לוקר VerSans Test, הרצל 12, ראשון לציון',
+          pickupSource: 'FAKE TEST DATA',
+          pickupEventAt: Date.now(),
+          pickupDetailsFound: true,
+          pickupCandidates: [
+            {
+              provider: 'FAKE TEST DATA',
+              description: 'Ready for pickup at collection point',
+              location: 'לוקר VerSans Test, הרצל 12, ראשון לציון',
+              stage: 'ready_for_pickup',
+              subStatus: 'available_for_collection',
+              eventAt: Date.now()
+            }
+          ],
+          items: [
+            {
+              itemIndex: 0,
+              itemOrderRef: 'VS-FAKE-PICKUP-P01',
+              productId: 'fake-product-001',
+              productName: 'מוצר בדיקה VerSans',
+              qty: 1
+            }
+          ],
+          message: fakeMessage,
+          whatsappWebUrl: null,
+          safeToSend: false,
+          diagnosticIssue: 'synthetic_test_only_no_send'
+        }
+      });
+      return true;
+    }
 
     // Safe diagnostics mode: inspect one exact tracking number even if its pickup
     // notification was already marked sent. This never marks anything as sent and
@@ -2160,7 +2232,7 @@ async function adminApi(req, res, pathname, parsed) {
 
       json(res, 200, {
         ok: true,
-        pickupPatchVersion: '2026-09-24-final-v2',
+        pickupPatchVersion: '2026-09-24-final-v3-fake-test',
         inspect: true,
         generatedAt: Date.now(),
         source: 'versans_database',
@@ -2198,7 +2270,7 @@ async function adminApi(req, res, pathname, parsed) {
     const shipments = await shippingBotReadyPickups(limit);
     json(res, 200, {
       ok: true,
-      pickupPatchVersion: '2026-09-24-final-v2',
+      pickupPatchVersion: '2026-09-24-final-v3-fake-test',
       generatedAt: Date.now(),
       source: 'versans_database',
       note: 'Tracking snapshots are refreshed by VerSans in the background. Use ?refresh=1 only when an immediate provider refresh is required.',
