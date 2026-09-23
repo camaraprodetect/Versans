@@ -1040,6 +1040,87 @@ async function listOrderShipmentsPayload(orderId) {
   return Promise.all(rows.map(shipmentWithItems));
 }
 
+function whatsappDigits(phone) {
+  const normalized = normalizePhone(phone);
+  return normalized ? normalized.replace(/^\+/, '') : '';
+}
+
+function shippingBotMessage({ customerName, items, trackingNumber }) {
+  const safeName = String(customerName || '').trim() || 'לקוח/ה';
+  const linked = Array.isArray(items) ? items : [];
+  const itemLines = linked.length <= 1
+    ? linked.map((item) => `${item.productName || 'מוצר'}\nמספר הזמנה: ${item.itemOrderRef}`)
+    : [
+        'המוצרים הבאים בחבילה מוכנים לאיסוף:',
+        ...linked.map((item) => `• ${item.productName || 'מוצר'} - ${item.itemOrderRef}`)
+      ];
+  return [
+    `היי ${safeName} 👋`,
+    'יש עדכון לגבי ההזמנה שלך מ-VerSans.',
+    '',
+    ...itemLines,
+    `מספר מעקב: ${trackingNumber}`,
+    '',
+    'החבילה שלך מוכנה לאיסוף.',
+    'ייתכן ששאר המוצרים בהזמנה עדיין בדרך.',
+    '',
+    'מומלץ לאסוף את החבילה בהקדם כדי למנוע החזרה לשולח.',
+    '',
+    'למעקב:',
+    'https://versans.com/track',
+    '',
+    'VerSans'
+  ].join('\n');
+}
+
+async function shippingBotReadyPickups(limit = 200) {
+  const createdAfter = Date.now() - 180 * 24 * 60 * 60 * 1000;
+  const rows = await database.listShipmentsByStatus('ready_for_pickup', createdAfter, limit);
+  const out = [];
+  for (const shipment of rows) {
+    const order = await database.getOrderById(shipment.order_id);
+    if (!order || order.status !== 'paid') continue;
+    const customer = parseStoredCustomer(order);
+    const linkedItems = await database.listShipmentItems(shipment.id);
+    const items = (linkedItems || []).map((item) => ({
+      itemIndex: Number(item.item_index),
+      itemOrderRef: orderItemRef(order.order_ref, Number(item.item_index)),
+      productId: item.product_id || null,
+      productName: item.product_name || 'מוצר',
+      qty: Number(item.qty || 1)
+    }));
+    const phone = normalizePhone(order.customer_phone || customer.phone);
+    const digits = whatsappDigits(phone);
+    const customerName = [customer.firstName, customer.lastName].filter(Boolean).join(' ').trim() || customer.name || order.customer_email || 'לקוח/ה';
+    const message = shippingBotMessage({ customerName, items, trackingNumber: shipment.tracking_number });
+    const encodedMessage = encodeURIComponent(message);
+    out.push({
+      shipmentId: Number(shipment.id),
+      orderRef: order.order_ref,
+      customer: {
+        name: customerName,
+        email: order.customer_email || customer.email || null,
+        phone: phone || null,
+        whatsappNumber: digits || null
+      },
+      trackingId: shipment.tracking_number,
+      status: shipment.status,
+      statusLabel: shipmentStatusLabel(shipment.status),
+      latestEvent: shipment.latest_event || null,
+      latestLocation: shipment.latest_location || null,
+      latestEventAt: shipment.latest_event_at == null ? null : Number(shipment.latest_event_at),
+      updatedAt: Number(shipment.updated_at || 0),
+      items,
+      message,
+      whatsappWebUrl: digits ? `https://web.whatsapp.com/send?phone=${digits}&text=${encodedMessage}` : null,
+      waMeUrl: digits ? `https://wa.me/${digits}?text=${encodedMessage}` : null,
+      safeToSend: Boolean(digits && items.length),
+      issue: !digits ? 'missing_or_invalid_phone' : (!items.length ? 'tracking_has_no_linked_products' : null)
+    });
+  }
+  return out;
+}
+
 function shipmentForOrderItem(shipments, itemIndex) {
   const index = Number(itemIndex);
   return (Array.isArray(shipments) ? shipments : []).find((shipment) =>
@@ -1828,6 +1909,27 @@ async function adminApi(req, res, pathname, parsed) {
     if (!update) { json(res, 404, { ok: false, error: 'tracking_info_not_found' }); return true; }
     const fresh = await shipmentWithItems(await database.getShipmentById(shipment.id));
     json(res, 200, { ok: true, shipment: fresh });
+    return true;
+  }
+
+  if (pathname === '/api/admin/bot/shipping/ready-pickups') {
+    if (req.method !== 'GET') { json(res, 405, { ok: false, error: 'method_not_allowed' }); return true; }
+    const requestedLimit = Number(parsed.searchParams.get('limit') || 200);
+    const limit = Number.isFinite(requestedLimit) ? Math.max(1, Math.min(500, Math.floor(requestedLimit))) : 200;
+    let refresh = null;
+    if (String(parsed.searchParams.get('refresh') || '') === '1') {
+      refresh = await syncActiveShipmentTracking();
+    }
+    const shipments = await shippingBotReadyPickups(limit);
+    json(res, 200, {
+      ok: true,
+      generatedAt: Date.now(),
+      source: 'versans_database',
+      note: 'Tracking snapshots are refreshed by VerSans in the background. Use ?refresh=1 only when an immediate provider refresh is required.',
+      refresh,
+      count: shipments.length,
+      shipments
+    });
     return true;
   }
 
