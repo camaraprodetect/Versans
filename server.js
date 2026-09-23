@@ -1131,7 +1131,36 @@ async function shippingBotTestPickup() {
   };
 }
 
-function shippingBotMessage({ customerName, items, trackingNumber }) {
+function cleanPickupText(value, max = 1400) {
+  const text = String(value == null ? '' : value).replace(/[\r\t]+/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
+  return text ? text.slice(0, max) : null;
+}
+
+function shipmentPickupDetails(shipment) {
+  if (!shipment) return { message: null, location: null, source: null, eventAt: null };
+  const events = providerEventsFromRow(shipment);
+  const pickupPattern = /(ready\s+for\s+(pickup|collection)|available\s+for\s+(pickup|collection)|awaiting\s+(pickup|collection)|pick\s*up|pickup\s+(point|station|location)|collection\s+(point|station|location)|parcel\s+locker|locker|מוכן\s+לאיסוף|נקודת\s+איסוף|איסוף)/i;
+  const candidates = events.filter((event) => pickupPattern.test([
+    event && event.description,
+    event && event.location,
+    event && event.stage,
+    event && event.subStatus
+  ].filter(Boolean).join(' ')));
+  const aliExpressEvent = candidates.find((event) => /cainiao|aliexpress/i.test(String(event && event.provider || ''))) || null;
+  const selected = aliExpressEvent || candidates[0] || null;
+  const meta = shipmentProviderMeta(shipment);
+  const message = cleanPickupText(selected && selected.description) || cleanPickupText(shipment.latest_event);
+  const location = cleanPickupText(selected && selected.location, 500) || cleanPickupText(shipment.latest_location, 500);
+  const source = cleanPickupText(selected && selected.provider, 120) || meta.sourceLabel || null;
+  return {
+    message,
+    location,
+    source,
+    eventAt: selected && selected.time != null ? Number(selected.time) : (shipment.latest_event_at == null ? null : Number(shipment.latest_event_at))
+  };
+}
+
+function shippingBotMessage({ customerName, items, trackingNumber, pickupMessageRaw = null, pickupLocation = null }) {
   const safeName = String(customerName || '').trim() || 'לקוח/ה';
   const linked = Array.isArray(items) ? items : [];
   const itemLines = linked.length <= 1
@@ -1140,6 +1169,15 @@ function shippingBotMessage({ customerName, items, trackingNumber }) {
         'המוצרים הבאים בחבילה מוכנים לאיסוף:',
         ...linked.map((item) => `• ${item.productName || 'מוצר'} - ${item.itemOrderRef}`)
       ];
+  const pickupText = cleanPickupText(pickupMessageRaw);
+  const locationText = cleanPickupText(pickupLocation, 500);
+  const pickupLines = [];
+  if (pickupText) {
+    pickupLines.push('', 'פרטי האיסוף לפי עדכון AliExpress / חברת השילוח:', pickupText);
+  }
+  if (locationText && (!pickupText || !pickupText.toLowerCase().includes(locationText.toLowerCase()))) {
+    pickupLines.push(`מיקום: ${locationText}`);
+  }
   return [
     `היי ${safeName} 👋`,
     'יש עדכון לגבי ההזמנה שלך מ-VerSans.',
@@ -1148,6 +1186,8 @@ function shippingBotMessage({ customerName, items, trackingNumber }) {
     `מספר מעקב: ${trackingNumber}`,
     '',
     'החבילה שלך מוכנה לאיסוף.',
+    ...pickupLines,
+    '',
     'ייתכן ששאר המוצרים בהזמנה עדיין בדרך.',
     '',
     'מומלץ לאסוף את החבילה בהקדם כדי למנוע החזרה לשולח.',
@@ -1182,7 +1222,14 @@ async function shippingBotReadyPickups(limit = 200) {
     const phone = normalizePhone(order.customer_phone || customer.phone);
     const digits = whatsappDigits(phone);
     const customerName = [customer.firstName, customer.lastName].filter(Boolean).join(' ').trim() || customer.name || order.customer_email || 'לקוח/ה';
-    const message = shippingBotMessage({ customerName, items, trackingNumber: shipment.tracking_number });
+    const pickup = shipmentPickupDetails(shipment);
+    const message = shippingBotMessage({
+      customerName,
+      items,
+      trackingNumber: shipment.tracking_number,
+      pickupMessageRaw: pickup.message,
+      pickupLocation: pickup.location
+    });
     const encodedMessage = encodeURIComponent(message);
     out.push({
       shipmentId: Number(shipment.id),
@@ -1199,6 +1246,10 @@ async function shippingBotReadyPickups(limit = 200) {
       latestEvent: shipment.latest_event || null,
       latestLocation: shipment.latest_location || null,
       latestEventAt: shipment.latest_event_at == null ? null : Number(shipment.latest_event_at),
+      pickupMessageRaw: pickup.message,
+      pickupLocation: pickup.location,
+      pickupSource: pickup.source,
+      pickupEventAt: pickup.eventAt,
       updatedAt: Number(shipment.updated_at || 0),
       items,
       message,
