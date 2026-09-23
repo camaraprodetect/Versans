@@ -1157,13 +1157,23 @@ async function trackingWebhookApi(req, res, pathname) {
   if (pathname !== '/api/webhooks/17track') return false;
   if (req.method !== 'POST') { json(res, 405, { ok: false, error: 'method_not_allowed' }); return true; }
   const raw = await readRawBody(req, 2 * 1024 * 1024);
-  if (!verify17TrackSignature(raw, req.headers.sign)) {
-    json(res, 401, { ok: false, error: 'invalid_signature' });
-    return true;
-  }
   let payload;
   try { payload = raw ? JSON.parse(raw) : {}; }
   catch (_) { json(res, 400, { ok: false, error: 'invalid_json' }); return true; }
+
+  // 17TRACK's dashboard "Test Webhook" probe may be sent without the signed
+  // `sign` header used by real tracking pushes. Accept unsigned JSON only as a
+  // no-op health check so the dashboard can verify reachability. Real updates
+  // are still processed only after their signature is verified.
+  const signature = String(req.headers.sign || '').trim();
+  if (!signature) {
+    json(res, 200, { ok: true, test: true, processed: 0, ignored: 1 });
+    return true;
+  }
+  if (!verify17TrackSignature(raw, signature)) {
+    json(res, 401, { ok: false, error: 'invalid_signature' });
+    return true;
+  }
   const updates = extract17TrackUpdates(payload);
   const results = [];
   for (const update of updates) results.push(await applyTrackingUpdate(update));
