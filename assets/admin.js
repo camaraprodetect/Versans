@@ -520,10 +520,10 @@
             meta.appendChild(make('span', 'admin-tracking-row__carrier', text(shipment.carrierName, 'זיהוי אוטומטי')));
 
             var actions = make('div', 'admin-shipment-actions');
-            var refresh = make('button', 'admin-small-button', 'רענון מ-17TRACK'); refresh.type = 'button'; refresh.disabled = !data.trackingConfigured;
+            var refresh = make('button', 'admin-small-button', 'רענון מעקב'); refresh.type = 'button'; refresh.disabled = !data.trackingConfigured;
             refresh.addEventListener('click', async function () {
               refresh.disabled = true;
-              try { await apiAction('/api/admin/shipments/' + shipment.id + '/refresh', 'POST'); showToast('המעקב עודכן מ-17TRACK'); await load(); }
+              try { await apiAction('/api/admin/shipments/' + shipment.id + '/refresh', 'POST'); showToast('המעקב עודכן'); await load(); }
               catch (e) { showToast(shippingErrorMessage(e)); refresh.disabled = false; }
             });
             var remove = make('button', 'admin-small-button admin-small-button--danger', 'ניתוק'); remove.type = 'button';
@@ -544,9 +544,10 @@
             var progressFill = make('span'); progressFill.style.width = shipmentProgressValue(shipment.status) + '%'; progress.appendChild(progressFill); row.appendChild(progress);
 
             var details = make('div', 'admin-tracking-details');
-            var providerBox = make('div'); providerBox.appendChild(make('span', '', 'סטטוס 17TRACK')); providerBox.appendChild(make('strong', '', text(shipment.providerStatus, shipment.statusLabel)));
+            var sourceLabel = text(shipment.trackingSourceLabel, '17TRACK');
+            var providerBox = make('div'); providerBox.appendChild(make('span', '', 'סטטוס ' + sourceLabel)); providerBox.appendChild(make('strong', '', text(shipment.providerStatus, shipment.statusLabel)));
             if (shipment.subStatus) providerBox.appendChild(make('small', 'admin-table__muted admin-table__mono', shipment.subStatus));
-            var locationBox = make('div'); locationBox.appendChild(make('span', '', 'אירוע אחרון')); locationBox.appendChild(make('strong', '', text(shipment.latestEvent, '17TRACK עדיין לא החזיר אירוע מפורט')));
+            var locationBox = make('div'); locationBox.appendChild(make('span', '', 'אירוע אחרון')); locationBox.appendChild(make('strong', '', text(shipment.latestEvent, sourceLabel + ' עדיין לא החזיר אירוע מפורט')));
             var updatedBox = make('div'); updatedBox.appendChild(make('span', '', 'עדכון אחרון')); updatedBox.appendChild(make('strong', '', shipment.latestEventAt ? dateTime(shipment.latestEventAt) : 'ממתין לעדכון'));
             var etaBox = make('div'); etaBox.appendChild(make('span', '', 'הערכת מסירה')); etaBox.appendChild(make('strong', '', shipmentEtaLabel(shipment.estimatedDeliveryFrom, shipment.estimatedDeliveryTo)));
             var syncBox = make('div'); syncBox.appendChild(make('span', '', 'סנכרון')); syncBox.appendChild(make('strong', '', text(shipment.syncStatus, shipment.registeredAt ? 'מחובר ל-17TRACK' : 'ממתין לרישום')));
@@ -561,8 +562,8 @@
 
             var history = Array.isArray(shipment.history) ? shipment.history : [];
             var historyWrap = make('div', 'admin-tracking-history');
-            historyWrap.appendChild(make('strong', 'admin-tracking-history__title', 'היסטוריית Tracking אמיתית'));
-            if (!history.length) historyWrap.appendChild(make('span', 'admin-table__muted', 'עדיין לא התקבלו אירועים מ-17TRACK.'));
+            historyWrap.appendChild(make('strong', 'admin-tracking-history__title', 'היסטוריית Tracking אמיתית · ' + sourceLabel));
+            if (!history.length) historyWrap.appendChild(make('span', 'admin-table__muted', 'עדיין לא התקבלו אירועים ממקור המעקב.'));
             else history.slice(0, 20).forEach(function (event) { historyWrap.appendChild(eventLine(event)); });
             row.appendChild(historyWrap);
             card.appendChild(row);

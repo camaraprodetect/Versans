@@ -978,6 +978,8 @@ function shipmentRowPayload(row, items = []) {
     carrierCode: row.carrier_code == null ? null : Number(row.carrier_code),
     carrierName: providerMeta.carrierName || shipmentCarrierLabel(row.carrier_code),
     provider: row.provider || '17track',
+    trackingSource: providerMeta.source,
+    trackingSourceLabel: providerMeta.sourceLabel,
     status: row.status || 'registered',
     statusLabel: shipmentStatusLabel(row.status),
     providerStatus: row.provider_status || null,
@@ -1119,8 +1121,11 @@ function shipmentProviderMeta(row) {
   const providers = Array.isArray(tracking.providers) ? tracking.providers : [];
   const carrierName = providers.map(providerName).find(Boolean) || null;
   const syncStatus = raw && (raw.sync_status || raw.syncStatus) || trackInfo.sync_status || tracking.sync_status || null;
+  const source = raw && raw.source === 'cainiao' ? 'cainiao' : '17track';
   return {
     carrierName,
+    source,
+    sourceLabel: source === 'cainiao' ? 'Cainiao / AliExpress' : '17TRACK',
     syncStatus: syncStatus == null ? null : String(syncStatus),
     providerTips: providerTipsFromRow(row),
     history: providerEventsFromRow(row)
@@ -1303,6 +1308,18 @@ async function notifyShipmentStatus(shipment, order) {
 async function applyTrackingUpdate(update) {
   const shipment = await database.getShipmentByTracking(update.trackingNumber);
   if (!shipment) return { ok: false, ignored: true, trackingNumber: update.trackingNumber };
+
+  // Never let an empty/older provider response erase tracking history we
+  // already have. This matters when a DSV subscription temporarily reports
+  // NotFound while Cainiao still has the cross-border history for the same ID.
+  const existingEventAt = Number(shipment.latest_event_at || 0);
+  const incomingEventAt = Number(update.latestEventAt || 0);
+  const existingUseful = Boolean(shipment.latest_event) || !['registered', 'info_received', ''].includes(String(shipment.status || ''));
+  const incomingEmpty = String(update.status || '') === 'registered' && !update.latestEvent;
+  if ((incomingEmpty && existingUseful) || (existingEventAt && incomingEventAt && incomingEventAt < existingEventAt)) {
+    return { ok: false, ignored: true, reason: 'stale_or_empty_tracking_update', trackingNumber: update.trackingNumber };
+  }
+
   const now = Date.now();
   await database.updateShipmentTracking(shipment.id, { ...update, registeredAt: shipment.registered_at || null, updatedAt: now });
   const fresh = await database.getShipmentById(shipment.id);
@@ -1393,6 +1410,24 @@ async function syncPendingTrackingRegistrations() {
   return { processed, failed };
 }
 
+async function syncActiveShipmentTracking() {
+  if (!is17TrackConfigured()) return { processed: 0, failed: 0 };
+  const now = Date.now();
+  const rows = await database.listActiveShipments(100, now - 25 * 60 * 1000, now - 120 * 24 * 60 * 60 * 1000);
+  let processed = 0;
+  let failed = 0;
+  for (const shipment of rows) {
+    try {
+      await refreshShipmentFrom17Track(shipment, { realTime: false });
+      processed += 1;
+    } catch (error) {
+      failed += 1;
+      console.error(`Tracking background refresh failed for ${shipment.tracking_number}:`, error && error.message);
+    }
+  }
+  return { processed, failed };
+}
+
 async function publicTrackingApi(req, res, pathname, parsed) {
   if (pathname !== '/api/tracking') return false;
   if (req.method !== 'GET') { json(res, 405, { ok: false, error: 'method_not_allowed' }); return true; }
@@ -1418,6 +1453,20 @@ async function publicTrackingApi(req, res, pathname, parsed) {
     json(res, 404, { ok: false, error: 'tracking_not_found' });
     return true;
   }
+  // Keep the customer page fresh even for AliExpress/Cainiao references that
+  // may not generate useful 17TRACK webhooks. We only refresh stale active
+  // shipments, so repeated page loads do not hammer either provider.
+  if (is17TrackConfigured()) {
+    const staleBefore = Date.now() - 10 * 60 * 1000;
+    const rawShipments = await database.listShipmentsForOrder(order.id);
+    for (const rawShipment of rawShipments) {
+      if (String(rawShipment.status || '') === 'delivered') continue;
+      if (Number(rawShipment.updated_at || 0) > staleBefore) continue;
+      try { await refreshShipmentFrom17Track(rawShipment, { realTime: false }); }
+      catch (error) { console.error(`Customer tracking refresh failed for ${rawShipment.tracking_number}:`, error && error.message); }
+    }
+  }
+
   const shipments = await listOrderShipmentsPayload(order.id);
   const allCustomerItems = orderItems.map((item, itemIndex) =>
     customerShipmentPayload(shipmentForOrderItem(shipments, itemIndex), itemIndex, item, order.order_ref)
@@ -2927,6 +2976,15 @@ setInterval(async () => {
   try { await syncPendingTrackingRegistrations(); } catch (err) { console.error('Pending 17TRACK registration sync failed:', err); }
 }, 60 * 60 * 1000).unref();
 
+// Cainiao marketplace references do not always receive useful 17TRACK webhook
+// events. Poll active shipments periodically using the normal (non-Instant)
+// lookup; if 17TRACK is empty, lib/shipping.js transparently falls back to
+// Cainiao. This also lets ready-for-pickup WhatsApp notifications fire without
+// waiting for an admin or customer to manually open the tracking page.
+setInterval(async () => {
+  try { await syncActiveShipmentTracking(); } catch (err) { console.error('Active shipment tracking sync failed:', err); }
+}, 30 * 60 * 1000).unref();
+
 async function purgeNonAdminUsersOnce() {
   const alreadyDone = await database.getSchemaMeta(USER_PURGE_META_KEY);
   if (alreadyDone) return;
@@ -2958,6 +3016,7 @@ async function start() {
       processPendingWelcomeEmails().catch((err) => console.error('Pending welcome email processing failed:', err));
       syncMarketingCatalog().catch((err) => console.error('Marketing catalog sync failed:', err));
       syncPendingTrackingRegistrations().catch((err) => console.error('Pending 17TRACK registration sync failed:', err));
+      syncActiveShipmentTracking().catch((err) => console.error('Active shipment tracking sync failed:', err));
     }, 1500);
     if (emailStartupTimer && typeof emailStartupTimer.unref === 'function') emailStartupTimer.unref();
   });
