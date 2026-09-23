@@ -629,6 +629,13 @@
             statusLine.appendChild(make('span', '', shipment.latestLocation ? 'מיקום אחרון: ' + shipment.latestLocation : 'מיקום אחרון טרם התקבל'));
             row.appendChild(statusLine);
 
+            if (shipment.pickupNotification && shipment.pickupNotification.state === 'sent') {
+              var notice = make('div', 'admin-shipping-note admin-shipping-note--sent');
+              notice.appendChild(make('strong', '', 'הודעת איסוף נשלחה ✓'));
+              notice.appendChild(make('span', '', shipment.pickupNotification.sentAt ? dateTime(shipment.pickupNotification.sentAt) : 'נשלחה ללקוח'));
+              row.appendChild(notice);
+            }
+
             var progress = make('div', 'admin-tracking-progress');
             var progressFill = make('span'); progressFill.style.width = shipmentProgressValue(shipment.status) + '%'; progress.appendChild(progressFill); row.appendChild(progress);
 

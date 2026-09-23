@@ -994,7 +994,7 @@ function shipmentCarrierLabel(code) {
   return carrier ? `חברת שילוח ${carrier}` : 'זיהוי אוטומטי';
 }
 
-function shipmentRowPayload(row, items = []) {
+function shipmentRowPayload(row, items = [], pickupNotification = null) {
   const providerMeta = shipmentProviderMeta(row);
   return {
     id: Number(row.id),
@@ -1021,6 +1021,12 @@ function shipmentRowPayload(row, items = []) {
     updatedAt: Number(row.updated_at || 0),
     providerTips: providerMeta.providerTips,
     history: providerMeta.history,
+    pickupNotification: pickupNotification ? {
+      state: pickupNotification.state || null,
+      recipient: pickupNotification.recipient || null,
+      sentAt: pickupNotification.sent_at == null ? null : Number(pickupNotification.sent_at),
+      updatedAt: pickupNotification.updated_at == null ? null : Number(pickupNotification.updated_at)
+    } : null,
     items: (items || []).map((item) => ({
       itemIndex: Number(item.item_index),
       productId: item.product_id || null,
@@ -1032,7 +1038,8 @@ function shipmentRowPayload(row, items = []) {
 
 async function shipmentWithItems(row) {
   const items = row ? await database.listShipmentItems(row.id) : [];
-  return row ? shipmentRowPayload(row, items) : null;
+  const pickupNotification = row ? await database.getShipmentNotification(row.id, 'customer', 'ready_for_pickup') : null;
+  return row ? shipmentRowPayload(row, items, pickupNotification) : null;
 }
 
 async function listOrderShipmentsPayload(orderId) {
@@ -1078,6 +1085,8 @@ async function shippingBotReadyPickups(limit = 200) {
   const rows = await database.listShipmentsByStatus('ready_for_pickup', createdAfter, limit);
   const out = [];
   for (const shipment of rows) {
+    const existingNotification = await database.getShipmentNotification(shipment.id, 'customer', 'ready_for_pickup');
+    if (existingNotification && existingNotification.state === 'sent') continue;
     const order = await database.getOrderById(shipment.order_id);
     if (!order || order.status !== 'paid') continue;
     const customer = parseStoredCustomer(order);
@@ -1929,6 +1938,62 @@ async function adminApi(req, res, pathname, parsed) {
       refresh,
       count: shipments.length,
       shipments
+    });
+    return true;
+  }
+
+  if (pathname === '/api/admin/bot/shipping/mark-sent') {
+    if (req.method !== 'POST') { json(res, 405, { ok: false, error: 'method_not_allowed' }); return true; }
+    if (!sameOriginAllowed(req)) { json(res, 403, { ok: false, error: 'origin_not_allowed' }); return true; }
+    const body = await readJsonBody(req, 512 * 1024);
+    const entries = Array.isArray(body && body.shipments)
+      ? body.shipments
+      : (body && body.shipmentId != null ? [body] : []);
+    if (!entries.length || entries.length > 500) {
+      json(res, 400, { ok: false, error: 'invalid_shipments' });
+      return true;
+    }
+    const now = Date.now();
+    const results = [];
+    for (const entry of entries) {
+      const shipmentId = Number(entry && entry.shipmentId);
+      if (!Number.isInteger(shipmentId) || shipmentId <= 0) {
+        results.push({ ok: false, shipmentId: entry && entry.shipmentId || null, error: 'invalid_shipment_id' });
+        continue;
+      }
+      const shipment = await database.getShipmentById(shipmentId);
+      if (!shipment) {
+        results.push({ ok: false, shipmentId, error: 'shipment_not_found' });
+        continue;
+      }
+      const expectedTracking = String(entry && entry.trackingId || '').trim();
+      if (expectedTracking && expectedTracking !== String(shipment.tracking_number || '')) {
+        results.push({ ok: false, shipmentId, trackingId: expectedTracking, error: 'tracking_mismatch' });
+        continue;
+      }
+      if (String(shipment.status || '') !== 'ready_for_pickup') {
+        results.push({ ok: false, shipmentId, trackingId: shipment.tracking_number, error: 'shipment_not_ready_for_pickup' });
+        continue;
+      }
+      const order = await database.getOrderById(shipment.order_id);
+      const customer = order ? parseStoredCustomer(order) : {};
+      const phone = order ? normalizePhone(order.customer_phone || customer.phone) : null;
+      await database.recordShipmentNotificationSent(
+        shipment.id,
+        'customer',
+        'ready_for_pickup',
+        phone || null,
+        String(entry && entry.messageId || 'grok-whatsapp-web'),
+        now
+      );
+      results.push({ ok: true, shipmentId, trackingId: shipment.tracking_number, sentAt: now });
+    }
+    const marked = results.filter((item) => item.ok).length;
+    json(res, marked === results.length ? 200 : 207, {
+      ok: marked === results.length,
+      marked,
+      failed: results.length - marked,
+      results
     });
     return true;
   }

@@ -61,3 +61,5 @@ button,input,select,a{font:inherit}.admin-app{display:grid;grid-template-columns
 .admin-table tbody tr.admin-order-row--unconnected:hover td{background:#ffe7e7}
 .admin-table tbody tr.admin-order-row--partial:hover td{background:#fff1c9}
 .admin-table tbody tr.admin-order-row--connected:hover td{background:#e1f5e8}
+
+.admin-shipping-note--sent{border-color:#cce4d6;background:#f1faf5;color:#245f46}.admin-shipping-note--sent strong{color:#1f6d49}
