@@ -1108,9 +1108,17 @@ async function ensureShipmentRegisteredWith17Track(shipment) {
   const storedCustomer = parseStoredCustomer(order);
   const countryText = String(storedCustomer.country || '').trim().toLowerCase();
   const destinationCountry = (countryText.includes('ישראל') || countryText.includes('israel') || normalizePhone(order.customer_phone).startsWith('+972')) ? 'IL' : null;
+  const phone = normalizePhone(order.customer_phone || storedCustomer.phone);
+  const consignee = [storedCustomer.firstName, storedCustomer.lastName].filter(Boolean).join(' ').trim() || null;
   const registered = await register17Track(shipment.tracking_number, shipment.carrier_code, {
+    originCountry: String(shipment.tracking_number || '').toUpperCase().startsWith('DSVPH') ? 'CN' : null,
     destinationCountry,
-    destinationPostalCode: storedCustomer.zip || null
+    destinationPostalCode: storedCustomer.zip || null,
+    destinationCity: storedCustomer.city || null,
+    consignee,
+    phoneNumber: phone || null,
+    phoneNumberLast4: phone ? phone.slice(-4) : null,
+    lang: 'en'
   });
   await database.markShipmentRegistered(shipment.id, registered.carrierCode || shipment.carrier_code || null, Date.now());
   return true;
@@ -1121,16 +1129,26 @@ function trackingLookupOptions(order) {
   const storedCustomer = parseStoredCustomer(order);
   const countryText = String(storedCustomer.country || '').trim().toLowerCase();
   const destinationCountry = (countryText.includes('ישראל') || countryText.includes('israel') || normalizePhone(order.customer_phone).startsWith('+972')) ? 'IL' : null;
+  const phone = normalizePhone(order.customer_phone || storedCustomer.phone);
+  const consignee = [storedCustomer.firstName, storedCustomer.lastName].filter(Boolean).join(' ').trim() || null;
   return {
     destinationCountry,
-    destinationPostalCode: storedCustomer.zip || null
+    destinationPostalCode: storedCustomer.zip || null,
+    destinationCity: storedCustomer.city || null,
+    consignee,
+    phoneNumber: phone || null,
+    phoneNumberLast4: phone ? phone.slice(-4) : null,
+    lang: 'en'
   };
 }
 
 async function refreshShipmentFrom17Track(shipment, { realTime = false } = {}) {
   if (!shipment || !is17TrackConfigured()) return null;
   const order = await database.getOrderById(shipment.order_id);
-  const options = trackingLookupOptions(order);
+  const options = {
+    ...trackingLookupOptions(order),
+    originCountry: String(shipment.tracking_number || '').toUpperCase().startsWith('DSVPH') ? 'CN' : null
+  };
   let info = null;
   if (realTime) {
     try {
@@ -1296,9 +1314,17 @@ async function adminApi(req, res, pathname, parsed) {
         const storedCustomer = parseStoredCustomer(order);
         const countryText = String(storedCustomer.country || '').trim().toLowerCase();
         const destinationCountry = (countryText.includes('ישראל') || countryText.includes('israel') || normalizePhone(order.customer_phone).startsWith('+972')) ? 'IL' : null;
+        const phone = normalizePhone(order.customer_phone || storedCustomer.phone);
+        const consignee = [storedCustomer.firstName, storedCustomer.lastName].filter(Boolean).join(' ').trim() || null;
         const registered = await register17Track(trackingNumber, carrierCode, {
+          originCountry: trackingNumber.toUpperCase().startsWith('DSVPH') ? 'CN' : null,
           destinationCountry,
-          destinationPostalCode: storedCustomer.zip || null
+          destinationPostalCode: storedCustomer.zip || null,
+          destinationCity: storedCustomer.city || null,
+          consignee,
+          phoneNumber: phone || null,
+          phoneNumberLast4: phone ? phone.slice(-4) : null,
+          lang: 'en'
         });
         resolvedCarrier = registered.carrierCode || carrierCode;
         providerRegisteredAt = Date.now();
