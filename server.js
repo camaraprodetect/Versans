@@ -853,6 +853,37 @@ async function getAdminUser(req) {
   return user && normalizeEmail(user.email) === ADMIN_EMAIL ? user : null;
 }
 
+
+function shippingBotKeyConfigured() {
+  return Boolean(String(process.env.VERSANS_SHIPPING_BOT_KEY || '').trim());
+}
+
+function secureTextEqual(a, b) {
+  const left = Buffer.from(String(a || ''), 'utf8');
+  const right = Buffer.from(String(b || ''), 'utf8');
+  if (!left.length || left.length !== right.length) return false;
+  return crypto.timingSafeEqual(left, right);
+}
+
+function requestShippingBotKey(req) {
+  const auth = String(req.headers.authorization || '').trim();
+  const bearer = /^Bearer\s+(.+)$/i.exec(auth);
+  if (bearer) return bearer[1].trim();
+  return String(req.headers['x-versans-shipping-bot-key'] || '').trim();
+}
+
+function shippingBotKeyAllowed(req) {
+  const expected = String(process.env.VERSANS_SHIPPING_BOT_KEY || '').trim();
+  if (!expected) return false;
+  return secureTextEqual(requestShippingBotKey(req), expected);
+}
+
+async function shippingBotAccessAllowed(req) {
+  if (shippingBotKeyAllowed(req)) return { ok: true, mode: 'bot_key' };
+  const admin = await getAdminUser(req);
+  return admin ? { ok: true, mode: 'admin_session', admin } : { ok: false, mode: null };
+}
+
 async function presenceApi(req, res, pathname) {
   if (pathname !== '/api/presence') return false;
   if (req.method !== 'POST') {
@@ -1684,8 +1715,10 @@ async function trackingWebhookApi(req, res, pathname) {
 
 async function adminApi(req, res, pathname, parsed) {
   if (!pathname.startsWith('/api/admin/')) return false;
-  const admin = await getAdminUser(req);
-  if (!admin) {
+  const shippingBotEndpoint = pathname === '/api/admin/bot/shipping/ready-pickups' || pathname === '/api/admin/bot/shipping/mark-sent';
+  const botKeyAccess = shippingBotEndpoint && shippingBotKeyAllowed(req);
+  const admin = botKeyAccess ? null : await getAdminUser(req);
+  if (!admin && !botKeyAccess) {
     json(res, 403, { ok: false, error: 'admin_required' });
     return true;
   }
@@ -1973,8 +2006,11 @@ async function adminApi(req, res, pathname, parsed) {
 
   if (pathname === '/api/admin/bot/shipping/ready-pickups') {
     if (req.method !== 'GET') { json(res, 405, { ok: false, error: 'method_not_allowed' }); return true; }
-    const botAdmin = await getAdminUser(req);
-    if (!botAdmin) { json(res, 401, { ok: false, error: 'admin_auth_required' }); return true; }
+    const botAccess = await shippingBotAccessAllowed(req);
+    if (!botAccess.ok) {
+      json(res, 401, { ok: false, error: shippingBotKeyConfigured() ? 'bot_auth_required' : 'admin_auth_required' });
+      return true;
+    }
     const requestedLimit = Number(parsed.searchParams.get('limit') || 200);
     const limit = Number.isFinite(requestedLimit) ? Math.max(1, Math.min(500, Math.floor(requestedLimit))) : 200;
     let refresh = null;
@@ -1996,9 +2032,12 @@ async function adminApi(req, res, pathname, parsed) {
 
   if (pathname === '/api/admin/bot/shipping/mark-sent') {
     if (req.method !== 'POST') { json(res, 405, { ok: false, error: 'method_not_allowed' }); return true; }
-    const botAdmin = await getAdminUser(req);
-    if (!botAdmin) { json(res, 401, { ok: false, error: 'admin_auth_required' }); return true; }
-    if (!sameOriginAllowed(req)) { json(res, 403, { ok: false, error: 'origin_not_allowed' }); return true; }
+    const botAccess = await shippingBotAccessAllowed(req);
+    if (!botAccess.ok) {
+      json(res, 401, { ok: false, error: shippingBotKeyConfigured() ? 'bot_auth_required' : 'admin_auth_required' });
+      return true;
+    }
+    if (botAccess.mode !== 'bot_key' && !sameOriginAllowed(req)) { json(res, 403, { ok: false, error: 'origin_not_allowed' }); return true; }
     const body = await readJsonBody(req, 512 * 1024);
     const entries = Array.isArray(body && body.shipments)
       ? body.shipments
