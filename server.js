@@ -2233,6 +2233,7 @@ function prettyRouteFile(pathname) {
     '/login': 'login.html',
     '/register': 'register.html',
     '/account': 'account.html',
+    '/track': 'track.html',
     '/forgot-password': 'forgot-password.html',
     '/reset-password': 'reset-password.html'
   };
