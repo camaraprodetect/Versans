@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex,follow">
   <title>מעקב הזמנה | VerSans</title>
   <link rel="icon" href="/favicon.ico">
-  <link rel="stylesheet" href="/assets/track.css?v=20260923-multi-pickup-v4">
+  <link rel="stylesheet" href="/assets/track.css?v=20260923-product-orders-v5">
 </head>
 <body>
   <header class="track-topbar">
@@ -18,7 +18,7 @@
     <section class="track-hero">
       <span class="track-eyebrow">VERSANS DELIVERY</span>
       <h1>מעקב אחר ההזמנה</h1>
-      <p>הכניסו את מספר ההזמנה שקיבלתם מ-VerSans. זה המספר היחיד שתצטרכו לאורך כל הדרך.</p>
+      <p>לכל מוצר בהזמנה יש מספר VerSans משלו. הכניסו אחד ממספרי ההזמנה שקיבלתם כדי לראות את המעקב של אותו מוצר.</p>
     </section>
 
     <section class="track-card" aria-labelledby="trackFormTitle">
@@ -26,11 +26,11 @@
       <form id="trackingForm" class="track-form" autocomplete="on">
         <label>
           <span>מספר הזמנה</span>
-          <input id="orderRef" name="order" type="text" inputmode="text" placeholder="לדוגמה KW-..." maxlength="120" required>
+          <input id="orderRef" name="order" type="text" inputmode="text" placeholder="לדוגמה VS-...-P01" maxlength="160" required>
         </label>
         <button id="trackSubmit" type="submit">בדיקת סטטוס</button>
       </form>
-      <p class="track-form-note">מספרי המעקב של חברות השילוח מחוברים להזמנה מאחורי הקלעים ואינם משנים את מספר ההזמנה שלכם.</p>
+      <p class="track-form-note">מספר ההזמנה של כל מוצר נשאר קבוע. כשמתקבל Tracking ID מהספק, הוא מתחבר לאותו מוצר ומעדכן את הסטטוס שלו.</p>
       <p id="trackError" class="track-error" hidden></p>
     </section>
 
@@ -43,6 +43,6 @@
     </section>
   </main>
 
-  <script src="/assets/track.js?v=20260923-multi-pickup-v4" defer></script>
+  <script src="/assets/track.js?v=20260923-product-orders-v5" defer></script>
 </body>
 </html>

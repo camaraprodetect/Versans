@@ -402,6 +402,7 @@
     var code = error && (error.code || error.message);
     var map = {
       invalid_tracking_number: 'מספר המעקב לא תקין.',
+      invalid_order_item: 'לא ניתן לזהות את המוצר בהזמנה.',
       tracking_already_exists: 'מספר המעקב כבר קיים במערכת.',
       order_not_paid: 'אפשר להוסיף משלוח רק להזמנה ששולמה.',
       '17track_not_configured': 'חסר VERSANS_17TRACK_API_KEY ב-Render.',
@@ -473,7 +474,7 @@
         var customerPreview = make('div', 'admin-shipping-customer-preview');
         customerPreview.appendChild(make('span', '', 'מה הלקוח רואה עכשיו'));
         customerPreview.appendChild(make('strong', '', customerState.label || 'ההזמנה בהכנה'));
-        customerPreview.appendChild(make('small', 'admin-table__muted', 'הלקוח ממשיך להיכנס עם מספר ההזמנה ' + order.orderRef + '. בתוך המעקב הוא רואה כל Tracking ID כחבילה נפרדת.'));
+        customerPreview.appendChild(make('small', 'admin-table__muted', 'לכל מוצר בהזמנה יש מספר VerSans נפרד. את ה-Tracking ID מ-AliExpress מחברים ישירות למוצר המתאים.'));
         panel.appendChild(customerPreview);
 
         var config = make('div', 'admin-shipping-config');
@@ -481,107 +482,144 @@
         panel.appendChild(config);
         if (!data.trackingConfigured || !data.customerWhatsAppConfigured || !data.adminWhatsAppConfigured) {
           var note = make('div', 'admin-shipping-note');
-          note.textContent = '17TRACK יכול לעבוד כבר עכשיו. WhatsApp נשאר מוכן בקוד ויופעל כשנוסיף את המספר והמשתנים של Meta ב-Render.';
+          note.textContent = '17TRACK יכול לעבוד כבר עכשיו. WhatsApp יופעל אוטומטית אחרי שנוסיף את מספר VerSans והמשתנים של Meta ב-Render.';
           panel.appendChild(note);
         }
 
-        var existing = make('div', 'admin-shipping-section');
-        existing.appendChild(make('h3', '', 'Tracking ID שמחובר להזמנה'));
-        existing.appendChild(make('p', 'admin-order-shipping-help', 'כל Tracking ID שמתקבל מהספק מתחבר להזמנת VerSans כחבילה נפרדת. אין שיוך למוצרים. כשהחבילה הופכת למוכנה לאיסוף, הלקוח יקבל הודעת WhatsApp נפרדת עבור ה-Tracking ID הזה כשהשירות יופעל.'));
+        var productsSection = make('div', 'admin-shipping-section');
+        productsSection.appendChild(make('h3', '', 'מעקב לפי מוצר'));
+        productsSection.appendChild(make('p', 'admin-order-shipping-help', 'לכל מוצר נוצר מספר הזמנה נפרד של VerSans. כשהספק נותן Tracking ID / מספר מעקב, מדביקים אותו בכרטיס של אותו מוצר בלבד.'));
 
-        var trackingList = make('div', 'admin-order-tracking-list');
-        if (!(data.shipments || []).length) {
-          var empty = make('div', 'admin-shipping-empty');
-          empty.appendChild(make('strong', '', 'עדיין לא חובר Tracking ID'));
-          empty.appendChild(make('span', 'admin-table__muted', 'בינתיים הלקוח רואה: ההזמנה בהכנה'));
-          trackingList.appendChild(empty);
-        }
+        var productTrackingList = make('div', 'admin-product-tracking-list');
+        (data.items || []).forEach(function (item) {
+          var shipment = item.shipment || null;
+          var card = make('section', 'admin-product-tracking-card' + (shipment ? ' has-tracking' : ''));
 
-        (data.shipments || []).forEach(function (shipment, shipmentIndex) {
-          var row = make('section', 'admin-tracking-row');
-          var top = make('div', 'admin-tracking-row__top');
-          var meta = make('div', 'admin-tracking-row__meta');
-          meta.appendChild(make('small', 'admin-table__muted', 'Tracking ID ' + (shipmentIndex + 1)));
-          meta.appendChild(make('strong', 'admin-table__strong admin-table__mono', shipment.trackingNumber));
-          meta.appendChild(make('span', 'admin-tracking-row__carrier', text(shipment.carrierName, 'זיהוי אוטומטי')));
-
-          var actions = make('div', 'admin-shipment-actions');
-          var refresh = make('button', 'admin-small-button', 'רענון מ-17TRACK'); refresh.type = 'button'; refresh.disabled = !data.trackingConfigured;
-          refresh.addEventListener('click', async function () {
-            refresh.disabled = true;
-            try { await apiAction('/api/admin/shipments/' + shipment.id + '/refresh', 'POST'); showToast('המעקב עודכן מ-17TRACK'); await load(); }
-            catch (e) { showToast(shippingErrorMessage(e)); refresh.disabled = false; }
-          });
-          var remove = make('button', 'admin-small-button admin-small-button--danger', 'ניתוק'); remove.type = 'button';
-          remove.addEventListener('click', async function () {
-            if (!window.confirm('לנתק את ה-Tracking ID מההזמנה? מספר ההזמנה של VerSans לא יימחק.')) return;
-            remove.disabled = true;
-            try { await apiAction('/api/admin/shipments/' + shipment.id, 'DELETE'); showToast('ה-Tracking ID נותק'); await load(); }
-            catch (e) { showToast(shippingErrorMessage(e)); remove.disabled = false; }
-          });
-          actions.append(refresh, remove); top.append(meta, actions); row.appendChild(top);
-
-          var statusLine = make('div', 'admin-tracking-status-line');
-          statusLine.appendChild(make('strong', '', shipment.statusLabel));
-          statusLine.appendChild(make('span', '', shipment.latestLocation ? 'מיקום אחרון: ' + shipment.latestLocation : 'מיקום אחרון טרם התקבל'));
-          row.appendChild(statusLine);
-
-          var progress = make('div', 'admin-tracking-progress');
-          var progressFill = make('span'); progressFill.style.width = shipmentProgressValue(shipment.status) + '%'; progress.appendChild(progressFill); row.appendChild(progress);
-
-          var details = make('div', 'admin-tracking-details');
-          var providerBox = make('div'); providerBox.appendChild(make('span', '', 'סטטוס 17TRACK')); providerBox.appendChild(make('strong', '', text(shipment.providerStatus, shipment.statusLabel)));
-          if (shipment.subStatus) providerBox.appendChild(make('small', 'admin-table__muted admin-table__mono', shipment.subStatus));
-          var locationBox = make('div'); locationBox.appendChild(make('span', '', 'אירוע אחרון')); locationBox.appendChild(make('strong', '', text(shipment.latestEvent, '17TRACK עדיין לא החזיר אירוע מפורט')));
-          var updatedBox = make('div'); updatedBox.appendChild(make('span', '', 'עדכון אחרון')); updatedBox.appendChild(make('strong', '', shipment.latestEventAt ? dateTime(shipment.latestEventAt) : 'ממתין לעדכון'));
-          var etaBox = make('div'); etaBox.appendChild(make('span', '', 'הערכת מסירה')); etaBox.appendChild(make('strong', '', shipmentEtaLabel(shipment.estimatedDeliveryFrom, shipment.estimatedDeliveryTo)));
-          var syncBox = make('div'); syncBox.appendChild(make('span', '', 'סנכרון')); syncBox.appendChild(make('strong', '', text(shipment.syncStatus, shipment.registeredAt ? 'מחובר ל-17TRACK' : 'ממתין לרישום')));
-          details.append(providerBox, locationBox, updatedBox, etaBox, syncBox); row.appendChild(details);
-
-          if (Array.isArray(shipment.providerTips) && shipment.providerTips.length) {
-            var tips = make('div', 'admin-shipping-note');
-            tips.appendChild(make('strong', '', 'הודעת חברת השילוח'));
-            shipment.providerTips.forEach(function (tip) { tips.appendChild(make('div', '', text(tip))); });
-            row.appendChild(tips);
+          var itemHead = make('div', 'admin-product-tracking-card__head');
+          var productMeta = make('div', 'admin-product-tracking-card__product');
+          if (item.productImage) {
+            var img = document.createElement('img');
+            img.src = item.productImage; img.alt = ''; img.loading = 'lazy';
+            productMeta.appendChild(img);
           }
+          var productCopy = make('div');
+          productCopy.appendChild(make('strong', '', text(item.productName, item.productId)));
+          productCopy.appendChild(make('small', 'admin-table__muted', 'כמות ' + numberFmt(item.qty || 1)));
+          productMeta.appendChild(productCopy);
+          var itemRef = make('div', 'admin-product-order-ref');
+          itemRef.appendChild(make('span', '', 'מספר הזמנה VerSans'));
+          itemRef.appendChild(make('strong', 'admin-table__mono', item.itemOrderRef));
+          itemHead.append(productMeta, itemRef); card.appendChild(itemHead);
 
-          var history = Array.isArray(shipment.history) ? shipment.history : [];
-          var historyWrap = make('div', 'admin-tracking-history');
-          historyWrap.appendChild(make('strong', 'admin-tracking-history__title', 'היסטוריית Tracking אמיתית'));
-          if (!history.length) {
-            historyWrap.appendChild(make('span', 'admin-table__muted', 'עדיין לא התקבלו אירועים מ-17TRACK.'));
+          if (shipment) {
+            var row = make('div', 'admin-product-tracking-live');
+            var top = make('div', 'admin-tracking-row__top');
+            var meta = make('div', 'admin-tracking-row__meta');
+            meta.appendChild(make('small', 'admin-table__muted', 'Tracking ID / מספר מעקב מהספק'));
+            meta.appendChild(make('strong', 'admin-table__strong admin-table__mono', shipment.trackingNumber));
+            meta.appendChild(make('span', 'admin-tracking-row__carrier', text(shipment.carrierName, 'זיהוי אוטומטי')));
+
+            var actions = make('div', 'admin-shipment-actions');
+            var refresh = make('button', 'admin-small-button', 'רענון מ-17TRACK'); refresh.type = 'button'; refresh.disabled = !data.trackingConfigured;
+            refresh.addEventListener('click', async function () {
+              refresh.disabled = true;
+              try { await apiAction('/api/admin/shipments/' + shipment.id + '/refresh', 'POST'); showToast('המעקב עודכן מ-17TRACK'); await load(); }
+              catch (e) { showToast(shippingErrorMessage(e)); refresh.disabled = false; }
+            });
+            var remove = make('button', 'admin-small-button admin-small-button--danger', 'ניתוק'); remove.type = 'button';
+            remove.addEventListener('click', async function () {
+              if (!window.confirm('לנתק את ה-Tracking ID מהמוצר ' + text(item.productName, '') + '?')) return;
+              remove.disabled = true;
+              try { await apiAction('/api/admin/shipments/' + shipment.id, 'DELETE'); showToast('ה-Tracking ID נותק מהמוצר'); await load(); }
+              catch (e) { showToast(shippingErrorMessage(e)); remove.disabled = false; }
+            });
+            actions.append(refresh, remove); top.append(meta, actions); row.appendChild(top);
+
+            var statusLine = make('div', 'admin-tracking-status-line');
+            statusLine.appendChild(make('strong', '', shipment.statusLabel));
+            statusLine.appendChild(make('span', '', shipment.latestLocation ? 'מיקום אחרון: ' + shipment.latestLocation : 'מיקום אחרון טרם התקבל'));
+            row.appendChild(statusLine);
+
+            var progress = make('div', 'admin-tracking-progress');
+            var progressFill = make('span'); progressFill.style.width = shipmentProgressValue(shipment.status) + '%'; progress.appendChild(progressFill); row.appendChild(progress);
+
+            var details = make('div', 'admin-tracking-details');
+            var providerBox = make('div'); providerBox.appendChild(make('span', '', 'סטטוס 17TRACK')); providerBox.appendChild(make('strong', '', text(shipment.providerStatus, shipment.statusLabel)));
+            if (shipment.subStatus) providerBox.appendChild(make('small', 'admin-table__muted admin-table__mono', shipment.subStatus));
+            var locationBox = make('div'); locationBox.appendChild(make('span', '', 'אירוע אחרון')); locationBox.appendChild(make('strong', '', text(shipment.latestEvent, '17TRACK עדיין לא החזיר אירוע מפורט')));
+            var updatedBox = make('div'); updatedBox.appendChild(make('span', '', 'עדכון אחרון')); updatedBox.appendChild(make('strong', '', shipment.latestEventAt ? dateTime(shipment.latestEventAt) : 'ממתין לעדכון'));
+            var etaBox = make('div'); etaBox.appendChild(make('span', '', 'הערכת מסירה')); etaBox.appendChild(make('strong', '', shipmentEtaLabel(shipment.estimatedDeliveryFrom, shipment.estimatedDeliveryTo)));
+            var syncBox = make('div'); syncBox.appendChild(make('span', '', 'סנכרון')); syncBox.appendChild(make('strong', '', text(shipment.syncStatus, shipment.registeredAt ? 'מחובר ל-17TRACK' : 'ממתין לרישום')));
+            details.append(providerBox, locationBox, updatedBox, etaBox, syncBox); row.appendChild(details);
+
+            if (Array.isArray(shipment.providerTips) && shipment.providerTips.length) {
+              var tips = make('div', 'admin-shipping-note');
+              tips.appendChild(make('strong', '', 'הודעת חברת השילוח'));
+              shipment.providerTips.forEach(function (tip) { tips.appendChild(make('div', '', text(tip))); });
+              row.appendChild(tips);
+            }
+
+            var history = Array.isArray(shipment.history) ? shipment.history : [];
+            var historyWrap = make('div', 'admin-tracking-history');
+            historyWrap.appendChild(make('strong', 'admin-tracking-history__title', 'היסטוריית Tracking אמיתית'));
+            if (!history.length) historyWrap.appendChild(make('span', 'admin-table__muted', 'עדיין לא התקבלו אירועים מ-17TRACK.'));
+            else history.slice(0, 20).forEach(function (event) { historyWrap.appendChild(eventLine(event)); });
+            row.appendChild(historyWrap);
+            card.appendChild(row);
           } else {
-            history.slice(0, 20).forEach(function (event) { historyWrap.appendChild(eventLine(event)); });
+            var waiting = make('div', 'admin-product-tracking-waiting');
+            waiting.appendChild(make('strong', '', 'ההזמנה בהכנה'));
+            waiting.appendChild(make('span', 'admin-table__muted', 'עדיין לא הוזן Tracking ID עבור המוצר הזה.'));
+            card.appendChild(waiting);
           }
-          row.appendChild(historyWrap);
-          trackingList.appendChild(row);
-        });
 
-        existing.appendChild(trackingList);
-        panel.appendChild(existing);
-
-        var addSection = make('div', 'admin-shipping-section');
-        addSection.appendChild(make('h3', '', 'חיבור Tracking ID להזמנה'));
-        addSection.appendChild(make('p', 'admin-order-shipping-help', 'הדביקו כאן את מספר המעקב שקיבלתם מהספק. הוא נשמר מאחורי הקלעים ומתחבר להזמנה ' + order.orderRef + '.'));
-        var form = make('form', 'admin-shipment-form');
-        var fields = make('div', 'admin-shipment-fields');
-        var trackingLabel = make('label'); trackingLabel.appendChild(make('span', '', 'Tracking ID מהספק')); var tracking = document.createElement('input'); tracking.name = 'tracking'; tracking.placeholder = 'לדוגמה LP..., DSVPH..., RR...'; tracking.autocomplete = 'off'; tracking.required = true; trackingLabel.appendChild(tracking);
-        var carrierLabel = make('label'); carrierLabel.appendChild(make('span', '', 'קוד חברת שילוח 17TRACK (אופציונלי)')); var carrier = document.createElement('input'); carrier.name = 'carrier'; carrier.placeholder = 'השאירו ריק לזיהוי אוטומטי'; carrier.inputMode = 'numeric'; carrierLabel.appendChild(carrier);
-        fields.append(trackingLabel, carrierLabel); form.appendChild(fields);
-        var submit = make('button', 'admin-shipment-submit', 'חבר Tracking ID להזמנה'); submit.type = 'submit'; form.appendChild(submit);
-        var formError = make('div', 'admin-shipment-form-error'); formError.hidden = true; form.appendChild(formError);
-        form.addEventListener('submit', async function (event) {
-          event.preventDefault(); formError.hidden = true; submit.disabled = true; submit.textContent = 'מחבר…';
-          try {
-            var created = await apiAction('/api/admin/orders/' + encodeURIComponent(order.orderRef) + '/shipments', 'POST', { trackingNumber: tracking.value.trim(), carrierCode: carrier.value.trim() || null });
-            if (created.warning && created.warning.error === 'tracking_registration_failed') showToast('ה-Tracking ID נשמר. 17TRACK עדיין לא הצליח להירשם וינסה שוב אוטומטית.');
-            else showToast('ה-Tracking ID חובר להזמנה');
-            await load();
-          } catch (e) {
-            formError.textContent = shippingErrorMessage(e); formError.hidden = false; submit.disabled = false; submit.textContent = 'חבר Tracking ID להזמנה';
-          }
+          var form = make('form', 'admin-product-tracking-form');
+          var trackingLabel = make('label');
+          trackingLabel.appendChild(make('span', '', 'Tracking ID / מספר מעקב מ-AliExpress'));
+          var tracking = document.createElement('input');
+          tracking.name = 'tracking'; tracking.placeholder = 'הדביקו כאן את מספר המעקב'; tracking.autocomplete = 'off'; tracking.required = true;
+          if (shipment && shipment.trackingNumber) tracking.value = shipment.trackingNumber;
+          trackingLabel.appendChild(tracking);
+          var submit = make('button', 'admin-shipment-submit', shipment ? 'שמור / החלף Tracking ID' : 'חבר Tracking ID למוצר'); submit.type = 'submit';
+          var formError = make('div', 'admin-shipment-form-error'); formError.hidden = true;
+          form.append(trackingLabel, submit, formError);
+          form.addEventListener('submit', async function (event) {
+            event.preventDefault(); formError.hidden = true; submit.disabled = true; var oldText = submit.textContent; submit.textContent = 'שומר…';
+            try {
+              var created = await apiAction('/api/admin/orders/' + encodeURIComponent(order.orderRef) + '/shipments', 'POST', {
+                itemIndex: item.itemIndex,
+                trackingNumber: tracking.value.trim()
+              });
+              if (created.warning && created.warning.error === 'tracking_registration_failed') showToast('ה-Tracking ID נשמר למוצר. 17TRACK עדיין לא הצליח לזהות אותו וינסה שוב.');
+              else showToast('ה-Tracking ID חובר ל-' + text(item.productName, 'המוצר'));
+              await load();
+            } catch (e) {
+              formError.textContent = shippingErrorMessage(e); formError.hidden = false; submit.disabled = false; submit.textContent = oldText;
+            }
+          });
+          card.appendChild(form);
+          productTrackingList.appendChild(card);
         });
-        addSection.appendChild(form); panel.appendChild(addSection);
+        productsSection.appendChild(productTrackingList);
+        panel.appendChild(productsSection);
+
+        if (Array.isArray(data.unassignedShipments) && data.unassignedShipments.length) {
+          var legacy = make('div', 'admin-shipping-section admin-shipping-section--legacy');
+          legacy.appendChild(make('h3', '', 'מעקבים ישנים ללא מוצר'));
+          legacy.appendChild(make('p', 'admin-order-shipping-help', 'אלה Tracking IDs שנוספו לפני שעברנו למעקב לפי מוצר. נתקו אותם והדביקו כל מספר בכרטיס המוצר המתאים למעלה.'));
+          data.unassignedShipments.forEach(function (shipment) {
+            var legacyRow = make('div', 'admin-legacy-tracking');
+            var copy = make('div'); copy.appendChild(make('strong', 'admin-table__mono', shipment.trackingNumber)); copy.appendChild(make('small', 'admin-table__muted', text(shipment.carrierName, 'ללא שיוך'))); legacyRow.appendChild(copy);
+            var remove = make('button', 'admin-small-button admin-small-button--danger', 'נתק'); remove.type = 'button';
+            remove.addEventListener('click', async function () {
+              remove.disabled = true;
+              try { await apiAction('/api/admin/shipments/' + shipment.id, 'DELETE'); showToast('המעקב הישן נותק'); await load(); }
+              catch (e) { showToast(shippingErrorMessage(e)); remove.disabled = false; }
+            });
+            legacyRow.appendChild(remove); legacy.appendChild(legacyRow);
+          });
+          panel.appendChild(legacy);
+        }
       } catch (error) {
         panel.replaceChildren();
         var err = make('div', 'admin-error'); err.appendChild(make('strong', '', 'לא ניתן לטעון את המעקב.')); err.appendChild(make('div', 'admin-table__muted', shippingErrorMessage(error))); panel.appendChild(err);

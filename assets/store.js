@@ -1939,9 +1939,16 @@ function orderTotal() {
     .then(function (r) { return r.json().catch(function () { return {}; }); })
     .then(function (data) {
       if (data && data.url) {
+        var pendingLines = cartLines();
         save(LS.pending, JSON.stringify({
           order: data.order, total: data.total, currency: CFG.currency.code,
-          items: state.cart, at: Date.now()
+          items: state.cart,
+          itemOrders: pendingLines.map(function (line) {
+            var title = line && line.p && line.p.title;
+            var name = title && typeof title === 'object' ? (title.he || title.en) : title;
+            return { name: String(name || (line && line.p && line.p.id) || 'מוצר'), qty: Number(line && line.qty || 1) };
+          }),
+          at: Date.now()
         }));
         window.location.href = data.url;
       } else {

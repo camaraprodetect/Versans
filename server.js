@@ -12,6 +12,7 @@ const ROUTES = require('./assets/routes.js');
 const { normalizeAdminRange, normalizeStoredOrderItems, aggregatePaidOrders } = require('./lib/admin-analytics.js');
 const { absoluteUrl, isEmailConfigured, orderConfirmationEmail, passwordResetEmail, productAnnouncementEmail, sendEmail, welcomeEmail } = require('./lib/email.js');
 const { buildPaidOrderPayload, sendPaidOrderToGoogleSheet } = require('./lib/google-orders.js');
+const { orderItemRef, parseOrderItemRef } = require('./lib/order-item-refs.js');
 const {
   normalizeTrackingNumber,
   normalizeCarrierCode,
@@ -907,7 +908,9 @@ function adminOrderPayload(row) {
     paidAt: row.paid_at == null ? null : Number(row.paid_at),
     updatedAt: Number(row.updated_at || 0),
     units: items.reduce((sum, item) => sum + Number(item.qty || 0), 0),
-    items: items.map((item) => ({
+    items: items.map((item, itemIndex) => ({
+      itemIndex,
+      itemOrderRef: orderItemRef(row.order_ref, itemIndex),
       id: item.id,
       name: item.name,
       qty: item.qty,
@@ -1008,6 +1011,29 @@ async function shipmentWithItems(row) {
 async function listOrderShipmentsPayload(orderId) {
   const rows = await database.listShipmentsForOrder(orderId);
   return Promise.all(rows.map(shipmentWithItems));
+}
+
+function shipmentForOrderItem(shipments, itemIndex) {
+  const index = Number(itemIndex);
+  return (Array.isArray(shipments) ? shipments : []).find((shipment) =>
+    Array.isArray(shipment && shipment.items)
+      && shipment.items.some((item) => Number(item.itemIndex) === index)
+  ) || null;
+}
+
+function orderItemPayload(orderRef, item, itemIndex, shipments) {
+  const product = adminProductInfo(item && item.id);
+  const shipment = shipmentForOrderItem(shipments, itemIndex);
+  const rawImage = item && item.image ? String(item.image) : '';
+  return {
+    itemIndex,
+    itemOrderRef: orderItemRef(orderRef, itemIndex),
+    productId: item && item.id || null,
+    productName: item && item.name || product.name || 'מוצר',
+    productImage: rawImage ? (/^https?:\/\//i.test(rawImage) ? rawImage : '/' + rawImage.replace(/^\/+/, '')) : product.image,
+    qty: Number(item && item.qty || 1),
+    shipment
+  };
 }
 
 function shipmentItemSummary(items) {
@@ -1152,14 +1178,16 @@ function customerTrackingState(shipments) {
   return { key: 'preparing', ...CUSTOMER_TRACKING_STATES.preparing, detail: null, location: null, updatedAt: latest ? Number(latest.latestEventAt || latest.updatedAt || 0) || null : null };
 }
 
-function customerShipmentPayload(shipment, index = 0) {
+function customerShipmentPayload(shipment, index = 0, item = null, orderRef = '') {
   const status = String(shipment && shipment.status || 'registered');
-  const local = shipmentHasIsraelEvent(shipment);
+  const local = shipment ? shipmentHasIsraelEvent(shipment) : false;
   const delivered = status === 'delivered';
   const pickupReady = status === 'ready_for_pickup';
   let stage = 'preparing';
   let statusLabel = CUSTOMER_TRACKING_STATES.preparing.label;
-  let description = 'החבילה עדיין בתהליך ההכנה וההעברה לחברת השילוח.';
+  let description = shipment
+    ? 'המשלוח עדיין בתהליך ההכנה וההעברה לחברת השילוח.'
+    : 'המוצר נקלט בהזמנה ועדיין לא חובר אליו מספר מעקב מהספק.';
 
   if (delivered) {
     stage = 'delivered';
@@ -1175,16 +1203,46 @@ function customerShipmentPayload(shipment, index = 0) {
       : 'החבילה נמצאת בטיפול חברת השילוח בישראל.';
   }
 
+  const rawImage = item && item.image ? String(item.image) : '';
   return {
     packageNumber: Number(index) + 1,
-    trackingNumber: shipment.trackingNumber,
+    itemIndex: Number(index),
+    itemOrderRef: orderItemRef(orderRef, index),
+    productId: item && item.id || null,
+    productName: item && item.name || 'מוצר',
+    productImage: rawImage ? (/^https?:\/\//i.test(rawImage) ? rawImage : '/' + rawImage.replace(/^\/+/, '')) : null,
+    qty: Number(item && item.qty || 1),
+    trackingNumber: shipment ? shipment.trackingNumber : null,
     status: stage,
     statusLabel,
     description,
     pickupReady,
-    location: local ? (shipment.latestLocation || null) : null,
-    updatedAt: Number(shipment.latestEventAt || shipment.updatedAt || 0) || null
+    location: local && shipment ? (shipment.latestLocation || null) : null,
+    updatedAt: shipment ? (Number(shipment.latestEventAt || shipment.updatedAt || 0) || null) : null
   };
+}
+
+function customerItemTrackingState(items) {
+  const rows = Array.isArray(items) ? items.filter(Boolean) : [];
+  if (!rows.length) return { key: 'preparing', ...CUSTOMER_TRACKING_STATES.preparing, detail: null, location: null, updatedAt: null };
+  if (rows.every((item) => item.status === 'delivered')) {
+    const latest = rows.slice().sort((a, b) => Number(b.updatedAt || 0) - Number(a.updatedAt || 0))[0];
+    return { key: 'delivered', ...CUSTOMER_TRACKING_STATES.delivered, detail: null, location: null, updatedAt: latest ? latest.updatedAt : null };
+  }
+  const active = rows.filter((item) => item.status === 'carrier' || item.status === 'delivered')
+    .sort((a, b) => Number(b.updatedAt || 0) - Number(a.updatedAt || 0));
+  if (active.length) {
+    const latest = active[0];
+    return {
+      key: 'carrier',
+      ...CUSTOMER_TRACKING_STATES.carrier,
+      detail: latest.statusLabel || null,
+      location: latest.location || null,
+      updatedAt: latest.updatedAt || null
+    };
+  }
+  const latest = rows.slice().sort((a, b) => Number(b.updatedAt || 0) - Number(a.updatedAt || 0))[0];
+  return { key: 'preparing', ...CUSTOMER_TRACKING_STATES.preparing, detail: null, location: null, updatedAt: latest ? latest.updatedAt : null };
 }
 
 async function notifyShipmentStatus(shipment, order) {
@@ -1194,7 +1252,10 @@ async function notifyShipmentStatus(shipment, order) {
   const now = Date.now();
   const staleBefore = now - 15 * 60 * 1000;
   const customer = parseStoredCustomer(order);
-  const trackingUrl = `https://versans.com/track?order=${encodeURIComponent(order.order_ref)}`;
+  const linkedItem = items[0] || null;
+  const customerOrderRef = linkedItem ? orderItemRef(order.order_ref, linkedItem.item_index) : order.order_ref;
+  const customerProductName = linkedItem && linkedItem.product_name ? String(linkedItem.product_name) : 'החבילה';
+  const trackingUrl = `https://versans.com/track?order=${encodeURIComponent(customerOrderRef)}`;
 
   // Customer WhatsApp is intentionally shipment-specific. Every Tracking ID has
   // its own notification key, so if order #123 has three parcels that become
@@ -1209,9 +1270,9 @@ async function notifyShipmentStatus(shipment, order) {
         const sent = await sendCustomerShippingWhatsApp({
           phone: order.customer_phone,
           firstName: customer.firstName || customer.name || 'לקוח/ה',
-          orderRef: order.order_ref,
+          orderRef: customerOrderRef,
           trackingNumber: shipment.tracking_number,
-          statusLabel: adminStatusLabel,
+          statusLabel: `${customerProductName} - ${adminStatusLabel}`,
           trackingUrl
         });
         await database.markShipmentNotificationSent(shipment.id, 'customer', customerNotificationKey, sent.id || null, Date.now());
@@ -1226,7 +1287,7 @@ async function notifyShipmentStatus(shipment, order) {
     if (claimed) {
       try {
         const sent = await sendAdminShippingWhatsApp({
-          orderRef: order.order_ref,
+          orderRef: customerOrderRef,
           statusLabel: adminStatusLabel,
           trackingNumber: shipment.tracking_number,
           itemSummary: shipmentItemSummary(items)
@@ -1335,29 +1396,46 @@ async function syncPendingTrackingRegistrations() {
 async function publicTrackingApi(req, res, pathname, parsed) {
   if (pathname !== '/api/tracking') return false;
   if (req.method !== 'GET') { json(res, 405, { ok: false, error: 'method_not_allowed' }); return true; }
-  const orderRef = String(parsed.searchParams.get('order') || '').trim().slice(0, 120);
-  if (!orderRef) { json(res, 400, { ok: false, error: 'missing_order_number' }); return true; }
-  const order = await database.getOrderByRef(orderRef);
+  const requestedRef = String(parsed.searchParams.get('order') || '').trim().slice(0, 160);
+  if (!requestedRef) { json(res, 400, { ok: false, error: 'missing_order_number' }); return true; }
+
+  let itemFilter = null;
+  let order = await database.getOrderByRef(requestedRef);
+  if (!order) {
+    const parsedItemRef = parseOrderItemRef(requestedRef);
+    if (parsedItemRef) {
+      order = await database.getOrderByRef(parsedItemRef.orderRef);
+      if (order) itemFilter = parsedItemRef.itemIndex;
+    }
+  }
   if (!order || order.status !== 'paid') {
     json(res, 404, { ok: false, error: 'tracking_not_found' });
     return true;
   }
 
-  // The customer enters only the original VerSans order number. Each supplier
-  // Tracking ID attached to that order is then shown as a separate parcel.
+  const orderItems = normalizeStoredOrderItems(order.items_json, PRODUCTS);
+  if (itemFilter !== null && (itemFilter < 0 || itemFilter >= orderItems.length)) {
+    json(res, 404, { ok: false, error: 'tracking_not_found' });
+    return true;
+  }
   const shipments = await listOrderShipmentsPayload(order.id);
-  const state = customerTrackingState(shipments);
-  const customerShipments = shipments.map((shipment, index) => customerShipmentPayload(shipment, index));
+  const allCustomerItems = orderItems.map((item, itemIndex) =>
+    customerShipmentPayload(shipmentForOrderItem(shipments, itemIndex), itemIndex, item, order.order_ref)
+  );
+  const customerItems = itemFilter === null ? allCustomerItems : [allCustomerItems[itemFilter]];
+  const state = customerItemTrackingState(customerItems);
   json(res, 200, {
     ok: true,
-    orderRef: order.order_ref,
+    orderRef: itemFilter === null ? order.order_ref : orderItemRef(order.order_ref, itemFilter),
+    parentOrderRef: order.order_ref,
+    itemSpecific: itemFilter !== null,
     status: state.key,
     statusLabel: state.label,
     description: state.description,
     detail: state.detail,
     location: state.location,
     updatedAt: state.updatedAt,
-    shipments: customerShipments
+    shipments: customerItems
   });
   return true;
 }
@@ -1423,6 +1501,11 @@ async function adminApi(req, res, pathname, parsed) {
         }
         shipments = await listOrderShipmentsPayload(order.id);
       }
+      const itemPayloads = orderItems.map((item, itemIndex) => orderItemPayload(order.order_ref, item, itemIndex, shipments));
+      const customerItems = orderItems.map((item, itemIndex) =>
+        customerShipmentPayload(shipmentForOrderItem(shipments, itemIndex), itemIndex, item, order.order_ref)
+      );
+      const unassignedShipments = shipments.filter((shipment) => !Array.isArray(shipment.items) || !shipment.items.length);
       json(res, 200, {
         ok: true,
         orderRef: order.order_ref,
@@ -1430,9 +1513,10 @@ async function adminApi(req, res, pathname, parsed) {
         trackingConfigured: is17TrackConfigured(),
         customerWhatsAppConfigured: isWhatsAppConfigured('customer'),
         adminWhatsAppConfigured: isWhatsAppConfigured('admin'),
-        customerTracking: customerTrackingState(shipments),
-        items: orderItems.map((item, itemIndex) => ({ itemIndex, productId: item.id, productName: item.name, qty: item.qty })),
-        shipments
+        customerTracking: customerItemTrackingState(customerItems),
+        items: itemPayloads,
+        shipments,
+        unassignedShipments
       });
       return true;
     }
@@ -1440,10 +1524,28 @@ async function adminApi(req, res, pathname, parsed) {
     if (!sameOriginAllowed(req)) { json(res, 403, { ok: false, error: 'origin_not_allowed' }); return true; }
     if (order.status !== 'paid') { json(res, 400, { ok: false, error: 'order_not_paid' }); return true; }
     const body = await readJsonBody(req);
+    const itemIndex = Number(body && body.itemIndex);
+    if (!Number.isInteger(itemIndex) || itemIndex < 0 || itemIndex >= orderItems.length) {
+      json(res, 400, { ok: false, error: 'invalid_order_item' });
+      return true;
+    }
+    const orderItem = orderItems[itemIndex];
     const trackingNumber = normalizeTrackingNumber(body && body.trackingNumber);
     const carrierCode = normalizeCarrierCode(body && body.carrierCode);
     if (!/^[A-Za-z0-9-]{5,80}$/.test(trackingNumber)) { json(res, 400, { ok: false, error: 'invalid_tracking_number' }); return true; }
-    if (await database.getShipmentByTracking(trackingNumber)) { json(res, 409, { ok: false, error: 'tracking_already_exists' }); return true; }
+
+    const currentShipments = await listOrderShipmentsPayload(order.id);
+    const currentForItem = shipmentForOrderItem(currentShipments, itemIndex);
+    const duplicateShipment = await database.getShipmentByTracking(trackingNumber);
+    if (duplicateShipment && (!currentForItem || Number(duplicateShipment.id) !== Number(currentForItem.id))) {
+      json(res, 409, { ok: false, error: 'tracking_already_exists' });
+      return true;
+    }
+    if (currentForItem && currentForItem.trackingNumber === trackingNumber) {
+      json(res, 200, { ok: true, shipment: currentForItem, unchanged: true });
+      return true;
+    }
+
     let resolvedCarrier = carrierCode;
     let providerRegisteredAt = null;
     let registrationWarning = null;
@@ -1481,7 +1583,20 @@ async function adminApi(req, res, pathname, parsed) {
     const now = Date.now();
     let shipmentId;
     try {
+      if (currentForItem) {
+        const oldShipment = await database.getShipmentById(currentForItem.id);
+        if (oldShipment && is17TrackConfigured()) {
+          try { await stop17Track(oldShipment.tracking_number, oldShipment.carrier_code); } catch (_) {}
+        }
+        await database.deleteShipment(currentForItem.id);
+      }
       shipmentId = await database.createShipment({ orderId: order.id, trackingNumber, carrierCode: resolvedCarrier, provider: '17track', status: 'registered', registeredAt: providerRegisteredAt, createdAt: now, updatedAt: now });
+      await database.setShipmentItems(shipmentId, [{
+        itemIndex,
+        productId: orderItem.id || null,
+        productName: orderItem.name || 'מוצר',
+        qty: Number(orderItem.qty || 1)
+      }]);
     } catch (error) {
       if (/unique|tracking_number/i.test(String(error && error.message))) { json(res, 409, { ok: false, error: 'tracking_already_exists' }); return true; }
       throw error;
@@ -1497,7 +1612,16 @@ async function adminApi(req, res, pathname, parsed) {
       }
     }
     const shipment = await shipmentWithItems(await database.getShipmentById(shipmentId));
-    json(res, 201, { ok: true, shipment, trackingConfigured: is17TrackConfigured(), warning: !is17TrackConfigured() ? { error: '17track_not_configured' } : registrationWarning });
+    json(res, currentForItem ? 200 : 201, {
+      ok: true,
+      shipment,
+      itemIndex,
+      itemOrderRef: orderItemRef(order.order_ref, itemIndex),
+      productName: orderItem.name || 'מוצר',
+      replaced: Boolean(currentForItem),
+      trackingConfigured: is17TrackConfigured(),
+      warning: !is17TrackConfigured() ? { error: '17track_not_configured' } : registrationWarning
+    });
     return true;
   }
 

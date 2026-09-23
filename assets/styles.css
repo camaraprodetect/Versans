@@ -4313,3 +4313,6 @@ body.site-overlay-open{overflow:hidden}
   .product-page-body .nav__menu > .nav__track-link::after,
   .home-page .nav__menu > .nav__track-link::after{display:none!important}
 }
+
+/* Thank-you: separate VerSans order number for every purchased product. */
+.result__item-orders{margin:1.7rem auto 0;max-width:560px;text-align:right;background:#fff;border:1px solid #dfe5e9;border-radius:14px;padding:1rem 1rem .8rem}.result__item-orders-title{font-weight:800;color:var(--navy);font-size:.95rem;margin-bottom:.55rem}.result__item-order{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.8rem 0;border-top:1px solid #edf0f2}.result__item-order:first-of-type{border-top:0}.result__item-order strong{display:block;font-size:.9rem;color:var(--navy)}.result__item-order small{display:block;margin-top:.2rem;color:var(--muted);font-size:.72rem}.result__item-order code{direction:ltr;background:#f2f5f7;border:1px solid #e2e7ea;border-radius:8px;padding:.45rem .55rem;font-size:.72rem;color:#243746;white-space:nowrap}.result__item-orders p{margin:.65rem 0 0!important;font-size:.75rem;line-height:1.55}@media(max-width:620px){.result__item-order{align-items:flex-start;flex-direction:column}.result__item-order code{width:100%;text-align:center}}

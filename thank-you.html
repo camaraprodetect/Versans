@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&amp;family=Frank+Ruhl+Libre:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/styles.css?v=20260908-promo-v3">
+<link rel="stylesheet" href="assets/styles.css?v=20260923-product-orders-v5">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="96x96" href="/images/favicon-96.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
@@ -46,7 +46,7 @@
   </div>
 </footer>
 
-<script src="assets/config.js?v=20260923-tracking-v1"></script>
+<script src="assets/config.js?v=20260914-pretty-urls-v1"></script>
 <script src="assets/i18n.js?v=20260922-order-confirmation-v1"></script>
 <script>
 (function () {
@@ -71,11 +71,23 @@
   var okIcon = '<svg class="result__icon" viewBox="0 0 48 48" fill="none" stroke="#2F6B4F" stroke-width="2"><circle cx="24" cy="24" r="21"/><path d="M15 24.5l6.5 6.5L33 18"/></svg>';
   var noIcon = '<svg class="result__icon" viewBox="0 0 48 48" fill="none" stroke="#A32B22" stroke-width="2"><circle cx="24" cy="24" r="21"/><path d="M17 17l14 14M31 17L17 31"/></svg>';
 
+  function productOrderRef(orderId, index) {
+    return String(orderId || '') + '-P' + String(index + 1).padStart(2, '0');
+  }
+
+  function itemOrdersHtml(orderId) {
+    var rows = pending && Array.isArray(pending.itemOrders) ? pending.itemOrders : [];
+    if (!orderId || !rows.length) return '';
+    return '<div class="result__item-orders"><div class="result__item-orders-title">מספרי ההזמנה לפי מוצר</div>' + rows.map(function (item, index) {
+      return '<div class="result__item-order"><div><strong>' + String(item.name || 'מוצר').replace(/[&<>"']/g, function (c) { return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]; }) + '</strong>' + (Number(item.qty || 1) > 1 ? '<small>כמות ' + Number(item.qty || 1) + '</small>' : '') + '</div><code>' + productOrderRef(orderId, index) + '</code></div>';
+    }).join('') + '<p>שמרו את המספר של כל מוצר. בעמוד המעקב תוכלו לבדוק כל מוצר בנפרד.</p></div>';
+  }
+
   function show(ok, orderId) {
     var html = (ok ? okIcon : noIcon) +
       '<h1>' + (ok ? t('ty.ok.t') : t('ty.fail.t')) + '</h1>' +
       '<p>' + (ok ? t('ty.ok.d') : t('ty.fail.d')) + '</p>' +
-      (ok && orderId ? '<p class="result__order">' + t('ty.order') + ': ' + orderId + '</p>' : '') +
+      (ok && orderId ? itemOrdersHtml(orderId) : '') +
       '<p class="result__cta"><a class="btn btn--primary" href="/shop#shop">' + t('ty.home') + '</a></p>';
     document.getElementById('result').innerHTML = html;
     if (ok) {
