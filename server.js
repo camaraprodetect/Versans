@@ -19,6 +19,7 @@ const {
   register17Track,
   stop17Track,
   get17TrackInfo,
+  get17TrackRealTimeInfo,
   verify17TrackSignature,
   shipmentStatusLabel,
   extractTrackingUpdate,
@@ -1115,6 +1116,35 @@ async function ensureShipmentRegisteredWith17Track(shipment) {
   return true;
 }
 
+function trackingLookupOptions(order) {
+  if (!order) return {};
+  const storedCustomer = parseStoredCustomer(order);
+  const countryText = String(storedCustomer.country || '').trim().toLowerCase();
+  const destinationCountry = (countryText.includes('ישראל') || countryText.includes('israel') || normalizePhone(order.customer_phone).startsWith('+972')) ? 'IL' : null;
+  return {
+    destinationCountry,
+    destinationPostalCode: storedCustomer.zip || null
+  };
+}
+
+async function refreshShipmentFrom17Track(shipment, { realTime = false } = {}) {
+  if (!shipment || !is17TrackConfigured()) return null;
+  const order = await database.getOrderById(shipment.order_id);
+  const options = trackingLookupOptions(order);
+  let info = null;
+  if (realTime) {
+    try {
+      info = await get17TrackRealTimeInfo(shipment.tracking_number, shipment.carrier_code, options);
+    } catch (error) {
+      console.error(`17TRACK real-time refresh failed for ${shipment.tracking_number}:`, error && error.message);
+    }
+  }
+  if (!info) info = await get17TrackInfo(shipment.tracking_number, shipment.carrier_code);
+  const update = info ? extractTrackingUpdate(info) : null;
+  if (update) await applyTrackingUpdate(update);
+  return update;
+}
+
 async function syncPendingTrackingRegistrations() {
   if (!is17TrackConfigured()) return { processed: 0, failed: 0 };
   const rows = await database.listUnregisteredShipments(100);
@@ -1220,9 +1250,8 @@ async function adminApi(req, res, pathname, parsed) {
         for (const shipment of shipments) {
           if (shipment.status !== 'registered' && now - Number(shipment.updatedAt || 0) < 5 * 60 * 1000) continue;
           try {
-            const info = await get17TrackInfo(shipment.trackingNumber, shipment.carrierCode);
-            const update = info ? extractTrackingUpdate(info) : null;
-            if (update) await applyTrackingUpdate(update);
+            const storedShipment = await database.getShipmentById(shipment.id);
+            if (storedShipment) await refreshShipmentFrom17Track(storedShipment, { realTime: false });
           } catch (error) {
             console.error(`17TRACK admin snapshot refresh failed for ${shipment.trackingNumber}:`, error && error.message);
           }
@@ -1289,9 +1318,7 @@ async function adminApi(req, res, pathname, parsed) {
     if (is17TrackConfigured()) {
       try {
         const created = await database.getShipmentById(shipmentId);
-        const info = created ? await get17TrackInfo(created.tracking_number, created.carrier_code) : null;
-        const update = info ? extractTrackingUpdate(info) : null;
-        if (update) await applyTrackingUpdate(update);
+        if (created) await refreshShipmentFrom17Track(created, { realTime: true });
       } catch (error) {
         console.error(`Initial 17TRACK refresh failed for ${trackingNumber}:`, error && error.message);
       }
@@ -1324,10 +1351,8 @@ async function adminApi(req, res, pathname, parsed) {
       try { await ensureShipmentRegisteredWith17Track(shipment); shipment = await database.getShipmentById(shipment.id); }
       catch (error) { json(res, 400, { ok: false, error: 'tracking_registration_failed', message: String(error && error.message || '').slice(0, 500) }); return true; }
     }
-    const info = await get17TrackInfo(shipment.tracking_number, shipment.carrier_code);
-    if (!info) { json(res, 404, { ok: false, error: 'tracking_info_not_found' }); return true; }
-    const update = extractTrackingUpdate(info);
-    if (update) await applyTrackingUpdate(update);
+    const update = await refreshShipmentFrom17Track(shipment, { realTime: true });
+    if (!update) { json(res, 404, { ok: false, error: 'tracking_info_not_found' }); return true; }
     const fresh = await shipmentWithItems(await database.getShipmentById(shipment.id));
     json(res, 200, { ok: true, shipment: fresh });
     return true;
