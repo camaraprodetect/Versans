@@ -1136,27 +1136,59 @@ function cleanPickupText(value, max = 1400) {
   return text ? text.slice(0, max) : null;
 }
 
-function shipmentPickupDetails(shipment) {
-  if (!shipment) return { message: null, location: null, source: null, eventAt: null };
+const PICKUP_EVENT_PATTERN = /(ready\s+for\s+(pickup|collection)|available\s+for\s+(pickup|collection)|awaiting\s+(pickup|collection)|pick\s*up|pickup\s*(point|station|location|ready)?|collection\s*(point|station|location|ready)?|parcel\s+locker|locker|ready_for_pickup|available_for_pickup|awaiting_collection|מוכן\s+לאיסוף|נקודת\s+איסוף|איסוף)/i;
+
+function shipmentPickupEventCandidates(shipment) {
+  if (!shipment) return [];
   const events = providerEventsFromRow(shipment);
-  const pickupPattern = /(ready\s+for\s+(pickup|collection)|available\s+for\s+(pickup|collection)|awaiting\s+(pickup|collection)|pick\s*up|pickup\s+(point|station|location)|collection\s+(point|station|location)|parcel\s+locker|locker|מוכן\s+לאיסוף|נקודת\s+איסוף|איסוף)/i;
-  const candidates = events.filter((event) => pickupPattern.test([
+  const candidates = events.filter((event) => PICKUP_EVENT_PATTERN.test([
     event && event.description,
     event && event.location,
     event && event.stage,
     event && event.subStatus
   ].filter(Boolean).join(' ')));
+
+  // Some providers expose the pickup event only in the shipment's flattened
+  // latest-event fields. Include it ONLY when that flattened event itself is
+  // unmistakably a pickup/collection event. Never treat unrelated events such
+  // as "Arrived at customs" as pickup details.
+  const latestText = [
+    shipment.latest_event,
+    shipment.latest_location,
+    shipment.provider_status,
+    shipment.sub_status
+  ].filter(Boolean).join(' ');
+  if (PICKUP_EVENT_PATTERN.test(latestText)) {
+    const latest = {
+      provider: shipmentProviderMeta(shipment).sourceLabel || null,
+      description: cleanPickupText(shipment.latest_event),
+      location: cleanPickupText(shipment.latest_location, 500),
+      stage: cleanPickupText(shipment.provider_status, 120),
+      subStatus: cleanPickupText(shipment.sub_status, 120),
+      time: shipment.latest_event_at == null ? null : Number(shipment.latest_event_at)
+    };
+    const duplicate = candidates.some((event) =>
+      String(event && event.description || '') === String(latest.description || '') &&
+      Number(event && event.time || 0) === Number(latest.time || 0)
+    );
+    if (!duplicate) candidates.unshift(latest);
+  }
+
+  candidates.sort((a, b) => Number(b && b.time || 0) - Number(a && a.time || 0));
+  return candidates.slice(0, 20);
+}
+
+function shipmentPickupDetails(shipment) {
+  if (!shipment) return { message: null, location: null, source: null, eventAt: null };
+  const candidates = shipmentPickupEventCandidates(shipment);
   const aliExpressEvent = candidates.find((event) => /cainiao|aliexpress/i.test(String(event && event.provider || ''))) || null;
   const selected = aliExpressEvent || candidates[0] || null;
-  const meta = shipmentProviderMeta(shipment);
-  const message = cleanPickupText(selected && selected.description) || cleanPickupText(shipment.latest_event);
-  const location = cleanPickupText(selected && selected.location, 500) || cleanPickupText(shipment.latest_location, 500);
-  const source = cleanPickupText(selected && selected.provider, 120) || meta.sourceLabel || null;
+  if (!selected) return { message: null, location: null, source: null, eventAt: null };
   return {
-    message,
-    location,
-    source,
-    eventAt: selected && selected.time != null ? Number(selected.time) : (shipment.latest_event_at == null ? null : Number(shipment.latest_event_at))
+    message: cleanPickupText(selected.description),
+    location: cleanPickupText(selected.location, 500),
+    source: cleanPickupText(selected.provider, 120),
+    eventAt: selected.time == null ? null : Number(selected.time)
   };
 }
 
@@ -2109,17 +2141,26 @@ async function adminApi(req, res, pathname, parsed) {
       const customerName = order
         ? ([customer.firstName, customer.lastName].filter(Boolean).join(' ').trim() || customer.name || order.customer_email || 'לקוח/ה')
         : 'לקוח/ה';
-      const message = shippingBotMessage({
+      const isReadyForPickup = String(shipment.status || '') === 'ready_for_pickup';
+      const message = isReadyForPickup ? shippingBotMessage({
         customerName,
         items,
         trackingNumber: shipment.tracking_number,
         pickupMessageRaw: pickup.message,
         pickupLocation: pickup.location
-      });
+      }) : null;
+      const pickupCandidates = shipmentPickupEventCandidates(shipment).map((event) => ({
+        provider: event.provider || null,
+        description: event.description || null,
+        location: event.location || null,
+        stage: event.stage || null,
+        subStatus: event.subStatus || null,
+        eventAt: event.time == null ? null : Number(event.time)
+      }));
 
       json(res, 200, {
         ok: true,
-        pickupPatchVersion: '2026-09-24-final-v1',
+        pickupPatchVersion: '2026-09-24-final-v2',
         inspect: true,
         generatedAt: Date.now(),
         source: 'versans_database',
@@ -2134,14 +2175,18 @@ async function adminApi(req, res, pathname, parsed) {
           latestEvent: shipment.latest_event || null,
           latestLocation: shipment.latest_location || null,
           latestEventAt: shipment.latest_event_at == null ? null : Number(shipment.latest_event_at),
-          pickupMessageRaw: pickup.message,
-          pickupLocation: pickup.location,
-          pickupSource: pickup.source,
-          pickupEventAt: pickup.eventAt,
+          isReadyForPickup,
+          pickupMessageRaw: isReadyForPickup ? pickup.message : null,
+          pickupLocation: isReadyForPickup ? pickup.location : null,
+          pickupSource: isReadyForPickup ? pickup.source : null,
+          pickupEventAt: isReadyForPickup ? pickup.eventAt : null,
+          pickupDetailsFound: Boolean(isReadyForPickup && (pickup.message || pickup.location)),
+          pickupCandidates,
           items,
           message,
-          whatsappWebUrl: digits ? `https://web.whatsapp.com/send?phone=${digits}&text=${encodeURIComponent(message)}` : null,
-          safeToSend: Boolean(digits && items.length)
+          whatsappWebUrl: (isReadyForPickup && digits && message) ? `https://web.whatsapp.com/send?phone=${digits}&text=${encodeURIComponent(message)}` : null,
+          safeToSend: Boolean(isReadyForPickup && digits && items.length),
+          diagnosticIssue: isReadyForPickup ? null : 'shipment_not_ready_for_pickup'
         }
       });
       return true;
@@ -2153,7 +2198,7 @@ async function adminApi(req, res, pathname, parsed) {
     const shipments = await shippingBotReadyPickups(limit);
     json(res, 200, {
       ok: true,
-      pickupPatchVersion: '2026-09-24-final-v1',
+      pickupPatchVersion: '2026-09-24-final-v2',
       generatedAt: Date.now(),
       source: 'versans_database',
       note: 'Tracking snapshots are refreshed by VerSans in the background. Use ?refresh=1 only when an immediate provider refresh is required.',
