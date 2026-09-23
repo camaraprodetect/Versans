@@ -2,71 +2,108 @@
   'use strict';
   var form=document.getElementById('trackingForm');
   var orderInput=document.getElementById('orderRef');
-  var contactInput=document.getElementById('contact');
   var submit=document.getElementById('trackSubmit');
   var errorBox=document.getElementById('trackError');
   var result=document.getElementById('trackingResult');
-  var supportLink=document.getElementById('trackSupportLink');
-
-  function supportConfig(){
-    var contact=(window.STORE_CONFIG&&window.STORE_CONFIG.contact)||{};
-    var whatsapp=String(contact.whatsapp||'').replace(/\D/g,'');
-    if(whatsapp&&whatsapp.indexOf('972')!==0&&whatsapp.charAt(0)==='0')whatsapp='972'+whatsapp.slice(1);
-    if(whatsapp){supportLink.href='https://wa.me/'+whatsapp;supportLink.target='_blank';supportLink.rel='noopener';supportLink.textContent='שירות לקוחות ב-WhatsApp';return}
-    var email=String(contact.email||'versanssupport@gmail.com').trim();
-    supportLink.href='mailto:'+email;supportLink.removeAttribute('target');supportLink.textContent='שירות לקוחות באימייל';
-  }
-  if(supportLink)supportConfig();
 
   var query=new URLSearchParams(window.location.search);
   if(query.get('order')) orderInput.value=query.get('order');
 
   function el(tag,cls,text){var n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n}
-  function fmtDate(value){if(!value)return '—';try{return new Intl.DateTimeFormat('he-IL',{timeZone:'Asia/Jerusalem',dateStyle:'medium',timeStyle:'short'}).format(new Date(Number(value)))}catch(_){return '—'}}
-  function etaText(from,to){if(!from&&!to)return 'עדיין אין הערכת מסירה';if(from&&to){try{var f=new Intl.DateTimeFormat('he-IL',{timeZone:'Asia/Jerusalem',day:'2-digit',month:'2-digit'}).format(new Date(Number(from)));var t=new Intl.DateTimeFormat('he-IL',{timeZone:'Asia/Jerusalem',day:'2-digit',month:'2-digit'}).format(new Date(Number(to)));return f===t?f:f+' - '+t}catch(_){}}return fmtDate(from||to)}
-  function detail(label,value){var box=el('div','track-detail');box.appendChild(el('span','',label));box.appendChild(el('strong','',value||'—'));return box}
+  function fmtDate(value){if(!value)return '';try{return new Intl.DateTimeFormat('he-IL',{timeZone:'Asia/Jerusalem',dateStyle:'medium',timeStyle:'short'}).format(new Date(Number(value)))}catch(_){return ''}}
+
+  var STEPS=[
+    {key:'preparing',label:'ההזמנה בהכנה',short:'בהכנה'},
+    {key:'carrier',label:'ההזמנה בחברת השילוח',short:'בחברת השילוח'},
+    {key:'delivered',label:'ההזמנה הגיעה',short:'הגיעה'}
+  ];
+
+  function stageIndex(key){var idx=STEPS.findIndex(function(step){return step.key===key});return idx<0?0:idx}
 
   function render(data){
-    result.replaceChildren(); result.hidden=false;
-    var summary=el('section','track-summary');
-    var left=el('div');left.appendChild(el('span','track-summary__label','סטטוס ההזמנה'));left.appendChild(el('h2','',data.overallStatusLabel));
-    summary.appendChild(left);summary.appendChild(el('span','track-summary__order',data.orderRef));result.appendChild(summary);
-    var shipments=Array.isArray(data.shipments)?data.shipments:[];
-    if(!shipments.length){var empty=el('section','track-empty');empty.appendChild(el('h3','','אנחנו מכינים את ההזמנה שלכם'));empty.appendChild(el('p','','ברגע שמספר המעקב ייקלט במערכת VerSans הוא יופיע כאן אוטומטית.'));result.appendChild(empty);return}
+    result.replaceChildren();result.hidden=false;
+    var current=stageIndex(data.status);
 
-    var orderCard=el('article','track-order');
-    var orderHead=el('div','track-order__head');
-    var title=el('div');title.appendChild(el('span','track-package__number','הזמנה אחת'));title.appendChild(el('h3','',data.overallStatusLabel));
-    orderHead.appendChild(title);orderHead.appendChild(el('span','track-badge'+((data.overallStatus==='attention')?' is-attention':''),data.overallStatusLabel));orderCard.appendChild(orderHead);
+    var summary=el('article','track-status-card is-'+data.status);
+    var top=el('div','track-status-card__top');
+    var title=el('div');
+    title.appendChild(el('span','track-status-card__eyebrow','סטטוס ההזמנה'));
+    title.appendChild(el('h2','',data.statusLabel||'ההזמנה בהכנה'));
+    top.appendChild(title);
+    top.appendChild(el('span','track-status-card__order',data.orderRef||orderInput.value.trim()));
+    summary.appendChild(top);
+    summary.appendChild(el('p','track-status-card__description',data.description||''));
 
-    var items=el('div','track-items track-order__items');items.appendChild(el('span','','המוצרים בהזמנה'));var ul=el('ul');(data.items||[]).forEach(function(item){ul.appendChild(el('li','',item.productName+' ×'+item.qty))});items.appendChild(ul);orderCard.appendChild(items);
+    if(data.detail||data.location||data.updatedAt){
+      var live=el('div','track-live-update');
+      if(data.detail){var a=el('div');a.appendChild(el('span','','עדכון נוכחי'));a.appendChild(el('strong','',data.detail));live.appendChild(a)}
+      if(data.location){var b=el('div');b.appendChild(el('span','','מיקום אחרון'));b.appendChild(el('strong','',data.location));live.appendChild(b)}
+      if(data.updatedAt){var c=el('div');c.appendChild(el('span','','עודכן'));c.appendChild(el('strong','',fmtDate(data.updatedAt)));live.appendChild(c)}
+      summary.appendChild(live);
+    }
 
-    var timeline=el('div','track-order__timeline');
-    shipments.forEach(function(shipment,index){
-      var row=el('section','track-shipment-row');
-      var rowHead=el('div','track-shipment-row__head');
-      var rowTitle=el('div');rowTitle.appendChild(el('span','track-package__number','מספר מעקב '+(index+1)));rowTitle.appendChild(el('strong','track-shipment-row__number',shipment.trackingNumber));
-      rowHead.appendChild(rowTitle);rowHead.appendChild(el('span','track-badge'+((shipment.status==='exception'||shipment.status==='delivery_failed')?' is-attention':''),shipment.statusLabel));row.appendChild(rowHead);
-
-      var current=el('div','track-shipment-current');
-      current.appendChild(detail('מיקום אחרון',shipment.latestLocation||'המיקום האחרון טרם התקבל'));
-      current.appendChild(detail('אירוע אחרון',shipment.latestEvent||'ממתינים לעדכון מפורט מחברת השילוח'));
-      row.appendChild(current);
-
-      var grid=el('div','track-package__grid');grid.appendChild(detail('חברת שילוח',shipment.localProvider||shipment.carrierName||'זיהוי אוטומטי'));grid.appendChild(detail('עדכון אחרון',fmtDate(shipment.latestEventAt||shipment.deliveredAt)));grid.appendChild(detail('הערכת מסירה',etaText(shipment.estimatedDeliveryFrom,shipment.estimatedDeliveryTo)));row.appendChild(grid);
-      if(shipment.localTrackingNumber&&shipment.localTrackingNumber!==shipment.trackingNumber){var local=el('p','track-local-number','מספר מעקב מקומי: '+shipment.localTrackingNumber);row.appendChild(local)}
-      timeline.appendChild(row);
+    var progress=el('div','track-progress');
+    STEPS.forEach(function(step,index){
+      var item=el('div','track-progress__step'+(index<current?' is-done':'')+(index===current?' is-current':''));
+      var dot=el('span','track-progress__dot',index<current?'✓':String(index+1));
+      item.appendChild(dot);
+      var copy=el('div');copy.appendChild(el('strong','',step.short));copy.appendChild(el('small','',step.label));item.appendChild(copy);
+      progress.appendChild(item);
     });
-    orderCard.appendChild(timeline);result.appendChild(orderCard);
+    summary.appendChild(progress);
+    result.appendChild(summary);
+
+    var shipments=Array.isArray(data.shipments)?data.shipments:[];
+    if(shipments.length){
+      var parcels=el('section','track-parcels');
+      var parcelsHead=el('div','track-parcels__head');
+      var parcelsTitle=el('div');
+      parcelsTitle.appendChild(el('span','track-status-card__eyebrow','החבילות בהזמנה'));
+      parcelsTitle.appendChild(el('h3','',shipments.length===1?'חבילה אחת':'סה״כ '+shipments.length+' חבילות'));
+      parcelsHead.appendChild(parcelsTitle);
+      parcelsHead.appendChild(el('p','','מספר ההזמנה שלך נשאר '+(data.orderRef||orderInput.value.trim())+'. לכל חבילה יש Tracking ID נפרד.'));
+      parcels.appendChild(parcelsHead);
+
+      var list=el('div','track-parcels__list');
+      shipments.forEach(function(shipment,index){
+        var card=el('article','track-parcel is-'+(shipment.status||'preparing')+(shipment.pickupReady?' is-pickup':''));
+        var topRow=el('div','track-parcel__top');
+        var name=el('div');
+        name.appendChild(el('span','track-parcel__number','חבילה '+(shipment.packageNumber||index+1)));
+        name.appendChild(el('strong','',shipment.statusLabel||'ההזמנה בהכנה'));
+        topRow.appendChild(name);
+        var trackingWrap=el('div','track-parcel__tracking');
+        trackingWrap.appendChild(el('span','','Tracking ID'));
+        trackingWrap.appendChild(el('strong','',shipment.trackingNumber||''));
+        topRow.appendChild(trackingWrap);
+        card.appendChild(topRow);
+        if(shipment.description)card.appendChild(el('p','track-parcel__description',shipment.description));
+        if(shipment.pickupReady){
+          var alert=el('div','track-pickup-alert');
+          alert.appendChild(el('strong','','החבילה מחכה לך לאיסוף'));
+          alert.appendChild(el('span','','מומלץ לאסוף אותה בהקדם בהתאם להנחיות חברת השילוח, כדי למנוע החזרה לשולח.'));
+          card.appendChild(alert);
+        }
+        if(shipment.location||shipment.updatedAt){
+          var meta=el('div','track-parcel__meta');
+          if(shipment.location){var loc=el('span','');loc.textContent='מיקום: '+shipment.location;meta.appendChild(loc)}
+          if(shipment.updatedAt){var upd=el('span','');upd.textContent='עודכן: '+fmtDate(shipment.updatedAt);meta.appendChild(upd)}
+          card.appendChild(meta);
+        }
+        list.appendChild(card);
+      });
+      parcels.appendChild(list);
+      result.appendChild(parcels);
+    }
   }
 
   form.addEventListener('submit',async function(event){
     event.preventDefault();errorBox.hidden=true;result.hidden=true;submit.disabled=true;submit.textContent='בודק…';
-    var order=orderInput.value.trim(),contact=contactInput.value.trim();
+    var order=orderInput.value.trim();
     try{
-      var response=await fetch('/api/tracking?order='+encodeURIComponent(order)+'&contact='+encodeURIComponent(contact),{headers:{Accept:'application/json'},credentials:'same-origin'});
+      var response=await fetch('/api/tracking?order='+encodeURIComponent(order),{headers:{Accept:'application/json'},credentials:'same-origin'});
       var body=null;try{body=await response.json()}catch(_){}
-      if(!response.ok)throw new Error(response.status===404?'לא מצאנו הזמנה עם הפרטים האלה. בדקו את מספר ההזמנה והאימייל/טלפון.':'לא ניתן לבדוק את המשלוח כרגע. נסו שוב בעוד רגע.');
+      if(!response.ok)throw new Error(response.status===404?'לא מצאנו הזמנה עם המספר הזה. בדקו שהמספר הוזן בדיוק כפי שקיבלתם אותו.':'לא ניתן לבדוק את ההזמנה כרגע. נסו שוב בעוד רגע.');
       render(body);history.replaceState(null,'','/track?order='+encodeURIComponent(order));
     }catch(err){errorBox.textContent=err.message||'אירעה שגיאה';errorBox.hidden=false}
     finally{submit.disabled=false;submit.textContent='בדיקת סטטוס'}

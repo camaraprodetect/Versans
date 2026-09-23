@@ -24,7 +24,6 @@ const {
   shipmentStatusLabel,
   extractTrackingUpdate,
   extract17TrackUpdates,
-  trackingDiagnosticsFromRaw,
   shouldNotifyStatus,
   isWhatsAppConfigured,
   sendCustomerShippingWhatsApp,
@@ -961,29 +960,26 @@ function parseStoredCustomer(order) {
   }
 }
 
-function shipmentCarrierLabel(code, rawJson = null) {
+function shipmentCarrierLabel(code) {
   const carrier = Number(code || 0);
-  const diagnostics = trackingDiagnosticsFromRaw(rawJson, carrier);
-  if (diagnostics.providerName) return diagnostics.providerName;
-  if (diagnostics.localProvider) return diagnostics.localProvider;
   if (carrier === 100298) return 'DSV e-Commerce IL';
   return carrier ? `חברת שילוח ${carrier}` : 'זיהוי אוטומטי';
 }
 
 function shipmentRowPayload(row, items = []) {
-  const diagnostics = trackingDiagnosticsFromRaw(row.raw_json, row.carrier_code);
-  const providerHasData = Boolean(row.latest_event || (row.provider_status && row.provider_status !== 'NotFound'));
+  const providerMeta = shipmentProviderMeta(row);
   return {
     id: Number(row.id),
     orderId: Number(row.order_id),
     trackingNumber: row.tracking_number,
     carrierCode: row.carrier_code == null ? null : Number(row.carrier_code),
-    carrierName: shipmentCarrierLabel(row.carrier_code, row.raw_json),
+    carrierName: providerMeta.carrierName || shipmentCarrierLabel(row.carrier_code),
     provider: row.provider || '17track',
     status: row.status || 'registered',
     statusLabel: shipmentStatusLabel(row.status),
     providerStatus: row.provider_status || null,
     subStatus: row.sub_status || null,
+    syncStatus: providerMeta.syncStatus,
     latestEvent: row.latest_event || null,
     latestLocation: row.latest_location || null,
     latestEventAt: row.latest_event_at == null ? null : Number(row.latest_event_at),
@@ -991,17 +987,10 @@ function shipmentRowPayload(row, items = []) {
     estimatedDeliveryTo: row.estimated_delivery_to == null ? null : Number(row.estimated_delivery_to),
     registeredAt: row.registered_at == null ? null : Number(row.registered_at),
     deliveredAt: row.delivered_at == null ? null : Number(row.delivered_at),
-    providerHasData,
-    providerTip: diagnostics.providerTip || null,
-    syncStatus: diagnostics.syncStatus || null,
-    syncTime: diagnostics.syncTime || null,
-    serviceType: diagnostics.serviceType || null,
-    providerHomepage: diagnostics.providerHomepage || null,
-    localTrackingNumber: diagnostics.localTrackingNumber || null,
-    localProvider: diagnostics.localProvider || null,
-    localCarrierCode: diagnostics.localCarrierCode || null,
     createdAt: Number(row.created_at || 0),
     updatedAt: Number(row.updated_at || 0),
+    providerTips: providerMeta.providerTips,
+    history: providerMeta.history,
     items: (items || []).map((item) => ({
       itemIndex: Number(item.item_index),
       productId: item.product_id || null,
@@ -1027,63 +1016,207 @@ function shipmentItemSummary(items) {
   return rows.slice(0, 3).map((item) => `${item.product_name || 'מוצר'} ×${Number(item.qty || 1)}`).join(' · ') + (rows.length > 3 ? ` +${rows.length - 3}` : '');
 }
 
-function publicTrackingStatus(shipments) {
-  const statuses = (shipments || []).map((shipment) => shipment.status);
-  if (!statuses.length) return 'preparing';
-  if (statuses.every((status) => status === 'delivered')) return 'delivered';
-  if (statuses.includes('delivery_failed') || statuses.includes('exception')) return 'attention';
-  if (statuses.includes('out_for_delivery')) return 'out_for_delivery';
-  if (statuses.includes('ready_for_pickup')) return 'ready_for_pickup';
-  if (statuses.includes('delivered')) return 'partially_delivered';
-  if (statuses.includes('arrived_country')) return 'arrived_country';
-  if (statuses.includes('in_transit')) return 'in_transit';
-  if (statuses.includes('info_received')) return 'info_received';
-  return 'preparing';
+function parseShipmentRaw(row) {
+  if (!row || !row.raw_json) return null;
+  try {
+    const parsed = typeof row.raw_json === 'string' ? JSON.parse(row.raw_json) : row.raw_json;
+    return parsed && typeof parsed === 'object' ? parsed : null;
+  } catch (_) {
+    return null;
+  }
 }
 
-const PUBLIC_TRACKING_LABELS = {
-  preparing: 'ההזמנה בהכנה',
-  info_received: 'פרטי המשלוח התקבלו',
-  in_transit: 'ההזמנה בדרך אליכם',
-  arrived_country: 'המשלוח הגיע לישראל',
-  ready_for_pickup: 'חבילה מוכנה לאיסוף',
-  out_for_delivery: 'חבילה יצאה למסירה',
-  delivered: 'ההזמנה נמסרה',
-  partially_delivered: 'חלק מהחבילות כבר נמסרו',
-  attention: 'יש עדכון שדורש תשומת לב'
+function providerEventDescription(event) {
+  if (!event || typeof event !== 'object') return null;
+  const translated = event.description_translation && typeof event.description_translation === 'object'
+    ? event.description_translation.description
+    : null;
+  return String(translated || event.description || '').trim() || null;
+}
+
+function providerEventLocation(event) {
+  if (!event || typeof event !== 'object') return null;
+  const address = event.address && typeof event.address === 'object' ? event.address : {};
+  return String(event.location || [address.city, address.state, address.country].filter(Boolean).join(', ')).trim() || null;
+}
+
+function providerName(provider) {
+  if (!provider || typeof provider !== 'object') return null;
+  const nested = provider.provider && typeof provider.provider === 'object' ? provider.provider : {};
+  const value = nested.name || nested.provider_name || provider.name || provider.provider_name || nested.key || provider.key || null;
+  return value == null ? null : String(value).trim() || null;
+}
+
+function providerEventsFromRow(row) {
+  const raw = parseShipmentRaw(row);
+  const trackInfo = raw && raw.track_info && typeof raw.track_info === 'object' ? raw.track_info : {};
+  const tracking = trackInfo.tracking && typeof trackInfo.tracking === 'object' ? trackInfo.tracking : {};
+  const providers = Array.isArray(tracking.providers) ? tracking.providers : [];
+  const events = [];
+  for (const provider of providers) {
+    const name = providerName(provider);
+    for (const event of Array.isArray(provider && provider.events) ? provider.events : []) {
+      if (!event || typeof event !== 'object') continue;
+      const when = event.time_utc || event.time_iso || null;
+      const timestamp = when ? Date.parse(String(when)) : NaN;
+      const address = event.address && typeof event.address === 'object' ? event.address : {};
+      events.push({
+        provider: name,
+        description: providerEventDescription(event),
+        location: providerEventLocation(event),
+        country: String(address.country || '').trim() || null,
+        stage: String(event.stage || '').trim() || null,
+        subStatus: String(event.sub_status || '').trim() || null,
+        time: Number.isFinite(timestamp) ? timestamp : null
+      });
+    }
+  }
+  events.sort((a, b) => Number(b.time || 0) - Number(a.time || 0));
+  return events.slice(0, 100);
+}
+
+function providerTipsFromRow(row) {
+  const raw = parseShipmentRaw(row);
+  const trackInfo = raw && raw.track_info && typeof raw.track_info === 'object' ? raw.track_info : {};
+  const tips = trackInfo.provider_tips || raw && raw.provider_tips || null;
+  if (!tips) return [];
+  if (Array.isArray(tips)) return tips.map((item) => typeof item === 'string' ? item : JSON.stringify(item)).filter(Boolean).slice(0, 20);
+  if (typeof tips === 'string') return [tips];
+  if (typeof tips === 'object') return [JSON.stringify(tips)];
+  return [];
+}
+
+function shipmentProviderMeta(row) {
+  const raw = parseShipmentRaw(row);
+  const trackInfo = raw && raw.track_info && typeof raw.track_info === 'object' ? raw.track_info : {};
+  const tracking = trackInfo.tracking && typeof trackInfo.tracking === 'object' ? trackInfo.tracking : {};
+  const providers = Array.isArray(tracking.providers) ? tracking.providers : [];
+  const carrierName = providers.map(providerName).find(Boolean) || null;
+  const syncStatus = raw && (raw.sync_status || raw.syncStatus) || trackInfo.sync_status || tracking.sync_status || null;
+  return {
+    carrierName,
+    syncStatus: syncStatus == null ? null : String(syncStatus),
+    providerTips: providerTipsFromRow(row),
+    history: providerEventsFromRow(row)
+  };
+}
+
+function shipmentHasIsraelEvent(shipment) {
+  if (!shipment) return false;
+  if (['arrived_country', 'ready_for_pickup', 'out_for_delivery', 'delivery_failed', 'delivered'].includes(String(shipment.status || ''))) return true;
+  const events = Array.isArray(shipment.history) ? shipment.history : providerEventsFromRow(shipment);
+  return events.some((event) => {
+    const country = String(event.country || '').trim().toLowerCase();
+    const location = String(event.location || '').trim().toLowerCase();
+    return country === 'il' || country === 'israel' || country === 'ישראל' || /(^|[,\s])israel($|[,\s])/.test(location) || location.includes('ישראל');
+  });
+}
+
+const CUSTOMER_TRACKING_STATES = {
+  preparing: {
+    label: 'ההזמנה בהכנה',
+    description: 'ההזמנה נקלטה ב-VerSans. אנחנו מטפלים בה ונעדכן כאן כשהיא תעבור לחברת השילוח בישראל.'
+  },
+  carrier: {
+    label: 'ההזמנה בחברת השילוח',
+    description: 'ההזמנה הגיעה לשלב המסירה בישראל ונמצאת בטיפול חברת השילוח.'
+  },
+  delivered: {
+    label: 'ההזמנה הגיעה',
+    description: 'לפי עדכון חברת השילוח, ההזמנה נמסרה.'
+  }
 };
 
-function publicTrackingContactMatches(order, contact) {
-  const raw = String(contact || '').trim();
-  if (!raw) return false;
-  if (raw.includes('@')) return normalizeEmail(raw) === normalizeEmail(order.customer_email);
-  const normalized = normalizePhone(raw);
-  return Boolean(normalized && normalized === normalizePhone(order.customer_phone));
+function customerTrackingState(shipments) {
+  const rows = Array.isArray(shipments) ? shipments.filter(Boolean) : [];
+  if (!rows.length) return { key: 'preparing', ...CUSTOMER_TRACKING_STATES.preparing, detail: null, location: null, updatedAt: null };
+  if (rows.every((shipment) => String(shipment.status || '') === 'delivered')) {
+    const latest = rows.slice().sort((a, b) => Number(b.deliveredAt || b.updatedAt || 0) - Number(a.deliveredAt || a.updatedAt || 0))[0];
+    return { key: 'delivered', ...CUSTOMER_TRACKING_STATES.delivered, detail: null, location: null, updatedAt: latest ? Number(latest.deliveredAt || latest.updatedAt || 0) || null : null };
+  }
+  const local = rows.filter(shipmentHasIsraelEvent).sort((a, b) => Number(b.latestEventAt || b.updatedAt || 0) - Number(a.latestEventAt || a.updatedAt || 0));
+  if (local.length) {
+    const latest = local[0];
+    const detail = ['ready_for_pickup', 'out_for_delivery', 'delivery_failed', 'exception', 'arrived_country'].includes(String(latest.status || ''))
+      ? shipmentStatusLabel(latest.status)
+      : null;
+    return {
+      key: 'carrier',
+      ...CUSTOMER_TRACKING_STATES.carrier,
+      detail,
+      location: latest.latestLocation || null,
+      updatedAt: Number(latest.latestEventAt || latest.updatedAt || 0) || null
+    };
+  }
+  const latest = rows.slice().sort((a, b) => Number(b.latestEventAt || b.updatedAt || 0) - Number(a.latestEventAt || a.updatedAt || 0))[0];
+  return { key: 'preparing', ...CUSTOMER_TRACKING_STATES.preparing, detail: null, location: null, updatedAt: latest ? Number(latest.latestEventAt || latest.updatedAt || 0) || null : null };
+}
+
+function customerShipmentPayload(shipment, index = 0) {
+  const status = String(shipment && shipment.status || 'registered');
+  const local = shipmentHasIsraelEvent(shipment);
+  const delivered = status === 'delivered';
+  const pickupReady = status === 'ready_for_pickup';
+  let stage = 'preparing';
+  let statusLabel = CUSTOMER_TRACKING_STATES.preparing.label;
+  let description = 'החבילה עדיין בתהליך ההכנה וההעברה לחברת השילוח.';
+
+  if (delivered) {
+    stage = 'delivered';
+    statusLabel = 'החבילה הגיעה';
+    description = 'לפי עדכון חברת השילוח, החבילה נמסרה.';
+  } else if (local) {
+    stage = 'carrier';
+    statusLabel = ['ready_for_pickup', 'out_for_delivery', 'delivery_failed', 'exception', 'arrived_country'].includes(status)
+      ? shipmentStatusLabel(status)
+      : CUSTOMER_TRACKING_STATES.carrier.label;
+    description = pickupReady
+      ? 'החבילה מוכנה לאיסוף. מומלץ לאסוף אותה בהקדם כדי למנוע החזרה לשולח.'
+      : 'החבילה נמצאת בטיפול חברת השילוח בישראל.';
+  }
+
+  return {
+    packageNumber: Number(index) + 1,
+    trackingNumber: shipment.trackingNumber,
+    status: stage,
+    statusLabel,
+    description,
+    pickupReady,
+    location: local ? (shipment.latestLocation || null) : null,
+    updatedAt: Number(shipment.latestEventAt || shipment.updatedAt || 0) || null
+  };
 }
 
 async function notifyShipmentStatus(shipment, order) {
   if (!shipment || !order || !shouldNotifyStatus(shipment.status)) return;
   const items = await database.listShipmentItems(shipment.id);
-  const statusLabel = shipmentStatusLabel(shipment.status);
+  const adminStatusLabel = shipmentStatusLabel(shipment.status);
   const now = Date.now();
   const staleBefore = now - 15 * 60 * 1000;
   const customer = parseStoredCustomer(order);
   const trackingUrl = `https://versans.com/track?order=${encodeURIComponent(order.order_ref)}`;
 
-  if (isWhatsAppConfigured('customer') && order.customer_phone) {
-    const claimed = await database.claimShipmentNotification(shipment.id, 'customer', shipment.status, order.customer_phone, now, staleBefore);
+  // Customer WhatsApp is intentionally shipment-specific. Every Tracking ID has
+  // its own notification key, so if order #123 has three parcels that become
+  // ready for pickup on different days, the customer receives three separate
+  // pickup alerts. Other 17TRACK transitions remain visible on /track without
+  // creating unnecessary WhatsApp noise.
+  if (shipment.status === 'ready_for_pickup' && isWhatsAppConfigured('customer') && order.customer_phone) {
+    const customerNotificationKey = 'ready_for_pickup';
+    const claimed = await database.claimShipmentNotification(shipment.id, 'customer', customerNotificationKey, order.customer_phone, now, staleBefore);
     if (claimed) {
       try {
         const sent = await sendCustomerShippingWhatsApp({
           phone: order.customer_phone,
           firstName: customer.firstName || customer.name || 'לקוח/ה',
           orderRef: order.order_ref,
-          statusLabel,
+          trackingNumber: shipment.tracking_number,
+          statusLabel: adminStatusLabel,
           trackingUrl
         });
-        await database.markShipmentNotificationSent(shipment.id, 'customer', shipment.status, sent.id || null, Date.now());
+        await database.markShipmentNotificationSent(shipment.id, 'customer', customerNotificationKey, sent.id || null, Date.now());
       } catch (error) {
-        await database.markShipmentNotificationFailed(shipment.id, 'customer', shipment.status, error && error.message, Date.now());
+        await database.markShipmentNotificationFailed(shipment.id, 'customer', customerNotificationKey, error && error.message, Date.now());
       }
     }
   }
@@ -1094,7 +1227,7 @@ async function notifyShipmentStatus(shipment, order) {
       try {
         const sent = await sendAdminShippingWhatsApp({
           orderRef: order.order_ref,
-          statusLabel,
+          statusLabel: adminStatusLabel,
           trackingNumber: shipment.tracking_number,
           itemSummary: shipmentItemSummary(items)
         });
@@ -1110,7 +1243,7 @@ async function applyTrackingUpdate(update) {
   const shipment = await database.getShipmentByTracking(update.trackingNumber);
   if (!shipment) return { ok: false, ignored: true, trackingNumber: update.trackingNumber };
   const now = Date.now();
-  await database.updateShipmentTracking(shipment.id, { ...update, registeredAt: shipment.registered_at || now, updatedAt: now });
+  await database.updateShipmentTracking(shipment.id, { ...update, registeredAt: shipment.registered_at || null, updatedAt: now });
   const fresh = await database.getShipmentById(shipment.id);
   const order = fresh ? await database.getOrderById(fresh.order_id) : null;
   if (fresh && order) await notifyShipmentStatus(fresh, order);
@@ -1128,13 +1261,14 @@ async function ensureShipmentRegisteredWith17Track(shipment) {
   const phone = normalizePhone(order.customer_phone || storedCustomer.phone);
   const consignee = [storedCustomer.firstName, storedCustomer.lastName].filter(Boolean).join(' ').trim() || null;
   const registered = await register17Track(shipment.tracking_number, shipment.carrier_code, {
+    originCountry: String(shipment.tracking_number || '').toUpperCase().startsWith('DSVPH') ? 'CN' : null,
     destinationCountry,
     destinationPostalCode: storedCustomer.zip || null,
     destinationCity: storedCustomer.city || null,
     consignee,
     phoneNumber: phone || null,
     phoneNumberLast4: phone ? phone.slice(-4) : null,
-    lang: 'he'
+    lang: 'en'
   });
   await database.markShipmentRegistered(shipment.id, registered.carrierCode || shipment.carrier_code || null, Date.now());
   return true;
@@ -1154,18 +1288,21 @@ function trackingLookupOptions(order) {
     consignee,
     phoneNumber: phone || null,
     phoneNumberLast4: phone ? phone.slice(-4) : null,
-    lang: 'he'
+    lang: 'en'
   };
 }
 
-async function refreshShipmentFrom17Track(shipment, { realTime = false, instant = false } = {}) {
+async function refreshShipmentFrom17Track(shipment, { realTime = false } = {}) {
   if (!shipment || !is17TrackConfigured()) return null;
   const order = await database.getOrderById(shipment.order_id);
-  const options = trackingLookupOptions(order);
+  const options = {
+    ...trackingLookupOptions(order),
+    originCountry: String(shipment.tracking_number || '').toUpperCase().startsWith('DSVPH') ? 'CN' : null
+  };
   let info = null;
   if (realTime) {
     try {
-      info = await get17TrackRealTimeInfo(shipment.tracking_number, shipment.carrier_code, { ...options, instant });
+      info = await get17TrackRealTimeInfo(shipment.tracking_number, shipment.carrier_code, options);
     } catch (error) {
       console.error(`17TRACK real-time refresh failed for ${shipment.tracking_number}:`, error && error.message);
     }
@@ -1199,57 +1336,28 @@ async function publicTrackingApi(req, res, pathname, parsed) {
   if (pathname !== '/api/tracking') return false;
   if (req.method !== 'GET') { json(res, 405, { ok: false, error: 'method_not_allowed' }); return true; }
   const orderRef = String(parsed.searchParams.get('order') || '').trim().slice(0, 120);
-  const contact = String(parsed.searchParams.get('contact') || '').trim().slice(0, 254);
-  if (!orderRef || !contact) { json(res, 400, { ok: false, error: 'missing_tracking_details' }); return true; }
+  if (!orderRef) { json(res, 400, { ok: false, error: 'missing_order_number' }); return true; }
   const order = await database.getOrderByRef(orderRef);
-  if (!order || order.status !== 'paid' || !publicTrackingContactMatches(order, contact)) {
+  if (!order || order.status !== 'paid') {
     json(res, 404, { ok: false, error: 'tracking_not_found' });
     return true;
   }
-  let shipments = await listOrderShipmentsPayload(order.id);
-  // After the customer has been authenticated by order + contact details, pull
-  // the latest registered snapshot from 17TRACK when our local copy is stale.
-  // gettrackinfo reads the subscribed data and does not trigger the expensive
-  // Instant real-time mode used only by an explicit admin action.
-  if (is17TrackConfigured() && shipments.length) {
-    const staleBefore = Date.now() - 15 * 60 * 1000;
-    for (const shipment of shipments) {
-      if (Number(shipment.updatedAt || 0) >= staleBefore && shipment.status !== 'registered') continue;
-      try {
-        const storedShipment = await database.getShipmentById(shipment.id);
-        if (storedShipment) await refreshShipmentFrom17Track(storedShipment, { realTime: false });
-      } catch (error) {
-        console.error(`17TRACK public snapshot refresh failed for ${shipment.trackingNumber}:`, error && error.message);
-      }
-    }
-    shipments = await listOrderShipmentsPayload(order.id);
-  }
-  const orderItems = normalizeStoredOrderItems(order.items_json, PRODUCTS);
-  const overall = publicTrackingStatus(shipments);
+
+  // The customer enters only the original VerSans order number. Each supplier
+  // Tracking ID attached to that order is then shown as a separate parcel.
+  const shipments = await listOrderShipmentsPayload(order.id);
+  const state = customerTrackingState(shipments);
+  const customerShipments = shipments.map((shipment, index) => customerShipmentPayload(shipment, index));
   json(res, 200, {
     ok: true,
     orderRef: order.order_ref,
-    overallStatus: overall,
-    overallStatusLabel: PUBLIC_TRACKING_LABELS[overall] || 'עדכון משלוח',
-    itemCount: orderItems.reduce((sum, item) => sum + Number(item.qty || 1), 0),
-    items: orderItems.map((item) => ({ productId: item.id || null, productName: item.name || 'מוצר', qty: Number(item.qty || 1) })),
-    shipments: shipments.map((shipment, index) => ({
-      packageNumber: index + 1,
-      trackingNumber: shipment.trackingNumber,
-      carrierCode: shipment.carrierCode,
-      carrierName: shipment.carrierName,
-      status: shipment.status,
-      statusLabel: shipment.statusLabel,
-      latestEvent: shipment.latestEvent,
-      latestLocation: shipment.latestLocation,
-      latestEventAt: shipment.latestEventAt,
-      estimatedDeliveryFrom: shipment.estimatedDeliveryFrom,
-      estimatedDeliveryTo: shipment.estimatedDeliveryTo,
-      deliveredAt: shipment.deliveredAt,
-      localTrackingNumber: shipment.localTrackingNumber || null,
-      localProvider: shipment.localProvider || null,
-      items: shipment.items.map((item) => ({ productName: item.productName, qty: item.qty }))
-    }))
+    status: state.key,
+    statusLabel: state.label,
+    description: state.description,
+    detail: state.detail,
+    location: state.location,
+    updatedAt: state.updatedAt,
+    shipments: customerShipments
   });
   return true;
 }
@@ -1322,6 +1430,7 @@ async function adminApi(req, res, pathname, parsed) {
         trackingConfigured: is17TrackConfigured(),
         customerWhatsAppConfigured: isWhatsAppConfigured('customer'),
         adminWhatsAppConfigured: isWhatsAppConfigured('admin'),
+        customerTracking: customerTrackingState(shipments),
         items: orderItems.map((item, itemIndex) => ({ itemIndex, productId: item.id, productName: item.name, qty: item.qty })),
         shipments
       });
@@ -1333,14 +1442,11 @@ async function adminApi(req, res, pathname, parsed) {
     const body = await readJsonBody(req);
     const trackingNumber = normalizeTrackingNumber(body && body.trackingNumber);
     const carrierCode = normalizeCarrierCode(body && body.carrierCode);
-    if (!/^[A-Za-z0-9-]{5,50}$/.test(trackingNumber)) { json(res, 400, { ok: false, error: 'invalid_tracking_number' }); return true; }
+    if (!/^[A-Za-z0-9-]{5,80}$/.test(trackingNumber)) { json(res, 400, { ok: false, error: 'invalid_tracking_number' }); return true; }
     if (await database.getShipmentByTracking(trackingNumber)) { json(res, 409, { ok: false, error: 'tracking_already_exists' }); return true; }
-    const requestedIndexes = Array.isArray(body && body.itemIndexes) ? body.itemIndexes.map(Number).filter(Number.isInteger) : [];
-    const uniqueIndexes = Array.from(new Set(requestedIndexes)).filter((idx) => idx >= 0 && idx < orderItems.length);
-    if (!uniqueIndexes.length) { json(res, 400, { ok: false, error: 'select_shipment_items' }); return true; }
-
     let resolvedCarrier = carrierCode;
     let providerRegisteredAt = null;
+    let registrationWarning = null;
     if (is17TrackConfigured()) {
       try {
         const storedCustomer = parseStoredCustomer(order);
@@ -1349,30 +1455,33 @@ async function adminApi(req, res, pathname, parsed) {
         const phone = normalizePhone(order.customer_phone || storedCustomer.phone);
         const consignee = [storedCustomer.firstName, storedCustomer.lastName].filter(Boolean).join(' ').trim() || null;
         const registered = await register17Track(trackingNumber, carrierCode, {
+          originCountry: trackingNumber.toUpperCase().startsWith('DSVPH') ? 'CN' : null,
           destinationCountry,
           destinationPostalCode: storedCustomer.zip || null,
           destinationCity: storedCustomer.city || null,
           consignee,
           phoneNumber: phone || null,
           phoneNumberLast4: phone ? phone.slice(-4) : null,
-          lang: 'he'
+          lang: 'en'
         });
         resolvedCarrier = registered.carrierCode || carrierCode;
         providerRegisteredAt = Date.now();
       } catch (error) {
-        json(res, 400, { ok: false, error: 'tracking_registration_failed', message: String(error && error.message || '').slice(0, 500), code: error && error.code || null });
-        return true;
+        // Keep the supplier Tracking ID attached to the VerSans order even if
+        // 17TRACK is temporarily unable to subscribe. The background retry can
+        // register it later; the admin still sees the original error.
+        registrationWarning = {
+          error: 'tracking_registration_failed',
+          message: String(error && error.message || '').slice(0, 500),
+          code: error && error.code || null
+        };
       }
     }
 
     const now = Date.now();
     let shipmentId;
     try {
-      shipmentId = await database.transaction(async (tx) => {
-        const id = await tx.createShipment({ orderId: order.id, trackingNumber, carrierCode: resolvedCarrier, provider: '17track', status: 'registered', registeredAt: providerRegisteredAt, createdAt: now, updatedAt: now });
-        await tx.setShipmentItems(id, uniqueIndexes.map((itemIndex) => ({ itemIndex, productId: orderItems[itemIndex].id, productName: orderItems[itemIndex].name, qty: orderItems[itemIndex].qty })));
-        return id;
-      });
+      shipmentId = await database.createShipment({ orderId: order.id, trackingNumber, carrierCode: resolvedCarrier, provider: '17track', status: 'registered', registeredAt: providerRegisteredAt, createdAt: now, updatedAt: now });
     } catch (error) {
       if (/unique|tracking_number/i.test(String(error && error.message))) { json(res, 409, { ok: false, error: 'tracking_already_exists' }); return true; }
       throw error;
@@ -1388,7 +1497,7 @@ async function adminApi(req, res, pathname, parsed) {
       }
     }
     const shipment = await shipmentWithItems(await database.getShipmentById(shipmentId));
-    json(res, 201, { ok: true, shipment, trackingConfigured: is17TrackConfigured(), warning: is17TrackConfigured() ? null : '17track_not_configured' });
+    json(res, 201, { ok: true, shipment, trackingConfigured: is17TrackConfigured(), warning: !is17TrackConfigured() ? { error: '17track_not_configured' } : registrationWarning });
     return true;
   }
 
@@ -1415,11 +1524,10 @@ async function adminApi(req, res, pathname, parsed) {
       try { await ensureShipmentRegisteredWith17Track(shipment); shipment = await database.getShipmentById(shipment.id); }
       catch (error) { json(res, 400, { ok: false, error: 'tracking_registration_failed', message: String(error && error.message || '').slice(0, 500) }); return true; }
     }
-    const instant = String(parsed.searchParams.get('mode') || '').toLowerCase() === 'instant';
-    const update = await refreshShipmentFrom17Track(shipment, { realTime: true, instant });
+    const update = await refreshShipmentFrom17Track(shipment, { realTime: true });
     if (!update) { json(res, 404, { ok: false, error: 'tracking_info_not_found' }); return true; }
     const fresh = await shipmentWithItems(await database.getShipmentById(shipment.id));
-    json(res, 200, { ok: true, shipment: fresh, refreshMode: instant ? 'instant' : 'standard' });
+    json(res, 200, { ok: true, shipment: fresh });
     return true;
   }
 

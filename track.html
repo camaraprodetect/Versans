@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex,follow">
   <title>מעקב הזמנה | VerSans</title>
   <link rel="icon" href="/favicon.ico">
-  <link rel="stylesheet" href="/assets/track.css?v=20260923-tracking-v2">
+  <link rel="stylesheet" href="/assets/track.css?v=20260923-multi-pickup-v4">
 </head>
 <body>
   <header class="track-topbar">
@@ -18,22 +18,19 @@
     <section class="track-hero">
       <span class="track-eyebrow">VERSANS DELIVERY</span>
       <h1>מעקב אחר ההזמנה</h1>
-      <p>הכניסו את מספר ההזמנה ואת האימייל או מספר הטלפון ששימשו בהזמנה.</p>
+      <p>הכניסו את מספר ההזמנה שקיבלתם מ-VerSans. זה המספר היחיד שתצטרכו לאורך כל הדרך.</p>
     </section>
 
     <section class="track-card" aria-labelledby="trackFormTitle">
-      <h2 id="trackFormTitle">מצאו את המשלוח שלכם</h2>
+      <h2 id="trackFormTitle">איפה ההזמנה שלי?</h2>
       <form id="trackingForm" class="track-form" autocomplete="on">
         <label>
           <span>מספר הזמנה</span>
-          <input id="orderRef" name="order" type="text" inputmode="text" placeholder="לדוגמה VS-..." maxlength="120" required>
-        </label>
-        <label>
-          <span>אימייל או טלפון</span>
-          <input id="contact" name="contact" type="text" placeholder="האימייל או הטלפון מההזמנה" maxlength="254" required>
+          <input id="orderRef" name="order" type="text" inputmode="text" placeholder="לדוגמה KW-..." maxlength="120" required>
         </label>
         <button id="trackSubmit" type="submit">בדיקת סטטוס</button>
       </form>
+      <p class="track-form-note">מספרי המעקב של חברות השילוח מחוברים להזמנה מאחורי הקלעים ואינם משנים את מספר ההזמנה שלכם.</p>
       <p id="trackError" class="track-error" hidden></p>
     </section>
 
@@ -41,12 +38,11 @@
 
     <section class="track-help">
       <strong>צריכים עזרה?</strong>
-      <p>צוות VerSans כאן בשבילכם. אם פרטי המעקב עדיין לא הופיעו, ייתכן שההזמנה עדיין בהכנה.</p>
-      <a id="trackSupportLink" href="mailto:versanssupport@gmail.com">שירות לקוחות באימייל</a>
+      <p>אם ההזמנה עדיין מופיעה כ"בהכנה", ייתכן שהיא עדיין בדרך לישראל או שחברת השילוח עדיין לא עדכנה את המעקב.</p>
+      <a href="mailto:versanssupport@gmail.com">versanssupport@gmail.com</a>
     </section>
   </main>
 
-  <script src="/assets/config.js?v=20260923-tracking-v1"></script>
-  <script src="/assets/track.js?v=20260923-tracking-v2" defer></script>
+  <script src="/assets/track.js?v=20260923-multi-pickup-v4" defer></script>
 </body>
 </html>

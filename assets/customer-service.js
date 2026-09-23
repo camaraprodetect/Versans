@@ -17,7 +17,7 @@
   }
 
   function whatsappNumber(){
-    return cleanWhatsapp(config().whatsapp);
+    return cleanWhatsapp(config().whatsapp || '');
   }
 
   function whatsappUrl(){
@@ -39,7 +39,7 @@
   }
 
   function injectMobileMenu(){
-    if (!whatsappUrl()) return;
+    if (!whatsappNumber()) return;
     document.querySelectorAll('#navmenu').forEach(function(menu){
       if (menu.querySelector('.nav__support-link')) return;
       var wrap = document.createElement('div');
@@ -52,7 +52,7 @@
   }
 
   function injectFooterLink(){
-    if (!whatsappUrl()) return;
+    if (!whatsappNumber()) return;
     var lists = document.querySelectorAll('#footContact, #productFootContact');
     if (lists.length) {
       lists.forEach(function(list){
@@ -76,7 +76,7 @@
   }
 
   function createFloatingBubble(){
-    if (!whatsappUrl()) return null;
+    if (!whatsappNumber()) return null;
     if (document.getElementById('versansSupportFloat')) return document.getElementById('versansSupportFloat');
     var bubble = document.createElement('aside');
     bubble.id = 'versansSupportFloat';
@@ -118,9 +118,9 @@
 
   function updateExistingLinks(){
     var url = whatsappUrl();
+    if (!url) { document.querySelectorAll('.versans-support-float,.versans-support-footer-item,.versans-support-footer-standalone,.nav__support-link').forEach(function(node){ node.remove(); }); return; }
     document.querySelectorAll('.versans-support-float__link,.versans-support-footer-link,.nav__support-link').forEach(function(link){
-      if (url) link.href = url;
-      else if (link.parentNode) link.parentNode.removeChild(link);
+      link.href = url;
     });
   }
 

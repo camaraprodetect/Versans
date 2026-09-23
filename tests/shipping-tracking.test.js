@@ -118,3 +118,14 @@ test('storefront no longer contains the previous hard-coded WhatsApp number', ()
     assert.equal(source.includes('972546296037'), false, relative + ' still contains the old number');
   }
 });
+
+test('admin includes standalone 17TRACK lookup that does not require an order', () => {
+  const root = path.resolve(__dirname, '..');
+  const server = fs.readFileSync(path.join(root, 'server.js'), 'utf8');
+  const admin = fs.readFileSync(path.join(root, 'assets/admin.js'), 'utf8');
+  assert.equal(server.includes("pathname === '/api/admin/tracking/lookup'"), true);
+  assert.equal(server.includes('linkedToOrder: false'), true);
+  assert.equal(server.includes('persisted: false'), true);
+  assert.equal(admin.includes('בדיקת 17TRACK ללא הזמנה'), true);
+  assert.equal(admin.includes('לא שומרת חבילה ולא מחברת אותה ללקוח'), true);
+});
