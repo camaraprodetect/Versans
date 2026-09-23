@@ -3,7 +3,6 @@
 
   var CLOSED_KEY = 'versans_support_closed_at';
   var RETURN_AFTER_MS = 10 * 60 * 1000;
-  var DEFAULT_WHATSAPP = '972546296037';
 
   function config(){
     return (window.STORE_CONFIG && window.STORE_CONFIG.contact) || {};
@@ -11,18 +10,19 @@
 
   function cleanWhatsapp(value){
     var digits = String(value || '').replace(/\D/g, '');
-    if (!digits) return DEFAULT_WHATSAPP;
+    if (!digits) return '';
     if (digits.indexOf('972') === 0) return digits;
     if (digits.charAt(0) === '0') return '972' + digits.slice(1);
     return digits;
   }
 
   function whatsappNumber(){
-    return cleanWhatsapp(config().whatsapp || DEFAULT_WHATSAPP);
+    return cleanWhatsapp(config().whatsapp);
   }
 
   function whatsappUrl(){
-    return 'https://wa.me/' + whatsappNumber();
+    var number = whatsappNumber();
+    return number ? 'https://wa.me/' + number : '';
   }
 
   function whatsappIcon(cls){
@@ -32,11 +32,14 @@
   }
 
   function supportLink(className, iconClass){
-    return '<a class="' + className + '" href="' + whatsappUrl() + '" target="_blank" rel="noopener noreferrer" aria-label="שירות לקוחות ב-WhatsApp">' +
+    var url = whatsappUrl();
+    if (!url) return '';
+    return '<a class="' + className + '" href="' + url + '" target="_blank" rel="noopener noreferrer" aria-label="שירות לקוחות ב-WhatsApp">' +
       whatsappIcon(iconClass) + '<span>שירות לקוחות</span></a>';
   }
 
   function injectMobileMenu(){
+    if (!whatsappUrl()) return;
     document.querySelectorAll('#navmenu').forEach(function(menu){
       if (menu.querySelector('.nav__support-link')) return;
       var wrap = document.createElement('div');
@@ -49,6 +52,7 @@
   }
 
   function injectFooterLink(){
+    if (!whatsappUrl()) return;
     var lists = document.querySelectorAll('#footContact, #productFootContact');
     if (lists.length) {
       lists.forEach(function(list){
@@ -72,6 +76,7 @@
   }
 
   function createFloatingBubble(){
+    if (!whatsappUrl()) return null;
     if (document.getElementById('versansSupportFloat')) return document.getElementById('versansSupportFloat');
     var bubble = document.createElement('aside');
     bubble.id = 'versansSupportFloat';
@@ -95,6 +100,7 @@
 
   function applyBubbleVisibility(){
     var bubble = createFloatingBubble();
+    if (!bubble) return;
     var closedAt = 0;
     try { closedAt = Number(sessionStorage.getItem(CLOSED_KEY) || 0); } catch (err) {}
     var remaining = closedAt ? RETURN_AFTER_MS - (Date.now() - closedAt) : 0;
@@ -111,8 +117,10 @@
   }
 
   function updateExistingLinks(){
+    var url = whatsappUrl();
     document.querySelectorAll('.versans-support-float__link,.versans-support-footer-link,.nav__support-link').forEach(function(link){
-      link.href = whatsappUrl();
+      if (url) link.href = url;
+      else if (link.parentNode) link.parentNode.removeChild(link);
     });
   }
 

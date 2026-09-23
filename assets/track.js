@@ -6,6 +6,17 @@
   var submit=document.getElementById('trackSubmit');
   var errorBox=document.getElementById('trackError');
   var result=document.getElementById('trackingResult');
+  var supportLink=document.getElementById('trackSupportLink');
+
+  function supportConfig(){
+    var contact=(window.STORE_CONFIG&&window.STORE_CONFIG.contact)||{};
+    var whatsapp=String(contact.whatsapp||'').replace(/\D/g,'');
+    if(whatsapp&&whatsapp.indexOf('972')!==0&&whatsapp.charAt(0)==='0')whatsapp='972'+whatsapp.slice(1);
+    if(whatsapp){supportLink.href='https://wa.me/'+whatsapp;supportLink.target='_blank';supportLink.rel='noopener';supportLink.textContent='שירות לקוחות ב-WhatsApp';return}
+    var email=String(contact.email||'versanssupport@gmail.com').trim();
+    supportLink.href='mailto:'+email;supportLink.removeAttribute('target');supportLink.textContent='שירות לקוחות באימייל';
+  }
+  if(supportLink)supportConfig();
 
   var query=new URLSearchParams(window.location.search);
   if(query.get('order')) orderInput.value=query.get('order');
@@ -42,7 +53,8 @@
       current.appendChild(detail('אירוע אחרון',shipment.latestEvent||'ממתינים לעדכון מפורט מחברת השילוח'));
       row.appendChild(current);
 
-      var grid=el('div','track-package__grid');grid.appendChild(detail('חברת שילוח',shipment.carrierName||'זיהוי אוטומטי'));grid.appendChild(detail('עדכון אחרון',fmtDate(shipment.latestEventAt||shipment.deliveredAt)));grid.appendChild(detail('הערכת מסירה',etaText(shipment.estimatedDeliveryFrom,shipment.estimatedDeliveryTo)));row.appendChild(grid);
+      var grid=el('div','track-package__grid');grid.appendChild(detail('חברת שילוח',shipment.localProvider||shipment.carrierName||'זיהוי אוטומטי'));grid.appendChild(detail('עדכון אחרון',fmtDate(shipment.latestEventAt||shipment.deliveredAt)));grid.appendChild(detail('הערכת מסירה',etaText(shipment.estimatedDeliveryFrom,shipment.estimatedDeliveryTo)));row.appendChild(grid);
+      if(shipment.localTrackingNumber&&shipment.localTrackingNumber!==shipment.trackingNumber){var local=el('p','track-local-number','מספר מעקב מקומי: '+shipment.localTrackingNumber);row.appendChild(local)}
       timeline.appendChild(row);
     });
     orderCard.appendChild(timeline);result.appendChild(orderCard);
