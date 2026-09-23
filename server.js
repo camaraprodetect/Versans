@@ -1084,6 +1084,8 @@ function whatsappDigits(phone) {
 }
 
 const SHIPPING_BOT_TEST_SHIPMENT_ID = 900000001;
+const SHIPPING_BOT_FAKE_PICKUP_SHIPMENT_ID = 900000002;
+const SHIPPING_BOT_FAKE_PICKUP_TRACKING_ID = 'VERSANS-FAKE-PICKUP-001';
 const SHIPPING_BOT_TEST_TRACKING_ID = 'VERSANS-TEST-1400';
 const SHIPPING_BOT_TEST_META_KEY = 'shipping_bot_test_2026_09_23_1400_sent';
 const SHIPPING_BOT_TEST_EXPIRES_AT = Date.parse('2026-09-24T00:00:00+03:00');
@@ -1134,6 +1136,17 @@ async function shippingBotTestPickup() {
 function cleanPickupText(value, max = 1400) {
   const text = String(value == null ? '' : value).replace(/[\r\t]+/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
   return text ? text.slice(0, max) : null;
+}
+
+function customerSafePickupText(value, max = 1400) {
+  const text = cleanPickupText(value, max);
+  if (!text) return null;
+  // Never expose marketplace/provider branding to VerSans customers.
+  return text
+    .replace(/AliExpress/gi, 'חברת המשלוחים')
+    .replace(/Cainiao/gi, 'חברת המשלוחים')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
 }
 
 const PICKUP_EVENT_PATTERN = /(ready\s+for\s+(pickup|collection)|available\s+for\s+(pickup|collection)|awaiting\s+(pickup|collection)|pick\s*up|pickup\s*(point|station|location|ready)?|collection\s*(point|station|location|ready)?|parcel\s+locker|locker|ready_for_pickup|available_for_pickup|awaiting_collection|מוכן\s+לאיסוף|נקודת\s+איסוף|איסוף)/i;
@@ -1201,11 +1214,11 @@ function shippingBotMessage({ customerName, items, trackingNumber, pickupMessage
         'המוצרים הבאים בחבילה מוכנים לאיסוף:',
         ...linked.map((item) => `• ${item.productName || 'מוצר'} - ${item.itemOrderRef}`)
       ];
-  const pickupText = cleanPickupText(pickupMessageRaw);
-  const locationText = cleanPickupText(pickupLocation, 500);
+  const pickupText = customerSafePickupText(pickupMessageRaw);
+  const locationText = customerSafePickupText(pickupLocation, 500);
   const pickupLines = [];
   if (pickupText) {
-    pickupLines.push('', 'פרטי האיסוף לפי עדכון AliExpress / חברת השילוח:', pickupText);
+    pickupLines.push('', 'פרטי האיסוף:', pickupText);
   }
   if (locationText && (!pickupText || !pickupText.toLowerCase().includes(locationText.toLowerCase()))) {
     pickupLines.push(`מיקום: ${locationText}`);
@@ -2098,6 +2111,7 @@ async function adminApi(req, res, pathname, parsed) {
     const limit = Number.isFinite(requestedLimit) ? Math.max(1, Math.min(500, Math.floor(requestedLimit))) : 200;
     const inspectTracking = normalizeTrackingNumber(parsed.searchParams.get('inspectTracking'));
     const fakePickup = String(parsed.searchParams.get('fakePickup') || '') === '1';
+    const sendFakeToMaor = fakePickup && String(parsed.searchParams.get('sendTest') || '') === '1';
     let refresh = null;
 
     // Safe fake diagnostics mode. This returns a synthetic ready-for-pickup
@@ -2105,7 +2119,7 @@ async function adminApi(req, res, pathname, parsed) {
     // ready-pickups queue, and without allowing WhatsApp send/mark-sent.
     if (fakePickup) {
       const fakeMessage = shippingBotMessage({
-        customerName: 'לקוח בדיקה',
+        customerName: sendFakeToMaor ? 'מאור' : 'לקוח בדיקה',
         items: [
           {
             itemIndex: 0,
@@ -2115,22 +2129,22 @@ async function adminApi(req, res, pathname, parsed) {
             qty: 1
           }
         ],
-        trackingNumber: 'VERSANS-FAKE-PICKUP-001',
+        trackingNumber: SHIPPING_BOT_FAKE_PICKUP_TRACKING_ID,
         pickupMessageRaw: 'החבילה ממתינה לאיסוף בנקודת בדיקה: לוקר VerSans Test, הרצל 12, ראשון לציון. קוד איסוף: 482913. שעות פעילות: 08:00-20:00.',
         pickupLocation: 'לוקר VerSans Test, הרצל 12, ראשון לציון'
       });
 
       json(res, 200, {
         ok: true,
-        pickupPatchVersion: '2026-09-24-final-v3-fake-test',
+        pickupPatchVersion: '2026-09-24-final-v4-private-brand-test',
         inspect: true,
         fake: true,
         generatedAt: Date.now(),
         source: 'synthetic_test_only',
         shipment: {
-          shipmentId: null,
+          shipmentId: SHIPPING_BOT_FAKE_PICKUP_SHIPMENT_ID,
           orderRef: 'VS-FAKE-PICKUP',
-          trackingId: 'VERSANS-FAKE-PICKUP-001',
+          trackingId: SHIPPING_BOT_FAKE_PICKUP_TRACKING_ID,
           status: 'ready_for_pickup',
           statusLabel: shipmentStatusLabel('ready_for_pickup'),
           notificationState: null,
@@ -2163,9 +2177,10 @@ async function adminApi(req, res, pathname, parsed) {
             }
           ],
           message: fakeMessage,
-          whatsappWebUrl: null,
-          safeToSend: false,
-          diagnosticIssue: 'synthetic_test_only_no_send'
+          whatsappNumber: sendFakeToMaor ? '972546296037' : null,
+          whatsappWebUrl: sendFakeToMaor ? `https://web.whatsapp.com/send?phone=972546296037&text=${encodeURIComponent(fakeMessage)}` : null,
+          safeToSend: Boolean(sendFakeToMaor),
+          diagnosticIssue: sendFakeToMaor ? null : 'synthetic_test_only_no_send'
         }
       });
       return true;
@@ -2232,7 +2247,7 @@ async function adminApi(req, res, pathname, parsed) {
 
       json(res, 200, {
         ok: true,
-        pickupPatchVersion: '2026-09-24-final-v3-fake-test',
+        pickupPatchVersion: '2026-09-24-final-v4-private-brand-test',
         inspect: true,
         generatedAt: Date.now(),
         source: 'versans_database',
@@ -2270,7 +2285,7 @@ async function adminApi(req, res, pathname, parsed) {
     const shipments = await shippingBotReadyPickups(limit);
     json(res, 200, {
       ok: true,
-      pickupPatchVersion: '2026-09-24-final-v3-fake-test',
+      pickupPatchVersion: '2026-09-24-final-v4-private-brand-test',
       generatedAt: Date.now(),
       source: 'versans_database',
       note: 'Tracking snapshots are refreshed by VerSans in the background. Use ?refresh=1 only when an immediate provider refresh is required.',
@@ -2303,6 +2318,16 @@ async function adminApi(req, res, pathname, parsed) {
       const shipmentId = Number(entry && entry.shipmentId);
       if (!Number.isInteger(shipmentId) || shipmentId <= 0) {
         results.push({ ok: false, shipmentId: entry && entry.shipmentId || null, error: 'invalid_shipment_id' });
+        continue;
+      }
+      if (shipmentId === SHIPPING_BOT_FAKE_PICKUP_SHIPMENT_ID) {
+        const expectedTracking = String(entry && entry.trackingId || '').trim();
+        if (expectedTracking && expectedTracking !== SHIPPING_BOT_FAKE_PICKUP_TRACKING_ID) {
+          results.push({ ok: false, shipmentId, trackingId: expectedTracking, error: 'tracking_mismatch' });
+          continue;
+        }
+        // Synthetic test only: acknowledge mark-sent without touching shipment/order data.
+        results.push({ ok: true, shipmentId, trackingId: SHIPPING_BOT_FAKE_PICKUP_TRACKING_ID, sentAt: now, fake: true, persisted: false });
         continue;
       }
       if (shipmentId === SHIPPING_BOT_TEST_SHIPMENT_ID) {
