@@ -1300,18 +1300,38 @@ async function adminApi(req, res, pathname, parsed) {
     const range = String(parsed.searchParams.get('range') || '30d');
     const sales = await adminSalesData(range, now);
     if (!sales) { json(res, 400, { ok: false, error: 'invalid_range' }); return true; }
-    const [onlineVisitors, todayVisitors, lifetimeVisitors, userCounts, recentRows] = await Promise.all([
+    const todayStart = israelStartOfDayMs(now);
+    const [onlineVisitors, todayVisitors, lifetimeVisitors, userCounts, recentRows, todayPaidOrders, todayAllOrders, lifetimeOrders] = await Promise.all([
       database.countPresenceVisitors(now - ONLINE_WINDOW_MS),
-      database.countPresenceVisitors(israelStartOfDayMs(now)),
+      database.countPresenceVisitors(todayStart),
       database.countPresenceVisitors(null),
       database.adminUserCounts(),
-      database.listAdminOrders({ status: 'paid', since: null, limit: 8, offset: 0 })
+      database.listAdminOrders({ status: 'paid', since: null, limit: 8, offset: 0 }),
+      database.countAdminOrders({ status: 'paid', since: todayStart }),
+      database.countAdminOrders({ status: 'all', since: todayStart }),
+      database.countAdminOrders({ status: 'all', since: null })
     ]);
+    const explicitSqlitePath = String(process.env.VERSANS_DB_PATH || '').trim();
+    const sqliteOutsideDeploy = Boolean(explicitSqlitePath) && !path.resolve(explicitSqlitePath).startsWith(ROOT + path.sep);
+    const persistentStorage = database.backend === 'postgres' || sqliteOutsideDeploy;
     json(res, 200, {
       ok: true,
       ...sales,
       visitors: { online: onlineVisitors, today: todayVisitors, lifetime: lifetimeVisitors },
       users: userCounts,
+      system: {
+        checkoutMode: checkoutMode(),
+        databaseBackend: database.backend,
+        persistentStorage,
+        storageMode: database.backend === 'postgres' ? 'postgres' : (sqliteOutsideDeploy ? 'external-sqlite' : 'local-sqlite'),
+        todayPaidOrders,
+        todayAllOrders,
+        lifetimeOrders,
+        googleOrdersConfigured: Boolean(String(process.env.GOOGLE_ORDERS_WEBHOOK_URL || '').trim()),
+        trackingConfigured: is17TrackConfigured(),
+        customerWhatsAppConfigured: isWhatsAppConfigured('customer'),
+        adminWhatsAppConfigured: isWhatsAppConfigured('admin')
+      },
       topProducts: sales.products.slice(0, 5),
       recentOrders: recentRows.map(adminOrderPayload)
     });
@@ -2226,13 +2246,39 @@ const server = http.createServer(async (req, res) => {
         };
 
         json(res, 200, result);
-        setImmediate(() => {
-          sendPaidOrderToGoogleSheet(demoOrder).catch((sheetErr) => {
+        setImmediate(async () => {
+          // Demo orders must be visible in Admin too. Persist them after the response so
+          // a slow/locked database can never block the checkout button again.
+          try {
+            await database.upsertPaidOrder({
+              orderRef: demoOrder.order_ref,
+              userId: null,
+              customerEmail: demoOrder.customer_email,
+              customerPhone: demoOrder.customer_phone,
+              customerJson: demoOrder.customer_json,
+              amountAgorot: demoOrder.amount_agorot,
+              currency: demoOrder.currency,
+              itemsJson: demoOrder.items_json,
+              couponId: null,
+              couponCode: requestedCouponCode || null,
+              couponDiscountAgorot: amountToAgorot(result.couponDiscount || 0) || 0,
+              createdAt: demoOrder.created_at,
+              paidAt: demoOrder.paid_at,
+              updatedAt: demoOrder.updated_at
+            });
+          } catch (dbErr) {
+            console.error(`Demo order database save failed for ${demoOrder.order_ref}:`, dbErr);
+          }
+          try {
+            await sendPaidOrderToGoogleSheet(demoOrder);
+          } catch (sheetErr) {
             console.error(`Google demo order sync failed for ${demoOrder.order_ref}:`, sheetErr);
-          });
-          sendOrderConfirmationForOrder(demoOrder).catch((emailErr) => {
+          }
+          try {
+            await sendOrderConfirmationForOrder(demoOrder);
+          } catch (emailErr) {
             console.error(`Demo order confirmation email failed for ${demoOrder.order_ref}:`, emailErr && emailErr.message ? emailErr.message : emailErr);
-          });
+          }
         });
         return;
       }

@@ -565,6 +565,21 @@
     return body;
   }
 
+  function systemHealthCard(system) {
+    system = system || {};
+    var body = make('div', 'detail-grid');
+    body.appendChild(detailItem('Checkout', String(system.checkoutMode || '—').toUpperCase()));
+    body.appendChild(detailItem('Database', system.databaseBackend || '—'));
+    body.appendChild(detailItem('הזמנות היום', numberFmt(system.todayAllOrders)));
+    body.appendChild(detailItem('Paid היום', numberFmt(system.todayPaidOrders)));
+    body.appendChild(detailItem('כל ההזמנות', numberFmt(system.lifetimeOrders)));
+    body.appendChild(detailItem('17TRACK', system.trackingConfigured ? 'מחובר' : 'לא מוגדר'));
+    var subtitle = system.persistentStorage
+      ? 'מסד הנתונים מוגדר כאחסון מתמשך.'
+      : 'אזהרה: מסד הנתונים מקומי ל־Deploy ועלול להימחק בכל Deploy/Restart ב־Render.';
+    return card('בדיקת מערכת', subtitle, body, system.persistentStorage ? badge('Persistent', 'verified') : badge('לא מתמשך', 'failed'));
+  }
+
   async function renderDashboardPage() {
     var range = state.ranges.dashboard;
     var data = await api('/api/admin/overview?range=' + encodeURIComponent(range));
@@ -576,6 +591,7 @@
     }));
     toolbar.appendChild(make('span', 'admin-toolbar-note', 'מכירות והכנסות מחושבות מ־Paid בלבד'));
     frag.appendChild(toolbar);
+    frag.appendChild(systemHealthCard(data.system));
     frag.appendChild(renderKpis([
       { label: 'הכנסות Paid', value: moneyAgorot(data.revenueAgorot), hint: 'בטווח שנבחר', primary: true, tone: 'green' },
       { label: 'הזמנות Paid', value: numberFmt(data.orderCount), hint: 'הזמנות ששולמו' },
