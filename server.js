@@ -1973,6 +1973,8 @@ async function adminApi(req, res, pathname, parsed) {
 
   if (pathname === '/api/admin/bot/shipping/ready-pickups') {
     if (req.method !== 'GET') { json(res, 405, { ok: false, error: 'method_not_allowed' }); return true; }
+    const botAdmin = await getAdminUser(req);
+    if (!botAdmin) { json(res, 401, { ok: false, error: 'admin_auth_required' }); return true; }
     const requestedLimit = Number(parsed.searchParams.get('limit') || 200);
     const limit = Number.isFinite(requestedLimit) ? Math.max(1, Math.min(500, Math.floor(requestedLimit))) : 200;
     let refresh = null;
@@ -1994,6 +1996,8 @@ async function adminApi(req, res, pathname, parsed) {
 
   if (pathname === '/api/admin/bot/shipping/mark-sent') {
     if (req.method !== 'POST') { json(res, 405, { ok: false, error: 'method_not_allowed' }); return true; }
+    const botAdmin = await getAdminUser(req);
+    if (!botAdmin) { json(res, 401, { ok: false, error: 'admin_auth_required' }); return true; }
     if (!sameOriginAllowed(req)) { json(res, 403, { ok: false, error: 'origin_not_allowed' }); return true; }
     const body = await readJsonBody(req, 512 * 1024);
     const entries = Array.isArray(body && body.shipments)
