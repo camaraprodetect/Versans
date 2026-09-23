@@ -921,6 +921,31 @@ function adminOrderPayload(row) {
   };
 }
 
+async function adminOrderPayloadWithFulfillment(row) {
+  const payload = adminOrderPayload(row);
+  const totalItems = payload.items.length;
+  const linkedIndexes = new Set();
+  const shipments = await database.listShipmentsForOrder(row.id);
+
+  await Promise.all((shipments || []).map(async (shipment) => {
+    const shipmentItems = await database.listShipmentItems(shipment.id);
+    for (const item of shipmentItems || []) {
+      const index = Number(item.item_index);
+      if (Number.isInteger(index) && index >= 0 && index < totalItems) linkedIndexes.add(index);
+    }
+  }));
+
+  const linkedItems = linkedIndexes.size;
+  let state = 'none';
+  if (totalItems > 0 && linkedItems >= totalItems) state = 'complete';
+  else if (linkedItems > 0) state = 'partial';
+
+  return {
+    ...payload,
+    fulfillment: { state, linkedItems, totalItems }
+  };
+}
+
 function adminReviewPayload(row) {
   const info = adminProductInfo(row.review_product_id);
   return {
@@ -1875,7 +1900,8 @@ async function adminApi(req, res, pathname, parsed) {
       database.countAdminOrders({ status, since: normalized.since }),
       database.listAdminOrders({ status, since: normalized.since, limit, offset })
     ]);
-    json(res, 200, { ok: true, status, range, count, limit, offset, hasMore: offset + rows.length < count, orders: rows.map(adminOrderPayload) });
+    const orders = await Promise.all(rows.map(adminOrderPayloadWithFulfillment));
+    json(res, 200, { ok: true, status, range, count, limit, offset, hasMore: offset + rows.length < count, orders });
     return true;
   }
 

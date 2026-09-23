@@ -435,6 +435,94 @@
     return steps[String(status || '')] || 8;
   }
 
+  function translateTrackingText(value) {
+    var raw = String(value == null ? '' : value).trim();
+    if (!raw) return '';
+
+    var exact = {
+      NotFound: 'עדיין לא נמצא מידע אצל חברת השילוח',
+      NotFound_Other: 'עדיין לא נמצא מידע אצל חברת השילוח',
+      InfoReceived: 'פרטי המשלוח התקבלו',
+      InTransit: 'החבילה בדרך',
+      OutForDelivery: 'החבילה יצאה למסירה',
+      AvailableForPickup: 'החבילה מוכנה לאיסוף',
+      Delivered: 'החבילה נמסרה',
+      Exception: 'יש חריגה או עיכוב במשלוח',
+      InTransit_Arrival: 'החבילה הגיעה למדינת היעד',
+      InTransit_CustomsProcessing: 'החבילה נמצאת בתהליך שחרור מהמכס',
+      InTransit_CustomsReleased: 'החבילה שוחררה מהמכס',
+      InTransit_Departure: 'החבילה יצאה מתחנת מעבר',
+      InTransit_Other: 'החבילה בתנועה',
+      Delivered_Other: 'החבילה נמסרה'
+    };
+    if (exact[raw]) return exact[raw];
+
+    var rules = [
+      [/package handed over to customs for clearance/i, 'החבילה נמסרה למכס לצורך שחרור'],
+      [/handed over to customs/i, 'החבילה נמסרה למכס'],
+      [/(arrived|arrival) (at|to) customs/i, 'החבילה הגיעה למכס'],
+      [/import customs clearance (started|start|processing)/i, 'תהליך השחרור מהמכס ביבוא התחיל'],
+      [/import customs clearance (completed|complete|success|finished)/i, 'השחרור מהמכס ביבוא הושלם'],
+      [/export customs clearance (started|start|processing)/i, 'תהליך המכס ביצוא התחיל'],
+      [/export customs clearance (completed|complete|success|finished)/i, 'תהליך המכס ביצוא הושלם'],
+      [/customs clearance (started|start|processing)/i, 'תהליך השחרור מהמכס התחיל'],
+      [/customs clearance (completed|complete|success|finished)/i, 'השחרור מהמכס הושלם'],
+      [/customs clearance failed/i, 'השחרור מהמכס נכשל'],
+      [/(held|detained) (at|by) customs/i, 'החבילה מעוכבת במכס'],
+      [/(released|release) from customs/i, 'החבילה שוחררה מהמכס'],
+      [/customs inspection/i, 'החבילה בבדיקת מכס'],
+      [/shipment accepted by the carrier/i, 'המשלוח התקבל אצל חברת השילוח'],
+      [/package accepted by (the )?carrier/i, 'החבילה התקבלה אצל חברת השילוח'],
+      [/received by (the )?carrier/i, 'החבילה התקבלה אצל חברת השילוח'],
+      [/received by (the )?local delivery (company|carrier)/i, 'החבילה התקבלה אצל חברת השילוח המקומית'],
+      [/handed over to (the )?local (delivery )?(company|carrier)/i, 'החבילה הועברה לחברת השילוח המקומית'],
+      [/arrived (in|at) (the )?destination country/i, 'החבילה הגיעה למדינת היעד'],
+      [/destination country.*arriv/i, 'החבילה הגיעה למדינת היעד'],
+      [/departed from (the )?origin country/i, 'החבילה יצאה מארץ המקור'],
+      [/arrived at (the )?(sorting|distribution) (center|centre)/i, 'החבילה הגיעה למרכז המיון'],
+      [/departed from (the )?(sorting|distribution) (center|centre)/i, 'החבילה יצאה ממרכז המיון'],
+      [/arrived at linehaul office/i, 'החבילה הגיעה למרכז ההפצה הבינלאומי'],
+      [/leaving from departure country/i, 'החבילה יוצאת מארץ המקור'],
+      [/flight.*depart/i, 'הטיסה עם המשלוח יצאה'],
+      [/flight.*arriv/i, 'הטיסה עם המשלוח הגיעה'],
+      [/handed over to airline/i, 'החבילה הועברה לחברת התעופה'],
+      [/ready for (pickup|collection)/i, 'החבילה מוכנה לאיסוף'],
+      [/available for (pickup|collection)/i, 'החבילה זמינה לאיסוף'],
+      [/out for delivery/i, 'החבילה יצאה למסירה'],
+      [/delivery attempt/i, 'בוצע ניסיון מסירה'],
+      [/delivered/i, 'החבילה נמסרה'],
+      [/in transit/i, 'החבילה בדרך']
+    ];
+    for (var i = 0; i < rules.length; i += 1) {
+      if (rules[i][0].test(raw)) return rules[i][1];
+    }
+    return raw;
+  }
+
+  function orderFulfillmentRowClass(order) {
+    var stateValue = order && order.fulfillment && order.fulfillment.state;
+    var stateClass = '';
+    if (stateValue === 'complete') stateClass = 'admin-order-row--connected';
+    else if (stateValue === 'partial') stateClass = 'admin-order-row--partial';
+    else if (stateValue === 'none') stateClass = 'admin-order-row--unconnected';
+    if (!stateClass) return '';
+    return stateClass + ' admin-order-row-id-' + Number(order.id || 0);
+  }
+
+  function updateOrderFulfillmentColor(order, data) {
+    var items = Array.isArray(data && data.items) ? data.items : [];
+    var totalItems = items.length;
+    var linkedItems = items.filter(function (item) { return Boolean(item && item.shipment); }).length;
+    var fulfillmentState = totalItems > 0 && linkedItems >= totalItems ? 'complete' : (linkedItems > 0 ? 'partial' : 'none');
+    order.fulfillment = { state: fulfillmentState, linkedItems: linkedItems, totalItems: totalItems };
+
+    var selector = '.admin-order-row-id-' + Number(order.id || 0);
+    document.querySelectorAll(selector).forEach(function (row) {
+      row.classList.remove('admin-order-row--connected', 'admin-order-row--partial', 'admin-order-row--unconnected');
+      row.classList.add(fulfillmentState === 'complete' ? 'admin-order-row--connected' : (fulfillmentState === 'partial' ? 'admin-order-row--partial' : 'admin-order-row--unconnected'));
+    });
+  }
+
   async function openShipmentManager(order) {
     closeShippingModal();
     var modal = make('div', 'admin-shipping-modal');
@@ -447,11 +535,11 @@
     function eventLine(event) {
       var row = make('div', 'admin-tracking-history__event');
       var main = make('div', 'admin-tracking-history__main');
-      main.appendChild(make('strong', '', text(event.description, text(event.stage, 'עדכון מחברת השילוח'))));
+      main.appendChild(make('strong', '', translateTrackingText(text(event.description, text(event.stage, 'עדכון מחברת השילוח')))));
       var meta = [];
       if (event.location) meta.push(event.location);
       if (event.provider) meta.push(event.provider);
-      if (event.subStatus) meta.push(event.subStatus);
+      if (event.subStatus) meta.push(translateTrackingText(event.subStatus));
       if (meta.length) main.appendChild(make('small', 'admin-table__muted', meta.join(' · ')));
       row.appendChild(main);
       row.appendChild(make('time', 'admin-tracking-history__time', event.time ? dateTime(event.time) : 'ללא זמן'));
@@ -461,6 +549,7 @@
     async function load() {
       try {
         var data = await api('/api/admin/orders/' + encodeURIComponent(order.orderRef) + '/shipments');
+        updateOrderFulfillmentColor(order, data);
         panel.replaceChildren();
 
         var head = make('div', 'admin-shipping-head');
@@ -545,9 +634,9 @@
 
             var details = make('div', 'admin-tracking-details');
             var sourceLabel = text(shipment.trackingSourceLabel, '17TRACK');
-            var providerBox = make('div'); providerBox.appendChild(make('span', '', 'סטטוס ' + sourceLabel)); providerBox.appendChild(make('strong', '', text(shipment.providerStatus, shipment.statusLabel)));
-            if (shipment.subStatus) providerBox.appendChild(make('small', 'admin-table__muted admin-table__mono', shipment.subStatus));
-            var locationBox = make('div'); locationBox.appendChild(make('span', '', 'אירוע אחרון')); locationBox.appendChild(make('strong', '', text(shipment.latestEvent, sourceLabel + ' עדיין לא החזיר אירוע מפורט')));
+            var providerBox = make('div'); providerBox.appendChild(make('span', '', 'סטטוס ' + sourceLabel)); providerBox.appendChild(make('strong', '', translateTrackingText(text(shipment.providerStatus, shipment.statusLabel))));
+            if (shipment.subStatus) providerBox.appendChild(make('small', 'admin-table__muted', translateTrackingText(shipment.subStatus)));
+            var locationBox = make('div'); locationBox.appendChild(make('span', '', 'אירוע אחרון')); locationBox.appendChild(make('strong', '', translateTrackingText(text(shipment.latestEvent, sourceLabel + ' עדיין לא החזיר אירוע מפורט'))));
             var updatedBox = make('div'); updatedBox.appendChild(make('span', '', 'עדכון אחרון')); updatedBox.appendChild(make('strong', '', shipment.latestEventAt ? dateTime(shipment.latestEventAt) : 'ממתין לעדכון'));
             var etaBox = make('div'); etaBox.appendChild(make('span', '', 'הערכת מסירה')); etaBox.appendChild(make('strong', '', shipmentEtaLabel(shipment.estimatedDeliveryFrom, shipment.estimatedDeliveryTo)));
             var syncBox = make('div'); syncBox.appendChild(make('span', '', 'סנכרון')); syncBox.appendChild(make('strong', '', text(shipment.syncStatus, shipment.registeredAt ? 'מחובר ל-17TRACK' : 'ממתין לרישום')));
@@ -556,7 +645,7 @@
             if (Array.isArray(shipment.providerTips) && shipment.providerTips.length) {
               var tips = make('div', 'admin-shipping-note');
               tips.appendChild(make('strong', '', 'הודעת חברת השילוח'));
-              shipment.providerTips.forEach(function (tip) { tips.appendChild(make('div', '', text(tip))); });
+              shipment.providerTips.forEach(function (tip) { tips.appendChild(make('div', '', translateTrackingText(text(tip)))); });
               row.appendChild(tips);
             }
 
@@ -645,6 +734,7 @@
       subtitle: subtitle || '',
       rows: rows || [],
       emptyText: 'אין הזמנות בטווח הזה.',
+      rowClass: orderFulfillmentRowClass,
       columns: [
         { label: 'הזמנה', render: function (row) { return cellPrimary(row.orderRef, '#' + row.id, true); } },
         { label: 'לקוח', render: function (row) { return cellPrimary(row.customerName || row.customerEmail || 'אורח', row.customerEmail || ''); } },
@@ -929,7 +1019,7 @@
     filters.appendChild(renderStatusFilter(status, function (next) { state.ordersStatus = next; state.offsets.orders = 0; renderCurrentPage(); }));
     filters.appendChild(renderRangeFilter(range, rangeOptions, function (next) { state.ranges.orders = next; state.offsets.orders = 0; renderCurrentPage(); }));
     toolbar.appendChild(filters);
-    toolbar.appendChild(make('span', 'admin-toolbar-note', 'סטטוס תשלום לקריאה בלבד · מספרי מעקב מנוהלים מכאן'));
+    toolbar.appendChild(make('span', 'admin-toolbar-note', 'אדום = לא חובר מעקב · צהוב = חובר רק חלק מההזמנה · ירוק = כל המוצרים מחוברים'));
     frag.appendChild(toolbar);
     frag.appendChild(renderKpis([
       { label: 'הזמנות בתצוגה', value: numberFmt(data.count), hint: status === 'all' ? 'כל הסטטוסים' : status, primary: status === 'paid', tone: status === 'paid' ? 'green' : 'amber' },
