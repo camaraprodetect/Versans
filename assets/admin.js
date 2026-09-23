@@ -403,7 +403,7 @@
     var map = {
       invalid_tracking_number: 'מספר המעקב לא תקין.',
       invalid_order_item: 'לא ניתן לזהות את המוצר בהזמנה.',
-      tracking_already_exists: 'מספר המעקב כבר קיים במערכת.',
+      tracking_already_exists: 'מספר המעקב כבר מחובר להזמנה אחרת במערכת.',
       order_not_paid: 'אפשר להוסיף משלוח רק להזמנה ששולמה.',
       '17track_not_configured': 'חסר VERSANS_17TRACK_API_KEY ב-Render.',
       tracking_registration_failed: '17TRACK לא קיבל את מספר המעקב. בדוק את המספר או את קוד חברת השילוח.'
@@ -530,7 +530,7 @@
             remove.addEventListener('click', async function () {
               if (!window.confirm('לנתק את ה-Tracking ID מהמוצר ' + text(item.productName, '') + '?')) return;
               remove.disabled = true;
-              try { await apiAction('/api/admin/shipments/' + shipment.id, 'DELETE'); showToast('ה-Tracking ID נותק מהמוצר'); await load(); }
+              try { await apiAction('/api/admin/orders/' + encodeURIComponent(order.orderRef) + '/shipment-items/' + item.itemIndex, 'DELETE'); showToast('ה-Tracking ID נותק מהמוצר'); await load(); }
               catch (e) { showToast(shippingErrorMessage(e)); remove.disabled = false; }
             });
             actions.append(refresh, remove); top.append(meta, actions); row.appendChild(top);
@@ -591,6 +591,8 @@
                 trackingNumber: tracking.value.trim()
               });
               if (created.warning && created.warning.error === 'tracking_registration_failed') showToast('ה-Tracking ID נשמר למוצר. 17TRACK עדיין לא הצליח לזהות אותו וינסה שוב.');
+              else if (created.reused && created.shared) showToast('ה-Tracking ID כבר היה בהזמנה וחובר גם ל-' + text(item.productName, 'המוצר'));
+              else if (created.reused) showToast('ה-Tracking ID הקיים שויך ל-' + text(item.productName, 'המוצר'));
               else showToast('ה-Tracking ID חובר ל-' + text(item.productName, 'המוצר'));
               await load();
             } catch (e) {

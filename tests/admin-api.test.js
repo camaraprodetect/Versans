@@ -50,7 +50,7 @@ async function runServer(fixture) {
   const port = await freePort();
   const child = spawn(process.execPath, ['server.js'], {
     cwd: path.join(__dirname, '..'),
-    env: { ...process.env, DATABASE_URL: '', VERSANS_DB_PATH: fixture.sqlitePath, PORT: String(port), HOST: '127.0.0.1', NODE_ENV: 'test' },
+    env: { ...process.env, DATABASE_URL: '', VERSANS_DB_PATH: fixture.sqlitePath, VERSANS_17TRACK_API_KEY: '', PORT: String(port), HOST: '127.0.0.1', NODE_ENV: 'test' },
     stdio: ['ignore', 'pipe', 'pipe']
   });
   let stderr = '';
@@ -116,6 +116,102 @@ test('admin sales API counts paid orders only', async () => {
     assert.equal(data.orderCount, 1);
     assert.equal(data.revenueAgorot, 25000);
     assert.equal(data.unitsSold, 2);
+  } finally {
+    if (running) await stopServer(running.child);
+    fs.rmSync(fixture.dir, { recursive: true, force: true });
+  }
+});
+
+test('tracking is attached per product and every product gets its own VerSans order number', async () => {
+  const fixture = await makeAdminFixture();
+  let running;
+  try {
+    const db = createDatabase({ sqlitePath: fixture.sqlitePath, databaseUrl: '' });
+    await db.init();
+    const now = Date.now();
+    const orderId = await db.insertPendingOrder({
+      orderRef: 'VS-THREE-PRODUCTS', userId: null, customerEmail: 'buyer@example.com', customerPhone: '+972500000001',
+      amountAgorot: 30000, currency: 'ILS',
+      itemsJson: JSON.stringify([
+        { id: 'hat-test', name: 'כובע', qty: 1, unitPrice: 100, lineTotal: 100 },
+        { id: 'bracelet-test', name: 'צמיד', qty: 1, unitPrice: 100, lineTotal: 100 },
+        { id: 'necklace-test', name: 'שרשרת', qty: 1, unitPrice: 100, lineTotal: 100 }
+      ]),
+      createdAt: now, updatedAt: now
+    });
+    await db.markOrderPaid(now, orderId);
+    await db.close();
+
+    running = await runServer(fixture);
+    const adminUrl = running.baseUrl + '/api/admin/orders/' + encodeURIComponent('VS-THREE-PRODUCTS') + '/shipments';
+    let response = await fetch(adminUrl, { headers: adminHeaders(fixture.token) });
+    assert.equal(response.status, 200, running.getStderr());
+    let data = await response.json();
+    assert.deepEqual(data.items.map((item) => item.itemOrderRef), [
+      'VS-THREE-PRODUCTS-P01', 'VS-THREE-PRODUCTS-P02', 'VS-THREE-PRODUCTS-P03'
+    ]);
+    assert.ok(data.items.every((item) => item.shipment === null));
+
+    response = await fetch(adminUrl, {
+      method: 'POST',
+      headers: { ...adminHeaders(fixture.token), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ itemIndex: 1, trackingNumber: 'TESTTRACK12345' })
+    });
+    assert.equal(response.status, 201, await response.text().catch(() => ''));
+
+    response = await fetch(adminUrl, { headers: adminHeaders(fixture.token) });
+    data = await response.json();
+    assert.equal(data.items[0].shipment, null);
+    assert.equal(data.items[1].shipment.trackingNumber, 'TESTTRACK12345');
+    assert.equal(data.items[1].shipment.items[0].itemIndex, 1);
+    assert.equal(data.items[2].shipment, null);
+
+    // AliExpress may consolidate two products from the same order into one
+    // parcel. Reusing the same Tracking ID within this order must attach the
+    // existing shipment to the second product instead of returning 409.
+    response = await fetch(adminUrl, {
+      method: 'POST',
+      headers: { ...adminHeaders(fixture.token), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ itemIndex: 2, trackingNumber: 'TESTTRACK12345' })
+    });
+    assert.equal(response.status, 200);
+    let reused = await response.json();
+    assert.equal(reused.reused, true);
+    assert.equal(reused.shared, true);
+
+    response = await fetch(adminUrl, { headers: adminHeaders(fixture.token) });
+    data = await response.json();
+    assert.equal(data.items[1].shipment.trackingNumber, 'TESTTRACK12345');
+    assert.equal(data.items[2].shipment.trackingNumber, 'TESTTRACK12345');
+    assert.deepEqual(data.items[2].shipment.items.map((item) => item.itemIndex), [1, 2]);
+
+    // Unlinking one product from a shared parcel must not delete the parcel for
+    // the other product.
+    response = await fetch(running.baseUrl + '/api/admin/orders/' + encodeURIComponent('VS-THREE-PRODUCTS') + '/shipment-items/2', {
+      method: 'DELETE', headers: adminHeaders(fixture.token)
+    });
+    assert.equal(response.status, 200, await response.text().catch(() => ''));
+
+    response = await fetch(adminUrl, { headers: adminHeaders(fixture.token) });
+    data = await response.json();
+    assert.equal(data.items[1].shipment.trackingNumber, 'TESTTRACK12345');
+    assert.equal(data.items[2].shipment, null);
+
+    response = await fetch(running.baseUrl + '/api/tracking?order=' + encodeURIComponent('VS-THREE-PRODUCTS-P02'));
+    assert.equal(response.status, 200);
+    data = await response.json();
+    assert.equal(data.itemSpecific, true);
+    assert.equal(data.shipments.length, 1);
+    assert.equal(data.shipments[0].productName, 'צמיד');
+    assert.equal(data.shipments[0].itemOrderRef, 'VS-THREE-PRODUCTS-P02');
+    assert.equal(data.shipments[0].trackingNumber, 'TESTTRACK12345');
+
+    response = await fetch(running.baseUrl + '/api/tracking?order=' + encodeURIComponent('VS-THREE-PRODUCTS'));
+    data = await response.json();
+    assert.equal(data.shipments.length, 3);
+    assert.equal(data.shipments[0].productName, 'כובע');
+    assert.equal(data.shipments[1].productName, 'צמיד');
+    assert.equal(data.shipments[2].productName, 'שרשרת');
   } finally {
     if (running) await stopServer(running.child);
     fs.rmSync(fixture.dir, { recursive: true, force: true });

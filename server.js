@@ -1537,12 +1537,75 @@ async function adminApi(req, res, pathname, parsed) {
     const currentShipments = await listOrderShipmentsPayload(order.id);
     const currentForItem = shipmentForOrderItem(currentShipments, itemIndex);
     const duplicateShipment = await database.getShipmentByTracking(trackingNumber);
-    if (duplicateShipment && (!currentForItem || Number(duplicateShipment.id) !== Number(currentForItem.id))) {
+
+    // A tracking number is globally unique, but AliExpress can consolidate more
+    // than one product from the SAME VerSans order into the same parcel. In that
+    // case reuse the existing shipment and attach this product to it instead of
+    // rejecting the number as a duplicate. A tracking number that belongs to a
+    // different customer/order still remains protected and cannot be reused.
+    if (duplicateShipment && Number(duplicateShipment.order_id) !== Number(order.id)) {
       json(res, 409, { ok: false, error: 'tracking_already_exists' });
       return true;
     }
     if (currentForItem && currentForItem.trackingNumber === trackingNumber) {
       json(res, 200, { ok: true, shipment: currentForItem, unchanged: true });
+      return true;
+    }
+
+    if (duplicateShipment && Number(duplicateShipment.order_id) === Number(order.id)) {
+      // If this product was previously connected to another parcel, unlink only
+      // this product from that parcel. Keep the old parcel alive if it still
+      // belongs to other products in the same order.
+      if (currentForItem && Number(currentForItem.id) !== Number(duplicateShipment.id)) {
+        const currentRows = await database.listShipmentItems(currentForItem.id);
+        const remainingRows = currentRows.filter((row) => Number(row.item_index) !== itemIndex);
+        if (remainingRows.length) {
+          await database.setShipmentItems(currentForItem.id, remainingRows.map((row) => ({
+            itemIndex: Number(row.item_index),
+            productId: row.product_id || null,
+            productName: row.product_name || 'מוצר',
+            qty: Number(row.qty || 1)
+          })));
+        } else {
+          const oldShipment = await database.getShipmentById(currentForItem.id);
+          if (oldShipment && is17TrackConfigured()) {
+            try { await stop17Track(oldShipment.tracking_number, oldShipment.carrier_code); } catch (_) {}
+          }
+          await database.deleteShipment(currentForItem.id);
+        }
+      }
+
+      const existingRows = await database.listShipmentItems(duplicateShipment.id);
+      const mergedRows = existingRows.filter((row) => Number(row.item_index) !== itemIndex).map((row) => ({
+        itemIndex: Number(row.item_index),
+        productId: row.product_id || null,
+        productName: row.product_name || 'מוצר',
+        qty: Number(row.qty || 1)
+      }));
+      mergedRows.push({
+        itemIndex,
+        productId: orderItem.id || null,
+        productName: orderItem.name || 'מוצר',
+        qty: Number(orderItem.qty || 1)
+      });
+      await database.setShipmentItems(duplicateShipment.id, mergedRows);
+
+      if (is17TrackConfigured()) {
+        try { await refreshShipmentFrom17Track(duplicateShipment, { realTime: false }); } catch (error) {
+          console.error(`17TRACK shared shipment refresh failed for ${trackingNumber}:`, error && error.message);
+        }
+      }
+      const reusedShipment = await shipmentWithItems(await database.getShipmentById(duplicateShipment.id));
+      json(res, 200, {
+        ok: true,
+        shipment: reusedShipment,
+        itemIndex,
+        itemOrderRef: orderItemRef(order.order_ref, itemIndex),
+        productName: orderItem.name || 'מוצר',
+        reused: true,
+        shared: reusedShipment && Array.isArray(reusedShipment.items) && reusedShipment.items.length > 1,
+        trackingConfigured: is17TrackConfigured()
+      });
       return true;
     }
 
@@ -1622,6 +1685,45 @@ async function adminApi(req, res, pathname, parsed) {
       trackingConfigured: is17TrackConfigured(),
       warning: !is17TrackConfigured() ? { error: '17track_not_configured' } : registrationWarning
     });
+    return true;
+  }
+
+  const shipmentItemDeleteMatch = /^\/api\/admin\/orders\/([^/]+)\/shipment-items\/(\d+)$/.exec(pathname);
+  if (shipmentItemDeleteMatch && req.method === 'DELETE') {
+    if (!sameOriginAllowed(req)) { json(res, 403, { ok: false, error: 'origin_not_allowed' }); return true; }
+    let orderRef;
+    try { orderRef = decodeURIComponent(shipmentItemDeleteMatch[1]); } catch (_) { orderRef = shipmentItemDeleteMatch[1]; }
+    const itemIndex = Number(shipmentItemDeleteMatch[2]);
+    const order = await database.getOrderByRef(orderRef);
+    if (!order) { json(res, 404, { ok: false, error: 'order_not_found' }); return true; }
+    const orderItems = normalizeStoredOrderItems(order.items_json, PRODUCTS);
+    if (!Number.isInteger(itemIndex) || itemIndex < 0 || itemIndex >= orderItems.length) {
+      json(res, 400, { ok: false, error: 'invalid_order_item' });
+      return true;
+    }
+    const shipments = await listOrderShipmentsPayload(order.id);
+    const current = shipmentForOrderItem(shipments, itemIndex);
+    if (!current) { json(res, 404, { ok: false, error: 'shipment_not_found' }); return true; }
+
+    const rows = await database.listShipmentItems(current.id);
+    const remainingRows = rows.filter((row) => Number(row.item_index) !== itemIndex);
+    if (remainingRows.length) {
+      await database.setShipmentItems(current.id, remainingRows.map((row) => ({
+        itemIndex: Number(row.item_index),
+        productId: row.product_id || null,
+        productName: row.product_name || 'מוצר',
+        qty: Number(row.qty || 1)
+      })));
+      json(res, 200, { ok: true, unlinked: true, deletedShipment: false });
+      return true;
+    }
+
+    const stored = await database.getShipmentById(current.id);
+    if (stored && is17TrackConfigured()) {
+      try { await stop17Track(stored.tracking_number, stored.carrier_code); } catch (_) {}
+    }
+    await database.deleteShipment(current.id);
+    json(res, 200, { ok: true, unlinked: true, deletedShipment: true });
     return true;
   }
 
