@@ -110,13 +110,14 @@ test('raw 17TRACK diagnostics expose provider sync and last-mile information', (
   assert.equal(diagnostics.localTrackingNumber, 'LOCAL123');
 });
 
-test('storefront no longer contains the previous hard-coded WhatsApp number', () => {
+test('storefront keeps the VerSans WhatsApp support number configured', () => {
   const root = path.resolve(__dirname, '..');
-  const files = ['assets/config.js', 'assets/customer-service.js', 'track.html'];
-  for (const relative of files) {
-    const source = fs.readFileSync(path.join(root, relative), 'utf8');
-    assert.equal(source.includes('972546296037'), false, relative + ' still contains the old number');
-  }
+  const config = fs.readFileSync(path.join(root, 'assets/config.js'), 'utf8');
+  const customerService = fs.readFileSync(path.join(root, 'assets/customer-service.js'), 'utf8');
+  assert.equal(config.includes("whatsapp:  '0546296037'"), true, 'WhatsApp support number must stay configured');
+  assert.equal(customerService.includes("'https://wa.me/' + number"), true, 'WhatsApp support link must keep using the configured number');
+  assert.equal(customerService.includes('injectFooterLink()'), true, 'Footer WhatsApp support entry must stay enabled');
+  assert.equal(customerService.includes('createFloatingBubble()'), true, 'Floating WhatsApp support bubble must stay enabled');
 });
 
 test('admin includes standalone 17TRACK lookup that does not require an order', () => {

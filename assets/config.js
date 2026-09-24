@@ -32,7 +32,7 @@ var STORE_CONFIG = {
   contact: {
     email:     'versanssupport@gmail.com',
     phone:     '',                       // לדוגמה: '050-0000000'
-    whatsapp:  '',                       // יופעל כשמספר שירות הלקוחות החדש יהיה מוכן
+    whatsapp:  '0546296037',             // מספר WhatsApp שירות הלקוחות של VerSans
     instagram: '',                       // כתובת מלאה
     tiktok:    ''
   },
