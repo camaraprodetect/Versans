@@ -63,6 +63,9 @@ const WELCOME_COUPON_PERCENT = 3;
 const WELCOME_COUPON_TTL_MS = 14 * 24 * 60 * 60 * 1000;
 const PASSWORD_RESET_TTL_MS = 30 * 60 * 1000;
 const PASSWORD_RESET_COOKIE = 'versans_password_reset';
+const ORDER_NOTIFICATION_CLAIM_TTL_MS = 30 * 60 * 1000;
+const ORDER_NOTIFICATION_WEBHOOK_RETRY_MS = 5 * 60 * 1000;
+const ORDER_NOTIFICATION_WEBHOOK_TIMEOUT_MS = 10 * 1000;
 const PRODUCT_BY_URL_SLUG = new Map(PRODUCTS.map((product) => [String(product.urlSlug || ''), product]));
 
 const database = createDatabase({ root: ROOT, sqlitePath: DB_PATH });
@@ -884,6 +887,41 @@ async function shippingBotAccessAllowed(req) {
   return admin ? { ok: true, mode: 'admin_session', admin } : { ok: false, mode: null };
 }
 
+function orderNotificationsBotKeyConfigured() {
+  return Boolean(String(process.env.VERSANS_ORDER_NOTIFICATIONS_BOT_KEY || '').trim());
+}
+
+function requestOrderNotificationsBotKey(req) {
+  const auth = String(req.headers.authorization || '').trim();
+  const bearer = /^Bearer\s+(.+)$/i.exec(auth);
+  if (bearer) return bearer[1].trim();
+  return String(req.headers['x-versans-order-notifications-bot-key'] || '').trim();
+}
+
+function orderNotificationsBotKeyAllowed(req) {
+  const expected = String(process.env.VERSANS_ORDER_NOTIFICATIONS_BOT_KEY || '').trim();
+  if (!expected) return false;
+  return secureTextEqual(requestOrderNotificationsBotKey(req), expected);
+}
+
+async function orderNotificationsBotAccessAllowed(req) {
+  if (orderNotificationsBotKeyAllowed(req)) return { ok: true, mode: 'bot_key' };
+  const admin = await getAdminUser(req);
+  return admin ? { ok: true, mode: 'admin_session', admin } : { ok: false, mode: null };
+}
+
+function newOrderWebhookConfig() {
+  return {
+    url: String(process.env.VERSANS_NEW_ORDER_WEBHOOK_URL || '').trim(),
+    secret: String(process.env.VERSANS_NEW_ORDER_WEBHOOK_SECRET || '').trim()
+  };
+}
+
+function isNewOrderWebhookConfigured() {
+  const cfg = newOrderWebhookConfig();
+  return Boolean(cfg.url && cfg.secret);
+}
+
 async function presenceApi(req, res, pathname) {
   if (pathname !== '/api/presence') return false;
   if (req.method !== 'POST') {
@@ -1669,6 +1707,105 @@ async function syncActiveShipmentTracking() {
   return { processed, failed };
 }
 
+function orderNotificationItems(payload) {
+  return (Array.isArray(payload && payload.items) ? payload.items : []).map((item) => ({
+    productId: String(item && item.productId || ''),
+    productName: String(item && item.productName || 'מוצר'),
+    variant: String(item && item.selectionsText || '').trim(),
+    quantity: Math.max(1, Number(item && item.quantity || 1))
+  }));
+}
+
+function newOrderCustomerMessage({ customerName, orderRef, items, trackingIds }) {
+  const lines = [];
+  lines.push(`היי ${customerName || 'לקוח/ה'} 👋`);
+  lines.push('ההזמנה שלך ב-VerSans התקבלה בהצלחה ✅');
+  lines.push('');
+  lines.push(`מספר הזמנה: ${orderRef}`);
+  lines.push('');
+  lines.push('המוצרים בהזמנה:');
+  for (const item of items) {
+    const variant = item.variant ? ` - ${item.variant}` : '';
+    const qty = Number(item.quantity || 1) > 1 ? ` × ${Number(item.quantity)}` : '';
+    lines.push(`• ${item.productName}${variant}${qty}`);
+  }
+  if (trackingIds && trackingIds.length) {
+    lines.push('');
+    lines.push(trackingIds.length === 1 ? `מספר מעקב: ${trackingIds[0]}` : 'מספרי מעקב:');
+    if (trackingIds.length > 1) trackingIds.forEach((trackingId) => lines.push(`• ${trackingId}`));
+  }
+  lines.push('');
+  lines.push('אנחנו נעדכן אותך בהמשך לגבי המשלוח 📦');
+  lines.push('');
+  lines.push('תודה שבחרת VerSans');
+  return lines.join('\n');
+}
+
+async function postNewOrderWebhook(orderRef) {
+  const cfg = newOrderWebhookConfig();
+  if (!cfg.url || !cfg.secret) return { ok: false, skipped: true, reason: 'new_order_webhook_not_configured' };
+  const now = Date.now();
+  let status = null;
+  let errorText = null;
+  let accepted = false;
+  try {
+    const response = await fetch(cfg.url, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${cfg.secret}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ event: 'VERSANS_NEW_ORDER_READY', orderRef }),
+      redirect: 'follow',
+      signal: AbortSignal.timeout(ORDER_NOTIFICATION_WEBHOOK_TIMEOUT_MS)
+    });
+    status = Number(response.status);
+    accepted = status === 200;
+    if (!accepted) {
+      const body = await response.text().catch(() => '');
+      errorText = `webhook_http_${status}${body ? `: ${body.slice(0, 500)}` : ''}`;
+    }
+  } catch (error) {
+    errorText = String(error && error.message || 'webhook_request_failed').slice(0, 1200);
+  }
+  try { await database.recordOrderNotificationWebhookAttempt(orderRef, status, accepted, errorText, now); }
+  catch (dbError) { console.error(`New-order webhook attempt state save failed for ${orderRef}:`, dbError); }
+  if (!accepted) throw new Error(errorText || 'new_order_webhook_not_accepted');
+  return { ok: true, status };
+}
+
+async function queueNewOrderNotificationAfterSheet(order) {
+  if (!order || String(order.status || '') !== 'paid') return { ok: false, skipped: true, reason: 'order_not_paid' };
+  const orderRef = String(order.order_ref || '').trim();
+  if (!orderRef || /^VS-DEMO-/i.test(orderRef)) return { ok: false, skipped: true, reason: 'demo_or_missing_order_ref' };
+  if (!order.id) return { ok: false, skipped: true, reason: 'missing_order_id' };
+  const payload = buildPaidOrderPayload(order);
+  const recipient = normalizePhone(payload.customerPhone || (payload.customer && payload.customer.phone) || order.customer_phone);
+  await database.ensureOrderNotification(order.id, orderRef, recipient || null, Date.now());
+  setImmediate(() => {
+    postNewOrderWebhook(orderRef).catch((error) => console.error(`New-order Grok webhook failed for ${orderRef}:`, error && error.message ? error.message : error));
+  });
+  return { ok: true, orderRef };
+}
+
+async function retryPendingNewOrderWebhooks() {
+  if (!isNewOrderWebhookConfigured()) return { processed: 0, skipped: true };
+  const now = Date.now();
+  const rows = await database.listOrderNotificationsForWebhook(
+    now,
+    now - ORDER_NOTIFICATION_CLAIM_TTL_MS,
+    now - ORDER_NOTIFICATION_WEBHOOK_RETRY_MS,
+    25
+  );
+  let processed = 0;
+  let failed = 0;
+  for (const row of rows) {
+    try { await postNewOrderWebhook(String(row.order_ref || '')); processed += 1; }
+    catch (error) { failed += 1; console.error(`New-order webhook retry failed for ${row.order_ref}:`, error && error.message ? error.message : error); }
+  }
+  return { processed, failed };
+}
+
 async function publicTrackingApi(req, res, pathname, parsed) {
   if (pathname !== '/api/tracking') return false;
   if (req.method !== 'GET') { json(res, 405, { ok: false, error: 'method_not_allowed' }); return true; }
@@ -1761,7 +1898,10 @@ async function trackingWebhookApi(req, res, pathname) {
 async function adminApi(req, res, pathname, parsed) {
   if (!pathname.startsWith('/api/admin/')) return false;
   const shippingBotEndpoint = pathname === '/api/admin/bot/shipping/ready-pickups' || pathname === '/api/admin/bot/shipping/mark-sent';
-  const botKeyAccess = shippingBotEndpoint && shippingBotKeyAllowed(req);
+  const orderNotificationsBotEndpoint = pathname === '/api/admin/bot/orders/new-order' || pathname === '/api/admin/bot/orders/mark-sent';
+  const botKeyAccess = shippingBotEndpoint
+    ? shippingBotKeyAllowed(req)
+    : (orderNotificationsBotEndpoint ? orderNotificationsBotKeyAllowed(req) : false);
   const admin = botKeyAccess ? null : await getAdminUser(req);
   if (!admin && !botKeyAccess) {
     json(res, 403, { ok: false, error: 'admin_required' });
@@ -2046,6 +2186,99 @@ async function adminApi(req, res, pathname, parsed) {
     if (!update) { json(res, 404, { ok: false, error: 'tracking_info_not_found' }); return true; }
     const fresh = await shipmentWithItems(await database.getShipmentById(shipment.id));
     json(res, 200, { ok: true, shipment: fresh });
+    return true;
+  }
+
+  if (pathname === '/api/admin/bot/orders/new-order') {
+    if (req.method !== 'GET') { json(res, 405, { ok: false, error: 'method_not_allowed' }); return true; }
+    const botAccess = await orderNotificationsBotAccessAllowed(req);
+    if (!botAccess.ok) {
+      json(res, 401, { ok: false, error: orderNotificationsBotKeyConfigured() ? 'bot_auth_required' : 'admin_auth_required' });
+      return true;
+    }
+    const orderRef = String(parsed.searchParams.get('orderRef') || '').trim().slice(0, 180);
+    if (!orderRef) { json(res, 400, { ok: false, error: 'missing_order_ref' }); return true; }
+    const order = await database.getOrderByRef(orderRef);
+    if (!order || String(order.status || '') !== 'paid') { json(res, 404, { ok: false, error: 'paid_order_not_found' }); return true; }
+    if (/^VS-DEMO-/i.test(orderRef)) { json(res, 400, { ok: false, error: 'demo_order_not_sendable' }); return true; }
+    let notification = await database.getOrderNotification(orderRef);
+    if (!notification) {
+      json(res, 409, { ok: false, error: 'notification_not_queued', orderRef, safeToSend: false });
+      return true;
+    }
+
+    const payload = buildPaidOrderPayload(order);
+    const customerName = String(payload.customer && (payload.customer.fullName || payload.customer.firstName) || payload.customerEmail || 'לקוח/ה').trim();
+    const phone = normalizePhone(payload.customerPhone || (payload.customer && payload.customer.phone) || order.customer_phone);
+    const digits = whatsappDigits(phone);
+    const items = orderNotificationItems(payload);
+    const shipments = await database.listShipmentsForOrder(order.id);
+    const trackingIds = [...new Set((shipments || []).map((shipment) => String(shipment.tracking_number || '').trim()).filter(Boolean))];
+    const message = newOrderCustomerMessage({ customerName, orderRef, items, trackingIds });
+    const notificationId = `NEW_ORDER:${orderRef}`;
+
+    if (String(notification.state || '') === 'sent') {
+      json(res, 200, { ok: true, notificationId, orderRef, customerName, whatsappNumber: digits, items, trackingIds, message, whatsappWebUrl: null, safeToSend: false, reason: 'already_sent', sentAt: notification.sent_at == null ? null : Number(notification.sent_at) });
+      return true;
+    }
+    if (!digits) {
+      json(res, 200, { ok: true, notificationId, orderRef, customerName, whatsappNumber: null, items, trackingIds, message, whatsappWebUrl: null, safeToSend: false, reason: 'missing_whatsapp_number' });
+      return true;
+    }
+    if (!items.length) {
+      json(res, 200, { ok: true, notificationId, orderRef, customerName, whatsappNumber: digits, items, trackingIds, message, whatsappWebUrl: null, safeToSend: false, reason: 'missing_order_items' });
+      return true;
+    }
+
+    const now = Date.now();
+    const claimed = await database.claimOrderNotification(orderRef, phone || null, now, now - ORDER_NOTIFICATION_CLAIM_TTL_MS);
+    notification = await database.getOrderNotification(orderRef) || notification;
+    if (!claimed) {
+      const reason = String(notification.state || '') === 'sent' ? 'already_sent' : 'already_claimed';
+      json(res, 200, { ok: true, notificationId, orderRef, customerName, whatsappNumber: digits, items, trackingIds, message, whatsappWebUrl: null, safeToSend: false, reason });
+      return true;
+    }
+
+    json(res, 200, {
+      ok: true,
+      notificationId,
+      orderRef,
+      customerName,
+      whatsappNumber: digits,
+      items,
+      trackingIds,
+      message,
+      whatsappWebUrl: `https://web.whatsapp.com/send?phone=${digits}&text=${encodeURIComponent(message)}`,
+      safeToSend: true,
+      claimedAt: now
+    });
+    return true;
+  }
+
+  if (pathname === '/api/admin/bot/orders/mark-sent') {
+    if (req.method !== 'POST') { json(res, 405, { ok: false, error: 'method_not_allowed' }); return true; }
+    const botAccess = await orderNotificationsBotAccessAllowed(req);
+    if (!botAccess.ok) {
+      json(res, 401, { ok: false, error: orderNotificationsBotKeyConfigured() ? 'bot_auth_required' : 'admin_auth_required' });
+      return true;
+    }
+    if (botAccess.mode !== 'bot_key' && !sameOriginAllowed(req)) { json(res, 403, { ok: false, error: 'origin_not_allowed' }); return true; }
+    const body = await readJsonBody(req, 256 * 1024);
+    let orderRef = String(body && body.orderRef || '').trim().slice(0, 180);
+    const notificationId = String(body && body.notificationId || '').trim();
+    if (!orderRef && notificationId.startsWith('NEW_ORDER:')) orderRef = notificationId.slice('NEW_ORDER:'.length);
+    if (!orderRef) { json(res, 400, { ok: false, error: 'missing_order_ref' }); return true; }
+    const notification = await database.getOrderNotification(orderRef);
+    if (!notification) { json(res, 404, { ok: false, error: 'notification_not_found', orderRef }); return true; }
+    if (String(notification.state || '') === 'sent') {
+      json(res, 200, { ok: true, orderRef, notificationId: `NEW_ORDER:${orderRef}`, alreadySent: true, sentAt: notification.sent_at == null ? null : Number(notification.sent_at) });
+      return true;
+    }
+    const order = await database.getOrderByRef(orderRef);
+    if (!order || String(order.status || '') !== 'paid') { json(res, 409, { ok: false, error: 'paid_order_not_found', orderRef }); return true; }
+    const now = Date.now();
+    await database.markOrderNotificationSent(orderRef, String(body && body.messageId || 'grok-whatsapp-web'), now);
+    json(res, 200, { ok: true, orderRef, notificationId: `NEW_ORDER:${orderRef}`, sentAt: now });
     return true;
   }
 
@@ -3337,10 +3570,16 @@ const server = http.createServer(async (req, res) => {
               paid_at: order.paid_at || now,
               updated_at: now
             };
+            let sheetSynced = false;
             try {
               await sendPaidOrderToGoogleSheet(paidOrder);
+              sheetSynced = true;
             } catch (sheetErr) {
               console.error(`Google order sync failed for ${order.order_ref}:`, sheetErr);
+            }
+            if (sheetSynced) {
+              try { await queueNewOrderNotificationAfterSheet(paidOrder); }
+              catch (notifyErr) { console.error(`New-order notification queue failed for ${order.order_ref}:`, notifyErr && notifyErr.message ? notifyErr.message : notifyErr); }
             }
             try {
               await sendOrderConfirmationForOrder(paidOrder);
@@ -3412,6 +3651,14 @@ setInterval(async () => {
   try { await syncActiveShipmentTracking(); } catch (err) { console.error('Active shipment tracking sync failed:', err); }
 }, 30 * 60 * 1000).unref();
 
+// New-order WhatsApp is event-driven: the paid-order flow posts the webhook
+// immediately after a successful Google Sheet write. This lightweight DB-only
+// retry loop exists solely to recover a failed webhook delivery or a crashed bot
+// run; it never polls Google Sheets and never sends WhatsApp itself.
+setInterval(async () => {
+  try { await retryPendingNewOrderWebhooks(); } catch (err) { console.error('New-order webhook retry failed:', err); }
+}, ORDER_NOTIFICATION_WEBHOOK_RETRY_MS).unref();
+
 async function purgeNonAdminUsersOnce() {
   const alreadyDone = await database.getSchemaMeta(USER_PURGE_META_KEY);
   if (alreadyDone) return;
@@ -3444,6 +3691,7 @@ async function start() {
       syncMarketingCatalog().catch((err) => console.error('Marketing catalog sync failed:', err));
       syncPendingTrackingRegistrations().catch((err) => console.error('Pending 17TRACK registration sync failed:', err));
       syncActiveShipmentTracking().catch((err) => console.error('Active shipment tracking sync failed:', err));
+      retryPendingNewOrderWebhooks().catch((err) => console.error('New-order webhook retry failed:', err));
     }, 1500);
     if (emailStartupTimer && typeof emailStartupTimer.unref === 'function') emailStartupTimer.unref();
   });
