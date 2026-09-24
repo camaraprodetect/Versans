@@ -19092,8 +19092,7 @@ var PRODUCTS = [
       "min": 18,
       "max": 30
     }
-  }
-,
+  },
   {
     "id": "photo-projection-necklace-open-heart-210",
     "slug": "product-210",
@@ -19222,8 +19221,7 @@ var PRODUCTS = [
       "min": 18,
       "max": 30
     }
-  }
-,
+  },
   {
     "id": "photo-projection-necklace-decorated-heart-211",
     "slug": "product-211",
@@ -19352,8 +19350,7 @@ var PRODUCTS = [
       "min": 18,
       "max": 30
     }
-  }
-,
+  },
   {
     "id": "photo-projection-necklace-crystal-heart-212",
     "slug": "product-212",
@@ -19611,8 +19608,7 @@ var PRODUCTS = [
       "min": 18,
       "max": 30
     }
-  }
-,
+  },
   {
     "id": "photo-projection-necklace-double-heart-214",
     "slug": "product-214",
@@ -19741,8 +19737,7 @@ var PRODUCTS = [
       "min": 18,
       "max": 30
     }
-  }
-,
+  },
   {
     "id": "photo-projection-necklace-elegant-heart-215",
     "slug": "product-215",
@@ -19871,8 +19866,7 @@ var PRODUCTS = [
       "min": 18,
       "max": 30
     }
-  }
-,
+  },
   {
     "id": "photo-projection-necklace-floral-heart-216",
     "slug": "product-216",
@@ -20003,221 +19997,221 @@ var PRODUCTS = [
     }
   },
   {
-  "id": "royal-crystal-bracelet-silver-217",
-  "slug": "product-217",
-  "urlSlug": "royal-crystal-bracelet-silver",
-  "sku": "VS-BR-217",
-  "category": "bracelets",
-  "categories": [
-    "bracelets"
-  ],
-  "badge": null,
-  "cardMode": "view",
-  "hideMessageCard": true,
-  "cardImage": "images/products/product-217/product-217-1.png",
-  "hoverImage": "images/products/product-217/product-217-2.png",
-  "images": [
-    "images/products/product-217/product-217-1.png",
-    "images/products/product-217/product-217-2.png",
-    "images/products/product-217/product-217-3.png",
-    "images/products/product-217/product-217-4.png",
-    "images/products/product-217/product-217-5.png",
-    "images/products/product-217/product-217-6.png",
-    "images/products/product-217/product-217-7.png",
-    "images/products/product-217/product-217-8.png"
-  ],
-  "showAllGalleryThumbs": true,
-  "price": 269.9,
-  "compareAt": 299.9,
-  "title": {
-    "he": "צמיד קריסטל רויאל - צבע כסף",
-    "en": "Royal Crystal Bracelet - Silver"
-  },
-  "subtitle": {
-    "he": "Premium Stainless Steel · משובץ זירקון לבן · לבחירה בצבע כסף או זהב",
-    "en": "Premium Stainless Steel · White zircon · choose silver or gold"
-  },
-  "colorHeading": {
-    "he": "בחרו צבע",
-    "en": "Choose a color"
-  },
-  "colorRequiredText": {
-    "he": "נא לבחור צבע",
-    "en": "Please choose a color"
-  },
-  "colorDisplay": "color-row",
-  "colors": [
-    {
-      "id": "silver",
-      "label": {
-        "he": "כסף",
-        "en": "Silver"
-      },
-      "swatch": "linear-gradient(135deg,#fbfbfb 0%,#bfc5cc 48%,#f7f8fa 72%,#9da4ac 100%)",
-      "image": "images/products/product-217/product-217-1.png"
-    },
-    {
-      "id": "gold",
-      "label": {
-        "he": "זהב",
-        "en": "Gold"
-      },
-      "swatch": "linear-gradient(135deg,#fff0a8 0%,#d5a233 48%,#ffe28a 72%,#b67d18 100%)",
-      "image": "images/products/product-217/product-217-5.png"
-    }
-  ],
-  "defaultColorId": "silver",
-  "cardTitle": {
-    "he": "צמיד קריסטל רויאל - צבע כסף",
-    "en": "Royal Crystal Bracelet - Silver"
-  },
-  "cardMessage": {
-    "he": "Premium Stainless Steel, משובץ זירקון לבן בשילוב חיתוכים עגולים, אובליים ומלבניים. לבחירה בכסף או זהב.",
-    "en": "Premium Stainless Steel set with white zircon in mixed round, oval and rectangular cuts. Available in silver or gold."
-  },
-  "signature": {
-    "he": "",
-    "en": ""
-  },
-  "details": {
-    "he": [
-      "חומר: Premium Stainless Steel",
-      "אבנים: זירקון לבן בחיתוכים עגולים, אובליים ומלבניים",
-      "צבעים לבחירה: כסף או זהב",
-      "אורך: כ-15 ס״מ + כ-5 ס״מ שרשרת הארכה",
-      "משקל: כ-13.3 גרם",
-      "מידות האבנים: כ-7.1–8.5 מ״מ",
-      "סוגר לובסטר עם שרשרת הארכה",
-      "הגלריה מציגה את שתי גרסאות הצבע"
+    "id": "royal-crystal-bracelet-silver-217",
+    "slug": "product-217",
+    "urlSlug": "royal-crystal-bracelet-silver",
+    "sku": "VS-BR-217",
+    "category": "bracelets",
+    "categories": [
+      "bracelets"
     ],
-    "en": [
-      "Material: Premium Stainless Steel",
-      "Stones: White zircon in round, oval and rectangular cuts",
-      "Available colors: Silver or Gold",
-      "Length: approx. 15 cm + 5 cm extension chain",
-      "Weight: approx. 13.3 g",
-      "Stone sizes: approx. 7.1–8.5 mm",
-      "Lobster clasp with extension chain",
-      "Gallery shows both color versions"
-    ]
+    "badge": null,
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-217/product-217-1.png",
+    "hoverImage": "images/products/product-217/product-217-2.png",
+    "images": [
+      "images/products/product-217/product-217-1.png",
+      "images/products/product-217/product-217-2.png",
+      "images/products/product-217/product-217-3.png",
+      "images/products/product-217/product-217-4.png",
+      "images/products/product-217/product-217-5.png",
+      "images/products/product-217/product-217-6.png",
+      "images/products/product-217/product-217-7.png",
+      "images/products/product-217/product-217-8.png"
+    ],
+    "showAllGalleryThumbs": true,
+    "price": 269.9,
+    "compareAt": 299.9,
+    "title": {
+      "he": "צמיד קריסטל רויאל - צבע כסף",
+      "en": "Royal Crystal Bracelet - Silver"
+    },
+    "subtitle": {
+      "he": "Premium Stainless Steel · משובץ זירקון לבן · לבחירה בצבע כסף או זהב",
+      "en": "Premium Stainless Steel · White zircon · choose silver or gold"
+    },
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose a color"
+    },
+    "colorRequiredText": {
+      "he": "נא לבחור צבע",
+      "en": "Please choose a color"
+    },
+    "colorDisplay": "color-row",
+    "colors": [
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "swatch": "linear-gradient(135deg,#fbfbfb 0%,#bfc5cc 48%,#f7f8fa 72%,#9da4ac 100%)",
+        "image": "images/products/product-217/product-217-1.png"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "swatch": "linear-gradient(135deg,#fff0a8 0%,#d5a233 48%,#ffe28a 72%,#b67d18 100%)",
+        "image": "images/products/product-217/product-217-5.png"
+      }
+    ],
+    "defaultColorId": "silver",
+    "cardTitle": {
+      "he": "צמיד קריסטל רויאל - צבע כסף",
+      "en": "Royal Crystal Bracelet - Silver"
+    },
+    "cardMessage": {
+      "he": "Premium Stainless Steel, משובץ זירקון לבן בשילוב חיתוכים עגולים, אובליים ומלבניים. לבחירה בכסף או זהב.",
+      "en": "Premium Stainless Steel set with white zircon in mixed round, oval and rectangular cuts. Available in silver or gold."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "חומר: Premium Stainless Steel",
+        "אבנים: זירקון לבן בחיתוכים עגולים, אובליים ומלבניים",
+        "צבעים לבחירה: כסף או זהב",
+        "אורך: כ-15 ס״מ + כ-5 ס״מ שרשרת הארכה",
+        "משקל: כ-13.3 גרם",
+        "מידות האבנים: כ-7.1–8.5 מ״מ",
+        "סוגר לובסטר עם שרשרת הארכה",
+        "הגלריה מציגה את שתי גרסאות הצבע"
+      ],
+      "en": [
+        "Material: Premium Stainless Steel",
+        "Stones: White zircon in round, oval and rectangular cuts",
+        "Available colors: Silver or Gold",
+        "Length: approx. 15 cm + 5 cm extension chain",
+        "Weight: approx. 13.3 g",
+        "Stone sizes: approx. 7.1–8.5 mm",
+        "Lobster clasp with extension chain",
+        "Gallery shows both color versions"
+      ]
+    },
+    "afterText": {
+      "he": "בחרו את הצבע הרצוי. בעמוד המוצר תוכלו לראות את כל 8 התמונות של גרסאות הכסף והזהב.",
+      "en": "Choose your preferred color. The product page includes all 8 images of the silver and gold versions."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
   },
-  "afterText": {
-    "he": "בחרו את הצבע הרצוי. בעמוד המוצר תוכלו לראות את כל 8 התמונות של גרסאות הכסף והזהב.",
-    "en": "Choose your preferred color. The product page includes all 8 images of the silver and gold versions."
-  },
-  "deliveryBusinessDays": {
-    "min": 9,
-    "max": 25
-  }
-},
   {
-  "id": "royal-crystal-bracelet-gold-218",
-  "slug": "product-218",
-  "urlSlug": "royal-crystal-bracelet-gold",
-  "sku": "VS-BR-218",
-  "category": "bracelets",
-  "categories": [
-    "bracelets"
-  ],
-  "badge": null,
-  "cardMode": "view",
-  "hideMessageCard": true,
-  "cardImage": "images/products/product-218/product-218-1.png",
-  "hoverImage": "images/products/product-218/product-218-2.png",
-  "images": [
-    "images/products/product-218/product-218-1.png",
-    "images/products/product-218/product-218-2.png",
-    "images/products/product-218/product-218-3.png",
-    "images/products/product-218/product-218-4.png",
-    "images/products/product-218/product-218-5.png",
-    "images/products/product-218/product-218-6.png",
-    "images/products/product-218/product-218-7.png",
-    "images/products/product-218/product-218-8.png"
-  ],
-  "showAllGalleryThumbs": true,
-  "price": 269.9,
-  "compareAt": 299.9,
-  "title": {
-    "he": "צמיד קריסטל רויאל - צבע זהב",
-    "en": "Royal Crystal Bracelet - Gold"
-  },
-  "subtitle": {
-    "he": "Premium Stainless Steel · משובץ זירקון לבן · לבחירה בצבע כסף או זהב",
-    "en": "Premium Stainless Steel · White zircon · choose silver or gold"
-  },
-  "colorHeading": {
-    "he": "בחרו צבע",
-    "en": "Choose a color"
-  },
-  "colorRequiredText": {
-    "he": "נא לבחור צבע",
-    "en": "Please choose a color"
-  },
-  "colorDisplay": "color-row",
-  "colors": [
-    {
-      "id": "silver",
-      "label": {
-        "he": "כסף",
-        "en": "Silver"
-      },
-      "swatch": "linear-gradient(135deg,#fbfbfb 0%,#bfc5cc 48%,#f7f8fa 72%,#9da4ac 100%)",
-      "image": "images/products/product-218/product-218-5.png"
-    },
-    {
-      "id": "gold",
-      "label": {
-        "he": "זהב",
-        "en": "Gold"
-      },
-      "swatch": "linear-gradient(135deg,#fff0a8 0%,#d5a233 48%,#ffe28a 72%,#b67d18 100%)",
-      "image": "images/products/product-218/product-218-1.png"
-    }
-  ],
-  "defaultColorId": "gold",
-  "cardTitle": {
-    "he": "צמיד קריסטל רויאל - צבע זהב",
-    "en": "Royal Crystal Bracelet - Gold"
-  },
-  "cardMessage": {
-    "he": "Premium Stainless Steel, משובץ זירקון לבן בשילוב חיתוכים עגולים, אובליים ומלבניים. לבחירה בכסף או זהב.",
-    "en": "Premium Stainless Steel set with white zircon in mixed round, oval and rectangular cuts. Available in silver or gold."
-  },
-  "signature": {
-    "he": "",
-    "en": ""
-  },
-  "details": {
-    "he": [
-      "חומר: Premium Stainless Steel",
-      "אבנים: זירקון לבן בחיתוכים עגולים, אובליים ומלבניים",
-      "צבעים לבחירה: כסף או זהב",
-      "אורך: כ-15 ס״מ + כ-5 ס״מ שרשרת הארכה",
-      "משקל: כ-13.3 גרם",
-      "מידות האבנים: כ-7.1–8.5 מ״מ",
-      "סוגר לובסטר עם שרשרת הארכה",
-      "הגלריה מציגה את שתי גרסאות הצבע"
+    "id": "royal-crystal-bracelet-gold-218",
+    "slug": "product-218",
+    "urlSlug": "royal-crystal-bracelet-gold",
+    "sku": "VS-BR-218",
+    "category": "bracelets",
+    "categories": [
+      "bracelets"
     ],
-    "en": [
-      "Material: Premium Stainless Steel",
-      "Stones: White zircon in round, oval and rectangular cuts",
-      "Available colors: Silver or Gold",
-      "Length: approx. 15 cm + 5 cm extension chain",
-      "Weight: approx. 13.3 g",
-      "Stone sizes: approx. 7.1–8.5 mm",
-      "Lobster clasp with extension chain",
-      "Gallery shows both color versions"
-    ]
+    "badge": null,
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-218/product-218-1.png",
+    "hoverImage": "images/products/product-218/product-218-2.png",
+    "images": [
+      "images/products/product-218/product-218-1.png",
+      "images/products/product-218/product-218-2.png",
+      "images/products/product-218/product-218-3.png",
+      "images/products/product-218/product-218-4.png",
+      "images/products/product-218/product-218-5.png",
+      "images/products/product-218/product-218-6.png",
+      "images/products/product-218/product-218-7.png",
+      "images/products/product-218/product-218-8.png"
+    ],
+    "showAllGalleryThumbs": true,
+    "price": 269.9,
+    "compareAt": 299.9,
+    "title": {
+      "he": "צמיד קריסטל רויאל - צבע זהב",
+      "en": "Royal Crystal Bracelet - Gold"
+    },
+    "subtitle": {
+      "he": "Premium Stainless Steel · משובץ זירקון לבן · לבחירה בצבע כסף או זהב",
+      "en": "Premium Stainless Steel · White zircon · choose silver or gold"
+    },
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose a color"
+    },
+    "colorRequiredText": {
+      "he": "נא לבחור צבע",
+      "en": "Please choose a color"
+    },
+    "colorDisplay": "color-row",
+    "colors": [
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "swatch": "linear-gradient(135deg,#fbfbfb 0%,#bfc5cc 48%,#f7f8fa 72%,#9da4ac 100%)",
+        "image": "images/products/product-218/product-218-5.png"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "swatch": "linear-gradient(135deg,#fff0a8 0%,#d5a233 48%,#ffe28a 72%,#b67d18 100%)",
+        "image": "images/products/product-218/product-218-1.png"
+      }
+    ],
+    "defaultColorId": "gold",
+    "cardTitle": {
+      "he": "צמיד קריסטל רויאל - צבע זהב",
+      "en": "Royal Crystal Bracelet - Gold"
+    },
+    "cardMessage": {
+      "he": "Premium Stainless Steel, משובץ זירקון לבן בשילוב חיתוכים עגולים, אובליים ומלבניים. לבחירה בכסף או זהב.",
+      "en": "Premium Stainless Steel set with white zircon in mixed round, oval and rectangular cuts. Available in silver or gold."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "חומר: Premium Stainless Steel",
+        "אבנים: זירקון לבן בחיתוכים עגולים, אובליים ומלבניים",
+        "צבעים לבחירה: כסף או זהב",
+        "אורך: כ-15 ס״מ + כ-5 ס״מ שרשרת הארכה",
+        "משקל: כ-13.3 גרם",
+        "מידות האבנים: כ-7.1–8.5 מ״מ",
+        "סוגר לובסטר עם שרשרת הארכה",
+        "הגלריה מציגה את שתי גרסאות הצבע"
+      ],
+      "en": [
+        "Material: Premium Stainless Steel",
+        "Stones: White zircon in round, oval and rectangular cuts",
+        "Available colors: Silver or Gold",
+        "Length: approx. 15 cm + 5 cm extension chain",
+        "Weight: approx. 13.3 g",
+        "Stone sizes: approx. 7.1–8.5 mm",
+        "Lobster clasp with extension chain",
+        "Gallery shows both color versions"
+      ]
+    },
+    "afterText": {
+      "he": "בחרו את הצבע הרצוי. בעמוד המוצר תוכלו לראות את כל 8 התמונות של גרסאות הכסף והזהב.",
+      "en": "Choose your preferred color. The product page includes all 8 images of the silver and gold versions."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
   },
-  "afterText": {
-    "he": "בחרו את הצבע הרצוי. בעמוד המוצר תוכלו לראות את כל 8 התמונות של גרסאות הכסף והזהב.",
-    "en": "Choose your preferred color. The product page includes all 8 images of the silver and gold versions."
-  },
-  "deliveryBusinessDays": {
-    "min": 9,
-    "max": 25
-  }
-},
   {
     "id": "floral-zircon-bracelet-silver-219",
     "slug": "product-219",
@@ -20676,7 +20670,7 @@ var PRODUCTS = [
     "sizes": [
       {
         "id": "5",
-        "addPrice": 0.0,
+        "addPrice": 0,
         "priceLabel": {
           "he": "159.90 ₪",
           "en": "₪159.90"
@@ -20836,7 +20830,7 @@ var PRODUCTS = [
     "sizes": [
       {
         "id": "5",
-        "addPrice": 0.0,
+        "addPrice": 0,
         "priceLabel": {
           "he": "159.90 ₪",
           "en": "₪159.90"
@@ -20997,7 +20991,7 @@ var PRODUCTS = [
     "sizes": [
       {
         "id": "5",
-        "addPrice": 0.0,
+        "addPrice": 0,
         "priceLabel": {
           "he": "189.90 ₪",
           "en": "₪189.90"
@@ -21158,7 +21152,7 @@ var PRODUCTS = [
     "sizes": [
       {
         "id": "5",
-        "addPrice": 0.0,
+        "addPrice": 0,
         "priceLabel": {
           "he": "189.90 ₪",
           "en": "₪189.90"
@@ -21275,8 +21269,7 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-  ,
+  },
   {
     "id": "heart-solitaire-ring-silver-227",
     "slug": "product-227",
@@ -21317,7 +21310,7 @@ var PRODUCTS = [
     "sizes": [
       {
         "id": "5",
-        "addPrice": 0.0,
+        "addPrice": 0,
         "priceLabel": {
           "he": "169.90 ₪",
           "en": "₪169.90"
@@ -21475,7 +21468,7 @@ var PRODUCTS = [
     "sizes": [
       {
         "id": "5",
-        "addPrice": 0.0,
+        "addPrice": 0,
         "priceLabel": {
           "he": "169.90 ₪",
           "en": "₪169.90"
@@ -21592,9 +21585,7 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
-  }
-
-  ,
+  },
   {
     "id": "classic-tennis-ring-gold-229",
     "slug": "product-229",
@@ -21616,7 +21607,11 @@ var PRODUCTS = [
       "images/products/product-229/product-229-1.png",
       "images/products/product-229/product-229-2.png",
       "images/products/product-229/product-229-3.png",
-      "images/products/product-229/product-229-4.png"
+      "images/products/product-229/product-229-4.png",
+      "images/products/product-230/product-230-1.png",
+      "images/products/product-230/product-230-2.png",
+      "images/products/product-230/product-230-3.png",
+      "images/products/product-230/product-230-4.png"
     ],
     "showAllGalleryThumbs": true,
     "price": 159.9,
@@ -21625,8 +21620,8 @@ var PRODUCTS = [
       "en": "Classic Tennis Ring - Gold"
     },
     "subtitle": {
-      "he": "Sterling Silver 925 · משובצת זירקון · מידות 5–9",
-      "en": "Sterling Silver 925 · Zircon set · sizes 5–9"
+      "he": "Sterling Silver 925 · משובצת זירקון · לבחירה בצבע כסף או זהב ובמידות 5–9",
+      "en": "Sterling Silver 925 · Zircon set · choose silver or gold in sizes 5–9"
     },
     "sizeHeading": {
       "he": "בחרו מידה",
@@ -21635,33 +21630,63 @@ var PRODUCTS = [
     "sizes": [
       {
         "id": "5",
-        "addPrice": 0.0,
-        "priceLabel": {"he": "159.90 ₪", "en": "₪159.90"},
-        "label": {"he": "5", "en": "5"}
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "159.90 ₪",
+          "en": "₪159.90"
+        },
+        "label": {
+          "he": "5",
+          "en": "5"
+        }
       },
       {
         "id": "6",
         "addPrice": 2.9,
-        "priceLabel": {"he": "162.80 ₪", "en": "₪162.80"},
-        "label": {"he": "6", "en": "6"}
+        "priceLabel": {
+          "he": "162.80 ₪",
+          "en": "₪162.80"
+        },
+        "label": {
+          "he": "6",
+          "en": "6"
+        }
       },
       {
         "id": "7",
         "addPrice": 5.8,
-        "priceLabel": {"he": "165.70 ₪", "en": "₪165.70"},
-        "label": {"he": "7", "en": "7"}
+        "priceLabel": {
+          "he": "165.70 ₪",
+          "en": "₪165.70"
+        },
+        "label": {
+          "he": "7",
+          "en": "7"
+        }
       },
       {
         "id": "8",
         "addPrice": 8.7,
-        "priceLabel": {"he": "168.60 ₪", "en": "₪168.60"},
-        "label": {"he": "8", "en": "8"}
+        "priceLabel": {
+          "he": "168.60 ₪",
+          "en": "₪168.60"
+        },
+        "label": {
+          "he": "8",
+          "en": "8"
+        }
       },
       {
         "id": "9",
         "addPrice": 11.6,
-        "priceLabel": {"he": "171.50 ₪", "en": "₪171.50"},
-        "label": {"he": "9", "en": "9"}
+        "priceLabel": {
+          "he": "171.50 ₪",
+          "en": "₪171.50"
+        },
+        "label": {
+          "he": "9",
+          "en": "9"
+        }
       }
     ],
     "colorHeading": {
@@ -21675,8 +21700,20 @@ var PRODUCTS = [
     "colorDisplay": "color-row",
     "colors": [
       {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "swatch": "linear-gradient(135deg,#fbfbfb 0%,#bfc5cc 48%,#f7f8fa 72%,#9da4ac 100%)",
+        "image": "images/products/product-230/product-230-1.png"
+      },
+      {
         "id": "gold",
-        "label": {"he": "זהב", "en": "Gold"},
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
         "swatch": "linear-gradient(135deg,#fff0a8 0%,#d5a233 48%,#ffe28a 72%,#b67d18 100%)",
         "image": "images/products/product-229/product-229-1.png"
       }
@@ -21687,41 +21724,216 @@ var PRODUCTS = [
       "en": "Classic Tennis Ring - Gold"
     },
     "cardMessage": {
-      "he": "טבעת טניס עדינה מכסף סטרלינג 925, משובצת אבני זירקון. זמינה כרגע בגוון זהב ובמידות 5–9.",
-      "en": "Delicate tennis ring in 925 sterling silver set with zircon stones. Currently available in gold tone, sizes 5–9."
+      "he": "טבעת טניס עדינה מכסף סטרלינג 925, משובצת אבני זירקון. לבחירה בכסף או זהב ובמידות 5–9.",
+      "en": "Delicate tennis ring in 925 sterling silver set with zircon stones. Available in silver or gold, sizes 5–9."
     },
-    "signature": {"he": "", "en": ""},
+    "signature": {
+      "he": "",
+      "en": ""
+    },
     "details": {
       "he": [
         "חומר: Sterling Silver 925",
         "אבנים: זירקון",
-        "צבע: זהב",
+        "צבעים לבחירה: כסף או זהב",
         "מידות לבחירה: 5, 6, 7, 8, 9",
         "מחיר התחלתי: 159.90 ₪",
         "כל עלייה במידה מוסיפה 2.90 ₪ למחיר",
-        "הגלריה כוללת 4 תמונות של המוצר"
+        "הגלריה כוללת את כל 8 התמונות של גרסאות הכסף והזהב"
       ],
       "en": [
         "Material: 925 Sterling Silver",
         "Stones: Zircon",
-        "Color: Gold",
+        "Available colors: Silver or Gold",
         "Available sizes: 5, 6, 7, 8, 9",
         "Starting price: ₪159.90",
         "Each size step adds ₪2.90 to the price",
-        "Gallery includes 4 product images"
+        "Gallery includes all 8 images of the silver and gold versions"
       ]
     },
     "afterText": {
-      "he": "בחרו מידה. גרסת הכסף תתווסף לאותו מוצר בהמשך.",
-      "en": "Choose a size. The silver version will be added to this product later."
+      "he": "בחרו צבע ומידה. בעמוד המוצר מוצגות כל 8 התמונות של גרסאות הכסף והזהב.",
+      "en": "Choose a color and size. The product page displays all 8 images of the silver and gold versions."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "classic-tennis-ring-silver-230",
+    "slug": "product-230",
+    "urlSlug": "classic-tennis-ring-silver",
+    "sku": "VS-RING-230",
+    "category": "rings",
+    "categories": [
+      "rings"
+    ],
+    "badge": {
+      "he": "Sterling Silver 925",
+      "en": "Sterling Silver 925"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-230/product-230-1.png",
+    "hoverImage": "images/products/product-230/product-230-2.png",
+    "images": [
+      "images/products/product-230/product-230-1.png",
+      "images/products/product-230/product-230-2.png",
+      "images/products/product-230/product-230-3.png",
+      "images/products/product-230/product-230-4.png",
+      "images/products/product-229/product-229-1.png",
+      "images/products/product-229/product-229-2.png",
+      "images/products/product-229/product-229-3.png",
+      "images/products/product-229/product-229-4.png"
+    ],
+    "showAllGalleryThumbs": true,
+    "price": 159.9,
+    "title": {
+      "he": "טבעת טניס קלאסית - צבע כסף",
+      "en": "Classic Tennis Ring - Silver"
+    },
+    "subtitle": {
+      "he": "Sterling Silver 925 · משובצת זירקון · לבחירה בצבע כסף או זהב ובמידות 5–9",
+      "en": "Sterling Silver 925 · Zircon set · choose silver or gold in sizes 5–9"
+    },
+    "sizeHeading": {
+      "he": "בחרו מידה",
+      "en": "Choose size"
+    },
+    "sizes": [
+      {
+        "id": "5",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "159.90 ₪",
+          "en": "₪159.90"
+        },
+        "label": {
+          "he": "5",
+          "en": "5"
+        }
+      },
+      {
+        "id": "6",
+        "addPrice": 2.9,
+        "priceLabel": {
+          "he": "162.80 ₪",
+          "en": "₪162.80"
+        },
+        "label": {
+          "he": "6",
+          "en": "6"
+        }
+      },
+      {
+        "id": "7",
+        "addPrice": 5.8,
+        "priceLabel": {
+          "he": "165.70 ₪",
+          "en": "₪165.70"
+        },
+        "label": {
+          "he": "7",
+          "en": "7"
+        }
+      },
+      {
+        "id": "8",
+        "addPrice": 8.7,
+        "priceLabel": {
+          "he": "168.60 ₪",
+          "en": "₪168.60"
+        },
+        "label": {
+          "he": "8",
+          "en": "8"
+        }
+      },
+      {
+        "id": "9",
+        "addPrice": 11.6,
+        "priceLabel": {
+          "he": "171.50 ₪",
+          "en": "₪171.50"
+        },
+        "label": {
+          "he": "9",
+          "en": "9"
+        }
+      }
+    ],
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "colorRequiredText": {
+      "he": "נא לבחור צבע",
+      "en": "Please choose a color"
+    },
+    "colorDisplay": "color-row",
+    "colors": [
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "swatch": "linear-gradient(135deg,#fbfbfb 0%,#bfc5cc 48%,#f7f8fa 72%,#9da4ac 100%)",
+        "image": "images/products/product-230/product-230-1.png"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "swatch": "linear-gradient(135deg,#fff0a8 0%,#d5a233 48%,#ffe28a 72%,#b67d18 100%)",
+        "image": "images/products/product-229/product-229-1.png"
+      }
+    ],
+    "defaultColorId": "silver",
+    "cardTitle": {
+      "he": "טבעת טניס קלאסית - צבע כסף",
+      "en": "Classic Tennis Ring - Silver"
+    },
+    "cardMessage": {
+      "he": "טבעת טניס עדינה מכסף סטרלינג 925, משובצת אבני זירקון. לבחירה בכסף או זהב ובמידות 5–9.",
+      "en": "Delicate tennis ring in 925 sterling silver set with zircon stones. Available in silver or gold, sizes 5–9."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "חומר: Sterling Silver 925",
+        "אבנים: זירקון",
+        "צבעים לבחירה: כסף או זהב",
+        "מידות לבחירה: 5, 6, 7, 8, 9",
+        "מחיר התחלתי: 159.90 ₪",
+        "כל עלייה במידה מוסיפה 2.90 ₪ למחיר",
+        "הגלריה כוללת את כל 8 התמונות של גרסאות הכסף והזהב"
+      ],
+      "en": [
+        "Material: 925 Sterling Silver",
+        "Stones: Zircon",
+        "Available colors: Silver or Gold",
+        "Available sizes: 5, 6, 7, 8, 9",
+        "Starting price: ₪159.90",
+        "Each size step adds ₪2.90 to the price",
+        "Gallery includes all 8 images of the silver and gold versions"
+      ]
+    },
+    "afterText": {
+      "he": "בחרו צבע ומידה. בעמוד המוצר מוצגות כל 8 התמונות של גרסאות הכסף והזהב.",
+      "en": "Choose a color and size. The product page displays all 8 images of the silver and gold versions."
     },
     "deliveryBusinessDays": {
       "min": 9,
       "max": 25
     }
   }
-
-
 ];
 
 var CATEGORIES = [
