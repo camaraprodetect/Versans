@@ -143,7 +143,9 @@
          through /shop, which the server maps to index.html, then url-mask.js hides
          the route again after the storefront has initialized. */
       var previewUrl = new URL(rawHref, location.origin + currentRoute);
-      var isHomeDocument = !!(document.body && document.body.classList.contains('home-page'));
+      var logicalDocumentPath = path();
+      var isHomeDocument = !!(document.body && document.body.classList.contains('home-page')) &&
+        (logicalDocumentPath === '/' || logicalDocumentPath === '/shop' || logicalDocumentPath === '/shop/');
       var homeFragments = { '#shop':1, '#shopTitle':1, '#reviews':1, '#top':1, '#how':1, '#faq':1, '#contact':1 };
       if (!isHomeDocument && previewUrl.origin === location.origin && previewUrl.pathname === '/' &&
           (!previewUrl.hash || homeFragments[previewUrl.hash])) {

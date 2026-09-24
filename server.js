@@ -3365,7 +3365,7 @@ function safeInlineJson(value) {
 }
 
 function injectStorefrontRouting(html, bootRoute) {
-  const early = `<script>window.__VERSANS_BOOT_ROUTE__=${safeInlineJson(bootRoute)};</script><script src="/assets/route-state.js?v=20260924-home-reviews-anchor-v6"></script>`;
+  const early = `<script>window.__VERSANS_BOOT_ROUTE__=${safeInlineJson(bootRoute)};</script><script src="/assets/route-state.js?v=20260924-home-collection-link-v7"></script>`;
   const late = '<script src="/assets/url-mask.js?v=20260924-home-reviews-anchor-v4"></script>';
   let out = String(html || '');
   out = out
