@@ -127,9 +127,9 @@ var PRODUCTS = [
       ]
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 14
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "beloved-infinity-01",
@@ -224,9 +224,9 @@ var PRODUCTS = [
       ]
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 14
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "daughter-love-01",
@@ -329,9 +329,9 @@ var PRODUCTS = [
       ]
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 14
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "love-of-my-life-01",
@@ -434,9 +434,9 @@ var PRODUCTS = [
       ]
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 14
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "wife-love-01",
@@ -563,9 +563,9 @@ var PRODUCTS = [
       ]
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 14
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "sister-love-01",
@@ -692,9 +692,9 @@ var PRODUCTS = [
       ]
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 14
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "wife-embrace-01",
@@ -797,9 +797,9 @@ var PRODUCTS = [
       ]
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 14
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "mom-daughter-01",
@@ -926,9 +926,9 @@ var PRODUCTS = [
       ]
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 14
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "mom-son-gratitude-01",
@@ -1031,9 +1031,9 @@ var PRODUCTS = [
       ]
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 14
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "tennis-chain-3mm-01",
@@ -1230,9 +1230,9 @@ var PRODUCTS = [
       "en": "Choose a length and width and the price updates automatically. For example, 55 cm at 5mm width costs ₪339.90. Gold versions, where offered, use 5 layers of 18K gold plating."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "star-tennis-bracelet-11",
@@ -1347,9 +1347,9 @@ var PRODUCTS = [
       "en": "The gallery shows the bracelet as a clean product shot, on-wrist, and in a close-up angle. The version shown here has a silver/white-gold tone and a white-gold plated finish."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "star-tennis-bracelet-12",
@@ -1464,9 +1464,9 @@ var PRODUCTS = [
       "en": "The gallery shows the bracelet as a clean product shot, on-wrist, and in a close-up angle. The version shown here has a silver/white-gold tone with a white-gold plated finish."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "tennis-bracelet-emerald-3mm-13",
@@ -1579,9 +1579,9 @@ var PRODUCTS = [
       "en": "The gallery shows the bracelet as a clean product shot, on-wrist, and in a close-up angle. This is a refined 3mm model with emerald-cut stones and a premium look."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "noir-black-tennis-bracelet-14",
@@ -1722,9 +1722,9 @@ var PRODUCTS = [
       "en": "The gallery shows the bracelet as a clean product shot, on-wrist, and in a close-up angle. This black model has a sharp, clean look suited for both everyday wear and evening styling."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "flora-cuban-chain-01",
@@ -1864,9 +1864,9 @@ var PRODUCTS = [
       "en": "Choose your preferred length and the price will update automatically."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "flora-gold-chain-01",
@@ -2006,9 +2006,9 @@ var PRODUCTS = [
       "en": "Choose your preferred length and the price will update automatically."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "flora-rose-gold-chain-01",
@@ -2148,9 +2148,9 @@ var PRODUCTS = [
       "en": "Choose your preferred length and the price will update automatically."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "tennis-chain-gold-18",
@@ -2347,9 +2347,9 @@ var PRODUCTS = [
       "en": "Choose a length and width and the price updates automatically. For example, 55 cm at 5mm width costs ₪339.90. The chain has a gold-tone finish with 5 layers of 18K gold plating."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "noya-black-tennis-necklace-20",
@@ -2526,9 +2526,9 @@ var PRODUCTS = [
       "en": "Choose a length and width and the price updates automatically. Starting price: ₪259.90 for 40 cm at 3 mm width."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "custom-photo-projection-bracelet-01",
@@ -2728,9 +2728,9 @@ var PRODUCTS = [
       "en": "Choose all three bracelet options, upload the photo you want inside the projection bead, and add it to cart."
     },
     "deliveryBusinessDays": {
-      "min": 18,
-      "max": 30
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "caterside-retro-round-crystal-smoke",
@@ -2799,9 +2799,9 @@ var PRODUCTS = [
       "en": "A compact retro model with a transparent frame that pairs easily with everyday looks."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-22/product-22-2.png"
   },
   {
@@ -2871,9 +2871,9 @@ var PRODUCTS = [
       "en": "A classic minimalist choice for everyday wear and outings."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-23/product-23-2.png"
   },
   {
@@ -2943,9 +2943,9 @@ var PRODUCTS = [
       "en": "A dark-to-clear frame combination for a distinctive yet easy-to-style look."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-24/product-24-2.png"
   },
   {
@@ -3015,9 +3015,9 @@ var PRODUCTS = [
       "en": "A square frame with subtle amber accents for added depth and character."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-25/product-25-2.png?v=12"
   },
   {
@@ -3087,9 +3087,9 @@ var PRODUCTS = [
       "en": "Blue lenses give the square silhouette a bold summer-ready look."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-26/product-26-2.png"
   },
   {
@@ -3159,9 +3159,9 @@ var PRODUCTS = [
       "en": "A clean black model that works easily with both casual and evening outfits."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-27/product-27-2.png?v=12"
   },
   {
@@ -3231,9 +3231,9 @@ var PRODUCTS = [
       "en": "Green lenses add color while keeping the frame refined and wearable."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-28/product-28-2.png?v=12"
   },
   {
@@ -3303,9 +3303,9 @@ var PRODUCTS = [
       "en": "A transparent frame and silver-toned lenses create a bright modern finish."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-29/product-29-2.png"
   },
   {
@@ -3375,9 +3375,9 @@ var PRODUCTS = [
       "en": "The tortoise finish gives the square frame a warm classic character."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-30/product-30-2.png?v=12"
   },
   {
@@ -3447,9 +3447,9 @@ var PRODUCTS = [
       "en": "A bright refined model that pairs beautifully with summer and everyday outfits."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-31/product-31-2.png"
   },
   {
@@ -3519,9 +3519,9 @@ var PRODUCTS = [
       "en": "A subtle olive tone that stands out while still feeling elegant and wearable."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-32/product-32-2.png"
   },
   {
@@ -3591,9 +3591,9 @@ var PRODUCTS = [
       "en": "A smoky frame with gold details for a refined and contemporary finish."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-33/product-33-2.png"
   },
   {
@@ -3663,9 +3663,9 @@ var PRODUCTS = [
       "en": "A clean translucent gray model that works effortlessly with almost any outfit."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-34/product-34-2.png"
   },
   {
@@ -3735,9 +3735,9 @@ var PRODUCTS = [
       "en": "A standout frame for anyone who likes bold eyewear with character."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-35/product-35-2.png"
   },
   {
@@ -3807,9 +3807,9 @@ var PRODUCTS = [
       "en": "A classic black model with strong presence that works with almost any outfit."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-36/product-36-2.png"
   },
   {
@@ -3879,9 +3879,9 @@ var PRODUCTS = [
       "en": "A stylish blend of clear crystal and warm tortoise for a sharp fashion-forward feel."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-37/product-37-2.png"
   },
   {
@@ -3951,9 +3951,9 @@ var PRODUCTS = [
       "en": "A warm statement frame that pairs beautifully with summer and polished outfits."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-38/product-38-2.png"
   },
   {
@@ -4023,9 +4023,9 @@ var PRODUCTS = [
       "en": "A clean high-contrast combination that creates a distinctive and confident style."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-39/product-39-2.png"
   },
   {
@@ -4095,9 +4095,9 @@ var PRODUCTS = [
       "en": "A clean standout frame that pairs effortlessly with almost any look."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-40/product-40-2.png"
   },
   {
@@ -4167,9 +4167,9 @@ var PRODUCTS = [
       "en": "A fresh refined choice for anyone who loves clear frames with a hint of color."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-41/product-41-2.png"
   },
   {
@@ -4239,9 +4239,9 @@ var PRODUCTS = [
       "en": "A color-forward model that instantly elevates any look."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-42/product-42-2.png"
   },
   {
@@ -4311,9 +4311,9 @@ var PRODUCTS = [
       "en": "A refined olive tone that adds character without feeling overdone."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-43/product-43-2.png"
   },
   {
@@ -4383,9 +4383,9 @@ var PRODUCTS = [
       "en": "A stylish model with lighter lenses that feels polished and premium."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-44/product-44-2.png"
   },
   {
@@ -4453,9 +4453,9 @@ var PRODUCTS = [
       "en": "A radiant, fresh model that adds standout style to any outfit."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-45/product-45-2.png"
   },
   {
@@ -4523,9 +4523,9 @@ var PRODUCTS = [
       "en": "A soft feminine frame with a flattering fashion touch."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-46/product-46-2.png"
   },
   {
@@ -4593,9 +4593,9 @@ var PRODUCTS = [
       "en": "A warm elegant colorway that feels classic yet stylish."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-47/product-47-2.png"
   },
   {
@@ -4663,9 +4663,9 @@ var PRODUCTS = [
       "en": "The classic choice for anyone who loves a sharp, sophisticated look."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-48/product-48-2.png"
   },
   {
@@ -4733,9 +4733,9 @@ var PRODUCTS = [
       "en": "An elegant refined model that complements almost any outfit."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-49/product-49-2.png"
   },
   {
@@ -4803,9 +4803,9 @@ var PRODUCTS = [
       "en": "A fashion-forward style that adds energy and glow."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-50/product-50-2.png"
   },
   {
@@ -4873,9 +4873,9 @@ var PRODUCTS = [
       "en": "A perfect balance between fashion presence and soft minimal elegance."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-51/product-51-2.png"
   },
   {
@@ -4943,9 +4943,9 @@ var PRODUCTS = [
       "en": "A flattering style with warm radiance and strong presence."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-52/product-52-2.png"
   },
   {
@@ -5013,9 +5013,9 @@ var PRODUCTS = [
       "en": "A distinctive shade that gives the look a stylish unique vibe."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-53/product-53-2.png"
   },
   {
@@ -5083,9 +5083,9 @@ var PRODUCTS = [
       "en": "A warm elegant style that adds rich character to any look."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-54/product-54-2.png"
   },
   {
@@ -5153,9 +5153,9 @@ var PRODUCTS = [
       "en": "A delicate trendy frame with a flattering feminine touch."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-55/product-55-2.png"
   },
   {
@@ -5223,9 +5223,9 @@ var PRODUCTS = [
       "en": "A fresh standout colorway with distinctive fashion presence."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-56/product-56-2.png"
   },
   {
@@ -5293,9 +5293,9 @@ var PRODUCTS = [
       "en": "A chic classic choice that fits effortlessly into any look."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-57/product-57-2.png"
   },
   {
@@ -5363,9 +5363,9 @@ var PRODUCTS = [
       "en": "An elegant warm colorway with a refined feminine touch."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-58/product-58-2.png"
   },
   {
@@ -5433,9 +5433,9 @@ var PRODUCTS = [
       "en": "A flattering delicate shade that adds a romantic fashion-forward vibe."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-59/product-59-2.png"
   },
   {
@@ -5503,9 +5503,9 @@ var PRODUCTS = [
       "en": "A soft chic choice with an elegant hint of color."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-60/product-60-2.png"
   },
   {
@@ -5573,9 +5573,9 @@ var PRODUCTS = [
       "en": "A colorful refined frame that adds a fresh retro touch to any look."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-61/product-61-2.png"
   },
   {
@@ -5643,9 +5643,9 @@ var PRODUCTS = [
       "en": "A warm flattering colorway that pairs easily with polished and casual looks."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-62/product-62-2.png"
   },
   {
@@ -5713,9 +5713,9 @@ var PRODUCTS = [
       "en": "A standout frame with a distinctive color that instantly adds character."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-63/product-63-2.png"
   },
   {
@@ -5783,9 +5783,9 @@ var PRODUCTS = [
       "en": "A clean classic choice that works with almost any look."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-64/product-64-2.png"
   },
   {
@@ -5853,9 +5853,9 @@ var PRODUCTS = [
       "en": "A flattering delicate frame with a clean retro vibe."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-65/product-65-2.png"
   },
   {
@@ -5923,9 +5923,9 @@ var PRODUCTS = [
       "en": "A chic standout frame with classic tortoise styling and dark lenses."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-66/product-66-2.png"
   },
   {
@@ -5993,9 +5993,9 @@ var PRODUCTS = [
       "en": "An elegant style combining warm gold, tortoise and tea tones."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-67/product-67-2.png"
   },
   {
@@ -6063,9 +6063,9 @@ var PRODUCTS = [
       "en": "A bright fresh combination with a clean modern presence."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-68/product-68-2.png"
   },
   {
@@ -6133,9 +6133,9 @@ var PRODUCTS = [
       "en": "A feminine statement style blending soft pink with black and gold."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-69/product-69-2.png"
   },
   {
@@ -6203,9 +6203,9 @@ var PRODUCTS = [
       "en": "A sharp classic choice with a timeless black-and-gold combination."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-70/product-70-2.png"
   },
   {
@@ -6281,9 +6281,9 @@ var PRODUCTS = [
       "en": "A sharp modern frame with a distinctive star detail."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-71/product-71-2.png"
   },
   {
@@ -6359,9 +6359,9 @@ var PRODUCTS = [
       "en": "A black-and-brown combination that gives the frame a warm wearable finish."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-72/product-72-2.png"
   },
   {
@@ -6437,9 +6437,9 @@ var PRODUCTS = [
       "en": "Light blue lenses add a fresh distinctive touch to the black frame."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-73/product-73-2.png"
   },
   {
@@ -6515,9 +6515,9 @@ var PRODUCTS = [
       "en": "Soft champagne lenses balance the black frame for an elevated, easy-to-style finish."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-74/product-74-2.png"
   },
   {
@@ -6593,9 +6593,9 @@ var PRODUCTS = [
       "en": "The clear frame highlights the silver star detail for a look that feels clean and distinctive at once."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "hoverImage": "images/products/product-75/product-75-2.png"
   },
   {
@@ -6665,9 +6665,9 @@ var PRODUCTS = [
       "en": "The watch, gift box, extra strap and included accessories arrive together - ready to gift."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 18
-    },
+    "min": 9,
+    "max": 14
+  },
     "colors": [
       {
         "id": "black-blue",
@@ -6793,9 +6793,9 @@ var PRODUCTS = [
       "en": "A silver ICE watch with a glittering black dial - a premium look for both everyday wear and special occasions."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 18
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "watch-ice-gold-01",
@@ -6863,9 +6863,9 @@ var PRODUCTS = [
       "en": "A gold ICE watch with a glittering black dial - a premium look for both everyday wear and special occasions."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 18
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "watch-chrono-royal-01",
@@ -6937,9 +6937,9 @@ var PRODUCTS = [
       "en": "Chrono Royal combines a bold premium look with a detailed dial and metal bracelet for both everyday wear and special occasions."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 18
-    },
+    "min": 9,
+    "max": 14
+  },
     "colors": [
       {
         "id": "black-gold",
@@ -7060,9 +7060,9 @@ var PRODUCTS = [
       "en": "Luna Date combines a clean dial, day-date display and metal bracelet for both everyday and polished looks."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 18
-    },
+    "min": 9,
+    "max": 14
+  },
     "colors": [
       {
         "id": "silver-white",
@@ -7200,9 +7200,9 @@ var PRODUCTS = [
       "en": "Royal Day combines a day-date display, metal bracelet and multiple color options for an elegant everyday or occasion-ready look."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 18
-    },
+    "min": 9,
+    "max": 14
+  },
     "colors": [
       {
         "id": "silver-green",
@@ -7321,9 +7321,9 @@ var PRODUCTS = [
       "en": "Royal Day combines a black dial, day-date display and metal bracelet for an elegant everyday or occasion-ready look."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 18
-    },
+    "min": 9,
+    "max": 14
+  },
     "colors": [
       {
         "id": "silver-black",
@@ -7432,9 +7432,9 @@ var PRODUCTS = [
       "en": "Royal Day combines a silver-tone dial, day-date display and metal bracelet for an elegant everyday or occasion-ready look."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 18
-    },
+    "min": 9,
+    "max": 14
+  },
     "colors": [
       {
         "id": "silver-white",
@@ -7536,9 +7536,9 @@ var PRODUCTS = [
       "en": "Royal Day combines gold tones, day-date display and a metal bracelet for an elegant everyday or occasion-ready look."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 18
-    },
+    "min": 9,
+    "max": 14
+  },
     "colors": [
       {
         "id": "silver-gold-white",
@@ -7643,9 +7643,9 @@ var PRODUCTS = [
       "en": "White OLEVS gift set supplied ready to gift with a watch, bracelet and heart necklace."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 18
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "watch-olevs-gift-pink-01",
@@ -7711,9 +7711,9 @@ var PRODUCTS = [
       "en": "Pink OLEVS gift set supplied ready to gift with a watch, bracelet and heart necklace."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 18
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "watch-olevs-gift-cyan-01",
@@ -7779,9 +7779,9 @@ var PRODUCTS = [
       "en": "Light Blue OLEVS gift set supplied ready to gift with a watch, bracelet and heart necklace."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 18
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "watch-olevs-gift-purple-01",
@@ -7847,9 +7847,9 @@ var PRODUCTS = [
       "en": "Purple OLEVS gift set supplied ready to gift with a watch, bracelet and heart necklace."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 18
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "watch-tachymeter-pro-black-01",
@@ -7916,9 +7916,9 @@ var PRODUCTS = [
       "en": "Tachymeter Pro combines a black finish, sporty dial and tachymeter scale for a modern statement look."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 18
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "watch-ice-supra-90",
@@ -7984,9 +7984,9 @@ var PRODUCTS = [
       "en": "Ice Supra in silver combines a high-impact iced-out look with day and date displays."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 18
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "watch-ice-supra-91",
@@ -8052,9 +8052,9 @@ var PRODUCTS = [
       "en": "Ice Supra in silver & gold combines a high-impact iced-out look with day and date displays."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 18
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "watch-ice-supra-92",
@@ -8120,9 +8120,9 @@ var PRODUCTS = [
       "en": "Ice Supra in black combines a high-impact iced-out look with day and date displays."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 18
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "watch-ice-supra-93",
@@ -8188,9 +8188,9 @@ var PRODUCTS = [
       "en": "Ice Supra in gold combines a high-impact iced-out look with day and date displays."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 18
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "flora-tennis-bracelet-sky-blue-94",
@@ -8314,9 +8314,9 @@ var PRODUCTS = [
       "en": "The gallery includes all six variants, a shared hover image, showcase photos, and an on-wrist image for wear reference."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "colorHeading": {
       "he": "בחרו צבע",
       "en": "Choose color"
@@ -8511,9 +8511,9 @@ var PRODUCTS = [
       "en": "The gallery includes all six variants, a shared hover image, showcase photos, and an on-wrist image for wear reference."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "colorHeading": {
       "he": "בחרו צבע",
       "en": "Choose color"
@@ -8708,9 +8708,9 @@ var PRODUCTS = [
       "en": "The gallery includes all six variants, a shared hover image, showcase photos, and an on-wrist image for wear reference."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "colorHeading": {
       "he": "בחרו צבע",
       "en": "Choose color"
@@ -8905,9 +8905,9 @@ var PRODUCTS = [
       "en": "The gallery includes all six variants, a shared hover image, showcase photos, and an on-wrist image for wear reference."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "colorHeading": {
       "he": "בחרו צבע",
       "en": "Choose color"
@@ -9102,9 +9102,9 @@ var PRODUCTS = [
       "en": "The gallery includes all six variants, a shared hover image, showcase photos, and an on-wrist image for wear reference."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "colorHeading": {
       "he": "בחרו צבע",
       "en": "Choose color"
@@ -9299,9 +9299,9 @@ var PRODUCTS = [
       "en": "The gallery includes all six variants, a shared hover image, showcase photos, and an on-wrist image for wear reference."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    },
+    "min": 9,
+    "max": 14
+  },
     "colorHeading": {
       "he": "בחרו צבע",
       "en": "Choose color"
@@ -9454,7 +9454,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -9537,7 +9537,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -9620,7 +9620,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -9703,7 +9703,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -9786,7 +9786,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -9869,7 +9869,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -9952,7 +9952,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -10035,7 +10035,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -10117,7 +10117,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -10201,7 +10201,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -10285,7 +10285,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -10369,7 +10369,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -10453,7 +10453,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -10537,7 +10537,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -10619,7 +10619,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -10700,7 +10700,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -10783,7 +10783,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -10866,7 +10866,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -10957,7 +10957,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -11044,7 +11044,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -11129,7 +11129,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -11215,7 +11215,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -11301,7 +11301,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -11386,7 +11386,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -11469,7 +11469,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -11555,7 +11555,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -11640,7 +11640,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -11724,7 +11724,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -11808,7 +11808,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -11894,7 +11894,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -11978,7 +11978,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -12064,7 +12064,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -12148,7 +12148,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -12231,7 +12231,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -12315,7 +12315,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -12398,7 +12398,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -12481,7 +12481,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -12565,7 +12565,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -12648,7 +12648,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -12731,7 +12731,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -12814,7 +12814,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -12895,7 +12895,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -12978,7 +12978,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -13063,7 +13063,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -13146,7 +13146,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -13227,7 +13227,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -13311,7 +13311,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -13397,7 +13397,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -13469,9 +13469,9 @@ var PRODUCTS = [
       "en": "Classic Date combines a minimalist black dial with a metal bracelet and clean lines for both everyday wear and special occasions."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 18
-    },
+    "min": 9,
+    "max": 14
+  },
     "colors": [
       {
         "id": "black",
@@ -13563,9 +13563,9 @@ var PRODUCTS = [
       "en": "Roma Watch combines a black case and bracelet with a clean dial, minute markers and a date window for an elegant everyday look."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 18
-    },
+    "min": 9,
+    "max": 14
+  },
     "colors": [
       {
         "id": "black-accent",
@@ -13668,9 +13668,9 @@ var PRODUCTS = [
       "en": "Milano Chrono combines a detailed black dial, leather strap and a classic-sport look for everyday wear and occasions."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 18
-    },
+    "min": 9,
+    "max": 14
+  },
     "colors": [
       {
         "id": "black",
@@ -13767,9 +13767,9 @@ var PRODUCTS = [
       "en": "Bella Watch combines a clean white dial with a metal mesh bracelet and a feminine minimalist look for everyday wear and occasions."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 18
-    },
+    "min": 9,
+    "max": 14
+  },
     "colors": [
       {
         "id": "rose-gold",
@@ -13865,9 +13865,9 @@ var PRODUCTS = [
       "en": "Emma Watch combines a clean white dial with a square case and elegant metal bracelet for a feminine minimalist look suited to everyday wear and occasions."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 18
-    },
+    "min": 9,
+    "max": 14
+  },
     "colors": [
       {
         "id": "rose-gold",
@@ -13954,9 +13954,9 @@ var PRODUCTS = [
       "en": "May Watch combines a striking green dial with an elegant feminine design suited to everyday wear and occasions."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 18
-    },
+    "min": 9,
+    "max": 14
+  },
     "colors": [
       {
         "id": "two-tone",
@@ -14048,9 +14048,9 @@ var PRODUCTS = [
       "en": "Noga Watch combines a sparkling blue dial with a metal mesh bracelet and elegant finish for a distinctive feminine look."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 18
-    },
+    "min": 9,
+    "max": 14
+  },
     "colors": [
       {
         "id": "black",
@@ -14154,9 +14154,9 @@ var PRODUCTS = [
       "en": "Liam Watch - White Dial combines a clean white dial with a leather strap and slim case for a classic everyday look."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 18
-    },
+    "min": 9,
+    "max": 14
+  },
     "colors": [
       {
         "id": "brown-rose-gold",
@@ -14260,9 +14260,9 @@ var PRODUCTS = [
       "en": "Liam Watch - Black Dial combines a clean black dial with a leather strap and slim case for a classic unisex everyday look."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 18
-    },
+    "min": 9,
+    "max": 14
+  },
     "colors": [
       {
         "id": "brown-rose-gold",
@@ -14376,7 +14376,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -14464,7 +14464,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -14552,7 +14552,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -14640,7 +14640,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -14728,7 +14728,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -14818,7 +14818,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -14906,7 +14906,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -14994,7 +14994,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -15082,7 +15082,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -15166,7 +15166,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -15250,7 +15250,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -15334,7 +15334,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -15418,7 +15418,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -15502,7 +15502,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -15586,7 +15586,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -15670,7 +15670,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -15754,7 +15754,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -15838,7 +15838,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -15922,7 +15922,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -16006,7 +16006,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -16090,7 +16090,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -16174,7 +16174,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -16258,7 +16258,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -16342,7 +16342,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -16426,7 +16426,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -16510,7 +16510,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -16594,7 +16594,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -16678,7 +16678,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -16762,7 +16762,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -16846,7 +16846,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -16930,7 +16930,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -17014,7 +17014,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -17098,7 +17098,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -17182,7 +17182,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -17266,7 +17266,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -17350,7 +17350,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -17434,7 +17434,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -17522,7 +17522,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -17610,7 +17610,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -17698,7 +17698,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -17786,7 +17786,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -17874,7 +17874,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -17962,7 +17962,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -18050,7 +18050,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -18138,7 +18138,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -18226,7 +18226,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -18316,7 +18316,7 @@ var PRODUCTS = [
     },
     "deliveryBusinessDays": {
       "min": 9,
-      "max": 25
+      "max": 20
     }
   },
   {
@@ -18444,9 +18444,9 @@ var PRODUCTS = [
       "en": "Choose a color, upload the photo you want inside the pendant and add it to cart."
     },
     "deliveryBusinessDays": {
-      "min": 18,
-      "max": 30
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "photo-projection-necklace-paw-205",
@@ -18573,9 +18573,9 @@ var PRODUCTS = [
       "en": "Choose a color, upload the photo you want inside the pendant and add it to cart."
     },
     "deliveryBusinessDays": {
-      "min": 18,
-      "max": 30
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "photo-projection-necklace-double-heart-206",
@@ -18702,9 +18702,9 @@ var PRODUCTS = [
       "en": "Choose a color, upload the photo you want inside the pendant and add it to cart."
     },
     "deliveryBusinessDays": {
-      "min": 18,
-      "max": 30
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "photo-projection-necklace-lock-207",
@@ -18831,9 +18831,9 @@ var PRODUCTS = [
       "en": "Choose a color, upload the photo you want inside the pendant and add it to cart."
     },
     "deliveryBusinessDays": {
-      "min": 18,
-      "max": 30
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "photo-projection-necklace-crystal-spiral-208",
@@ -18960,9 +18960,9 @@ var PRODUCTS = [
       "en": "Choose a color, upload the photo you want inside the pendant and add it to cart."
     },
     "deliveryBusinessDays": {
-      "min": 18,
-      "max": 30
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "photo-projection-necklace-mom-heart-209",
@@ -19089,9 +19089,9 @@ var PRODUCTS = [
       "en": "Choose a color, upload the photo you want inside the pendant and add it to cart."
     },
     "deliveryBusinessDays": {
-      "min": 18,
-      "max": 30
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "photo-projection-necklace-open-heart-210",
@@ -19218,9 +19218,9 @@ var PRODUCTS = [
       "en": "Choose a color, upload the photo you want inside the pendant and add it to cart."
     },
     "deliveryBusinessDays": {
-      "min": 18,
-      "max": 30
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "photo-projection-necklace-decorated-heart-211",
@@ -19347,9 +19347,9 @@ var PRODUCTS = [
       "en": "Choose a color, upload the photo you want inside the pendant and add it to cart."
     },
     "deliveryBusinessDays": {
-      "min": 18,
-      "max": 30
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "photo-projection-necklace-crystal-heart-212",
@@ -19476,9 +19476,9 @@ var PRODUCTS = [
       "en": "Choose a color, upload the photo you want inside the pendant and add it to cart."
     },
     "deliveryBusinessDays": {
-      "min": 18,
-      "max": 30
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "photo-projection-necklace-star-of-david-213",
@@ -19605,9 +19605,9 @@ var PRODUCTS = [
       "en": "Choose a color, upload the photo you want inside the pendant and add it to cart."
     },
     "deliveryBusinessDays": {
-      "min": 18,
-      "max": 30
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "photo-projection-necklace-double-heart-214",
@@ -19734,9 +19734,9 @@ var PRODUCTS = [
       "en": "Choose a color, upload the photo you want inside the pendant and add it to cart."
     },
     "deliveryBusinessDays": {
-      "min": 18,
-      "max": 30
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "photo-projection-necklace-elegant-heart-215",
@@ -19863,9 +19863,9 @@ var PRODUCTS = [
       "en": "Choose a color, upload the photo you want inside the pendant and add it to cart."
     },
     "deliveryBusinessDays": {
-      "min": 18,
-      "max": 30
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "photo-projection-necklace-floral-heart-216",
@@ -19992,9 +19992,9 @@ var PRODUCTS = [
       "en": "Choose a color, upload the photo you want inside the pendant and add it to cart."
     },
     "deliveryBusinessDays": {
-      "min": 18,
-      "max": 30
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "royal-crystal-bracelet-silver-217",
@@ -20100,9 +20100,9 @@ var PRODUCTS = [
       "en": "Choose your preferred color. The product page includes all 8 images of the silver and gold versions."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "royal-crystal-bracelet-gold-218",
@@ -20208,9 +20208,9 @@ var PRODUCTS = [
       "en": "Choose your preferred color. The product page includes all 8 images of the silver and gold versions."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "floral-zircon-bracelet-silver-219",
@@ -20312,9 +20312,9 @@ var PRODUCTS = [
       "en": "Choose your preferred color. The product page includes all 4 images of the silver and gold versions."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "floral-zircon-bracelet-gold-220",
@@ -20416,9 +20416,9 @@ var PRODUCTS = [
       "en": "Choose your preferred color. The product page includes all 4 images of the silver and gold versions."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "halo-zircon-bracelet-silver-221",
@@ -20520,9 +20520,9 @@ var PRODUCTS = [
       "en": "Choose your preferred color. The product page includes all 4 images of the silver and gold versions."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "halo-zircon-bracelet-gold-222",
@@ -20624,9 +20624,9 @@ var PRODUCTS = [
       "en": "Choose your preferred color. The product page includes all 4 images of the silver and gold versions."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "aurora-zircon-ring-gold-223",
@@ -20784,9 +20784,9 @@ var PRODUCTS = [
       "en": "Choose a color and size. Each product page shows all 6 images of the silver and gold versions."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "aurora-zircon-ring-silver-224",
@@ -20944,9 +20944,9 @@ var PRODUCTS = [
       "en": "Choose a color and size. Each product page shows all 6 images of the silver and gold versions."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "classic-crown-ring-silver-225",
@@ -21105,9 +21105,9 @@ var PRODUCTS = [
       "en": "Choose a color and size. The product page displays all 7 images of the silver and gold versions."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "classic-crown-ring-gold-226",
@@ -21266,9 +21266,9 @@ var PRODUCTS = [
       "en": "Choose a color and size. The product page displays all 7 images of the silver and gold versions."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "heart-solitaire-ring-silver-227",
@@ -21424,9 +21424,9 @@ var PRODUCTS = [
       "en": "Choose a color and size. The product page displays all 4 images of the silver and gold versions."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "heart-solitaire-ring-gold-228",
@@ -21582,9 +21582,9 @@ var PRODUCTS = [
       "en": "Choose a color and size. The product page displays all 4 images of the silver and gold versions."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "classic-tennis-ring-gold-229",
@@ -21756,9 +21756,9 @@ var PRODUCTS = [
       "en": "Choose a color and size. The product page displays all 8 images of the silver and gold versions."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "classic-tennis-ring-silver-230",
@@ -21930,9 +21930,9 @@ var PRODUCTS = [
       "en": "Choose a color and size. The product page displays all 8 images of the silver and gold versions."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "butterfly-double-ring-gold-231",
@@ -22032,9 +22032,9 @@ var PRODUCTS = [
       "en": "Choose a color. The product page displays all 4 images of the silver and gold versions."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    }
+    "min": 9,
+    "max": 14
+  }
   },
   {
     "id": "butterfly-double-ring-silver-232",
@@ -22134,9 +22134,9 @@ var PRODUCTS = [
       "en": "Choose a color. The product page displays all 4 images of the silver and gold versions."
     },
     "deliveryBusinessDays": {
-      "min": 9,
-      "max": 25
-    }
+    "min": 9,
+    "max": 14
+  }
   },
 {
   "id": "marquise-open-ring-silver-233",
@@ -22238,7 +22238,7 @@ var PRODUCTS = [
   },
   "deliveryBusinessDays": {
     "min": 9,
-    "max": 25
+    "max": 14
   }
 },
 {
@@ -22341,7 +22341,7 @@ var PRODUCTS = [
   },
   "deliveryBusinessDays": {
     "min": 9,
-    "max": 25
+    "max": 14
   }
 },
 {
@@ -22503,7 +22503,7 @@ var PRODUCTS = [
   },
   "deliveryBusinessDays": {
     "min": 9,
-    "max": 25
+    "max": 14
   }
 },
 {
@@ -22665,7 +22665,7 @@ var PRODUCTS = [
   },
   "deliveryBusinessDays": {
     "min": 9,
-    "max": 25
+    "max": 14
   }
 }
 

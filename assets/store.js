@@ -1241,6 +1241,22 @@
     for (var i = 0; i < list.length; i++) if (list[i].id === id) return list[i];
     return null;
   }
+  function isHatProduct(product) {
+    product = product || {};
+    return product.category === 'hats' || (Array.isArray(product.categories) && product.categories.indexOf('hats') !== -1);
+  }
+  function deliveryHtml(line) {
+    var hat = isHatProduct(line && line.p);
+    var label = state.lang === 'he' ? 'זמן אספקה: ' : 'Delivery: ';
+    var days = hat
+      ? (state.lang === 'he' ? '9–20 ימי עסקים' : '9–20 business days')
+      : (state.lang === 'he' ? '9–14 ימי עסקים' : '9–14 business days');
+    var note = hat
+      ? '<small class="line__delivery-note">' + esc(state.lang === 'he' ? 'כרגע יש חוסר מלאי, לכן המשלוח לוקח קצת יותר זמן.' : 'Currently low on stock, so delivery is taking a little longer.') + '</small>'
+      : '';
+    return '<div class="line__delivery-wrap"><p class="line__delivery"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v10H3zM14 10h4l3 3v4h-7z"/><circle cx="7" cy="18" r="1.8"/><circle cx="17.5" cy="18" r="1.8"/></svg><span>' + esc(label) + '<strong>' + esc(days) + '</strong></span></p>' + note + '</div>';
+  }
+
   function cartItemKey(it) {
     var pending = Array.isArray(it && it.quickAddPending) ? it.quickAddPending.slice().sort().join(',') : '';
     return it.key || (it.id + '|' + (it.necklace || '') + '|' + (it.box || '') + '|' + (it.size || '') + '|' + (it.color || '') + '|pack:' + (it.packaging || '') + '|' + (it.customName || '') + '|p:' + (it.customPhoto && it.customPhoto.assetId || '') + '|g:' + (it.greeting ? JSON.stringify(it.greeting) : '') + '|pending:' + pending);
@@ -1752,6 +1768,7 @@ function orderTotal() {
           '<p class="line__name">' + esc(L(l.p.title) + (l.packaging ? (state.lang === 'he' ? ' + מארז LOVE FOREVER' : ' + LOVE FOREVER packaging') : '')) + '</p>' +
           (meta.length ? '<p class="line__meta">' + esc(meta.join(' · ')) + '</p>' : '') +
           '<p class="line__meta">' + money(l.unitPrice) + '</p>' +
+          deliveryHtml(l) +
           '<div class="line__row">' +
             '<div class="qty qty--sm">' +
               '<button type="button" data-line="' + esc(l.key) + '" data-delta="-1" aria-label="-">−</button>' +

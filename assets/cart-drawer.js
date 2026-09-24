@@ -35,6 +35,23 @@
     return variantImg || (line.necklace ? line.necklace.image : ((p.images && p.images.length) ? p.images[0] : (p.cardImage || '')));
   }
 
+  function isHatProduct(product) {
+    product = product || {};
+    return product.category === 'hats' || (Array.isArray(product.categories) && product.categories.indexOf('hats') !== -1);
+  }
+
+  function deliveryHtml(line) {
+    var hat = isHatProduct(line && line.p);
+    var label = lang === 'he' ? 'זמן אספקה: ' : 'Delivery: ';
+    var days = hat
+      ? (lang === 'he' ? '9–20 ימי עסקים' : '9–20 business days')
+      : (lang === 'he' ? '9–14 ימי עסקים' : '9–14 business days');
+    var note = hat
+      ? '<small class="line__delivery-note">' + esc(lang === 'he' ? 'כרגע יש חוסר מלאי, לכן המשלוח לוקח קצת יותר זמן.' : 'Currently low on stock, so delivery is taking a little longer.') + '</small>'
+      : '';
+    return '<div class="line__delivery-wrap"><p class="line__delivery"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v10H3zM14 10h4l3 3v4h-7z"/><circle cx="7" cy="18" r="1.8"/><circle cx="17.5" cy="18" r="1.8"/></svg><span>' + esc(label) + '<strong>' + esc(days) + '</strong></span></p>' + note + '</div>';
+  }
+
   function pricingSummary(lines) {
     var subtotal = lines.reduce(function (sum, line) { return sum + line.unitPrice * line.qty; }, 0);
     var shipping = subtotal && CFG.shipping ? ((CFG.shipping.freeOver && subtotal >= CFG.shipping.freeOver) ? 0 : Number(CFG.shipping.flat || 0)) : 0;
@@ -151,6 +168,7 @@
           '<p class="line__name">' + esc(L(line.p.title) + (line.packaging ? (lang === 'he' ? ' + מארז LOVE FOREVER' : ' + LOVE FOREVER packaging') : '')) + '</p>' +
           (meta.length ? '<p class="line__meta">' + esc(meta.join(' · ')) + '</p>' : '') +
           '<p class="line__meta">' + money(line.unitPrice) + '</p>' +
+          deliveryHtml(line) +
           '<div class="line__row">' +
             '<div class="qty qty--sm">' +
               '<button type="button" data-global-cart-key="' + esc(line.key) + '" data-global-cart-delta="-1" aria-label="הפחתת כמות">−</button>' +

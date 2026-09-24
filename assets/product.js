@@ -1780,15 +1780,6 @@ async function uploadProductPhoto(blob, meta) {
     $('#productTitle').textContent = L(product.title);
     $('#productSubtitle').textContent = L(product.subtitle);
 
-    var delivery = product.deliveryBusinessDays || { min: 9, max: 25 };
-    var deliveryLabel = $('#productDeliveryLabel');
-    var deliveryValue = $('#productDeliveryValue');
-    if (deliveryLabel) deliveryLabel.textContent = lang === 'he' ? 'זמן אספקה משוער:' : 'Estimated delivery:';
-    if (deliveryValue) {
-      deliveryValue.textContent = String(delivery.min || 9) + '–' + String(delivery.max || 25) + (lang === 'he' ? ' ימי עסקים' : ' business days');
-      deliveryValue.setAttribute('dir', lang === 'he' ? 'rtl' : 'ltr');
-    }
-
     var standalone = !(isConfigurable() || hasSizeOptions() || hasColorOptions() || hasCustomName() || hasCustomPhoto() || hasGiftPackaging() || requiresCompanion());
     document.body.classList.toggle('is-standalone-product', standalone);
     var divider = document.querySelector('.product-info__divider');

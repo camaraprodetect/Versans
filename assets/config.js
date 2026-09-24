@@ -25,14 +25,14 @@ var STORE_CONFIG = {
   shipping: {
     flat: 0,
     freeOver: 0,
-    etaDays: { he: 'זמן האספקה משתנה לפי המוצר ומופיע בעמוד המוצר', en: 'Delivery time varies by product and is shown on each product page' }
+    etaDays: { he: '9–14 ימי עסקים', en: '9–14 business days' }
   },
 
   /* --- פרטי קשר (מופיעים בפוטר, בתקנון ובדף התודה) --------------------- */
   contact: {
     email:     'versanssupport@gmail.com',
-    phone:     '0553026389',              // שירות לקוחות
-    whatsapp:  '0553026389',              // WhatsApp שירות לקוחות
+    phone:     '',                       // לדוגמה: '050-0000000'
+    whatsapp:  '',                       // יופעל כשמספר שירות הלקוחות החדש יהיה מוכן
     instagram: '',                       // כתובת מלאה
     tiktok:    ''
   },

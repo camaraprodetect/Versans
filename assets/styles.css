@@ -4390,3 +4390,14 @@ body.site-overlay-open{overflow:hidden}
     font-size:.96rem!important;
   }
 }
+
+/* Cart per-product delivery promise */
+.line__delivery{display:flex;align-items:center;gap:.38rem;margin-top:.35rem;color:#45634c;font-size:.75rem;line-height:1.45}
+.line__delivery svg{width:15px;height:15px;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:1.65}
+.line__delivery strong{color:#244d38;font-weight:800}
+
+/* Hat delivery delay notice in cart */
+.line__delivery-wrap{margin-top:.35rem}
+.line__delivery-wrap .line__delivery{margin-top:0}
+.line__delivery-note{display:block;margin:.12rem 0 0 1.35rem;color:#c62828;font-size:.66rem;font-weight:650;line-height:1.35}
+@media(max-width:560px){.line__delivery-note{font-size:.63rem;margin-left:1.25rem}}
