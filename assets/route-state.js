@@ -143,9 +143,11 @@
          through /shop, which the server maps to index.html, then url-mask.js hides
          the route again after the storefront has initialized. */
       var previewUrl = new URL(rawHref, location.origin + currentRoute);
-      var logicalDocumentPath = path();
-      var isHomeDocument = !!(document.body && document.body.classList.contains('home-page')) &&
-        (logicalDocumentPath === '/' || logicalDocumentPath === '/shop' || logicalDocumentPath === '/shop/');
+      /* Category routes such as /rings use the same home-page DOM and are switched
+         client-side by store.js. Treat that DOM as the home document even when the
+         logical route is a category, otherwise clicking "עמוד בית" is intercepted
+         here and causes a full reload through /shop. */
+      var isHomeDocument = !!(document.body && document.body.classList.contains('home-page'));
       var homeFragments = { '#shop':1, '#shopTitle':1, '#reviews':1, '#top':1, '#how':1, '#faq':1, '#contact':1 };
       if (!isHomeDocument && previewUrl.origin === location.origin && previewUrl.pathname === '/' &&
           (!previewUrl.hash || homeFragments[previewUrl.hash])) {
