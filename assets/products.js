@@ -18963,6 +18963,1044 @@ var PRODUCTS = [
       "min": 18,
       "max": 30
     }
+  },
+  {
+    "id": "photo-projection-necklace-mom-heart-209",
+    "slug": "product-209",
+    "urlSlug": "photo-projection-necklace-mom-heart",
+    "sku": "VS-PHOTO-209",
+    "category": "photo-bracelets",
+    "categories": [
+      "necklaces",
+      "photo-bracelets",
+      "custom"
+    ],
+    "badge": {
+      "he": "עיצוב אישי",
+      "en": "Custom"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-209/product-209-1.png",
+    "hoverImage": "images/products/product-209/product-209-2.png",
+    "images": [
+      "images/products/product-209/product-209-1.png",
+      "images/products/product-209/product-209-2.png",
+      "images/products/product-209/product-209-3.png"
+    ],
+    "showAllGalleryThumbs": true,
+    "price": 139.9,
+    "compareAt": 239.9,
+    "title": {
+      "he": "תכשיט עם תמונה מוקרנת - לב MOM",
+      "en": "Photo Projection Jewelry - MOM Heart"
+    },
+    "subtitle": {
+      "he": "שרשרת עם תליון בצורת לב MOM ותמונה אישית שמוקרנת מתוך התליון - בחרו צבע והעלו תמונה",
+      "en": "MOM Heart projection pendant necklace with your custom photo - choose a color and upload a photo"
+    },
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose a color"
+    },
+    "colorRequiredText": {
+      "he": "נא לבחור צבע",
+      "en": "Please choose a color"
+    },
+    "colorDisplay": "color-row",
+    "colors": [
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "swatch": "linear-gradient(135deg,#fbfbfb 0%,#bfc5cc 48%,#f7f8fa 72%,#9da4ac 100%)",
+        "image": "images/products/product-209/product-209-1.png"
+      },
+      {
+        "id": "rose-gold",
+        "label": {
+          "he": "רוז גולד",
+          "en": "Rose Gold"
+        },
+        "swatch": "linear-gradient(135deg,#f7d0c4 0%,#b9725f 48%,#f4c2b4 75%,#9a5c4c 100%)",
+        "image": "images/products/product-209/product-209-2.png"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "swatch": "linear-gradient(135deg,#fff0a8 0%,#d5a233 48%,#ffe28a 72%,#b67d18 100%)",
+        "image": "images/products/product-209/product-209-3.png"
+      }
+    ],
+    "customPhoto": {
+      "required": true,
+      "heading": {
+        "he": "העלו את התמונה להקרנה",
+        "en": "Upload the projection photo"
+      },
+      "label": {
+        "he": "בחרו תמונה ברורה מהמכשיר",
+        "en": "Choose a clear photo from your device"
+      },
+      "help": {
+        "he": "התמונה תישמר להזמנה ותשויך לתכשיט שלכם.",
+        "en": "The photo is saved with your order and linked to your jewelry."
+      },
+      "cartLabel": {
+        "he": "תמונה אישית",
+        "en": "Custom photo"
+      }
+    },
+    "cardTitle": {
+      "he": "תכשיט עם תמונה מוקרנת - לב MOM",
+      "en": "Photo Projection Jewelry - MOM Heart"
+    },
+    "cardMessage": {
+      "he": "תליון בצורת לב MOM עם הקרנת תמונה אישית לבחירתכם.",
+      "en": "MOM Heart pendant with a custom photo projection."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צורה: לב MOM",
+        "צבעים לבחירה: כסף, רוז גולד או זהב",
+        "כולל הקרנת תמונה אישית מתוך התליון",
+        "יש להעלות תמונה לפני הוספת המוצר לסל",
+        "מתנה מרגשת במיוחד לאמא"
+      ],
+      "en": [
+        "Shape: MOM Heart",
+        "Available colors: Silver, Rose Gold or Gold",
+        "Projects your custom photo from the pendant",
+        "A photo must be uploaded before adding the item to cart",
+        "A meaningful gift especially for mom"
+      ]
+    },
+    "afterText": {
+      "he": "בחרו צבע, העלו את התמונה שתרצו בתוך התליון והוסיפו לסל.",
+      "en": "Choose a color, upload the photo you want inside the pendant and add it to cart."
+    },
+    "deliveryBusinessDays": {
+      "min": 18,
+      "max": 30
+    }
+  }
+,
+  {
+    "id": "photo-projection-necklace-open-heart-210",
+    "slug": "product-210",
+    "urlSlug": "photo-projection-necklace-open-heart",
+    "sku": "VS-PHOTO-210",
+    "category": "photo-bracelets",
+    "categories": [
+      "necklaces",
+      "photo-bracelets",
+      "custom"
+    ],
+    "badge": {
+      "he": "עיצוב אישי",
+      "en": "Custom"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-210/product-210-1.png",
+    "hoverImage": "images/products/product-210/product-210-2.png",
+    "images": [
+      "images/products/product-210/product-210-1.png",
+      "images/products/product-210/product-210-2.png",
+      "images/products/product-210/product-210-3.png"
+    ],
+    "showAllGalleryThumbs": true,
+    "price": 139.9,
+    "compareAt": 239.9,
+    "title": {
+      "he": "תכשיט עם תמונה מוקרנת - לב פתוח",
+      "en": "Photo Projection Jewelry - Open Heart"
+    },
+    "subtitle": {
+      "he": "שרשרת עם תליון בצורת לב פתוח ותמונה אישית שמוקרנת מתוך התליון - בחרו צבע והעלו תמונה",
+      "en": "Open Heart projection pendant necklace with your custom photo - choose a color and upload a photo"
+    },
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose a color"
+    },
+    "colorRequiredText": {
+      "he": "נא לבחור צבע",
+      "en": "Please choose a color"
+    },
+    "colorDisplay": "color-row",
+    "colors": [
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "swatch": "linear-gradient(135deg,#fbfbfb 0%,#bfc5cc 48%,#f7f8fa 72%,#9da4ac 100%)",
+        "image": "images/products/product-210/product-210-1.png"
+      },
+      {
+        "id": "rose-gold",
+        "label": {
+          "he": "רוז גולד",
+          "en": "Rose Gold"
+        },
+        "swatch": "linear-gradient(135deg,#f7d0c4 0%,#b9725f 48%,#f4c2b4 75%,#9a5c4c 100%)",
+        "image": "images/products/product-210/product-210-2.png"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "swatch": "linear-gradient(135deg,#fff0a8 0%,#d5a233 48%,#ffe28a 72%,#b67d18 100%)",
+        "image": "images/products/product-210/product-210-3.png"
+      }
+    ],
+    "customPhoto": {
+      "required": true,
+      "heading": {
+        "he": "העלו את התמונה להקרנה",
+        "en": "Upload the projection photo"
+      },
+      "label": {
+        "he": "בחרו תמונה ברורה מהמכשיר",
+        "en": "Choose a clear photo from your device"
+      },
+      "help": {
+        "he": "התמונה תישמר להזמנה ותשויך לתכשיט שלכם.",
+        "en": "The photo is saved with your order and linked to your jewelry."
+      },
+      "cartLabel": {
+        "he": "תמונה אישית",
+        "en": "Custom photo"
+      }
+    },
+    "cardTitle": {
+      "he": "תכשיט עם תמונה מוקרנת - לב פתוח",
+      "en": "Photo Projection Jewelry - Open Heart"
+    },
+    "cardMessage": {
+      "he": "תליון בצורת לב פתוח עם הקרנת תמונה אישית לבחירתכם.",
+      "en": "Open Heart pendant with a custom photo projection."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צורה: לב פתוח",
+        "צבעים לבחירה: כסף, רוז גולד או זהב",
+        "כולל הקרנת תמונה אישית מתוך התליון",
+        "יש להעלות תמונה לפני הוספת המוצר לסל",
+        "עיצוב לב פתוח למראה נקי ורומנטי"
+      ],
+      "en": [
+        "Shape: Open Heart",
+        "Available colors: Silver, Rose Gold or Gold",
+        "Projects your custom photo from the pendant",
+        "A photo must be uploaded before adding the item to cart",
+        "Open-heart design for a clean, romantic look"
+      ]
+    },
+    "afterText": {
+      "he": "בחרו צבע, העלו את התמונה שתרצו בתוך התליון והוסיפו לסל.",
+      "en": "Choose a color, upload the photo you want inside the pendant and add it to cart."
+    },
+    "deliveryBusinessDays": {
+      "min": 18,
+      "max": 30
+    }
+  }
+,
+  {
+    "id": "photo-projection-necklace-decorated-heart-211",
+    "slug": "product-211",
+    "urlSlug": "photo-projection-necklace-decorated-heart",
+    "sku": "VS-PHOTO-211",
+    "category": "photo-bracelets",
+    "categories": [
+      "necklaces",
+      "photo-bracelets",
+      "custom"
+    ],
+    "badge": {
+      "he": "עיצוב אישי",
+      "en": "Custom"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-211/product-211-1.png",
+    "hoverImage": "images/products/product-211/product-211-2.png",
+    "images": [
+      "images/products/product-211/product-211-1.png",
+      "images/products/product-211/product-211-2.png",
+      "images/products/product-211/product-211-3.png"
+    ],
+    "showAllGalleryThumbs": true,
+    "price": 139.9,
+    "compareAt": 239.9,
+    "title": {
+      "he": "תכשיט עם תמונה מוקרנת - לב מעוטר",
+      "en": "Photo Projection Jewelry - Decorated Heart"
+    },
+    "subtitle": {
+      "he": "שרשרת עם תליון בצורת לב מעוטר ותמונה אישית שמוקרנת מתוך התליון - בחרו צבע והעלו תמונה",
+      "en": "Decorated Heart projection pendant necklace with your custom photo - choose a color and upload a photo"
+    },
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose a color"
+    },
+    "colorRequiredText": {
+      "he": "נא לבחור צבע",
+      "en": "Please choose a color"
+    },
+    "colorDisplay": "color-row",
+    "colors": [
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "swatch": "linear-gradient(135deg,#fbfbfb 0%,#bfc5cc 48%,#f7f8fa 72%,#9da4ac 100%)",
+        "image": "images/products/product-211/product-211-1.png"
+      },
+      {
+        "id": "rose-gold",
+        "label": {
+          "he": "רוז גולד",
+          "en": "Rose Gold"
+        },
+        "swatch": "linear-gradient(135deg,#f7d0c4 0%,#b9725f 48%,#f4c2b4 75%,#9a5c4c 100%)",
+        "image": "images/products/product-211/product-211-2.png"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "swatch": "linear-gradient(135deg,#fff0a8 0%,#d5a233 48%,#ffe28a 72%,#b67d18 100%)",
+        "image": "images/products/product-211/product-211-3.png"
+      }
+    ],
+    "customPhoto": {
+      "required": true,
+      "heading": {
+        "he": "העלו את התמונה להקרנה",
+        "en": "Upload the projection photo"
+      },
+      "label": {
+        "he": "בחרו תמונה ברורה מהמכשיר",
+        "en": "Choose a clear photo from your device"
+      },
+      "help": {
+        "he": "התמונה תישמר להזמנה ותשויך לתכשיט שלכם.",
+        "en": "The photo is saved with your order and linked to your jewelry."
+      },
+      "cartLabel": {
+        "he": "תמונה אישית",
+        "en": "Custom photo"
+      }
+    },
+    "cardTitle": {
+      "he": "תכשיט עם תמונה מוקרנת - לב מעוטר",
+      "en": "Photo Projection Jewelry - Decorated Heart"
+    },
+    "cardMessage": {
+      "he": "תליון בצורת לב מעוטר עם הקרנת תמונה אישית לבחירתכם.",
+      "en": "Decorated Heart pendant with a custom photo projection."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צורה: לב מעוטר",
+        "צבעים לבחירה: כסף, רוז גולד או זהב",
+        "כולל הקרנת תמונה אישית מתוך התליון",
+        "יש להעלות תמונה לפני הוספת המוצר לסל",
+        "עיצוב לב מיוחד עם פרטים דקורטיביים"
+      ],
+      "en": [
+        "Shape: Decorated Heart",
+        "Available colors: Silver, Rose Gold or Gold",
+        "Projects your custom photo from the pendant",
+        "A photo must be uploaded before adding the item to cart",
+        "Distinctive heart design with decorative details"
+      ]
+    },
+    "afterText": {
+      "he": "בחרו צבע, העלו את התמונה שתרצו בתוך התליון והוסיפו לסל.",
+      "en": "Choose a color, upload the photo you want inside the pendant and add it to cart."
+    },
+    "deliveryBusinessDays": {
+      "min": 18,
+      "max": 30
+    }
+  }
+,
+  {
+    "id": "photo-projection-necklace-crystal-heart-212",
+    "slug": "product-212",
+    "urlSlug": "photo-projection-necklace-crystal-heart",
+    "sku": "VS-PHOTO-212",
+    "category": "photo-bracelets",
+    "categories": [
+      "necklaces",
+      "photo-bracelets",
+      "custom"
+    ],
+    "badge": {
+      "he": "עיצוב אישי",
+      "en": "Custom"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-212/product-212-1.png",
+    "hoverImage": "images/products/product-212/product-212-2.png",
+    "images": [
+      "images/products/product-212/product-212-1.png",
+      "images/products/product-212/product-212-2.png",
+      "images/products/product-212/product-212-3.png"
+    ],
+    "showAllGalleryThumbs": true,
+    "price": 139.9,
+    "compareAt": 239.9,
+    "title": {
+      "he": "תכשיט עם תמונה מוקרנת - לב משובץ",
+      "en": "Photo Projection Jewelry - Crystal Heart"
+    },
+    "subtitle": {
+      "he": "שרשרת עם תליון בצורת לב משובץ ותמונה אישית שמוקרנת מתוך התליון - בחרו צבע והעלו תמונה",
+      "en": "Crystal Heart projection pendant necklace with your custom photo - choose a color and upload a photo"
+    },
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose a color"
+    },
+    "colorRequiredText": {
+      "he": "נא לבחור צבע",
+      "en": "Please choose a color"
+    },
+    "colorDisplay": "color-row",
+    "colors": [
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "swatch": "linear-gradient(135deg,#fbfbfb 0%,#bfc5cc 48%,#f7f8fa 72%,#9da4ac 100%)",
+        "image": "images/products/product-212/product-212-1.png"
+      },
+      {
+        "id": "rose-gold",
+        "label": {
+          "he": "רוז גולד",
+          "en": "Rose Gold"
+        },
+        "swatch": "linear-gradient(135deg,#f7d0c4 0%,#b9725f 48%,#f4c2b4 75%,#9a5c4c 100%)",
+        "image": "images/products/product-212/product-212-2.png"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "swatch": "linear-gradient(135deg,#fff0a8 0%,#d5a233 48%,#ffe28a 72%,#b67d18 100%)",
+        "image": "images/products/product-212/product-212-3.png"
+      }
+    ],
+    "customPhoto": {
+      "required": true,
+      "heading": {
+        "he": "העלו את התמונה להקרנה",
+        "en": "Upload the projection photo"
+      },
+      "label": {
+        "he": "בחרו תמונה ברורה מהמכשיר",
+        "en": "Choose a clear photo from your device"
+      },
+      "help": {
+        "he": "התמונה תישמר להזמנה ותשויך לתכשיט שלכם.",
+        "en": "The photo is saved with your order and linked to your jewelry."
+      },
+      "cartLabel": {
+        "he": "תמונה אישית",
+        "en": "Custom photo"
+      }
+    },
+    "cardTitle": {
+      "he": "תכשיט עם תמונה מוקרנת - לב משובץ",
+      "en": "Photo Projection Jewelry - Crystal Heart"
+    },
+    "cardMessage": {
+      "he": "תליון בצורת לב משובץ עם הקרנת תמונה אישית לבחירתכם.",
+      "en": "Crystal Heart pendant with a custom photo projection."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צורה: לב משובץ",
+        "צבעים לבחירה: כסף, רוז גולד או זהב",
+        "כולל הקרנת תמונה אישית מתוך התליון",
+        "יש להעלות תמונה לפני הוספת המוצר לסל",
+        "עיצוב לב משובץ למראה יוקרתי"
+      ],
+      "en": [
+        "Shape: Crystal Heart",
+        "Available colors: Silver, Rose Gold or Gold",
+        "Projects your custom photo from the pendant",
+        "A photo must be uploaded before adding the item to cart",
+        "Crystal-style heart design for a premium look"
+      ]
+    },
+    "afterText": {
+      "he": "בחרו צבע, העלו את התמונה שתרצו בתוך התליון והוסיפו לסל.",
+      "en": "Choose a color, upload the photo you want inside the pendant and add it to cart."
+    },
+    "deliveryBusinessDays": {
+      "min": 18,
+      "max": 30
+    }
+  },
+  {
+    "id": "photo-projection-necklace-star-of-david-213",
+    "slug": "product-213",
+    "urlSlug": "photo-projection-necklace-star-of-david",
+    "sku": "VS-PHOTO-213",
+    "category": "photo-bracelets",
+    "categories": [
+      "necklaces",
+      "photo-bracelets",
+      "custom"
+    ],
+    "badge": {
+      "he": "עיצוב אישי",
+      "en": "Custom"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-213/product-213-1.png",
+    "hoverImage": "images/products/product-213/product-213-2.png",
+    "images": [
+      "images/products/product-213/product-213-1.png",
+      "images/products/product-213/product-213-2.png",
+      "images/products/product-213/product-213-3.png"
+    ],
+    "showAllGalleryThumbs": true,
+    "price": 139.9,
+    "compareAt": 239.9,
+    "title": {
+      "he": "תכשיט עם תמונה מוקרנת - מגן דוד",
+      "en": "Photo Projection Jewelry - Star of David"
+    },
+    "subtitle": {
+      "he": "שרשרת עם תליון בצורת מגן דוד ותמונה אישית שמוקרנת מתוך התליון - בחרו צבע והעלו תמונה",
+      "en": "Star of David projection pendant necklace with your custom photo - choose a color and upload a photo"
+    },
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose a color"
+    },
+    "colorRequiredText": {
+      "he": "נא לבחור צבע",
+      "en": "Please choose a color"
+    },
+    "colorDisplay": "color-row",
+    "colors": [
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "swatch": "linear-gradient(135deg,#fbfbfb 0%,#bfc5cc 48%,#f7f8fa 72%,#9da4ac 100%)",
+        "image": "images/products/product-213/product-213-1.png"
+      },
+      {
+        "id": "rose-gold",
+        "label": {
+          "he": "רוז גולד",
+          "en": "Rose Gold"
+        },
+        "swatch": "linear-gradient(135deg,#f7d0c4 0%,#b9725f 48%,#f4c2b4 75%,#9a5c4c 100%)",
+        "image": "images/products/product-213/product-213-2.png"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "swatch": "linear-gradient(135deg,#fff0a8 0%,#d5a233 48%,#ffe28a 72%,#b67d18 100%)",
+        "image": "images/products/product-213/product-213-3.png"
+      }
+    ],
+    "customPhoto": {
+      "required": true,
+      "heading": {
+        "he": "העלו את התמונה להקרנה",
+        "en": "Upload the projection photo"
+      },
+      "label": {
+        "he": "בחרו תמונה ברורה מהמכשיר",
+        "en": "Choose a clear photo from your device"
+      },
+      "help": {
+        "he": "התמונה תישמר להזמנה ותשויך לתכשיט שלכם.",
+        "en": "The photo is saved with your order and linked to your jewelry."
+      },
+      "cartLabel": {
+        "he": "תמונה אישית",
+        "en": "Custom photo"
+      }
+    },
+    "cardTitle": {
+      "he": "תכשיט עם תמונה מוקרנת - מגן דוד",
+      "en": "Photo Projection Jewelry - Star of David"
+    },
+    "cardMessage": {
+      "he": "תליון מגן דוד עם הקרנת תמונה אישית לבחירתכם.",
+      "en": "Star of David pendant with a custom photo projection."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צורה: מגן דוד",
+        "צבעים לבחירה: כסף, רוז גולד או זהב",
+        "כולל הקרנת תמונה אישית מתוך התליון",
+        "יש להעלות תמונה לפני הוספת המוצר לסל",
+        "עיצוב מגן דוד ייחודי עם אבנים משובצות"
+      ],
+      "en": [
+        "Shape: Star of David",
+        "Available colors: Silver, Rose Gold or Gold",
+        "Projects your custom photo from the pendant",
+        "A photo must be uploaded before adding the item to cart",
+        "Unique Star of David design with crystal details"
+      ]
+    },
+    "afterText": {
+      "he": "בחרו צבע, העלו את התמונה שתרצו בתוך התליון והוסיפו לסל.",
+      "en": "Choose a color, upload the photo you want inside the pendant and add it to cart."
+    },
+    "deliveryBusinessDays": {
+      "min": 18,
+      "max": 30
+    }
+  }
+,
+  {
+    "id": "photo-projection-necklace-double-heart-214",
+    "slug": "product-214",
+    "urlSlug": "photo-projection-necklace-double-heart",
+    "sku": "VS-PHOTO-214",
+    "category": "photo-bracelets",
+    "categories": [
+      "necklaces",
+      "photo-bracelets",
+      "custom"
+    ],
+    "badge": {
+      "he": "עיצוב אישי",
+      "en": "Custom"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-214/product-214-1.png",
+    "hoverImage": "images/products/product-214/product-214-2.png",
+    "images": [
+      "images/products/product-214/product-214-1.png",
+      "images/products/product-214/product-214-2.png",
+      "images/products/product-214/product-214-3.png"
+    ],
+    "showAllGalleryThumbs": true,
+    "price": 139.9,
+    "compareAt": 239.9,
+    "title": {
+      "he": "תכשיט עם תמונה מוקרנת - לב כפול",
+      "en": "Photo Projection Jewelry - Double Heart"
+    },
+    "subtitle": {
+      "he": "שרשרת עם תליון בצורת לב כפול ותמונה אישית שמוקרנת מתוך התליון - בחרו צבע והעלו תמונה",
+      "en": "Double Heart projection pendant necklace with your custom photo - choose a color and upload a photo"
+    },
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose a color"
+    },
+    "colorRequiredText": {
+      "he": "נא לבחור צבע",
+      "en": "Please choose a color"
+    },
+    "colorDisplay": "color-row",
+    "colors": [
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "swatch": "linear-gradient(135deg,#fbfbfb 0%,#bfc5cc 48%,#f7f8fa 72%,#9da4ac 100%)",
+        "image": "images/products/product-214/product-214-1.png"
+      },
+      {
+        "id": "rose-gold",
+        "label": {
+          "he": "רוז גולד",
+          "en": "Rose Gold"
+        },
+        "swatch": "linear-gradient(135deg,#f7d0c4 0%,#b9725f 48%,#f4c2b4 75%,#9a5c4c 100%)",
+        "image": "images/products/product-214/product-214-2.png"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "swatch": "linear-gradient(135deg,#fff0a8 0%,#d5a233 48%,#ffe28a 72%,#b67d18 100%)",
+        "image": "images/products/product-214/product-214-3.png"
+      }
+    ],
+    "customPhoto": {
+      "required": true,
+      "heading": {
+        "he": "העלו את התמונה להקרנה",
+        "en": "Upload the projection photo"
+      },
+      "label": {
+        "he": "בחרו תמונה ברורה מהמכשיר",
+        "en": "Choose a clear photo from your device"
+      },
+      "help": {
+        "he": "התמונה תישמר להזמנה ותשויך לתכשיט שלכם.",
+        "en": "The photo is saved with your order and linked to your jewelry."
+      },
+      "cartLabel": {
+        "he": "תמונה אישית",
+        "en": "Custom photo"
+      }
+    },
+    "cardTitle": {
+      "he": "תכשיט עם תמונה מוקרנת - לב כפול",
+      "en": "Photo Projection Jewelry - Double Heart"
+    },
+    "cardMessage": {
+      "he": "תליון לב כפול עם הקרנת תמונה אישית לבחירתכם.",
+      "en": "Double Heart pendant with a custom photo projection."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צורה: לב כפול",
+        "צבעים לבחירה: כסף, רוז גולד או זהב",
+        "כולל הקרנת תמונה אישית מתוך התליון",
+        "יש להעלות תמונה לפני הוספת המוצר לסל",
+        "עיצוב לב רומנטי ונקי"
+      ],
+      "en": [
+        "Shape: Double Heart",
+        "Available colors: Silver, Rose Gold or Gold",
+        "Projects your custom photo from the pendant",
+        "A photo must be uploaded before adding the item to cart",
+        "Romantic clean heart design"
+      ]
+    },
+    "afterText": {
+      "he": "בחרו צבע, העלו את התמונה שתרצו בתוך התליון והוסיפו לסל.",
+      "en": "Choose a color, upload the photo you want inside the pendant and add it to cart."
+    },
+    "deliveryBusinessDays": {
+      "min": 18,
+      "max": 30
+    }
+  }
+,
+  {
+    "id": "photo-projection-necklace-elegant-heart-215",
+    "slug": "product-215",
+    "urlSlug": "photo-projection-necklace-elegant-heart",
+    "sku": "VS-PHOTO-215",
+    "category": "photo-bracelets",
+    "categories": [
+      "necklaces",
+      "photo-bracelets",
+      "custom"
+    ],
+    "badge": {
+      "he": "עיצוב אישי",
+      "en": "Custom"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-215/product-215-1.png",
+    "hoverImage": "images/products/product-215/product-215-2.png",
+    "images": [
+      "images/products/product-215/product-215-1.png",
+      "images/products/product-215/product-215-2.png",
+      "images/products/product-215/product-215-3.png"
+    ],
+    "showAllGalleryThumbs": true,
+    "price": 139.9,
+    "compareAt": 239.9,
+    "title": {
+      "he": "תכשיט עם תמונה מוקרנת - לב אלגנטי",
+      "en": "Photo Projection Jewelry - Elegant Heart"
+    },
+    "subtitle": {
+      "he": "שרשרת עם תליון בצורת לב אלגנטי ותמונה אישית שמוקרנת מתוך התליון - בחרו צבע והעלו תמונה",
+      "en": "Elegant Heart projection pendant necklace with your custom photo - choose a color and upload a photo"
+    },
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose a color"
+    },
+    "colorRequiredText": {
+      "he": "נא לבחור צבע",
+      "en": "Please choose a color"
+    },
+    "colorDisplay": "color-row",
+    "colors": [
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "swatch": "linear-gradient(135deg,#fbfbfb 0%,#bfc5cc 48%,#f7f8fa 72%,#9da4ac 100%)",
+        "image": "images/products/product-215/product-215-1.png"
+      },
+      {
+        "id": "rose-gold",
+        "label": {
+          "he": "רוז גולד",
+          "en": "Rose Gold"
+        },
+        "swatch": "linear-gradient(135deg,#f7d0c4 0%,#b9725f 48%,#f4c2b4 75%,#9a5c4c 100%)",
+        "image": "images/products/product-215/product-215-2.png"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "swatch": "linear-gradient(135deg,#fff0a8 0%,#d5a233 48%,#ffe28a 72%,#b67d18 100%)",
+        "image": "images/products/product-215/product-215-3.png"
+      }
+    ],
+    "customPhoto": {
+      "required": true,
+      "heading": {
+        "he": "העלו את התמונה להקרנה",
+        "en": "Upload the projection photo"
+      },
+      "label": {
+        "he": "בחרו תמונה ברורה מהמכשיר",
+        "en": "Choose a clear photo from your device"
+      },
+      "help": {
+        "he": "התמונה תישמר להזמנה ותשויך לתכשיט שלכם.",
+        "en": "The photo is saved with your order and linked to your jewelry."
+      },
+      "cartLabel": {
+        "he": "תמונה אישית",
+        "en": "Custom photo"
+      }
+    },
+    "cardTitle": {
+      "he": "תכשיט עם תמונה מוקרנת - לב אלגנטי",
+      "en": "Photo Projection Jewelry - Elegant Heart"
+    },
+    "cardMessage": {
+      "he": "תליון לב אלגנטי עם הקרנת תמונה אישית לבחירתכם.",
+      "en": "Elegant Heart pendant with a custom photo projection."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צורה: לב אלגנטי",
+        "צבעים לבחירה: כסף, רוז גולד או זהב",
+        "כולל הקרנת תמונה אישית מתוך התליון",
+        "יש להעלות תמונה לפני הוספת המוצר לסל",
+        "עיצוב עדין ומוארך למראה יוקרתי"
+      ],
+      "en": [
+        "Shape: Elegant Heart",
+        "Available colors: Silver, Rose Gold or Gold",
+        "Projects your custom photo from the pendant",
+        "A photo must be uploaded before adding the item to cart",
+        "Delicate elongated design for a premium look"
+      ]
+    },
+    "afterText": {
+      "he": "בחרו צבע, העלו את התמונה שתרצו בתוך התליון והוסיפו לסל.",
+      "en": "Choose a color, upload the photo you want inside the pendant and add it to cart."
+    },
+    "deliveryBusinessDays": {
+      "min": 18,
+      "max": 30
+    }
+  }
+,
+  {
+    "id": "photo-projection-necklace-floral-heart-216",
+    "slug": "product-216",
+    "urlSlug": "photo-projection-necklace-floral-heart",
+    "sku": "VS-PHOTO-216",
+    "category": "photo-bracelets",
+    "categories": [
+      "necklaces",
+      "photo-bracelets",
+      "custom"
+    ],
+    "badge": {
+      "he": "עיצוב אישי",
+      "en": "Custom"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-216/product-216-1.png",
+    "hoverImage": "images/products/product-216/product-216-2.png",
+    "images": [
+      "images/products/product-216/product-216-1.png",
+      "images/products/product-216/product-216-2.png",
+      "images/products/product-216/product-216-3.png"
+    ],
+    "showAllGalleryThumbs": true,
+    "price": 139.9,
+    "compareAt": 239.9,
+    "title": {
+      "he": "תכשיט עם תמונה מוקרנת - לב פרחוני",
+      "en": "Photo Projection Jewelry - Floral Heart"
+    },
+    "subtitle": {
+      "he": "שרשרת עם תליון בצורת לב פרחוני ותמונה אישית שמוקרנת מתוך התליון - בחרו צבע והעלו תמונה",
+      "en": "Floral Heart projection pendant necklace with your custom photo - choose a color and upload a photo"
+    },
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose a color"
+    },
+    "colorRequiredText": {
+      "he": "נא לבחור צבע",
+      "en": "Please choose a color"
+    },
+    "colorDisplay": "color-row",
+    "colors": [
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "swatch": "linear-gradient(135deg,#fbfbfb 0%,#bfc5cc 48%,#f7f8fa 72%,#9da4ac 100%)",
+        "image": "images/products/product-216/product-216-1.png"
+      },
+      {
+        "id": "rose-gold",
+        "label": {
+          "he": "רוז גולד",
+          "en": "Rose Gold"
+        },
+        "swatch": "linear-gradient(135deg,#f7d0c4 0%,#b9725f 48%,#f4c2b4 75%,#9a5c4c 100%)",
+        "image": "images/products/product-216/product-216-2.png"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "swatch": "linear-gradient(135deg,#fff0a8 0%,#d5a233 48%,#ffe28a 72%,#b67d18 100%)",
+        "image": "images/products/product-216/product-216-3.png"
+      }
+    ],
+    "customPhoto": {
+      "required": true,
+      "heading": {
+        "he": "העלו את התמונה להקרנה",
+        "en": "Upload the projection photo"
+      },
+      "label": {
+        "he": "בחרו תמונה ברורה מהמכשיר",
+        "en": "Choose a clear photo from your device"
+      },
+      "help": {
+        "he": "התמונה תישמר להזמנה ותשויך לתכשיט שלכם.",
+        "en": "The photo is saved with your order and linked to your jewelry."
+      },
+      "cartLabel": {
+        "he": "תמונה אישית",
+        "en": "Custom photo"
+      }
+    },
+    "cardTitle": {
+      "he": "תכשיט עם תמונה מוקרנת - לב פרחוני",
+      "en": "Photo Projection Jewelry - Floral Heart"
+    },
+    "cardMessage": {
+      "he": "תליון לב פרחוני עם הקרנת תמונה אישית לבחירתכם.",
+      "en": "Floral Heart pendant with a custom photo projection."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צורה: לב פרחוני",
+        "צבעים לבחירה: כסף, רוז גולד או זהב",
+        "כולל הקרנת תמונה אישית מתוך התליון",
+        "יש להעלות תמונה לפני הוספת המוצר לסל",
+        "עיצוב לב עם פרטים משובצים בסגנון פרחוני"
+      ],
+      "en": [
+        "Shape: Floral Heart",
+        "Available colors: Silver, Rose Gold or Gold",
+        "Projects your custom photo from the pendant",
+        "A photo must be uploaded before adding the item to cart",
+        "Heart design with floral crystal details"
+      ]
+    },
+    "afterText": {
+      "he": "בחרו צבע, העלו את התמונה שתרצו בתוך התליון והוסיפו לסל.",
+      "en": "Choose a color, upload the photo you want inside the pendant and add it to cart."
+    },
+    "deliveryBusinessDays": {
+      "min": 18,
+      "max": 30
+    }
   }
 ];
 
