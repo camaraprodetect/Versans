@@ -98,12 +98,10 @@
     name.textContent = reviewName(review);
     reviewer.appendChild(name);
 
-    if (review.verified) {
-      var verified = document.createElement('span');
-      verified.className = 'product-review-slide__verified';
-      verified.innerHTML = '<span aria-hidden="true">V</span> מאומת';
-      reviewer.appendChild(verified);
-    }
+    var verified = document.createElement('span');
+    verified.className = 'product-review-slide__verified';
+    verified.innerHTML = '<span aria-hidden="true">V</span> לקוח מאומת';
+    reviewer.appendChild(verified);
 
     var starEl = document.createElement('span');
     starEl.className = 'product-review-slide__stars';
@@ -369,7 +367,7 @@
     activeModalReview = review;
     activeMediaIndex = 0;
     if (modalName) modalName.textContent = reviewName(review);
-    modalVerified.hidden = !review.verified;
+    modalVerified.hidden = false;
     modalDate.textContent = formatDate(review.createdAt);
     try { modalDate.dateTime = new Date(review.createdAt).toISOString(); } catch (_) {}
     modalStars.textContent = stars(review.rating);

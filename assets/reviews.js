@@ -26,6 +26,7 @@
   var verifiedRequired = document.getElementById('reviewVerifiedRequired');
   var userLine = document.getElementById('reviewUserLine');
   var productPicker = document.getElementById('reviewProducts');
+  var nameInput = document.getElementById('reviewName');
   var phoneInput = document.getElementById('reviewPhone');
   var dateInput = document.getElementById('reviewDate');
   var textInput = document.getElementById('reviewText');
@@ -52,6 +53,7 @@
   var detailPrev = document.getElementById('reviewDetailPrev');
   var detailNext = document.getElementById('reviewDetailNext');
   var detailCounter = document.getElementById('reviewDetailCounter');
+  var detailName = document.getElementById('reviewDetailName');
   var detailVerified = document.getElementById('reviewDetailVerified');
   var detailDate = document.getElementById('reviewDetailDate');
   var detailStars = document.getElementById('reviewDetailStars');
@@ -239,8 +241,8 @@
     stars.textContent = starsText(review.rating);
     score.textContent = review.rating + ' / 5';
     card.querySelector('.review-card__text').textContent = review.text;
-    name.textContent = 'לקוח VerSans';
-    if (verified) verified.hidden = !review.verified;
+    name.textContent = String(review.name || 'לקוח VerSans');
+    if (verified) verified.hidden = false;
     date.textContent = reviewDate(review.createdAt);
     date.dateTime = new Date(review.createdAt).toISOString();
     renderReviewMedia(card, review);
@@ -544,6 +546,8 @@
         if (option) option.classList.remove('is-selected');
       });
     }
+    if (nameInput) nameInput.value = currentUser && currentUser.name ? currentUser.name : '';
+    if (phoneInput) phoneInput.value = currentUser && currentUser.phone ? currentUser.phone : '';
     if (dateInput) {
       var today = localDateValue(new Date());
       dateInput.value = today;
@@ -794,7 +798,8 @@
     detailLastFocused = document.activeElement;
     activeDetailReview = review;
     activeDetailMediaIndex = 0;
-    detailVerified.hidden = !review.verified;
+    if (detailName) detailName.textContent = String(review.name || 'לקוח VerSans');
+    detailVerified.hidden = false;
     detailDate.textContent = reviewDate(review.createdAt);
     detailDate.dateTime = new Date(review.createdAt).toISOString();
     detailStars.textContent = starsText(review.rating);
@@ -1035,6 +1040,7 @@
     event.preventDefault();
     setMessage('');
     var productIds = selectedReviewProductIds();
+    var reviewName = nameInput ? nameInput.value.replace(/\s+/g, ' ').trim() : '';
     var phone = phoneInput.value.trim();
     var reviewDateValue = dateInput ? dateInput.value : '';
     var text = textInput.value.trim();
@@ -1043,6 +1049,11 @@
       setMessage('חייבים לבחור לפחות מוצר אחד שרכשתם.', true);
       var firstProductChoice = productPicker ? productPicker.querySelector('input[type="checkbox"]') : null;
       if (firstProductChoice) firstProductChoice.focus();
+      return;
+    }
+    if (reviewName.length < 2 || reviewName.length > 70) {
+      setMessage('הזינו שם שיוצג בביקורת (2 עד 70 תווים).', true);
+      if (nameInput) nameInput.focus();
       return;
     }
     if (phone.replace(/\D/g, '').length < 9) {
@@ -1078,6 +1089,7 @@
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       body: JSON.stringify({
         productIds: productIds,
+        name: reviewName,
         phone: phone,
         date: reviewDateValue,
         rating: selectedRating,
@@ -1100,6 +1112,7 @@
           throw new Error('רק לקוחות עם רכישה מאומתת יכולים לפרסם ביקורת.');
         }
         if (code === 'product_not_purchased') throw new Error('אפשר לפרסם ביקורת רק על מוצר שנרכש בחשבון הזה.');
+        if (code === 'invalid_review_name') throw new Error('הזינו שם שיוצג בביקורת (2 עד 70 תווים).');
         if (code === 'review_product_required') throw new Error('חייבים לבחור לפחות מוצר אחד שרכשתם לפני פרסום הביקורת.');
         if (code === 'too_many_review_products') throw new Error('נבחרו יותר מדי מוצרים לביקורת אחת.');
         if (code === 'invalid_phone') throw new Error('הזינו מספר טלפון תקין.');

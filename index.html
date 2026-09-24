@@ -600,6 +600,7 @@
       </div>
       <a href="/necklaces#shop" data-cat="necklaces" data-nav-cat="necklaces">שרשראות</a>
       <a href="/bracelets#shop" data-cat="bracelets" data-nav-cat="bracelets">צמידים</a>
+      <a href="/rings#shop" data-cat="rings" data-nav-cat="rings">טבעות</a>
       <a href="/photo-bracelets#shop" data-cat="photo-bracelets" data-nav-cat="photo-bracelets">תכשיטי תמונה</a>
       <div class="nav__item nav__item--has-submenu" data-nav-group="watches">
         <a href="/watches#shop" data-cat="watches" data-nav-cat="watches" data-nav-parent-toggle="watches" aria-haspopup="true" aria-expanded="false">שעונים</a>
@@ -823,7 +824,7 @@
           </div>
           <blockquote class="review-card__text" dir="auto"></blockquote>
           <div class="review-card__footer">
-            <p class="review-card__identity"><span class="review-card__name">לקוח VerSans</span><span class="review-card__verified" hidden><span class="review-card__verified-icon" aria-hidden="true">V</span> מאומת</span></p>
+            <p class="review-card__identity"><span class="review-card__name">לקוח VerSans</span><span class="review-card__verified"><span class="review-card__verified-icon" aria-hidden="true">V</span> לקוח מאומת</span></p>
           </div>
           <a class="review-card__product" href="/mom-heart-necklace">
             <img class="review-card__product-image" src="images/review-products/necklace-1.png" alt="" loading="lazy" decoding="async">
@@ -872,6 +873,12 @@
           <div class="review-product-picker__status">טוען את המוצרים שרכשתם…</div>
         </div>
         <small class="review-form__hint" id="reviewProductsHint">חייבים לבחור לפחות מוצר אחד. אפשר לבחור כמה מוצרים, ורק מתוך מוצרים שנרכשו בחשבון הזה.</small>
+      </div>
+
+      <div class="review-form__field">
+        <label for="reviewName">השם שיוצג בביקורת</label>
+        <input class="review-form__input" id="reviewName" name="reviewName" type="text" autocomplete="name" maxlength="70" placeholder="לדוגמה: מאור" required>
+        <small class="review-form__hint">השם הזה יוצג באתר ליד הביקורת שלכם.</small>
       </div>
 
       <div class="review-form__field">
@@ -955,7 +962,7 @@
     </div>
     <div class="review-detail-modal__content">
       <div class="review-detail-modal__meta">
-        <p class="review-detail-modal__identity"><strong id="reviewDetailName">לקוח VerSans</strong><span class="review-detail-modal__verified" id="reviewDetailVerified" hidden><span aria-hidden="true">V</span> מאומת</span></p>
+        <p class="review-detail-modal__identity"><strong id="reviewDetailName">לקוח VerSans</strong><span class="review-detail-modal__verified" id="reviewDetailVerified"><span aria-hidden="true">V</span> לקוח מאומת</span></p>
         <time id="reviewDetailDate"></time>
       </div>
       <p class="review-detail-modal__rating"><span id="reviewDetailStars" aria-hidden="true"></span><span id="reviewDetailScore" dir="ltr"></span></p>
@@ -1120,7 +1127,7 @@
 <script src="assets/glasses-pricing.js?v=20260912-glasses-v9"></script>
 <script src="assets/pricing.js?v=20260922-cart-promos-v2"></script>
 <script src="assets/i18n.js?v=20260922-full-address-v1"></script>
-<script src="assets/reviews.js?v=20260924-reviews-multi-my-v1"></script>
+<script src="assets/reviews.js?v=20260924-review-names-verified-v2"></script>
 <script src="assets/home.js?v=20260921-watch-subcats-v1"></script>
 <script src="assets/store.js?v=20260923-product-orders-v5"></script>
 <script src="assets/auth-nav.js?v=20260914-pretty-urls-v1"></script>

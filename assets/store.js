@@ -203,7 +203,6 @@
     { key: 'greeting', label: 'תכשיט עם ברכה' },
     { key: 'necklaces', label: 'שרשראות' },
     { key: 'bracelets', label: 'צמידים' },
-    { key: 'rings', label: 'טבעות' },
     { key: 'photo-bracelets', label: 'תכשיטי תמונה' },
     { key: 'watches', label: 'שעונים' },
     { key: 'glasses', label: 'משקפיים' },
@@ -218,7 +217,7 @@
 
   var MATERIAL_DEFS = [
     { key: 'sterling-925', label: 'Sterling Silver 925', terms: ['925 sterling silver', 'sterling silver 925', 'כסף סטרלינג', 'ציפוי sterling silver 925'] },
-    { key: 'stainless-steel', label: 'Premium Stainless Steel', terms: ['stainless steel', 'נירוסטה', 'פלדת אל חלד'] },
+    { key: 'stainless-steel', label: 'Stainless Steel', terms: ['stainless steel', 'נירוסטה', 'פלדת אל חלד'] },
     { key: 'zinc-alloy', label: 'Zinc Alloy', terms: ['zinc alloy', 'סגסוגת אבץ'] },
     { key: 'acetate', label: 'אצטט', terms: ['acetate', 'אצטט'] }
   ];

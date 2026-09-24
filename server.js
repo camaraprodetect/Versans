@@ -48,6 +48,7 @@ const PRESENCE_RETENTION_MS = 90 * 24 * 60 * 60 * 1000;
 const ONLINE_WINDOW_MS = 75 * 1000;
 const ADMIN_EMAIL = 'camaraprodetect@gmail.com';
 const USER_PURGE_META_KEY = 'purge_users_except_camaraprodetect_20260922_v1';
+const REVIEWS_PURGE_META_KEY = 'purge_all_reviews_20260924_v1';
 const ADMIN_PAGES = new Set(['', 'dashboard', 'visitors', 'sales', 'orders', 'products', 'customers', 'traffic', 'reviews']);
 const BODY_LIMIT = 48 * 1024 * 1024;
 const REVIEW_IMAGE_LIMIT = 2 * 1024 * 1024;
@@ -55,6 +56,7 @@ const REVIEW_VIDEO_LIMIT = 20 * 1024 * 1024;
 const REVIEW_MEDIA_TOTAL_LIMIT = 30 * 1024 * 1024;
 const REVIEW_MEDIA_MAX_COUNT = 5;
 const REVIEW_TEXT_MAX = 1200;
+const REVIEW_NAME_MAX = 70;
 const PUBLIC_REVIEW_NAME = 'לקוח VerSans';
 const TERMS_VERSION = '2026-09-22';
 const MARKETING_CATALOG_META_KEY = 'marketing_catalog_initialized_v1';
@@ -457,8 +459,8 @@ async function publicReview(row) {
   const primaryProduct = products[0] || reviewProductPayload(row.review_product_id, row.review_product_variant, row.id);
   return {
     id: row.id,
-    name: PUBLIC_REVIEW_NAME,
-    verified: Number(row.verified_purchase || 0) === 1,
+    name: cleanName(row.review_name) || PUBLIC_REVIEW_NAME,
+    verified: true,
     rating: row.rating,
     text: row.body,
     createdAt: row.review_date || row.created_at,
@@ -3164,9 +3166,14 @@ async function reviewsApi(req, res, pathname) {
 
     const body = await readJsonBody(req);
     const reviewDate = parseReviewDate(body.date);
+    const reviewName = cleanName(body.name);
     const phone = normalizePhone(body.phone);
     const rating = Number(body.rating);
     const text = cleanReviewText(body.text);
+    if (reviewName.length < 2 || reviewName.length > REVIEW_NAME_MAX) {
+      json(res, 400, { ok: false, error: 'invalid_review_name' });
+      return true;
+    }
     if (!phone) {
       json(res, 400, { ok: false, error: 'invalid_phone' });
       return true;
@@ -3223,7 +3230,7 @@ async function reviewsApi(req, res, pathname) {
     await database.transaction(async (tx) => {
       id = await tx.insertReview({
         userId: user.id,
-        reviewName: PUBLIC_REVIEW_NAME,
+        reviewName,
         contactPhone: phone,
         reviewProductId: primaryProduct.id,
         reviewProductVariant: primaryProduct.variant,
@@ -3254,7 +3261,7 @@ async function reviewsApi(req, res, pathname) {
       ok: true,
       review: {
         id,
-        name: PUBLIC_REVIEW_NAME,
+        name: reviewName,
         verified: true,
         rating,
         text,
@@ -3798,6 +3805,20 @@ setInterval(async () => {
   try { await retryPendingNewOrderWebhooks(); } catch (err) { console.error('New-order webhook retry failed:', err); }
 }, ORDER_NOTIFICATION_WEBHOOK_RETRY_MS).unref();
 
+async function purgeAllReviewsOnce() {
+  const alreadyDone = await database.getSchemaMeta(REVIEWS_PURGE_META_KEY);
+  if (alreadyDone) return;
+
+  const result = typeof database.deleteAllReviews === 'function'
+    ? await database.deleteAllReviews()
+    : { deletedReviews: 0 };
+  await database.setSchemaMeta(REVIEWS_PURGE_META_KEY, JSON.stringify({
+    completedAt: Date.now(),
+    deletedReviews: Number(result && result.deletedReviews ? result.deletedReviews : 0)
+  }));
+  console.log(`One-time review purge complete: deleted ${Number(result && result.deletedReviews ? result.deletedReviews : 0)} reviews.`);
+}
+
 async function purgeNonAdminUsersOnce() {
   const alreadyDone = await database.getSchemaMeta(USER_PURGE_META_KEY);
   if (alreadyDone) return;
@@ -3819,6 +3840,7 @@ async function purgeNonAdminUsersOnce() {
 
 async function start() {
   await database.init();
+  await purgeAllReviewsOnce();
   await purgeNonAdminUsersOnce();
   await database.cleanupPresencePageViews(Date.now() - PRESENCE_RETENTION_MS);
   server.listen(PORT, HOST, () => {
