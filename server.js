@@ -922,6 +922,10 @@ function isNewOrderWebhookConfigured() {
   return Boolean(cfg.url && cfg.secret);
 }
 
+function allowDemoOrderNotifications() {
+  return /^(1|true|yes|on)$/i.test(String(process.env.VERSANS_ALLOW_DEMO_ORDER_NOTIFICATIONS || '').trim());
+}
+
 async function presenceApi(req, res, pathname) {
   if (pathname !== '/api/presence') return false;
   if (req.method !== 'POST') {
@@ -1777,7 +1781,10 @@ async function postNewOrderWebhook(orderRef) {
 async function queueNewOrderNotificationAfterSheet(order) {
   if (!order || String(order.status || '') !== 'paid') return { ok: false, skipped: true, reason: 'order_not_paid' };
   const orderRef = String(order.order_ref || '').trim();
-  if (!orderRef || /^VS-DEMO-/i.test(orderRef)) return { ok: false, skipped: true, reason: 'demo_or_missing_order_ref' };
+  if (!orderRef) return { ok: false, skipped: true, reason: 'missing_order_ref' };
+  if (/^VS-DEMO-/i.test(orderRef) && !allowDemoOrderNotifications()) {
+    return { ok: false, skipped: true, reason: 'demo_order_notifications_disabled' };
+  }
   if (!order.id) return { ok: false, skipped: true, reason: 'missing_order_id' };
   const payload = buildPaidOrderPayload(order);
   const recipient = normalizePhone(payload.customerPhone || (payload.customer && payload.customer.phone) || order.customer_phone);
@@ -2200,7 +2207,10 @@ async function adminApi(req, res, pathname, parsed) {
     if (!orderRef) { json(res, 400, { ok: false, error: 'missing_order_ref' }); return true; }
     const order = await database.getOrderByRef(orderRef);
     if (!order || String(order.status || '') !== 'paid') { json(res, 404, { ok: false, error: 'paid_order_not_found' }); return true; }
-    if (/^VS-DEMO-/i.test(orderRef)) { json(res, 400, { ok: false, error: 'demo_order_not_sendable' }); return true; }
+    if (/^VS-DEMO-/i.test(orderRef) && !allowDemoOrderNotifications()) {
+      json(res, 400, { ok: false, error: 'demo_order_not_sendable' });
+      return true;
+    }
     let notification = await database.getOrderNotification(orderRef);
     if (!notification) {
       json(res, 409, { ok: false, error: 'notification_not_queued', orderRef, safeToSend: false });
