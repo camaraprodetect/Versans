@@ -21933,7 +21933,742 @@ var PRODUCTS = [
       "min": 9,
       "max": 25
     }
+  },
+  {
+    "id": "butterfly-double-ring-gold-231",
+    "slug": "product-231",
+    "urlSlug": "butterfly-double-ring-gold",
+    "sku": "VS-RING-231",
+    "category": "rings",
+    "categories": [
+      "rings"
+    ],
+    "badge": {
+      "he": "Sterling Silver 925",
+      "en": "Sterling Silver 925"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-231/product-231-1.png",
+    "hoverImage": "images/products/product-231/product-231-2.png",
+    "images": [
+      "images/products/product-231/product-231-1.png",
+      "images/products/product-231/product-231-2.png",
+      "images/products/product-232/product-232-1.png",
+      "images/products/product-232/product-232-2.png"
+    ],
+    "showAllGalleryThumbs": true,
+    "price": 169.9,
+    "title": {
+      "he": "טבעת פרפר כפולה - צבע זהב",
+      "en": "Double Butterfly Ring - Gold"
+    },
+    "subtitle": {
+      "he": "Sterling Silver 925 · טבעת פתוחה דו-שכבתית · לבחירה בצבע כסף או זהב",
+      "en": "Sterling Silver 925 · Double-layer open ring · choose silver or gold"
+    },
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "colorRequiredText": {
+      "he": "נא לבחור צבע",
+      "en": "Please choose a color"
+    },
+    "colorDisplay": "color-row",
+    "colors": [
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "swatch": "linear-gradient(135deg,#fbfbfb 0%,#bfc5cc 48%,#f7f8fa 72%,#9da4ac 100%)",
+        "image": "images/products/product-232/product-232-1.png"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "swatch": "linear-gradient(135deg,#fff0a8 0%,#d5a233 48%,#ffe28a 72%,#b67d18 100%)",
+        "image": "images/products/product-231/product-231-1.png"
+      }
+    ],
+    "defaultColorId": "gold",
+    "cardTitle": {
+      "he": "טבעת פרפר כפולה - צבע זהב",
+      "en": "Double Butterfly Ring - Gold"
+    },
+    "cardMessage": {
+      "he": "טבעת פרפר כפולה מכסף סטרלינג 925 בעיצוב פתוח ועדין, עם זירקונים. לבחירה בכסף או זהב.",
+      "en": "A delicate double butterfly open ring in 925 sterling silver with zircon stones. Available in silver or gold."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "חומר: Sterling Silver 925",
+        "אבנים: זירקון",
+        "עיצוב: טבעת פתוחה דו-שכבתית עם פרפר משובץ",
+        "צבעים לבחירה: כסף או זהב",
+        "מחיר: 169.90 ₪",
+        "הגלריה כוללת את כל 4 התמונות של גרסאות הכסף והזהב"
+      ],
+      "en": [
+        "Material: 925 Sterling Silver",
+        "Stones: Zircon",
+        "Design: Double-layer open ring with a butterfly motif",
+        "Available colors: Silver or Gold",
+        "Price: ₪169.90",
+        "Gallery includes all 4 images of the silver and gold versions"
+      ]
+    },
+    "afterText": {
+      "he": "בחרו צבע. בעמוד המוצר מוצגות כל 4 התמונות של גרסאות הכסף והזהב.",
+      "en": "Choose a color. The product page displays all 4 images of the silver and gold versions."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+  {
+    "id": "butterfly-double-ring-silver-232",
+    "slug": "product-232",
+    "urlSlug": "butterfly-double-ring-silver",
+    "sku": "VS-RING-232",
+    "category": "rings",
+    "categories": [
+      "rings"
+    ],
+    "badge": {
+      "he": "Sterling Silver 925",
+      "en": "Sterling Silver 925"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-232/product-232-1.png",
+    "hoverImage": "images/products/product-232/product-232-2.png",
+    "images": [
+      "images/products/product-232/product-232-1.png",
+      "images/products/product-232/product-232-2.png",
+      "images/products/product-231/product-231-1.png",
+      "images/products/product-231/product-231-2.png"
+    ],
+    "showAllGalleryThumbs": true,
+    "price": 169.9,
+    "title": {
+      "he": "טבעת פרפר כפולה - צבע כסף",
+      "en": "Double Butterfly Ring - Silver"
+    },
+    "subtitle": {
+      "he": "Sterling Silver 925 · טבעת פתוחה דו-שכבתית · לבחירה בצבע כסף או זהב",
+      "en": "Sterling Silver 925 · Double-layer open ring · choose silver or gold"
+    },
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "colorRequiredText": {
+      "he": "נא לבחור צבע",
+      "en": "Please choose a color"
+    },
+    "colorDisplay": "color-row",
+    "colors": [
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "swatch": "linear-gradient(135deg,#fbfbfb 0%,#bfc5cc 48%,#f7f8fa 72%,#9da4ac 100%)",
+        "image": "images/products/product-232/product-232-1.png"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "swatch": "linear-gradient(135deg,#fff0a8 0%,#d5a233 48%,#ffe28a 72%,#b67d18 100%)",
+        "image": "images/products/product-231/product-231-1.png"
+      }
+    ],
+    "defaultColorId": "silver",
+    "cardTitle": {
+      "he": "טבעת פרפר כפולה - צבע כסף",
+      "en": "Double Butterfly Ring - Silver"
+    },
+    "cardMessage": {
+      "he": "טבעת פרפר כפולה מכסף סטרלינג 925 בעיצוב פתוח ועדין, עם זירקונים. לבחירה בכסף או זהב.",
+      "en": "A delicate double butterfly open ring in 925 sterling silver with zircon stones. Available in silver or gold."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "חומר: Sterling Silver 925",
+        "אבנים: זירקון",
+        "עיצוב: טבעת פתוחה דו-שכבתית עם פרפר משובץ",
+        "צבעים לבחירה: כסף או זהב",
+        "מחיר: 169.90 ₪",
+        "הגלריה כוללת את כל 4 התמונות של גרסאות הכסף והזהב"
+      ],
+      "en": [
+        "Material: 925 Sterling Silver",
+        "Stones: Zircon",
+        "Design: Double-layer open ring with a butterfly motif",
+        "Available colors: Silver or Gold",
+        "Price: ₪169.90",
+        "Gallery includes all 4 images of the silver and gold versions"
+      ]
+    },
+    "afterText": {
+      "he": "בחרו צבע. בעמוד המוצר מוצגות כל 4 התמונות של גרסאות הכסף והזהב.",
+      "en": "Choose a color. The product page displays all 4 images of the silver and gold versions."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 25
+    }
+  },
+{
+  "id": "marquise-open-ring-silver-233",
+  "slug": "product-233",
+  "urlSlug": "marquise-open-ring-silver",
+  "sku": "VS-RING-233",
+  "category": "rings",
+  "categories": [
+    "rings"
+  ],
+  "badge": {
+    "he": "Sterling Silver 999",
+    "en": "Sterling Silver 999"
+  },
+  "cardMode": "view",
+  "hideMessageCard": true,
+  "cardImage": "images/products/product-233/product-233-1.png",
+  "hoverImage": "images/products/product-233/product-233-2.png",
+  "images": [
+    "images/products/product-233/product-233-1.png",
+    "images/products/product-233/product-233-2.png",
+    "images/products/product-234/product-234-1.png",
+    "images/products/product-234/product-234-2.png",
+    "images/products/product-233/product-233-5.png"
+  ],
+  "showAllGalleryThumbs": true,
+  "price": 169.9,
+  "title": {
+    "he": "טבעת מרקיזה פתוחה - צבע כסף",
+    "en": "Open Marquise Ring - Silver"
+  },
+  "subtitle": {
+    "he": "Sterling Silver 999 · טבעת פתוחה עדינה · לבחירה בצבע כסף או זהב",
+    "en": "Sterling Silver 999 · Delicate open ring · choose silver or gold"
+  },
+  "colorHeading": {
+    "he": "בחרו צבע",
+    "en": "Choose color"
+  },
+  "colorRequiredText": {
+    "he": "נא לבחור צבע",
+    "en": "Please choose a color"
+  },
+  "colorDisplay": "color-row",
+  "colors": [
+    {
+      "id": "silver",
+      "label": {
+        "he": "כסף",
+        "en": "Silver"
+      },
+      "swatch": "linear-gradient(135deg,#fbfbfb 0%,#bfc5cc 48%,#f7f8fa 72%,#9da4ac 100%)",
+      "image": "images/products/product-233/product-233-1.png"
+    },
+    {
+      "id": "gold",
+      "label": {
+        "he": "זהב",
+        "en": "Gold"
+      },
+      "swatch": "linear-gradient(135deg,#fff0a8 0%,#d5a233 48%,#ffe28a 72%,#b67d18 100%)",
+      "image": "images/products/product-234/product-234-1.png"
+    }
+  ],
+  "defaultColorId": "silver",
+  "cardTitle": {
+    "he": "טבעת מרקיזה פתוחה - צבע כסף",
+    "en": "Open Marquise Ring - Silver"
+  },
+  "cardMessage": {
+    "he": "טבעת פתוחה ועדינה מכסף סטרלינג 999 עם זירקונים, לבחירה בכסף או זהב.",
+    "en": "A delicate open ring in 999 sterling silver with zircon stones. Available in silver or gold."
+  },
+  "signature": {
+    "he": "",
+    "en": ""
+  },
+  "details": {
+    "he": [
+      "חומר: Sterling Silver 999",
+      "אבנים: זירקון",
+      "עיצוב: טבעת פתוחה עם אבני מרקיזה וטיפה",
+      "צבעים לבחירה: כסף או זהב",
+      "מחיר: 169.90 ₪",
+      "הגלריה כוללת את כל 5 התמונות של גרסאות הכסף והזהב"
+    ],
+    "en": [
+      "Material: 999 Sterling Silver",
+      "Stones: Zircon",
+      "Design: Open ring with marquise and pear-cut stones",
+      "Available colors: Silver or Gold",
+      "Price: ₪169.90",
+      "Gallery includes all 5 images of the silver and gold versions"
+    ]
+  },
+  "afterText": {
+    "he": "בחרו צבע. בעמוד המוצר מוצגות כל 5 התמונות של גרסאות הכסף והזהב.",
+    "en": "Choose a color. The product page displays all 5 images of the silver and gold versions."
+  },
+  "deliveryBusinessDays": {
+    "min": 9,
+    "max": 25
   }
+},
+{
+  "id": "marquise-open-ring-gold-234",
+  "slug": "product-234",
+  "urlSlug": "marquise-open-ring-gold",
+  "sku": "VS-RING-234",
+  "category": "rings",
+  "categories": [
+    "rings"
+  ],
+  "badge": {
+    "he": "Sterling Silver 999",
+    "en": "Sterling Silver 999"
+  },
+  "cardMode": "view",
+  "hideMessageCard": true,
+  "cardImage": "images/products/product-234/product-234-1.png",
+  "hoverImage": "images/products/product-234/product-234-2.png",
+  "images": [
+    "images/products/product-234/product-234-1.png",
+    "images/products/product-234/product-234-2.png",
+    "images/products/product-233/product-233-1.png",
+    "images/products/product-233/product-233-2.png",
+    "images/products/product-234/product-234-5.png"
+  ],
+  "showAllGalleryThumbs": true,
+  "price": 169.9,
+  "title": {
+    "he": "טבעת מרקיזה פתוחה - צבע זהב",
+    "en": "Open Marquise Ring - Gold"
+  },
+  "subtitle": {
+    "he": "Sterling Silver 999 · טבעת פתוחה עדינה · לבחירה בצבע כסף או זהב",
+    "en": "Sterling Silver 999 · Delicate open ring · choose silver or gold"
+  },
+  "colorHeading": {
+    "he": "בחרו צבע",
+    "en": "Choose color"
+  },
+  "colorRequiredText": {
+    "he": "נא לבחור צבע",
+    "en": "Please choose a color"
+  },
+  "colorDisplay": "color-row",
+  "colors": [
+    {
+      "id": "silver",
+      "label": {
+        "he": "כסף",
+        "en": "Silver"
+      },
+      "swatch": "linear-gradient(135deg,#fbfbfb 0%,#bfc5cc 48%,#f7f8fa 72%,#9da4ac 100%)",
+      "image": "images/products/product-233/product-233-1.png"
+    },
+    {
+      "id": "gold",
+      "label": {
+        "he": "זהב",
+        "en": "Gold"
+      },
+      "swatch": "linear-gradient(135deg,#fff0a8 0%,#d5a233 48%,#ffe28a 72%,#b67d18 100%)",
+      "image": "images/products/product-234/product-234-1.png"
+    }
+  ],
+  "defaultColorId": "gold",
+  "cardTitle": {
+    "he": "טבעת מרקיזה פתוחה - צבע זהב",
+    "en": "Open Marquise Ring - Gold"
+  },
+  "cardMessage": {
+    "he": "טבעת פתוחה ועדינה מכסף סטרלינג 999 עם זירקונים, לבחירה בכסף או זהב.",
+    "en": "A delicate open ring in 999 sterling silver with zircon stones. Available in silver or gold."
+  },
+  "signature": {
+    "he": "",
+    "en": ""
+  },
+  "details": {
+    "he": [
+      "חומר: Sterling Silver 999",
+      "אבנים: זירקון",
+      "עיצוב: טבעת פתוחה עם אבני מרקיזה וטיפה",
+      "צבעים לבחירה: כסף או זהב",
+      "מחיר: 169.90 ₪",
+      "הגלריה כוללת את כל 5 התמונות של גרסאות הכסף והזהב"
+    ],
+    "en": [
+      "Material: 999 Sterling Silver",
+      "Stones: Zircon",
+      "Design: Open ring with marquise and pear-cut stones",
+      "Available colors: Silver or Gold",
+      "Price: ₪169.90",
+      "Gallery includes all 5 images of the silver and gold versions"
+    ]
+  },
+  "afterText": {
+    "he": "בחרו צבע. בעמוד המוצר מוצגות כל 5 התמונות של גרסאות הכסף והזהב.",
+    "en": "Choose a color. The product page displays all 5 images of the silver and gold versions."
+  },
+  "deliveryBusinessDays": {
+    "min": 9,
+    "max": 25
+  }
+},
+{
+  "id": "zircon-clover-ring-silver-235",
+  "slug": "product-235",
+  "urlSlug": "zircon-clover-ring-silver",
+  "sku": "VS-RING-235",
+  "category": "rings",
+  "categories": [
+    "rings"
+  ],
+  "badge": {
+    "he": "Sterling Silver 925",
+    "en": "Sterling Silver 925"
+  },
+  "cardMode": "view",
+  "hideMessageCard": true,
+  "cardImage": "images/products/product-235/product-235-1.png",
+  "hoverImage": "images/products/product-235/product-235-2.png",
+  "images": [
+    "images/products/product-235/product-235-1.png",
+    "images/products/product-235/product-235-2.png",
+    "images/products/product-235/product-235-3.png",
+    "images/products/product-236/product-236-1.png",
+    "images/products/product-236/product-236-2.png",
+    "images/products/product-236/product-236-3.png"
+  ],
+  "showAllGalleryThumbs": true,
+  "price": 169.9,
+  "title": {
+    "he": "טבעת תלתן זירקון - צבע כסף",
+    "en": "Zircon Clover Ring - Silver"
+  },
+  "subtitle": {
+    "he": "Sterling Silver 925 · משובצת זירקון · לבחירה בצבע כסף או זהב ובמידות 5–8",
+    "en": "Sterling Silver 925 · Zircon set · choose silver or gold in sizes 5–8"
+  },
+  "sizeHeading": {
+    "he": "בחרו מידה",
+    "en": "Choose size"
+  },
+  "sizes": [
+    {
+      "id": "5",
+      "addPrice": 0,
+      "priceLabel": {
+        "he": "169.90 ₪",
+        "en": "₪169.90"
+      },
+      "label": {
+        "he": "5",
+        "en": "5"
+      }
+    },
+    {
+      "id": "6",
+      "addPrice": 2.9,
+      "priceLabel": {
+        "he": "172.80 ₪",
+        "en": "₪172.80"
+      },
+      "label": {
+        "he": "6",
+        "en": "6"
+      }
+    },
+    {
+      "id": "7",
+      "addPrice": 5.8,
+      "priceLabel": {
+        "he": "175.70 ₪",
+        "en": "₪175.70"
+      },
+      "label": {
+        "he": "7",
+        "en": "7"
+      }
+    },
+    {
+      "id": "8",
+      "addPrice": 8.7,
+      "priceLabel": {
+        "he": "178.60 ₪",
+        "en": "₪178.60"
+      },
+      "label": {
+        "he": "8",
+        "en": "8"
+      }
+    }
+  ],
+  "colorHeading": {
+    "he": "בחרו צבע",
+    "en": "Choose color"
+  },
+  "colorRequiredText": {
+    "he": "נא לבחור צבע",
+    "en": "Please choose a color"
+  },
+  "colorDisplay": "color-row",
+  "colors": [
+    {
+      "id": "silver",
+      "label": {
+        "he": "כסף",
+        "en": "Silver"
+      },
+      "swatch": "linear-gradient(135deg,#fbfbfb 0%,#bfc5cc 48%,#f7f8fa 72%,#9da4ac 100%)",
+      "image": "images/products/product-235/product-235-1.png"
+    },
+    {
+      "id": "gold",
+      "label": {
+        "he": "זהב",
+        "en": "Gold"
+      },
+      "swatch": "linear-gradient(135deg,#fff0a8 0%,#d5a233 48%,#ffe28a 72%,#b67d18 100%)",
+      "image": "images/products/product-236/product-236-1.png"
+    }
+  ],
+  "defaultColorId": "silver",
+  "cardTitle": {
+    "he": "טבעת תלתן זירקון - צבע כסף",
+    "en": "Zircon Clover Ring - Silver"
+  },
+  "cardMessage": {
+    "he": "טבעת תלתן עדינה מכסף סטרלינג 925, משובצת אבני זירקון. לבחירה בכסף או זהב ובמידות 5–8.",
+    "en": "A delicate 925 sterling silver clover ring set with zircon stones. Available in silver or gold, sizes 5–8."
+  },
+  "signature": {
+    "he": "",
+    "en": ""
+  },
+  "details": {
+    "he": [
+      "חומר: Sterling Silver 925",
+      "אבנים: זירקון",
+      "עיצוב: תלתן ארבעה עלים עם חישוק כדורי עדין",
+      "צבעים לבחירה: כסף או זהב",
+      "מידות לבחירה: 5, 6, 7, 8",
+      "מחיר התחלתי: 169.90 ₪",
+      "כל עלייה במידה מוסיפה 2.90 ₪ למחיר",
+      "הגלריה כוללת את כל 6 התמונות של גרסאות הכסף והזהב"
+    ],
+    "en": [
+      "Material: 925 Sterling Silver",
+      "Stones: Zircon",
+      "Design: Four-leaf clover with a delicate beaded band",
+      "Available colors: Silver or Gold",
+      "Available sizes: 5, 6, 7, 8",
+      "Starting price: ₪169.90",
+      "Each size step adds ₪2.90 to the price",
+      "Gallery includes all 6 images of the silver and gold versions"
+    ]
+  },
+  "afterText": {
+    "he": "בחרו צבע ומידה. בעמוד המוצר מוצגות כל 6 התמונות של גרסאות הכסף והזהב.",
+    "en": "Choose a color and size. The product page displays all 6 images of the silver and gold versions."
+  },
+  "deliveryBusinessDays": {
+    "min": 9,
+    "max": 25
+  }
+},
+{
+  "id": "zircon-clover-ring-gold-236",
+  "slug": "product-236",
+  "urlSlug": "zircon-clover-ring-gold",
+  "sku": "VS-RING-236",
+  "category": "rings",
+  "categories": [
+    "rings"
+  ],
+  "badge": {
+    "he": "Sterling Silver 925",
+    "en": "Sterling Silver 925"
+  },
+  "cardMode": "view",
+  "hideMessageCard": true,
+  "cardImage": "images/products/product-236/product-236-1.png",
+  "hoverImage": "images/products/product-236/product-236-2.png",
+  "images": [
+    "images/products/product-236/product-236-1.png",
+    "images/products/product-236/product-236-2.png",
+    "images/products/product-236/product-236-3.png",
+    "images/products/product-235/product-235-1.png",
+    "images/products/product-235/product-235-2.png",
+    "images/products/product-235/product-235-3.png"
+  ],
+  "showAllGalleryThumbs": true,
+  "price": 169.9,
+  "title": {
+    "he": "טבעת תלתן זירקון - צבע זהב",
+    "en": "Zircon Clover Ring - Gold"
+  },
+  "subtitle": {
+    "he": "Sterling Silver 925 · משובצת זירקון · לבחירה בצבע כסף או זהב ובמידות 5–8",
+    "en": "Sterling Silver 925 · Zircon set · choose silver or gold in sizes 5–8"
+  },
+  "sizeHeading": {
+    "he": "בחרו מידה",
+    "en": "Choose size"
+  },
+  "sizes": [
+    {
+      "id": "5",
+      "addPrice": 0,
+      "priceLabel": {
+        "he": "169.90 ₪",
+        "en": "₪169.90"
+      },
+      "label": {
+        "he": "5",
+        "en": "5"
+      }
+    },
+    {
+      "id": "6",
+      "addPrice": 2.9,
+      "priceLabel": {
+        "he": "172.80 ₪",
+        "en": "₪172.80"
+      },
+      "label": {
+        "he": "6",
+        "en": "6"
+      }
+    },
+    {
+      "id": "7",
+      "addPrice": 5.8,
+      "priceLabel": {
+        "he": "175.70 ₪",
+        "en": "₪175.70"
+      },
+      "label": {
+        "he": "7",
+        "en": "7"
+      }
+    },
+    {
+      "id": "8",
+      "addPrice": 8.7,
+      "priceLabel": {
+        "he": "178.60 ₪",
+        "en": "₪178.60"
+      },
+      "label": {
+        "he": "8",
+        "en": "8"
+      }
+    }
+  ],
+  "colorHeading": {
+    "he": "בחרו צבע",
+    "en": "Choose color"
+  },
+  "colorRequiredText": {
+    "he": "נא לבחור צבע",
+    "en": "Please choose a color"
+  },
+  "colorDisplay": "color-row",
+  "colors": [
+    {
+      "id": "silver",
+      "label": {
+        "he": "כסף",
+        "en": "Silver"
+      },
+      "swatch": "linear-gradient(135deg,#fbfbfb 0%,#bfc5cc 48%,#f7f8fa 72%,#9da4ac 100%)",
+      "image": "images/products/product-235/product-235-1.png"
+    },
+    {
+      "id": "gold",
+      "label": {
+        "he": "זהב",
+        "en": "Gold"
+      },
+      "swatch": "linear-gradient(135deg,#fff0a8 0%,#d5a233 48%,#ffe28a 72%,#b67d18 100%)",
+      "image": "images/products/product-236/product-236-1.png"
+    }
+  ],
+  "defaultColorId": "gold",
+  "cardTitle": {
+    "he": "טבעת תלתן זירקון - צבע זהב",
+    "en": "Zircon Clover Ring - Gold"
+  },
+  "cardMessage": {
+    "he": "טבעת תלתן עדינה מכסף סטרלינג 925, משובצת אבני זירקון. לבחירה בכסף או זהב ובמידות 5–8.",
+    "en": "A delicate 925 sterling silver clover ring set with zircon stones. Available in silver or gold, sizes 5–8."
+  },
+  "signature": {
+    "he": "",
+    "en": ""
+  },
+  "details": {
+    "he": [
+      "חומר: Sterling Silver 925",
+      "אבנים: זירקון",
+      "עיצוב: תלתן ארבעה עלים עם חישוק כדורי עדין",
+      "צבעים לבחירה: כסף או זהב",
+      "מידות לבחירה: 5, 6, 7, 8",
+      "מחיר התחלתי: 169.90 ₪",
+      "כל עלייה במידה מוסיפה 2.90 ₪ למחיר",
+      "הגלריה כוללת את כל 6 התמונות של גרסאות הכסף והזהב"
+    ],
+    "en": [
+      "Material: 925 Sterling Silver",
+      "Stones: Zircon",
+      "Design: Four-leaf clover with a delicate beaded band",
+      "Available colors: Silver or Gold",
+      "Available sizes: 5, 6, 7, 8",
+      "Starting price: ₪169.90",
+      "Each size step adds ₪2.90 to the price",
+      "Gallery includes all 6 images of the silver and gold versions"
+    ]
+  },
+  "afterText": {
+    "he": "בחרו צבע ומידה. בעמוד המוצר מוצגות כל 6 התמונות של גרסאות הכסף והזהב.",
+    "en": "Choose a color and size. The product page displays all 6 images of the silver and gold versions."
+  },
+  "deliveryBusinessDays": {
+    "min": 9,
+    "max": 25
+  }
+}
+
 ];
 
 var CATEGORIES = [
