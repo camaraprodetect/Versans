@@ -1782,9 +1782,6 @@ async function queueNewOrderNotificationAfterSheet(order) {
   if (!order || String(order.status || '') !== 'paid') return { ok: false, skipped: true, reason: 'order_not_paid' };
   const orderRef = String(order.order_ref || '').trim();
   if (!orderRef) return { ok: false, skipped: true, reason: 'missing_order_ref' };
-  if (/^VS-DEMO-/i.test(orderRef) && !allowDemoOrderNotifications()) {
-    return { ok: false, skipped: true, reason: 'demo_order_notifications_disabled' };
-  }
   if (!order.id) return { ok: false, skipped: true, reason: 'missing_order_id' };
   const payload = buildPaidOrderPayload(order);
   const recipient = normalizePhone(payload.customerPhone || (payload.customer && payload.customer.phone) || order.customer_phone);
@@ -2207,10 +2204,6 @@ async function adminApi(req, res, pathname, parsed) {
     if (!orderRef) { json(res, 400, { ok: false, error: 'missing_order_ref' }); return true; }
     const order = await database.getOrderByRef(orderRef);
     if (!order || String(order.status || '') !== 'paid') { json(res, 404, { ok: false, error: 'paid_order_not_found' }); return true; }
-    if (/^VS-DEMO-/i.test(orderRef) && !allowDemoOrderNotifications()) {
-      json(res, 400, { ok: false, error: 'demo_order_not_sendable' });
-      return true;
-    }
     let notification = await database.getOrderNotification(orderRef);
     if (!notification) {
       json(res, 409, { ok: false, error: 'notification_not_queued', orderRef, safeToSend: false });
@@ -3456,10 +3449,22 @@ const server = http.createServer(async (req, res) => {
           } catch (dbErr) {
             console.error(`Demo order database save failed for ${demoOrder.order_ref}:`, dbErr);
           }
+          let sheetSynced = false;
           try {
             await sendPaidOrderToGoogleSheet(demoOrder);
+            sheetSynced = true;
           } catch (sheetErr) {
             console.error(`Google demo order sync failed for ${demoOrder.order_ref}:`, sheetErr);
+          }
+          if (sheetSynced) {
+            try {
+              const persistedDemoOrder = await database.getOrderByRef(demoOrder.order_ref);
+              if (!persistedDemoOrder) throw new Error('demo_order_not_persisted');
+              await queueNewOrderNotificationAfterSheet(persistedDemoOrder);
+              console.log(`New-order Grok webhook queued after Google Sheet sync for ${demoOrder.order_ref}`);
+            } catch (notifyErr) {
+              console.error(`Demo new-order notification queue failed for ${demoOrder.order_ref}:`, notifyErr && notifyErr.message ? notifyErr.message : notifyErr);
+            }
           }
           try {
             await sendOrderConfirmationForOrder(demoOrder);
