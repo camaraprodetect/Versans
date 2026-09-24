@@ -600,7 +600,6 @@
       </div>
       <a href="/necklaces#shop" data-cat="necklaces" data-nav-cat="necklaces">שרשראות</a>
       <a href="/bracelets#shop" data-cat="bracelets" data-nav-cat="bracelets">צמידים</a>
-      <a href="/rings#shop" data-cat="rings" data-nav-cat="rings">טבעות</a>
       <a href="/photo-bracelets#shop" data-cat="photo-bracelets" data-nav-cat="photo-bracelets">תכשיטי תמונה</a>
       <div class="nav__item nav__item--has-submenu" data-nav-group="watches">
         <a href="/watches#shop" data-cat="watches" data-nav-cat="watches" data-nav-parent-toggle="watches" aria-haspopup="true" aria-expanded="false">שעונים</a>
@@ -697,10 +696,6 @@
         <a class="mobile-collection-picker__item" href="/bracelets#shop" data-cat="bracelets">
           <span class="mobile-collection-picker__image"><img src="images/mobile-collections/bracelets.png" alt="צמידים" loading="lazy" decoding="async"></span>
           <span class="mobile-collection-picker__label">צמידים</span>
-        </a>
-        <a class="mobile-collection-picker__item" href="/rings#shop" data-cat="rings">
-          <span class="mobile-collection-picker__image"><img src="images/mobile-collections/rings.png" alt="טבעות" loading="lazy" decoding="async"></span>
-          <span class="mobile-collection-picker__label">טבעות</span>
         </a>
         <a class="mobile-collection-picker__item" href="/photo-bracelets#shop" data-cat="photo-bracelets">
           <span class="mobile-collection-picker__image"><img src="images/mobile-collections/photo-jewelry.png" alt="תכשיטי תמונה" loading="lazy" decoding="async"></span>
@@ -869,6 +864,14 @@
 
     <form class="review-form" id="reviewForm" novalidate>
       <div class="review-form__user" id="reviewUserLine"></div>
+
+      <div class="review-form__field">
+        <label for="reviewProduct">על איזה מוצר הביקורת?</label>
+        <select class="review-form__input review-form__select" id="reviewProduct" name="reviewProduct" required>
+          <option value="">טוען את המוצרים שרכשתם…</option>
+        </select>
+        <small class="review-form__hint">אפשר לפרסם ביקורת רק על מוצרים שנרכשו בחשבון הזה.</small>
+      </div>
 
       <div class="review-form__field">
         <label for="reviewPhone">מספר טלפון</label>

@@ -25,6 +25,7 @@
   var loginRequired = document.getElementById('reviewLoginRequired');
   var verifiedRequired = document.getElementById('reviewVerifiedRequired');
   var userLine = document.getElementById('reviewUserLine');
+  var productInput = document.getElementById('reviewProduct');
   var phoneInput = document.getElementById('reviewPhone');
   var dateInput = document.getElementById('reviewDate');
   var textInput = document.getElementById('reviewText');
@@ -57,6 +58,9 @@
   if (!grid || !template || !modal || !form || !openBtn) return;
 
   var currentUser = null;
+  var eligibleReviewProducts = [];
+  var eligibleProductsLoaded = false;
+  var eligibleProductsLoadError = false;
   var selectedRating = 0;
   var mediaItems = [];
   var mediaSequence = 0;
@@ -330,6 +334,87 @@
       .catch(function () { currentUser = null; });
   }
 
+  function renderEligibleReviewProducts() {
+    if (!productInput) return;
+    productInput.textContent = '';
+
+    if (!eligibleProductsLoaded) {
+      var loadingOption = document.createElement('option');
+      loadingOption.value = '';
+      loadingOption.textContent = 'טוען את המוצרים שרכשתם…';
+      loadingOption.selected = true;
+      productInput.appendChild(loadingOption);
+      return;
+    }
+
+    if (eligibleProductsLoadError) {
+      var errorOption = document.createElement('option');
+      errorOption.value = '';
+      errorOption.textContent = 'לא הצלחנו לטעון את הרכישות';
+      errorOption.selected = true;
+      productInput.appendChild(errorOption);
+      return;
+    }
+
+    if (!eligibleReviewProducts.length) {
+      var emptyOption = document.createElement('option');
+      emptyOption.value = '';
+      emptyOption.textContent = 'לא נמצאו מוצרים שנרכשו';
+      emptyOption.selected = true;
+      productInput.appendChild(emptyOption);
+      return;
+    }
+
+    if (eligibleReviewProducts.length > 1) {
+      var placeholder = document.createElement('option');
+      placeholder.value = '';
+      placeholder.textContent = 'בחרו מוצר שרכשתם';
+      placeholder.selected = true;
+      productInput.appendChild(placeholder);
+    }
+
+    eligibleReviewProducts.forEach(function (product) {
+      var option = document.createElement('option');
+      option.value = String(product.id || '');
+      option.textContent = String(product.title || 'המוצר שנרכש');
+      if (eligibleReviewProducts.length === 1) option.selected = true;
+      productInput.appendChild(option);
+    });
+  }
+
+  function loadEligibleReviewProducts() {
+    eligibleReviewProducts = [];
+    eligibleProductsLoaded = false;
+    eligibleProductsLoadError = false;
+    renderEligibleReviewProducts();
+    if (!currentUser) {
+      eligibleProductsLoaded = true;
+      renderEligibleReviewProducts();
+      return Promise.resolve();
+    }
+
+    return fetch('/api/reviews/eligible-products', {
+      credentials: 'same-origin',
+      headers: { Accept: 'application/json' }
+    }).then(function (response) {
+      if (response.status === 401) {
+        currentUser = null;
+        return null;
+      }
+      if (!response.ok) throw new Error('eligible_products_load_failed');
+      return response.json();
+    }).then(function (payload) {
+      eligibleReviewProducts = payload && Array.isArray(payload.products) ? payload.products : [];
+      eligibleProductsLoaded = true;
+      renderEligibleReviewProducts();
+    }).catch(function () {
+      eligibleReviewProducts = [];
+      eligibleProductsLoaded = true;
+      eligibleProductsLoadError = true;
+      renderEligibleReviewProducts();
+    });
+  }
+
   function setRating(value) {
     selectedRating = value;
     starButtons.forEach(function (button) {
@@ -426,10 +511,28 @@
   function updateModalMode() {
     var loggedIn = !!currentUser;
     var verified = loggedIn && !!currentUser.isVerifiedCustomer;
-    form.hidden = !verified;
+    var hasPurchasedProducts = eligibleProductsLoaded && !eligibleProductsLoadError && eligibleReviewProducts.length > 0;
+    var canReview = verified && hasPurchasedProducts;
+    form.hidden = !canReview;
     loginRequired.hidden = loggedIn;
-    verifiedRequired.hidden = !loggedIn || verified;
-    if (verified) userLine.textContent = 'לקוח VerSans מאומת · הביקורת תוצג בשם "לקוח VerSans".';
+    verifiedRequired.hidden = !loggedIn || canReview;
+
+    if (canReview) {
+      userLine.textContent = 'לקוח VerSans מאומת · אפשר לכתוב ביקורת רק על מוצר שרכשתם.';
+    } else if (loggedIn && verifiedRequired) {
+      var title = verifiedRequired.querySelector('strong');
+      var copy = verifiedRequired.querySelector('p');
+      if (eligibleProductsLoadError) {
+        if (title) title.textContent = 'לא הצלחנו לבדוק את הרכישות כרגע';
+        if (copy) copy.textContent = 'רעננו את העמוד ונסו שוב. הביקורת תתאפשר רק לאחר שנזהה מוצר שנרכש בחשבון.';
+      } else if (verified && eligibleProductsLoaded) {
+        if (title) title.textContent = 'לא נמצאו מוצרים זמינים לביקורת';
+        if (copy) copy.textContent = 'אפשר לפרסם ביקורת רק על מוצרים שמופיעים בהזמנה ששולמה ומקושרת לחשבון הזה.';
+      } else {
+        if (title) title.textContent = 'ביקורות זמינות ללקוחות מאומתים בלבד';
+        if (copy) copy.textContent = 'רק חשבון שמקושר לרכישה שאושרה יכול לפרסם ביקורת. אפשר עדיין לקרוא את כל הביקורות באתר.';
+      }
+    }
   }
 
   function openModal() {
@@ -438,8 +541,9 @@
     updateModalMode();
     modal.hidden = false;
     document.body.classList.add('review-modal-open');
+    var canReview = !!currentUser && !!currentUser.isVerifiedCustomer && eligibleProductsLoaded && !eligibleProductsLoadError && eligibleReviewProducts.length > 0;
     var focusTarget = currentUser
-      ? (currentUser.isVerifiedCustomer ? phoneInput : verifiedRequired.querySelector('a,button'))
+      ? (canReview ? (eligibleReviewProducts.length > 1 ? productInput : phoneInput) : verifiedRequired.querySelector('a,button'))
       : loginRequired.querySelector('a');
     setTimeout(function () { if (focusTarget) focusTarget.focus(); }, 0);
   }
@@ -726,10 +830,16 @@
   form.addEventListener('submit', function (event) {
     event.preventDefault();
     setMessage('');
+    var productId = productInput ? productInput.value.trim() : '';
     var phone = phoneInput.value.trim();
     var reviewDateValue = dateInput ? dateInput.value : '';
     var text = textInput.value.trim();
 
+    if (!productId) {
+      setMessage('בחרו מוצר שרכשתם.', true);
+      if (productInput) productInput.focus();
+      return;
+    }
     if (phone.replace(/\D/g, '').length < 9) {
       setMessage('הזינו מספר טלפון תקין.', true);
       phoneInput.focus();
@@ -762,6 +872,7 @@
       credentials: 'same-origin',
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       body: JSON.stringify({
+        productId: productId,
         phone: phone,
         date: reviewDateValue,
         rating: selectedRating,
@@ -783,6 +894,8 @@
           updateModalMode();
           throw new Error('רק לקוחות עם רכישה מאומתת יכולים לפרסם ביקורת.');
         }
+        if (code === 'product_not_purchased') throw new Error('אפשר לפרסם ביקורת רק על מוצר שנרכש בחשבון הזה.');
+        if (code === 'review_product_required') throw new Error('בחרו מוצר שרכשתם לפני פרסום הביקורת.');
         if (code === 'invalid_phone') throw new Error('הזינו מספר טלפון תקין.');
         if (code === 'invalid_review_date') throw new Error('בחרו תאריך ביקורת תקין שאינו בעתיד.');
         if (code === 'too_many_media') throw new Error('אפשר לצרף עד ' + MAX_MEDIA + ' תמונות או סרטונים לביקורת.');
@@ -817,7 +930,11 @@
     });
   });
 
-  openBtn.addEventListener('click', function () { loadUser().then(openModal); });
+  openBtn.addEventListener('click', function () {
+    loadUser()
+      .then(function () { return loadEligibleReviewProducts(); })
+      .then(openModal);
+  });
   if (loadMoreBtn) loadMoreBtn.addEventListener('click', function () { loadReviews(false); });
 
   Array.prototype.forEach.call(document.querySelectorAll('[data-review-close]'), function (button) {

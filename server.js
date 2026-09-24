@@ -398,22 +398,42 @@ function reviewProductPayload(productId, variant, seed) {
   };
 }
 
-async function purchasedProductForUser(userId) {
-  const order = await database.latestPaidOrderForUser(userId);
-  if (!order || !order.items_json) return null;
-  let items;
-  try { items = JSON.parse(order.items_json); } catch (_) { return null; }
-  if (!Array.isArray(items) || !items.length) return null;
-  const preferred = items.find((item) => item && item.id === 'mom-heart-01') || items[0];
-  if (!preferred || !preferred.id) return null;
-  const product = productById(preferred.id);
-  if (!product) return null;
-  return {
-    id: product.id,
-    variant: product.id === 'mom-heart-01' && /^necklace-[1-5]$/.test(String(preferred.necklace || ''))
-      ? String(preferred.necklace)
-      : null
-  };
+async function purchasedProductsForUser(userId) {
+  const orders = typeof database.listPaidOrdersForUser === 'function'
+    ? await database.listPaidOrdersForUser(userId)
+    : [await database.latestPaidOrderForUser(userId)].filter(Boolean);
+  const purchased = [];
+  const seen = new Set();
+
+  for (const order of orders) {
+    if (!order || !order.items_json) continue;
+    let items;
+    try { items = JSON.parse(order.items_json); } catch (_) { continue; }
+    if (!Array.isArray(items)) continue;
+
+    for (const item of items) {
+      const itemId = String(item && (item.id || item.productId) || '').trim();
+      if (!itemId || seen.has(itemId)) continue;
+      const product = productById(itemId);
+      if (!product) continue;
+      seen.add(itemId);
+      purchased.push({
+        id: product.id,
+        variant: product.id === 'mom-heart-01' && /^necklace-[1-5]$/.test(String(item.necklace || ''))
+          ? String(item.necklace)
+          : null
+      });
+    }
+  }
+
+  return purchased;
+}
+
+async function purchasedProductForUser(userId, requestedProductId) {
+  const purchased = await purchasedProductsForUser(userId);
+  const requested = String(requestedProductId || '').trim();
+  if (requested) return purchased.find((item) => String(item.id) === requested) || null;
+  return purchased.length === 1 ? purchased[0] : null;
 }
 
 async function publicReview(row) {
@@ -2937,6 +2957,20 @@ async function authApi(req, res, pathname, parsed) {
 
 
 async function reviewsApi(req, res, pathname) {
+  if (pathname === '/api/reviews/eligible-products' && req.method === 'GET') {
+    const user = await ensureVerifiedCustomer(await getCurrentUser(req));
+    if (!user) {
+      json(res, 401, { ok: false, error: 'login_required' });
+      return true;
+    }
+    const purchased = await purchasedProductsForUser(user.id);
+    json(res, 200, {
+      ok: true,
+      products: purchased.map((item, index) => reviewProductPayload(item.id, item.variant, index + 1))
+    });
+    return true;
+  }
+
   if (pathname === '/api/reviews' && req.method === 'GET') {
     const parsed = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
     const requestedLimit = Number(parsed.searchParams.get('limit') || 12);
@@ -3105,9 +3139,18 @@ async function reviewsApi(req, res, pathname) {
       return true;
     }
 
+    const purchasedProduct = await purchasedProductForUser(user.id, body.productId);
+    if (!purchasedProduct) {
+      const requestedProductId = String(body.productId || '').trim();
+      json(res, requestedProductId ? 403 : 400, {
+        ok: false,
+        error: requestedProductId ? 'product_not_purchased' : 'review_product_required'
+      });
+      return true;
+    }
+
     const now = Date.now();
     let id;
-    const purchasedProduct = (await purchasedProductForUser(user.id)) || { id: 'mom-heart-01', variant: null };
     await database.transaction(async (tx) => {
       id = await tx.insertReview({
         userId: user.id,
