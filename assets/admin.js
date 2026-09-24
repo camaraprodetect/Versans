@@ -555,7 +555,7 @@
         var head = make('div', 'admin-shipping-head');
         var headText = make('div');
         headText.appendChild(make('small', '', 'מעקב אמיתי מהספק דרך 17TRACK'));
-        headText.appendChild(make('h2', '', 'רכישה ' + order.orderRef));
+        headText.appendChild(make('h2', '', order.orderRef));
         var close = make('button', 'admin-shipping-close', '×'); close.type = 'button'; close.addEventListener('click', closeShippingModal);
         head.append(headText, close); panel.appendChild(head);
 
@@ -565,15 +565,6 @@
         customerPreview.appendChild(make('strong', '', customerState.label || 'ההזמנה בהכנה'));
         customerPreview.appendChild(make('small', 'admin-table__muted', 'לכל מוצר בהזמנה יש מספר VerSans נפרד. את ה-Tracking ID מ-AliExpress מחברים ישירות למוצר המתאים.'));
         panel.appendChild(customerPreview);
-
-        var config = make('div', 'admin-shipping-config');
-        config.append(configPill(data.trackingConfigured, '17TRACK'), configPill(data.customerWhatsAppConfigured, 'WhatsApp לקוח'), configPill(data.adminWhatsAppConfigured, 'WhatsApp מנהל'));
-        panel.appendChild(config);
-        if (!data.trackingConfigured || !data.customerWhatsAppConfigured || !data.adminWhatsAppConfigured) {
-          var note = make('div', 'admin-shipping-note');
-          note.textContent = '17TRACK יכול לעבוד כבר עכשיו. WhatsApp יופעל אוטומטית אחרי שנוסיף את מספר VerSans והמשתנים של Meta ב-Render.';
-          panel.appendChild(note);
-        }
 
         var productsSection = make('div', 'admin-shipping-section');
         productsSection.appendChild(make('h3', '', 'מעקב לפי מוצר'));
@@ -743,7 +734,7 @@
       emptyText: 'אין הזמנות בטווח הזה.',
       rowClass: orderFulfillmentRowClass,
       columns: [
-        { label: 'רכישה', render: function (row) { return cellPrimary(row.orderRef, '#' + row.id, true); } },
+        { label: 'הזמנה', render: function (row) { return cellPrimary(row.orderRef, '#' + row.id, true); } },
         { label: 'לקוח', render: function (row) { return cellPrimary(row.customerName || row.customerEmail || 'אורח', row.customerEmail || ''); } },
         { label: 'טלפון', render: function (row) { return text(row.customerPhone); } },
         { label: 'מוצרים', render: orderItemsSummary },
