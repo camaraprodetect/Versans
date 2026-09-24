@@ -40,7 +40,7 @@
       if (!requestedCategory) requestedCategory = new URLSearchParams(logicalSearch()).get('cat');
       var validCategories = [
         'all', 'greeting', 'greeting-mom', 'greeting-partner', 'greeting-daughter', 'greeting-sister',
-        'necklaces', 'bracelets', 'photo-bracelets', 'watches', 'watches-men', 'watches-women',
+        'necklaces', 'bracelets', 'rings', 'photo-bracelets', 'watches', 'watches-men', 'watches-women',
         'glasses', 'glasses-men', 'glasses-women', 'glasses-unisex',
         'hats'
       ];
@@ -203,6 +203,7 @@
     { key: 'greeting', label: 'תכשיט עם ברכה' },
     { key: 'necklaces', label: 'שרשראות' },
     { key: 'bracelets', label: 'צמידים' },
+    { key: 'rings', label: 'טבעות' },
     { key: 'photo-bracelets', label: 'תכשיטי תמונה' },
     { key: 'watches', label: 'שעונים' },
     { key: 'glasses', label: 'משקפיים' },
@@ -217,7 +218,7 @@
 
   var MATERIAL_DEFS = [
     { key: 'sterling-925', label: 'Sterling Silver 925', terms: ['925 sterling silver', 'sterling silver 925', 'כסף סטרלינג', 'ציפוי sterling silver 925'] },
-    { key: 'stainless-steel', label: 'Stainless Steel', terms: ['stainless steel', 'נירוסטה', 'פלדת אל חלד'] },
+    { key: 'stainless-steel', label: 'Premium Stainless Steel', terms: ['stainless steel', 'נירוסטה', 'פלדת אל חלד'] },
     { key: 'zinc-alloy', label: 'Zinc Alloy', terms: ['zinc alloy', 'סגסוגת אבץ'] },
     { key: 'acetate', label: 'אצטט', terms: ['acetate', 'אצטט'] }
   ];
@@ -531,6 +532,7 @@
         state.filter === 'all' ||
         state.filter === 'necklaces' ||
         state.filter === 'bracelets' ||
+        state.filter === 'rings' ||
         state.filter === 'photo-bracelets';
       otherCollectionsBanner.hidden = !showOtherCollectionsBanner;
     }
@@ -793,6 +795,7 @@
     { key: 'greeting', title: 'תכשיט עם ברכה', allLabel: 'לכל מוצרי תכשיט עם ברכה' },
     { key: 'necklaces', title: 'שרשראות', allLabel: 'לכל השרשראות' },
     { key: 'bracelets', title: 'צמידים', allLabel: 'לכל הצמידים' },
+    { key: 'rings', title: 'טבעות', allLabel: 'לכל הטבעות' },
     { key: 'photo-bracelets', title: 'תכשיטי תמונה', allLabel: 'לכל תכשיטי התמונה' },
     { key: 'watches', title: 'שעונים', allLabel: 'לכל השעונים' },
     { key: 'glasses', title: 'משקפיים', allLabel: 'לכל המשקפיים' },
