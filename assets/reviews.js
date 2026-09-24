@@ -99,6 +99,11 @@
     }
   }
 
+  function displayReviewName(review) {
+    var name = String(review && review.name ? review.name : '').replace(/\s+/g, ' ').trim();
+    return name && name !== 'לקוח VerSans' ? name : 'לקוח';
+  }
+
   function mediaForReview(review) {
     if (review && Array.isArray(review.media) && review.media.length) return review.media.slice(0, MAX_MEDIA);
     var urls = review && Array.isArray(review.imageUrls) ? review.imageUrls.slice(0, MAX_MEDIA) : [];
@@ -241,7 +246,7 @@
     stars.textContent = starsText(review.rating);
     score.textContent = review.rating + ' / 5';
     card.querySelector('.review-card__text').textContent = review.text;
-    name.textContent = String(review.name || 'לקוח VerSans');
+    name.textContent = displayReviewName(review);
     if (verified) verified.hidden = false;
     date.textContent = reviewDate(review.createdAt);
     date.dateTime = new Date(review.createdAt).toISOString();
@@ -572,7 +577,7 @@
     verifiedRequired.hidden = !loggedIn || canReview;
 
     if (canReview) {
-      userLine.textContent = 'לקוח VerSans מאומת · אפשר לכתוב ביקורת רק על מוצר שרכשתם.';
+      userLine.textContent = 'לקוח מאומת · אפשר לכתוב ביקורת רק על מוצר שרכשתם.';
     } else if (loggedIn && verifiedRequired) {
       var title = verifiedRequired.querySelector('strong');
       var copy = verifiedRequired.querySelector('p');
@@ -798,7 +803,7 @@
     detailLastFocused = document.activeElement;
     activeDetailReview = review;
     activeDetailMediaIndex = 0;
-    if (detailName) detailName.textContent = String(review.name || 'לקוח VerSans');
+    if (detailName) detailName.textContent = displayReviewName(review);
     detailVerified.hidden = false;
     detailDate.textContent = reviewDate(review.createdAt);
     detailDate.dateTime = new Date(review.createdAt).toISOString();
@@ -865,6 +870,16 @@
 
       var top = document.createElement('div');
       top.className = 'my-review-card__top';
+      var identity = document.createElement('div');
+      identity.className = 'my-review-card__identity';
+      var reviewerName = document.createElement('strong');
+      reviewerName.className = 'my-review-card__name';
+      reviewerName.textContent = displayReviewName(review);
+      var reviewerVerified = document.createElement('span');
+      reviewerVerified.className = 'my-review-card__verified';
+      reviewerVerified.innerHTML = '<span aria-hidden="true">V</span> לקוח מאומת';
+      identity.appendChild(reviewerName);
+      identity.appendChild(reviewerVerified);
       var rating = document.createElement('div');
       rating.className = 'my-review-card__rating';
       rating.textContent = starsText(Number(review.rating || 0));
@@ -872,6 +887,7 @@
       date.className = 'my-review-card__date';
       date.textContent = reviewDate(review.createdAt);
       try { date.dateTime = new Date(review.createdAt).toISOString(); } catch (_) {}
+      top.appendChild(identity);
       top.appendChild(rating);
       top.appendChild(date);
 

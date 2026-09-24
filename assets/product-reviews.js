@@ -10,6 +10,8 @@
   var summaryEl = document.getElementById('productReviewSummary');
   var summaryAverageEl = document.getElementById('productReviewAverage');
   var summaryCountEl = document.getElementById('productReviewSummaryCount');
+  var summaryStarsFillEl = document.getElementById('productReviewAverageStarsFill');
+  var carouselAverageEl = document.getElementById('productReviewCarouselAverage');
 
   var modal = document.getElementById('productReviewDetail');
   var dialog = document.getElementById('productReviewDetailDialog');
@@ -52,7 +54,7 @@
 
   function findProduct(value) {
     for (var i = 0; i < PRODUCTS.length; i += 1) {
-      if (String(PRODUCTS[i].id) === String(value) || String(PRODUCTS[i].slug) === String(value)) return PRODUCTS[i];
+      if (String(PRODUCTS[i].id) === String(value) || String(PRODUCTS[i].slug) === String(value) || String(PRODUCTS[i].urlSlug) === String(value)) return PRODUCTS[i];
     }
     return null;
   }
@@ -76,7 +78,8 @@
   }
 
   function reviewName(review) {
-    return String(review && review.name ? review.name : 'לקוח VerSans').trim() || 'לקוח VerSans';
+    var name = String(review && review.name ? review.name : '').replace(/\s+/g, ' ').trim();
+    return name && name !== 'לקוח VerSans' ? name : 'לקוח';
   }
 
   function createSlide(review, duplicate) {
@@ -263,13 +266,17 @@
     }
 
     root.hidden = false;
-    if (countEl) countEl.textContent = reviews.length === 1 ? 'ביקורת אחת' : reviews.length + ' ביקורות';
+    var totalRating = reviews.reduce(function (sum, review) { return sum + (Number(review.rating) || 0); }, 0);
+    var averageRating = totalRating / reviews.length;
+    var reviewCountLabel = reviews.length === 1 ? 'ביקורת אחת' : reviews.length + ' ביקורות';
+    if (countEl) countEl.textContent = reviewCountLabel;
+    if (carouselAverageEl) carouselAverageEl.textContent = 'דירוג ממוצע ' + averageRating.toFixed(1) + '/5';
     if (summaryEl) {
-      var totalRating = reviews.reduce(function (sum, review) { return sum + (Number(review.rating) || 0); }, 0);
-      var averageRating = totalRating / reviews.length;
       summaryEl.hidden = false;
+      summaryEl.setAttribute('aria-label', 'דירוג ממוצע ' + averageRating.toFixed(1) + ' מתוך 5, ' + reviewCountLabel);
       if (summaryAverageEl) summaryAverageEl.textContent = averageRating.toFixed(1) + '/5';
-      if (summaryCountEl) summaryCountEl.textContent = reviews.length === 1 ? 'ביקורת אחת' : reviews.length + ' ביקורות';
+      if (summaryCountEl) summaryCountEl.textContent = reviewCountLabel;
+      if (summaryStarsFillEl) summaryStarsFillEl.style.width = Math.max(0, Math.min(100, (averageRating / 5) * 100)) + '%';
     }
 
     if (reviews.length === 1 || reduceMotion) {

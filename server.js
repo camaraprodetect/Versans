@@ -57,7 +57,7 @@ const REVIEW_MEDIA_TOTAL_LIMIT = 30 * 1024 * 1024;
 const REVIEW_MEDIA_MAX_COUNT = 5;
 const REVIEW_TEXT_MAX = 1200;
 const REVIEW_NAME_MAX = 70;
-const PUBLIC_REVIEW_NAME = 'לקוח VerSans';
+const PUBLIC_REVIEW_NAME = 'לקוח';
 const TERMS_VERSION = '2026-09-22';
 const MARKETING_CATALOG_META_KEY = 'marketing_catalog_initialized_v1';
 const MARKETING_DELIVERY_STALE_MS = 15 * 60 * 1000;
@@ -278,6 +278,14 @@ function cleanReviewText(value) {
   return String(value || '').replace(/\r\n?/g, '\n').trim();
 }
 
+function reviewDisplayName(row) {
+  const customName = cleanName(row && row.review_name);
+  if (customName && customName !== 'לקוח VerSans') return customName;
+  const accountName = cleanName(row && row.user_name);
+  if (accountName) return accountName;
+  return PUBLIC_REVIEW_NAME;
+}
+
 function currentIsraelDateValue() {
   const parts = new Intl.DateTimeFormat('en-US', {
     timeZone: 'Asia/Jerusalem',
@@ -459,7 +467,7 @@ async function publicReview(row) {
   const primaryProduct = products[0] || reviewProductPayload(row.review_product_id, row.review_product_variant, row.id);
   return {
     id: row.id,
-    name: cleanName(row.review_name) || PUBLIC_REVIEW_NAME,
+    name: reviewDisplayName(row),
     verified: true,
     rating: row.rating,
     text: row.body,
@@ -1071,7 +1079,7 @@ function adminReviewPayload(row) {
   return {
     id: Number(row.id),
     userId: row.user_id == null ? null : Number(row.user_id),
-    name: row.review_name || row.user_name || PUBLIC_REVIEW_NAME,
+    name: reviewDisplayName(row),
     email: row.user_email || null,
     productId: row.review_product_id || null,
     productName: info.name,

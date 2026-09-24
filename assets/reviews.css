@@ -1374,3 +1374,10 @@ body.review-detail-open{overflow:hidden}
   .my-reviews-modal__dialog{width:100%;max-height:94vh}
   .my-reviews__body{padding:1.15rem 1.15rem 1.6rem}
 }
+
+
+/* Review display-name + verified badge in My Reviews */
+.my-review-card__identity{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;min-width:0}
+.my-review-card__name{font-size:.9rem;font-weight:750;color:#142333;overflow-wrap:anywhere}
+.my-review-card__verified{display:inline-flex;align-items:center;gap:.28rem;font-size:.72rem;font-weight:700;color:#52606d;white-space:nowrap}
+.my-review-card__verified>span{display:inline-grid;place-items:center;width:18px;height:18px;border:1px solid currentColor;border-radius:50%;font-size:.62rem;line-height:1}

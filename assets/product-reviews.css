@@ -532,3 +532,33 @@ body.product-review-detail-open{overflow:hidden}
     line-height:1.25!important;
   }
 }
+
+/* Product review average / carousel restore */
+.product-review-carousel__average{
+  color:#142333;
+  font-size:.7rem;
+  font-weight:750;
+  white-space:nowrap;
+}
+.product-review-summary__stars{
+  position:relative;
+  display:inline-block;
+  width:max-content;
+  line-height:1;
+  direction:ltr;
+  letter-spacing:.06em;
+}
+.product-review-summary__stars-base{
+  color:#d7dde2;
+}
+.product-review-summary__stars-fill{
+  position:absolute;
+  inset:0 auto 0 0;
+  width:0;
+  overflow:hidden;
+  color:#f2b615;
+  white-space:nowrap;
+}
+@media(max-width:520px){
+  .product-review-carousel__average{font-size:.63rem}
+}

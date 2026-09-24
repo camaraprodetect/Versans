@@ -21,7 +21,7 @@
 <link rel="icon" type="image/png" sizes="96x96" href="/images/favicon-96.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
 <link rel="stylesheet" href="assets/brand.css?v=20260905-versans-v1">
-<link rel="stylesheet" href="assets/product-reviews.css?v=20260908-product-reviews-v4">
+<link rel="stylesheet" href="assets/product-reviews.css?v=20260924-product-reviews-carousel-restore-v1">
 <link rel="stylesheet" href="assets/fonts.css?v=20260909-fonts-only">
 <link rel="stylesheet" href="assets/typography-only.css?v=20260909-fonts-only">
 <link rel="stylesheet" href="/assets/customer-service.css?v=20260922-whatsapp-support-v2">
@@ -175,7 +175,10 @@
         </div>
         <h1 class="product-info__title" id="productTitle"></h1>
         <div class="product-review-summary" id="productReviewSummary" hidden aria-label="סיכום ביקורות">
-          <span class="product-review-summary__stars" aria-hidden="true">★★★★★</span>
+          <span class="product-review-summary__stars" aria-hidden="true">
+            <span class="product-review-summary__stars-base">★★★★★</span>
+            <span class="product-review-summary__stars-fill" id="productReviewAverageStarsFill">★★★★★</span>
+          </span>
           <strong id="productReviewAverage" dir="ltr"></strong>
           <button class="product-review-summary__count" id="productReviewSummaryCount" type="button"></button>
         </div>
@@ -195,6 +198,7 @@
           <div class="product-review-carousel__head">
             <div class="product-review-carousel__title">
               <strong>ביקורות על המוצר</strong>
+              <span class="product-review-carousel__average" id="productReviewCarouselAverage"></span>
               <span class="product-review-carousel__count" id="productReviewCount"></span>
             </div>
             <a class="product-review-carousel__more" href="/#reviews">עוד ביקורות</a>
@@ -388,7 +392,7 @@
     </div>
     <div class="product-review-detail__content">
       <div class="product-review-detail__meta">
-        <p class="product-review-detail__identity"><strong id="productReviewDetailName">לקוח VerSans</strong><span class="product-review-detail__verified" id="productReviewDetailVerified"><span aria-hidden="true">V</span> לקוח מאומת</span></p>
+        <p class="product-review-detail__identity"><strong id="productReviewDetailName">לקוח</strong><span class="product-review-detail__verified" id="productReviewDetailVerified"><span aria-hidden="true">V</span> לקוח מאומת</span></p>
         <time id="productReviewDetailDate"></time>
       </div>
       <p class="product-review-detail__rating"><span id="productReviewDetailStars" aria-hidden="true"></span><span class="product-review-detail__score" id="productReviewDetailScore" dir="ltr"></span></p>
@@ -410,7 +414,7 @@
 <script src="/assets/cart-drawer.js?v=20260922-cart-promos-v2"></script>
 <script src="assets/i18n.js?v=20260905-versans-v1"></script>
 <script src="assets/product.js?v=20260922-cart-canonical-v3"></script>
-<script src="assets/product-reviews.js?v=20260924-review-names-verified-v2"></script>
+<script src="assets/product-reviews.js?v=20260924-product-review-name-v2"></script>
 <script src="assets/auth-nav.js?v=20260914-pretty-urls-v1"></script>
   <script src="/assets/presence.js?v=20260915-presence-v1"></script>
   <script src="/assets/customer-service.js?v=20260922-whatsapp-support-v2"></script>
