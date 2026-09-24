@@ -103,7 +103,7 @@
 
     var verified = document.createElement('span');
     verified.className = 'product-review-slide__verified';
-    verified.innerHTML = '<span aria-hidden="true">V</span> לקוח מאומת';
+    verified.textContent = 'לקוח מאומת';
     reviewer.appendChild(verified);
 
     var starEl = document.createElement('span');

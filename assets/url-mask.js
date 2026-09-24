@@ -64,6 +64,23 @@
     });
   }
 
+  function restoreHomeAnchor() {
+    if (!document.body || !document.body.classList.contains('home-page')) return;
+    var hash = '';
+    try { hash = state.hash ? state.hash() : ''; } catch (_) {}
+    if (!hash || hash === '#top') return;
+    var id = hash.slice(1);
+    var target = id ? document.getElementById(id) : null;
+    if (!target) return;
+    window.requestAnimationFrame(function () {
+      window.requestAnimationFrame(function () {
+        try { target.scrollIntoView({ behavior: 'auto', block: 'start' }); }
+        catch (_) { target.scrollIntoView(); }
+      });
+    });
+  }
+
   addShareButton();
   state.mask();
+  restoreHomeAnchor();
 })();

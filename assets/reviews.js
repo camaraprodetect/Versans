@@ -877,7 +877,7 @@
       reviewerName.textContent = displayReviewName(review);
       var reviewerVerified = document.createElement('span');
       reviewerVerified.className = 'my-review-card__verified';
-      reviewerVerified.innerHTML = '<span aria-hidden="true">V</span> לקוח מאומת';
+      reviewerVerified.textContent = 'לקוח מאומת';
       identity.appendChild(reviewerName);
       identity.appendChild(reviewerVerified);
       var rating = document.createElement('div');

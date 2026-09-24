@@ -47,6 +47,13 @@
   }
 
   var bootRoute = normalizeRoute(window.__VERSANS_BOOT_ROUTE__ || visibleRoute);
+  /* URL fragments are never sent to the server, so the injected boot route can
+     miss anchors such as #reviews even though the browser still has them. Keep
+     the browser fragment attached to the logical route before masking the URL. */
+  try {
+    var visibleHash = routeUrl(visibleRoute).hash || '';
+    if (visibleHash && !routeUrl(bootRoute).hash) bootRoute = normalizeRoute(bootRoute + visibleHash);
+  } catch (_) {}
   var currentRoute = (visibleRoute === '/' && stateRoute && stateRoute !== '/') ? stateRoute : bootRoute;
 
   function save(route) {
@@ -137,7 +144,7 @@
          the route again after the storefront has initialized. */
       var previewUrl = new URL(rawHref, location.origin + currentRoute);
       var isHomeDocument = !!(document.body && document.body.classList.contains('home-page'));
-      var homeFragments = { '#shop':1, '#shopTitle':1, '#top':1, '#how':1, '#faq':1, '#contact':1 };
+      var homeFragments = { '#shop':1, '#shopTitle':1, '#reviews':1, '#top':1, '#how':1, '#faq':1, '#contact':1 };
       if (!isHomeDocument && previewUrl.origin === location.origin && previewUrl.pathname === '/' &&
           (!previewUrl.hash || homeFragments[previewUrl.hash])) {
         var documentRoute = '/shop' + (previewUrl.search || '') + (previewUrl.hash || '');
