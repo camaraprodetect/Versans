@@ -1712,9 +1712,7 @@ async function syncActiveShipmentTracking() {
 }
 
 function orderNotificationItems(payload) {
-  const parentOrderRef = String(payload && payload.orderRef || '').trim();
-  return (Array.isArray(payload && payload.items) ? payload.items : []).map((item, index) => ({
-    itemOrderRef: String(item && item.itemOrderRef || orderItemRef(parentOrderRef, index)),
+  return (Array.isArray(payload && payload.items) ? payload.items : []).map((item) => ({
     productId: String(item && item.productId || ''),
     productName: String(item && item.productName || 'מוצר'),
     variant: String(item && item.selectionsText || '').trim(),
@@ -1727,13 +1725,13 @@ function newOrderCustomerMessage({ customerName, orderRef, items, trackingIds })
   lines.push(`היי ${customerName || 'לקוח/ה'} 👋`);
   lines.push('ההזמנה שלך ב-VerSans התקבלה בהצלחה ✅');
   lines.push('');
+  lines.push(`מספר הזמנה: ${orderRef}`);
+  lines.push('');
   lines.push('המוצרים בהזמנה:');
-  for (const [index, item] of items.entries()) {
+  for (const item of items) {
     const variant = item.variant ? ` - ${item.variant}` : '';
     const qty = Number(item.quantity || 1) > 1 ? ` × ${Number(item.quantity)}` : '';
-    const itemRef = String(item.itemOrderRef || orderItemRef(orderRef, index));
     lines.push(`• ${item.productName}${variant}${qty}`);
-    lines.push(`  מספר הזמנה: ${itemRef}`);
   }
   if (trackingIds && trackingIds.length) {
     lines.push('');
@@ -1780,22 +1778,6 @@ async function postNewOrderWebhook(orderRef) {
   return { ok: true, status };
 }
 
-async function dispatchNewOrderWebhook(orderRef) {
-  const now = Date.now();
-  // Atomic dispatch lease: even if the same paid order is processed twice at the
-  // same moment (duplicate payment callback, duplicate Sheet completion, or two
-  // Render workers), only one webhook run may be started for this order during
-  // the retry window. A failed/abandoned dispatch becomes eligible again after
-  // ORDER_NOTIFICATION_WEBHOOK_RETRY_MS.
-  const claimed = await database.claimOrderNotificationWebhookDispatch(
-    orderRef,
-    now,
-    now - ORDER_NOTIFICATION_WEBHOOK_RETRY_MS
-  );
-  if (!claimed) return { ok: false, skipped: true, reason: 'webhook_dispatch_already_claimed' };
-  return postNewOrderWebhook(orderRef);
-}
-
 async function queueNewOrderNotificationAfterSheet(order) {
   if (!order || String(order.status || '') !== 'paid') return { ok: false, skipped: true, reason: 'order_not_paid' };
   const orderRef = String(order.order_ref || '').trim();
@@ -1805,7 +1787,7 @@ async function queueNewOrderNotificationAfterSheet(order) {
   const recipient = normalizePhone(payload.customerPhone || (payload.customer && payload.customer.phone) || order.customer_phone);
   await database.ensureOrderNotification(order.id, orderRef, recipient || null, Date.now());
   setImmediate(() => {
-    dispatchNewOrderWebhook(orderRef).catch((error) => console.error(`New-order Grok webhook failed for ${orderRef}:`, error && error.message ? error.message : error));
+    postNewOrderWebhook(orderRef).catch((error) => console.error(`New-order Grok webhook failed for ${orderRef}:`, error && error.message ? error.message : error));
   });
   return { ok: true, orderRef };
 }
@@ -1822,10 +1804,7 @@ async function retryPendingNewOrderWebhooks() {
   let processed = 0;
   let failed = 0;
   for (const row of rows) {
-    try {
-      const result = await dispatchNewOrderWebhook(String(row.order_ref || ''));
-      if (result && result.ok) processed += 1;
-    }
+    try { await postNewOrderWebhook(String(row.order_ref || '')); processed += 1; }
     catch (error) { failed += 1; console.error(`New-order webhook retry failed for ${row.order_ref}:`, error && error.message ? error.message : error); }
   }
   return { processed, failed };
@@ -1837,13 +1816,23 @@ async function publicTrackingApi(req, res, pathname, parsed) {
   const requestedRef = String(parsed.searchParams.get('order') || '').trim().slice(0, 160);
   if (!requestedRef) { json(res, 400, { ok: false, error: 'missing_order_number' }); return true; }
 
+  // Customer-facing order numbers are per product (for example ...-P01).
+  // Resolve that suffix to the parent paid order BEFORE the database lookup so
+  // the tracking page works with the exact number shown in Admin / WhatsApp.
+  // Keep the direct parent-order lookup as a backwards-compatible fallback.
   let itemFilter = null;
-  let order = await database.getOrderByRef(requestedRef);
-  if (!order) {
-    const parsedItemRef = parseOrderItemRef(requestedRef);
-    if (parsedItemRef) {
-      order = await database.getOrderByRef(parsedItemRef.orderRef);
-      if (order) itemFilter = parsedItemRef.itemIndex;
+  const parsedItemRef = parseOrderItemRef(requestedRef);
+  let order = null;
+  if (parsedItemRef) {
+    order = await database.getOrderByRef(parsedItemRef.orderRef);
+    if (!order && parsedItemRef.orderRef !== parsedItemRef.orderRef.toUpperCase()) {
+      order = await database.getOrderByRef(parsedItemRef.orderRef.toUpperCase());
+    }
+    if (order) itemFilter = parsedItemRef.itemIndex;
+  } else {
+    order = await database.getOrderByRef(requestedRef);
+    if (!order && requestedRef !== requestedRef.toUpperCase()) {
+      order = await database.getOrderByRef(requestedRef.toUpperCase());
     }
   }
   if (!order || order.status !== 'paid') {

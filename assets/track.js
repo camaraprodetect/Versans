@@ -108,12 +108,57 @@
     }
   }
 
+  function itemRefParts(value){
+    var match=/^(.*)-P(\d{2,3})$/i.exec(String(value||'').trim());
+    if(!match||!match[1])return null;
+    var oneBased=Number(match[2]);
+    if(!Number.isInteger(oneBased)||oneBased<1)return null;
+    return {parent:match[1],index:oneBased-1};
+  }
+
+  async function fetchTracking(order){
+    var response=await fetch('/api/tracking?order='+encodeURIComponent(order),{headers:{Accept:'application/json'},credentials:'same-origin'});
+    var body=null;try{body=await response.json()}catch(_){}
+    return {response:response,body:body};
+  }
+
+  // Compatibility fallback: if an older backend deployment does not yet resolve
+  // product order numbers (…-P01), retry the parent order and isolate the exact
+  // product in the browser. This keeps the number the customer received usable.
+  function isolateRequestedProduct(body,requested,parts){
+    if(!body||!parts||!Array.isArray(body.shipments))return body;
+    var shipment=body.shipments[parts.index];
+    if(!shipment)return null;
+    return Object.assign({},body,{
+      orderRef:requested,
+      parentOrderRef:body.parentOrderRef||parts.parent,
+      itemSpecific:true,
+      status:shipment.status||body.status,
+      statusLabel:shipment.statusLabel||body.statusLabel,
+      description:shipment.description||body.description,
+      detail:null,
+      location:shipment.location||null,
+      updatedAt:shipment.updatedAt||null,
+      shipments:[shipment]
+    });
+  }
+
   form.addEventListener('submit',async function(event){
     event.preventDefault();errorBox.hidden=true;result.hidden=true;submit.disabled=true;submit.textContent='בודק…';
     var order=orderInput.value.trim();
     try{
-      var response=await fetch('/api/tracking?order='+encodeURIComponent(order),{headers:{Accept:'application/json'},credentials:'same-origin'});
-      var body=null;try{body=await response.json()}catch(_){}
+      var attempt=await fetchTracking(order);
+      var response=attempt.response,body=attempt.body;
+      if(!response.ok&&response.status===404){
+        var parts=itemRefParts(order);
+        if(parts){
+          var parentAttempt=await fetchTracking(parts.parent);
+          if(parentAttempt.response.ok){
+            var isolated=isolateRequestedProduct(parentAttempt.body,order,parts);
+            if(isolated){response=parentAttempt.response;body=isolated}
+          }
+        }
+      }
       if(!response.ok)throw new Error(response.status===404?'לא מצאנו הזמנה עם המספר הזה. בדקו שהמספר הוזן בדיוק כפי שקיבלתם אותו.':'לא ניתן לבדוק את ההזמנה כרגע. נסו שוב בעוד רגע.');
       render(body);history.replaceState(null,'','/track?order='+encodeURIComponent(order));
     }catch(err){errorBox.textContent=err.message||'אירעה שגיאה';errorBox.hidden=false}
