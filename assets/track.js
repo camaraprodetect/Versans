@@ -82,12 +82,6 @@
         statusBox.appendChild(el('span','','סטטוס'));
         statusBox.appendChild(el('strong','',shipment.statusLabel||'ההזמנה בהכנה'));
         card.appendChild(statusBox);
-        if(shipment.trackingNumber){
-          var supplierTrack=el('div','track-parcel__supplier-track');
-          supplierTrack.appendChild(el('span','','Tracking ID'));
-          supplierTrack.appendChild(el('strong','',shipment.trackingNumber));
-          card.appendChild(supplierTrack);
-        }
         if(shipment.description)card.appendChild(el('p','track-parcel__description',shipment.description));
         if(shipment.pickupReady){
           var alert=el('div','track-pickup-alert');

@@ -1475,7 +1475,7 @@ function customerShipmentPayload(shipment, index = 0, item = null, orderRef = ''
   let statusLabel = CUSTOMER_TRACKING_STATES.preparing.label;
   let description = shipment
     ? 'המשלוח עדיין בתהליך ההכנה וההעברה לחברת השילוח.'
-    : 'המוצר נקלט בהזמנה ועדיין לא חובר אליו מספר מעקב מהספק.';
+    : 'המוצר נקלט בהזמנה ונמצא בהכנה.';
 
   if (delivered) {
     stage = 'delivered';
@@ -1500,7 +1500,6 @@ function customerShipmentPayload(shipment, index = 0, item = null, orderRef = ''
     productName: item && item.name || 'מוצר',
     productImage: rawImage ? (/^https?:\/\//i.test(rawImage) ? rawImage : '/' + rawImage.replace(/^\/+/, '')) : null,
     qty: Number(item && item.qty || 1),
-    trackingNumber: shipment ? shipment.trackingNumber : null,
     status: stage,
     statusLabel,
     description,
