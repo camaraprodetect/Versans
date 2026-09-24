@@ -1780,6 +1780,22 @@ async function postNewOrderWebhook(orderRef) {
   return { ok: true, status };
 }
 
+async function dispatchNewOrderWebhook(orderRef) {
+  const now = Date.now();
+  // Atomic dispatch lease: even if the same paid order is processed twice at the
+  // same moment (duplicate payment callback, duplicate Sheet completion, or two
+  // Render workers), only one webhook run may be started for this order during
+  // the retry window. A failed/abandoned dispatch becomes eligible again after
+  // ORDER_NOTIFICATION_WEBHOOK_RETRY_MS.
+  const claimed = await database.claimOrderNotificationWebhookDispatch(
+    orderRef,
+    now,
+    now - ORDER_NOTIFICATION_WEBHOOK_RETRY_MS
+  );
+  if (!claimed) return { ok: false, skipped: true, reason: 'webhook_dispatch_already_claimed' };
+  return postNewOrderWebhook(orderRef);
+}
+
 async function queueNewOrderNotificationAfterSheet(order) {
   if (!order || String(order.status || '') !== 'paid') return { ok: false, skipped: true, reason: 'order_not_paid' };
   const orderRef = String(order.order_ref || '').trim();
@@ -1789,7 +1805,7 @@ async function queueNewOrderNotificationAfterSheet(order) {
   const recipient = normalizePhone(payload.customerPhone || (payload.customer && payload.customer.phone) || order.customer_phone);
   await database.ensureOrderNotification(order.id, orderRef, recipient || null, Date.now());
   setImmediate(() => {
-    postNewOrderWebhook(orderRef).catch((error) => console.error(`New-order Grok webhook failed for ${orderRef}:`, error && error.message ? error.message : error));
+    dispatchNewOrderWebhook(orderRef).catch((error) => console.error(`New-order Grok webhook failed for ${orderRef}:`, error && error.message ? error.message : error));
   });
   return { ok: true, orderRef };
 }
@@ -1806,7 +1822,10 @@ async function retryPendingNewOrderWebhooks() {
   let processed = 0;
   let failed = 0;
   for (const row of rows) {
-    try { await postNewOrderWebhook(String(row.order_ref || '')); processed += 1; }
+    try {
+      const result = await dispatchNewOrderWebhook(String(row.order_ref || ''));
+      if (result && result.ok) processed += 1;
+    }
     catch (error) { failed += 1; console.error(`New-order webhook retry failed for ${row.order_ref}:`, error && error.message ? error.message : error); }
   }
   return { processed, failed };
