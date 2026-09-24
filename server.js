@@ -494,6 +494,24 @@ function safeUser(user) {
   } : null;
 }
 
+async function ensureVerifiedCustomer(user) {
+  if (!user || Number(user.is_verified_customer || 0) === 1) return user;
+
+  // A paid order may pre-date the account link (for example a demo/test checkout
+  // or an order placed before registration). Treat a paid order made with the
+  // same account email as proof of purchase and persist the verified flag.
+  const paidOrder = await database.latestPaidOrderForUser(user.id);
+  if (!paidOrder) return user;
+
+  const now = Date.now();
+  await database.markUserVerified(now, user.id);
+  return {
+    ...user,
+    is_verified_customer: 1,
+    verified_customer_at: user.verified_customer_at || now
+  };
+}
+
 function marketingUnsubscribeToken() {
   return crypto.randomBytes(32).toString('base64url');
 }
@@ -920,10 +938,6 @@ function newOrderWebhookConfig() {
 function isNewOrderWebhookConfigured() {
   const cfg = newOrderWebhookConfig();
   return Boolean(cfg.url && cfg.secret);
-}
-
-function allowDemoOrderNotifications() {
-  return /^(1|true|yes|on)$/i.test(String(process.env.VERSANS_ALLOW_DEMO_ORDER_NOTIFICATIONS || '').trim());
 }
 
 async function presenceApi(req, res, pathname) {
@@ -1475,7 +1489,7 @@ function customerShipmentPayload(shipment, index = 0, item = null, orderRef = ''
   let statusLabel = CUSTOMER_TRACKING_STATES.preparing.label;
   let description = shipment
     ? 'המשלוח עדיין בתהליך ההכנה וההעברה לחברת השילוח.'
-    : 'המוצר נקלט בהזמנה ונמצא בהכנה.';
+    : 'המוצר נקלט בהזמנה ועדיין לא חובר אליו מספר מעקב מהספק.';
 
   if (delivered) {
     stage = 'delivered';
@@ -1500,6 +1514,7 @@ function customerShipmentPayload(shipment, index = 0, item = null, orderRef = ''
     productName: item && item.name || 'מוצר',
     productImage: rawImage ? (/^https?:\/\//i.test(rawImage) ? rawImage : '/' + rawImage.replace(/^\/+/, '')) : null,
     qty: Number(item && item.qty || 1),
+    trackingNumber: shipment ? shipment.trackingNumber : null,
     status: stage,
     statusLabel,
     description,
@@ -1780,7 +1795,7 @@ async function postNewOrderWebhook(orderRef) {
 async function queueNewOrderNotificationAfterSheet(order) {
   if (!order || String(order.status || '') !== 'paid') return { ok: false, skipped: true, reason: 'order_not_paid' };
   const orderRef = String(order.order_ref || '').trim();
-  if (!orderRef) return { ok: false, skipped: true, reason: 'missing_order_ref' };
+  if (!orderRef || /^VS-DEMO-/i.test(orderRef)) return { ok: false, skipped: true, reason: 'demo_or_missing_order_ref' };
   if (!order.id) return { ok: false, skipped: true, reason: 'missing_order_id' };
   const payload = buildPaidOrderPayload(order);
   const recipient = normalizePhone(payload.customerPhone || (payload.customer && payload.customer.phone) || order.customer_phone);
@@ -1815,23 +1830,13 @@ async function publicTrackingApi(req, res, pathname, parsed) {
   const requestedRef = String(parsed.searchParams.get('order') || '').trim().slice(0, 160);
   if (!requestedRef) { json(res, 400, { ok: false, error: 'missing_order_number' }); return true; }
 
-  // Customer-facing order numbers are per product (for example ...-P01).
-  // Resolve that suffix to the parent paid order BEFORE the database lookup so
-  // the tracking page works with the exact number shown in Admin / WhatsApp.
-  // Keep the direct parent-order lookup as a backwards-compatible fallback.
   let itemFilter = null;
-  const parsedItemRef = parseOrderItemRef(requestedRef);
-  let order = null;
-  if (parsedItemRef) {
-    order = await database.getOrderByRef(parsedItemRef.orderRef);
-    if (!order && parsedItemRef.orderRef !== parsedItemRef.orderRef.toUpperCase()) {
-      order = await database.getOrderByRef(parsedItemRef.orderRef.toUpperCase());
-    }
-    if (order) itemFilter = parsedItemRef.itemIndex;
-  } else {
-    order = await database.getOrderByRef(requestedRef);
-    if (!order && requestedRef !== requestedRef.toUpperCase()) {
-      order = await database.getOrderByRef(requestedRef.toUpperCase());
+  let order = await database.getOrderByRef(requestedRef);
+  if (!order) {
+    const parsedItemRef = parseOrderItemRef(requestedRef);
+    if (parsedItemRef) {
+      order = await database.getOrderByRef(parsedItemRef.orderRef);
+      if (order) itemFilter = parsedItemRef.itemIndex;
     }
   }
   if (!order || order.status !== 'paid') {
@@ -2213,6 +2218,7 @@ async function adminApi(req, res, pathname, parsed) {
     if (!orderRef) { json(res, 400, { ok: false, error: 'missing_order_ref' }); return true; }
     const order = await database.getOrderByRef(orderRef);
     if (!order || String(order.status || '') !== 'paid') { json(res, 404, { ok: false, error: 'paid_order_not_found' }); return true; }
+    if (/^VS-DEMO-/i.test(orderRef)) { json(res, 400, { ok: false, error: 'demo_order_not_sendable' }); return true; }
     let notification = await database.getOrderNotification(orderRef);
     if (!notification) {
       json(res, 409, { ok: false, error: 'notification_not_queued', orderRef, safeToSend: false });
@@ -2710,7 +2716,8 @@ async function authApi(req, res, pathname, parsed) {
   }
 
   if (pathname === '/api/auth/me' && req.method === 'GET') {
-    json(res, 200, { ok: true, user: safeUser(await getCurrentUser(req)) });
+    const user = await ensureVerifiedCustomer(await getCurrentUser(req));
+    json(res, 200, { ok: true, user: safeUser(user) });
     return true;
   }
 
@@ -2882,7 +2889,7 @@ async function authApi(req, res, pathname, parsed) {
     }
 
     const cookie = await createSession(userId, req);
-    const user = await database.findUserByEmail(email);
+    const user = await ensureVerifiedCustomer(await database.findUserByEmail(email));
     json(res, 201, { ok: true, user: safeUser(user) }, { 'Set-Cookie': cookie });
     setImmediate(() => {
       sendWelcomeForUser(user).catch((err) => console.error(`Welcome email failed for user ${userId}:`, err && err.message ? err.message : err));
@@ -2908,7 +2915,8 @@ async function authApi(req, res, pathname, parsed) {
     const oldToken = getSessionToken(req);
     if (oldToken) await database.deleteSession(tokenHash(oldToken));
     const cookie = await createSession(user.id, req);
-    json(res, 200, { ok: true, user: safeUser(user) }, { 'Set-Cookie': cookie });
+    const verifiedUser = await ensureVerifiedCustomer(user);
+    json(res, 200, { ok: true, user: safeUser(verifiedUser) }, { 'Set-Cookie': cookie });
     return true;
   }
 
@@ -3050,7 +3058,7 @@ async function reviewsApi(req, res, pathname) {
       json(res, 403, { ok: false, error: 'origin_not_allowed' });
       return true;
     }
-    const user = await getCurrentUser(req);
+    const user = await ensureVerifiedCustomer(await getCurrentUser(req));
     if (!user) {
       json(res, 401, { ok: false, error: 'login_required' });
       return true;
@@ -3458,22 +3466,10 @@ const server = http.createServer(async (req, res) => {
           } catch (dbErr) {
             console.error(`Demo order database save failed for ${demoOrder.order_ref}:`, dbErr);
           }
-          let sheetSynced = false;
           try {
             await sendPaidOrderToGoogleSheet(demoOrder);
-            sheetSynced = true;
           } catch (sheetErr) {
             console.error(`Google demo order sync failed for ${demoOrder.order_ref}:`, sheetErr);
-          }
-          if (sheetSynced) {
-            try {
-              const persistedDemoOrder = await database.getOrderByRef(demoOrder.order_ref);
-              if (!persistedDemoOrder) throw new Error('demo_order_not_persisted');
-              await queueNewOrderNotificationAfterSheet(persistedDemoOrder);
-              console.log(`New-order Grok webhook queued after Google Sheet sync for ${demoOrder.order_ref}`);
-            } catch (notifyErr) {
-              console.error(`Demo new-order notification queue failed for ${demoOrder.order_ref}:`, notifyErr && notifyErr.message ? notifyErr.message : notifyErr);
-            }
           }
           try {
             await sendOrderConfirmationForOrder(demoOrder);
