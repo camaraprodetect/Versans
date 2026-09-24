@@ -46,7 +46,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
 <link rel="stylesheet" href="assets/brand.css?v=20260905-versans-v1">
 <link rel="stylesheet" href="assets/home.css?v=20260918-all-collection-groups-v1">
-<link rel="stylesheet" href="assets/reviews.css?v=20260908-reviews-counts-v12">
+<link rel="stylesheet" href="assets/reviews.css?v=20260924-reviews-multi-my-v1">
 <link rel="stylesheet" href="assets/fonts.css?v=20260909-fonts-only">
 <link rel="stylesheet" href="assets/typography-only.css?v=20260909-fonts-only">
 <style id="versans-hats-carousel-v2">
@@ -787,6 +787,7 @@
           <span class="reviews__summary-stars" id="reviewsSummaryStars" aria-hidden="true"></span>
           <span class="reviews__count" id="reviewsCount"></span>
         </div>
+        <button class="btn reviews__my-btn" id="openMyReviews" type="button" hidden>הביקורות שלי</button>
         <button class="btn btn--primary reviews__write-btn" id="openReviewModal" type="button">כתבו ביקורת</button>
       </div>
     </div>
@@ -866,11 +867,11 @@
       <div class="review-form__user" id="reviewUserLine"></div>
 
       <div class="review-form__field">
-        <label for="reviewProduct">על איזה מוצר הביקורת?</label>
-        <select class="review-form__input review-form__select" id="reviewProduct" name="reviewProduct" required>
-          <option value="">טוען את המוצרים שרכשתם…</option>
-        </select>
-        <small class="review-form__hint">אפשר לפרסם ביקורת רק על מוצרים שנרכשו בחשבון הזה.</small>
+        <span class="review-form__field-label" id="reviewProductsLabel">על אילו מוצרים הביקורת?</span>
+        <div class="review-product-picker" id="reviewProducts" role="group" aria-labelledby="reviewProductsLabel" aria-describedby="reviewProductsHint">
+          <div class="review-product-picker__status">טוען את המוצרים שרכשתם…</div>
+        </div>
+        <small class="review-form__hint" id="reviewProductsHint">חייבים לבחור לפחות מוצר אחד. אפשר לבחור כמה מוצרים, ורק מתוך מוצרים שנרכשו בחשבון הזה.</small>
       </div>
 
       <div class="review-form__field">
@@ -921,6 +922,24 @@
       <div class="review-form__message" id="reviewFormMessage" role="status" aria-live="polite"></div>
       <button class="btn btn--primary review-form__submit" id="reviewSubmit" type="submit">פרסום הביקורת</button>
     </form>
+  </section>
+</div>
+
+<div class="review-modal my-reviews-modal" id="myReviewsModal" hidden>
+  <div class="review-modal__backdrop" data-my-reviews-close></div>
+  <section class="review-modal__dialog my-reviews-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="myReviewsTitle">
+    <button class="review-modal__close" type="button" data-my-reviews-close aria-label="סגירה">×</button>
+    <div class="review-modal__head">
+      <p class="eyebrow">VERSANS</p>
+      <h2 id="myReviewsTitle">הביקורות שלי</h2>
+      <p>כאן אפשר לראות ולמחוק ביקורות שפרסמתם. האזור זמין ללקוחות מאומתים בלבד.</p>
+    </div>
+    <div class="my-reviews__body">
+      <div class="my-reviews__loading" id="myReviewsLoading">טוען את הביקורות שלכם…</div>
+      <div class="my-reviews__empty" id="myReviewsEmpty" hidden>עדיין לא פרסמתם ביקורות.</div>
+      <div class="my-reviews__list" id="myReviewsList" hidden></div>
+      <div class="my-reviews__message" id="myReviewsMessage" role="status" aria-live="polite"></div>
+    </div>
   </section>
 </div>
 
@@ -1101,7 +1120,7 @@
 <script src="assets/glasses-pricing.js?v=20260912-glasses-v9"></script>
 <script src="assets/pricing.js?v=20260922-cart-promos-v2"></script>
 <script src="assets/i18n.js?v=20260922-full-address-v1"></script>
-<script src="assets/reviews.js?v=20260914-pretty-urls-v1"></script>
+<script src="assets/reviews.js?v=20260924-reviews-multi-my-v1"></script>
 <script src="assets/home.js?v=20260921-watch-subcats-v1"></script>
 <script src="assets/store.js?v=20260923-product-orders-v5"></script>
 <script src="assets/auth-nav.js?v=20260914-pretty-urls-v1"></script>

@@ -25,7 +25,7 @@
   var loginRequired = document.getElementById('reviewLoginRequired');
   var verifiedRequired = document.getElementById('reviewVerifiedRequired');
   var userLine = document.getElementById('reviewUserLine');
-  var productInput = document.getElementById('reviewProduct');
+  var productPicker = document.getElementById('reviewProducts');
   var phoneInput = document.getElementById('reviewPhone');
   var dateInput = document.getElementById('reviewDate');
   var textInput = document.getElementById('reviewText');
@@ -37,6 +37,13 @@
   var message = document.getElementById('reviewFormMessage');
   var submit = document.getElementById('reviewSubmit');
   var starButtons = Array.prototype.slice.call(document.querySelectorAll('[data-review-rating]'));
+  var myReviewsBtn = document.getElementById('openMyReviews');
+  var myReviewsModal = document.getElementById('myReviewsModal');
+  var myReviewsLoading = document.getElementById('myReviewsLoading');
+  var myReviewsEmpty = document.getElementById('myReviewsEmpty');
+  var myReviewsList = document.getElementById('myReviewsList');
+  var myReviewsMessage = document.getElementById('myReviewsMessage');
+  var myReviewsLastFocused = null;
 
   var detailModal = document.getElementById('reviewDetailModal');
   var detailDialog = document.getElementById('reviewDetailDialog');
@@ -153,6 +160,7 @@
 
   function renderReviewProduct(card, review) {
     var product = review && review.product ? review.product : null;
+    var products = review && Array.isArray(review.products) ? review.products : (product ? [product] : []);
     var link = card.querySelector('.review-card__product');
     if (!link) return;
     if (!product) {
@@ -170,8 +178,9 @@
     }
     if (title) title.textContent = product.title || 'שרשרת לאמא עם ברכה והקדשה מרגשת';
     if (variant) {
-      variant.textContent = product.variantLabel || '';
-      variant.hidden = !product.variantLabel;
+      var extra = products.length > 1 ? '+' + (products.length - 1) + ' מוצרים נוספים' : '';
+      variant.textContent = [product.variantLabel || '', extra].filter(Boolean).join(' · ');
+      variant.hidden = !variant.textContent;
     }
   }
 
@@ -327,59 +336,92 @@
     });
   }
 
+  function updateVerifiedActions() {
+    if (myReviewsBtn) myReviewsBtn.hidden = !(currentUser && currentUser.isVerifiedCustomer);
+  }
+
   function loadUser() {
     return fetch('/api/auth/me', { credentials: 'same-origin', headers: { Accept: 'application/json' } })
       .then(function (response) { return response.ok ? response.json() : null; })
-      .then(function (data) { currentUser = data && data.user ? data.user : null; })
-      .catch(function () { currentUser = null; });
+      .then(function (data) { currentUser = data && data.user ? data.user : null; updateVerifiedActions(); })
+      .catch(function () { currentUser = null; updateVerifiedActions(); });
   }
 
   function renderEligibleReviewProducts() {
-    if (!productInput) return;
-    productInput.textContent = '';
+    if (!productPicker) return;
+    productPicker.textContent = '';
+
+    function status(text, isError) {
+      var el = document.createElement('div');
+      el.className = 'review-product-picker__status' + (isError ? ' is-error' : '');
+      el.textContent = text;
+      productPicker.appendChild(el);
+    }
 
     if (!eligibleProductsLoaded) {
-      var loadingOption = document.createElement('option');
-      loadingOption.value = '';
-      loadingOption.textContent = 'טוען את המוצרים שרכשתם…';
-      loadingOption.selected = true;
-      productInput.appendChild(loadingOption);
+      status('טוען את המוצרים שרכשתם…');
       return;
     }
-
     if (eligibleProductsLoadError) {
-      var errorOption = document.createElement('option');
-      errorOption.value = '';
-      errorOption.textContent = 'לא הצלחנו לטעון את הרכישות';
-      errorOption.selected = true;
-      productInput.appendChild(errorOption);
+      status('לא הצלחנו לטעון את הרכישות.', true);
       return;
     }
-
     if (!eligibleReviewProducts.length) {
-      var emptyOption = document.createElement('option');
-      emptyOption.value = '';
-      emptyOption.textContent = 'לא נמצאו מוצרים שנרכשו';
-      emptyOption.selected = true;
-      productInput.appendChild(emptyOption);
+      status('לא נמצאו מוצרים שנרכשו.');
       return;
     }
 
-    if (eligibleReviewProducts.length > 1) {
-      var placeholder = document.createElement('option');
-      placeholder.value = '';
-      placeholder.textContent = 'בחרו מוצר שרכשתם';
-      placeholder.selected = true;
-      productInput.appendChild(placeholder);
-    }
+    eligibleReviewProducts.forEach(function (product, index) {
+      var label = document.createElement('label');
+      label.className = 'review-product-option';
 
-    eligibleReviewProducts.forEach(function (product) {
-      var option = document.createElement('option');
-      option.value = String(product.id || '');
-      option.textContent = String(product.title || 'המוצר שנרכש');
-      if (eligibleReviewProducts.length === 1) option.selected = true;
-      productInput.appendChild(option);
+      var checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.name = 'reviewProducts';
+      checkbox.value = String(product.id || '');
+      checkbox.setAttribute('aria-label', String(product.title || 'המוצר שנרכש'));
+      checkbox.addEventListener('change', function () {
+        label.classList.toggle('is-selected', checkbox.checked);
+        setMessage('');
+      });
+
+      var image = document.createElement('img');
+      image.className = 'review-product-option__image';
+      image.src = product.imageUrl || '/images/review-products/necklace-1.png';
+      image.alt = '';
+      image.loading = 'lazy';
+      image.decoding = 'async';
+
+      var copy = document.createElement('span');
+      copy.className = 'review-product-option__copy';
+      var title = document.createElement('strong');
+      title.textContent = String(product.title || 'המוצר שנרכש');
+      copy.appendChild(title);
+      if (product.variantLabel) {
+        var variant = document.createElement('small');
+        variant.textContent = product.variantLabel;
+        copy.appendChild(variant);
+      }
+
+      var mark = document.createElement('span');
+      mark.className = 'review-product-option__mark';
+      mark.setAttribute('aria-hidden', 'true');
+      mark.textContent = '✓';
+
+      label.appendChild(checkbox);
+      label.appendChild(image);
+      label.appendChild(copy);
+      label.appendChild(mark);
+      productPicker.appendChild(label);
+      if (index === 0) label.dataset.firstProduct = 'true';
     });
+  }
+
+  function selectedReviewProductIds() {
+    if (!productPicker) return [];
+    return Array.prototype.slice.call(productPicker.querySelectorAll('input[type="checkbox"]:checked'))
+      .map(function (input) { return String(input.value || '').trim(); })
+      .filter(Boolean);
   }
 
   function loadEligibleReviewProducts() {
@@ -495,6 +537,13 @@
 
   function resetForm() {
     form.reset();
+    if (productPicker) {
+      Array.prototype.forEach.call(productPicker.querySelectorAll('input[type="checkbox"]'), function (input) {
+        input.checked = false;
+        var option = input.closest('.review-product-option');
+        if (option) option.classList.remove('is-selected');
+      });
+    }
     if (dateInput) {
       var today = localDateValue(new Date());
       dateInput.value = today;
@@ -509,6 +558,7 @@
   }
 
   function updateModalMode() {
+    updateVerifiedActions();
     var loggedIn = !!currentUser;
     var verified = loggedIn && !!currentUser.isVerifiedCustomer;
     var hasPurchasedProducts = eligibleProductsLoaded && !eligibleProductsLoadError && eligibleReviewProducts.length > 0;
@@ -542,8 +592,9 @@
     modal.hidden = false;
     document.body.classList.add('review-modal-open');
     var canReview = !!currentUser && !!currentUser.isVerifiedCustomer && eligibleProductsLoaded && !eligibleProductsLoadError && eligibleReviewProducts.length > 0;
+    var firstProductChoice = productPicker ? productPicker.querySelector('input[type="checkbox"]') : null;
     var focusTarget = currentUser
-      ? (canReview ? (eligibleReviewProducts.length > 1 ? productInput : phoneInput) : verifiedRequired.querySelector('a,button'))
+      ? (canReview ? (firstProductChoice || phoneInput) : verifiedRequired.querySelector('a,button'))
       : loginRequired.querySelector('a');
     setTimeout(function () { if (focusTarget) focusTarget.focus(); }, 0);
   }
@@ -682,6 +733,7 @@
 
   function renderDetailProduct(review) {
     var product = review && review.product ? review.product : null;
+    var products = review && Array.isArray(review.products) ? review.products : (product ? [product] : []);
     if (!detailProduct) return;
     if (!product) {
       detailProduct.hidden = true;
@@ -692,8 +744,9 @@
     detailProductImage.src = product.imageUrl || 'images/review-products/necklace-1.png';
     detailProductImage.alt = product.title || 'המוצר שנרכש';
     detailProductTitle.textContent = product.title || 'שרשרת לאמא עם ברכה והקדשה מרגשת';
-    detailProductVariant.textContent = product.variantLabel || '';
-    detailProductVariant.hidden = !product.variantLabel;
+    var extra = products.length > 1 ? '+' + (products.length - 1) + ' מוצרים נוספים בביקורת' : '';
+    detailProductVariant.textContent = [product.variantLabel || '', extra].filter(Boolean).join(' · ');
+    detailProductVariant.hidden = !detailProductVariant.textContent;
   }
 
   function renderDetailMedia() {
@@ -776,6 +829,157 @@
     renderDetailMedia();
   }
 
+  function setMyReviewsMessage(text, isError) {
+    if (!myReviewsMessage) return;
+    myReviewsMessage.textContent = text || '';
+    myReviewsMessage.classList.toggle('is-error', !!text && !!isError);
+  }
+
+  function reviewProductsForDisplay(review) {
+    if (review && Array.isArray(review.products) && review.products.length) return review.products;
+    return review && review.product ? [review.product] : [];
+  }
+
+  function renderMyReviews(reviews) {
+    if (!myReviewsList || !myReviewsEmpty || !myReviewsLoading) return;
+    myReviewsLoading.hidden = true;
+    myReviewsList.textContent = '';
+    reviews = Array.isArray(reviews) ? reviews : [];
+    if (!reviews.length) {
+      myReviewsEmpty.hidden = false;
+      myReviewsList.hidden = true;
+      return;
+    }
+    myReviewsEmpty.hidden = true;
+    myReviewsList.hidden = false;
+
+    reviews.forEach(function (review) {
+      var card = document.createElement('article');
+      card.className = 'my-review-card';
+      card.dataset.reviewId = String(review.id);
+
+      var top = document.createElement('div');
+      top.className = 'my-review-card__top';
+      var rating = document.createElement('div');
+      rating.className = 'my-review-card__rating';
+      rating.textContent = starsText(Number(review.rating || 0));
+      var date = document.createElement('time');
+      date.className = 'my-review-card__date';
+      date.textContent = reviewDate(review.createdAt);
+      try { date.dateTime = new Date(review.createdAt).toISOString(); } catch (_) {}
+      top.appendChild(rating);
+      top.appendChild(date);
+
+      var body = document.createElement('p');
+      body.className = 'my-review-card__text';
+      body.textContent = review.text || '';
+
+      var productsWrap = document.createElement('div');
+      productsWrap.className = 'my-review-card__products';
+      reviewProductsForDisplay(review).forEach(function (product) {
+        var chip = document.createElement('span');
+        chip.className = 'my-review-card__product';
+        var img = document.createElement('img');
+        img.src = product.imageUrl || '/images/review-products/necklace-1.png';
+        img.alt = '';
+        img.loading = 'lazy';
+        var copy = document.createElement('span');
+        copy.textContent = product.title || 'המוצר שנרכש';
+        chip.appendChild(img);
+        chip.appendChild(copy);
+        productsWrap.appendChild(chip);
+      });
+
+      var actions = document.createElement('div');
+      actions.className = 'my-review-card__actions';
+      var deleteBtn = document.createElement('button');
+      deleteBtn.type = 'button';
+      deleteBtn.className = 'my-review-card__delete';
+      deleteBtn.textContent = 'מחיקת הביקורת';
+      deleteBtn.addEventListener('click', function () { deleteMyReview(review, deleteBtn); });
+      actions.appendChild(deleteBtn);
+
+      card.appendChild(top);
+      card.appendChild(body);
+      if (productsWrap.childNodes.length) card.appendChild(productsWrap);
+      card.appendChild(actions);
+      myReviewsList.appendChild(card);
+    });
+  }
+
+  function loadMyReviews() {
+    if (!myReviewsModal) return Promise.resolve();
+    if (myReviewsLoading) { myReviewsLoading.hidden = false; myReviewsLoading.textContent = 'טוען את הביקורות שלכם…'; }
+    if (myReviewsEmpty) myReviewsEmpty.hidden = true;
+    if (myReviewsList) myReviewsList.hidden = true;
+    setMyReviewsMessage('');
+    return fetch('/api/reviews/mine', { credentials: 'same-origin', headers: { Accept: 'application/json' } })
+      .then(function (response) {
+        return response.json().catch(function () { return {}; }).then(function (data) { return { response: response, data: data }; });
+      })
+      .then(function (result) {
+        if (result.response.status === 401 || result.response.status === 403) {
+          if (result.response.status === 401) currentUser = null;
+          else if (currentUser) currentUser.isVerifiedCustomer = false;
+          updateVerifiedActions();
+          throw new Error('האזור זמין ללקוחות מאומתים בלבד.');
+        }
+        if (!result.response.ok || !result.data.ok) throw new Error('לא הצלחנו לטעון את הביקורות שלכם.');
+        renderMyReviews(result.data.reviews || []);
+      })
+      .catch(function (err) {
+        if (myReviewsLoading) { myReviewsLoading.hidden = false; myReviewsLoading.textContent = err.message || 'לא הצלחנו לטעון את הביקורות שלכם.'; }
+      });
+  }
+
+  function openMyReviews() {
+    if (!myReviewsModal || !currentUser || !currentUser.isVerifiedCustomer) return;
+    myReviewsLastFocused = document.activeElement;
+    myReviewsModal.hidden = false;
+    document.body.classList.add('review-modal-open');
+    loadMyReviews();
+    setTimeout(function () {
+      var close = myReviewsModal.querySelector('[data-my-reviews-close]');
+      if (close) close.focus();
+    }, 0);
+  }
+
+  function closeMyReviews() {
+    if (!myReviewsModal || myReviewsModal.hidden) return;
+    myReviewsModal.hidden = true;
+    document.body.classList.remove('review-modal-open');
+    if (myReviewsLastFocused && typeof myReviewsLastFocused.focus === 'function') myReviewsLastFocused.focus();
+  }
+
+  function deleteMyReview(review, button) {
+    if (!review || !review.id) return;
+    if (!window.confirm('למחוק את הביקורת הזאת? הפעולה לא ניתנת לביטול.')) return;
+    setMyReviewsMessage('');
+    if (button) { button.disabled = true; button.textContent = 'מוחק…'; }
+    fetch('/api/reviews/' + encodeURIComponent(review.id), {
+      method: 'DELETE',
+      credentials: 'same-origin',
+      headers: { Accept: 'application/json' }
+    }).then(function (response) {
+      return response.json().catch(function () { return {}; }).then(function (data) { return { response: response, data: data }; });
+    }).then(function (result) {
+      if (!result.response.ok || !result.data.ok) {
+        if (result.response.status === 401 || result.response.status === 403) {
+          if (result.response.status === 401) currentUser = null;
+          else if (currentUser) currentUser.isVerifiedCustomer = false;
+          updateVerifiedActions();
+          throw new Error('האזור זמין ללקוחות מאומתים בלבד.');
+        }
+        throw new Error('לא הצלחנו למחוק את הביקורת. נסו שוב.');
+      }
+      setMyReviewsMessage('הביקורת נמחקה.');
+      return Promise.all([loadMyReviews(), loadReviews(true)]);
+    }).catch(function (err) {
+      if (button) { button.disabled = false; button.textContent = 'מחיקת הביקורת'; }
+      setMyReviewsMessage(err.message || 'לא הצלחנו למחוק את הביקורת.', true);
+    });
+  }
+
   starButtons.forEach(function (button) {
     button.addEventListener('click', function () {
       setRating(Number(button.getAttribute('data-review-rating')));
@@ -830,14 +1034,15 @@
   form.addEventListener('submit', function (event) {
     event.preventDefault();
     setMessage('');
-    var productId = productInput ? productInput.value.trim() : '';
+    var productIds = selectedReviewProductIds();
     var phone = phoneInput.value.trim();
     var reviewDateValue = dateInput ? dateInput.value : '';
     var text = textInput.value.trim();
 
-    if (!productId) {
-      setMessage('בחרו מוצר שרכשתם.', true);
-      if (productInput) productInput.focus();
+    if (!productIds.length) {
+      setMessage('חייבים לבחור לפחות מוצר אחד שרכשתם.', true);
+      var firstProductChoice = productPicker ? productPicker.querySelector('input[type="checkbox"]') : null;
+      if (firstProductChoice) firstProductChoice.focus();
       return;
     }
     if (phone.replace(/\D/g, '').length < 9) {
@@ -872,7 +1077,7 @@
       credentials: 'same-origin',
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       body: JSON.stringify({
-        productId: productId,
+        productIds: productIds,
         phone: phone,
         date: reviewDateValue,
         rating: selectedRating,
@@ -895,7 +1100,8 @@
           throw new Error('רק לקוחות עם רכישה מאומתת יכולים לפרסם ביקורת.');
         }
         if (code === 'product_not_purchased') throw new Error('אפשר לפרסם ביקורת רק על מוצר שנרכש בחשבון הזה.');
-        if (code === 'review_product_required') throw new Error('בחרו מוצר שרכשתם לפני פרסום הביקורת.');
+        if (code === 'review_product_required') throw new Error('חייבים לבחור לפחות מוצר אחד שרכשתם לפני פרסום הביקורת.');
+        if (code === 'too_many_review_products') throw new Error('נבחרו יותר מדי מוצרים לביקורת אחת.');
         if (code === 'invalid_phone') throw new Error('הזינו מספר טלפון תקין.');
         if (code === 'invalid_review_date') throw new Error('בחרו תאריך ביקורת תקין שאינו בעתיד.');
         if (code === 'too_many_media') throw new Error('אפשר לצרף עד ' + MAX_MEDIA + ' תמונות או סרטונים לביקורת.');
@@ -935,10 +1141,20 @@
       .then(function () { return loadEligibleReviewProducts(); })
       .then(openModal);
   });
+  if (myReviewsBtn) {
+    myReviewsBtn.addEventListener('click', function () {
+      loadUser().then(function () {
+        if (currentUser && currentUser.isVerifiedCustomer) openMyReviews();
+      });
+    });
+  }
   if (loadMoreBtn) loadMoreBtn.addEventListener('click', function () { loadReviews(false); });
 
   Array.prototype.forEach.call(document.querySelectorAll('[data-review-close]'), function (button) {
     button.addEventListener('click', closeModal);
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-my-reviews-close]'), function (button) {
+    button.addEventListener('click', closeMyReviews);
   });
   Array.prototype.forEach.call(document.querySelectorAll('[data-review-detail-close]'), function (button) {
     button.addEventListener('click', closeReviewDetail);
@@ -950,6 +1166,7 @@
   document.addEventListener('keydown', function (event) {
     if (event.key === 'Escape') {
       if (detailModal && !detailModal.hidden) closeReviewDetail();
+      else if (myReviewsModal && !myReviewsModal.hidden) closeMyReviews();
       else if (!modal.hidden) closeModal();
     }
     if (detailModal && !detailModal.hidden && activeDetailReview) {

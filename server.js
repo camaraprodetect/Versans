@@ -445,6 +445,16 @@ async function publicReview(row) {
     url: `/api/reviews/${row.id}/media/${index}?v=${cacheVersion}`
   }));
   const imageUrls = media.filter((entry) => entry.kind === 'image').map((entry) => entry.url);
+  const linkedProducts = typeof database.listReviewProducts === 'function'
+    ? await database.listReviewProducts(row.id)
+    : [];
+  const productRows = linkedProducts.length
+    ? linkedProducts
+    : [{ product_id: row.review_product_id, product_variant: row.review_product_variant, sort_order: 0 }];
+  const products = productRows
+    .filter((entry) => entry && entry.product_id)
+    .map((entry, index) => reviewProductPayload(entry.product_id, entry.product_variant, row.id + index));
+  const primaryProduct = products[0] || reviewProductPayload(row.review_product_id, row.review_product_variant, row.id);
   return {
     id: row.id,
     name: PUBLIC_REVIEW_NAME,
@@ -456,7 +466,8 @@ async function publicReview(row) {
     mediaCount: media.length,
     imageUrls,
     imageUrl: imageUrls[0] || null,
-    product: reviewProductPayload(row.review_product_id, row.review_product_variant, row.id)
+    product: primaryProduct,
+    products
   };
 }
 
@@ -2971,6 +2982,51 @@ async function reviewsApi(req, res, pathname) {
     return true;
   }
 
+  if (pathname === '/api/reviews/mine' && req.method === 'GET') {
+    const user = await ensureVerifiedCustomer(await getCurrentUser(req));
+    if (!user) {
+      json(res, 401, { ok: false, error: 'login_required' });
+      return true;
+    }
+    if (Number(user.is_verified_customer || 0) !== 1) {
+      json(res, 403, { ok: false, error: 'verified_customer_required' });
+      return true;
+    }
+    const rows = typeof database.listReviewsForUser === 'function'
+      ? await database.listReviewsForUser(user.id, 100, 0)
+      : [];
+    const reviews = await Promise.all(rows.map((row) => publicReview(row)));
+    json(res, 200, { ok: true, reviews });
+    return true;
+  }
+
+  const deleteMatch = /^\/api\/reviews\/(\d+)$/.exec(pathname);
+  if (deleteMatch && req.method === 'DELETE') {
+    if (!sameOriginAllowed(req)) {
+      json(res, 403, { ok: false, error: 'origin_not_allowed' });
+      return true;
+    }
+    const user = await ensureVerifiedCustomer(await getCurrentUser(req));
+    if (!user) {
+      json(res, 401, { ok: false, error: 'login_required' });
+      return true;
+    }
+    if (Number(user.is_verified_customer || 0) !== 1) {
+      json(res, 403, { ok: false, error: 'verified_customer_required' });
+      return true;
+    }
+    const reviewId = Number(deleteMatch[1]);
+    const deleted = Number.isInteger(reviewId) && reviewId > 0 && typeof database.deleteReviewForUser === 'function'
+      ? await database.deleteReviewForUser(reviewId, user.id)
+      : false;
+    if (!deleted) {
+      json(res, 404, { ok: false, error: 'review_not_found' });
+      return true;
+    }
+    json(res, 200, { ok: true, deletedReviewId: reviewId });
+    return true;
+  }
+
   if (pathname === '/api/reviews' && req.method === 'GET') {
     const parsed = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
     const requestedLimit = Number(parsed.searchParams.get('limit') || 12);
@@ -3139,16 +3195,29 @@ async function reviewsApi(req, res, pathname) {
       return true;
     }
 
-    const purchasedProduct = await purchasedProductForUser(user.id, body.productId);
-    if (!purchasedProduct) {
-      const requestedProductId = String(body.productId || '').trim();
-      json(res, requestedProductId ? 403 : 400, {
-        ok: false,
-        error: requestedProductId ? 'product_not_purchased' : 'review_product_required'
-      });
+    const requestedProductIds = Array.from(new Set(
+      (Array.isArray(body.productIds) ? body.productIds : [body.productId])
+        .map((value) => String(value || '').trim())
+        .filter(Boolean)
+    ));
+    if (!requestedProductIds.length) {
+      json(res, 400, { ok: false, error: 'review_product_required' });
+      return true;
+    }
+    if (requestedProductIds.length > 20) {
+      json(res, 400, { ok: false, error: 'too_many_review_products' });
       return true;
     }
 
+    const purchasedProducts = await purchasedProductsForUser(user.id);
+    const purchasedById = new Map(purchasedProducts.map((item) => [String(item.id), item]));
+    const selectedProducts = requestedProductIds.map((id) => purchasedById.get(id)).filter(Boolean);
+    if (selectedProducts.length !== requestedProductIds.length) {
+      json(res, 403, { ok: false, error: 'product_not_purchased' });
+      return true;
+    }
+
+    const primaryProduct = selectedProducts[0];
     const now = Date.now();
     let id;
     await database.transaction(async (tx) => {
@@ -3156,14 +3225,19 @@ async function reviewsApi(req, res, pathname) {
         userId: user.id,
         reviewName: PUBLIC_REVIEW_NAME,
         contactPhone: phone,
-        reviewProductId: purchasedProduct.id,
-        reviewProductVariant: purchasedProduct.variant,
+        reviewProductId: primaryProduct.id,
+        reviewProductVariant: primaryProduct.variant,
         rating,
         body: text,
         reviewDate,
         createdAt: now,
         updatedAt: now
       });
+      if (typeof tx.insertReviewProduct === 'function') {
+        for (const [index, product] of selectedProducts.entries()) {
+          await tx.insertReviewProduct(id, product.id, product.variant, index);
+        }
+      }
       for (const [index, entry] of media.entries()) {
         await tx.insertReviewMedia(id, index, entry.buffer, entry.mime, entry.kind, now);
       }
@@ -3175,6 +3249,7 @@ async function reviewsApi(req, res, pathname) {
       url: `/api/reviews/${id}/media/${index}`
     }));
     const imageUrls = mediaPayload.filter((entry) => entry.kind === 'image').map((entry) => entry.url);
+    const productPayloads = selectedProducts.map((product, index) => reviewProductPayload(product.id, product.variant, id + index));
     json(res, 201, {
       ok: true,
       review: {
@@ -3188,7 +3263,8 @@ async function reviewsApi(req, res, pathname) {
         mediaCount: mediaPayload.length,
         imageUrls,
         imageUrl: imageUrls[0] || null,
-        product: reviewProductPayload(purchasedProduct.id, purchasedProduct.variant, id)
+        product: productPayloads[0] || null,
+        products: productPayloads
       }
     });
     return true;

@@ -34,6 +34,12 @@ const TABLES = [
     numeric: ['id','user_id','verified_purchase','rating','review_date','created_at','updated_at']
   },
   {
+    name: 'review_products',
+    key: 'review_id, product_id',
+    columns: ['review_id','product_id','product_variant','sort_order'],
+    numeric: ['review_id','sort_order']
+  },
+  {
     name: 'review_images',
     key: 'id',
     columns: ['id','review_id','sort_order','image_blob','image_mime','media_kind','created_at'],
@@ -159,7 +165,7 @@ async function copySnapshotToPostgres(client, snapshot, replaceTarget = false) {
 
   await client.query('BEGIN');
   try {
-    if (replaceTarget) await client.query('TRUNCATE review_images, reviews, orders, sessions, users, schema_meta RESTART IDENTITY CASCADE');
+    if (replaceTarget) await client.query('TRUNCATE review_images, review_products, reviews, orders, sessions, users, schema_meta RESTART IDENTITY CASCADE');
     for (const descriptor of TABLES) await insertTable(client, descriptor, snapshot[descriptor.name]);
     for (const table of ['users','sessions','orders','reviews','review_images']) await resetIdentity(client, table);
     await client.query('COMMIT');
