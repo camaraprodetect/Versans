@@ -555,7 +555,7 @@
         var head = make('div', 'admin-shipping-head');
         var headText = make('div');
         headText.appendChild(make('small', '', 'מעקב אמיתי מהספק דרך 17TRACK'));
-        headText.appendChild(make('h2', '', order.orderRef));
+        headText.appendChild(make('h2', '', 'רכישה ' + order.orderRef));
         var close = make('button', 'admin-shipping-close', '×'); close.type = 'button'; close.addEventListener('click', closeShippingModal);
         head.append(headText, close); panel.appendChild(head);
 
@@ -743,7 +743,7 @@
       emptyText: 'אין הזמנות בטווח הזה.',
       rowClass: orderFulfillmentRowClass,
       columns: [
-        { label: 'הזמנה', render: function (row) { return cellPrimary(row.orderRef, '#' + row.id, true); } },
+        { label: 'רכישה', render: function (row) { return cellPrimary(row.orderRef, '#' + row.id, true); } },
         { label: 'לקוח', render: function (row) { return cellPrimary(row.customerName || row.customerEmail || 'אורח', row.customerEmail || ''); } },
         { label: 'טלפון', render: function (row) { return text(row.customerPhone); } },
         { label: 'מוצרים', render: orderItemsSummary },

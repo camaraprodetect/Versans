@@ -1712,7 +1712,9 @@ async function syncActiveShipmentTracking() {
 }
 
 function orderNotificationItems(payload) {
-  return (Array.isArray(payload && payload.items) ? payload.items : []).map((item) => ({
+  const parentOrderRef = String(payload && payload.orderRef || '').trim();
+  return (Array.isArray(payload && payload.items) ? payload.items : []).map((item, index) => ({
+    itemOrderRef: String(item && item.itemOrderRef || orderItemRef(parentOrderRef, index)),
     productId: String(item && item.productId || ''),
     productName: String(item && item.productName || 'מוצר'),
     variant: String(item && item.selectionsText || '').trim(),
@@ -1725,13 +1727,13 @@ function newOrderCustomerMessage({ customerName, orderRef, items, trackingIds })
   lines.push(`היי ${customerName || 'לקוח/ה'} 👋`);
   lines.push('ההזמנה שלך ב-VerSans התקבלה בהצלחה ✅');
   lines.push('');
-  lines.push(`מספר הזמנה: ${orderRef}`);
-  lines.push('');
   lines.push('המוצרים בהזמנה:');
-  for (const item of items) {
+  for (const [index, item] of items.entries()) {
     const variant = item.variant ? ` - ${item.variant}` : '';
     const qty = Number(item.quantity || 1) > 1 ? ` × ${Number(item.quantity)}` : '';
+    const itemRef = String(item.itemOrderRef || orderItemRef(orderRef, index));
     lines.push(`• ${item.productName}${variant}${qty}`);
+    lines.push(`  מספר הזמנה: ${itemRef}`);
   }
   if (trackingIds && trackingIds.length) {
     lines.push('');

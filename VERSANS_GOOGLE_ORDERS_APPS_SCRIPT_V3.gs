@@ -9,7 +9,8 @@
 
 const VERSANS_ORDERS_SHEET = 'הזמנות';
 const VERSANS_WEBHOOK_SECRET = 'vrs_am5Vuf8xWNsvwnejtfF9ih67s1VdpmctcAcevNqQuWs';
-const VERSANS_MARKER_COLUMN = 16; // P - hidden internal marker
+const VERSANS_LEGACY_MARKER_COLUMN = 16; // P - old hidden marker
+const VERSANS_MARKER_COLUMN = 17; // Q - hidden internal marker
 const VERSANS_FOLDER_PROPERTY = 'VERSANS_DRIVE_FOLDER_ID';
 const VERSANS_FOLDER_NAME = 'VerSans Orders Assets';
 
@@ -126,6 +127,8 @@ function ensureOrdersSheet_(ss) {
 
   sheet.setRightToLeft(true);
   sheet.setFrozenRows(0);
+  migrateLegacyMarkerColumn_(sheet);
+  sheet.showColumns(1, 16);
   sheet.setColumnWidth(1, 76);   // checkbox
   sheet.setColumnWidth(2, 115);  // product image
   sheet.setColumnWidth(3, 260);  // name
@@ -141,8 +144,27 @@ function ensureOrdersSheet_(ss) {
   sheet.setColumnWidth(13, 125); // product link
   sheet.setColumnWidth(14, 155); // order date
   sheet.setColumnWidth(15, 120); // line total
+  sheet.setColumnWidth(16, 235); // per-product VerSans order number
   sheet.hideColumns(VERSANS_MARKER_COLUMN);
   return sheet;
+}
+
+function migrateLegacyMarkerColumn_(sheet) {
+  const lastRow = Math.max(sheet.getLastRow(), 1);
+  const legacy = sheet.getRange(1, VERSANS_LEGACY_MARKER_COLUMN, lastRow, 1).getValues();
+  const current = sheet.getRange(1, VERSANS_MARKER_COLUMN, lastRow, 1).getValues();
+  let changed = false;
+  legacy.forEach(function(row, index) {
+    const value = String(row[0] || '');
+    if (!/^(ORDER|ITEM):/.test(value)) return;
+    if (!String(current[index][0] || '')) current[index][0] = value;
+    legacy[index][0] = '';
+    changed = true;
+  });
+  if (changed) {
+    sheet.getRange(1, VERSANS_MARKER_COLUMN, lastRow, 1).setValues(current);
+    sheet.getRange(1, VERSANS_LEGACY_MARKER_COLUMN, lastRow, 1).setValues(legacy);
+  }
 }
 
 function appendOrderBlock_(sheet, order) {
@@ -167,9 +189,9 @@ function appendOrderBlock_(sheet, order) {
   }
 
   sheet.getRange(titleRow, 1).insertCheckboxes().setValue(false).setHorizontalAlignment('center');
-  sheet.getRange(titleRow, 2, 1, 14).merge();
+  sheet.getRange(titleRow, 2, 1, 15).merge();
   sheet.getRange(titleRow, 2)
-    .setValue('הזמנה #' + String(order.orderRef) + '  |  סה״כ: ' + money_(order.orderTotal, order.currency) + '  |  תאריך: ' + formatDate_(order.paidAt || order.createdAt))
+    .setValue('רכישה  |  ' + items.length + ' מוצרים  |  סה״כ: ' + money_(order.orderTotal, order.currency) + '  |  תאריך: ' + formatDate_(order.paidAt || order.createdAt))
     .setFontWeight('bold')
     .setFontSize(12)
     .setHorizontalAlignment('right')
@@ -196,9 +218,9 @@ function appendOrderBlock_(sheet, order) {
   const headers = [[
     'בוצע', 'תמונת מוצר', 'שם מוצר', 'בחירה / דגם', 'תמונת בחירה', 'פרטי התאמה אישית',
     'תמונת ברכה', 'קישור ברכה', 'תמונת לקוח', 'קישור תמונת לקוח', 'כמות', 'מחיר מוצר',
-    'קישור מוצר', 'תאריך הזמנה', 'סה״כ שורה'
+    'קישור מוצר', 'תאריך הזמנה', 'סה״כ שורה', 'מספר הזמנה'
   ]];
-  sheet.getRange(headerRow, 1, 1, 15)
+  sheet.getRange(headerRow, 1, 1, 16)
     .setValues(headers)
     .setFontWeight('bold')
     .setHorizontalAlignment('center')
@@ -249,20 +271,23 @@ function appendOrderBlock_(sheet, order) {
       sheet.getRange(row, 13).setFormula('=HYPERLINK("' + formulaEscape_(item.productLink) + '","פתיחת קישור")');
     }
 
+    const itemOrderRef = String(item.itemOrderRef || (String(order.orderRef) + '-P' + String(index + 1).padStart(2, '0')));
+    sheet.getRange(row, 16).setValue(itemOrderRef).setNumberFormat('@').setHorizontalAlignment('left');
+
     const itemMarker = ['ITEM', String(order.orderRef), titleRow, blockRows, firstItemRow, items.length].join(':');
     sheet.getRange(row, VERSANS_MARKER_COLUMN).setValue(itemMarker);
     sheet.getRange(row, 12).setNumberFormat('₪#,##0.00');
     sheet.getRange(row, 15).setNumberFormat('₪#,##0.00');
-    sheet.getRange(row, 1, 1, 15).setVerticalAlignment('middle');
+    sheet.getRange(row, 1, 1, 16).setVerticalAlignment('middle');
     sheet.getRange(row, 3, 1, 8).setWrap(true);
     sheet.setRowHeight(row, 104);
   });
 
-  const block = sheet.getRange(titleRow, 1, blockRows, 15);
+  const block = sheet.getRange(titleRow, 1, blockRows, 16);
   block.setBorder(true, true, true, true, true, true, '#b7b7b7', SpreadsheetApp.BorderStyle.SOLID);
   paintOrderState_(sheet, titleRow, blockRows, firstItemRow, items.length);
 
-  sheet.getRange(lastItemRow + 1, 1, 1, 15).clearFormat().clearContent();
+  sheet.getRange(lastItemRow + 1, 1, 1, 16).clearFormat().clearContent();
   sheet.setRowHeight(lastItemRow + 1, 16);
 }
 
@@ -309,7 +334,7 @@ function buildPersonalizationText_(item) {
 }
 
 function writeMergedDetailRow_(sheet, row, text) {
-  sheet.getRange(row, 2, 1, 14).merge();
+  sheet.getRange(row, 2, 1, 15).merge();
   sheet.getRange(row, 2)
     .setValue(text)
     .setHorizontalAlignment('right')
@@ -323,13 +348,13 @@ function paintOrderState_(sheet, titleRow, blockRows, firstItemRow, itemCount) {
   const allChecked = itemCount > 0 && checks.every((row) => row[0] === true);
   const commonBodyRows = firstItemRow - titleRow;
 
-  sheet.getRange(titleRow, 1, 1, 15).setBackground(allChecked ? COLOR_SHIPPED_TITLE : COLOR_PENDING_TITLE);
+  sheet.getRange(titleRow, 1, 1, 16).setBackground(allChecked ? COLOR_SHIPPED_TITLE : COLOR_PENDING_TITLE);
   if (commonBodyRows > 1) {
-    sheet.getRange(titleRow + 1, 1, commonBodyRows - 1, 15).setBackground(allChecked ? COLOR_SHIPPED_BODY : COLOR_PENDING_BODY);
+    sheet.getRange(titleRow + 1, 1, commonBodyRows - 1, 16).setBackground(allChecked ? COLOR_SHIPPED_BODY : COLOR_PENDING_BODY);
   }
 
   checks.forEach(function(rowValue, index) {
-    sheet.getRange(firstItemRow + index, 1, 1, 15).setBackground(rowValue[0] === true ? COLOR_SHIPPED_BODY : COLOR_PENDING_BODY);
+    sheet.getRange(firstItemRow + index, 1, 1, 16).setBackground(rowValue[0] === true ? COLOR_SHIPPED_BODY : COLOR_PENDING_BODY);
   });
 }
 
