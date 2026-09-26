@@ -1878,7 +1878,7 @@ async function postNewOrderWebhook(orderRef) {
 async function queueNewOrderNotificationAfterSheet(order) {
   if (!order || String(order.status || '') !== 'paid') return { ok: false, skipped: true, reason: 'order_not_paid' };
   const orderRef = String(order.order_ref || '').trim();
-  if (!orderRef || /^VS-DEMO-/i.test(orderRef)) return { ok: false, skipped: true, reason: 'demo_or_missing_order_ref' };
+  if (!orderRef) return { ok: false, skipped: true, reason: 'missing_order_ref' };
   if (!order.id) return { ok: false, skipped: true, reason: 'missing_order_id' };
   const payload = buildPaidOrderPayload(order);
   const recipient = normalizePhone(payload.customerPhone || (payload.customer && payload.customer.phone) || order.customer_phone);
@@ -2305,7 +2305,6 @@ async function adminApi(req, res, pathname, parsed) {
     if (!orderRef) { json(res, 400, { ok: false, error: 'missing_order_ref' }); return true; }
     const order = await database.getOrderByRef(orderRef);
     if (!order || String(order.status || '') !== 'paid') { json(res, 404, { ok: false, error: 'paid_order_not_found' }); return true; }
-    if (/^VS-DEMO-/i.test(orderRef)) { json(res, 400, { ok: false, error: 'demo_order_not_sendable' }); return true; }
     let notification = await database.getOrderNotification(orderRef);
     if (!notification) {
       json(res, 409, { ok: false, error: 'notification_not_queued', orderRef, safeToSend: false });
@@ -3526,7 +3525,7 @@ function safeInlineJson(value) {
 }
 
 function injectStorefrontRouting(html, bootRoute) {
-  const early = `<script>window.__VERSANS_BOOT_ROUTE__=${safeInlineJson(bootRoute)};</script><script src="/assets/route-state.js?v=20260926-category-refresh-v9"></script>`;
+  const early = `<script>window.__VERSANS_BOOT_ROUTE__=${safeInlineJson(bootRoute)};</script><script src="/assets/route-state.js?v=20260924-home-no-refresh-v8"></script>`;
   const late = '<script src="/assets/url-mask.js?v=20260924-home-reviews-anchor-v4"></script>';
   let out = String(html || '');
   out = out
@@ -3750,6 +3749,7 @@ const server = http.createServer(async (req, res) => {
         setImmediate(async () => {
           // Demo orders must be visible in Admin too. Persist them after the response so
           // a slow/locked database can never block the checkout button again.
+          let persistedDemoOrder = null;
           try {
             await database.upsertPaidOrder({
               orderRef: demoOrder.order_ref,
@@ -3767,13 +3767,20 @@ const server = http.createServer(async (req, res) => {
               paidAt: demoOrder.paid_at,
               updatedAt: demoOrder.updated_at
             });
+            persistedDemoOrder = await database.getOrderByRef(demoOrder.order_ref);
           } catch (dbErr) {
             console.error(`Demo order database save failed for ${demoOrder.order_ref}:`, dbErr);
           }
+          let sheetSynced = false;
           try {
             await sendPaidOrderToGoogleSheet(demoOrder);
+            sheetSynced = true;
           } catch (sheetErr) {
             console.error(`Google demo order sync failed for ${demoOrder.order_ref}:`, sheetErr);
+          }
+          if (sheetSynced && persistedDemoOrder) {
+            try { await queueNewOrderNotificationAfterSheet(persistedDemoOrder); }
+            catch (notifyErr) { console.error(`Demo new-order notification queue failed for ${demoOrder.order_ref}:`, notifyErr && notifyErr.message ? notifyErr.message : notifyErr); }
           }
           try {
             await sendOrderConfirmationForOrder(demoOrder);

@@ -527,6 +527,52 @@
   }
 }
 </style>
+<style id="versans-desktop-hero-fit-v1">
+@media (min-width: 768px) {
+  .home-page .desktop-hero-actions {
+    top: 69% !important;
+  }
+  .home-page .hero.hero--full {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    aspect-ratio: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    line-height: 0 !important;
+  }
+  .home-page .hero.hero--full .hero__visual {
+    position: relative !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    aspect-ratio: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    line-height: 0 !important;
+  }
+  .home-page .hero.hero--full .hero__image {
+    position: relative !important;
+    inset: auto !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    aspect-ratio: 2048 / 820 !important;
+    object-fit: contain !important;
+    object-position: center top !important;
+    margin: 0 !important;
+  }
+}
+</style>
 <link rel="stylesheet" href="/assets/customer-service.css?v=20260922-whatsapp-support-v2">
 </head>
 <body class="home-page">
@@ -647,7 +693,7 @@
 <!-- הירו -->
 <section class="hero hero--full" id="top" aria-label="באנר VerSans">
   <div class="hero__visual" data-hero-slider aria-live="off">
-    <img class="hero__image hero__slide is-active" src="images/desktop-entry-promo.png" width="1916" height="821" alt="באנר VerSans" fetchpriority="high" data-hero-slide>
+    <img class="hero__image hero__slide is-active" src="images/desktop-entry-promo.png" width="2048" height="820" alt="באנר VerSans" fetchpriority="high" data-hero-slide>
     <div class="desktop-hero-actions" aria-label="קישורים מהירים">
       <a class="desktop-hero-cta desktop-hero-cta--primary" href="#shopTitle">לגלות את הקולקציה</a>
       <a class="desktop-hero-cta desktop-hero-cta--secondary" href="#reviews">לביקורות הלקוחות</a>
@@ -658,6 +704,14 @@
 <!-- חנות -->
 <section class="section shop" id="shop" aria-labelledby="shopTitle">
   <div class="container">
+    <div class="mobile-entry-banner" id="mobileEntryBanner" aria-label="מבצע VerSans עד 40% הנחה">
+      <img src="images/mobile-entry-promo.png" width="941" height="1672" alt="VerSans - עד 40% הנחה על כל קולקציית האתר" loading="eager" decoding="async">
+      <div class="mobile-entry-banner__actions" aria-label="קישורים מהירים">
+        <a class="mobile-entry-banner__cta mobile-entry-banner__cta--primary" href="#shopTitle">לגלות את הקולקציה</a>
+        <a class="mobile-entry-banner__cta mobile-entry-banner__cta--secondary" href="#reviews">לביקורות הלקוחות</a>
+      </div>
+    </div>
+
     <nav class="mobile-collection-picker" aria-label="בחירת קולקציה">
       <div class="mobile-collection-picker__track">
         <a class="mobile-collection-picker__item" href="/#shopTitle" data-cat="all">
