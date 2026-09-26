@@ -5,44 +5,78 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, follow">
 <title>VerSans</title>
-<meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/styles.css?v=20260908-promo-v3">
 <link rel="stylesheet" href="assets/brand.css?v=20260905-versans-v1">
-<link rel="stylesheet" href="assets/auth.css?v=20260905-auth-v6">
+<link rel="stylesheet" href="assets/auth.css?v=20260926-account-v2">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="96x96" href="/images/favicon-96.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
 <link rel="stylesheet" href="assets/fonts.css?v=20260909-fonts-only">
 <link rel="stylesheet" href="assets/typography-only.css?v=20260909-fonts-only">
-<link rel="stylesheet" href="/assets/customer-service.css?v=20260922-whatsapp-support-v2">
+<link rel="stylesheet" href="/assets/customer-service.css?v=20260926-service-v3">
 </head>
 <body class="auth-page" data-auth-page="account">
-<main class="auth-shell">
-  <section class="auth-visual" aria-hidden="true"><div class="auth-visual__media"><img src="images/auth-showcase.png" alt="" loading="eager" decoding="async"></div><div class="auth-visual__content"><p class="auth-visual__eyebrow">VERSANS ACCOUNT</p><h1 id="authVisualTitle">המתנה שלכם. החשבון שלכם.</h1><p id="authVisualText">חשבון VerSans מאפשר לנו לזהות אתכם בצורה מאובטחת ולהוסיף בהמשך היסטוריית הזמנות, ביקורות והטבות.</p></div></section>
+<main class="auth-shell auth-shell--account">
+  <section class="auth-visual" aria-hidden="true"><div class="auth-visual__media"><img src="images/auth-showcase.png" alt="" loading="eager" decoding="async"></div><div class="auth-visual__content"><p class="auth-visual__eyebrow">VERSANS ACCOUNT</p><h1 id="authVisualTitle">המתנה שלכם. החשבון שלכם.</h1><p id="authVisualText">בחשבון אפשר לעדכן פרטים, לצפות בהזמנות ולנהל העדפות.</p></div></section>
   <section class="auth-panel">
-    <div class="auth-card">
+    <div class="auth-card auth-card--account">
       <div class="auth-card__top"><a class="auth-card__brand" href="/shop#top" aria-label="VerSans"><span class="brand__logo"><img src="images/VerSansLogoBlackJewlery.png" alt="VerSans" width="800" height="800"></span></a><div><a class="auth-back" id="authBack" href="/shop#shop">חזרה לחנות</a></div></div>
-      <p class="auth-card__eyebrow">VERSANS</p><h2 id="authTitle">החשבון שלי</h2><p class="auth-card__lead" id="authLead">פרטי החשבון המחובר כרגע.</p>
+      <p class="auth-card__eyebrow">VERSANS</p><h2 id="authTitle">החשבון שלי</h2><p class="auth-card__lead" id="authLead">ניהול פרטי החשבון, הזמנות והעדפות.</p>
       <p class="account-loading" id="accountLoading">טוען את החשבון…</p>
       <div id="accountDetails" hidden>
-        <div class="account-card">
-          <div class="account-row"><span id="labelName">שם</span><strong id="accountName"></strong></div>
-          <div class="account-row"><span id="labelEmail">אימייל</span><strong id="accountEmail" dir="ltr"></strong></div>
-          <div class="account-row"><span id="labelPhone">טלפון</span><strong id="accountPhone" dir="ltr"></strong></div>
-          <div class="account-row"><span id="labelSince">נרשמת בתאריך</span><strong id="accountSince"></strong></div>
-        </div>
+        <section class="account-section" aria-labelledby="accountProfileHeading">
+          <div class="account-section__head"><h3 id="accountProfileHeading">פרטי החשבון</h3><span class="account-since"><span id="labelSince">נרשמת בתאריך</span> <strong id="accountSince"></strong></span></div>
+          <form id="accountProfileForm" class="account-form" novalidate>
+            <div class="auth-field"><label id="labelName" for="accountNameInput">שם</label><input class="auth-input" id="accountNameInput" type="text" autocomplete="name" minlength="2" maxlength="70" required></div>
+            <div class="auth-field"><label id="labelEmail" for="accountEmailInput">אימייל</label><input class="auth-input" id="accountEmailInput" type="email" dir="ltr" readonly aria-readonly="true"></div>
+            <div class="auth-field"><label id="labelPhone" for="accountPhoneInput">טלפון</label><input class="auth-input" id="accountPhoneInput" type="tel" autocomplete="tel" inputmode="tel" minlength="9" maxlength="20" required></div>
+            <button class="btn btn--primary" type="submit">שמירת פרטים</button>
+          </form>
+        </section>
+
+        <section class="account-section" aria-labelledby="ordersHeading">
+          <div class="account-section__head"><h3 id="ordersHeading">ההזמנות שלי</h3><a class="account-inline-link" href="/cancel-order">בקשת ביטול / החזרה</a></div>
+          <div id="accountOrders" class="account-orders" aria-live="polite"><p class="account-muted">טוען הזמנות…</p></div>
+        </section>
+
+        <section class="account-section" aria-labelledby="marketingHeading">
+          <div class="account-section__head"><h3 id="marketingHeading">עדכונים שיווקיים</h3></div>
+          <p class="account-muted">כל ערוץ הוא בחירה נפרדת. WhatsApp שירותי לגבי הזמנה אינו תלוי בהסכמה לשיווק.</p>
+          <form id="marketingPreferencesForm" class="account-preferences">
+            <label class="auth-check" for="accountMarketingEmail"><input id="accountMarketingEmail" type="checkbox"><span class="auth-check__box" aria-hidden="true"></span><span>אימייל</span></label>
+            <label class="auth-check" for="accountMarketingSms"><input id="accountMarketingSms" type="checkbox"><span class="auth-check__box" aria-hidden="true"></span><span>SMS</span></label>
+            <label class="auth-check" for="accountMarketingWhatsapp"><input id="accountMarketingWhatsapp" type="checkbox"><span class="auth-check__box" aria-hidden="true"></span><span>WhatsApp שיווקי</span></label>
+            <button class="btn btn--ghost" type="submit">שמירת העדפות</button>
+          </form>
+        </section>
+
+        <section class="account-section account-terms" id="termsUpdateSection" hidden aria-labelledby="termsUpdateHeading">
+          <h3 id="termsUpdateHeading">עודכנו תנאי האתר</h3>
+          <p>אפשר לעיין ב<a href="/policies" target="_blank" rel="noopener">תנאים ובמדיניות המעודכנים</a>. השינויים אינם גורעים מזכויות שכבר נצברו.</p>
+          <button class="btn btn--ghost" id="acceptTermsBtn" type="button">קראתי ואישרתי</button>
+        </section>
+
+        <section class="account-section account-danger" aria-labelledby="deleteHeading">
+          <h3 id="deleteHeading">מחיקת חשבון</h3>
+          <p class="account-muted">המחיקה דורשת אימות מחדש בסיסמה. ביקורות שכבר פורסמו יכולות להישאר ללא קישור לחשבון, בהתאם למדיניות.</p>
+          <form id="deleteAccountForm" class="account-delete-form">
+            <div class="auth-field"><label for="deleteAccountPassword">סיסמה לאימות</label><input class="auth-input" id="deleteAccountPassword" type="password" autocomplete="current-password" minlength="8" required></div>
+            <button class="btn btn--ghost account-danger__button" type="submit">מחיקת החשבון</button>
+          </form>
+        </section>
+
         <div class="auth-message" id="authMessage" role="status" aria-live="polite"></div>
         <div class="account-actions"><a class="btn btn--ghost" href="/shop#shop"><span id="shopText">חזרה לחנות</span></a><button class="btn btn--primary" id="logoutBtn" type="button"><span id="logoutText">התנתקות</span></button></div>
       </div>
     </div>
   </section>
 </main>
-<script src="assets/auth.js?v=20260922-account-phone-v1"></script>
-  <script src="/assets/presence.js?v=20260915-presence-v1"></script>
-  <script src="/assets/config.js?v=20260924-whatsapp-restore-v1"></script>
-  <script src="/assets/customer-service.js?v=20260923-tracking-v1"></script>
+<script src="assets/auth.js?v=20260926-account-v2"></script>
+<script src="/assets/presence.js?v=20260915-presence-v1"></script>
+<script src="/assets/config.js?v=20260926-config-v2"></script>
+<script src="/assets/customer-service.js?v=20260926-service-v3"></script>
 </body>
 </html>

@@ -19,7 +19,6 @@ var PRODUCTS = [
       "images/products/product-1/mainproduct1.png"
     ],
     "price": 149.9,
-    "compareAt": 249.9,
     "title": {
       "he": "שרשרת לאמא \"אוהב מאוד הבן שלך\"",
       "en": "Necklace for Mom - With a Personal Message"
@@ -148,7 +147,6 @@ var PRODUCTS = [
       "images/products/product-5/mainproduct1.png"
     ],
     "price": 149.9,
-    "compareAt": 239.9,
     "title": {
       "he": "שרשרת לאהובתך \"אני אוהב אותך עד אין סוף ובחזרה\"",
       "en": "Necklace for Your Beloved - I Love You to Infinity and Back"
@@ -245,7 +243,6 @@ var PRODUCTS = [
       "images/products/product-3/mainproduct1.png"
     ],
     "price": 149.9,
-    "compareAt": 229.9,
     "title": {
       "he": "שרשרת לילדה שלנו \"אוהבים אמא ואבא\"",
       "en": "Necklace for Our Daughter - Love, Mom & Dad"
@@ -350,7 +347,6 @@ var PRODUCTS = [
       "images/products/product-4/mainproduct1.png"
     ],
     "price": 149.9,
-    "compareAt": 249.9,
     "title": {
       "he": "שרשרת לאהבת חייך \"אני אוהב אותך\"",
       "en": "Necklace for the Love of Your Life - I Love You"
@@ -455,7 +451,6 @@ var PRODUCTS = [
       "images/products/product-2/mainproduct1.png"
     ],
     "price": 149.9,
-    "compareAt": 239.9,
     "title": {
       "he": "שרשרת לאישה \"אוהב המון בעלך\"",
       "en": "Necklace for My Wife - Love, Your Husband"
@@ -584,7 +579,6 @@ var PRODUCTS = [
       "images/products/product-6/mainproduct1.png"
     ],
     "price": 149.9,
-    "compareAt": 229.9,
     "title": {
       "he": "שרשרת לאחותך \"אוהבת אחותך\"",
       "en": "Necklace for Your Sister - Love, Your Sister"
@@ -713,7 +707,6 @@ var PRODUCTS = [
       "images/products/product-7/mainproduct1.png"
     ],
     "price": 149.9,
-    "compareAt": 249.9,
     "title": {
       "he": "שרשרת לאהובה שלך \"אני אוהב אותך\"",
       "en": "Necklace for Your Beloved - I Love You"
@@ -818,7 +811,6 @@ var PRODUCTS = [
       "images/products/product-8/mainproduct1.png"
     ],
     "price": 149.9,
-    "compareAt": 239.9,
     "title": {
       "he": "שרשרת לאמא \"אוהבת המון הבת שלך\"",
       "en": "Necklace for Mom - Love, Your Daughter"
@@ -947,7 +939,6 @@ var PRODUCTS = [
       "images/products/product-9/mainproduct1.png"
     ],
     "price": 149.9,
-    "compareAt": 229.9,
     "title": {
       "he": "שרשרת לאמא \"אוהב המון הבן שלך\"",
       "en": "Necklace for Mom - Lots of Love, Your Son"
@@ -1064,7 +1055,6 @@ var PRODUCTS = [
       "images/products/product-10/product-10-3.png"
     ],
     "price": 269.9,
-    "compareAt": 369.9,
     "title": {
       "he": "שרשרת טניס קלאסית",
       "en": "Classic Tennis Chain"
@@ -1263,7 +1253,6 @@ var PRODUCTS = [
       "images/products/product-11/product-11-3.png"
     ],
     "price": 189.9,
-    "compareAt": 219.9,
     "title": {
       "he": "צמיד טניס פרח",
       "en": "Flower Tennis Bracelet"
@@ -1380,7 +1369,6 @@ var PRODUCTS = [
       "images/products/product-12/product-12-3.png"
     ],
     "price": 189.9,
-    "compareAt": 279.9,
     "title": {
       "he": "צמיד טניס כוכב",
       "en": "Star Tennis Bracelet"
@@ -1497,7 +1485,6 @@ var PRODUCTS = [
       "images/products/product-13/product-13-3.png"
     ],
     "price": 229.9,
-    "compareAt": 309.9,
     "title": {
       "he": "צמיד טניס אמרלד",
       "en": "Emerald Tennis Bracelet"
@@ -1612,7 +1599,6 @@ var PRODUCTS = [
       "images/products/product-14/product-14-3.png"
     ],
     "price": 189.9,
-    "compareAt": 249.9,
     "title": {
       "he": "צמיד טניס נויה שחור",
       "en": "Noya Black Tennis Bracelet"
@@ -1756,7 +1742,6 @@ var PRODUCTS = [
       "images/products/product-15/product-15-2.png"
     ],
     "price": 339.9,
-    "compareAt": 439.9,
     "title": {
       "he": "שרשרת פלורה - צבע כסף",
       "en": "Flora Chain"
@@ -1898,7 +1883,6 @@ var PRODUCTS = [
       "images/products/product-16/product-16-3.png"
     ],
     "price": 339.9,
-    "compareAt": 439.9,
     "title": {
       "he": "שרשרת פלורה - צבע זהב",
       "en": "Flora Chain - Gold Color"
@@ -2040,7 +2024,6 @@ var PRODUCTS = [
       "images/products/product-17/product-17-3.png"
     ],
     "price": 339.9,
-    "compareAt": 439.9,
     "title": {
       "he": "שרשרת פלורה - צבע רוז גולד",
       "en": "Flora Chain - Rose Gold Color"
@@ -2181,7 +2164,6 @@ var PRODUCTS = [
       "images/products/product-18/product-18-3.png"
     ],
     "price": 269.9,
-    "compareAt": 369.9,
     "title": {
       "he": "שרשרת טניס קלאסית - צבע זהב",
       "en": "Classic Tennis Chain - Gold Color"
@@ -2380,7 +2362,6 @@ var PRODUCTS = [
       "images/products/product-20/product-20-necklace.png"
     ],
     "price": 259.9,
-    "compareAt": 359.9,
     "title": {
       "he": "שרשרת טניס נויה שחורה",
       "en": "Noya Black Tennis Necklace"
@@ -2557,7 +2538,6 @@ var PRODUCTS = [
       "images/products/product-21/product-21-white-stone-heart.png"
     ],
     "price": 139.9,
-    "compareAt": 239.9,
     "title": {
       "he": "צמיד הקרנת תמונה אישי - Unisex",
       "en": "Custom Photo Projection Bracelet - Unisex"
@@ -2777,7 +2757,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב רטרו עגול-אובלי עם מסגרת קומפקטית",
-        "עדשות עם הגנת UV400 לשימוש בשמש",
+        "עדשות כהות בגוון המוצג בתמונות",
         "מסגרת קלה ונוחה לשימוש יומיומי",
         "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, חופשות, נהיגה ולוקים אופנתיים",
@@ -2786,7 +2766,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Retro round-oval design with a compact frame",
-        "UV400 lens protection for sunny conditions",
+        "Tinted lenses in the color shown in the photos",
         "Lightweight frame for comfortable everyday wear",
         "Unisex design for women and men",
         "Suitable for everyday wear, holidays, driving and fashion styling",
@@ -2849,7 +2829,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב רטרו עגול-אובלי עם מסגרת קומפקטית",
-        "עדשות עם הגנת UV400 לשימוש בשמש",
+        "עדשות כהות בגוון המוצג בתמונות",
         "מסגרת קלה ונוחה לשימוש יומיומי",
         "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, חופשות, נהיגה ולוקים אופנתיים",
@@ -2858,7 +2838,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Retro round-oval design with a compact frame",
-        "UV400 lens protection for sunny conditions",
+        "Tinted lenses in the color shown in the photos",
         "Lightweight frame for comfortable everyday wear",
         "Unisex design for women and men",
         "Suitable for everyday wear, holidays, driving and fashion styling",
@@ -2921,7 +2901,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב רטרו עגול-אובלי עם מסגרת קומפקטית",
-        "עדשות עם הגנת UV400 לשימוש בשמש",
+        "עדשות כהות בגוון המוצג בתמונות",
         "מסגרת קלה ונוחה לשימוש יומיומי",
         "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, חופשות, נהיגה ולוקים אופנתיים",
@@ -2930,7 +2910,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Retro round-oval design with a compact frame",
-        "UV400 lens protection for sunny conditions",
+        "Tinted lenses in the color shown in the photos",
         "Lightweight frame for comfortable everyday wear",
         "Unisex design for women and men",
         "Suitable for everyday wear, holidays, driving and fashion styling",
@@ -2993,7 +2973,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב מרובע-רטרו עם נוכחות נקייה ומודרנית",
-        "עדשות עם הגנת UV400 לשימוש בשמש",
+        "עדשות כהות בגוון המוצג בתמונות",
         "מבנה קל ונוח לשימוש יומיומי",
         "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, טיולים, יציאות ולוקים אופנתיים",
@@ -3002,7 +2982,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Retro square design with a clean modern look",
-        "UV400 lens protection for sunny conditions",
+        "Tinted lenses in the color shown in the photos",
         "Lightweight construction for comfortable everyday wear",
         "Unisex design for women and men",
         "Suitable for everyday wear, travel, outings and fashion styling",
@@ -3065,7 +3045,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב מרובע-רטרו עם נוכחות נקייה ומודרנית",
-        "עדשות עם הגנת UV400 לשימוש בשמש",
+        "עדשות כהות בגוון המוצג בתמונות",
         "מבנה קל ונוח לשימוש יומיומי",
         "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, טיולים, יציאות ולוקים אופנתיים",
@@ -3074,7 +3054,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Retro square design with a clean modern look",
-        "UV400 lens protection for sunny conditions",
+        "Tinted lenses in the color shown in the photos",
         "Lightweight construction for comfortable everyday wear",
         "Unisex design for women and men",
         "Suitable for everyday wear, travel, outings and fashion styling",
@@ -3137,7 +3117,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב מרובע-רטרו עם נוכחות נקייה ומודרנית",
-        "עדשות עם הגנת UV400 לשימוש בשמש",
+        "עדשות כהות בגוון המוצג בתמונות",
         "מבנה קל ונוח לשימוש יומיומי",
         "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, טיולים, יציאות ולוקים אופנתיים",
@@ -3146,7 +3126,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Retro square design with a clean modern look",
-        "UV400 lens protection for sunny conditions",
+        "Tinted lenses in the color shown in the photos",
         "Lightweight construction for comfortable everyday wear",
         "Unisex design for women and men",
         "Suitable for everyday wear, travel, outings and fashion styling",
@@ -3209,7 +3189,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב מרובע-רטרו עם נוכחות נקייה ומודרנית",
-        "עדשות עם הגנת UV400 לשימוש בשמש",
+        "עדשות כהות בגוון המוצג בתמונות",
         "מבנה קל ונוח לשימוש יומיומי",
         "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, טיולים, יציאות ולוקים אופנתיים",
@@ -3218,7 +3198,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Retro square design with a clean modern look",
-        "UV400 lens protection for sunny conditions",
+        "Tinted lenses in the color shown in the photos",
         "Lightweight construction for comfortable everyday wear",
         "Unisex design for women and men",
         "Suitable for everyday wear, travel, outings and fashion styling",
@@ -3281,7 +3261,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב מרובע-רטרו עם נוכחות נקייה ומודרנית",
-        "עדשות עם הגנת UV400 לשימוש בשמש",
+        "עדשות כהות בגוון המוצג בתמונות",
         "מבנה קל ונוח לשימוש יומיומי",
         "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, טיולים, יציאות ולוקים אופנתיים",
@@ -3290,7 +3270,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Retro square design with a clean modern look",
-        "UV400 lens protection for sunny conditions",
+        "Tinted lenses in the color shown in the photos",
         "Lightweight construction for comfortable everyday wear",
         "Unisex design for women and men",
         "Suitable for everyday wear, travel, outings and fashion styling",
@@ -3353,7 +3333,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב מרובע-רטרו עם נוכחות נקייה ומודרנית",
-        "עדשות עם הגנת UV400 לשימוש בשמש",
+        "עדשות כהות בגוון המוצג בתמונות",
         "מבנה קל ונוח לשימוש יומיומי",
         "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, טיולים, יציאות ולוקים אופנתיים",
@@ -3362,7 +3342,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Retro square design with a clean modern look",
-        "UV400 lens protection for sunny conditions",
+        "Tinted lenses in the color shown in the photos",
         "Lightweight construction for comfortable everyday wear",
         "Unisex design for women and men",
         "Suitable for everyday wear, travel, outings and fashion styling",
@@ -3425,7 +3405,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב מרובע-רטרו עם קווים נקיים ונוכחות מודרנית",
-        "עדשות עם הגנת UV400",
+        "עדשות בגוון המוצג בתמונות",
         "מסגרת קלה ונוחה לשימוש יומיומי",
         "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, נהיגה, טיולים ולוקים אופנתיים",
@@ -3434,7 +3414,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Retro square design with clean lines and a modern presence",
-        "UV400 lens protection",
+        "Tinted lenses in the color shown in the photos",
         "Lightweight frame for comfortable everyday wear",
         "Unisex design for women and men",
         "Suitable for everyday wear, driving, travel and fashion styling",
@@ -3497,7 +3477,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב מרובע-רטרו עם קווים נקיים ונוכחות מודרנית",
-        "עדשות עם הגנת UV400",
+        "עדשות בגוון המוצג בתמונות",
         "מסגרת קלה ונוחה לשימוש יומיומי",
         "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, נהיגה, טיולים ולוקים אופנתיים",
@@ -3506,7 +3486,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Retro square design with clean lines and a modern presence",
-        "UV400 lens protection",
+        "Tinted lenses in the color shown in the photos",
         "Lightweight frame for comfortable everyday wear",
         "Unisex design for women and men",
         "Suitable for everyday wear, driving, travel and fashion styling",
@@ -3569,7 +3549,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב מרובע-רטרו עם קווים נקיים ונוכחות מודרנית",
-        "עדשות עם הגנת UV400",
+        "עדשות בגוון המוצג בתמונות",
         "מסגרת קלה ונוחה לשימוש יומיומי",
         "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, נהיגה, טיולים ולוקים אופנתיים",
@@ -3578,7 +3558,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Retro square design with clean lines and a modern presence",
-        "UV400 lens protection",
+        "Tinted lenses in the color shown in the photos",
         "Lightweight frame for comfortable everyday wear",
         "Unisex design for women and men",
         "Suitable for everyday wear, driving, travel and fashion styling",
@@ -3641,7 +3621,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב מרובע-רטרו עם קווים נקיים ונוכחות מודרנית",
-        "עדשות עם הגנת UV400",
+        "עדשות בגוון המוצג בתמונות",
         "מסגרת קלה ונוחה לשימוש יומיומי",
         "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, נהיגה, טיולים ולוקים אופנתיים",
@@ -3650,7 +3630,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Retro square design with clean lines and a modern presence",
-        "UV400 lens protection",
+        "Tinted lenses in the color shown in the photos",
         "Lightweight frame for comfortable everyday wear",
         "Unisex design for women and men",
         "Suitable for everyday wear, driving, travel and fashion styling",
@@ -3713,7 +3693,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב punk square עם מסגרת עבה ומראה רטרו מודרני",
-        "עדשות עם הגנת UV400",
+        "עדשות בגוון המוצג בתמונות",
         "מסגרת קלה ונוחה לשימוש יומיומי",
         "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, נסיעות, בילויים ולוקים אופנתיים",
@@ -3722,7 +3702,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Punk square design with a thick frame and modern retro attitude",
-        "UV400 lens protection",
+        "Tinted lenses in the color shown in the photos",
         "Lightweight frame for comfortable everyday wear",
         "Unisex design for women and men",
         "Suitable for everyday wear, travel, social outings and fashion styling",
@@ -3785,7 +3765,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב punk square עם מסגרת עבה ומראה רטרו מודרני",
-        "עדשות עם הגנת UV400",
+        "עדשות בגוון המוצג בתמונות",
         "מסגרת קלה ונוחה לשימוש יומיומי",
         "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, נסיעות, בילויים ולוקים אופנתיים",
@@ -3794,7 +3774,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Punk square design with a thick frame and modern retro attitude",
-        "UV400 lens protection",
+        "Tinted lenses in the color shown in the photos",
         "Lightweight frame for comfortable everyday wear",
         "Unisex design for women and men",
         "Suitable for everyday wear, travel, social outings and fashion styling",
@@ -3857,7 +3837,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב punk square עם מסגרת עבה ומראה רטרו מודרני",
-        "עדשות עם הגנת UV400",
+        "עדשות בגוון המוצג בתמונות",
         "מסגרת קלה ונוחה לשימוש יומיומי",
         "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, נסיעות, בילויים ולוקים אופנתיים",
@@ -3866,7 +3846,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Punk square design with a thick frame and modern retro attitude",
-        "UV400 lens protection",
+        "Tinted lenses in the color shown in the photos",
         "Lightweight frame for comfortable everyday wear",
         "Unisex design for women and men",
         "Suitable for everyday wear, travel, social outings and fashion styling",
@@ -3929,7 +3909,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב punk square עם מסגרת עבה ומראה רטרו מודרני",
-        "עדשות עם הגנת UV400",
+        "עדשות בגוון המוצג בתמונות",
         "מסגרת קלה ונוחה לשימוש יומיומי",
         "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, נסיעות, בילויים ולוקים אופנתיים",
@@ -3938,7 +3918,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Punk square design with a thick frame and modern retro attitude",
-        "UV400 lens protection",
+        "Tinted lenses in the color shown in the photos",
         "Lightweight frame for comfortable everyday wear",
         "Unisex design for women and men",
         "Suitable for everyday wear, travel, social outings and fashion styling",
@@ -4001,7 +3981,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב punk square עם מסגרת עבה ומראה רטרו מודרני",
-        "עדשות עם הגנת UV400",
+        "עדשות בגוון המוצג בתמונות",
         "מסגרת קלה ונוחה לשימוש יומיומי",
         "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, נסיעות, בילויים ולוקים אופנתיים",
@@ -4010,7 +3990,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Punk square design with a thick frame and modern retro attitude",
-        "UV400 lens protection",
+        "Tinted lenses in the color shown in the photos",
         "Lightweight frame for comfortable everyday wear",
         "Unisex design for women and men",
         "Suitable for everyday wear, travel, social outings and fashion styling",
@@ -4073,7 +4053,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב polygon גיאומטרי עם מסגרת מודגשת ועכשווית",
-        "עדשות עם הגנת UV400",
+        "עדשות בגוון המוצג בתמונות",
         "מסגרת קלה ונוחה לשימוש יומיומי",
         "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, נסיעות, בילויים ולוקים אופנתיים",
@@ -4082,7 +4062,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Geometric polygon design with a bold contemporary frame",
-        "UV400 lens protection",
+        "Tinted lenses in the color shown in the photos",
         "Lightweight frame for comfortable everyday wear",
         "Unisex design for women and men",
         "Suitable for everyday wear, travel, social outings and fashion styling",
@@ -4145,7 +4125,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב polygon גיאומטרי עם מסגרת קלילה ומלאת סטייל",
-        "עדשות עם הגנת UV400",
+        "עדשות בגוון המוצג בתמונות",
         "מסגרת קלה ונוחה לשימוש יומיומי",
         "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, חופשות, בילויים ולוקים קיציים",
@@ -4154,7 +4134,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Geometric polygon design with a light style-forward frame",
-        "UV400 lens protection",
+        "Tinted lenses in the color shown in the photos",
         "Lightweight frame for comfortable everyday wear",
         "Unisex design for women and men",
         "Suitable for everyday wear, vacations, social outings and summer styling",
@@ -4217,7 +4197,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב polygon גיאומטרי עם מסגרת מודגשת",
-        "עדשות עם הגנת UV400",
+        "עדשות בגוון המוצג בתמונות",
         "מסגרת קלה ונוחה לשימוש יומיומי",
         "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, נסיעות, בילויים ולוקים בולטים",
@@ -4226,7 +4206,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Geometric polygon design with a bold frame silhouette",
-        "UV400 lens protection",
+        "Tinted lenses in the color shown in the photos",
         "Lightweight frame for comfortable everyday wear",
         "Unisex design for women and men",
         "Suitable for everyday wear, travel, outings and standout styling",
@@ -4289,7 +4269,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב polygon גיאומטרי עם קווים חדים ונקיים",
-        "עדשות עם הגנת UV400",
+        "עדשות בגוון המוצג בתמונות",
         "מסגרת קלה ונוחה לשימוש יומיומי",
         "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, טיולים, חופשות ולוקים אופנתיים",
@@ -4298,7 +4278,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Geometric polygon design with clean sharp lines",
-        "UV400 lens protection",
+        "Tinted lenses in the color shown in the photos",
         "Lightweight frame for comfortable everyday wear",
         "Unisex design for women and men",
         "Suitable for everyday wear, travel, vacations and fashion styling",
@@ -4361,7 +4341,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב polygon גיאומטרי עם מסגרת עבה ומראה מעודכן",
-        "עדשות עם הגנת UV400",
+        "עדשות בגוון המוצג בתמונות",
         "מסגרת קלה ונוחה לשימוש יומיומי",
         "עיצוב יוניסקס - מתאים לנשים ולגברים",
         "מתאים ליום-יום, בילויים, חופשות ולוקים אופנתיים",
@@ -4370,7 +4350,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Geometric polygon design with a thick up-to-date frame",
-        "UV400 lens protection",
+        "Tinted lenses in the color shown in the photos",
         "Lightweight frame for comfortable everyday wear",
         "Unisex design for women and men",
         "Suitable for everyday wear, outings, vacations and fashion styling",
@@ -4431,7 +4411,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב מרובע Oversized בולט בסגנון אופנתי ועדכני",
-        "עדשות עם הגנת UV400",
+        "עדשות בגוון המוצג בתמונות",
         "זרועות דקות בגוון זהב לפרופיל נקי ואלגנטי",
         "דגם מקולקציית הנשים של VerSans",
         "מתאים ליום-יום, חופשות, בילויים ולוקים אופנתיים",
@@ -4440,7 +4420,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Bold oversized square silhouette with a modern fashion-forward look",
-        "UV400 lens protection",
+        "Tinted lenses in the color shown in the photos",
         "Slim gold-tone temples for a clean elegant profile",
         "Part of the VerSans women's sunglasses collection",
         "Suitable for daily wear, vacations, outings and fashion looks",
@@ -4501,7 +4481,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב מרובע Oversized בולט בסגנון אופנתי ועדכני",
-        "עדשות עם הגנת UV400",
+        "עדשות בגוון המוצג בתמונות",
         "זרועות דקות בגוון זהב לפרופיל נקי ואלגנטי",
         "דגם מקולקציית הנשים של VerSans",
         "מתאים ליום-יום, חופשות, בילויים ולוקים אופנתיים",
@@ -4510,7 +4490,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Bold oversized square silhouette with a modern fashion-forward look",
-        "UV400 lens protection",
+        "Tinted lenses in the color shown in the photos",
         "Slim gold-tone temples for a clean elegant profile",
         "Part of the VerSans women's sunglasses collection",
         "Suitable for daily wear, vacations, outings and fashion looks",
@@ -4571,7 +4551,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב מרובע Oversized בולט בסגנון אופנתי ועדכני",
-        "עדשות עם הגנת UV400",
+        "עדשות בגוון המוצג בתמונות",
         "זרועות דקות בגוון זהב לפרופיל נקי ואלגנטי",
         "דגם מקולקציית הנשים של VerSans",
         "מתאים ליום-יום, חופשות, בילויים ולוקים אופנתיים",
@@ -4580,7 +4560,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Bold oversized square silhouette with a modern fashion-forward look",
-        "UV400 lens protection",
+        "Tinted lenses in the color shown in the photos",
         "Slim gold-tone temples for a clean elegant profile",
         "Part of the VerSans women's sunglasses collection",
         "Suitable for daily wear, vacations, outings and fashion looks",
@@ -4641,7 +4621,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב מרובע Oversized בולט בסגנון אופנתי ועדכני",
-        "עדשות עם הגנת UV400",
+        "עדשות בגוון המוצג בתמונות",
         "זרועות דקות בגוון זהב לפרופיל נקי ואלגנטי",
         "דגם מקולקציית הנשים של VerSans",
         "מתאים ליום-יום, חופשות, בילויים ולוקים אופנתיים",
@@ -4650,7 +4630,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Bold oversized square silhouette with a modern fashion-forward look",
-        "UV400 lens protection",
+        "Tinted lenses in the color shown in the photos",
         "Slim gold-tone temples for a clean elegant profile",
         "Part of the VerSans women's sunglasses collection",
         "Suitable for daily wear, vacations, outings and fashion looks",
@@ -4711,7 +4691,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב מרובע Oversized בולט בסגנון אופנתי ועדכני",
-        "עדשות עם הגנת UV400",
+        "עדשות בגוון המוצג בתמונות",
         "זרועות דקות בגוון זהב לפרופיל נקי ואלגנטי",
         "דגם מקולקציית הנשים של VerSans",
         "מתאים ליום-יום, חופשות, בילויים ולוקים אופנתיים",
@@ -4720,7 +4700,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Bold oversized square silhouette with a modern fashion-forward look",
-        "UV400 lens protection",
+        "Tinted lenses in the color shown in the photos",
         "Slim gold-tone temples for a clean elegant profile",
         "Part of the VerSans women's sunglasses collection",
         "Suitable for daily wear, vacations, outings and fashion looks",
@@ -4781,7 +4761,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב מרובע Oversized בולט בסגנון אופנתי ועדכני",
-        "עדשות עם הגנת UV400",
+        "עדשות בגוון המוצג בתמונות",
         "זרועות דקות בגוון זהב לפרופיל נקי ואלגנטי",
         "דגם מקולקציית הנשים של VerSans",
         "מתאים ליום-יום, חופשות, בילויים ולוקים אופנתיים",
@@ -4790,7 +4770,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Bold oversized square silhouette with a modern fashion-forward look",
-        "UV400 lens protection",
+        "Tinted lenses in the color shown in the photos",
         "Slim gold-tone temples for a clean elegant profile",
         "Part of the VerSans women's sunglasses collection",
         "Suitable for daily wear, vacations, outings and fashion looks",
@@ -4851,7 +4831,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב מרובע Oversized בולט בסגנון אופנתי ועדכני",
-        "עדשות עם הגנת UV400",
+        "עדשות בגוון המוצג בתמונות",
         "זרועות דקות בגוון זהב לפרופיל נקי ואלגנטי",
         "דגם מקולקציית הנשים של VerSans",
         "מתאים ליום-יום, חופשות, בילויים ולוקים אופנתיים",
@@ -4860,7 +4840,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Bold oversized square silhouette with a modern fashion-forward look",
-        "UV400 lens protection",
+        "Tinted lenses in the color shown in the photos",
         "Slim gold-tone temples for a clean elegant profile",
         "Part of the VerSans women's sunglasses collection",
         "Suitable for daily wear, vacations, outings and fashion looks",
@@ -4921,7 +4901,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב מרובע Oversized בולט בסגנון אופנתי ועדכני",
-        "עדשות עם הגנת UV400",
+        "עדשות בגוון המוצג בתמונות",
         "זרועות דקות בגוון זהב לפרופיל נקי ואלגנטי",
         "דגם מקולקציית הנשים של VerSans",
         "מתאים ליום-יום, חופשות, בילויים ולוקים אופנתיים",
@@ -4930,7 +4910,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Bold oversized square silhouette with a modern fashion-forward look",
-        "UV400 lens protection",
+        "Tinted lenses in the color shown in the photos",
         "Slim gold-tone temples for a clean elegant profile",
         "Part of the VerSans women's sunglasses collection",
         "Suitable for daily wear, vacations, outings and fashion looks",
@@ -4991,7 +4971,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב מרובע Oversized בולט בסגנון אופנתי ועדכני",
-        "עדשות עם הגנת UV400",
+        "עדשות בגוון המוצג בתמונות",
         "זרועות דקות בגוון זהב לפרופיל נקי ואלגנטי",
         "דגם מקולקציית הנשים של VerSans",
         "מתאים ליום-יום, חופשות, בילויים ולוקים אופנתיים",
@@ -5000,7 +4980,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Bold oversized square silhouette with a modern fashion-forward look",
-        "UV400 lens protection",
+        "Tinted lenses in the color shown in the photos",
         "Slim gold-tone temples for a clean elegant profile",
         "Part of the VerSans women's sunglasses collection",
         "Suitable for daily wear, vacations, outings and fashion looks",
@@ -5341,7 +5321,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב Oval נשי עם גשר כפול ודיטייל פנינים לאורך הזרועות",
-        "עדשות בגוון תה עם הגנת UV400",
+        "עדשות בגוון תה בגוון המוצג בתמונות",
         "מסגרת מתכת קלה בגוון זהב לנוחות בשימוש יומיומי",
         "דגם מקולקציית הנשים של VerSans",
         "מתאים ליום-יום, נהיגה, חופשות ובילויים",
@@ -5350,7 +5330,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Feminine oval design with a double bridge and pearl detailing along the temples",
-        "Tea-tinted lenses with UV400 protection",
+        "Tea-tinted lenses in the color shown in the photos",
         "Lightweight gold-tone metal frame for comfortable everyday wear",
         "Part of the VerSans women's sunglasses collection",
         "Suitable for daily wear, driving, vacations and outings",
@@ -5411,7 +5391,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב Oval נשי עם גשר כפול ודיטייל פנינים לאורך הזרועות",
-        "עדשות ורוד-בלש עם הגנת UV400",
+        "עדשות ורוד-בלש בגוון המוצג בתמונות",
         "מסגרת מתכת קלה בגוון זהב לנוחות בשימוש יומיומי",
         "דגם מקולקציית הנשים של VerSans",
         "מתאים ליום-יום, נהיגה, חופשות ובילויים",
@@ -5420,7 +5400,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Feminine oval design with a double bridge and pearl detailing along the temples",
-        "Pink blush lenses with UV400 protection",
+        "Pink blush lenses in the color shown in the photos",
         "Lightweight gold-tone metal frame for comfortable everyday wear",
         "Part of the VerSans women's sunglasses collection",
         "Suitable for daily wear, driving, vacations and outings",
@@ -5481,7 +5461,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב Oval נשי עם גשר כפול ודיטייל פנינים לאורך הזרועות",
-        "עדשות לילך-גרדיאנט עם הגנת UV400",
+        "עדשות לילך-גרדיאנט בגוון המוצג בתמונות",
         "מסגרת מתכת קלה בגוון זהב לנוחות בשימוש יומיומי",
         "דגם מקולקציית הנשים של VerSans",
         "מתאים ליום-יום, נהיגה, חופשות ובילויים",
@@ -5490,7 +5470,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Feminine oval design with a double bridge and pearl detailing along the temples",
-        "Lilac gradient lenses with UV400 protection",
+        "Lilac gradient lenses in the color shown in the photos",
         "Lightweight gold-tone metal frame for comfortable everyday wear",
         "Part of the VerSans women's sunglasses collection",
         "Suitable for daily wear, driving, vacations and outings",
@@ -5551,7 +5531,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב Oval בסגנון קוריאני עם מראה רטרו-אופנתי",
-        "עדשות כחולות עם הגנת UV400",
+        "עדשות כחולות בגוון המוצג בתמונות",
         "מסגרת מתכת קלה עם חזית בדוגמת טורטויס",
         "דגם מקולקציית הנשים של VerSans",
         "מתאים ליום-יום, נהיגה, חופשות ובילויים",
@@ -5560,7 +5540,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Korean-style oval design with a retro fashion look",
-        "Blue lenses with UV400 protection",
+        "Blue lenses in the color shown in the photos",
         "Lightweight metal frame with tortoise-pattern front detailing",
         "Part of the VerSans women's sunglasses collection",
         "Suitable for daily wear, driving, vacations and outings",
@@ -5621,7 +5601,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב Oval בסגנון קוריאני עם מראה רטרו-אופנתי",
-        "עדשות שמפניה עם הגנת UV400",
+        "עדשות שמפניה בגוון המוצג בתמונות",
         "מסגרת מתכת קלה עם חזית בדוגמת טורטויס",
         "דגם מקולקציית הנשים של VerSans",
         "מתאים ליום-יום, נהיגה, חופשות ובילויים",
@@ -5630,7 +5610,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Korean-style oval design with a retro fashion look",
-        "Champagne lenses with UV400 protection",
+        "Champagne lenses in the color shown in the photos",
         "Lightweight metal frame with tortoise-pattern front detailing",
         "Part of the VerSans women's sunglasses collection",
         "Suitable for daily wear, driving, vacations and outings",
@@ -5691,7 +5671,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב Oval בסגנון קוריאני עם מראה רטרו-אופנתי",
-        "עדשות ירוקות עם הגנת UV400",
+        "עדשות ירוקות בגוון המוצג בתמונות",
         "מסגרת מתכת קלה עם חזית בדוגמת טורטויס",
         "דגם מקולקציית הנשים של VerSans",
         "מתאים ליום-יום, נהיגה, חופשות ובילויים",
@@ -5700,7 +5680,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Korean-style oval design with a retro fashion look",
-        "Green lenses with UV400 protection",
+        "Green lenses in the color shown in the photos",
         "Lightweight metal frame with tortoise-pattern front detailing",
         "Part of the VerSans women's sunglasses collection",
         "Suitable for daily wear, driving, vacations and outings",
@@ -5761,7 +5741,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב Oval בסגנון קוריאני עם מראה רטרו-אופנתי",
-        "עדשות כהות עם הגנת UV400",
+        "עדשות כהות בגוון המוצג בתמונות",
         "מסגרת מתכת קלה עם חזית שחורה מודגשת",
         "דגם מקולקציית הנשים של VerSans",
         "מתאים ליום-יום, נהיגה, חופשות ובילויים",
@@ -5770,7 +5750,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Korean-style oval design with a retro fashion look",
-        "Dark lenses with UV400 protection",
+        "Dark lenses in the color shown in the photos",
         "Lightweight metal frame with a bold black front",
         "Part of the VerSans women's sunglasses collection",
         "Suitable for daily wear, driving, vacations and outings",
@@ -5831,7 +5811,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב Cat Eye צר בסגנון רטרו עם צורה אובלית קטנה",
-        "עדשות עם הגנת UV400 מפני קרינת UVA ו־UVB",
+        "עדשות בגוון המוצג בתמונות",
         "מסגרת פלסטיק קלה ונוחה לשימוש יומיומי",
         "דגם מקולקציית הנשים של VerSans",
         "מתאים ליום-יום, נהיגה, חופשות ולוקים אופנתיים",
@@ -5840,7 +5820,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Narrow cat-eye retro design with a small oval silhouette",
-        "UV400 lens protection against UVA and UVB rays",
+        "Tinted lenses in the color shown in the photos",
         "Lightweight plastic frame for comfortable everyday wear",
         "Part of the VerSans women's sunglasses collection",
         "Suitable for daily wear, driving, vacations and fashion styling",
@@ -5901,7 +5881,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב Cat Eye צר בסגנון רטרו עם צורה אובלית קטנה",
-        "עדשות עם הגנת UV400 מפני קרינת UVA ו־UVB",
+        "עדשות בגוון המוצג בתמונות",
         "מסגרת פלסטיק קלה ונוחה לשימוש יומיומי",
         "דגם מקולקציית הנשים של VerSans",
         "מתאים ליום-יום, נהיגה, חופשות ולוקים אופנתיים",
@@ -5910,7 +5890,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Narrow cat-eye retro design with a small oval silhouette",
-        "UV400 lens protection against UVA and UVB rays",
+        "Tinted lenses in the color shown in the photos",
         "Lightweight plastic frame for comfortable everyday wear",
         "Part of the VerSans women's sunglasses collection",
         "Suitable for daily wear, driving, vacations and fashion styling",
@@ -5971,7 +5951,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב Oval מתכתי אופנתי עם פרטי צד מודגשים",
-        "עדשות גרדיאנט עם הגנת UV400",
+        "עדשות גרדיאנט בגוון המוצג בתמונות",
         "מסגרת מתכת קלה ונוחה לשימוש יומיומי",
         "דגם מקולקציית הנשים של VerSans",
         "מתאים ליום-יום, נהיגה, חופשות ובילויים",
@@ -5980,7 +5960,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Fashion-forward metal oval design with statement side detailing",
-        "Gradient lenses with UV400 protection",
+        "Gradient lenses in the color shown in the photos",
         "Lightweight metal frame for comfortable everyday wear",
         "Part of the VerSans women's sunglasses collection",
         "Suitable for daily wear, driving, vacations and outings",
@@ -6041,7 +6021,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב Oval מתכתי אופנתי עם פרטי צד מודגשים",
-        "עדשות כחול-גרדיאנט עם הגנת UV400",
+        "עדשות כחול-גרדיאנט בגוון המוצג בתמונות",
         "מסגרת מתכת קלה ונוחה לשימוש יומיומי",
         "דגם מקולקציית הנשים של VerSans",
         "מתאים ליום-יום, נהיגה, חופשות ובילויים",
@@ -6050,7 +6030,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Fashion-forward metal oval design with statement side detailing",
-        "Blue gradient lenses with UV400 protection",
+        "Blue gradient lenses in the color shown in the photos",
         "Lightweight metal frame for comfortable everyday wear",
         "Part of the VerSans women's sunglasses collection",
         "Suitable for daily wear, driving, vacations and outings",
@@ -6111,7 +6091,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב Oval מתכתי אופנתי עם פרטי צד מודגשים",
-        "עדשות ורוד-תה גרדיאנט עם הגנת UV400",
+        "עדשות ורוד-תה גרדיאנט בגוון המוצג בתמונות",
         "מסגרת מתכת קלה ונוחה לשימוש יומיומי",
         "דגם מקולקציית הנשים של VerSans",
         "מתאים ליום-יום, נהיגה, חופשות ובילויים",
@@ -6120,7 +6100,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Fashion-forward metal oval design with statement side detailing",
-        "Tea-pink gradient lenses with UV400 protection",
+        "Tea-pink gradient lenses in the color shown in the photos",
         "Lightweight metal frame for comfortable everyday wear",
         "Part of the VerSans women's sunglasses collection",
         "Suitable for daily wear, driving, vacations and outings",
@@ -6181,7 +6161,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב Oval מתכתי אופנתי עם פרטי צד מודגשים",
-        "עדשות עשן כהות עם הגנת UV400",
+        "עדשות עשן כהות בגוון המוצג בתמונות",
         "מסגרת מתכת קלה ונוחה לשימוש יומיומי",
         "דגם מקולקציית הנשים של VerSans",
         "מתאים ליום-יום, נהיגה, חופשות ובילויים",
@@ -6190,7 +6170,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Fashion-forward metal oval design with statement side detailing",
-        "Dark smoke lenses with UV400 protection",
+        "Dark smoke lenses in the color shown in the photos",
         "Lightweight metal frame for comfortable everyday wear",
         "Part of the VerSans women's sunglasses collection",
         "Suitable for daily wear, driving, vacations and outings",
@@ -6253,7 +6233,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב מלבני מודגש עם פרטי מתכת בצורת כוכב בגוון כסוף",
-        "עדשות עשן כהות עם הגנת UV400",
+        "עדשות עשן כהות בגוון המוצג בתמונות",
         "מסגרת אצטט מלבנית עמידה עם זרועות שחורות",
         "צירים משולשים ליציבות טובה יותר של הזרועות",
         "מידה: 53-12-140 מ״מ",
@@ -6265,7 +6245,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Bold rectangular design with silver-tone star-shaped metal accents",
-        "Dark smoke lenses with UV400 protection",
+        "Dark smoke lenses in the color shown in the photos",
         "Durable rectangular acetate frame with black temples",
         "Triple hinges for improved temple stability",
         "Size: 53-12-140 mm",
@@ -6331,7 +6311,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב מלבני מודגש עם פרטי מתכת בצורת כוכב בגוון כסוף",
-        "עדשות חומות עם הגנת UV400",
+        "עדשות חומות בגוון המוצג בתמונות",
         "מסגרת אצטט מלבנית עמידה עם זרועות שחורות",
         "צירים משולשים ליציבות טובה יותר של הזרועות",
         "מידה: 53-12-140 מ״מ",
@@ -6343,7 +6323,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Bold rectangular design with silver-tone star-shaped metal accents",
-        "Brown lenses with UV400 protection",
+        "Brown lenses in the color shown in the photos",
         "Durable rectangular acetate frame with black temples",
         "Triple hinges for improved temple stability",
         "Size: 53-12-140 mm",
@@ -6409,7 +6389,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב מלבני מודגש עם פרטי מתכת בצורת כוכב בגוון כסוף",
-        "עדשות כחול-קרח עם הגנת UV400",
+        "עדשות כחול-קרח בגוון המוצג בתמונות",
         "מסגרת אצטט מלבנית עמידה עם זרועות שחורות",
         "צירים משולשים ליציבות טובה יותר של הזרועות",
         "מידה: 53-12-140 מ״מ",
@@ -6421,7 +6401,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Bold rectangular design with silver-tone star-shaped metal accents",
-        "Ice-blue lenses with UV400 protection",
+        "Ice-blue lenses in the color shown in the photos",
         "Durable rectangular acetate frame with black temples",
         "Triple hinges for improved temple stability",
         "Size: 53-12-140 mm",
@@ -6487,7 +6467,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב מלבני מודגש עם פרטי מתכת בצורת כוכב בגוון כסוף",
-        "עדשות שמפניה בהירות עם הגנת UV400",
+        "עדשות שמפניה בהירות בגוון המוצג בתמונות",
         "מסגרת אצטט מלבנית עמידה עם זרועות שחורות",
         "צירים משולשים ליציבות טובה יותר של הזרועות",
         "מידה: 53-12-140 מ״מ",
@@ -6499,7 +6479,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Bold rectangular design with silver-tone star-shaped metal accents",
-        "Light champagne lenses with UV400 protection",
+        "Light champagne lenses in the color shown in the photos",
         "Durable rectangular acetate frame with black temples",
         "Triple hinges for improved temple stability",
         "Size: 53-12-140 mm",
@@ -6565,7 +6545,7 @@ var PRODUCTS = [
     "details": {
       "he": [
         "עיצוב מלבני מודגש עם פרטי מתכת בצורת כוכב בגוון כסוף",
-        "עדשות עשן כהות עם הגנת UV400",
+        "עדשות עשן כהות בגוון המוצג בתמונות",
         "מסגרת אצטט שקופה מלבנית עמידה עם זרועות שקופות",
         "צירים משולשים ליציבות טובה יותר של הזרועות",
         "מידה: 53-12-140 מ״מ",
@@ -6577,7 +6557,7 @@ var PRODUCTS = [
       ],
       "en": [
         "Bold rectangular design with silver-tone star-shaped metal accents",
-        "Dark smoke lenses with UV400 protection",
+        "Dark smoke lenses in the color shown in the photos",
         "Durable clear rectangular acetate frame with transparent temples",
         "Triple hinges for improved temple stability",
         "Size: 53-12-140 mm",
@@ -8228,7 +8208,6 @@ var PRODUCTS = [
       "images/products/product-94/product-94-10.png"
     ],
     "price": 219.9,
-    "compareAt": 249.9,
     "title": {
       "he": "צמיד טניס תלתן - כחול",
       "en": "Clover Tennis Bracelet - Blue"
@@ -8425,7 +8404,6 @@ var PRODUCTS = [
       "images/products/product-95/product-95-10.png"
     ],
     "price": 219.9,
-    "compareAt": 249.9,
     "title": {
       "he": "צמיד טניס תלתן - ורוד",
       "en": "Clover Tennis Bracelet - Pink"
@@ -8622,7 +8600,6 @@ var PRODUCTS = [
       "images/products/product-96/product-96-10.png"
     ],
     "price": 219.9,
-    "compareAt": 259.9,
     "title": {
       "he": "צמיד טניס תלתן - שחור זהב",
       "en": "Clover Tennis Bracelet - Black Gold"
@@ -8819,7 +8796,6 @@ var PRODUCTS = [
       "images/products/product-97/product-97-10.png"
     ],
     "price": 219.9,
-    "compareAt": 249.9,
     "title": {
       "he": "צמיד טניס תלתן - ירוק",
       "en": "Clover Tennis Bracelet - Green"
@@ -9016,7 +8992,6 @@ var PRODUCTS = [
       "images/products/product-98/product-98-10.png"
     ],
     "price": 219.9,
-    "compareAt": 249.9,
     "title": {
       "he": "צמיד טניס תלתן - שחור",
       "en": "Clover Tennis Bracelet - Black"
@@ -9213,7 +9188,6 @@ var PRODUCTS = [
       "images/products/product-99/product-99-10.png"
     ],
     "price": 219.9,
-    "compareAt": 249.9,
     "title": {
       "he": "צמיד טניס תלתן - לבן",
       "en": "Clover Tennis Bracelet - White"
@@ -18345,7 +18319,6 @@ var PRODUCTS = [
     ],
     "showAllGalleryThumbs": true,
     "price": 139.9,
-    "compareAt": 239.9,
     "title": {
       "he": "תכשיט עם תמונה מוקרנת - עגול",
       "en": "Photo Projection Jewelry - Round"
@@ -18474,7 +18447,6 @@ var PRODUCTS = [
     ],
     "showAllGalleryThumbs": true,
     "price": 139.9,
-    "compareAt": 239.9,
     "title": {
       "he": "תכשיט עם תמונה מוקרנת - כף רגל",
       "en": "Photo Projection Jewelry - Paw"
@@ -18603,7 +18575,6 @@ var PRODUCTS = [
     ],
     "showAllGalleryThumbs": true,
     "price": 139.9,
-    "compareAt": 239.9,
     "title": {
       "he": "תכשיט עם תמונה מוקרנת - לב כפול",
       "en": "Photo Projection Jewelry - Double Heart"
@@ -18732,7 +18703,6 @@ var PRODUCTS = [
     ],
     "showAllGalleryThumbs": true,
     "price": 139.9,
-    "compareAt": 239.9,
     "title": {
       "he": "תכשיט עם תמונה מוקרנת - מנעול",
       "en": "Photo Projection Jewelry - Lock"
@@ -18861,7 +18831,6 @@ var PRODUCTS = [
     ],
     "showAllGalleryThumbs": true,
     "price": 139.9,
-    "compareAt": 239.9,
     "title": {
       "he": "תכשיט עם תמונה מוקרנת - ספירלה משובצת",
       "en": "Photo Projection Jewelry - Crystal Spiral"
@@ -18990,7 +18959,6 @@ var PRODUCTS = [
     ],
     "showAllGalleryThumbs": true,
     "price": 139.9,
-    "compareAt": 239.9,
     "title": {
       "he": "תכשיט עם תמונה מוקרנת - לב MOM",
       "en": "Photo Projection Jewelry - MOM Heart"
@@ -19119,7 +19087,6 @@ var PRODUCTS = [
     ],
     "showAllGalleryThumbs": true,
     "price": 139.9,
-    "compareAt": 239.9,
     "title": {
       "he": "תכשיט עם תמונה מוקרנת - לב פתוח",
       "en": "Photo Projection Jewelry - Open Heart"
@@ -19248,7 +19215,6 @@ var PRODUCTS = [
     ],
     "showAllGalleryThumbs": true,
     "price": 139.9,
-    "compareAt": 239.9,
     "title": {
       "he": "תכשיט עם תמונה מוקרנת - לב מעוטר",
       "en": "Photo Projection Jewelry - Decorated Heart"
@@ -19377,7 +19343,6 @@ var PRODUCTS = [
     ],
     "showAllGalleryThumbs": true,
     "price": 139.9,
-    "compareAt": 239.9,
     "title": {
       "he": "תכשיט עם תמונה מוקרנת - לב משובץ",
       "en": "Photo Projection Jewelry - Crystal Heart"
@@ -19506,7 +19471,6 @@ var PRODUCTS = [
     ],
     "showAllGalleryThumbs": true,
     "price": 139.9,
-    "compareAt": 239.9,
     "title": {
       "he": "תכשיט עם תמונה מוקרנת - מגן דוד",
       "en": "Photo Projection Jewelry - Star of David"
@@ -19635,7 +19599,6 @@ var PRODUCTS = [
     ],
     "showAllGalleryThumbs": true,
     "price": 139.9,
-    "compareAt": 239.9,
     "title": {
       "he": "תכשיט עם תמונה מוקרנת - לב כפול",
       "en": "Photo Projection Jewelry - Double Heart"
@@ -19764,7 +19727,6 @@ var PRODUCTS = [
     ],
     "showAllGalleryThumbs": true,
     "price": 139.9,
-    "compareAt": 239.9,
     "title": {
       "he": "תכשיט עם תמונה מוקרנת - לב אלגנטי",
       "en": "Photo Projection Jewelry - Elegant Heart"
@@ -19893,7 +19855,6 @@ var PRODUCTS = [
     ],
     "showAllGalleryThumbs": true,
     "price": 139.9,
-    "compareAt": 239.9,
     "title": {
       "he": "תכשיט עם תמונה מוקרנת - לב פרחוני",
       "en": "Photo Projection Jewelry - Floral Heart"
@@ -20022,7 +19983,6 @@ var PRODUCTS = [
     ],
     "showAllGalleryThumbs": true,
     "price": 269.9,
-    "compareAt": 299.9,
     "title": {
       "he": "צמיד קריסטל רויאל - צבע כסף",
       "en": "Royal Crystal Bracelet - Silver"
@@ -20130,7 +20090,6 @@ var PRODUCTS = [
     ],
     "showAllGalleryThumbs": true,
     "price": 269.9,
-    "compareAt": 299.9,
     "title": {
       "he": "צמיד קריסטל רויאל - צבע זהב",
       "en": "Royal Crystal Bracelet - Gold"
@@ -20234,7 +20193,6 @@ var PRODUCTS = [
     ],
     "showAllGalleryThumbs": true,
     "price": 269.9,
-    "compareAt": 299.9,
     "title": {
       "he": "צמיד קריסטל פרחוני - צבע כסף",
       "en": "Floral Crystal Bracelet - Silver"
@@ -20338,7 +20296,6 @@ var PRODUCTS = [
     ],
     "showAllGalleryThumbs": true,
     "price": 269.9,
-    "compareAt": 299.9,
     "title": {
       "he": "צמיד קריסטל פרחוני - צבע זהב",
       "en": "Floral Crystal Bracelet - Gold"
@@ -20442,7 +20399,6 @@ var PRODUCTS = [
     ],
     "showAllGalleryThumbs": true,
     "price": 269.9,
-    "compareAt": 299.9,
     "title": {
       "he": "צמיד קריסטל היילו - צבע כסף",
       "en": "Halo Crystal Bracelet - Silver"
@@ -20546,7 +20502,6 @@ var PRODUCTS = [
     ],
     "showAllGalleryThumbs": true,
     "price": 269.9,
-    "compareAt": 299.9,
     "title": {
       "he": "צמיד קריסטל היילו - צבע זהב",
       "en": "Halo Crystal Bracelet - Gold"

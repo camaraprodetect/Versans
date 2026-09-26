@@ -34,7 +34,7 @@
   <div class="promo-marquee__viewport">
     <div class="promo-marquee__track">
       <div class="promo-marquee__group">
-        <a class="promo-marquee__item promo-marquee__item--sale" href="/#shop"><span class="promo-marquee__icon">✶</span><span class="promo-he">עד 40% הנחה על כל האתר</span></a>
+        <a class="promo-marquee__item promo-marquee__item--sale" href="/#shop"><span class="promo-marquee__icon">✶</span><span class="promo-he">10% הנחה על כל פריט שני</span></a>
         <span class="promo-marquee__sep" aria-hidden="true">•</span>
         <a class="promo-marquee__item promo-marquee__item--bundle" href="/#shop"><span class="promo-marquee__icon">2</span><span class="promo-he">25% הנחה על המוצר השני</span></a>
         <span class="promo-marquee__sep" aria-hidden="true">•</span>
@@ -50,7 +50,7 @@
         <span class="promo-marquee__sep" aria-hidden="true">•</span>
       </div>
       <div class="promo-marquee__group" aria-hidden="true">
-        <a class="promo-marquee__item promo-marquee__item--sale" href="/#shop" tabindex="-1"><span class="promo-marquee__icon">✶</span><span class="promo-he">עד 40% הנחה על כל האתר</span></a>
+        <a class="promo-marquee__item promo-marquee__item--sale" href="/#shop" tabindex="-1"><span class="promo-marquee__icon">✶</span><span class="promo-he">10% הנחה על כל פריט שני</span></a>
         <span class="promo-marquee__sep" aria-hidden="true">•</span>
         <a class="promo-marquee__item promo-marquee__item--bundle" href="/#shop" tabindex="-1"><span class="promo-marquee__icon">2</span><span class="promo-he">25% הנחה על המוצר השני</span></a>
         <span class="promo-marquee__sep" aria-hidden="true">•</span>
@@ -180,7 +180,7 @@
             <span class="product-review-summary__stars-fill" id="productReviewAverageStarsFill">★★★★★</span>
           </span>
           <strong id="productReviewAverage" dir="ltr"></strong>
-          <button class="product-review-summary__count" id="productReviewSummaryCount" type="button"></button>
+          <button class="product-review-summary__count" id="productReviewSummaryCount" type="button" aria-label="פתיחת ביקורות המוצר"></button>
         </div>
         <p class="product-info__subtitle" id="productSubtitle"></p>
         <div class="product-info__price">
@@ -281,6 +281,10 @@
             <button type="button" id="customPhotoRemove">החלפת תמונה</button>
           </div>
           <div class="product-custom-help"><span id="customPhotoHelp">התמונה תישמר להזמנה.</span></div>
+          <label class="product-custom-consent" for="customPhotoRightsConsent">
+            <input id="customPhotoRightsConsent" type="checkbox">
+            <span>אני מאשר/ת שיש לי את הזכויות וההרשאות הנדרשות להשתמש בתמונה, ובמקרה שמופיע בה קטין — גם הסכמת הורה/אפוטרופוס ככל שנדרשת.</span>
+          </label>
         </section>
 
         <section class="product-custom-block product-gift-packaging" id="giftPackagingBlock" hidden aria-labelledby="giftPackagingHeading">
@@ -350,6 +354,7 @@
           <p id="cardSignature" class="message-card__signature"></p>
         </section>
 
+
         <details class="product-details-accordion">
           <summary class="product-details-summary"><span>פרטים</span><span class="product-details-chevron" aria-hidden="true">⌄</span></summary>
           <div class="product-details-list product-details-panel" id="productDetails"></div>
@@ -366,8 +371,8 @@
   <div class="container">
     <div class="foot__grid">
       <div class="foot__brand"><a class="brand__footer-link" href="/#top"><span class="brand__logo"><img src="images/VerSansLogoBlackJewlery.png" alt="VerSans" width="800" height="800" decoding="async"></span><span class="brand__sr" id="footBrand" aria-hidden="true" dir="ltr">VerSans</span></a><p class="foot__about" id="footAbout">שרשראות מתנה שמגיעות עם המילים שנשארות.</p></div>
-      <div><h4 id="footShopTitle">קניות</h4><ul><li><a href="/#shop" id="footShopLink">החנות</a></li><li><a href="/#how" id="footHowLink">איך זה עובד</a></li><li><a href="/#faq" id="footFaqLink">שאלות נפוצות</a></li></ul></div>
-      <div><h4 id="footInfoTitle">מידע</h4><ul><li><a href="/policies#shipping">משלוחים והחזרות</a></li><li><a href="/policies#terms">תקנון</a></li><li><a href="/policies#privacy">מדיניות פרטיות</a></li><li><a href="/policies#materials">חומרים וציפויים</a></li><li><a href="/policies#cancel-request">ביטול עסקה</a></li></ul></div>
+      <div><h4 id="footShopTitle">קניות</h4><ul><li><a href="/#shop" id="footShopLink">החנות</a></li><li><a href="/#how" id="footHowLink">איך זה עובד</a></li><li><a href="/cancel-order" id="footFaqLink">ביטול/החזרה</a></li></ul></div>
+      <div><h4 id="footInfoTitle">מידע</h4><ul><li><a href="/policies#shipping">משלוחים והחזרות</a></li><li><a href="/policies#purchase">תקנון</a></li><li><a href="/policies#privacy">מדיניות פרטיות</a></li><li><a href="/policies#defects">חומרים וציפויים</a></li><li><a href="/policies#cancel">ביטול עסקה</a></li></ul></div>
       <div><h4 id="footContactTitle">יצירת קשר</h4><ul id="productFootContact"></ul></div>
     </div>
     <div class="foot__bottom"><span>© <span id="year"></span> <span id="footBrandBottom">VerSans</span>. כל הזכויות שמורות.</span><span class="pay">תשלום מאובטח בסליקת HYP</span></div>
@@ -411,6 +416,6 @@
 <script src="assets/product-reviews.js?v=20260924-product-review-name-v2"></script>
 <script src="assets/auth-nav.js?v=20260914-pretty-urls-v1"></script>
   <script src="/assets/presence.js?v=20260915-presence-v1"></script>
-  <script src="/assets/customer-service.js?v=20260922-whatsapp-support-v2"></script>
+  <script src="/assets/customer-service.js?v=20260926-support-label-v3"></script>
 </body>
 </html>

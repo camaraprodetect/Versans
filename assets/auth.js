@@ -19,7 +19,7 @@
       mismatch: 'הסיסמאות אינן תואמות.', exists: 'כבר קיים חשבון עם האימייל הזה.', tooMany: 'בוצעו יותר מדי ניסיונות. נסו שוב מאוחר יותר.',
       generic: 'משהו השתבש. נסו שוב.', loading: 'רק רגע…', accountTitle: 'החשבון שלי', accountLead: 'פרטי החשבון המחובר כרגע.',
       logout: 'התנתקות', shop: 'חזרה לחנות', memberSince: 'נרשמת בתאריך', accountEmail: 'אימייל', accountPhone: 'טלפון', accountName: 'שם',
-      visualTitle: 'המתנה שלכם. החשבון שלכם.', visualText: 'חשבון VerSans מאפשר לנו לזהות אתכם בצורה מאובטחת ולהוסיף בהמשך היסטוריית הזמנות, ביקורות והטבות.',
+      visualTitle: 'המתנה שלכם. החשבון שלכם.', visualText: 'חשבון VerSans מאפשר לנהל פרטים, הזמנות, ביקורות והעדפות בצורה מאובטחת.',
       newHere: 'עדיין אין לכם חשבון?', createNow: 'צרו חשבון', already: 'כבר רשומים?', loginNow: 'התחברו', back: 'חזרה לחנות', backToLogin: 'חזרה להתחברות', passHint: 'לפחות 8 תווים.'
     },
     en: {
@@ -28,7 +28,7 @@
       email: 'Email', phone: 'Phone number', password: 'Password', newPassword: 'New password', name: 'Full name', confirm: 'Confirm password', confirmNew: 'Confirm new password', login: 'Sign in', register: 'Create account', sendReset: 'Send reset link', savePassword: 'Save new password', show: 'Show', hide: 'Hide', forgotPassword: 'Forgot password',
       invalidCredentials: 'The email or password is incorrect.', invalidEmail: 'Enter a valid email address.', invalidPhone: 'Enter a valid phone number.', termsRequired: 'You must accept the Terms of Service and Privacy Policy to create an account.', invalidName: 'Enter a name with at least 2 characters.', invalidPassword: 'Password must be at least 8 characters.', invalidReset: 'This password reset link is invalid or has expired. Request a new one.', resetSent: 'If an account exists for this email, we sent it a password reset link. Check your spam folder too.', passwordChanged: 'Password changed successfully. Redirecting you to sign in…', passwordChangedLogin: 'Password changed successfully. You can now sign in with your new password.', mismatch: 'Passwords do not match.', exists: 'An account with this email already exists.', tooMany: 'Too many attempts. Try again later.', generic: 'Something went wrong. Try again.', loading: 'Please wait…',
       accountTitle: 'My account', accountLead: 'Details for the account currently signed in.', logout: 'Log out', shop: 'Back to shop', memberSince: 'Member since', accountEmail: 'Email', accountPhone: 'Phone', accountName: 'Name',
-      visualTitle: 'Your gift. Your account.', visualText: 'A VerSans account securely identifies you and gives us a foundation for order history, reviews and benefits later on.',
+      visualTitle: 'Your gift. Your account.', visualText: 'A VerSans account lets you securely manage details, orders, reviews and preferences.',
       newHere: 'New here?', createNow: 'Create an account', already: 'Already registered?', loginNow: 'Sign in', back: 'Back to shop', backToLogin: 'Back to sign in', passHint: 'At least 8 characters.'
     }
   };
@@ -73,7 +73,9 @@
       invalid_or_expired_reset: t('invalidReset'), terms_required: t('termsRequired'), email_exists: t('exists'), too_many_attempts: t('tooMany'),
       email_not_found: 'לא נמצא חשבון עם כתובת האימייל הזו.',
       email_unavailable: 'לא ניתן לשלוח כרגע מייל לאיפוס הסיסמה. נסו שוב בעוד כמה דקות.',
-      email_send_failed: 'שליחת המייל נכשלה. נסו שוב בעוד כמה דקות.'
+      email_send_failed: 'שליחת המייל נכשלה. נסו שוב בעוד כמה דקות.',
+      account_blocked: 'הגישה לחשבון נחסמה. אפשר לפנות לשירות הלקוחות.',
+      reauth_failed: 'הסיסמה לאימות אינה נכונה.'
     })[code] || t('generic');
   }
 
@@ -87,6 +89,23 @@
   function post(url, body) {
     return fetch(url, { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(body || {}) })
       .then(function (response) { return response.json().catch(function () { return {}; }).then(function (data) { return { response: response, data: data }; }); });
+  }
+
+  function api(url, method, body) {
+    var options = { method: method || 'GET', credentials: 'same-origin', headers: { Accept: 'application/json' } };
+    if (body !== undefined) { options.headers['Content-Type'] = 'application/json'; options.body = JSON.stringify(body || {}); }
+    return fetch(url, options).then(function (response) { return response.json().catch(function () { return {}; }).then(function (data) { return { response: response, data: data }; }); });
+  }
+
+  function formatPhone(phone) {
+    phone = String(phone || '').trim();
+    if (lang === 'he' && /^\+972\d{9}$/.test(phone)) phone = '0' + phone.slice(4);
+    if (/^05\d{8}$/.test(phone)) return phone.slice(0, 3) + '-' + phone.slice(3, 6) + '-' + phone.slice(6);
+    return phone;
+  }
+
+  function escapeHtml(value) {
+    return String(value == null ? '' : value).replace(/[&<>"']/g, function (ch) { return ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[ch]; });
   }
 
   function validEmail(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
@@ -178,7 +197,9 @@
         var compactPhone = body.phone.replace(/[\s().-]+/g, '');
         var validPhone = /^0\d{8,9}$/.test(compactPhone) || /^972\d{8,9}$/.test(compactPhone) || /^\+\d{9,15}$/.test(compactPhone);
         body.termsAccepted = !!((qs('#termsAccepted') || {}).checked);
-        body.marketingOptIn = !!((qs('#marketingOptIn') || {}).checked);
+        body.marketingEmailOptIn = !!((qs('#marketingEmailOptIn') || {}).checked);
+        body.marketingSmsOptIn = !!((qs('#marketingSmsOptIn') || {}).checked);
+        body.marketingWhatsappOptIn = !!((qs('#marketingWhatsappOptIn') || {}).checked);
         if (body.name.length < 2) { setMessage(t('invalidName')); return; }
         if (!validPhone) { setMessage(t('invalidPhone')); return; }
         if (password !== String((qs('#confirmPassword') || {}).value || '')) { setMessage(t('mismatch')); return; }
@@ -208,20 +229,89 @@
 
   function loadAccount() {
     if (document.body.getAttribute('data-auth-page') !== 'account') return;
-    fetch('/api/auth/me', { credentials: 'same-origin', headers: { Accept: 'application/json' } })
-      .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
-      .then(function (data) {
-        if (!data.user) { location.replace('/login?next=%2Faccount'); return; }
-        qs('#accountLoading').hidden = true; qs('#accountDetails').hidden = false;
-        qs('#accountName').textContent = data.user.name; qs('#accountEmail').textContent = data.user.email;
-        var phone = String(data.user.phone || '').trim();
-        if (lang === 'he' && /^\+972\d{9}$/.test(phone)) phone = '0' + phone.slice(4);
-        if (/^05\d{8}$/.test(phone)) phone = phone.slice(0, 3) + '-' + phone.slice(3, 6) + '-' + phone.slice(6);
-        qs('#accountPhone').textContent = phone || (lang === 'he' ? 'לא הוזן' : 'Not provided');
-        var d = new Date(data.user.createdAt); qs('#accountSince').textContent = new Intl.DateTimeFormat(lang === 'he' ? 'he-IL' : 'en-GB', { dateStyle: 'medium' }).format(d);
-      }).catch(function () { location.replace('/login?next=%2Faccount'); });
+    var currentUser = null;
+
+    function showAccountMessage(message, ok) { setMessage(message, ok); }
+
+    function renderOrders(orders) {
+      var root = qs('#accountOrders'); if (!root) return;
+      if (!orders || !orders.length) { root.innerHTML = '<p class="account-muted">עדיין אין הזמנות שמקושרות לחשבון הזה.</p>'; return; }
+      root.innerHTML = orders.map(function (order) {
+        var date = new Date(order.paidAt || order.createdAt || Date.now());
+        var dateText = new Intl.DateTimeFormat('he-IL', { dateStyle: 'medium' }).format(date);
+        var amount = new Intl.NumberFormat('he-IL', { style: 'currency', currency: order.currency || 'ILS' }).format(Number(order.amount || 0));
+        var items = (order.items || []).map(function (item) { return '<li>' + escapeHtml(item.name || item.id || 'מוצר') + ' × ' + Number(item.qty || 1) + '</li>'; }).join('');
+        var cancellation = order.cancellation ? '<span class="account-order__request">בקשת ביטול: ' + escapeHtml(order.cancellation.requestRef) + ' · ' + escapeHtml(order.cancellation.status || 'received') + '</span>' : '<a class="account-inline-link" href="/cancel-order?order=' + encodeURIComponent(order.orderRef) + '">בקשת ביטול / החזרה</a>';
+        return '<article class="account-order"><div class="account-order__top"><strong>' + escapeHtml(order.orderRef) + '</strong><span>' + escapeHtml(dateText) + '</span></div><div class="account-order__meta"><span>' + escapeHtml(amount) + '</span><span>סטטוס: ' + escapeHtml(order.status || '') + '</span></div><ul>' + items + '</ul>' + cancellation + '</article>';
+      }).join('');
+    }
+
+    function loadOrders() {
+      return api('/api/account/orders', 'GET').then(function (result) {
+        if (!result.response.ok || !result.data.ok) throw result.data;
+        renderOrders(result.data.orders || []);
+      }).catch(function () { var root = qs('#accountOrders'); if (root) root.innerHTML = '<p class="account-muted">לא הצלחנו לטעון את ההזמנות כרגע.</p>'; });
+    }
+
+    function populate(user) {
+      currentUser = user;
+      qs('#accountLoading').hidden = true; qs('#accountDetails').hidden = false;
+      qs('#accountNameInput').value = user.name || '';
+      qs('#accountEmailInput').value = user.email || '';
+      qs('#accountPhoneInput').value = formatPhone(user.phone || '');
+      var d = new Date(user.createdAt); qs('#accountSince').textContent = new Intl.DateTimeFormat('he-IL', { dateStyle: 'medium' }).format(d);
+      var marketing = user.marketing || {};
+      qs('#accountMarketingEmail').checked = !!marketing.email;
+      qs('#accountMarketingSms').checked = !!marketing.sms;
+      qs('#accountMarketingWhatsapp').checked = !!marketing.whatsapp;
+      qs('#termsUpdateSection').hidden = !user.termsNeedsReview;
+    }
+
+    api('/api/auth/me', 'GET').then(function (result) {
+      if (!result.response.ok || !result.data.user) { location.replace('/login?next=%2Faccount'); return; }
+      populate(result.data.user); loadOrders();
+    }).catch(function () { location.replace('/login?next=%2Faccount'); });
+
+    var profile = qs('#accountProfileForm'); if (profile) profile.addEventListener('submit', function (event) {
+      event.preventDefault(); showAccountMessage('');
+      var name = String(qs('#accountNameInput').value || '').replace(/\s+/g, ' ').trim();
+      var phone = String(qs('#accountPhoneInput').value || '').trim();
+      if (name.length < 2) { showAccountMessage(t('invalidName')); return; }
+      api('/api/auth/account', 'PATCH', { name: name, phone: phone }).then(function (result) {
+        if (!result.response.ok || !result.data.ok) throw result.data;
+        populate(result.data.user); showAccountMessage('הפרטים נשמרו.', true);
+      }).catch(function (err) { showAccountMessage(errorText(err && err.error)); });
+    });
+
+    var prefs = qs('#marketingPreferencesForm'); if (prefs) prefs.addEventListener('submit', function (event) {
+      event.preventDefault(); showAccountMessage('');
+      api('/api/auth/marketing-preferences', 'PATCH', { email: qs('#accountMarketingEmail').checked, sms: qs('#accountMarketingSms').checked, whatsapp: qs('#accountMarketingWhatsapp').checked }).then(function (result) {
+        if (!result.response.ok || !result.data.ok) throw result.data;
+        populate(result.data.user); showAccountMessage('העדפות השיווק נשמרו.', true);
+      }).catch(function (err) { showAccountMessage(errorText(err && err.error)); });
+    });
+
+    var acceptTerms = qs('#acceptTermsBtn'); if (acceptTerms) acceptTerms.addEventListener('click', function () {
+      acceptTerms.disabled = true;
+      api('/api/auth/accept-terms', 'POST', {}).then(function (result) {
+        if (!result.response.ok || !result.data.ok) throw result.data;
+        qs('#termsUpdateSection').hidden = true; showAccountMessage('אישור התנאים נשמר.', true);
+      }).catch(function (err) { showAccountMessage(errorText(err && err.error)); acceptTerms.disabled = false; });
+    });
+
+    var deleteForm = qs('#deleteAccountForm'); if (deleteForm) deleteForm.addEventListener('submit', function (event) {
+      event.preventDefault(); showAccountMessage('');
+      var password = String(qs('#deleteAccountPassword').value || '');
+      if (password.length < 8) { showAccountMessage(t('invalidPassword')); return; }
+      if (!window.confirm('למחוק את חשבון VerSans לצמיתות? לא ניתן לבטל פעולה זו.')) return;
+      api('/api/auth/account', 'DELETE', { password: password }).then(function (result) {
+        if (!result.response.ok || !result.data.ok) throw result.data;
+        location.replace('/shop');
+      }).catch(function (err) { showAccountMessage(errorText(err && err.error)); });
+    });
+
     var logout = qs('#logoutBtn'); if (logout) logout.addEventListener('click', function () {
-      logout.disabled = true; post('/api/auth/logout', {}).then(function () { location.replace('index.html'); }).catch(function () { logout.disabled = false; setMessage(t('generic')); });
+      logout.disabled = true; post('/api/auth/logout', {}).then(function () { location.replace('/shop'); }).catch(function () { logout.disabled = false; showAccountMessage(t('generic')); });
     });
   }
 

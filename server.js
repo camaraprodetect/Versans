@@ -10,7 +10,7 @@ const { createPaymentUrl, verifyPayment, priceOrder } = require('./api/_hyp.js')
 const { PRODUCTS } = require('./assets/products.js');
 const ROUTES = require('./assets/routes.js');
 const { normalizeAdminRange, normalizeStoredOrderItems, aggregatePaidOrders } = require('./lib/admin-analytics.js');
-const { absoluteUrl, isEmailConfigured, orderConfirmationEmail, passwordResetEmail, productAnnouncementEmail, sendEmail, welcomeEmail } = require('./lib/email.js');
+const { absoluteUrl, isEmailConfigured, orderConfirmationEmail, passwordResetEmail, productAnnouncementEmail, sendEmail, termsUpdateEmail, welcomeEmail } = require('./lib/email.js');
 const { buildPaidOrderPayload, sendPaidOrderToGoogleSheet } = require('./lib/google-orders.js');
 const { orderItemRef, parseOrderItemRef } = require('./lib/order-item-refs.js');
 const {
@@ -42,6 +42,7 @@ const PORT = Number(process.env.PORT || 3000);
 const HOST = process.env.HOST || '0.0.0.0';
 const SESSION_COOKIE = 'versans_session';
 const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000;
+const ADMIN_SESSION_TTL_MS = 8 * 60 * 60 * 1000;
 const VISITOR_COOKIE = 'versans_visitor';
 const VISITOR_TTL_MS = 90 * 24 * 60 * 60 * 1000;
 const PRESENCE_RETENTION_MS = 90 * 24 * 60 * 60 * 1000;
@@ -58,7 +59,8 @@ const REVIEW_MEDIA_MAX_COUNT = 5;
 const REVIEW_TEXT_MAX = 1200;
 const REVIEW_NAME_MAX = 70;
 const PUBLIC_REVIEW_NAME = 'לקוח';
-const TERMS_VERSION = '2026-09-22';
+const TERMS_VERSION = '2026-09-26';
+const REVIEW_MEDIA_TERMS_VERSION = '2026-09-26';
 const MARKETING_CATALOG_META_KEY = 'marketing_catalog_initialized_v1';
 const MARKETING_DELIVERY_STALE_MS = 15 * 60 * 1000;
 const WELCOME_COUPON_PERCENT = 3;
@@ -189,6 +191,13 @@ function normalizeShippingCustomer(raw) {
     err.status = 400;
     throw err;
   }
+  const countryKey = customer.country.toLowerCase().replace(/\s+/g, '');
+  if (!['ישראל','israel'].includes(countryKey)) {
+    const err = new Error('israel_only');
+    err.status = 400;
+    throw err;
+  }
+  customer.country = 'ישראל';
   return customer;
 }
 
@@ -481,9 +490,10 @@ async function publicReview(row) {
   };
 }
 
-function sessionCookie(token, req) {
+function sessionCookie(token, req, ttlMs = SESSION_TTL_MS) {
   const secure = process.env.NODE_ENV === 'production' || String(req.headers['x-forwarded-proto'] || '').split(',')[0].trim() === 'https';
-  return `${SESSION_COOKIE}=${encodeURIComponent(token)}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${Math.floor(SESSION_TTL_MS / 1000)}${secure ? '; Secure' : ''}`;
+  const ttl = Number.isFinite(Number(ttlMs)) && Number(ttlMs) > 0 ? Number(ttlMs) : SESSION_TTL_MS;
+  return `${SESSION_COOKIE}=${encodeURIComponent(token)}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${Math.floor(ttl / 1000)}${secure ? '; Secure' : ''}`;
 }
 
 function clearSessionCookie(req) {
@@ -512,14 +522,22 @@ function getPasswordResetToken(req) {
 async function getCurrentUser(req) {
   const token = getSessionToken(req);
   if (!token || token.length < 20) return null;
-  return await database.findPublicUserBySession(tokenHash(token), Date.now()) || null;
+  const user = await database.findPublicUserBySession(tokenHash(token), Date.now()) || null;
+  if (user && Number(user.is_blocked || 0) === 1) {
+    await database.deleteSession(tokenHash(token));
+    return null;
+  }
+  return user;
 }
 
 async function createSession(userId, req) {
   const token = crypto.randomBytes(32).toString('base64url');
   const now = Date.now();
-  await database.insertSession(userId, tokenHash(token), now, now + SESSION_TTL_MS);
-  return sessionCookie(token, req);
+  const user = typeof database.findUserById === 'function' ? await database.findUserById(userId) : null;
+  const privileged = user && (normalizeEmail(user.email) === ADMIN_EMAIL || ['admin','staff'].includes(String(user.role || 'customer')));
+  const ttl = privileged ? ADMIN_SESSION_TTL_MS : SESSION_TTL_MS;
+  await database.insertSession(userId, tokenHash(token), now, now + ttl);
+  return sessionCookie(token, req, ttl);
 }
 
 function safeUser(user) {
@@ -530,7 +548,15 @@ function safeUser(user) {
     phone: user.phone || null,
     isVerifiedCustomer: Number(user.is_verified_customer || 0) === 1,
     verifiedCustomerAt: user.verified_customer_at || null,
-    marketingOptIn: Number(user.marketing_opt_in || 0) === 1,
+    marketingOptIn: Number(user.marketing_email_opt_in != null ? user.marketing_email_opt_in : user.marketing_opt_in || 0) === 1,
+    marketing: {
+      email: Number(user.marketing_email_opt_in != null ? user.marketing_email_opt_in : user.marketing_opt_in || 0) === 1,
+      sms: Number(user.marketing_sms_opt_in || 0) === 1,
+      whatsapp: Number(user.marketing_whatsapp_opt_in || 0) === 1
+    },
+    role: user.role || (normalizeEmail(user.email) === ADMIN_EMAIL ? 'admin' : 'customer'),
+    termsVersion: user.terms_version || null,
+    termsNeedsReview: String(user.terms_version || '') !== TERMS_VERSION,
     createdAt: user.created_at
   } : null;
 }
@@ -571,7 +597,8 @@ function productMarketingImage(product) {
 
 async function sendWelcomeForUser(user) {
   if (!user || !user.id || !validEmail(user.email) || !isEmailConfigured()) return false;
-  const coupon = await createWelcomeCoupon(database, user.id, user.created_at || Date.now());
+  const emailMarketingAllowed = Number(user.marketing_email_opt_in != null ? user.marketing_email_opt_in : user.marketing_opt_in || 0) === 1;
+  const coupon = emailMarketingAllowed ? await createWelcomeCoupon(database, user.id, user.created_at || Date.now()) : null;
   const message = welcomeEmail({
     name: user.name,
     couponCode: coupon && coupon.code,
@@ -589,6 +616,21 @@ async function sendWelcomeForUser(user) {
   return result;
 }
 
+
+async function sendTermsUpdateNoticeForUser(user) {
+  if (!user || !user.id || !validEmail(user.email) || !isEmailConfigured()) return false;
+  if (String(user.terms_version || '') === TERMS_VERSION || String(user.terms_notice_version || '') === TERMS_VERSION) return false;
+  const message = termsUpdateEmail({ name: user.name, termsUrl: absoluteUrl('/policies'), effectiveDate: TERMS_VERSION });
+  const result = await sendEmail({
+    to: user.email,
+    subject: message.subject,
+    html: message.html,
+    text: message.text,
+    idempotencyKey: `terms-${TERMS_VERSION}-user-${user.id}`
+  });
+  if (typeof database.markTermsNoticeSent === 'function') await database.markTermsNoticeSent(user.id, TERMS_VERSION);
+  return result;
+}
 
 async function sendOrderConfirmationForOrder(order) {
   if (!order || !isEmailConfigured()) return false;
@@ -912,7 +954,17 @@ function visitorSummary(row, now) {
 
 async function getAdminUser(req) {
   const user = await getCurrentUser(req);
-  return user && normalizeEmail(user.email) === ADMIN_EMAIL ? user : null;
+  if (!user) return null;
+  if (normalizeEmail(user.email) === ADMIN_EMAIL) return { ...user, role: 'admin' };
+  return ['admin','staff'].includes(String(user.role || '')) ? user : null;
+}
+
+function adminCanAccess(user, pathname, method) {
+  if (!user) return false;
+  if (normalizeEmail(user.email) === ADMIN_EMAIL || String(user.role || '') === 'admin') return true;
+  if (String(user.role || '') !== 'staff') return false;
+  if (method !== 'GET') return false;
+  return pathname === '/api/admin/orders' || /^\/api\/admin\/orders\/[^/]+\/shipments$/.test(pathname);
 }
 
 
@@ -1253,7 +1305,7 @@ function shipmentPickupDetails(shipment) {
   };
 }
 
-function shippingBotMessage({ customerName, items, trackingNumber, pickupMessageRaw = null, pickupLocation = null }) {
+function shippingBotMessage({ customerName, items, pickupMessageRaw = null, pickupLocation = null }) {
   const safeName = String(customerName || '').trim() || 'לקוח/ה';
   const linked = Array.isArray(items) ? items : [];
   const itemLines = linked.length <= 1
@@ -1276,8 +1328,6 @@ function shippingBotMessage({ customerName, items, trackingNumber, pickupMessage
     'יש עדכון לגבי ההזמנה שלך מ-VerSans.',
     '',
     ...itemLines,
-    `מספר מעקב: ${trackingNumber}`,
-    '',
     'החבילה שלך מוכנה לאיסוף.',
     ...pickupLines,
     '',
@@ -1317,7 +1367,6 @@ async function shippingBotReadyPickups(limit = 200) {
     const message = shippingBotMessage({
       customerName,
       items,
-      trackingNumber: shipment.tracking_number,
       pickupMessageRaw: pickup.message,
       pickupLocation: pickup.location
     });
@@ -1555,7 +1604,6 @@ function customerShipmentPayload(shipment, index = 0, item = null, orderRef = ''
     productName: item && item.name || 'מוצר',
     productImage: rawImage ? (/^https?:\/\//i.test(rawImage) ? rawImage : '/' + rawImage.replace(/^\/+/, '')) : null,
     qty: Number(item && item.qty || 1),
-    trackingNumber: shipment ? shipment.trackingNumber : null,
     status: stage,
     statusLabel,
     description,
@@ -1614,7 +1662,6 @@ async function notifyShipmentStatus(shipment, order) {
           phone: order.customer_phone,
           firstName: customer.firstName || customer.name || 'לקוח/ה',
           orderRef: customerOrderRef,
-          trackingNumber: shipment.tracking_number,
           statusLabel: `${customerProductName} - ${adminStatusLabel}`,
           trackingUrl
         });
@@ -1632,7 +1679,6 @@ async function notifyShipmentStatus(shipment, order) {
         const sent = await sendAdminShippingWhatsApp({
           orderRef: customerOrderRef,
           statusLabel: adminStatusLabel,
-          trackingNumber: shipment.tracking_number,
           itemSummary: shipmentItemSummary(items)
         });
         await database.markShipmentNotificationSent(shipment.id, 'admin', shipment.status, sent.id || null, Date.now());
@@ -1775,7 +1821,7 @@ function orderNotificationItems(payload) {
   }));
 }
 
-function newOrderCustomerMessage({ customerName, orderRef, items, trackingIds }) {
+function newOrderCustomerMessage({ customerName, orderRef, items }) {
   const lines = [];
   lines.push(`היי ${customerName || 'לקוח/ה'} 👋`);
   lines.push('ההזמנה שלך ב-VerSans התקבלה בהצלחה ✅');
@@ -1788,12 +1834,8 @@ function newOrderCustomerMessage({ customerName, orderRef, items, trackingIds })
     const qty = Number(item.quantity || 1) > 1 ? ` × ${Number(item.quantity)}` : '';
     lines.push(`• ${item.productName}${variant}${qty}`);
   }
-  if (trackingIds && trackingIds.length) {
-    lines.push('');
-    lines.push(trackingIds.length === 1 ? `מספר מעקב: ${trackingIds[0]}` : 'מספרי מעקב:');
-    if (trackingIds.length > 1) trackingIds.forEach((trackingId) => lines.push(`• ${trackingId}`));
-  }
   lines.push('');
+  lines.push('למעקב משתמשים במספר ההזמנה של VerSans בעמוד המעקב באתר.');
   lines.push('אנחנו נעדכן אותך בהמשך לגבי המשלוח 📦');
   lines.push('');
   lines.push('תודה שבחרת VerSans');
@@ -1964,6 +2006,10 @@ async function adminApi(req, res, pathname, parsed) {
   const admin = botKeyAccess ? null : await getAdminUser(req);
   if (!admin && !botKeyAccess) {
     json(res, 403, { ok: false, error: 'admin_required' });
+    return true;
+  }
+  if (admin && !adminCanAccess(admin, pathname, req.method)) {
+    json(res, 403, { ok: false, error: 'permission_denied' });
     return true;
   }
   const shipmentOrderMatch = /^\/api\/admin\/orders\/([^/]+)\/shipments$/.exec(pathname);
@@ -2273,7 +2319,7 @@ async function adminApi(req, res, pathname, parsed) {
     const items = orderNotificationItems(payload);
     const shipments = await database.listShipmentsForOrder(order.id);
     const trackingIds = [...new Set((shipments || []).map((shipment) => String(shipment.tracking_number || '').trim()).filter(Boolean))];
-    const message = newOrderCustomerMessage({ customerName, orderRef, items, trackingIds });
+    const message = newOrderCustomerMessage({ customerName, orderRef, items });
     const notificationId = `NEW_ORDER:${orderRef}`;
 
     if (String(notification.state || '') === 'sent') {
@@ -2524,6 +2570,18 @@ async function adminApi(req, res, pathname, parsed) {
     return true;
   }
 
+  const accessMatch = /^\/api\/admin\/customers\/(\d+)\/access$/.exec(pathname);
+  if (accessMatch && req.method === 'POST') {
+    if (!admin || !(normalizeEmail(admin.email) === ADMIN_EMAIL || String(admin.role || '') === 'admin')) { json(res,403,{ok:false,error:'permission_denied'}); return true; }
+    const body=await readJsonBody(req); const role=['customer','staff','admin'].includes(String(body.role||''))?String(body.role):'customer'; const blocked=body.blocked===true; const targetId=Number(accessMatch[1]);
+    if(targetId===Number(admin.id) && blocked){json(res,400,{ok:false,error:'cannot_block_self'});return true;}
+    const changed=await database.setUserAccess(targetId,role,blocked,cleanCheckoutText(body.reason,300),Date.now()); json(res,changed?200:404,{ok:changed,error:changed?undefined:'user_not_found'}); return true;
+  }
+  if (pathname === '/api/admin/cancellation-requests' && req.method === 'GET') {
+    if (typeof database.listAdminCancellationRequests !== 'function') { json(res,200,{ok:true,requests:[]}); return true; }
+    const rows=await database.listAdminCancellationRequests(200); json(res,200,{ok:true,requests:rows}); return true;
+  }
+
   if (req.method !== 'GET') {
     json(res, 405, { ok: false, error: 'method_not_allowed' });
     return true;
@@ -2613,7 +2671,9 @@ async function adminApi(req, res, pathname, parsed) {
     const [count, rows] = await Promise.all([database.countAdminCustomers(), database.listAdminCustomers(limit, offset)]);
     const customers = rows.map((row) => ({
       id: Number(row.id), name: row.name, email: row.email, phone: row.known_phone || null,
-      marketingOptIn: Number(row.marketing_opt_in || 0) === 1,
+      marketingOptIn: Number(row.marketing_email_opt_in != null ? row.marketing_email_opt_in : row.marketing_opt_in || 0) === 1,
+      marketing: { email: Number(row.marketing_email_opt_in != null ? row.marketing_email_opt_in : row.marketing_opt_in || 0) === 1, sms: Number(row.marketing_sms_opt_in || 0) === 1, whatsapp: Number(row.marketing_whatsapp_opt_in || 0) === 1 },
+      role: row.role || 'customer', blocked: Number(row.is_blocked || 0) === 1, blockedReason: row.blocked_reason || null,
       verifiedCustomer: Number(row.is_verified_customer || 0) === 1,
       verifiedCustomerAt: row.verified_customer_at == null ? null : Number(row.verified_customer_at),
       createdAt: Number(row.created_at || 0), paidOrderCount: Number(row.paid_order_count || 0),
@@ -2756,6 +2816,47 @@ async function authApi(req, res, pathname, parsed) {
     return true;
   }
 
+  if (pathname === '/api/cancel-order' && req.method === 'POST') {
+    if (!sameOriginAllowed(req)) { json(res, 403, { ok: false, error: 'origin_not_allowed' }); return true; }
+    if (rateLimited(req, 'cancel-order', 10, 60 * 60 * 1000)) { json(res, 429, { ok: false, error: 'too_many_attempts' }); return true; }
+    const body = await readJsonBody(req);
+    const requestType = ['cancel','return'].includes(String(body.requestType || '')) ? String(body.requestType) : '';
+    const rawRef = cleanCheckoutText(body.orderRef, 100);
+    const parsedRef = parseOrderItemRef(rawRef);
+    const orderRef = parsedRef ? parsedRef.orderRef : rawRef;
+    const name = cleanName(body.name);
+    const email = normalizeEmail(body.email);
+    const phone = normalizePhone(body.phone);
+    const reason = cleanCheckoutText(body.reason, 1200);
+    if (!requestType || !orderRef || name.length < 2 || !validEmail(email) || !phone) { json(res, 400, { ok: false, error: 'invalid_request' }); return true; }
+    const order = await database.getOrderByRef(orderRef);
+    const currentUser = await getCurrentUser(req);
+    const emailMatches = order && normalizeEmail(order.customer_email) === email;
+    const ownsOrder = order && currentUser && (Number(order.user_id || 0) === Number(currentUser.id) || normalizeEmail(currentUser.email) === normalizeEmail(order.customer_email));
+    if (!order || (!emailMatches && !ownsOrder)) { json(res, 404, { ok: false, error: 'order_not_found_or_mismatch' }); return true; }
+    const now = Date.now();
+    const requestRef = 'VS-CAN-' + now.toString(36).toUpperCase() + '-' + crypto.randomBytes(3).toString('hex').toUpperCase();
+    await database.insertCancellationRequest({ requestRef, orderId: Number(order.id), orderRef: order.order_ref, userId: currentUser ? Number(currentUser.id) : (order.user_id ? Number(order.user_id) : null), requestType, name, email, phone, reason, createdAt: now, updatedAt: now });
+    json(res, 201, { ok: true, requestRef, status: 'received' });
+    setImmediate(() => { if (isEmailConfigured()) sendEmail({ to: 'versanssupport@gmail.com', subject: `בקשת ${requestType === 'cancel' ? 'ביטול' : 'החזרה'} ${requestRef}`, text: `מספר בקשה: ${requestRef}\nהזמנה: ${order.order_ref}\nשם: ${name}\nאימייל: ${email}\nטלפון: ${phone}\nפירוט: ${reason || '-'}` }).catch((err)=>console.error('Cancellation request email failed:',err&&err.message)); });
+    return true;
+  }
+
+  if (pathname === '/api/privacy-request' && req.method === 'POST') {
+    if (!sameOriginAllowed(req)) { json(res, 403, { ok: false, error: 'origin_not_allowed' }); return true; }
+    if (rateLimited(req, 'privacy-request', 6, 60 * 60 * 1000)) { json(res, 429, { ok: false, error: 'too_many_attempts' }); return true; }
+    const body = await readJsonBody(req);
+    const requestType = ['access','correction'].includes(String(body.requestType || '')) ? String(body.requestType) : '';
+    const name = cleanName(body.name), email = normalizeEmail(body.email), phone = normalizePhone(body.phone), details = cleanCheckoutText(body.details,1600);
+    if (!requestType || name.length < 2 || !validEmail(email) || !details) { json(res,400,{ok:false,error:'invalid_request'}); return true; }
+    const user = await getCurrentUser(req); const now=Date.now();
+    const requestRef='VS-PRV-'+now.toString(36).toUpperCase()+'-'+crypto.randomBytes(3).toString('hex').toUpperCase();
+    await database.insertPrivacyRequest({requestRef,userId:user?Number(user.id):null,requestType,name,email,phone,details,createdAt:now,updatedAt:now});
+    json(res,201,{ok:true,requestRef,status:'received'});
+    setImmediate(()=>{if(isEmailConfigured())sendEmail({to:'versanssupport@gmail.com',subject:`בקשת פרטיות ${requestRef}`,text:`מספר בקשה: ${requestRef}\nסוג: ${requestType}\nשם: ${name}\nאימייל: ${email}\nטלפון: ${phone||'-'}\nפרטים: ${details}`}).catch((err)=>console.error('Privacy request email failed:',err&&err.message));});
+    return true;
+  }
+
   if (pathname === '/api/auth/me' && req.method === 'GET') {
     const user = await ensureVerifiedCustomer(await getCurrentUser(req));
     json(res, 200, { ok: true, user: safeUser(user) });
@@ -2880,7 +2981,9 @@ async function authApi(req, res, pathname, parsed) {
     const phone = normalizePhone(body.phone);
     const password = String(body.password || '');
     const termsAccepted = body.termsAccepted === true;
-    const marketingOptIn = body.marketingOptIn === true;
+    const marketingEmailOptIn = body.marketingEmailOptIn === true;
+    const marketingSmsOptIn = body.marketingSmsOptIn === true;
+    const marketingWhatsappOptIn = body.marketingWhatsappOptIn === true;
 
     if (name.length < 2 || name.length > 70) {
       json(res, 400, { ok: false, error: 'invalid_name' });
@@ -2914,11 +3017,14 @@ async function authApi(req, res, pathname, parsed) {
         const insertedUserId = await tx.insertUser(name, email, hashPassword(password), createdAt, phone, {
           termsAcceptedAt: createdAt,
           termsVersion: TERMS_VERSION,
-          marketingOptIn,
-          marketingOptInAt: marketingOptIn ? createdAt : null,
+          marketingEmailOptIn,
+          marketingSmsOptIn,
+          marketingWhatsappOptIn,
+          marketingOptInAt: (marketingEmailOptIn || marketingSmsOptIn || marketingWhatsappOptIn) ? createdAt : null,
+          marketingConsentVersion: TERMS_VERSION,
           marketingUnsubscribeToken: marketingUnsubscribeToken()
         });
-        await createWelcomeCoupon(tx, insertedUserId, createdAt);
+        if (marketingEmailOptIn) await createWelcomeCoupon(tx, insertedUserId, createdAt);
         return insertedUserId;
       });
     } catch (err) {
@@ -2952,13 +3058,54 @@ async function authApi(req, res, pathname, parsed) {
       json(res, 401, { ok: false, error: 'invalid_credentials' });
       return true;
     }
+    if (Number(user.is_blocked || 0) === 1) {
+      json(res, 403, { ok: false, error: 'account_blocked' });
+      return true;
+    }
 
     const oldToken = getSessionToken(req);
     if (oldToken) await database.deleteSession(tokenHash(oldToken));
     const cookie = await createSession(user.id, req);
     const verifiedUser = await ensureVerifiedCustomer(user);
     json(res, 200, { ok: true, user: safeUser(verifiedUser) }, { 'Set-Cookie': cookie });
+    if (String(verifiedUser.terms_version || '') !== TERMS_VERSION) {
+      setImmediate(() => sendTermsUpdateNoticeForUser(verifiedUser).catch((err) => console.error(`Terms update email failed for user ${verifiedUser.id}:`, err && err.message ? err.message : err)));
+    }
     return true;
+  }
+
+  if (pathname === '/api/auth/account' && req.method === 'PATCH') {
+    if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'}); return true; }
+    const user=await getCurrentUser(req); if(!user){json(res,401,{ok:false,error:'login_required'});return true;}
+    const body=await readJsonBody(req), name=cleanName(body.name), phone=normalizePhone(body.phone);
+    if(name.length<2||name.length>70){json(res,400,{ok:false,error:'invalid_name'});return true;} if(!phone){json(res,400,{ok:false,error:'invalid_phone'});return true;}
+    await database.updateAccount(user.id,name,phone); const refreshed=await database.findUserById(user.id); json(res,200,{ok:true,user:safeUser({...user,...refreshed})}); return true;
+  }
+  if (pathname === '/api/auth/marketing-preferences' && req.method === 'PATCH') {
+    if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'}); return true; }
+    const user=await getCurrentUser(req); if(!user){json(res,401,{ok:false,error:'login_required'});return true;}
+    const body=await readJsonBody(req); const prefs={email:body.email===true,sms:body.sms===true,whatsapp:body.whatsapp===true};
+    await database.updateMarketingPreferences(user.id,prefs,Date.now(),TERMS_VERSION);
+    if(prefs.email) await createWelcomeCoupon(database,user.id,Date.now());
+    const refreshed=await database.findUserById(user.id); json(res,200,{ok:true,user:safeUser({...user,...refreshed})}); return true;
+  }
+  if (pathname === '/api/auth/accept-terms' && req.method === 'POST') {
+    if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'}); return true; }
+    const user=await getCurrentUser(req); if(!user){json(res,401,{ok:false,error:'login_required'});return true;}
+    if(typeof database.acceptTermsForUser==='function') await database.acceptTermsForUser(user.id,TERMS_VERSION,Date.now());
+    json(res,200,{ok:true,termsVersion:TERMS_VERSION}); return true;
+  }
+  if (pathname === '/api/auth/account' && req.method === 'DELETE') {
+    if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'}); return true; }
+    const sessionUser=await getCurrentUser(req); if(!sessionUser){json(res,401,{ok:false,error:'login_required'});return true;}
+    const body=await readJsonBody(req), password=String(body.password||''); const full=await database.findUserById(sessionUser.id);
+    if(!full||!verifyPassword(password,full.password_hash)){json(res,401,{ok:false,error:'reauth_failed'});return true;}
+    await database.deleteUserPreservingReviews(sessionUser.id); json(res,200,{ok:true},{'Set-Cookie':clearSessionCookie(req)}); return true;
+  }
+  if (pathname === '/api/account/orders' && req.method === 'GET') {
+    const user=await getCurrentUser(req); if(!user){json(res,401,{ok:false,error:'login_required'});return true;}
+    const rows=await database.listAccountOrders(user.id,100); const orders=rows.map((row)=>({orderRef:row.order_ref,status:row.status,amount:Number(row.amount_agorot||0)/100,currency:row.currency||'ILS',createdAt:Number(row.created_at||0),paidAt:row.paid_at==null?null:Number(row.paid_at),items:normalizeStoredOrderItems(row.items_json,PRODUCTS).map((item)=>({id:item.id||null,name:item.name||'מוצר',qty:Number(item.qty||1)})),cancellation:row.cancellation_request_ref?{requestRef:row.cancellation_request_ref,status:row.cancellation_status}:null}));
+    json(res,200,{ok:true,orders}); return true;
   }
 
   if (pathname === '/api/auth/logout' && req.method === 'POST') {
@@ -3199,6 +3346,9 @@ async function reviewsApi(req, res, pathname) {
       return true;
     }
 
+    const mediaAdConsent = body.mediaAdConsent === true;
+    const mediaRightsConfirmed = body.mediaRightsConfirmed === true;
+
     let media;
     try {
       const incoming = Array.isArray(body.media)
@@ -3207,6 +3357,11 @@ async function reviewsApi(req, res, pathname) {
       media = parseReviewMedia(incoming);
     } catch (err) {
       json(res, err.status || 400, { ok: false, error: err.message || 'invalid_media' });
+      return true;
+    }
+
+    if (media.length && !mediaRightsConfirmed) {
+      json(res, 400, { ok: false, error: 'media_rights_required' });
       return true;
     }
 
@@ -3245,6 +3400,9 @@ async function reviewsApi(req, res, pathname) {
         rating,
         body: text,
         reviewDate,
+        mediaAdConsent,
+        mediaRightsConfirmed,
+        mediaTermsVersion: REVIEW_MEDIA_TERMS_VERSION,
         createdAt: now,
         updatedAt: now
       });
@@ -3324,7 +3482,10 @@ function prettyRouteFile(pathname) {
     '/account': 'account.html',
     '/track': 'track.html',
     '/forgot-password': 'forgot-password.html',
-    '/reset-password': 'reset-password.html'
+    '/reset-password': 'reset-password.html',
+    '/cancel-order': 'cancel-order.html',
+    '/privacy-request': 'privacy-request.html',
+    '/policies': 'policies.html'
   };
   if (authPages[pathname]) return authPages[pathname];
   // Internal document route used when leaving a masked product page for the
@@ -3365,7 +3526,7 @@ function safeInlineJson(value) {
 }
 
 function injectStorefrontRouting(html, bootRoute) {
-  const early = `<script>window.__VERSANS_BOOT_ROUTE__=${safeInlineJson(bootRoute)};</script><script src="/assets/route-state.js?v=20260924-home-no-refresh-v8"></script>`;
+  const early = `<script>window.__VERSANS_BOOT_ROUTE__=${safeInlineJson(bootRoute)};</script><script src="/assets/route-state.js?v=20260926-category-refresh-v9"></script>`;
   const late = '<script src="/assets/url-mask.js?v=20260924-home-reviews-anchor-v4"></script>';
   let out = String(html || '');
   out = out
@@ -3549,6 +3710,11 @@ const server = http.createServer(async (req, res) => {
 
     if (pathname === '/api/create-payment' && req.method === 'POST') {
       const body = await readJsonBody(req);
+      const currentUser = await getCurrentUser(req);
+      if (!currentUser) {
+        json(res, 401, { ok: false, error: 'login_required' });
+        return;
+      }
       const mode = checkoutMode();
       const requestedCouponCode = normalizeCouponCode(body && body.couponCode);
       const customer = normalizeShippingCustomer(body && body.customer);
@@ -3587,7 +3753,7 @@ const server = http.createServer(async (req, res) => {
           try {
             await database.upsertPaidOrder({
               orderRef: demoOrder.order_ref,
-              userId: null,
+              userId: Number(currentUser.id),
               customerEmail: demoOrder.customer_email,
               customerPhone: demoOrder.customer_phone,
               customerJson: demoOrder.customer_json,
@@ -3618,13 +3784,8 @@ const server = http.createServer(async (req, res) => {
         return;
       }
 
-      const currentUser = await getCurrentUser(req);
       let coupon = null;
       if (requestedCouponCode) {
-        if (!currentUser) {
-          json(res, 401, { ok: false, error: 'login_required' });
-          return;
-        }
         coupon = await database.getCouponForUserByCode(currentUser.id, requestedCouponCode);
         const status = couponStatus(coupon);
         if (status !== 'ok') {
@@ -3641,11 +3802,7 @@ const server = http.createServer(async (req, res) => {
       const amountAgorot = amountToAgorot(result.total);
       if (amountAgorot === null) throw new Error('invalid_order_total');
 
-      let linkedUserId = currentUser ? Number(currentUser.id) : null;
-      if (!linkedUserId && validEmail(customerEmail)) {
-        const existingUser = await database.findUserByEmail(customerEmail);
-        if (existingUser) linkedUserId = Number(existingUser.id);
-      }
+      const linkedUserId = Number(currentUser.id);
 
       const now = Date.now();
       await database.insertPendingOrder({

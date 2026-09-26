@@ -137,10 +137,10 @@ html[dir=rtl] .nav__item--has-submenu:hover .nav__submenu,html[dir=rtl] .nav__it
 /* Collection: quiet side navigation, generous imagery, clear pricing. */
 .shop__head{display:flex;align-items:flex-end;justify-content:space-between;gap:2rem;padding-bottom:2.2rem;border-bottom:1px solid var(--line);margin-bottom:2.3rem}
 .shop__head .eyebrow{color:var(--muted);margin-bottom:.65rem}
-.glasses-collection-banner,.watches-collection-banner,.other-collections-banner,.greeting-custom-collection-banner,.gift-boxes-collection-banner{width:100%;margin:0 auto 2.3rem;text-align:center}
-.glasses-collection-banner[hidden],.watches-collection-banner[hidden],.other-collections-banner[hidden],.greeting-custom-collection-banner[hidden],.gift-boxes-collection-banner[hidden]{display:none}
-.glasses-collection-banner__picture,.watches-collection-banner__picture,.other-collections-banner__picture,.greeting-custom-collection-banner__picture,.gift-boxes-collection-banner__picture{display:block;width:100%;max-width:1600px;margin:0 auto}
-.glasses-collection-banner img,.watches-collection-banner img,.other-collections-banner img,.greeting-custom-collection-banner img,.gift-boxes-collection-banner img{display:block;width:100%;max-width:1600px;height:auto;margin:0 auto}
+.glasses-collection-banner,.watches-collection-banner,.other-collections-banner,.greeting-custom-collection-banner,.gift-boxes-collection-banner,.photo-jewelry-collection-banner,.rings-collection-banner,.bracelets-collection-banner,.necklaces-collection-banner,.home-collection-banner{width:100%;margin:0 auto 2.3rem;text-align:center}
+.glasses-collection-banner[hidden],.watches-collection-banner[hidden],.other-collections-banner[hidden],.greeting-custom-collection-banner[hidden],.gift-boxes-collection-banner[hidden],.photo-jewelry-collection-banner[hidden],.rings-collection-banner[hidden],.bracelets-collection-banner[hidden],.necklaces-collection-banner[hidden],.home-collection-banner[hidden]{display:none}
+.glasses-collection-banner__picture,.watches-collection-banner__picture,.other-collections-banner__picture,.greeting-custom-collection-banner__picture,.gift-boxes-collection-banner__picture,.photo-jewelry-collection-banner__picture,.rings-collection-banner__picture,.bracelets-collection-banner__picture,.necklaces-collection-banner__picture,.home-collection-banner__picture{display:block;width:100%;max-width:1600px;margin:0 auto}
+.glasses-collection-banner img,.watches-collection-banner img,.other-collections-banner img,.greeting-custom-collection-banner img,.gift-boxes-collection-banner img,.photo-jewelry-collection-banner img,.rings-collection-banner img,.bracelets-collection-banner img,.necklaces-collection-banner img,.home-collection-banner img{display:block;width:100%;max-width:1600px;height:auto;margin:0 auto}
 .shop__layout{display:grid;grid-template-columns:220px minmax(0,1fr);gap:3rem;align-items:start}
 .shop__sidebar{position:sticky;top:130px;padding-top:.25rem}
 .shop__filter-label{font-size:.875rem;font-weight:500;margin-bottom:.8rem}
@@ -2129,7 +2129,12 @@ body[data-product-slug="product-80"] .product-choice--color .product-choice__ima
   .home-page .watches-collection-banner,
   .home-page .other-collections-banner,
   .home-page .greeting-custom-collection-banner,
-  .home-page .gift-boxes-collection-banner{margin-bottom:1.1rem;overflow:hidden;border-radius:10px}
+  .home-page .gift-boxes-collection-banner,
+  .home-page .photo-jewelry-collection-banner,
+  .home-page .rings-collection-banner,
+  .home-page .bracelets-collection-banner,
+  .home-page .necklaces-collection-banner,
+  .home-page .home-collection-banner{margin-bottom:1.1rem;overflow:hidden;border-radius:10px}
 
   /* Keep every main collection visible on the home navbar instead of hiding it in a drawer. */
   .home-page .nav{position:sticky;top:0}
@@ -2447,7 +2452,12 @@ body[data-product-slug="product-80"] .product-choice--color .product-choice__ima
   .home-page .watches-collection-banner,
   .home-page .other-collections-banner,
   .home-page .greeting-custom-collection-banner,
-  .home-page .gift-boxes-collection-banner{order:1}
+  .home-page .gift-boxes-collection-banner,
+  .home-page .photo-jewelry-collection-banner,
+  .home-page .rings-collection-banner,
+  .home-page .bracelets-collection-banner,
+  .home-page .necklaces-collection-banner,
+  .home-page .home-collection-banner{order:1}
   .home-page .shop__head{order:2}
   .home-page .shop__layout{order:3}
 
@@ -3010,7 +3020,12 @@ body.site-overlay-open{overflow:hidden}
   .home-page .glasses-collection-banner,
   .home-page .watches-collection-banner,
   .home-page .greeting-custom-collection-banner,
-  .home-page .gift-boxes-collection-banner{order:2;margin-top:0!important;margin-bottom:1rem!important}
+  .home-page .gift-boxes-collection-banner,
+  .home-page .photo-jewelry-collection-banner,
+  .home-page .rings-collection-banner,
+  .home-page .bracelets-collection-banner,
+  .home-page .necklaces-collection-banner,
+  .home-page .home-collection-banner{order:2;margin-top:0!important;margin-bottom:1rem!important}
   .home-page .shop__head{order:3}
   .home-page .shop__layout{order:4}
 }
@@ -3608,7 +3623,12 @@ body.site-overlay-open{overflow:hidden}
   .home-page .watches-collection-banner,
   .home-page .other-collections-banner,
   .home-page .greeting-custom-collection-banner,
-  .home-page .gift-boxes-collection-banner{order:2!important}
+  .home-page .gift-boxes-collection-banner,
+  .home-page .photo-jewelry-collection-banner,
+  .home-page .rings-collection-banner,
+  .home-page .bracelets-collection-banner,
+  .home-page .necklaces-collection-banner,
+  .home-page .home-collection-banner{order:2!important}
   .home-page .shop__head{order:3!important}
   .home-page .shop__filter-row{order:4!important;width:100%!important;margin-top:0!important}
   .home-page .shop__layout{order:5!important;width:100%!important}
@@ -3922,7 +3942,12 @@ body.site-overlay-open{overflow:hidden}
   .home-page .watches-collection-banner,
   .home-page .other-collections-banner,
   .home-page .greeting-custom-collection-banner,
-  .home-page .gift-boxes-collection-banner{order:3!important}
+  .home-page .gift-boxes-collection-banner,
+  .home-page .photo-jewelry-collection-banner,
+  .home-page .rings-collection-banner,
+  .home-page .bracelets-collection-banner,
+  .home-page .necklaces-collection-banner,
+  .home-page .home-collection-banner{order:3!important}
   .home-page .shop__head{order:4!important}
   .home-page .shop__filter-row{order:5!important}
   .home-page .shop__layout{order:6!important}

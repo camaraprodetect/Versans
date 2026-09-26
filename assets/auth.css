@@ -385,3 +385,31 @@ html[dir="ltr"] .auth-panel{direction:ltr}
   .auth-back{font-size:.76rem}
   .account-actions{grid-template-columns:1fr}
 }
+
+/* Account management */
+.auth-shell--account .auth-panel{align-items:flex-start;padding-block:3rem}
+.auth-card--account{width:min(100%,720px)}
+.account-section{border-top:1px solid var(--line);margin-top:1.7rem;padding-top:1.25rem}
+.account-section h3{margin:0;font-size:1.08rem;font-weight:650;color:var(--ink)}
+.account-section__head{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:1rem}
+.account-since,.account-muted{color:var(--muted);font-size:.8rem;line-height:1.65}
+.account-form{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+.account-form .auth-field:nth-child(2){grid-column:1/-1}
+.account-form .btn{min-height:48px;align-self:end}
+.account-preferences{display:grid;gap:.72rem;margin-top:.85rem}
+.account-preferences .btn{margin-top:.35rem;min-height:46px}
+.account-inline-link{color:#142333;font-size:.8rem;font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.account-orders{display:grid;gap:.8rem}
+.account-order{border:1px solid var(--line);padding:1rem;background:#fff}
+.account-order__top,.account-order__meta{display:flex;justify-content:space-between;gap:1rem;align-items:center}
+.account-order__top span,.account-order__meta{color:var(--muted);font-size:.78rem}
+.account-order__meta{margin-top:.4rem}
+.account-order ul{margin:.75rem 0;padding-inline-start:1.2rem;color:#46545f;font-size:.8rem;line-height:1.7}
+.account-order__request{font-size:.78rem;color:var(--muted)}
+.account-terms{background:#f7f8f9;padding:1rem;border:1px solid var(--line)}
+.account-terms[hidden]{display:none}
+.account-terms p{color:var(--muted);font-size:.82rem;line-height:1.7}
+.account-danger{border-color:#e5caca}
+.account-delete-form{display:grid;grid-template-columns:1fr auto;gap:.75rem;align-items:end;margin-top:.85rem}
+.account-danger__button{border-color:#b56a6a;color:#823838}
+@media(max-width:620px){.account-form,.account-delete-form{grid-template-columns:1fr}.account-form .auth-field:nth-child(2){grid-column:auto}.account-section__head,.account-order__top,.account-order__meta{align-items:flex-start;flex-direction:column;gap:.35rem}}

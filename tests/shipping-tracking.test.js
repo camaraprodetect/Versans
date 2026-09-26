@@ -114,7 +114,7 @@ test('storefront keeps the VerSans WhatsApp support number configured', () => {
   const root = path.resolve(__dirname, '..');
   const config = fs.readFileSync(path.join(root, 'assets/config.js'), 'utf8');
   const customerService = fs.readFileSync(path.join(root, 'assets/customer-service.js'), 'utf8');
-  assert.equal(config.includes("whatsapp:  '0546296037'"), true, 'WhatsApp support number must stay configured');
+  assert.equal(config.includes("whatsapp: '972553026389'") || config.includes("whatsapp:  '972553026389'"), true, 'Current WhatsApp support number must stay configured');
   assert.equal(customerService.includes("'https://wa.me/' + number"), true, 'WhatsApp support link must keep using the configured number');
   assert.equal(customerService.includes('injectFooterLink()'), true, 'Footer WhatsApp support entry must stay enabled');
   assert.equal(customerService.includes('createFloatingBubble()'), true, 'Floating WhatsApp support bubble must stay enabled');

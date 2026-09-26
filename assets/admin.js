@@ -812,6 +812,10 @@
     toolbar.appendChild(make('span', 'admin-toolbar-note', 'מכירות והכנסות מחושבות מ־Paid בלבד'));
     frag.appendChild(toolbar);
     frag.appendChild(systemHealthCard(data.system));
+    var securityBody = make('div', 'admin-security-note');
+    securityBody.appendChild(make('strong', '', 'אבטחת Admin'));
+    securityBody.appendChild(make('p', 'admin-table__muted', 'חשבונות Admin/Staff מקבלים סשן קצר של 8 שעות והרשאות לפי תפקיד. אימות דו-שלבי (2FA) עדיין אינו מופעל; מומלץ להוסיף אותו לפני שמרחיבים גישת עובדים או שומרים יותר מידע רגיש.'));
+    frag.appendChild(card('אבטחת גישה', 'בדיקת הקשחה לפני הרחבת צוות', securityBody, badge('2FA טרם הוגדר', 'pending')));
     frag.appendChild(renderKpis([
       { label: 'הכנסות Paid', value: moneyAgorot(data.revenueAgorot), hint: 'בטווח שנבחר', primary: true, tone: 'green' },
       { label: 'הזמנות Paid', value: numberFmt(data.orderCount), hint: 'הזמנות ששולמו' },
@@ -1048,6 +1052,28 @@
     content.replaceChildren(frag);
   }
 
+  function customerAccessControl(row) {
+    var wrap = make('div', 'admin-access-control');
+    var role = document.createElement('select');
+    role.className = 'admin-access-control__select';
+    [['customer','לקוח'],['staff','צוות - הזמנות בלבד'],['admin','מנהל']].forEach(function (item) {
+      var option = document.createElement('option'); option.value = item[0]; option.textContent = item[1]; option.selected = String(row.role || 'customer') === item[0]; role.appendChild(option);
+    });
+    var blocked = document.createElement('label'); blocked.className = 'admin-access-control__blocked';
+    var check = document.createElement('input'); check.type = 'checkbox'; check.checked = !!row.blocked;
+    blocked.append(check, document.createTextNode(' חסום'));
+    var save = make('button', 'admin-access-control__save', 'שמור'); save.type = 'button';
+    save.addEventListener('click', async function () {
+      save.disabled = true;
+      try {
+        await apiAction('/api/admin/customers/' + encodeURIComponent(row.id) + '/access', 'POST', { role: role.value, blocked: check.checked, reason: check.checked ? 'נחסם דרך פאנל הניהול' : '' });
+        showToast('הרשאת המשתמש נשמרה'); await renderCurrentPage();
+      } catch (error) { showToast(error && error.message ? error.message : 'שמירת ההרשאה נכשלה'); save.disabled = false; }
+    });
+    wrap.append(role, blocked, save);
+    return wrap;
+  }
+
   async function renderCustomersPage() {
     var offset = state.offsets.customers;
     var data = await api('/api/admin/customers?limit=50&offset=' + offset);
@@ -1073,7 +1099,8 @@
         { label: 'סה״כ הוצאות', render: function (row) { return make('strong', 'admin-table__strong', moneyAgorot(row.paidSpendAgorot)); } },
         { label: 'Paid אחרון', render: function (row) { return dateTime(row.lastPaidAt); } },
         { label: 'נרשם', render: function (row) { return dateOnly(row.createdAt); } },
-        { label: 'לקוח מאומת', render: function (row) { return row.verifiedCustomer ? badge('מאומת', 'verified') : badge('לא', 'neutral'); } }
+        { label: 'לקוח מאומת', render: function (row) { return row.verifiedCustomer ? badge('מאומת', 'verified') : badge('לא', 'neutral'); } },
+        { label: 'הרשאה', render: customerAccessControl }
       ]
     });
     table.appendChild(renderPagination({ count: data.count, limit: data.limit, offset: data.offset, onChange: function (next) { state.offsets.customers = next; renderCurrentPage(); } }));

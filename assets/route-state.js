@@ -39,7 +39,10 @@
   /* A masked product/category refresh requests `/`. Restore the real route before
      the storefront scripts initialize, then the late mask hides it again. */
   if (!isBot && visibleRoute === '/' && navigationType() === 'reload') {
-    var reloadRoute = stateRoute && stateRoute !== '/' ? stateRoute : savedRoute;
+    /* The click-capture layer can update sessionStorage before the SPA writes a
+       fresh history.state entry. Prefer the last explicitly saved logical route
+       so refresh never revives a stale category (for example /hats). */
+    var reloadRoute = savedRoute && savedRoute !== '/' ? savedRoute : stateRoute;
     if (reloadRoute && reloadRoute !== '/') {
       location.replace(reloadRoute);
       return;
@@ -148,6 +151,13 @@
          logical route is a category, otherwise clicking "עמוד בית" is intercepted
          here and causes a full reload through /shop. */
       var isHomeDocument = !!(document.body && document.body.classList.contains('home-page'));
+
+      /* Category links on the storefront are handled by store.js. Do not save
+         their href here during capture: doing so changes currentRoute before
+         store.js compares the old/new route, which can prevent pushState from
+         updating history.state. */
+      if (isHomeDocument && anchor.hasAttribute('data-cat')) return;
+
       var homeFragments = { '#shop':1, '#shopTitle':1, '#reviews':1, '#top':1, '#how':1, '#faq':1, '#contact':1 };
       if (!isHomeDocument && previewUrl.origin === location.origin && previewUrl.pathname === '/' &&
           (!previewUrl.hash || homeFragments[previewUrl.hash])) {

@@ -31,11 +31,12 @@
     '</span>';
   }
 
-  function supportLink(className, iconClass){
+  function supportLink(className, iconClass, showHours){
     var url = whatsappUrl();
     if (!url) return '';
+    var hours = showHours === false ? '' : ' <small class="versans-support-hours">08:00–22:00 · כל יום</small>';
     return '<a class="' + className + '" href="' + url + '" target="_blank" rel="noopener noreferrer" aria-label="שירות לקוחות ב-WhatsApp">' +
-      whatsappIcon(iconClass) + '<span>שירות לקוחות</span></a>';
+      whatsappIcon(iconClass) + '<span>שירות לקוחות' + hours + '</span></a>';
   }
 
   function injectMobileMenu(){
@@ -82,7 +83,7 @@
     bubble.id = 'versansSupportFloat';
     bubble.className = 'versans-support-float';
     bubble.setAttribute('aria-label', 'שירות לקוחות');
-    bubble.innerHTML = supportLink('versans-support-float__link', 'versans-support-float__icon') +
+    bubble.innerHTML = supportLink('versans-support-float__link', 'versans-support-float__icon', false) +
       '<button class="versans-support-float__close" type="button" aria-label="סגירת בועת שירות הלקוחות">×</button>';
     document.body.appendChild(bubble);
 

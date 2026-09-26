@@ -35,6 +35,8 @@
   var dropZone = document.getElementById('reviewDropzone');
   var mediaPreviews = document.getElementById('reviewImagePreviews');
   var mediaCount = document.getElementById('reviewImageCount');
+  var mediaRights = document.getElementById('reviewMediaRights');
+  var mediaAdConsent = document.getElementById('reviewMediaAdConsent');
   var message = document.getElementById('reviewFormMessage');
   var submit = document.getElementById('reviewSubmit');
   var starButtons = Array.prototype.slice.call(document.querySelectorAll('[data-review-rating]'));
@@ -1096,6 +1098,11 @@
       setMessage('חכו רגע עד שכל התמונות והסרטונים יסיימו להיטען.', true);
       return;
     }
+    if (mediaItems.length && (!mediaRights || !mediaRights.checked)) {
+      setMessage('כדי לצרף תמונות או סרטונים צריך לאשר שיש לכם את הזכויות וההרשאות הדרושות למדיה.', true);
+      if (mediaRights) mediaRights.focus();
+      return;
+    }
 
     submit.disabled = true;
     submit.textContent = 'מפרסם…';
@@ -1110,7 +1117,9 @@
         date: reviewDateValue,
         rating: selectedRating,
         text: text,
-        media: mediaItems.map(function (item) { return { kind: item.kind, dataUrl: item.dataUrl }; })
+        media: mediaItems.map(function (item) { return { kind: item.kind, dataUrl: item.dataUrl }; }),
+        mediaRightsConfirmed: !!(mediaRights && mediaRights.checked),
+        mediaAdConsent: !!(mediaAdConsent && mediaAdConsent.checked)
       })
     }).then(function (response) {
       return response.json().catch(function () { return {}; }).then(function (data) { return { response: response, data: data }; });
@@ -1136,6 +1145,7 @@
         if (code === 'too_many_media') throw new Error('אפשר לצרף עד ' + MAX_MEDIA + ' תמונות או סרטונים לביקורת.');
         if (code === 'media_too_large' || code === 'video_too_large' || code === 'image_too_large') throw new Error('אחד הקבצים גדול מדי. נסו קובץ קטן יותר.');
         if (code === 'invalid_media') throw new Error('קובץ המדיה אינו נתמך או אינו תקין.');
+        if (code === 'media_rights_required') throw new Error('כדי לצרף מדיה צריך לאשר שיש לכם את הזכויות וההרשאות הדרושות.');
         if (code === 'too_many_attempts') throw new Error('נשלחו יותר מדי ביקורות בזמן קצר. נסו שוב מאוחר יותר.');
         throw new Error('לא הצלחנו לפרסם את הביקורת. נסו שוב.');
       }

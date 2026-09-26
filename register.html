@@ -38,11 +38,13 @@
             <span class="auth-check__box" aria-hidden="true"></span>
             <span id="termsAcceptedText">אני מאשר/ת את <a href="/policies" target="_blank" rel="noopener">תנאי השימוש ומדיניות הפרטיות</a>.</span>
           </label>
-          <label class="auth-check" for="marketingOptIn">
-            <input id="marketingOptIn" name="marketingOptIn" type="checkbox" checked>
-            <span class="auth-check__box" aria-hidden="true"></span>
-            <span id="marketingOptInText">אני רוצה לקבל במייל עדכונים, מבצעים ומוצרים חדשים מ-VerSans. אפשר להסיר את ההסכמה בכל עת.</span>
-          </label>
+          <fieldset class="auth-marketing" aria-describedby="marketingHelp">
+            <legend>עדכונים שיווקיים - רשות בלבד</legend>
+            <p id="marketingHelp" class="auth-password-hint">אפשר לבחור כל ערוץ בנפרד. אף אפשרות אינה מסומנת מראש וניתן לבטל בכל עת.</p>
+            <label class="auth-check" for="marketingEmailOptIn"><input id="marketingEmailOptIn" name="marketingEmailOptIn" type="checkbox"><span class="auth-check__box" aria-hidden="true"></span><span>אימייל - מבצעים, מוצרים חדשים והטבות</span></label>
+            <label class="auth-check" for="marketingSmsOptIn"><input id="marketingSmsOptIn" name="marketingSmsOptIn" type="checkbox"><span class="auth-check__box" aria-hidden="true"></span><span>SMS - הודעות שיווקיות</span></label>
+            <label class="auth-check" for="marketingWhatsappOptIn"><input id="marketingWhatsappOptIn" name="marketingWhatsappOptIn" type="checkbox"><span class="auth-check__box" aria-hidden="true"></span><span>WhatsApp - הודעות שיווקיות. הודעות שירות חיוניות להזמנה נפרדות מהסכמה זו.</span></label>
+          </fieldset>
         </div>
         <div class="auth-message" id="authMessage" role="status" aria-live="polite"></div>
         <button class="btn btn--primary auth-submit" id="authSubmit" type="submit"><span id="authSubmitText">יצירת חשבון</span></button>

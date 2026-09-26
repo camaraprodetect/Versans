@@ -30,7 +30,7 @@ assert.strictEqual(womenSquare.length, 9, 'Expected 9 women square sunglasses pr
 for (const p of womenSquare) {
   const customerText = JSON.stringify({title:p.title, cardTitle:p.cardTitle, subtitle:p.subtitle, details:p.details, afterText:p.afterText});
   assert.ok(/Oversized Square/i.test(customerText), `${p.slug} should use the Oversized Square product naming`);
-  assert.ok(/UV400/i.test(customerText), `${p.slug} should include UV400 information from the product listing`);
+  assert.ok(!/UV400|UV protection|הגנת UV/i.test(customerText), `${p.slug} must not claim UV protection without evidence`);
   assert.ok(!/CATERSIDE|QVQV|AliExpress|אליאקספרס|supplier|הספק/i.test(customerText), `${p.slug} exposes marketplace/supplier branding`);
 }
 
@@ -47,7 +47,7 @@ assert.strictEqual(womenPearl.length, 3, 'Expected 3 women pearl oval sunglasses
 for (const p of womenPearl) {
   const customerText = JSON.stringify({title:p.title, cardTitle:p.cardTitle, subtitle:p.subtitle, details:p.details, afterText:p.afterText});
   assert.ok(/Pearl Oval/i.test(customerText), `${p.slug} should use the Pearl Oval product naming`);
-  assert.ok(/UV400/i.test(customerText), `${p.slug} should include UV400 information from the product listing`);
+  assert.ok(!/UV400|UV protection|הגנת UV/i.test(customerText), `${p.slug} must not claim UV protection without evidence`);
   assert.ok(!/QVQV|AliExpress|אליאקספרס|supplier|הספק/i.test(customerText), `${p.slug} exposes marketplace/supplier branding`);
 }
 
@@ -56,7 +56,7 @@ assert.strictEqual(womenKoreanOval.length, 4, 'Expected 4 women Korean oval sung
 for (const p of womenKoreanOval) {
   const customerText = JSON.stringify({title:p.title, cardTitle:p.cardTitle, subtitle:p.subtitle, details:p.details, afterText:p.afterText});
   assert.ok(/Oval/i.test(customerText), `${p.slug} should use oval product naming`);
-  assert.ok(/UV400/i.test(customerText), `${p.slug} should include UV400 information from the product listing`);
+  assert.ok(!/UV400|UV protection|הגנת UV/i.test(customerText), `${p.slug} must not claim UV protection without evidence`);
   assert.ok(/metal|מתכת/i.test(customerText), `${p.slug} should include the metal-frame material information from the listing`);
   assert.ok(!/QVQV|AliExpress|אליאקספרס|supplier|הספק/i.test(customerText), `${p.slug} exposes marketplace/supplier branding`);
 }
@@ -67,7 +67,7 @@ assert.strictEqual(womenMetalOval.length, 4, 'Expected 4 women metal oval sungla
 for (const p of womenMetalOval) {
   const customerText = JSON.stringify({title:p.title, cardTitle:p.cardTitle, subtitle:p.subtitle, details:p.details, afterText:p.afterText});
   assert.ok(/Metal Oval/i.test(customerText), `${p.slug} should use Metal Oval product naming`);
-  assert.ok(/UV400/i.test(customerText), `${p.slug} should include UV400 information from the listing`);
+  assert.ok(!/UV400|UV protection|הגנת UV/i.test(customerText), `${p.slug} must not claim UV protection without evidence`);
   assert.ok(/metal|מתכת/i.test(customerText), `${p.slug} should include metal-frame information from the listing`);
   assert.ok(!/QVQV|AliExpress|אליאקספרס|supplier|הספק/i.test(customerText), `${p.slug} exposes marketplace/supplier branding`);
 }

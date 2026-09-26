@@ -63,3 +63,9 @@ button,input,select,a{font:inherit}.admin-app{display:grid;grid-template-columns
 .admin-table tbody tr.admin-order-row--connected:hover td{background:#e1f5e8}
 
 .admin-shipping-note--sent{border-color:#cce4d6;background:#f1faf5;color:#245f46}.admin-shipping-note--sent strong{color:#1f6d49}
+
+.admin-access-control{display:grid;gap:6px;min-width:150px}
+.admin-access-control__select,.admin-access-control__save{min-height:34px;border:1px solid #d7dde2;background:#fff;border-radius:6px;padding:5px 8px;font:inherit;font-size:12px}
+.admin-access-control__blocked{display:flex;align-items:center;gap:4px;font-size:11px;color:#66727c}
+.admin-access-control__save{cursor:pointer;background:#142333;color:#fff;border-color:#142333}
+.admin-security-note p{margin:.45rem 0 0;line-height:1.65}

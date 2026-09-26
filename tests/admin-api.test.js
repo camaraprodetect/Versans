@@ -204,7 +204,7 @@ test('tracking is attached per product and every product gets its own VerSans or
     assert.equal(data.shipments.length, 1);
     assert.equal(data.shipments[0].productName, 'צמיד');
     assert.equal(data.shipments[0].itemOrderRef, 'VS-THREE-PRODUCTS-P02');
-    assert.equal(data.shipments[0].trackingNumber, 'TESTTRACK12345');
+    assert.equal(Object.prototype.hasOwnProperty.call(data.shipments[0], 'trackingNumber'), false, 'customer tracking API must not expose external tracking IDs');
 
     response = await fetch(running.baseUrl + '/api/tracking?order=' + encodeURIComponent('VS-THREE-PRODUCTS'));
     data = await response.json();

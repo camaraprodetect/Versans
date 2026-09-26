@@ -341,21 +341,6 @@
     }).filter(function (range) { return range.count > 0; });
   }
 
-  function availableSaleOptions(list) {
-    var sale = 0;
-    var regular = 0;
-    list.forEach(function (p) {
-      var price = Number(p && p.price);
-      var compareAt = Number(p && p.compareAt);
-      if (isFinite(compareAt) && isFinite(price) && compareAt > price) sale += 1;
-      else regular += 1;
-    });
-    return [
-      { key: 'sale', label: 'במבצע', count: sale },
-      { key: 'regular', label: 'ללא מחיר קודם', count: regular }
-    ].filter(function (option) { return option.count > 0; });
-  }
-
   function resetCatalogFilters() {
     state.catalogFilters = { hatGroups: [], colors: [], priceMin: '', priceMax: '' };
   }
@@ -518,6 +503,31 @@
       hatsBanner.hidden = state.filter !== 'hats';
     }
 
+    var photoJewelryCollectionBanner = $('#photoJewelryCollectionBanner');
+    if (photoJewelryCollectionBanner) {
+      photoJewelryCollectionBanner.hidden = state.filter !== 'photo-bracelets';
+    }
+
+    var ringsCollectionBanner = $('#ringsCollectionBanner');
+    if (ringsCollectionBanner) {
+      ringsCollectionBanner.hidden = state.filter !== 'rings';
+    }
+
+    var braceletsCollectionBanner = $('#braceletsCollectionBanner');
+    if (braceletsCollectionBanner) {
+      braceletsCollectionBanner.hidden = state.filter !== 'bracelets';
+    }
+
+    var necklacesCollectionBanner = $('#necklacesCollectionBanner');
+    if (necklacesCollectionBanner) {
+      necklacesCollectionBanner.hidden = state.filter !== 'necklaces';
+    }
+
+    var homeCollectionBanner = $('#homeCollectionBanner');
+    if (homeCollectionBanner) {
+      homeCollectionBanner.hidden = state.filter !== 'all';
+    }
+
     var greetingCustomCollectionBanner = $('#greetingCustomCollectionBanner');
     if (greetingCustomCollectionBanner) {
       greetingCustomCollectionBanner.hidden = !(
@@ -527,12 +537,7 @@
 
     var otherCollectionsBanner = $('#otherCollectionsBanner');
     if (otherCollectionsBanner) {
-      var showOtherCollectionsBanner =
-        state.filter === 'all' ||
-        state.filter === 'necklaces' ||
-        state.filter === 'bracelets' ||
-        state.filter === 'rings' ||
-        state.filter === 'photo-bracelets';
+      var showOtherCollectionsBanner = false;
       otherCollectionsBanner.hidden = !showOtherCollectionsBanner;
     }
 
@@ -770,7 +775,6 @@
         (isGlasses ? '' : '<p class="prod__sub">' + esc(L(p.subtitle)) + '</p>') +
         productColorMetaHTML(p) +
         '<p class="prod__price">' + (p.startingPrice ? (state.lang === 'he' ? 'החל מ־' : 'From ') : '') + money(p.price) +
-          (p.compareAt ? '<span class="prod__was">' + money(p.compareAt) + '</span>' : '') +
         '</p>' +
         '<div class="prod__actions">' +
           ((p.necklaces && p.necklaces.length && p.boxes && p.boxes.length)
@@ -1209,7 +1213,7 @@
       '<div class="pdp__body">' +
         '<h3 class="pdp__name" id="pdpName">' + esc(L(p.title)) + '</h3>' +
         '<p class="pdp__sub">' + esc(L(p.subtitle)) + '</p>' +
-        '<p class="pdp__price">' + money(p.price) + (p.compareAt ? '<span class="prod__was">' + money(p.compareAt) + '</span>' : '') + '</p>' +
+        '<p class="pdp__price">' + money(p.price) + '</p>' +
         '<div class="pdp__quote"><h4>' + esc(t('modal.message')) + '</h4><p>' + esc(L(p.cardMessage)) +
           '</p><p style="margin-top:.6rem;font-weight:700">' + esc(L(p.signature)) + '</p></div>' +
         '<ul class="pdp__list">' + details.map(function (d) {
@@ -1252,7 +1256,7 @@
       ? (state.lang === 'he' ? '9–20 ימי עסקים' : '9–20 business days')
       : (state.lang === 'he' ? '9–14 ימי עסקים' : '9–14 business days');
     var note = hat
-      ? '<small class="line__delivery-note">' + esc(state.lang === 'he' ? 'כרגע יש חוסר מלאי, לכן המשלוח לוקח קצת יותר זמן.' : 'Currently low on stock, so delivery is taking a little longer.') + '</small>'
+      ? '<small class="line__delivery-note">' + esc(state.lang === 'he' ? 'בשל חוסר מלאי, זמן האספקה למוצר זה עשוי להתארך עד 20 ימי עסקים.' : 'Due to low stock, delivery for this item may take up to 20 business days.') + '</small>'
       : '';
     return '<div class="line__delivery-wrap"><p class="line__delivery"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v10H3zM14 10h4l3 3v4h-7z"/><circle cx="7" cy="18" r="1.8"/><circle cx="17.5" cy="18" r="1.8"/></svg><span>' + esc(label) + '<strong>' + esc(days) + '</strong></span></p>' + note + '</div>';
   }
@@ -1904,10 +1908,20 @@ function orderTotal() {
       window.setTimeout(function () { window.location.href = productPath(pendingLine.p) + '?completeCart=1'; }, 220);
       return;
     }
-    renderSummary();
-    renderCouponUi();
-    closeOv('#cartOverlay');
-    openOv('#coOverlay');
+    fetch('/api/auth/me', { credentials: 'same-origin', headers: { Accept: 'application/json' } })
+      .then(function (response) { return response.ok ? response.json() : null; })
+      .then(function (data) {
+        if (!data || !data.user) {
+          var next = encodeURIComponent(location.pathname + location.search + '#cart');
+          location.href = '/login?next=' + next;
+          return;
+        }
+        renderSummary();
+        renderCouponUi();
+        closeOv('#cartOverlay');
+        openOv('#coOverlay');
+      })
+      .catch(function () { toast(state.lang === 'he' ? 'לא הצלחנו לאמת את החשבון. נסו שוב.' : 'We could not verify your account. Please try again.'); });
   }
 
   function fieldError(input, msg) {
@@ -1946,6 +1960,7 @@ function orderTotal() {
     .then(function (itemsPayload) {
       return fetch('/api/create-payment', {
         method: 'POST',
+        credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           items: itemsPayload,
@@ -1979,7 +1994,11 @@ function orderTotal() {
     .catch(function (err) {
       btn.disabled = false;
       btn.textContent = t('co.pay');
-      if (err && ['login_required','coupon_used','coupon_expired','invalid_coupon'].indexOf(err.code) !== -1) {
+      if (err && err.code === 'login_required') {
+        location.href = '/login?next=' + encodeURIComponent(location.pathname + location.search + '#cart');
+        return;
+      }
+      if (err && ['coupon_used','coupon_expired','invalid_coupon'].indexOf(err.code) !== -1) {
         state.coupon = null;
         renderCouponUi();
         renderSummary();

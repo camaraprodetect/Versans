@@ -1381,3 +1381,8 @@ body.review-detail-open{overflow:hidden}
 .my-review-card__name{font-size:.9rem;font-weight:750;color:#142333;overflow-wrap:anywhere}
 .my-review-card__verified{display:inline-flex;align-items:center;gap:.28rem;font-size:.72rem;font-weight:700;color:#52606d;white-space:nowrap}
 .my-review-card__verified>span{display:inline-grid;place-items:center;width:18px;height:18px;border:1px solid currentColor;border-radius:50%;font-size:.62rem;line-height:1}
+
+.review-media-consents{display:grid;gap:.7rem;margin-top:.9rem;padding-top:.85rem;border-top:1px solid rgba(20,35,51,.1)}
+.review-consent{display:grid;grid-template-columns:auto 1fr;gap:.65rem;align-items:flex-start;font-size:.76rem;line-height:1.6;color:#53606a;cursor:pointer}
+.review-consent input{width:18px;height:18px;margin-top:.15rem;accent-color:#142333}
+.review-consent:has(input:focus-visible){outline:2px solid rgba(20,35,51,.18);outline-offset:4px}

@@ -142,11 +142,10 @@
     var bundleDiscountCents = glassesDiscountCents + hatsDiscountCents;
 
     /* 2) 10% off every second item, using prices AFTER bundle promotions.
-       Units are ordered high-to-low, so each pair gives 10% off the cheaper item.
-       This makes mixed carts predictable and customer-friendly. */
-    var byEffectivePrice = units.map(function (_, index) { return index; }).filter(function (index) {
-      return !units[index].bundleApplied;
-    }).sort(function (a, b) {
+       Bundle-priced hats/glasses remain eligible so promotions can accumulate in
+       the documented order: bundle first, then every-second-item discount.
+       Units are ordered high-to-low, so each pair gives 10% off the cheaper item. */
+    var byEffectivePrice = units.map(function (_, index) { return index; }).sort(function (a, b) {
       return units[b].effectiveCents - units[a].effectiveCents || a - b;
     });
     var secondItemDiscountCents = 0;

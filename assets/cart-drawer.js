@@ -47,7 +47,7 @@
       ? (lang === 'he' ? '9–20 ימי עסקים' : '9–20 business days')
       : (lang === 'he' ? '9–14 ימי עסקים' : '9–14 business days');
     var note = hat
-      ? '<small class="line__delivery-note">' + esc(lang === 'he' ? 'כרגע יש חוסר מלאי, לכן המשלוח לוקח קצת יותר זמן.' : 'Currently low on stock, so delivery is taking a little longer.') + '</small>'
+      ? '<small class="line__delivery-note">' + esc(lang === 'he' ? 'בשל חוסר מלאי, זמן האספקה למוצר זה עשוי להתארך עד 20 ימי עסקים.' : 'Due to low stock, delivery for this item may take up to 20 business days.') + '</small>'
       : '';
     return '<div class="line__delivery-wrap"><p class="line__delivery"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v10H3zM14 10h4l3 3v4h-7z"/><circle cx="7" cy="18" r="1.8"/><circle cx="17.5" cy="18" r="1.8"/></svg><span>' + esc(label) + '<strong>' + esc(days) + '</strong></span></p>' + note + '</div>';
   }

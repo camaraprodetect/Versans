@@ -185,6 +185,12 @@ function priceOrder(items, lang, coupon = null) {
         err.status = 400;
         throw err;
       }
+      if (item.customPhotoRightsConfirmed !== true) {
+        const err = new Error('Custom photo rights confirmation is required');
+        err.status = 400;
+        err.code = 'custom_photo_rights_required';
+        throw err;
+      }
       const photoLabel = localText(product.customPhoto.cartLabel, lang) || (lang === 'he' ? 'תמונה אישית' : 'Custom photo');
       nameParts.push(photoLabel + ': ' + (fileName || assetId));
     }
