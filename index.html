@@ -506,6 +506,9 @@
   display:none!important;
 }
 @media(min-width:701px){
+  .home-page .shop__filter-row.shop__filter-row--hats{
+    margin-top:24px!important;
+  }
   .home-page .shop__filter-row.shop__filter-row--hats .filters.filters--hats:not([hidden]){
     display:grid!important;
     grid-template-columns:repeat(3,minmax(0,1fr))!important;
@@ -524,6 +527,52 @@
   }
 }
 </style>
+<style id="versans-desktop-hero-fit-v1">
+@media (min-width: 768px) {
+  .home-page .desktop-hero-actions {
+    top: 69% !important;
+  }
+  .home-page .hero.hero--full {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    aspect-ratio: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    line-height: 0 !important;
+  }
+  .home-page .hero.hero--full .hero__visual {
+    position: relative !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    aspect-ratio: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    line-height: 0 !important;
+  }
+  .home-page .hero.hero--full .hero__image {
+    position: relative !important;
+    inset: auto !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    aspect-ratio: 2048 / 820 !important;
+    object-fit: contain !important;
+    object-position: center top !important;
+    margin: 0 !important;
+  }
+}
+</style>
 <link rel="stylesheet" href="/assets/customer-service.css?v=20260922-whatsapp-support-v2">
 </head>
 <body class="home-page">
@@ -536,7 +585,7 @@
       <div class="promo-marquee__group">
         <a class="promo-marquee__item promo-marquee__item--sale" href="/#shop"><span class="promo-marquee__icon">✶</span><span class="promo-he">10% הנחה על כל פריט שני</span></a>
         <span class="promo-marquee__sep" aria-hidden="true">•</span>
-        <a class="promo-marquee__item promo-marquee__item--bundle" href="/#shop"><span class="promo-marquee__icon">2</span><span class="promo-he">25% הנחה על המוצר השני</span></a>
+        <a class="promo-marquee__item promo-marquee__item--bundle" href="/policies"><span class="promo-marquee__icon">✓</span><span class="promo-he">תשלום מאובטח</span></a>
         <span class="promo-marquee__sep" aria-hidden="true">•</span>
         <a class="promo-marquee__item promo-marquee__item--greeting" href="/#shop"><span class="promo-marquee__icon">✉</span><span class="promo-he">תכשיט עם ברכה מעוצבת</span></a>
         <span class="promo-marquee__sep" aria-hidden="true">•</span>
@@ -544,15 +593,13 @@
         <span class="promo-marquee__sep" aria-hidden="true">•</span>
         <a class="promo-marquee__item promo-marquee__item--projection" href="/photo-projection-bracelet"><span class="promo-marquee__icon">◎</span><span class="promo-he">תכשיטים עם הקרנת תמונה אישית</span></a>
         <span class="promo-marquee__sep" aria-hidden="true">•</span>
-        <a class="promo-marquee__item promo-marquee__item--rating" href="#reviews"><span class="promo-marquee__icon">★</span><span class="promo-he">דירוג 4.8</span></a>
-        <span class="promo-marquee__sep" aria-hidden="true">•</span>
-        <a class="promo-marquee__item promo-marquee__item--reviews" href="#reviews"><span class="promo-marquee__icon">✎</span><span class="promo-he">120+ ביקורות</span></a>
+        <a class="promo-marquee__item promo-marquee__item--reviews" href="/#shop"><span class="promo-marquee__icon">✦</span><span class="promo-he">תכשיטים בהתאמה אישית</span></a>
         <span class="promo-marquee__sep" aria-hidden="true">•</span>
       </div>
       <div class="promo-marquee__group" aria-hidden="true">
         <a class="promo-marquee__item promo-marquee__item--sale" href="/#shop" tabindex="-1"><span class="promo-marquee__icon">✶</span><span class="promo-he">10% הנחה על כל פריט שני</span></a>
         <span class="promo-marquee__sep" aria-hidden="true">•</span>
-        <a class="promo-marquee__item promo-marquee__item--bundle" href="/#shop" tabindex="-1"><span class="promo-marquee__icon">2</span><span class="promo-he">25% הנחה על המוצר השני</span></a>
+        <a class="promo-marquee__item promo-marquee__item--bundle" href="/policies" tabindex="-1"><span class="promo-marquee__icon">✓</span><span class="promo-he">תשלום מאובטח</span></a>
         <span class="promo-marquee__sep" aria-hidden="true">•</span>
         <a class="promo-marquee__item promo-marquee__item--greeting" href="/#shop" tabindex="-1"><span class="promo-marquee__icon">✉</span><span class="promo-he">תכשיט עם ברכה מעוצבת</span></a>
         <span class="promo-marquee__sep" aria-hidden="true">•</span>
@@ -560,9 +607,7 @@
         <span class="promo-marquee__sep" aria-hidden="true">•</span>
         <a class="promo-marquee__item promo-marquee__item--projection" href="/photo-projection-bracelet" tabindex="-1"><span class="promo-marquee__icon">◎</span><span class="promo-he">תכשיטים עם הקרנת תמונה אישית</span></a>
         <span class="promo-marquee__sep" aria-hidden="true">•</span>
-        <a class="promo-marquee__item promo-marquee__item--rating" href="#reviews" tabindex="-1"><span class="promo-marquee__icon">★</span><span class="promo-he">דירוג 4.8</span></a>
-        <span class="promo-marquee__sep" aria-hidden="true">•</span>
-        <a class="promo-marquee__item promo-marquee__item--reviews" href="#reviews" tabindex="-1"><span class="promo-marquee__icon">✎</span><span class="promo-he">120+ ביקורות</span></a>
+        <a class="promo-marquee__item promo-marquee__item--reviews" href="/#shop" tabindex="-1"><span class="promo-marquee__icon">✦</span><span class="promo-he">תכשיטים בהתאמה אישית</span></a>
         <span class="promo-marquee__sep" aria-hidden="true">•</span>
       </div>
     </div>
@@ -646,21 +691,9 @@
 <main id="main">
 
 <!-- הירו -->
-<section class="hero hero--full" id="top" aria-labelledby="heroTitle">
-  <div class="hero__copy">
-    <p class="eyebrow hero__eyebrow"><span class="hero__eyebrow-line" aria-hidden="true"></span><span data-i18n="hero.eyebrow">למי שתמיד בלב</span></p>
-    <h1 class="hero__title" id="heroTitle"><span data-i18n="hero.line1">תכשיט קטן.</span><span data-i18n="hero.line2">משמעות גדולה.</span></h1>
-    <p class="hero__sub" data-i18n="hero.sub">תכשיטים ליום־יום ומתנות עם מילים משלכם. בחרו משהו יפה למישהו שעושה לכם טוב.</p>
-    <div class="hero__cta">
-      <a class="btn btn--light" href="#shop"><span data-i18n="hero.cta">לגלות את הקולקציה</span><svg class="arrow-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M20 12H4m6-6-6 6 6 6"/></svg></a>
-      <a class="text-link" href="#reviews" data-i18n="hero.cta2">לביקורות הלקוחות</a>
-    </div>
-    <p class="hero__note"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 3l7 3v6c0 4.2-2.9 7.6-7 9-4.1-1.4-7-4.8-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg><span data-i18n="hero.note">זכויות ביטול והחזרה לפי דין</span></p>
-  </div>
+<section class="hero hero--full" id="top" aria-label="באנר VerSans">
   <div class="hero__visual" data-hero-slider aria-live="off">
-    <img class="hero__image hero__slide is-active" src="images/heroback.png" width="1915" height="821" alt="שרשרת וכרטיס ברכה בקופסת מתנה" fetchpriority="high" data-hero-slide>
-    <img class="hero__image hero__slide" src="images/hero-love-forever.png" width="2048" height="881" alt="מארזי מתנה עם שרשראות" loading="eager" aria-hidden="true" data-hero-slide>
-    <img class="hero__image hero__slide" src="images/hero-heart-forever.png" width="1950" height="807" alt="מארז מתנה עם שרשרת" loading="eager" aria-hidden="true" data-hero-slide>
+    <img class="hero__image hero__slide is-active" src="images/desktop-entry-promo.png" width="2048" height="820" alt="באנר VerSans" fetchpriority="high" data-hero-slide>
     <div class="desktop-hero-actions" aria-label="קישורים מהירים">
       <a class="desktop-hero-cta desktop-hero-cta--primary" href="#shopTitle">לגלות את הקולקציה</a>
       <a class="desktop-hero-cta desktop-hero-cta--secondary" href="#reviews">לביקורות הלקוחות</a>
@@ -668,10 +701,17 @@
   </div>
 </section>
 
-
 <!-- חנות -->
 <section class="section shop" id="shop" aria-labelledby="shopTitle">
   <div class="container">
+    <div class="mobile-entry-banner" id="mobileEntryBanner" aria-label="מבצע VerSans עד 40% הנחה">
+      <img src="images/mobile-entry-promo.png" width="941" height="1672" alt="VerSans - עד 40% הנחה על כל קולקציית האתר" loading="eager" decoding="async">
+      <div class="mobile-entry-banner__actions" aria-label="קישורים מהירים">
+        <a class="mobile-entry-banner__cta mobile-entry-banner__cta--primary" href="#shopTitle">לגלות את הקולקציה</a>
+        <a class="mobile-entry-banner__cta mobile-entry-banner__cta--secondary" href="#reviews">לביקורות הלקוחות</a>
+      </div>
+    </div>
+
     <nav class="mobile-collection-picker" aria-label="בחירת קולקציה">
       <div class="mobile-collection-picker__track">
         <a class="mobile-collection-picker__item" href="/#shopTitle" data-cat="all">
@@ -723,11 +763,55 @@
         <img src="images/glasses-collection-banner.png" width="1235" height="338" alt="קולקציית משקפי שמש VerSans - שני זוגות ב־249.90 ₪">
       </picture>
     </div>
+    <div class="watches-collection-banner" id="watchesCollectionBanner" hidden aria-label="מבצע קולקציית שעונים">
+      <picture class="watches-collection-banner__picture">
+        <source media="(min-width: 1440px)" srcset="images/watch-collection-banner-wide-v2.png">
+        <source media="(min-width: 768px)" srcset="images/watch-collection-banner-medium-v2.png">
+        <img src="images/watch-collection-banner-v2.png" width="1235" height="338" alt="קולקציית השעונים של VerSans - עד 40% הנחה על כל השעונים">
+      </picture>
+    </div>
+    <div class="greeting-custom-collection-banner" id="greetingCustomCollectionBanner" hidden aria-label="מבצע קולקציית תכשיט עם ברכה ועיצוב אישי">
+      <picture class="greeting-custom-collection-banner__picture">
+        <source media="(min-width: 1440px)" srcset="images/greeting-custom-collection-banner-wide.png">
+        <source media="(min-width: 768px)" srcset="images/greeting-custom-collection-banner-medium.png">
+        <img src="images/greeting-custom-collection-banner.png" width="1600" height="277" alt="תכשיט עם ברכה ועיצוב אישי - עד 40% הנחה על מתנה מרגשת למישהו שחשוב לכם">
+      </picture>
+    </div>
     <div class="hats-collection-banner" id="hatsCollectionBanner" hidden aria-label="מבצע קולקציית הכובעים">
       <picture class="hats-collection-banner__picture">
         <source media="(min-width: 1440px)" srcset="/images/hats-collection-banner-wide.png">
         <source media="(min-width: 768px)" srcset="/images/hats-collection-banner-medium.png">
         <img src="/images/hats-collection-banner.png" width="1600" height="600" alt="מבצע כובעים של VerSans - 1 ב־139.90 ₪, 2 ב־239.90 ₪, 3 ב־299.90 ₪">
+      </picture>
+    </div>
+    <div class="photo-jewelry-collection-banner" id="photoJewelryCollectionBanner" hidden aria-label="מבצע קולקציית תכשיטי תמונה">
+      <picture class="photo-jewelry-collection-banner__picture">
+        <source media="(min-width: 768px)" srcset="/images/photo-jewelry-collection-banner-desktop.png">
+        <img src="/images/photo-jewelry-collection-banner.png" width="960" height="320" alt="תכשיטי תמונה VerSans - עד 40% הנחה על כל הקולקציה">
+      </picture>
+    </div>
+    <div class="rings-collection-banner" id="ringsCollectionBanner" hidden aria-label="מבצע קולקציית הטבעות">
+      <picture class="rings-collection-banner__picture">
+        <source media="(min-width: 768px)" srcset="/images/rings-collection-banner-desktop.png">
+        <img src="/images/rings-collection-banner-mobile.png" alt="קולקציית הטבעות VerSans - עד 40% הנחה על כל קולקציית הטבעות">
+      </picture>
+    </div>
+    <div class="bracelets-collection-banner" id="braceletsCollectionBanner" hidden aria-label="מבצע קולקציית הצמידים">
+      <picture class="bracelets-collection-banner__picture">
+        <source media="(min-width: 768px)" srcset="/images/bracelets-collection-banner-desktop.png">
+        <img src="/images/bracelets-collection-banner-mobile.png" alt="קולקציית הצמידים VerSans - עד 40% הנחה על כל קולקציית הצמידים">
+      </picture>
+    </div>
+    <div class="necklaces-collection-banner" id="necklacesCollectionBanner" hidden aria-label="מבצע קולקציית השרשראות">
+      <picture class="necklaces-collection-banner__picture">
+        <source media="(min-width: 768px)" srcset="/images/necklaces-collection-banner-desktop.png">
+        <img src="/images/necklaces-collection-banner-mobile.png" alt="קולקציית השרשראות VerSans - עד 40% הנחה על כל קולקציית השרשראות">
+      </picture>
+    </div>
+    <div class="home-collection-banner" id="homeCollectionBanner" hidden aria-label="מבצע הקולקציה בעמוד הבית">
+      <picture class="home-collection-banner__picture">
+        <source media="(min-width: 768px)" srcset="/images/home-collection-banner-desktop.png">
+        <img src="/images/home-collection-banner-mobile.png" alt="קולקציית VerSans - עד 40% הנחה על כל הקולקציה">
       </picture>
     </div>
     <div class="shop__filter-row">
@@ -1089,9 +1173,9 @@
 <script src="assets/i18n.js?v=20260922-full-address-v1"></script>
 <script src="assets/reviews.js?v=20260924-review-display-name-v3"></script>
 <script src="assets/home.js?v=20260921-watch-subcats-v1"></script>
-<script src="assets/store.js?v=20260926-checkout-photo-rights-v2"></script>
+<script src="assets/store.js?v=20260926-checkout-photo-rights-only-v1"></script>
 <script src="assets/auth-nav.js?v=20260914-pretty-urls-v1"></script>
   <script src="/assets/presence.js?v=20260915-presence-v1"></script>
-  <script src="/assets/customer-service.js?v=20260922-whatsapp-support-v2"></script>
+  <script src="/assets/customer-service.js?v=20260926-support-label-v3"></script>
 </body>
 </html>
