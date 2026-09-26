@@ -7,7 +7,8 @@
   var result=document.getElementById('trackingResult');
 
   var query=new URLSearchParams(window.location.search);
-  if(query.get('order')) orderInput.value=query.get('order');
+  var initialOrder=String(query.get('order')||'').trim();
+  if(initialOrder) orderInput.value=initialOrder;
 
   function el(tag,cls,text){var n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n}
   function fmtDate(value){if(!value)return '';try{return new Intl.DateTimeFormat('he-IL',{timeZone:'Asia/Jerusalem',dateStyle:'medium',timeStyle:'short'}).format(new Date(Number(value)))}catch(_){return ''}}
@@ -158,4 +159,13 @@
     }catch(err){errorBox.textContent=err.message||'אירעה שגיאה';errorBox.hidden=false}
     finally{submit.disabled=false;submit.textContent='בדיקת סטטוס'}
   });
+
+  // A personalized /track?order=... link from WhatsApp should open the
+  // customer's tracking result immediately, without another manual click.
+  if(initialOrder){
+    setTimeout(function(){
+      if(typeof form.requestSubmit==='function') form.requestSubmit();
+      else submit.click();
+    },0);
+  }
 })();

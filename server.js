@@ -1235,12 +1235,16 @@ function whatsappDigits(phone) {
 function normalizeHebrewCustomerMessage(value) {
   return String(value == null ? '' : value)
     .normalize('NFC')
+    .replace(/\uFFFD/g, '')
     .replace(/בהמשלוח/g, 'במשלוח')
     .replace(/בההזמנה/g, 'בהזמנה')
     .replace(/לההזמנה/g, 'להזמנה')
     .replace(/מההמשלוח/g, 'מהמשלוח')
     .replace(/בההמשך/g, 'בהמשך')
+    .replace(/בהמשמך/g, 'בהמשך')
+    .replace(/בהמשכ/g, 'בהמשך')
     .replace(/[ \t]+(?=\n)/g, '')
+    .replace(/[ \t]{2,}/g, ' ')
     .replace(/\n{3,}/g, '\n\n')
     .trim();
 }
@@ -1251,7 +1255,7 @@ function botVerbatimMessagePolicy() {
     rewriteAllowed: false,
     translateAllowed: false,
     addTextAllowed: false,
-    instruction: 'שלח ללקוח את השדה message בדיוק כפי שהוא. אין לשכתב, לנסח מחדש, לתרגם, לקצר או להוסיף טקסט.'
+    instruction: 'שלח ללקוח את exactMessage בדיוק כפי שהוא. אין לנסח הודעה חדשה מהשדות האחרים, אין לשכתב, לתרגם, לקצר, לתקן, להוסיף או להסיר תווים ואימוג׳ים.'
   };
 }
 
@@ -1415,6 +1419,8 @@ async function shippingBotReadyPickups(limit = 200) {
       updatedAt: Number(shipment.updated_at || 0),
       items,
       message,
+      exactMessage: message,
+      mustSendExactMessage: true,
       messagePolicy: botVerbatimMessagePolicy(),
       whatsappWebUrl: digits ? `https://web.whatsapp.com/send?phone=${digits}&text=${encodedMessage}` : null,
       waMeUrl: digits ? `https://wa.me/${digits}?text=${encodedMessage}` : null,
@@ -1835,30 +1841,104 @@ async function syncActiveShipmentTracking() {
   return { processed, failed };
 }
 
-function orderNotificationItems(payload) {
-  return (Array.isArray(payload && payload.items) ? payload.items : []).map((item) => ({
-    productId: String(item && item.productId || ''),
-    productName: String(item && item.productName || 'מוצר'),
-    variant: String(item && item.selectionsText || '').trim(),
+function notificationOptionLabel(product, type, value = '') {
+  const heading = product && (type === 'size' ? product.sizeHeading : product.colorHeading);
+  const text = typeof heading === 'string'
+    ? heading
+    : String(heading && (heading.he || heading.en) || '');
+  const cleanValue = String(value || '').trim();
+  if (/אורך/.test(text)) return 'אורך';
+  if (/רוחב|עובי/.test(text)) return 'רוחב';
+  if (/מידה/.test(text)) return 'מידה';
+  if (/צבע/.test(text)) return 'צבע';
+  if (/ס[״"]?מ/i.test(cleanValue)) return 'אורך';
+  if (/מ[״"]?מ/i.test(cleanValue)) return 'רוחב';
+  return type === 'size' ? 'מידה' : 'צבע';
+}
+
+function conciseGreetingNotificationName(product, item) {
+  const greeting = item && item.greeting && typeof item.greeting === 'object' ? item.greeting : null;
+  if (!greeting) return '';
+
+  let title = String(greeting.title || '').replace(/[\r\n\t]+/g, ' ').replace(/\s+/g, ' ').trim();
+  const signature = String(greeting.signature || '').replace(/[\r\n\t]+/g, ' ').replace(/\s+/g, ' ').trim();
+  if (!title || !signature) return '';
+
+  // The editor often stores the title as "לתהל" / "לאמא". The label below
+  // already supplies the Hebrew ל, so strip one leading ל to avoid "ללתהל".
+  title = title.replace(/^ל(?=\S)/u, '').trim();
+  if (!title) return '';
+
+  return `שרשרת ל"${title.replace(/["״]/g, '')}" "${signature.replace(/["״]/g, '')}"`;
+}
+
+function conciseOrderNotificationItem(item) {
+  const productId = String(item && item.productId || '');
+  const product = productById(productId);
+  const selections = Array.isArray(item && item.selections) ? item.selections : [];
+  const selectedValues = selections
+    .filter((entry) => entry && (entry.type === 'size' || entry.type === 'color'))
+    .map((entry) => String(entry.label || '').trim())
+    .filter(Boolean);
+  const compactSelections = selections
+    .filter((entry) => entry && (entry.type === 'size' || entry.type === 'color'))
+    .map((entry) => {
+      const value = String(entry.label || '').trim();
+      if (!value) return '';
+      return `${notificationOptionLabel(product, entry.type, value)}: ${value}`;
+    })
+    .filter(Boolean);
+
+  let fallbackName = String((item && item.productName) || 'מוצר').trim();
+  for (const value of selectedValues) {
+    const escaped = value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    fallbackName = fallbackName.replace(new RegExp(`\\s*-\\s*${escaped}(?=\\s*-|$)`, 'gu'), '');
+  }
+  fallbackName = fallbackName.replace(/\s{2,}/g, ' ').replace(/\s*-\s*$/u, '').trim();
+
+  let productName = conciseGreetingNotificationName(product, item)
+    || String(product ? productTitle(product) : fallbackName || 'מוצר').trim();
+  if (compactSelections.some((entry) => entry.startsWith('צבע: '))) {
+    productName = productName.replace(/\s*-\s*צבע\s+[^|–—-]+$/u, '').trim();
+  }
+
+  return {
+    productId,
+    productName: productName || 'מוצר',
+    variant: compactSelections.join(' | '),
     quantity: Math.max(1, Number(item && item.quantity || 1))
+  };
+}
+
+function orderNotificationItems(payload, orderRef) {
+  const safeOrderRef = String(orderRef || '').trim();
+  return (Array.isArray(payload && payload.items) ? payload.items : []).map((item, itemIndex) => ({
+    ...conciseOrderNotificationItem(item),
+    itemOrderRef: safeOrderRef ? orderItemRef(safeOrderRef, itemIndex) : ''
   }));
 }
 
 function newOrderCustomerMessage({ customerName, orderRef, items }) {
+  const safeOrderRef = String(orderRef || '').trim();
+  const trackingUrl = 'https://versans.com/track';
   const lines = [];
   lines.push(`היי ${customerName || 'לקוח/ה'} 👋`);
   lines.push('ההזמנה שלך ב-VerSans התקבלה בהצלחה ✅');
   lines.push('');
-  lines.push(`מספר הזמנה: ${orderRef}`);
+  lines.push(`מספר הזמנה: ${safeOrderRef}`);
   lines.push('');
   lines.push('המוצרים בהזמנה:');
   for (const item of items) {
     const variant = item.variant ? ` - ${item.variant}` : '';
     const qty = Number(item.quantity || 1) > 1 ? ` × ${Number(item.quantity)}` : '';
-    lines.push(`• ${item.productName}${variant}${qty}`);
+    const itemRef = String(item.itemOrderRef || safeOrderRef || '').trim();
+    const itemRefText = itemRef ? ` | מספר הזמנה: ${itemRef}` : '';
+    lines.push(`• ${item.productName}${variant}${qty}${itemRefText}`);
   }
   lines.push('');
-  lines.push('למעקב משתמשים במספר ההזמנה של VerSans בעמוד המעקב באתר.');
+  lines.push('למעקב אחר ההזמנה:');
+  lines.push(trackingUrl);
+  lines.push('');
   lines.push('אנחנו נעדכן אותך בהמשך לגבי המשלוח 📦');
   lines.push('');
   lines.push('תודה שבחרת VerSans');
@@ -1878,7 +1958,7 @@ async function postNewOrderWebhook(orderRef) {
     if (order && String(order.status || '') === 'paid') {
       const payload = buildPaidOrderPayload(order);
       const customerName = String(payload.customer && (payload.customer.fullName || payload.customer.firstName) || payload.customerEmail || 'לקוח/ה').trim();
-      webhookMessage = newOrderCustomerMessage({ customerName, orderRef, items: orderNotificationItems(payload) });
+      webhookMessage = newOrderCustomerMessage({ customerName, orderRef, items: orderNotificationItems(payload, orderRef) });
     }
   } catch (messageError) {
     console.error(`New-order webhook message preparation failed for ${orderRef}:`, messageError && messageError.message ? messageError.message : messageError);
@@ -1894,9 +1974,11 @@ async function postNewOrderWebhook(orderRef) {
         event: 'VERSANS_NEW_ORDER_READY',
         orderRef,
         message: webhookMessage,
+        exactMessage: webhookMessage,
         messageMode: 'verbatim',
+        mustSendExactMessage: true,
         messagePolicy: botVerbatimMessagePolicy(),
-        instruction: 'Send the message field exactly as provided. Do not rewrite, paraphrase, translate, correct, shorten, or add text.'
+        instruction: 'Send exactMessage exactly as provided, byte-for-byte after JSON decoding. Do not generate, rewrite, paraphrase, translate, correct, shorten, add, remove, or reorder any text. Do not insert any emoji or characters.'
       }),
       redirect: 'follow',
       signal: AbortSignal.timeout(ORDER_NOTIFICATION_WEBHOOK_TIMEOUT_MS)
@@ -2356,22 +2438,22 @@ async function adminApi(req, res, pathname, parsed) {
     const customerName = String(payload.customer && (payload.customer.fullName || payload.customer.firstName) || payload.customerEmail || 'לקוח/ה').trim();
     const phone = normalizePhone(payload.customerPhone || (payload.customer && payload.customer.phone) || order.customer_phone);
     const digits = whatsappDigits(phone);
-    const items = orderNotificationItems(payload);
+    const items = orderNotificationItems(payload, orderRef);
     const shipments = await database.listShipmentsForOrder(order.id);
     const trackingIds = [...new Set((shipments || []).map((shipment) => String(shipment.tracking_number || '').trim()).filter(Boolean))];
     const message = newOrderCustomerMessage({ customerName, orderRef, items });
     const notificationId = `NEW_ORDER:${orderRef}`;
 
     if (String(notification.state || '') === 'sent') {
-      json(res, 200, { ok: true, notificationId, orderRef, customerName, whatsappNumber: digits, items, trackingIds, message, messagePolicy: botVerbatimMessagePolicy(), whatsappWebUrl: null, safeToSend: false, reason: 'already_sent', sentAt: notification.sent_at == null ? null : Number(notification.sent_at) });
+      json(res, 200, { ok: true, notificationId, orderRef, customerName, whatsappNumber: digits, items, trackingIds, message, exactMessage: message, mustSendExactMessage: true, messagePolicy: botVerbatimMessagePolicy(), whatsappWebUrl: null, safeToSend: false, reason: 'already_sent', sentAt: notification.sent_at == null ? null : Number(notification.sent_at) });
       return true;
     }
     if (!digits) {
-      json(res, 200, { ok: true, notificationId, orderRef, customerName, whatsappNumber: null, items, trackingIds, message, messagePolicy: botVerbatimMessagePolicy(), whatsappWebUrl: null, safeToSend: false, reason: 'missing_whatsapp_number' });
+      json(res, 200, { ok: true, notificationId, orderRef, customerName, whatsappNumber: null, items, trackingIds, message, exactMessage: message, mustSendExactMessage: true, messagePolicy: botVerbatimMessagePolicy(), whatsappWebUrl: null, safeToSend: false, reason: 'missing_whatsapp_number' });
       return true;
     }
     if (!items.length) {
-      json(res, 200, { ok: true, notificationId, orderRef, customerName, whatsappNumber: digits, items, trackingIds, message, messagePolicy: botVerbatimMessagePolicy(), whatsappWebUrl: null, safeToSend: false, reason: 'missing_order_items' });
+      json(res, 200, { ok: true, notificationId, orderRef, customerName, whatsappNumber: digits, items, trackingIds, message, exactMessage: message, mustSendExactMessage: true, messagePolicy: botVerbatimMessagePolicy(), whatsappWebUrl: null, safeToSend: false, reason: 'missing_order_items' });
       return true;
     }
 
@@ -2380,7 +2462,7 @@ async function adminApi(req, res, pathname, parsed) {
     notification = await database.getOrderNotification(orderRef) || notification;
     if (!claimed) {
       const reason = String(notification.state || '') === 'sent' ? 'already_sent' : 'already_claimed';
-      json(res, 200, { ok: true, notificationId, orderRef, customerName, whatsappNumber: digits, items, trackingIds, message, messagePolicy: botVerbatimMessagePolicy(), whatsappWebUrl: null, safeToSend: false, reason });
+      json(res, 200, { ok: true, notificationId, orderRef, customerName, whatsappNumber: digits, items, trackingIds, message, exactMessage: message, mustSendExactMessage: true, messagePolicy: botVerbatimMessagePolicy(), whatsappWebUrl: null, safeToSend: false, reason });
       return true;
     }
 
@@ -2393,6 +2475,8 @@ async function adminApi(req, res, pathname, parsed) {
       items,
       trackingIds,
       message,
+      exactMessage: message,
+      mustSendExactMessage: true,
       messagePolicy: botVerbatimMessagePolicy(),
       whatsappWebUrl: `https://web.whatsapp.com/send?phone=${digits}&text=${encodeURIComponent(message)}`,
       safeToSend: true,
