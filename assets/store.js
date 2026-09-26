@@ -503,31 +503,6 @@
       hatsBanner.hidden = state.filter !== 'hats';
     }
 
-    var photoJewelryCollectionBanner = $('#photoJewelryCollectionBanner');
-    if (photoJewelryCollectionBanner) {
-      photoJewelryCollectionBanner.hidden = state.filter !== 'photo-bracelets';
-    }
-
-    var ringsCollectionBanner = $('#ringsCollectionBanner');
-    if (ringsCollectionBanner) {
-      ringsCollectionBanner.hidden = state.filter !== 'rings';
-    }
-
-    var braceletsCollectionBanner = $('#braceletsCollectionBanner');
-    if (braceletsCollectionBanner) {
-      braceletsCollectionBanner.hidden = state.filter !== 'bracelets';
-    }
-
-    var necklacesCollectionBanner = $('#necklacesCollectionBanner');
-    if (necklacesCollectionBanner) {
-      necklacesCollectionBanner.hidden = state.filter !== 'necklaces';
-    }
-
-    var homeCollectionBanner = $('#homeCollectionBanner');
-    if (homeCollectionBanner) {
-      homeCollectionBanner.hidden = state.filter !== 'all';
-    }
-
     var greetingCustomCollectionBanner = $('#greetingCustomCollectionBanner');
     if (greetingCustomCollectionBanner) {
       greetingCustomCollectionBanner.hidden = !(
@@ -537,7 +512,12 @@
 
     var otherCollectionsBanner = $('#otherCollectionsBanner');
     if (otherCollectionsBanner) {
-      var showOtherCollectionsBanner = false;
+      var showOtherCollectionsBanner =
+        state.filter === 'all' ||
+        state.filter === 'necklaces' ||
+        state.filter === 'bracelets' ||
+        state.filter === 'rings' ||
+        state.filter === 'photo-bracelets';
       otherCollectionsBanner.hidden = !showOtherCollectionsBanner;
     }
 
@@ -1256,7 +1236,7 @@
       ? (state.lang === 'he' ? '9–20 ימי עסקים' : '9–20 business days')
       : (state.lang === 'he' ? '9–14 ימי עסקים' : '9–14 business days');
     var note = hat
-      ? '<small class="line__delivery-note">' + esc(state.lang === 'he' ? 'בשל חוסר מלאי, זמן האספקה למוצר זה עשוי להתארך עד 20 ימי עסקים.' : 'Due to low stock, delivery for this item may take up to 20 business days.') + '</small>'
+      ? '<small class="line__delivery-note">' + esc(state.lang === 'he' ? 'כרגע יש חוסר מלאי, לכן המשלוח לוקח קצת יותר זמן.' : 'Currently low on stock, so delivery is taking a little longer.') + '</small>'
       : '';
     return '<div class="line__delivery-wrap"><p class="line__delivery"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v10H3zM14 10h4l3 3v4h-7z"/><circle cx="7" cy="18" r="1.8"/><circle cx="17.5" cy="18" r="1.8"/></svg><span>' + esc(label) + '<strong>' + esc(days) + '</strong></span></p>' + note + '</div>';
   }
@@ -1360,7 +1340,7 @@
   }
   function checkoutItemsPayload() {
     return state.cart.map(function (i) {
-      return { id: i.id, qty: i.qty, necklace: i.necklace || null, box: i.box || null, size: i.size || null, color: i.color || null, packaging: i.packaging || null, customName: i.customName || null, customPhoto: i.customPhoto || null, greeting: i.greeting || null };
+      return { id: i.id, qty: i.qty, necklace: i.necklace || null, box: i.box || null, size: i.size || null, color: i.color || null, packaging: i.packaging || null, customName: i.customName || null, customPhoto: i.customPhoto || null, customPhotoRightsConfirmed: i.customPhotoRightsConfirmed === true, greeting: i.greeting || null };
     });
   }
 
@@ -1944,6 +1924,23 @@ function orderTotal() {
     return ok;
   }
 
+  function checkoutServerErrorText(code) {
+    code = String(code || '').trim();
+    if (!code) return '';
+    if (code === 'Custom photo rights confirmation is required' || code === 'custom_photo_rights_required') {
+      return state.lang === 'he' ? 'נא לאשר שיש לכם את הזכויות וההרשאות הדרושות לתמונה האישית.' : 'Please confirm that you have the required rights and permissions for the custom photo.';
+    }
+    if (code === 'A custom photo is required') {
+      return state.lang === 'he' ? 'יש מוצר בסל שדורש תמונה אישית. חזרו לעמוד המוצר והעלו את התמונה.' : 'A product in your cart requires a custom photo. Return to the product and upload it.';
+    }
+    if (['A valid necklace selection is required','A valid box selection is required','A valid size selection is required','A valid color selection is required','A valid packaging selection is required','A compatible necklace is required with this packaging','LOVE FOREVER packaging must be attached to a necklace cart line','A custom name is required','A valid English initial is required','No valid items'].indexOf(code) !== -1) {
+      return state.lang === 'he' ? 'יש מוצר בסל שחסרה בו בחירה. חזרו לעמוד המוצר והשלימו את האפשרויות לפני התשלום.' : 'A product in your cart is missing a required selection. Return to the product and complete its options before checkout.';
+    }
+    if (code === 'missing_shipping_details') return state.lang === 'he' ? 'נא למלא את כל פרטי המשלוח.' : 'Please complete all shipping details.';
+    if (code === 'israel_only') return state.lang === 'he' ? 'כרגע המשלוחים זמינים לישראל בלבד.' : 'Shipping is currently available in Israel only.';
+    return '';
+  }
+
   function submitCheckout(e) {
     e.preventDefault();
     var form = $('#coForm'), btn = $('#payBtn'), errBox = $('#coError');
@@ -2004,7 +2001,7 @@ function orderTotal() {
         renderSummary();
         errBox.textContent = couponErrorText(err.code);
       } else {
-        errBox.textContent = t('co.err.server');
+        errBox.textContent = checkoutServerErrorText(err && err.code) || t('co.err.server');
       }
       errBox.hidden = false;
     });
