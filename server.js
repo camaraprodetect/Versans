@@ -1872,10 +1872,47 @@ function conciseGreetingNotificationName(product, item) {
   return `שרשרת ל"${title.replace(/["״]/g, '')}" "${signature.replace(/["״]/g, '')}"`;
 }
 
+function notificationLocalLabel(value) {
+  if (value == null) return '';
+  if (typeof value === 'string' || typeof value === 'number') return String(value).trim();
+  if (typeof value === 'object') return String(value.he || value.en || value.label || value.id || '').trim();
+  return '';
+}
+
+function notificationOptionFromRaw(product, listKey, selectedId) {
+  if (!product || !Array.isArray(product[listKey]) || selectedId == null || selectedId === '') return null;
+  const option = product[listKey].find((entry) => String(entry && entry.id || '') === String(selectedId));
+  if (!option) return null;
+  return notificationLocalLabel(option.label || option.title || option.name || option.id);
+}
+
+function notificationSelectionsFromRawItem(product, item) {
+  const selections = [];
+  const sizeValue = notificationOptionFromRaw(product, 'sizes', item && item.size);
+  const colorValue = notificationOptionFromRaw(product, 'colors', item && item.color);
+  if (sizeValue) selections.push({ type: 'size', label: sizeValue });
+  if (colorValue) selections.push({ type: 'color', label: colorValue });
+  return selections;
+}
+
+function parseNotificationOrderItems(orderOrPayload) {
+  if (Array.isArray(orderOrPayload && orderOrPayload.items)) return orderOrPayload.items;
+  const raw = orderOrPayload && orderOrPayload.items_json;
+  if (Array.isArray(raw)) return raw;
+  try {
+    const parsed = JSON.parse(String(raw || '[]'));
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (_) {
+    return [];
+  }
+}
+
 function conciseOrderNotificationItem(item) {
-  const productId = String(item && item.productId || '');
+  const productId = String(item && (item.productId || item.id) || '');
   const product = productById(productId);
-  const selections = Array.isArray(item && item.selections) ? item.selections : [];
+  const selections = Array.isArray(item && item.selections)
+    ? item.selections
+    : notificationSelectionsFromRawItem(product, item);
   const selectedValues = selections
     .filter((entry) => entry && (entry.type === 'size' || entry.type === 'color'))
     .map((entry) => String(entry.label || '').trim())
@@ -1889,7 +1926,7 @@ function conciseOrderNotificationItem(item) {
     })
     .filter(Boolean);
 
-  let fallbackName = String((item && item.productName) || 'מוצר').trim();
+  let fallbackName = String((item && item.productName) || (product && productTitle(product)) || productId || 'מוצר').trim();
   for (const value of selectedValues) {
     const escaped = value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     fallbackName = fallbackName.replace(new RegExp(`\\s*-\\s*${escaped}(?=\\s*-|$)`, 'gu'), '');
@@ -1906,16 +1943,35 @@ function conciseOrderNotificationItem(item) {
     productId,
     productName: productName || 'מוצר',
     variant: compactSelections.join(' | '),
-    quantity: Math.max(1, Number(item && item.quantity || 1))
+    quantity: Math.max(1, Number(item && (item.quantity || item.qty) || 1))
   };
 }
 
-function orderNotificationItems(payload, orderRef) {
+function orderNotificationItems(orderOrPayload, orderRef) {
   const safeOrderRef = String(orderRef || '').trim();
-  return (Array.isArray(payload && payload.items) ? payload.items : []).map((item, itemIndex) => ({
-    ...conciseOrderNotificationItem(item),
-    itemOrderRef: safeOrderRef ? orderItemRef(safeOrderRef, itemIndex) : ''
-  }));
+  const sourceItems = parseNotificationOrderItems(orderOrPayload);
+  const result = [];
+  sourceItems.forEach((item, itemIndex) => {
+    try {
+      result.push({
+        ...conciseOrderNotificationItem(item),
+        itemOrderRef: safeOrderRef ? orderItemRef(safeOrderRef, itemIndex) : ''
+      });
+    } catch (error) {
+      // A malformed/customized product must never block the entire customer notification.
+      const productId = String(item && (item.productId || item.id) || '');
+      const product = productById(productId);
+      result.push({
+        productId,
+        productName: String(product ? productTitle(product) : (item && item.productName) || 'מוצר').trim() || 'מוצר',
+        variant: '',
+        quantity: Math.max(1, Number(item && (item.quantity || item.qty) || 1)),
+        itemOrderRef: safeOrderRef ? orderItemRef(safeOrderRef, itemIndex) : ''
+      });
+      console.error(`Order notification item fallback used for ${safeOrderRef || 'unknown'} item ${itemIndex + 1}:`, error && error.message ? error.message : error);
+    }
+  });
+  return result;
 }
 
 function newOrderCustomerMessage({ customerName, orderRef, items }) {
@@ -1956,12 +2012,26 @@ async function postNewOrderWebhook(orderRef) {
   try {
     const order = await database.getOrderByRef(orderRef);
     if (order && String(order.status || '') === 'paid') {
-      const payload = buildPaidOrderPayload(order);
-      const customerName = String(payload.customer && (payload.customer.fullName || payload.customer.firstName) || payload.customerEmail || 'לקוח/ה').trim();
-      webhookMessage = newOrderCustomerMessage({ customerName, orderRef, items: orderNotificationItems(payload, orderRef) });
+      const customer = parseStoredCustomer(order);
+      const customerName = String([customer.firstName, customer.lastName].filter(Boolean).join(' ') || order.customer_email || 'לקוח/ה').trim();
+      webhookMessage = newOrderCustomerMessage({ customerName, orderRef, items: orderNotificationItems(order, orderRef) });
     }
   } catch (messageError) {
     console.error(`New-order webhook message preparation failed for ${orderRef}:`, messageError && messageError.message ? messageError.message : messageError);
+    // Never suppress the webhook because one customized product could not be formatted.
+    // Grok can still fetch the order by orderRef, while this minimal exactMessage is safe to send.
+    webhookMessage = normalizeHebrewCustomerMessage([
+      'ההזמנה שלך ב-VerSans התקבלה בהצלחה ✅',
+      '',
+      `מספר הזמנה: ${String(orderRef || '').trim()}`,
+      '',
+      'למעקב אחר ההזמנה:',
+      'https://versans.com/track',
+      '',
+      'אנחנו נעדכן אותך בהמשך לגבי המשלוח 📦',
+      '',
+      'תודה שבחרת VerSans'
+    ].join('\n'));
   }
   try {
     const response = await fetch(cfg.url, {
@@ -1984,7 +2054,7 @@ async function postNewOrderWebhook(orderRef) {
       signal: AbortSignal.timeout(ORDER_NOTIFICATION_WEBHOOK_TIMEOUT_MS)
     });
     status = Number(response.status);
-    accepted = status === 200;
+    accepted = response.ok;
     if (!accepted) {
       const body = await response.text().catch(() => '');
       errorText = `webhook_http_${status}${body ? `: ${body.slice(0, 500)}` : ''}`;
@@ -2003,17 +2073,40 @@ async function queueNewOrderNotificationAfterSheet(order) {
   const orderRef = String(order.order_ref || '').trim();
   if (!orderRef) return { ok: false, skipped: true, reason: 'missing_order_ref' };
   if (!order.id) return { ok: false, skipped: true, reason: 'missing_order_id' };
-  const payload = buildPaidOrderPayload(order);
-  const recipient = normalizePhone(payload.customerPhone || (payload.customer && payload.customer.phone) || order.customer_phone);
+  const customer = parseStoredCustomer(order);
+  const recipient = normalizePhone(order.customer_phone || customer.phone);
   await database.ensureOrderNotification(order.id, orderRef, recipient || null, Date.now());
-  setImmediate(() => {
-    postNewOrderWebhook(orderRef).catch((error) => console.error(`New-order Grok webhook failed for ${orderRef}:`, error && error.message ? error.message : error));
-  });
+
+  // Attempt the webhook immediately instead of postponing it with setImmediate.
+  // If delivery fails, the pending notification remains in the DB and the retry
+  // loop will try again later.
+  await postNewOrderWebhook(orderRef);
   return { ok: true, orderRef };
+}
+
+async function backfillRecentPaidOrderNotifications() {
+  const now = Date.now();
+  const since = now - (24 * 60 * 60 * 1000);
+  const orders = await database.listOrdersForAnalytics('paid', since);
+  let created = 0;
+
+  for (const order of (orders || [])) {
+    const orderRef = String(order && order.order_ref || '').trim();
+    if (!orderRef || !order.id) continue;
+    const existing = await database.getOrderNotification(orderRef);
+    if (existing) continue;
+    const recipient = normalizePhone(order.customer_phone || '');
+    await database.ensureOrderNotification(order.id, orderRef, recipient || null, now);
+    created += 1;
+  }
+
+  return { created };
 }
 
 async function retryPendingNewOrderWebhooks() {
   if (!isNewOrderWebhookConfigured()) return { processed: 0, skipped: true };
+  try { await backfillRecentPaidOrderNotifications(); }
+  catch (error) { console.error('New-order notification backfill failed:', error && error.message ? error.message : error); }
   const now = Date.now();
   const rows = await database.listOrderNotificationsForWebhook(
     now,
@@ -2434,11 +2527,11 @@ async function adminApi(req, res, pathname, parsed) {
       return true;
     }
 
-    const payload = buildPaidOrderPayload(order);
-    const customerName = String(payload.customer && (payload.customer.fullName || payload.customer.firstName) || payload.customerEmail || 'לקוח/ה').trim();
-    const phone = normalizePhone(payload.customerPhone || (payload.customer && payload.customer.phone) || order.customer_phone);
+    const customer = parseStoredCustomer(order);
+    const customerName = String([customer.firstName, customer.lastName].filter(Boolean).join(' ') || order.customer_email || 'לקוח/ה').trim();
+    const phone = normalizePhone(order.customer_phone || customer.phone);
     const digits = whatsappDigits(phone);
-    const items = orderNotificationItems(payload, orderRef);
+    const items = orderNotificationItems(order, orderRef);
     const shipments = await database.listShipmentsForOrder(order.id);
     const trackingIds = [...new Set((shipments || []).map((shipment) => String(shipment.tracking_number || '').trim()).filter(Boolean))];
     const message = newOrderCustomerMessage({ customerName, orderRef, items });
@@ -3898,16 +3991,17 @@ const server = http.createServer(async (req, res) => {
           } catch (dbErr) {
             console.error(`Demo order database save failed for ${demoOrder.order_ref}:`, dbErr);
           }
-          let sheetSynced = false;
-          try {
-            await sendPaidOrderToGoogleSheet(demoOrder);
-            sheetSynced = true;
-          } catch (sheetErr) {
-            console.error(`Google demo order sync failed for ${demoOrder.order_ref}:`, sheetErr);
-          }
-          if (sheetSynced && persistedDemoOrder) {
+          // Trigger Grok as soon as the paid DEMO order exists in the DB. Do this
+          // before Google Sheets so a slow/outageing Sheet can never delay or suppress
+          // the customer WhatsApp notification.
+          if (persistedDemoOrder) {
             try { await queueNewOrderNotificationAfterSheet(persistedDemoOrder); }
             catch (notifyErr) { console.error(`Demo new-order notification queue failed for ${demoOrder.order_ref}:`, notifyErr && notifyErr.message ? notifyErr.message : notifyErr); }
+          }
+          try {
+            await sendPaidOrderToGoogleSheet(demoOrder);
+          } catch (sheetErr) {
+            console.error(`Google demo order sync failed for ${demoOrder.order_ref}:`, sheetErr);
           }
           try {
             await sendOrderConfirmationForOrder(demoOrder);
@@ -4019,16 +4113,14 @@ const server = http.createServer(async (req, res) => {
               paid_at: order.paid_at || now,
               updated_at: now
             };
-            let sheetSynced = false;
+            // Trigger Grok immediately after the order is marked paid. Google Sheets
+            // remains best-effort and cannot delay or suppress the notification.
+            try { await queueNewOrderNotificationAfterSheet(paidOrder); }
+            catch (notifyErr) { console.error(`New-order notification queue failed for ${order.order_ref}:`, notifyErr && notifyErr.message ? notifyErr.message : notifyErr); }
             try {
               await sendPaidOrderToGoogleSheet(paidOrder);
-              sheetSynced = true;
             } catch (sheetErr) {
               console.error(`Google order sync failed for ${order.order_ref}:`, sheetErr);
-            }
-            if (sheetSynced) {
-              try { await queueNewOrderNotificationAfterSheet(paidOrder); }
-              catch (notifyErr) { console.error(`New-order notification queue failed for ${order.order_ref}:`, notifyErr && notifyErr.message ? notifyErr.message : notifyErr); }
             }
             try {
               await sendOrderConfirmationForOrder(paidOrder);
@@ -4101,9 +4193,9 @@ setInterval(async () => {
 }, 30 * 60 * 1000).unref();
 
 // New-order WhatsApp is event-driven: the paid-order flow posts the webhook
-// immediately after a successful Google Sheet write. This lightweight DB-only
-// retry loop exists solely to recover a failed webhook delivery or a crashed bot
-// run; it never polls Google Sheets and never sends WhatsApp itself.
+// immediately after the paid order is persisted. Google Sheets is independent.
+// This lightweight DB-only retry loop also backfills recent paid orders that
+// missed notification creation and retries failed webhook deliveries.
 setInterval(async () => {
   try { await retryPendingNewOrderWebhooks(); } catch (err) { console.error('New-order webhook retry failed:', err); }
 }, ORDER_NOTIFICATION_WEBHOOK_RETRY_MS).unref();
