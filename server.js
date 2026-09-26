@@ -1232,6 +1232,28 @@ function whatsappDigits(phone) {
   return normalized ? normalized.replace(/^\+/, '') : '';
 }
 
+function normalizeHebrewCustomerMessage(value) {
+  return String(value == null ? '' : value)
+    .normalize('NFC')
+    .replace(/בהמשלוח/g, 'במשלוח')
+    .replace(/בההזמנה/g, 'בהזמנה')
+    .replace(/לההזמנה/g, 'להזמנה')
+    .replace(/מההמשלוח/g, 'מהמשלוח')
+    .replace(/בההמשך/g, 'בהמשך')
+    .replace(/[ \t]+(?=\n)/g, '')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
+function botVerbatimMessagePolicy() {
+  return {
+    mode: 'verbatim',
+    rewriteAllowed: false,
+    translateAllowed: false,
+    addTextAllowed: false,
+    instruction: 'שלח ללקוח את השדה message בדיוק כפי שהוא. אין לשכתב, לנסח מחדש, לתרגם, לקצר או להוסיף טקסט.'
+  };
+}
 
 function cleanPickupText(value, max = 1400) {
   const text = String(value == null ? '' : value).replace(/[\r\t]+/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
@@ -1323,7 +1345,7 @@ function shippingBotMessage({ customerName, items, pickupMessageRaw = null, pick
   if (locationText && (!pickupText || !pickupText.toLowerCase().includes(locationText.toLowerCase()))) {
     pickupLines.push(`מיקום: ${locationText}`);
   }
-  return [
+  return normalizeHebrewCustomerMessage([
     `היי ${safeName} 👋`,
     'יש עדכון לגבי ההזמנה שלך מ-VerSans.',
     '',
@@ -1339,7 +1361,7 @@ function shippingBotMessage({ customerName, items, pickupMessageRaw = null, pick
     'https://versans.com/track',
     '',
     'VerSans'
-  ].join('\n');
+  ].join('\n'));
 }
 
 async function shippingBotReadyPickups(limit = 200) {
@@ -1393,6 +1415,7 @@ async function shippingBotReadyPickups(limit = 200) {
       updatedAt: Number(shipment.updated_at || 0),
       items,
       message,
+      messagePolicy: botVerbatimMessagePolicy(),
       whatsappWebUrl: digits ? `https://web.whatsapp.com/send?phone=${digits}&text=${encodedMessage}` : null,
       waMeUrl: digits ? `https://wa.me/${digits}?text=${encodedMessage}` : null,
       safeToSend: Boolean(digits && items.length),
@@ -1839,7 +1862,7 @@ function newOrderCustomerMessage({ customerName, orderRef, items }) {
   lines.push('אנחנו נעדכן אותך בהמשך לגבי המשלוח 📦');
   lines.push('');
   lines.push('תודה שבחרת VerSans');
-  return lines.join('\n');
+  return normalizeHebrewCustomerMessage(lines.join('\n'));
 }
 
 async function postNewOrderWebhook(orderRef) {
@@ -1849,6 +1872,17 @@ async function postNewOrderWebhook(orderRef) {
   let status = null;
   let errorText = null;
   let accepted = false;
+  let webhookMessage = null;
+  try {
+    const order = await database.getOrderByRef(orderRef);
+    if (order && String(order.status || '') === 'paid') {
+      const payload = buildPaidOrderPayload(order);
+      const customerName = String(payload.customer && (payload.customer.fullName || payload.customer.firstName) || payload.customerEmail || 'לקוח/ה').trim();
+      webhookMessage = newOrderCustomerMessage({ customerName, orderRef, items: orderNotificationItems(payload) });
+    }
+  } catch (messageError) {
+    console.error(`New-order webhook message preparation failed for ${orderRef}:`, messageError && messageError.message ? messageError.message : messageError);
+  }
   try {
     const response = await fetch(cfg.url, {
       method: 'POST',
@@ -1856,7 +1890,14 @@ async function postNewOrderWebhook(orderRef) {
         'Authorization': `Bearer ${cfg.secret}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ event: 'VERSANS_NEW_ORDER_READY', orderRef }),
+      body: JSON.stringify({
+        event: 'VERSANS_NEW_ORDER_READY',
+        orderRef,
+        message: webhookMessage,
+        messageMode: 'verbatim',
+        messagePolicy: botVerbatimMessagePolicy(),
+        instruction: 'Send the message field exactly as provided. Do not rewrite, paraphrase, translate, correct, shorten, or add text.'
+      }),
       redirect: 'follow',
       signal: AbortSignal.timeout(ORDER_NOTIFICATION_WEBHOOK_TIMEOUT_MS)
     });
@@ -2322,15 +2363,15 @@ async function adminApi(req, res, pathname, parsed) {
     const notificationId = `NEW_ORDER:${orderRef}`;
 
     if (String(notification.state || '') === 'sent') {
-      json(res, 200, { ok: true, notificationId, orderRef, customerName, whatsappNumber: digits, items, trackingIds, message, whatsappWebUrl: null, safeToSend: false, reason: 'already_sent', sentAt: notification.sent_at == null ? null : Number(notification.sent_at) });
+      json(res, 200, { ok: true, notificationId, orderRef, customerName, whatsappNumber: digits, items, trackingIds, message, messagePolicy: botVerbatimMessagePolicy(), whatsappWebUrl: null, safeToSend: false, reason: 'already_sent', sentAt: notification.sent_at == null ? null : Number(notification.sent_at) });
       return true;
     }
     if (!digits) {
-      json(res, 200, { ok: true, notificationId, orderRef, customerName, whatsappNumber: null, items, trackingIds, message, whatsappWebUrl: null, safeToSend: false, reason: 'missing_whatsapp_number' });
+      json(res, 200, { ok: true, notificationId, orderRef, customerName, whatsappNumber: null, items, trackingIds, message, messagePolicy: botVerbatimMessagePolicy(), whatsappWebUrl: null, safeToSend: false, reason: 'missing_whatsapp_number' });
       return true;
     }
     if (!items.length) {
-      json(res, 200, { ok: true, notificationId, orderRef, customerName, whatsappNumber: digits, items, trackingIds, message, whatsappWebUrl: null, safeToSend: false, reason: 'missing_order_items' });
+      json(res, 200, { ok: true, notificationId, orderRef, customerName, whatsappNumber: digits, items, trackingIds, message, messagePolicy: botVerbatimMessagePolicy(), whatsappWebUrl: null, safeToSend: false, reason: 'missing_order_items' });
       return true;
     }
 
@@ -2339,7 +2380,7 @@ async function adminApi(req, res, pathname, parsed) {
     notification = await database.getOrderNotification(orderRef) || notification;
     if (!claimed) {
       const reason = String(notification.state || '') === 'sent' ? 'already_sent' : 'already_claimed';
-      json(res, 200, { ok: true, notificationId, orderRef, customerName, whatsappNumber: digits, items, trackingIds, message, whatsappWebUrl: null, safeToSend: false, reason });
+      json(res, 200, { ok: true, notificationId, orderRef, customerName, whatsappNumber: digits, items, trackingIds, message, messagePolicy: botVerbatimMessagePolicy(), whatsappWebUrl: null, safeToSend: false, reason });
       return true;
     }
 
@@ -2352,6 +2393,7 @@ async function adminApi(req, res, pathname, parsed) {
       items,
       trackingIds,
       message,
+      messagePolicy: botVerbatimMessagePolicy(),
       whatsappWebUrl: `https://web.whatsapp.com/send?phone=${digits}&text=${encodeURIComponent(message)}`,
       safeToSend: true,
       claimedAt: now
@@ -2483,6 +2525,7 @@ async function adminApi(req, res, pathname, parsed) {
           pickupCandidates,
           items,
           message,
+          messagePolicy: botVerbatimMessagePolicy(),
           whatsappWebUrl: (isReadyForPickup && digits && message) ? `https://web.whatsapp.com/send?phone=${digits}&text=${encodeURIComponent(message)}` : null,
           safeToSend: Boolean(isReadyForPickup && digits && items.length),
           diagnosticIssue: isReadyForPickup ? null : 'shipment_not_ready_for_pickup'
