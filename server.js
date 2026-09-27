@@ -2017,6 +2017,7 @@ function newOrderCustomerMessage({ customerName, orderRef, items }) {
   const lines = [];
   const safeCustomerName = safeCustomerProductText(customerName, 'לקוח/ה');
   lines.push(`היי ${safeCustomerName} 👋`);
+  lines.push('');
   lines.push('ההזמנה שלך ב-VerSans התקבלה בהצלחה ✅');
   lines.push('');
   lines.push(`מספר הזמנה: ${safeOrderRef}`);
@@ -2029,6 +2030,7 @@ function newOrderCustomerMessage({ customerName, orderRef, items }) {
     const safeName = safeCustomerProductText(item.productName, 'מוצר VerSans');
     const safeVariant = item.variant ? safeCustomerProductText(item.variant, '') : '';
     const safeVariantText = safeVariant ? ` - ${safeVariant}` : '';
+    lines.push('');
     lines.push(`• ${safeName}${safeVariantText}${qty}${itemRefText}`);
   }
   lines.push('');
@@ -2049,11 +2051,13 @@ async function postNewOrderWebhook(orderRef) {
   let errorText = null;
   let accepted = false;
   let webhookMessage = null;
+  let webhookWhatsappDigits = '';
   try {
     const order = await database.getOrderByRef(orderRef);
     if (order && String(order.status || '') === 'paid') {
       const customer = parseStoredCustomer(order);
       const customerName = String([customer.firstName, customer.lastName].filter(Boolean).join(' ') || order.customer_email || 'לקוח/ה').trim();
+      webhookWhatsappDigits = whatsappDigits(order.customer_phone || customer.phone);
       webhookMessage = newOrderCustomerMessage({ customerName, orderRef, items: orderNotificationItems(order, orderRef) });
     }
   } catch (messageError) {
@@ -2085,10 +2089,17 @@ async function postNewOrderWebhook(orderRef) {
         orderRef,
         message: webhookMessage,
         exactMessage: webhookMessage,
-        messageMode: 'verbatim',
+        messageMode: 'prefilled_whatsapp_url',
         mustSendExactMessage: true,
+        doNotTypeOrRewriteMessage: true,
+        whatsappWebUrl: webhookWhatsappDigits && webhookMessage
+          ? `https://web.whatsapp.com/send?phone=${webhookWhatsappDigits}&text=${encodeURIComponent(webhookMessage)}`
+          : null,
+        waMeUrl: webhookWhatsappDigits && webhookMessage
+          ? `https://wa.me/${webhookWhatsappDigits}?text=${encodeURIComponent(webhookMessage)}`
+          : null,
         messagePolicy: botVerbatimMessagePolicy(),
-        instruction: 'Send exactMessage exactly as provided, byte-for-byte after JSON decoding. Do not generate, rewrite, paraphrase, translate, correct, shorten, add, remove, or reorder any text. Do not insert any emoji or characters.'
+        instruction: 'DO NOT type, regenerate, paraphrase, or rewrite the customer message. Open whatsappWebUrl (or waMeUrl on mobile), let WhatsApp prefill the exact server-generated text, and only click Send. Never reconstruct the message from order fields.'
       }),
       redirect: 'follow',
       signal: AbortSignal.timeout(ORDER_NOTIFICATION_WEBHOOK_TIMEOUT_MS)
@@ -2612,6 +2623,10 @@ async function adminApi(req, res, pathname, parsed) {
       mustSendExactMessage: true,
       messagePolicy: botVerbatimMessagePolicy(),
       whatsappWebUrl: `https://web.whatsapp.com/send?phone=${digits}&text=${encodeURIComponent(message)}`,
+      waMeUrl: `https://wa.me/${digits}?text=${encodeURIComponent(message)}`,
+      sendMode: 'prefilled_whatsapp_url',
+      doNotTypeOrRewriteMessage: true,
+      sendInstruction: 'Open whatsappWebUrl (or waMeUrl) and click Send. Do not type or reconstruct the message.',
       safeToSend: true,
       claimedAt: now
     });
