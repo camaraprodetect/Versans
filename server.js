@@ -1232,10 +1232,28 @@ function whatsappDigits(phone) {
   return normalized ? normalized.replace(/^\+/, '') : '';
 }
 
-function normalizeHebrewCustomerMessage(value) {
-  return String(value == null ? '' : value)
-    .normalize('NFC')
+function decodeCustomerTextPercentEscapes(value) {
+  let text = String(value == null ? '' : value);
+  if (!/%[0-9A-F]{2}/i.test(text)) return text;
+  try {
+    const decoded = decodeURIComponent(text);
+    return decoded || text;
+  } catch (_) {
+    return text;
+  }
+}
+
+function normalizeCustomerVisibleText(value) {
+  let text = decodeCustomerTextPercentEscapes(value).normalize('NFC');
+
+  // Repair known UTF-8 / percent-encoding corruption before removing replacement chars.
+  // Example seen in production: "צ%[D7�ע לבן" -> "צבע לבן".
+  text = text
+    .replace(/צ%[\[\]A-F0-9]*\uFFFD?ע/giu, 'צבע')
+    .replace(/צ%[\[\]A-F0-9]*ע/giu, 'צבע')
     .replace(/\uFFFD/g, '')
+    .replace(/מוקרננת/g, 'מוקרנת')
+    .replace(/מוקרננ(?:ת|ט)/g, 'מוקרנת')
     .replace(/בהמשלוח/g, 'במשלוח')
     .replace(/בההזמנה/g, 'בהזמנה')
     .replace(/לההזמנה/g, 'להזמנה')
@@ -1243,8 +1261,27 @@ function normalizeHebrewCustomerMessage(value) {
     .replace(/בההמשך/g, 'בהמשך')
     .replace(/בהמשמך/g, 'בהמשך')
     .replace(/בהמשכ/g, 'בהמשך')
-    .replace(/[ \t]+(?=\n)/g, '')
     .replace(/[ \t]{2,}/g, ' ')
+    .trim();
+
+  return text;
+}
+
+function safeCustomerProductText(value, fallback = 'מוצר VerSans') {
+  const raw = String(value == null ? '' : value);
+  const knownBrokenColorEncoding = /צ%[\[\]A-F0-9]*\uFFFD?ע/iu.test(raw) || /צ%[\[\]A-F0-9]*ע/iu.test(raw);
+  const text = normalizeCustomerVisibleText(raw);
+  if (!text) return fallback;
+  // Unknown replacement-character / percent-encoding corruption fails closed instead
+  // of exposing a partially repaired or misspelled product name to the customer.
+  if (/\uFFFD/u.test(raw) && !knownBrokenColorEncoding) return fallback;
+  if (/\uFFFD/u.test(text) || /%\[?[A-F0-9]{2,}/iu.test(text)) return fallback;
+  return text;
+}
+
+function normalizeHebrewCustomerMessage(value) {
+  return normalizeCustomerVisibleText(value)
+    .replace(/[ \t]+(?=\n)/g, '')
     .replace(/\n{3,}/g, '\n\n')
     .trim();
 }
@@ -1941,8 +1978,8 @@ function conciseOrderNotificationItem(item) {
 
   return {
     productId,
-    productName: productName || 'מוצר',
-    variant: compactSelections.join(' | '),
+    productName: safeCustomerProductText(productName || 'מוצר', 'מוצר VerSans'),
+    variant: safeCustomerProductText(compactSelections.join(' | '), ''),
     quantity: Math.max(1, Number(item && (item.quantity || item.qty) || 1))
   };
 }
@@ -1963,7 +2000,7 @@ function orderNotificationItems(orderOrPayload, orderRef) {
       const product = productById(productId);
       result.push({
         productId,
-        productName: String(product ? productTitle(product) : (item && item.productName) || 'מוצר').trim() || 'מוצר',
+        productName: safeCustomerProductText(String(product ? productTitle(product) : (item && item.productName) || 'מוצר').trim(), 'מוצר VerSans'),
         variant: '',
         quantity: Math.max(1, Number(item && (item.quantity || item.qty) || 1)),
         itemOrderRef: safeOrderRef ? orderItemRef(safeOrderRef, itemIndex) : ''
@@ -1978,18 +2015,21 @@ function newOrderCustomerMessage({ customerName, orderRef, items }) {
   const safeOrderRef = String(orderRef || '').trim();
   const trackingUrl = 'https://versans.com/track';
   const lines = [];
-  lines.push(`היי ${customerName || 'לקוח/ה'} 👋`);
+  const safeCustomerName = safeCustomerProductText(customerName, 'לקוח/ה');
+  lines.push(`היי ${safeCustomerName} 👋`);
   lines.push('ההזמנה שלך ב-VerSans התקבלה בהצלחה ✅');
   lines.push('');
   lines.push(`מספר הזמנה: ${safeOrderRef}`);
   lines.push('');
   lines.push('המוצרים בהזמנה:');
   for (const item of items) {
-    const variant = item.variant ? ` - ${item.variant}` : '';
     const qty = Number(item.quantity || 1) > 1 ? ` × ${Number(item.quantity)}` : '';
     const itemRef = String(item.itemOrderRef || safeOrderRef || '').trim();
     const itemRefText = itemRef ? ` | מספר הזמנה: ${itemRef}` : '';
-    lines.push(`• ${item.productName}${variant}${qty}${itemRefText}`);
+    const safeName = safeCustomerProductText(item.productName, 'מוצר VerSans');
+    const safeVariant = item.variant ? safeCustomerProductText(item.variant, '') : '';
+    const safeVariantText = safeVariant ? ` - ${safeVariant}` : '';
+    lines.push(`• ${safeName}${safeVariantText}${qty}${itemRefText}`);
   }
   lines.push('');
   lines.push('למעקב אחר ההזמנה:');
