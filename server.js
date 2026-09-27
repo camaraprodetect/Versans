@@ -2055,13 +2055,11 @@ function newOrderCustomerMessage({ customerName, orderRef, items }) {
   lines.push('המוצרים בהזמנה:');
   for (const item of items) {
     const qty = Number(item.quantity || 1) > 1 ? ` × ${Number(item.quantity)}` : '';
-    const itemRef = String(item.itemOrderRef || safeOrderRef || '').trim();
-    const itemRefText = itemRef ? ` | מספר הזמנה: ${itemRef}` : '';
     const safeName = safeCustomerProductText(item.productName, 'מוצר VerSans');
     const safeVariant = item.variant ? safeCustomerProductText(item.variant, '') : '';
     const safeVariantText = safeVariant ? ` - ${safeVariant}` : '';
     lines.push('');
-    lines.push(`• ${safeName}${safeVariantText}${qty}${itemRefText}`);
+    lines.push(`• ${safeName}${safeVariantText}${qty}`);
   }
   lines.push('');
   lines.push('למעקב אחר ההזמנה:');
