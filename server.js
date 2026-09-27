@@ -67,8 +67,8 @@ const WELCOME_COUPON_PERCENT = 3;
 const WELCOME_COUPON_TTL_MS = 14 * 24 * 60 * 60 * 1000;
 const PASSWORD_RESET_TTL_MS = 30 * 60 * 1000;
 const PASSWORD_RESET_COOKIE = 'versans_password_reset';
-const ORDER_NOTIFICATION_CLAIM_TTL_MS = 30 * 60 * 1000;
-const ORDER_NOTIFICATION_WEBHOOK_RETRY_MS = 5 * 60 * 1000;
+const ORDER_NOTIFICATION_CLAIM_TTL_MS = 2 * 60 * 1000;
+const ORDER_NOTIFICATION_WEBHOOK_RETRY_MS = 60 * 1000;
 const ORDER_NOTIFICATION_WEBHOOK_TIMEOUT_MS = 10 * 1000;
 const PRODUCT_BY_URL_SLUG = new Map(PRODUCTS.map((product) => [String(product.urlSlug || ''), product]));
 
@@ -1489,7 +1489,7 @@ async function shippingBotReadyPickups(limit = 200) {
       exactMessage: message,
       mustSendExactMessage: true,
       messagePolicy: botVerbatimMessagePolicy(),
-      whatsappWebUrl: digits ? `https://web.whatsapp.com/send?phone=${digits}&text=${encodedMessage}` : null,
+      whatsappWebUrl: digits ? `https://web.whatsapp.com/send/?phone=${digits}&text=${encodedMessage}&type=phone_number&app_absent=0` : null,
       waMeUrl: digits ? `https://wa.me/${digits}?text=${encodedMessage}` : null,
       safeToSend: Boolean(digits && items.length),
       issue: !digits ? 'missing_or_invalid_phone' : (!items.length ? 'tracking_has_no_linked_products' : null)
@@ -2786,7 +2786,7 @@ async function adminApi(req, res, pathname, parsed) {
           items,
           message,
           messagePolicy: botVerbatimMessagePolicy(),
-          whatsappWebUrl: (isReadyForPickup && digits && message) ? `https://web.whatsapp.com/send?phone=${digits}&text=${encodeURIComponent(message)}` : null,
+          whatsappWebUrl: (isReadyForPickup && digits && message) ? `https://web.whatsapp.com/send/?phone=${digits}&text=${encodeURIComponent(message)}&type=phone_number&app_absent=0` : null,
           safeToSend: Boolean(isReadyForPickup && digits && items.length),
           diagnosticIssue: isReadyForPickup ? null : 'shipment_not_ready_for_pickup'
         }
@@ -4243,7 +4243,7 @@ const server = http.createServer(async (req, res) => {
       const customerName = String([customer.firstName, customer.lastName].filter(Boolean).join(' ') || order.customer_email || 'לקוח/ה').trim();
       const orderRef = String(order.order_ref || '').trim();
       const message = newOrderCustomerMessage({ customerName, orderRef, items: orderNotificationItems(order, orderRef) });
-      const destination = `https://web.whatsapp.com/send?phone=${digits}&text=${encodeURIComponent(message)}`;
+      const destination = `https://web.whatsapp.com/send/?phone=${digits}&text=${encodeURIComponent(message)}&type=phone_number&app_absent=0`;
       redirect(res, destination, 302);
       return;
     }
