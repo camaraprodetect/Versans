@@ -1033,6 +1033,36 @@ function isNewOrderWebhookConfigured() {
   return Boolean(cfg.url && cfg.secret);
 }
 
+function newOrderShortLinkToken(order) {
+  const cfg = newOrderWebhookConfig();
+  const orderId = Number(order && order.id);
+  const orderRef = String(order && order.order_ref || '').trim();
+  if (!cfg.secret || !Number.isInteger(orderId) || orderId <= 0 || !orderRef) return '';
+  const idPart = orderId.toString(36);
+  const sig = crypto.createHmac('sha256', cfg.secret)
+    .update(`${orderId}:${orderRef}`)
+    .digest('hex')
+    .slice(0, 10);
+  return `${idPart}-${sig}`;
+}
+
+function newOrderShortWhatsAppUrl(order) {
+  const token = newOrderShortLinkToken(order);
+  return token ? `https://versans.com/w/${token}` : null;
+}
+
+async function resolveNewOrderShortLink(token) {
+  const match = /^([0-9a-z]+)-([0-9a-f]{10})$/i.exec(String(token || '').trim());
+  if (!match) return null;
+  const orderId = parseInt(match[1], 36);
+  if (!Number.isSafeInteger(orderId) || orderId <= 0) return null;
+  const order = await database.getOrderById(orderId);
+  if (!order || String(order.status || '') !== 'paid') return null;
+  const expected = newOrderShortLinkToken(order);
+  if (!expected || !secureTextEqual(expected, String(token || '').trim().toLowerCase())) return null;
+  return order;
+}
+
 async function presenceApi(req, res, pathname) {
   if (pathname !== '/api/presence') return false;
   if (req.method !== 'POST') {
@@ -2052,12 +2082,14 @@ async function postNewOrderWebhook(orderRef) {
   let accepted = false;
   let webhookMessage = null;
   let webhookWhatsappDigits = '';
+  let webhookShortUrl = null;
   try {
     const order = await database.getOrderByRef(orderRef);
     if (order && String(order.status || '') === 'paid') {
       const customer = parseStoredCustomer(order);
       const customerName = String([customer.firstName, customer.lastName].filter(Boolean).join(' ') || order.customer_email || 'לקוח/ה').trim();
       webhookWhatsappDigits = whatsappDigits(order.customer_phone || customer.phone);
+      webhookShortUrl = webhookWhatsappDigits ? newOrderShortWhatsAppUrl(order) : null;
       webhookMessage = newOrderCustomerMessage({ customerName, orderRef, items: orderNotificationItems(order, orderRef) });
     }
   } catch (messageError) {
@@ -2089,17 +2121,14 @@ async function postNewOrderWebhook(orderRef) {
         orderRef,
         message: webhookMessage,
         exactMessage: webhookMessage,
-        messageMode: 'prefilled_whatsapp_url',
+        messageMode: 'short_server_redirect',
         mustSendExactMessage: true,
         doNotTypeOrRewriteMessage: true,
-        whatsappWebUrl: webhookWhatsappDigits && webhookMessage
-          ? `https://web.whatsapp.com/send?phone=${webhookWhatsappDigits}&text=${encodeURIComponent(webhookMessage)}`
-          : null,
-        waMeUrl: webhookWhatsappDigits && webhookMessage
-          ? `https://wa.me/${webhookWhatsappDigits}?text=${encodeURIComponent(webhookMessage)}`
-          : null,
+        shortWhatsAppUrl: webhookShortUrl,
+        whatsappWebUrl: webhookShortUrl,
+        waMeUrl: webhookShortUrl,
         messagePolicy: botVerbatimMessagePolicy(),
-        instruction: 'DO NOT type, regenerate, paraphrase, or rewrite the customer message. Open whatsappWebUrl (or waMeUrl on mobile), let WhatsApp prefill the exact server-generated text, and only click Send. Never reconstruct the message from order fields.'
+        instruction: 'Type/open the short whatsappWebUrl exactly as provided, wait for the VerSans server redirect to WhatsApp with the message already prefilled, then only click Send. Do not type or reconstruct the customer message.'
       }),
       redirect: 'follow',
       signal: AbortSignal.timeout(ORDER_NOTIFICATION_WEBHOOK_TIMEOUT_MS)
@@ -2622,11 +2651,12 @@ async function adminApi(req, res, pathname, parsed) {
       exactMessage: message,
       mustSendExactMessage: true,
       messagePolicy: botVerbatimMessagePolicy(),
-      whatsappWebUrl: `https://web.whatsapp.com/send?phone=${digits}&text=${encodeURIComponent(message)}`,
-      waMeUrl: `https://wa.me/${digits}?text=${encodeURIComponent(message)}`,
-      sendMode: 'prefilled_whatsapp_url',
+      shortWhatsAppUrl: newOrderShortWhatsAppUrl(order),
+      whatsappWebUrl: newOrderShortWhatsAppUrl(order),
+      waMeUrl: newOrderShortWhatsAppUrl(order),
+      sendMode: 'short_server_redirect',
       doNotTypeOrRewriteMessage: true,
-      sendInstruction: 'Open whatsappWebUrl (or waMeUrl) and click Send. Do not type or reconstruct the message.',
+      sendInstruction: 'Type/open the short whatsappWebUrl exactly as provided, wait for the redirect to WhatsApp with the exact message prefilled, then click Send. Do not type or reconstruct the message.',
       safeToSend: true,
       claimedAt: now
     });
@@ -4194,6 +4224,29 @@ const server = http.createServer(async (req, res) => {
 
     if (pathname.startsWith('/api/')) {
       json(res, 404, { error: 'API route not found' });
+      return;
+    }
+
+    const shortWhatsAppMatch = /^\/w\/([0-9a-z]+-[0-9a-f]{10})$/i.exec(pathname);
+    if (shortWhatsAppMatch && (req.method === 'GET' || req.method === 'HEAD')) {
+      const order = await resolveNewOrderShortLink(shortWhatsAppMatch[1]);
+      if (!order) {
+        res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store' });
+        res.end('קישור WhatsApp לא תקין או שפג תוקפו');
+        return;
+      }
+      const customer = parseStoredCustomer(order);
+      const digits = whatsappDigits(order.customer_phone || customer.phone);
+      if (!digits) {
+        res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store' });
+        res.end('לא נמצא מספר WhatsApp להזמנה');
+        return;
+      }
+      const customerName = String([customer.firstName, customer.lastName].filter(Boolean).join(' ') || order.customer_email || 'לקוח/ה').trim();
+      const orderRef = String(order.order_ref || '').trim();
+      const message = newOrderCustomerMessage({ customerName, orderRef, items: orderNotificationItems(order, orderRef) });
+      const destination = `https://web.whatsapp.com/send?phone=${digits}&text=${encodeURIComponent(message)}`;
+      redirect(res, destination, 302);
       return;
     }
 
