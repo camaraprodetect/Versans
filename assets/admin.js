@@ -406,7 +406,8 @@
       tracking_already_exists: 'מספר המעקב כבר מחובר להזמנה אחרת במערכת.',
       order_not_paid: 'אפשר להוסיף משלוח רק להזמנה ששולמה.',
       '17track_not_configured': 'חסר VERSANS_17TRACK_API_KEY ב-Render.',
-      tracking_registration_failed: '17TRACK לא קיבל את מספר המעקב. בדוק את המספר או את קוד חברת השילוח.'
+      tracking_registration_failed: '17TRACK לא קיבל את מספר המעקב. בדוק את המספר או את קוד חברת השילוח.',
+      invalid_provider_tracking_url: 'קישור המעקב של AliExpress לא תקין. יש להדביק קישור https מתוך AliExpress.'
     };
     return map[code] || text(error && error.message, 'לא ניתן לבצע את הפעולה כרגע.');
   }
@@ -668,15 +669,29 @@
           tracking.name = 'tracking'; tracking.placeholder = 'הדביקו כאן את מספר המעקב'; tracking.autocomplete = 'off'; tracking.required = true;
           if (shipment && shipment.trackingNumber) tracking.value = shipment.trackingNumber;
           trackingLabel.appendChild(tracking);
+
+          var providerUrlLabel = make('label');
+          providerUrlLabel.appendChild(make('span', '', 'קישור ישיר לעמוד המשלוח ב-AliExpress (אופציונלי)'));
+          var providerTrackingUrl = document.createElement('input');
+          providerTrackingUrl.name = 'providerTrackingUrl';
+          providerTrackingUrl.type = 'url';
+          providerTrackingUrl.inputMode = 'url';
+          providerTrackingUrl.placeholder = 'https://www.aliexpress.com/...';
+          providerTrackingUrl.autocomplete = 'off';
+          if (shipment && shipment.providerTrackingUrl) providerTrackingUrl.value = shipment.providerTrackingUrl;
+          providerUrlLabel.appendChild(providerTrackingUrl);
+          providerUrlLabel.appendChild(make('small', 'admin-table__muted', 'מומלץ להדביק את הקישור הישיר של פרטי המשלוח. ה-Pickup Collector יפתח אותו ישירות במקום לחפש את ההזמנה.'));
+
           var submit = make('button', 'admin-shipment-submit', shipment ? 'שמור / החלף Tracking ID' : 'חבר Tracking ID למוצר'); submit.type = 'submit';
           var formError = make('div', 'admin-shipment-form-error'); formError.hidden = true;
-          form.append(trackingLabel, submit, formError);
+          form.append(trackingLabel, providerUrlLabel, submit, formError);
           form.addEventListener('submit', async function (event) {
             event.preventDefault(); formError.hidden = true; submit.disabled = true; var oldText = submit.textContent; submit.textContent = 'שומר…';
             try {
               var created = await apiAction('/api/admin/orders/' + encodeURIComponent(order.orderRef) + '/shipments', 'POST', {
                 itemIndex: item.itemIndex,
-                trackingNumber: tracking.value.trim()
+                trackingNumber: tracking.value.trim(),
+                providerTrackingUrl: providerTrackingUrl.value.trim()
               });
               if (created.warning && created.warning.error === 'tracking_registration_failed') showToast('ה-Tracking ID נשמר למוצר. 17TRACK עדיין לא הצליח לזהות אותו וינסה שוב.');
               else if (created.reused && created.shared) showToast('ה-Tracking ID כבר היה בהזמנה וחובר גם ל-' + text(item.productName, 'המוצר'));
@@ -812,10 +827,6 @@
     toolbar.appendChild(make('span', 'admin-toolbar-note', 'מכירות והכנסות מחושבות מ־Paid בלבד'));
     frag.appendChild(toolbar);
     frag.appendChild(systemHealthCard(data.system));
-    var securityBody = make('div', 'admin-security-note');
-    securityBody.appendChild(make('strong', '', 'אבטחת Admin'));
-    securityBody.appendChild(make('p', 'admin-table__muted', 'חשבונות Admin/Staff מקבלים סשן קצר של 8 שעות והרשאות לפי תפקיד. אימות דו-שלבי (2FA) עדיין אינו מופעל; מומלץ להוסיף אותו לפני שמרחיבים גישת עובדים או שומרים יותר מידע רגיש.'));
-    frag.appendChild(card('אבטחת גישה', 'בדיקת הקשחה לפני הרחבת צוות', securityBody, badge('2FA טרם הוגדר', 'pending')));
     frag.appendChild(renderKpis([
       { label: 'הכנסות Paid', value: moneyAgorot(data.revenueAgorot), hint: 'בטווח שנבחר', primary: true, tone: 'green' },
       { label: 'הזמנות Paid', value: numberFmt(data.orderCount), hint: 'הזמנות ששולמו' },
@@ -1052,28 +1063,6 @@
     content.replaceChildren(frag);
   }
 
-  function customerAccessControl(row) {
-    var wrap = make('div', 'admin-access-control');
-    var role = document.createElement('select');
-    role.className = 'admin-access-control__select';
-    [['customer','לקוח'],['staff','צוות - הזמנות בלבד'],['admin','מנהל']].forEach(function (item) {
-      var option = document.createElement('option'); option.value = item[0]; option.textContent = item[1]; option.selected = String(row.role || 'customer') === item[0]; role.appendChild(option);
-    });
-    var blocked = document.createElement('label'); blocked.className = 'admin-access-control__blocked';
-    var check = document.createElement('input'); check.type = 'checkbox'; check.checked = !!row.blocked;
-    blocked.append(check, document.createTextNode(' חסום'));
-    var save = make('button', 'admin-access-control__save', 'שמור'); save.type = 'button';
-    save.addEventListener('click', async function () {
-      save.disabled = true;
-      try {
-        await apiAction('/api/admin/customers/' + encodeURIComponent(row.id) + '/access', 'POST', { role: role.value, blocked: check.checked, reason: check.checked ? 'נחסם דרך פאנל הניהול' : '' });
-        showToast('הרשאת המשתמש נשמרה'); await renderCurrentPage();
-      } catch (error) { showToast(error && error.message ? error.message : 'שמירת ההרשאה נכשלה'); save.disabled = false; }
-    });
-    wrap.append(role, blocked, save);
-    return wrap;
-  }
-
   async function renderCustomersPage() {
     var offset = state.offsets.customers;
     var data = await api('/api/admin/customers?limit=50&offset=' + offset);
@@ -1099,8 +1088,7 @@
         { label: 'סה״כ הוצאות', render: function (row) { return make('strong', 'admin-table__strong', moneyAgorot(row.paidSpendAgorot)); } },
         { label: 'Paid אחרון', render: function (row) { return dateTime(row.lastPaidAt); } },
         { label: 'נרשם', render: function (row) { return dateOnly(row.createdAt); } },
-        { label: 'לקוח מאומת', render: function (row) { return row.verifiedCustomer ? badge('מאומת', 'verified') : badge('לא', 'neutral'); } },
-        { label: 'הרשאה', render: customerAccessControl }
+        { label: 'לקוח מאומת', render: function (row) { return row.verifiedCustomer ? badge('מאומת', 'verified') : badge('לא', 'neutral'); } }
       ]
     });
     table.appendChild(renderPagination({ count: data.count, limit: data.limit, offset: data.offset, onChange: function (next) { state.offsets.customers = next; renderCurrentPage(); } }));

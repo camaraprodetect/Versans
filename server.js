@@ -992,6 +992,23 @@ function shippingBotKeyAllowed(req) {
   return secureTextEqual(requestShippingBotKey(req), expected);
 }
 
+function providerMessageKeyConfigured() {
+  return Boolean(String(process.env.VERSANS_PROVIDER_MESSAGE_KEY || process.env.VERSANS_SHIPPING_BOT_KEY || '').trim());
+}
+
+function requestProviderMessageKey(req) {
+  const auth = String(req.headers.authorization || '').trim();
+  const bearer = /^Bearer\s+(.+)$/i.exec(auth);
+  if (bearer) return bearer[1].trim();
+  return String(req.headers['x-versans-provider-message-key'] || req.headers['x-versans-shipping-bot-key'] || '').trim();
+}
+
+function providerMessageKeyAllowed(req) {
+  const expected = String(process.env.VERSANS_PROVIDER_MESSAGE_KEY || process.env.VERSANS_SHIPPING_BOT_KEY || '').trim();
+  if (!expected) return false;
+  return secureTextEqual(requestProviderMessageKey(req), expected);
+}
+
 async function shippingBotAccessAllowed(req) {
   if (shippingBotKeyAllowed(req)) return { ok: true, mode: 'bot_key' };
   const admin = await getAdminUser(req);
@@ -1061,6 +1078,42 @@ async function resolveNewOrderShortLink(token) {
   const expected = newOrderShortLinkToken(order);
   if (!expected || !secureTextEqual(expected, String(token || '').trim().toLowerCase())) return null;
   return order;
+}
+
+function pickupShortLinkSecret() {
+  return String(process.env.VERSANS_SHIPPING_BOT_KEY || process.env.VERSANS_NEW_ORDER_WEBHOOK_SECRET || '').trim();
+}
+
+function pickupShortLinkToken(shipment) {
+  const secret = pickupShortLinkSecret();
+  const shipmentId = Number(shipment && shipment.id);
+  const trackingNumber = String(shipment && shipment.tracking_number || '').trim();
+  if (!secret || !Number.isInteger(shipmentId) || shipmentId <= 0 || !trackingNumber) return '';
+  const idPart = shipmentId.toString(36);
+  const sig = crypto.createHmac('sha256', secret)
+    .update(`${shipmentId}:${trackingNumber}`)
+    .digest('hex')
+    .slice(0, 10);
+  return `${idPart}-${sig}`;
+}
+
+function pickupShortWhatsAppUrl(shipment) {
+  const token = pickupShortLinkToken(shipment);
+  return token ? `https://versans.com/p/${token}` : null;
+}
+
+async function resolvePickupShortLink(token) {
+  const match = /^([0-9a-z]+)-([0-9a-f]{10})$/i.exec(String(token || '').trim());
+  if (!match) return null;
+  const shipmentId = parseInt(match[1], 36);
+  if (!Number.isSafeInteger(shipmentId) || shipmentId <= 0) return null;
+  const shipment = await database.getShipmentById(shipmentId);
+  if (!shipment || String(shipment.status || '') !== 'ready_for_pickup') return null;
+  const expected = pickupShortLinkToken(shipment);
+  if (!expected || !secureTextEqual(expected, String(token || '').trim().toLowerCase())) return null;
+  const order = await database.getOrderById(shipment.order_id);
+  if (!order || String(order.status || '') !== 'paid') return null;
+  return { shipment, order };
 }
 
 async function presenceApi(req, res, pathname) {
@@ -1204,12 +1257,68 @@ function shipmentCarrierLabel(code) {
   return carrier ? `חברת שילוח ${carrier}` : 'זיהוי אוטומטי';
 }
 
+function normalizeProviderTrackingUrl(value) {
+  const raw = String(value == null ? '' : value).trim();
+  if (!raw) return null;
+  try {
+    const parsed = new URL(raw);
+    const host = String(parsed.hostname || '').toLowerCase();
+    const allowedHost = host === 'aliexpress.com'
+      || host.endsWith('.aliexpress.com')
+      || host === 'aliexpress.us'
+      || host.endsWith('.aliexpress.us');
+    if (parsed.protocol !== 'https:' || !allowedHost) return '';
+    parsed.hash = '';
+    return parsed.toString().slice(0, 2000);
+  } catch (_) {
+    return '';
+  }
+}
+
+function shipmentProviderTrackingUrl(row) {
+  const raw = parseShipmentRaw(row);
+  if (!raw || Array.isArray(raw)) return null;
+  const value = normalizeProviderTrackingUrl(raw.versans_provider_tracking_url);
+  return value || null;
+}
+
+function shipmentRawJsonWithProviderTrackingUrl(row, providerTrackingUrl) {
+  let raw = parseShipmentRaw(row);
+  if (!raw || Array.isArray(raw)) raw = {};
+  else raw = { ...raw };
+  if (providerTrackingUrl) raw.versans_provider_tracking_url = providerTrackingUrl;
+  else delete raw.versans_provider_tracking_url;
+  return JSON.stringify(raw);
+}
+
+async function updateShipmentProviderTrackingUrl(shipment, providerTrackingUrl) {
+  if (!shipment) return null;
+  const now = Date.now();
+  await database.updateShipmentTracking(shipment.id, {
+    carrierCode: shipment.carrier_code || null,
+    status: shipment.status || 'registered',
+    providerStatus: shipment.provider_status || null,
+    subStatus: shipment.sub_status || null,
+    latestEvent: shipment.latest_event || null,
+    latestLocation: shipment.latest_location || null,
+    latestEventAt: shipment.latest_event_at || null,
+    estimatedDeliveryFrom: shipment.estimated_delivery_from || null,
+    estimatedDeliveryTo: shipment.estimated_delivery_to || null,
+    rawJson: shipmentRawJsonWithProviderTrackingUrl(shipment, providerTrackingUrl),
+    registeredAt: shipment.registered_at || null,
+    deliveredAt: shipment.delivered_at || null,
+    updatedAt: now
+  });
+  return database.getShipmentById(shipment.id);
+}
+
 function shipmentRowPayload(row, items = [], pickupNotification = null) {
   const providerMeta = shipmentProviderMeta(row);
   return {
     id: Number(row.id),
     orderId: Number(row.order_id),
     trackingNumber: row.tracking_number,
+    providerTrackingUrl: shipmentProviderTrackingUrl(row),
     carrierCode: row.carrier_code == null ? null : Number(row.carrier_code),
     carrierName: providerMeta.carrierName || shipmentCarrierLabel(row.carrier_code),
     provider: row.provider || '17track',
@@ -1334,12 +1443,99 @@ function cleanPickupText(value, max = 1400) {
 function customerSafePickupText(value, max = 1400) {
   const text = cleanPickupText(value, max);
   if (!text) return null;
-  // Never expose marketplace/provider branding to VerSans customers.
+  // Never expose marketplace/provider branding to VerSans customers. Preserve
+  // line breaks so pickup codes / locker / address remain readable on mobile.
   return text
     .replace(/AliExpress/gi, 'חברת המשלוחים')
     .replace(/Cainiao/gi, 'חברת המשלוחים')
-    .replace(/\s{2,}/g, ' ')
+    .replace(/[ \t]{2,}/g, ' ')
+    .replace(/\n{3,}/g, '\n\n')
     .trim();
+}
+
+function normalizeProviderMessageText(value) {
+  return String(value == null ? '' : value)
+    .replace(/[\u200B\u200C\u200D\u2060\uFEFF]/g, '')
+    .replace(/\r/g, '')
+    .replace(/[ \t]+(?=\n)/g, '')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
+function providerMessageField(text, pattern, max = 500) {
+  const match = pattern.exec(text);
+  if (!match) return null;
+  const value = String(match[1] || '').replace(/^\*+|\*+$/g, '').trim();
+  return value ? value.slice(0, max) : null;
+}
+
+function parseProviderPickupMessage(value, fallbackTrackingNumber = null) {
+  const text = normalizeProviderMessageText(value);
+  const trackingNumber = providerMessageField(text, /(?:משלוח\s*מספר|מספר\s*משלוח)\s*[:：]\s*([A-Za-z0-9._-]+)/i, 120)
+    || providerMessageField(text, /\b(DSVPH[A-Za-z0-9._-]+)\b/i, 120)
+    || (fallbackTrackingNumber ? normalizeTrackingNumber(fallbackTrackingNumber) : null);
+  const pickupCode = providerMessageField(text, /קוד\s*איסוף\s*[:：]\s*([^\n]+)/i, 160);
+  const lockerNumber = providerMessageField(text, /מספר\s*ארונית\s*[:：]\s*([^\n]+)/i, 80);
+  const shelfNumber = providerMessageField(text, /מספר\s*מדף\s*[:：]\s*([^\n]+)/i, 80);
+  const packageNumber = providerMessageField(text, /מספר\s*חבילה\s*[:：]\s*([^\n]+)/i, 120);
+  const verificationCode = providerMessageField(text, /קוד\s*אימות\s*[:：]\s*([^\n]+)/i, 120);
+  const address = providerMessageField(text, /כתובת\s*[:：]\s*([^\n]+)/i, 500);
+  const openingHours = providerMessageField(text, /שעות\s*פתיחה\s*[:：]\s*([^\n]+)/i, 900);
+  const pickupPoint = providerMessageField(text, /החבילה\s+שלך\s+הגיעה\s+ל-?\s*([^,\n]+)/i, 180);
+  const deadline = providerMessageField(text, /נא\s+לאסוף\s+את\s+החבילה\s+תוך\s+([^\n,]+)/i, 180);
+  const arrivalDate = providerMessageField(text, /בתאריך\s+(\d{1,2}\/\d{1,2}\/\d{4})/i, 40);
+  return {
+    trackingNumber: trackingNumber ? normalizeTrackingNumber(trackingNumber) : null,
+    pickupCode,
+    lockerNumber,
+    shelfNumber,
+    packageNumber,
+    verificationCode,
+    address,
+    openingHours,
+    pickupPoint,
+    deadline,
+    arrivalDate,
+    rawText: text
+  };
+}
+
+function providerPickupCustomerDetails(parsed) {
+  if (!parsed) return null;
+  const lines = [];
+  if (parsed.pickupPoint) lines.push(`נקודת איסוף: ${parsed.pickupPoint}`);
+  if (parsed.address) lines.push(`כתובת: ${parsed.address}`);
+  if (parsed.pickupCode) lines.push(`קוד איסוף: ${parsed.pickupCode}`);
+  if (parsed.lockerNumber) lines.push(`מספר ארונית: ${parsed.lockerNumber}`);
+  if (parsed.shelfNumber) lines.push(`מספר מדף: ${parsed.shelfNumber}`);
+  if (parsed.verificationCode) lines.push(`קוד אימות: ${parsed.verificationCode}`);
+  if (!parsed.pickupCode && parsed.packageNumber) lines.push(`מספר חבילה: ${parsed.packageNumber}`);
+  if (parsed.openingHours) lines.push(`שעות פתיחה: ${parsed.openingHours}`);
+  if (parsed.deadline) lines.push(`יש לאסוף תוך ${parsed.deadline}`);
+  return lines.length ? lines.join('\n') : null;
+}
+
+function providerPickupDetailsAreActionable(parsed) {
+  return Boolean(parsed && parsed.trackingNumber && (
+    parsed.pickupCode || parsed.verificationCode || parsed.lockerNumber || parsed.address || parsed.pickupPoint
+  ));
+}
+
+function shipmentRequiresProviderPickupDetails(shipment) {
+  const tracking = String(shipment && shipment.tracking_number || '').toUpperCase();
+  return tracking.startsWith('DSVPH');
+}
+
+function shipmentHasActionablePickupDetails(shipment, pickup = null) {
+  if (!shipment) return false;
+  try {
+    const raw = shipment.raw_json ? JSON.parse(shipment.raw_json) : null;
+    const parsed = raw && raw.versansProviderPickupMessage && raw.versansProviderPickupMessage.parsed;
+    if (providerPickupDetailsAreActionable(parsed)) return true;
+  } catch (_) {}
+  const combined = [pickup && pickup.message, pickup && pickup.location, shipment.latest_event, shipment.latest_location]
+    .filter(Boolean).join(' ');
+  return /(קוד\s*איסוף|קוד\s*אימות|מספר\s*ארונית|מספר\s*מדף|כתובת\s*:|pickup\s*code|locker|pickup\s*point)/i.test(combined);
 }
 
 const PICKUP_EVENT_PATTERN = /(ready\s+for\s+(pickup|collection)|available\s+for\s+(pickup|collection)|awaiting\s+(pickup|collection)|pick\s*up|pickup\s*(point|station|location|ready)?|collection\s*(point|station|location|ready)?|parcel\s+locker|locker|ready_for_pickup|available_for_pickup|awaiting_collection|מוכן\s+לאיסוף|נקודת\s+איסוף|איסוף)/i;
@@ -1385,16 +1581,29 @@ function shipmentPickupEventCandidates(shipment) {
 }
 
 function shipmentPickupDetails(shipment) {
-  if (!shipment) return { message: null, location: null, source: null, eventAt: null };
+  if (!shipment) return { message: null, location: null, source: null, eventAt: null, parsed: null };
   const candidates = shipmentPickupEventCandidates(shipment);
   const aliExpressEvent = candidates.find((event) => /cainiao|aliexpress/i.test(String(event && event.provider || ''))) || null;
   const selected = aliExpressEvent || candidates[0] || null;
-  if (!selected) return { message: null, location: null, source: null, eventAt: null };
+  if (!selected) return { message: null, location: null, source: null, eventAt: null, parsed: null };
+
+  // Cainiao/AliExpress often exposes the same last-mile pickup instruction
+  // shown in the AliExpress tracking timeline (pickup code, locker, address,
+  // hours, etc.). Parse that provider event directly so the customer receives
+  // only actionable pickup details rather than the provider's full message.
+  const parsed = parseProviderPickupMessage(selected.description, shipment.tracking_number);
+  const parsedMessage = providerPickupDetailsAreActionable(parsed)
+    ? providerPickupCustomerDetails(parsed)
+    : null;
+
   return {
-    message: cleanPickupText(selected.description),
-    location: cleanPickupText(selected.location, 500),
+    message: parsedMessage || cleanPickupText(selected.description),
+    location: parsed && parsed.address
+      ? cleanPickupText(parsed.address, 500)
+      : cleanPickupText(selected.location, 500),
     source: cleanPickupText(selected.provider, 120),
-    eventAt: selected.time == null ? null : Number(selected.time)
+    eventAt: selected.time == null ? null : Number(selected.time),
+    parsed
   };
 }
 
@@ -1457,13 +1666,18 @@ async function shippingBotReadyPickups(limit = 200) {
     const digits = whatsappDigits(phone);
     const customerName = [customer.firstName, customer.lastName].filter(Boolean).join(' ').trim() || customer.name || order.customer_email || 'לקוח/ה';
     const pickup = shipmentPickupDetails(shipment);
+    const providerDetailsRequired = shipmentRequiresProviderPickupDetails(shipment);
+    const pickupDetailsReady = shipmentHasActionablePickupDetails(shipment, pickup);
+    // Cainiao/Parcel Home shipments must not reach the bot until we have the
+    // actual pickup instructions (code/address/locker/etc.), not just a generic
+    // ready-for-pickup status.
+    if (providerDetailsRequired && !pickupDetailsReady) continue;
     const message = shippingBotMessage({
       customerName,
       items,
       pickupMessageRaw: pickup.message,
       pickupLocation: pickup.location
     });
-    const encodedMessage = encodeURIComponent(message);
     out.push({
       shipmentId: Number(shipment.id),
       orderRef: order.order_ref,
@@ -1489,10 +1703,18 @@ async function shippingBotReadyPickups(limit = 200) {
       exactMessage: message,
       mustSendExactMessage: true,
       messagePolicy: botVerbatimMessagePolicy(),
-      whatsappWebUrl: digits ? `https://web.whatsapp.com/send/?phone=${digits}&text=${encodedMessage}&type=phone_number&app_absent=0` : null,
-      waMeUrl: digits ? `https://wa.me/${digits}?text=${encodedMessage}` : null,
-      safeToSend: Boolean(digits && items.length),
-      issue: !digits ? 'missing_or_invalid_phone' : (!items.length ? 'tracking_has_no_linked_products' : null)
+      messageMode: 'short_server_redirect',
+      shortWhatsAppUrl: digits ? pickupShortWhatsAppUrl(shipment) : null,
+      whatsappWebUrl: digits ? pickupShortWhatsAppUrl(shipment) : null,
+      waMeUrl: digits ? pickupShortWhatsAppUrl(shipment) : null,
+      instruction: 'Type/open the short whatsappWebUrl exactly as provided, wait for the VerSans server redirect to WhatsApp with the pickup message already prefilled, then only click Send. Do not type or reconstruct the customer message.',
+      pickupDetailsReady,
+      safeToSend: Boolean(digits && items.length && (!providerDetailsRequired || pickupDetailsReady)),
+      issue: !digits
+        ? 'missing_or_invalid_phone'
+        : (!items.length
+          ? 'tracking_has_no_linked_products'
+          : (providerDetailsRequired && !pickupDetailsReady ? 'waiting_for_provider_pickup_details' : null))
     });
   }
   return out;
@@ -1801,6 +2023,20 @@ async function applyTrackingUpdate(update) {
   }
 
   const now = Date.now();
+  const providerTrackingUrl = shipmentProviderTrackingUrl(shipment);
+  if (providerTrackingUrl) {
+    let incomingRaw = null;
+    try {
+      incomingRaw = update.rawJson
+        ? JSON.parse(update.rawJson)
+        : (parseShipmentRaw(shipment) || {});
+    } catch (_) {
+      incomingRaw = parseShipmentRaw(shipment) || {};
+    }
+    if (!incomingRaw || Array.isArray(incomingRaw) || typeof incomingRaw !== 'object') incomingRaw = {};
+    incomingRaw.versans_provider_tracking_url = providerTrackingUrl;
+    update.rawJson = JSON.stringify(incomingRaw);
+  }
   await database.updateShipmentTracking(shipment.id, { ...update, registeredAt: shipment.registered_at || null, updatedAt: now });
   const fresh = await database.getShipmentById(shipment.id);
   const order = fresh ? await database.getOrderById(fresh.order_id) : null;
@@ -2262,6 +2498,86 @@ async function publicTrackingApi(req, res, pathname, parsed) {
   return true;
 }
 
+async function providerMessageWebhookApi(req, res, pathname) {
+  if (pathname !== '/api/webhooks/provider-message') return false;
+  if (req.method !== 'POST') { json(res, 405, { ok: false, error: 'method_not_allowed' }); return true; }
+  if (!providerMessageKeyConfigured()) { json(res, 503, { ok: false, error: 'provider_message_key_not_configured' }); return true; }
+  if (!providerMessageKeyAllowed(req)) { json(res, 401, { ok: false, error: 'invalid_provider_message_key' }); return true; }
+
+  const raw = await readRawBody(req, 512 * 1024);
+  let body = null;
+  let messageText = '';
+  try {
+    body = raw ? JSON.parse(raw) : {};
+    messageText = String(body && (body.message || body.text || body.body || body.rawText) || '');
+  } catch (_) {
+    messageText = String(raw || '');
+    body = {};
+  }
+  if (!messageText.trim()) { json(res, 400, { ok: false, error: 'missing_message_text' }); return true; }
+
+  const parsedPickup = parseProviderPickupMessage(messageText);
+  if (!parsedPickup.trackingNumber) {
+    json(res, 422, { ok: false, error: 'tracking_number_not_found', parsed: parsedPickup });
+    return true;
+  }
+  if (!providerPickupDetailsAreActionable(parsedPickup)) {
+    json(res, 422, { ok: false, error: 'pickup_details_not_found', trackingId: parsedPickup.trackingNumber, parsed: parsedPickup });
+    return true;
+  }
+
+  const shipment = await database.getShipmentByTracking(parsedPickup.trackingNumber);
+  if (!shipment) {
+    json(res, 404, { ok: false, error: 'tracking_not_found', trackingId: parsedPickup.trackingNumber, parsed: parsedPickup });
+    return true;
+  }
+
+  const now = Date.now();
+  const receivedAtRaw = Number(body && body.receivedAt);
+  const receivedAt = Number.isFinite(receivedAtRaw) && receivedAtRaw > 0 ? receivedAtRaw : now;
+  const customerDetails = providerPickupCustomerDetails(parsedPickup);
+  let rawJson = {};
+  try { rawJson = shipment.raw_json ? JSON.parse(shipment.raw_json) : {}; } catch (_) { rawJson = {}; }
+  if (!rawJson || typeof rawJson !== 'object' || Array.isArray(rawJson)) rawJson = {};
+  rawJson.versansProviderPickupMessage = {
+    receivedAt,
+    sender: String(body && body.sender || '').trim().slice(0, 180) || null,
+    source: String(body && body.source || 'provider_message').trim().slice(0, 120),
+    parsed: parsedPickup,
+    rawText: normalizeProviderMessageText(messageText).slice(0, 12000)
+  };
+
+  await database.updateShipmentTracking(shipment.id, {
+    carrierCode: shipment.carrier_code || null,
+    status: 'ready_for_pickup',
+    providerStatus: shipment.provider_status || 'provider_message',
+    subStatus: 'ready_for_pickup',
+    latestEvent: customerDetails ? `מוכן לאיסוף\n${customerDetails}` : 'מוכן לאיסוף',
+    latestLocation: parsedPickup.address || parsedPickup.pickupPoint || shipment.latest_location || null,
+    latestEventAt: receivedAt,
+    estimatedDeliveryFrom: shipment.estimated_delivery_from || null,
+    estimatedDeliveryTo: shipment.estimated_delivery_to || null,
+    rawJson: JSON.stringify(rawJson),
+    registeredAt: shipment.registered_at || null,
+    deliveredAt: shipment.delivered_at || null,
+    updatedAt: now
+  });
+
+  const fresh = await database.getShipmentById(shipment.id);
+  const order = fresh ? await database.getOrderById(fresh.order_id) : null;
+  json(res, 200, {
+    ok: true,
+    trackingId: parsedPickup.trackingNumber,
+    shipmentId: Number(shipment.id),
+    orderRef: order && order.order_ref || null,
+    status: 'ready_for_pickup',
+    parsed: parsedPickup,
+    customerPickupDetails: customerDetails,
+    pickupBotReady: true
+  });
+  return true;
+}
+
 async function trackingWebhookApi(req, res, pathname) {
   if (pathname !== '/api/webhooks/17track') return false;
   if (req.method !== 'POST') { json(res, 405, { ok: false, error: 'method_not_allowed' }); return true; }
@@ -2292,7 +2608,10 @@ async function trackingWebhookApi(req, res, pathname) {
 
 async function adminApi(req, res, pathname, parsed) {
   if (!pathname.startsWith('/api/admin/')) return false;
-  const shippingBotEndpoint = pathname === '/api/admin/bot/shipping/ready-pickups' || pathname === '/api/admin/bot/shipping/mark-sent';
+  const shippingBotEndpoint = pathname === '/api/admin/bot/shipping/ready-pickups'
+    || pathname === '/api/admin/bot/shipping/mark-sent'
+    || pathname === '/api/admin/bot/shipping/pickup-collector/pending'
+    || pathname === '/api/admin/bot/shipping/pickup-collector/submit';
   const orderNotificationsBotEndpoint = pathname === '/api/admin/bot/orders/new-order' || pathname === '/api/admin/bot/orders/mark-sent';
   const botKeyAccess = shippingBotEndpoint
     ? shippingBotKeyAllowed(req)
@@ -2363,7 +2682,13 @@ async function adminApi(req, res, pathname, parsed) {
     const orderItem = orderItems[itemIndex];
     const trackingNumber = normalizeTrackingNumber(body && body.trackingNumber);
     const carrierCode = normalizeCarrierCode(body && body.carrierCode);
+    const providerTrackingUrlProvided = Boolean(body && Object.prototype.hasOwnProperty.call(body, 'providerTrackingUrl'));
+    const providerTrackingUrl = normalizeProviderTrackingUrl(body && body.providerTrackingUrl);
     if (!/^[A-Za-z0-9-]{5,80}$/.test(trackingNumber)) { json(res, 400, { ok: false, error: 'invalid_tracking_number' }); return true; }
+    if (providerTrackingUrlProvided && String(body && body.providerTrackingUrl || '').trim() && !providerTrackingUrl) {
+      json(res, 400, { ok: false, error: 'invalid_provider_tracking_url' });
+      return true;
+    }
 
     const currentShipments = await listOrderShipmentsPayload(order.id);
     const currentForItem = shipmentForOrderItem(currentShipments, itemIndex);
@@ -2379,7 +2704,19 @@ async function adminApi(req, res, pathname, parsed) {
       return true;
     }
     if (currentForItem && currentForItem.trackingNumber === trackingNumber) {
-      json(res, 200, { ok: true, shipment: currentForItem, unchanged: true });
+      let storedShipment = await database.getShipmentById(currentForItem.id);
+      const previousProviderTrackingUrl = shipmentProviderTrackingUrl(storedShipment);
+      let providerTrackingUrlUpdated = false;
+      if (providerTrackingUrlProvided && previousProviderTrackingUrl !== providerTrackingUrl) {
+        storedShipment = await updateShipmentProviderTrackingUrl(storedShipment, providerTrackingUrl);
+        providerTrackingUrlUpdated = true;
+      }
+      json(res, 200, {
+        ok: true,
+        shipment: await shipmentWithItems(storedShipment),
+        unchanged: !providerTrackingUrlUpdated,
+        providerTrackingUrlUpdated
+      });
       return true;
     }
 
@@ -2421,8 +2758,13 @@ async function adminApi(req, res, pathname, parsed) {
       });
       await database.setShipmentItems(duplicateShipment.id, mergedRows);
 
+      let duplicateShipmentForRefresh = duplicateShipment;
+      if (providerTrackingUrlProvided) {
+        duplicateShipmentForRefresh = await updateShipmentProviderTrackingUrl(duplicateShipment, providerTrackingUrl) || duplicateShipment;
+      }
+
       if (is17TrackConfigured()) {
-        try { await refreshShipmentFrom17Track(duplicateShipment, { realTime: false }); } catch (error) {
+        try { await refreshShipmentFrom17Track(duplicateShipmentForRefresh, { realTime: false }); } catch (error) {
           console.error(`17TRACK shared shipment refresh failed for ${trackingNumber}:`, error && error.message);
         }
       }
@@ -2484,7 +2826,17 @@ async function adminApi(req, res, pathname, parsed) {
         }
         await database.deleteShipment(currentForItem.id);
       }
-      shipmentId = await database.createShipment({ orderId: order.id, trackingNumber, carrierCode: resolvedCarrier, provider: '17track', status: 'registered', registeredAt: providerRegisteredAt, createdAt: now, updatedAt: now });
+      shipmentId = await database.createShipment({
+        orderId: order.id,
+        trackingNumber,
+        carrierCode: resolvedCarrier,
+        provider: '17track',
+        status: 'registered',
+        rawJson: providerTrackingUrl ? JSON.stringify({ versans_provider_tracking_url: providerTrackingUrl }) : null,
+        registeredAt: providerRegisteredAt,
+        createdAt: now,
+        updatedAt: now
+      });
       await database.setShipmentItems(shipmentId, [{
         itemIndex,
         productId: orderItem.id || null,
@@ -2688,6 +3040,134 @@ async function adminApi(req, res, pathname, parsed) {
     return true;
   }
 
+
+  if (pathname === '/api/admin/bot/shipping/pickup-collector/pending') {
+    if (req.method !== 'GET') { json(res, 405, { ok: false, error: 'method_not_allowed' }); return true; }
+    const botAccess = await shippingBotAccessAllowed(req);
+    if (!botAccess.ok) {
+      json(res, 401, { ok: false, error: shippingBotKeyConfigured() ? 'bot_auth_required' : 'admin_auth_required' });
+      return true;
+    }
+    const requestedLimit = Number(parsed.searchParams.get('limit') || 50);
+    const limit = Number.isFinite(requestedLimit) ? Math.max(1, Math.min(100, Math.floor(requestedLimit))) : 50;
+    if (String(parsed.searchParams.get('refresh') || '') === '1') {
+      try { await syncActiveShipmentTracking(); } catch (error) {
+        console.error('Pickup collector tracking refresh failed:', error && error.message);
+      }
+    }
+    const createdAfter = Date.now() - 90 * 24 * 60 * 60 * 1000;
+    const rows = await database.listShipmentsByStatus('ready_for_pickup', createdAfter, Math.max(limit * 4, 100));
+    const jobs = [];
+    for (const shipment of rows) {
+      if (jobs.length >= limit) break;
+      if (!shipmentRequiresProviderPickupDetails(shipment)) continue;
+      const pickup = shipmentPickupDetails(shipment);
+      if (shipmentHasActionablePickupDetails(shipment, pickup)) continue;
+      const order = await database.getOrderById(shipment.order_id);
+      if (!order || order.status !== 'paid') continue;
+      const trackingId = normalizeTrackingNumber(shipment.tracking_number);
+      if (!trackingId) continue;
+      const directProviderTrackingUrl = shipmentProviderTrackingUrl(shipment);
+      jobs.push({
+        shipmentId: Number(shipment.id),
+        orderRef: order.order_ref,
+        trackingId,
+        status: shipment.status,
+        latestEvent: shipment.latest_event || null,
+        latestEventAt: shipment.latest_event_at == null ? null : Number(shipment.latest_event_at),
+        provider: directProviderTrackingUrl ? 'AliExpress direct tracking page' : 'Cainiao / AliExpress',
+        trackingPageSource: directProviderTrackingUrl ? 'aliexpress_direct' : 'cainiao_public',
+        trackingPageUrl: directProviderTrackingUrl || `https://global.cainiao.com/newDetail.htm?mailNoList=${encodeURIComponent(trackingId)}`,
+        submitEndpoint: 'https://versans.com/api/admin/bot/shipping/pickup-collector/submit',
+        instruction: directProviderTrackingUrl
+          ? 'Open trackingPageUrl directly. It is the saved AliExpress shipment page for this parcel. If pickup instructions are visible, copy the complete visible pickup instruction text exactly (including pickup code, locker/shelf, address and hours when present) and POST it to submitEndpoint with shipmentId, trackingId and message. Do not navigate through My Orders and do not mark the customer pickup notification as sent.'
+          : 'Open trackingPageUrl. If pickup instructions are visible, copy the complete visible pickup instruction text exactly (including pickup code, locker/shelf, address and hours when present) and POST it to submitEndpoint with shipmentId, trackingId and message. Do not mark the customer pickup notification as sent.'
+      });
+    }
+    json(res, 200, {
+      ok: true,
+      generatedAt: Date.now(),
+      count: jobs.length,
+      jobs
+    });
+    return true;
+  }
+
+  if (pathname === '/api/admin/bot/shipping/pickup-collector/submit') {
+    if (req.method !== 'POST') { json(res, 405, { ok: false, error: 'method_not_allowed' }); return true; }
+    const botAccess = await shippingBotAccessAllowed(req);
+    if (!botAccess.ok) {
+      json(res, 401, { ok: false, error: shippingBotKeyConfigured() ? 'bot_auth_required' : 'admin_auth_required' });
+      return true;
+    }
+    if (botAccess.mode !== 'bot_key' && !sameOriginAllowed(req)) { json(res, 403, { ok: false, error: 'origin_not_allowed' }); return true; }
+    const body = await readJsonBody(req, 512 * 1024);
+    const shipmentId = Number(body && body.shipmentId);
+    const trackingId = normalizeTrackingNumber(body && (body.trackingId || body.trackingNumber));
+    const messageText = String(body && (body.message || body.text || body.rawText) || '').trim();
+    if (!Number.isInteger(shipmentId) || shipmentId <= 0) { json(res, 400, { ok: false, error: 'invalid_shipment_id' }); return true; }
+    if (!messageText) { json(res, 400, { ok: false, error: 'missing_message_text' }); return true; }
+    const shipment = await database.getShipmentById(shipmentId);
+    if (!shipment) { json(res, 404, { ok: false, error: 'shipment_not_found' }); return true; }
+    const storedTracking = normalizeTrackingNumber(shipment.tracking_number);
+    if (trackingId && trackingId !== storedTracking) { json(res, 409, { ok: false, error: 'tracking_mismatch' }); return true; }
+
+    const parsedPickup = parseProviderPickupMessage(messageText, storedTracking);
+    if (!providerPickupDetailsAreActionable(parsedPickup)) {
+      json(res, 422, {
+        ok: false,
+        error: 'pickup_details_not_found',
+        trackingId: storedTracking,
+        parsed: parsedPickup,
+        instruction: 'The captured text did not include actionable pickup details yet. Leave the collector job pending and try again later.'
+      });
+      return true;
+    }
+
+    const now = Date.now();
+    const customerDetails = providerPickupCustomerDetails(parsedPickup);
+    let rawJson = {};
+    try { rawJson = shipment.raw_json ? JSON.parse(shipment.raw_json) : {}; } catch (_) { rawJson = {}; }
+    if (!rawJson || typeof rawJson !== 'object' || Array.isArray(rawJson)) rawJson = {};
+    rawJson.versansProviderPickupMessage = {
+      receivedAt: now,
+      sender: 'Cainiao web collector',
+      source: String(body && body.source || 'cainiao_web_collector').trim().slice(0, 120),
+      parsed: parsedPickup,
+      rawText: normalizeProviderMessageText(messageText).slice(0, 12000)
+    };
+
+    await database.updateShipmentTracking(shipment.id, {
+      carrierCode: shipment.carrier_code || null,
+      status: 'ready_for_pickup',
+      providerStatus: shipment.provider_status || 'provider_message',
+      subStatus: 'ready_for_pickup',
+      latestEvent: customerDetails ? `מוכן לאיסוף\n${customerDetails}` : 'מוכן לאיסוף',
+      latestLocation: parsedPickup.address || parsedPickup.pickupPoint || shipment.latest_location || null,
+      latestEventAt: shipment.latest_event_at || now,
+      estimatedDeliveryFrom: shipment.estimated_delivery_from || null,
+      estimatedDeliveryTo: shipment.estimated_delivery_to || null,
+      rawJson: JSON.stringify(rawJson),
+      registeredAt: shipment.registered_at || null,
+      deliveredAt: shipment.delivered_at || null,
+      updatedAt: now
+    });
+
+    const fresh = await database.getShipmentById(shipment.id);
+    const pickup = shipmentPickupDetails(fresh || shipment);
+    json(res, 200, {
+      ok: true,
+      shipmentId: Number(shipment.id),
+      trackingId: storedTracking,
+      parsed: parsedPickup,
+      customerPickupDetails: customerDetails,
+      pickupDetailsReady: shipmentHasActionablePickupDetails(fresh || shipment, pickup),
+      pickupBotReady: true,
+      nextStep: 'The normal Pickup Bot can now send this shipment to the customer using its short WhatsApp link.'
+    });
+    return true;
+  }
+
   if (pathname === '/api/admin/bot/shipping/ready-pickups') {
     if (req.method !== 'GET') { json(res, 405, { ok: false, error: 'method_not_allowed' }); return true; }
     const botAccess = await shippingBotAccessAllowed(req);
@@ -2786,7 +3266,11 @@ async function adminApi(req, res, pathname, parsed) {
           items,
           message,
           messagePolicy: botVerbatimMessagePolicy(),
-          whatsappWebUrl: (isReadyForPickup && digits && message) ? `https://web.whatsapp.com/send/?phone=${digits}&text=${encodeURIComponent(message)}&type=phone_number&app_absent=0` : null,
+          messageMode: 'short_server_redirect',
+          shortWhatsAppUrl: (isReadyForPickup && digits && message) ? pickupShortWhatsAppUrl(shipment) : null,
+          whatsappWebUrl: (isReadyForPickup && digits && message) ? pickupShortWhatsAppUrl(shipment) : null,
+          waMeUrl: (isReadyForPickup && digits && message) ? pickupShortWhatsAppUrl(shipment) : null,
+          instruction: 'Type/open the short whatsappWebUrl exactly as provided, wait for the VerSans server redirect to WhatsApp with the pickup message already prefilled, then only click Send.',
           safeToSend: Boolean(isReadyForPickup && digits && items.length),
           diagnosticIssue: isReadyForPickup ? null : 'shipment_not_ready_for_pickup'
         }
@@ -3964,6 +4448,7 @@ const server = http.createServer(async (req, res) => {
     }
     if (await adminPage(req, res, pathname)) return;
     if (await marketingUnsubscribePage(req, res, pathname, parsed)) return;
+    if (await providerMessageWebhookApi(req, res, pathname)) return;
     if (await trackingWebhookApi(req, res, pathname)) return;
     if (await publicTrackingApi(req, res, pathname, parsed)) return;
     if (await presenceApi(req, res, pathname)) return;
@@ -4243,6 +4728,54 @@ const server = http.createServer(async (req, res) => {
       const customerName = String([customer.firstName, customer.lastName].filter(Boolean).join(' ') || order.customer_email || 'לקוח/ה').trim();
       const orderRef = String(order.order_ref || '').trim();
       const message = newOrderCustomerMessage({ customerName, orderRef, items: orderNotificationItems(order, orderRef) });
+      const destination = `https://web.whatsapp.com/send/?phone=${digits}&text=${encodeURIComponent(message)}&type=phone_number&app_absent=0`;
+      redirect(res, destination, 302);
+      return;
+    }
+
+
+    const pickupShortWhatsAppMatch = /^\/p\/([0-9a-z]+-[0-9a-f]{10})$/i.exec(pathname);
+    if (pickupShortWhatsAppMatch && (req.method === 'GET' || req.method === 'HEAD')) {
+      const resolved = await resolvePickupShortLink(pickupShortWhatsAppMatch[1]);
+      if (!resolved) {
+        res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store' });
+        res.end('קישור איסוף לא תקין או שפג תוקפו');
+        return;
+      }
+      const { shipment, order } = resolved;
+      const customer = parseStoredCustomer(order);
+      const digits = whatsappDigits(order.customer_phone || customer.phone);
+      if (!digits) {
+        res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store' });
+        res.end('לא נמצא מספר WhatsApp להזמנה');
+        return;
+      }
+      const linkedItems = await database.listShipmentItems(shipment.id);
+      const items = (linkedItems || []).map((item) => ({
+        itemIndex: Number(item.item_index),
+        itemOrderRef: orderItemRef(order.order_ref, Number(item.item_index)),
+        productId: item.product_id || null,
+        productName: item.product_name || 'מוצר',
+        qty: Number(item.qty || 1)
+      }));
+      if (!items.length) {
+        res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store' });
+        res.end('לא נמצאו מוצרים מקושרים למשלוח');
+        return;
+      }
+      const customerName = [customer.firstName, customer.lastName].filter(Boolean).join(' ').trim() || customer.name || order.customer_email || 'לקוח/ה';
+      const pickup = shipmentPickupDetails(shipment);
+      if (shipmentRequiresProviderPickupDetails(shipment) && !shipmentHasActionablePickupDetails(shipment, pickup)) {
+        res.writeHead(409, { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store' });
+        res.end('פרטי האיסוף עדיין לא התקבלו מחברת המשלוחים');
+        return;
+      }
+      const message = shippingBotMessage({
+        customerName,
+        items,
+        pickupMessageRaw: pickup.message,
+        pickupLocation: pickup.location
+      });
       const destination = `https://web.whatsapp.com/send/?phone=${digits}&text=${encodeURIComponent(message)}&type=phone_number&app_absent=0`;
       redirect(res, destination, 302);
       return;
