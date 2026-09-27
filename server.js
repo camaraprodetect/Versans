@@ -1522,8 +1522,13 @@ function providerPickupDetailsAreActionable(parsed) {
 }
 
 function shipmentRequiresProviderPickupDetails(shipment) {
-  const tracking = String(shipment && shipment.tracking_number || '').toUpperCase();
-  return tracking.startsWith('DSVPH');
+  if (!shipment) return false;
+  const tracking = String(shipment.tracking_number || '').toUpperCase();
+  // Parcel Home/Cainiao tracking numbers require the actual pickup instructions,
+  // not only a generic ready-for-pickup status. The same is true for every
+  // shipment that has a saved direct AliExpress tracking page, regardless of
+  // the tracking-number prefix.
+  return tracking.startsWith('DSVPH') || Boolean(shipmentProviderTrackingUrl(shipment));
 }
 
 function shipmentHasActionablePickupDetails(shipment, pickup = null) {
@@ -1582,15 +1587,33 @@ function shipmentPickupEventCandidates(shipment) {
 
 function shipmentPickupDetails(shipment) {
   if (!shipment) return { message: null, location: null, source: null, eventAt: null, parsed: null };
+
+  // Pickup Collector data is the authoritative source once it exists. A generic
+  // Cainiao timeline event such as "Awaiting for you to pick-up" must never
+  // override a saved locker/code/address captured from AliExpress/Cainiao.
+  try {
+    const raw = shipment.raw_json ? JSON.parse(shipment.raw_json) : null;
+    const saved = raw && raw.versansProviderPickupMessage;
+    const savedParsed = saved && saved.parsed;
+    if (providerPickupDetailsAreActionable(savedParsed)) {
+      const savedMessage = providerPickupCustomerDetails(savedParsed);
+      return {
+        message: savedMessage,
+        location: savedParsed.address
+          ? cleanPickupText(savedParsed.address, 500)
+          : (savedParsed.pickupPoint ? cleanPickupText(savedParsed.pickupPoint, 500) : null),
+        source: cleanPickupText(saved.source || saved.sender || 'pickup_collector', 120),
+        eventAt: saved.receivedAt == null ? null : Number(saved.receivedAt),
+        parsed: savedParsed
+      };
+    }
+  } catch (_) {}
+
   const candidates = shipmentPickupEventCandidates(shipment);
   const aliExpressEvent = candidates.find((event) => /cainiao|aliexpress/i.test(String(event && event.provider || ''))) || null;
   const selected = aliExpressEvent || candidates[0] || null;
   if (!selected) return { message: null, location: null, source: null, eventAt: null, parsed: null };
 
-  // Cainiao/AliExpress often exposes the same last-mile pickup instruction
-  // shown in the AliExpress tracking timeline (pickup code, locker, address,
-  // hours, etc.). Parse that provider event directly so the customer receives
-  // only actionable pickup details rather than the provider's full message.
   const parsed = parseProviderPickupMessage(selected.description, shipment.tracking_number);
   const parsedMessage = providerPickupDetailsAreActionable(parsed)
     ? providerPickupCustomerDetails(parsed)
