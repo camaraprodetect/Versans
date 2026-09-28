@@ -1038,6 +1038,23 @@ async function orderNotificationsBotAccessAllowed(req) {
   return admin ? { ok: true, mode: 'admin_session', admin } : { ok: false, mode: null };
 }
 
+function pickupMessageBotKeyConfigured() {
+  return Boolean(String(process.env.VERSANS_PICKUP_MESSAGE_BOT_KEY || '').trim());
+}
+
+function requestPickupMessageBotKey(req) {
+  const auth = String(req.headers.authorization || '').trim();
+  const bearer = /^Bearer\s+(.+)$/i.exec(auth);
+  if (bearer) return bearer[1].trim();
+  return String(req.headers['x-versans-pickup-message-bot-key'] || '').trim();
+}
+
+function pickupMessageBotKeyAllowed(req) {
+  const expected = String(process.env.VERSANS_PICKUP_MESSAGE_BOT_KEY || '').trim();
+  if (!expected) return false;
+  return secureTextEqual(requestPickupMessageBotKey(req), expected);
+}
+
 function newOrderWebhookConfig() {
   return {
     url: String(process.env.VERSANS_NEW_ORDER_WEBHOOK_URL || '').trim(),
@@ -2767,8 +2784,9 @@ async function adminApi(req, res, pathname, parsed) {
     || pathname === '/api/admin/bot/shipping/pickup-collector/submit';
   const orderNotificationsBotEndpoint = pathname === '/api/admin/bot/orders/new-order' || pathname === '/api/admin/bot/orders/mark-sent';
   const shippingMarkSentOrderBotAccess = pathname === '/api/admin/bot/shipping/mark-sent' && orderNotificationsBotKeyAllowed(req);
+  const shippingMarkSentPickupMessageBotAccess = pathname === '/api/admin/bot/shipping/mark-sent' && pickupMessageBotKeyAllowed(req);
   const botKeyAccess = shippingBotEndpoint
-    ? (shippingBotKeyAllowed(req) || shippingMarkSentOrderBotAccess)
+    ? (shippingBotKeyAllowed(req) || shippingMarkSentOrderBotAccess || shippingMarkSentPickupMessageBotAccess)
     : (orderNotificationsBotEndpoint ? orderNotificationsBotKeyAllowed(req) : false);
   const admin = botKeyAccess ? null : await getAdminUser(req);
   if (!admin && !botKeyAccess) {
@@ -3555,9 +3573,10 @@ async function adminApi(req, res, pathname, parsed) {
   if (pathname === '/api/admin/bot/shipping/mark-sent') {
     if (req.method !== 'POST') { json(res, 405, { ok: false, error: 'method_not_allowed' }); return true; }
     const orderBotAllowed = orderNotificationsBotKeyAllowed(req);
-    const botAccess = orderBotAllowed ? { ok: true, mode: 'bot_key' } : await shippingBotAccessAllowed(req);
+    const pickupMessageBotAllowed = pickupMessageBotKeyAllowed(req);
+    const botAccess = (orderBotAllowed || pickupMessageBotAllowed) ? { ok: true, mode: 'bot_key' } : await shippingBotAccessAllowed(req);
     if (!botAccess.ok) {
-      json(res, 401, { ok: false, error: (shippingBotKeyConfigured() || orderNotificationsBotKeyConfigured()) ? 'bot_auth_required' : 'admin_auth_required' });
+      json(res, 401, { ok: false, error: (shippingBotKeyConfigured() || orderNotificationsBotKeyConfigured() || pickupMessageBotKeyConfigured()) ? 'bot_auth_required' : 'admin_auth_required' });
       return true;
     }
     if (botAccess.mode !== 'bot_key' && !sameOriginAllowed(req)) { json(res, 403, { ok: false, error: 'origin_not_allowed' }); return true; }
