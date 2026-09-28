@@ -103,3 +103,23 @@ button,input,select,a{font:inherit}.admin-app{display:grid;grid-template-columns
     min-width:0;
   }
 }
+
+
+/* Manual pickup-message intake: paste Parcel Home/last-mile message and dispatch via Order Notifications. */
+.admin-pickup-message-card{margin-bottom:18px;border-color:#d7e3dc}
+.admin-pickup-message-card__badge{display:inline-flex;align-items:center;min-height:28px;padding:5px 9px;border-radius:999px;background:#eef7f1;color:#2b6849;font-size:9px;font-weight:800;white-space:nowrap}
+.admin-pickup-message-form{display:grid;gap:13px}
+.admin-pickup-message-form label{display:grid;gap:7px}
+.admin-pickup-message-form label>span{font-size:10px;font-weight:800;color:var(--admin-navy)}
+.admin-pickup-message-form textarea{display:block;width:100%;min-height:210px;resize:vertical;border:1px solid var(--admin-line-strong);border-radius:11px;background:#fbfcfd;padding:13px 14px;outline:none;font:500 12px/1.8 inherit;color:#26343e;direction:rtl;text-align:right}
+.admin-pickup-message-form textarea:focus{border-color:#8fa1ae;box-shadow:0 0 0 3px rgba(20,35,51,.05);background:#fff}
+.admin-pickup-message-form__actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.admin-pickup-message-form__actions .admin-shipment-submit{min-width:220px;padding-inline:20px}
+.admin-pickup-message-result{border:1px solid var(--admin-line);border-radius:10px;padding:12px 13px;display:grid;gap:7px;background:#f8fafb}
+.admin-pickup-message-result[hidden]{display:none}
+.admin-pickup-message-result.is-success{border-color:#cce4d6;background:#f1faf5;color:#245f46}
+.admin-pickup-message-result.is-error{border-color:#edcccc;background:#fff4f4;color:#9f3030}
+.admin-pickup-message-result__meta{font-size:10px;line-height:1.6}
+.admin-pickup-message-result__details{margin:2px 0 0;padding:10px;border:1px solid rgba(20,35,51,.08);border-radius:8px;background:rgba(255,255,255,.68);white-space:pre-wrap;font:500 10px/1.75 inherit;color:#34434d}
+.admin-pickup-message-result__fallback{justify-self:start;display:inline-flex;align-items:center;min-height:34px;padding:7px 11px;border-radius:8px;background:var(--admin-navy);color:#fff;text-decoration:none;font-size:10px;font-weight:800}
+@media(max-width:720px){.admin-pickup-message-card__badge{display:none}.admin-pickup-message-form textarea{min-height:250px}.admin-pickup-message-form__actions{display:grid}.admin-pickup-message-form__actions .admin-shipment-submit{width:100%;min-width:0}}

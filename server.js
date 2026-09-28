@@ -1443,11 +1443,14 @@ function cleanPickupText(value, max = 1400) {
 function customerSafePickupText(value, max = 1400) {
   const text = cleanPickupText(value, max);
   if (!text) return null;
-  // Never expose marketplace/provider branding to VerSans customers. Preserve
-  // line breaks so pickup codes / locker / address remain readable on mobile.
+  // Never expose marketplace/provider branding or external tracking identifiers
+  // to VerSans customers. External tracking IDs (for example DSVPH...) are used
+  // only internally to match the provider message to the correct shipment.
   return text
     .replace(/AliExpress/gi, 'חברת המשלוחים')
     .replace(/Cainiao/gi, 'חברת המשלוחים')
+    .replace(/^.*(?:משלוח\s*מספר|מספר\s*משלוח)\s*[:：]?\s*DSVPH[A-Za-z0-9._-]*.*$/gim, '')
+    .replace(/\bDSVPH[A-Za-z0-9._-]+\b/gi, '')
     .replace(/[ \t]{2,}/g, ' ')
     .replace(/\n{3,}/g, '\n\n')
     .trim();
@@ -1519,6 +1522,85 @@ function providerPickupDetailsAreActionable(parsed) {
   return Boolean(parsed && parsed.trackingNumber && (
     parsed.pickupCode || parsed.verificationCode || parsed.lockerNumber || parsed.address || parsed.pickupPoint
   ));
+}
+
+function shipmentManualPickupMeta(shipment) {
+  if (!shipment) return null;
+  try {
+    const raw = shipment.raw_json ? JSON.parse(shipment.raw_json) : null;
+    return raw && raw.versansManualPickup && typeof raw.versansManualPickup === 'object'
+      ? raw.versansManualPickup
+      : null;
+  } catch (_) {
+    return null;
+  }
+}
+
+async function saveAdminPickupMessage(messageText) {
+  const parsedPickup = parseProviderPickupMessage(messageText);
+  if (!parsedPickup.trackingNumber) {
+    const error = new Error('tracking_number_not_found');
+    error.code = 'tracking_number_not_found';
+    error.parsed = parsedPickup;
+    throw error;
+  }
+  if (!providerPickupDetailsAreActionable(parsedPickup)) {
+    const error = new Error('pickup_details_not_found');
+    error.code = 'pickup_details_not_found';
+    error.parsed = parsedPickup;
+    throw error;
+  }
+
+  const shipment = await database.getShipmentByTracking(parsedPickup.trackingNumber);
+  if (!shipment) {
+    const error = new Error('tracking_not_found');
+    error.code = 'tracking_not_found';
+    error.trackingId = parsedPickup.trackingNumber;
+    throw error;
+  }
+
+  const now = Date.now();
+  const customerDetails = providerPickupCustomerDetails(parsedPickup);
+  let rawJson = {};
+  try { rawJson = shipment.raw_json ? JSON.parse(shipment.raw_json) : {}; } catch (_) { rawJson = {}; }
+  if (!rawJson || typeof rawJson !== 'object' || Array.isArray(rawJson)) rawJson = {};
+  rawJson.versansProviderPickupMessage = {
+    receivedAt: now,
+    sender: 'admin',
+    source: 'admin_manual',
+    parsed: parsedPickup,
+    rawText: normalizeProviderMessageText(messageText).slice(0, 12000)
+  };
+  rawJson.versansManualPickup = {
+    receivedAt: now,
+    dispatch: 'order_notifications_webhook'
+  };
+
+  await database.updateShipmentTracking(shipment.id, {
+    carrierCode: shipment.carrier_code || null,
+    status: 'ready_for_pickup',
+    providerStatus: shipment.provider_status || 'admin_manual',
+    subStatus: 'ready_for_pickup',
+    latestEvent: customerDetails ? `מוכן לאיסוף
+${customerDetails}` : 'מוכן לאיסוף',
+    latestLocation: parsedPickup.address || parsedPickup.pickupPoint || shipment.latest_location || null,
+    latestEventAt: now,
+    estimatedDeliveryFrom: shipment.estimated_delivery_from || null,
+    estimatedDeliveryTo: shipment.estimated_delivery_to || null,
+    rawJson: JSON.stringify(rawJson),
+    registeredAt: shipment.registered_at || null,
+    deliveredAt: shipment.delivered_at || null,
+    updatedAt: now
+  });
+
+  const fresh = await database.getShipmentById(shipment.id);
+  const order = fresh ? await database.getOrderById(fresh.order_id) : null;
+  if (!order || String(order.status || '') !== 'paid') {
+    const error = new Error('paid_order_not_found');
+    error.code = 'paid_order_not_found';
+    throw error;
+  }
+  return { shipment: fresh, order, parsedPickup, customerDetails };
 }
 
 function shipmentRequiresProviderPickupDetails(shipment) {
@@ -1630,41 +1712,40 @@ function shipmentPickupDetails(shipment) {
   };
 }
 
-function shippingBotMessage({ customerName, items, pickupMessageRaw = null, pickupLocation = null }) {
+function shippingBotMessage({ customerName, orderRef = null, items, pickupMessageRaw = null, pickupLocation = null }) {
   const safeName = String(customerName || '').trim() || 'לקוח/ה';
   const linked = Array.isArray(items) ? items : [];
-  const itemLines = linked.length <= 1
-    ? linked.map((item) => `${item.productName || 'מוצר'}\nמספר הזמנה: ${item.itemOrderRef}`)
-    : [
-        'המוצרים הבאים בחבילה מוכנים לאיסוף:',
-        ...linked.map((item) => `• ${item.productName || 'מוצר'} - ${item.itemOrderRef}`)
-      ];
+  const productLines = linked.length
+    ? ['המוצרים שהגיעו:', ...linked.map((item) => {
+        const qty = Number(item.qty || item.quantity || 1) > 1 ? ` × ${Number(item.qty || item.quantity || 1)}` : '';
+        const productName = safeCustomerProductText(item.productName || 'מוצר', 'מוצר VerSans');
+        const itemRef = String(item.itemOrderRef || '').trim();
+        return `• ${productName}${qty}${itemRef ? ` | מספר הזמנה: ${itemRef}` : ''}`;
+      })]
+    : [];
   const pickupText = customerSafePickupText(pickupMessageRaw);
   const locationText = customerSafePickupText(pickupLocation, 500);
   const pickupLines = [];
-  if (pickupText) {
-    pickupLines.push('', 'פרטי האיסוף:', pickupText);
-  }
+  if (pickupText) pickupLines.push('פרטי האיסוף:', pickupText);
   if (locationText && (!pickupText || !pickupText.toLowerCase().includes(locationText.toLowerCase()))) {
     pickupLines.push(`מיקום: ${locationText}`);
   }
   return normalizeHebrewCustomerMessage([
     `היי ${safeName} 👋`,
-    'יש עדכון לגבי ההזמנה שלך מ-VerSans.',
     '',
-    ...itemLines,
-    'החבילה שלך מוכנה לאיסוף.',
+    'הזמנת VerSans שלך הגיעה לנקודת האיסוף ומוכנה לאיסוף 📦',
+    '',
+    ...productLines,
+    productLines.length ? '' : '',
     ...pickupLines,
     '',
-    'ייתכן ששאר המוצרים בהזמנה עדיין בדרך.',
-    '',
-    'מומלץ לאסוף את החבילה בהקדם כדי למנוע החזרה לשולח.',
-    '',
-    'למעקב:',
+    'למעקב אחר ההזמנה:',
     'https://versans.com/track',
     '',
-    'VerSans'
-  ].join('\n'));
+    'מומלץ לאסוף את החבילה בזמן כדי למנוע החזרה לשולח.',
+    '',
+    'תודה שבחרת VerSans'
+  ].filter((line, index, arr) => !(line === '' && index > 0 && arr[index - 1] === '')).join('\n'));
 }
 
 async function shippingBotReadyPickups(limit = 200) {
@@ -1672,6 +1753,10 @@ async function shippingBotReadyPickups(limit = 200) {
   const rows = await database.listShipmentsByStatus('ready_for_pickup', createdAfter, limit);
   const out = [];
   for (const shipment of rows) {
+    // Admin-pasted pickup messages are dispatched through the existing Order Notifications
+    // webhook, never through the legacy Pickup Notifications queue. This prevents duplicates
+    // while the old pickup agents are being retired.
+    if (shipmentManualPickupMeta(shipment)) continue;
     const existingNotification = await database.getShipmentNotification(shipment.id, 'customer', 'ready_for_pickup');
     if (existingNotification && existingNotification.state === 'sent') continue;
     const order = await database.getOrderById(shipment.order_id);
@@ -1697,6 +1782,7 @@ async function shippingBotReadyPickups(limit = 200) {
     if (providerDetailsRequired && !pickupDetailsReady) continue;
     const message = shippingBotMessage({
       customerName,
+      orderRef: order.order_ref,
       items,
       pickupMessageRaw: pickup.message,
       pickupLocation: pickup.location
@@ -2405,6 +2491,50 @@ async function postNewOrderWebhook(orderRef) {
   return { ok: true, status };
 }
 
+async function postManualPickupWebhook({ shipment, order, message }) {
+  const cfg = newOrderWebhookConfig();
+  if (!cfg.url || !cfg.secret) return { ok: false, skipped: true, reason: 'new_order_webhook_not_configured' };
+  const customer = parseStoredCustomer(order);
+  const digits = whatsappDigits(order.customer_phone || customer.phone);
+  const shortUrl = digits ? pickupShortWhatsAppUrl(shipment) : null;
+  if (!digits || !shortUrl) return { ok: false, skipped: true, reason: !digits ? 'missing_whatsapp_number' : 'missing_short_whatsapp_url' };
+
+  const response = await fetch(cfg.url, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${cfg.secret}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      event: 'VERSANS_PICKUP_MESSAGE_READY',
+      notificationId: `PICKUP:${Number(shipment.id)}`,
+      shipmentId: Number(shipment.id),
+      trackingId: shipment.tracking_number,
+      orderRef: order.order_ref,
+      message,
+      exactMessage: message,
+      mustSendExactMessage: true,
+      messageMode: 'short_server_redirect',
+      doNotTypeOrRewriteMessage: true,
+      shortWhatsAppUrl: shortUrl,
+      whatsappWebUrl: shortUrl,
+      waMeUrl: shortUrl,
+      markSentUrl: 'https://versans.com/api/admin/bot/shipping/mark-sent',
+      messagePolicy: botVerbatimMessagePolicy(),
+      instruction: 'This is a pickup notification. Open the exact short whatsappWebUrl, wait for the VerSans redirect to WhatsApp with the message prefilled, click Send, then POST shipmentId/trackingId/messageId to markSentUrl. Do not type or rewrite the message.'
+    }),
+    redirect: 'follow',
+    signal: AbortSignal.timeout(ORDER_NOTIFICATION_WEBHOOK_TIMEOUT_MS)
+  });
+  if (!response.ok) {
+    const body = await response.text().catch(() => '');
+    const error = new Error(`pickup_webhook_http_${response.status}${body ? `: ${body.slice(0, 500)}` : ''}`);
+    error.status = response.status;
+    throw error;
+  }
+  return { ok: true, status: Number(response.status), shortUrl };
+}
+
 async function queueNewOrderNotificationAfterSheet(order) {
   if (!order || String(order.status || '') !== 'paid') return { ok: false, skipped: true, reason: 'order_not_paid' };
   const orderRef = String(order.order_ref || '').trim();
@@ -2636,8 +2766,9 @@ async function adminApi(req, res, pathname, parsed) {
     || pathname === '/api/admin/bot/shipping/pickup-collector/pending'
     || pathname === '/api/admin/bot/shipping/pickup-collector/submit';
   const orderNotificationsBotEndpoint = pathname === '/api/admin/bot/orders/new-order' || pathname === '/api/admin/bot/orders/mark-sent';
+  const shippingMarkSentOrderBotAccess = pathname === '/api/admin/bot/shipping/mark-sent' && orderNotificationsBotKeyAllowed(req);
   const botKeyAccess = shippingBotEndpoint
-    ? shippingBotKeyAllowed(req)
+    ? (shippingBotKeyAllowed(req) || shippingMarkSentOrderBotAccess)
     : (orderNotificationsBotEndpoint ? orderNotificationsBotKeyAllowed(req) : false);
   const admin = botKeyAccess ? null : await getAdminUser(req);
   if (!admin && !botKeyAccess) {
@@ -2648,6 +2779,108 @@ async function adminApi(req, res, pathname, parsed) {
     json(res, 403, { ok: false, error: 'permission_denied' });
     return true;
   }
+  if (pathname === '/api/admin/shipping/pickup-message' && req.method === 'POST') {
+    if (!admin) { json(res, 403, { ok: false, error: 'admin_required' }); return true; }
+    if (!sameOriginAllowed(req)) { json(res, 403, { ok: false, error: 'origin_not_allowed' }); return true; }
+    const body = await readJsonBody(req, 512 * 1024);
+    const messageText = String(body && (body.message || body.rawText || body.text) || '').trim();
+    if (!messageText) { json(res, 400, { ok: false, error: 'missing_message_text' }); return true; }
+
+    let saved;
+    try {
+      saved = await saveAdminPickupMessage(messageText);
+    } catch (error) {
+      const code = error && error.code || error && error.message || 'pickup_message_failed';
+      const status = code === 'tracking_not_found' ? 404 : (code === 'paid_order_not_found' ? 409 : 422);
+      json(res, status, { ok: false, error: code, trackingId: error && error.trackingId || null, parsed: error && error.parsed || null });
+      return true;
+    }
+
+    const { shipment, order, parsedPickup, customerDetails } = saved;
+    const customer = parseStoredCustomer(order);
+    const phone = normalizePhone(order.customer_phone || customer.phone);
+    const digits = whatsappDigits(phone);
+    const linkedItems = await database.listShipmentItems(shipment.id);
+    const items = (linkedItems || []).map((item) => ({
+      itemIndex: Number(item.item_index),
+      itemOrderRef: orderItemRef(order.order_ref, Number(item.item_index)),
+      productId: item.product_id || null,
+      productName: item.product_name || 'מוצר',
+      qty: Number(item.qty || 1)
+    }));
+    const customerName = [customer.firstName, customer.lastName].filter(Boolean).join(' ').trim() || customer.name || order.customer_email || 'לקוח/ה';
+    const pickup = shipmentPickupDetails(shipment);
+    const message = shippingBotMessage({
+      customerName,
+      orderRef: order.order_ref,
+      items,
+      pickupMessageRaw: pickup.message || customerDetails,
+      pickupLocation: pickup.location || parsedPickup.address || parsedPickup.pickupPoint
+    });
+    const shortUrl = digits ? pickupShortWhatsAppUrl(shipment) : null;
+    if (!digits || !shortUrl) {
+      json(res, 422, { ok: false, error: !digits ? 'missing_whatsapp_number' : 'missing_short_whatsapp_url', trackingId: shipment.tracking_number, orderRef: order.order_ref, parsed: parsedPickup, message });
+      return true;
+    }
+
+    const existing = await database.getShipmentNotification(shipment.id, 'customer', 'ready_for_pickup');
+    if (existing && String(existing.state || '') === 'sent') {
+      json(res, 200, {
+        ok: true,
+        alreadySent: true,
+        trackingId: shipment.tracking_number,
+        shipmentId: Number(shipment.id),
+        orderRef: order.order_ref,
+        customerName,
+        parsed: parsedPickup,
+        customerPickupDetails: customerDetails,
+        message,
+        whatsappWebUrl: shortUrl
+      });
+      return true;
+    }
+
+    const now = Date.now();
+    const claimed = await database.claimShipmentNotification(shipment.id, 'customer', 'ready_for_pickup', phone || null, now, now - 2 * 60 * 1000);
+    if (!claimed) {
+      json(res, 409, { ok: false, error: 'pickup_notification_already_queued', trackingId: shipment.tracking_number, shipmentId: Number(shipment.id), orderRef: order.order_ref, whatsappWebUrl: shortUrl });
+      return true;
+    }
+
+    try {
+      const webhook = await postManualPickupWebhook({ shipment, order, message });
+      if (!webhook.ok) throw new Error(webhook.reason || 'pickup_webhook_not_available');
+      json(res, 200, {
+        ok: true,
+        queued: true,
+        event: 'VERSANS_PICKUP_MESSAGE_READY',
+        trackingId: shipment.tracking_number,
+        shipmentId: Number(shipment.id),
+        orderRef: order.order_ref,
+        customerName,
+        parsed: parsedPickup,
+        customerPickupDetails: customerDetails,
+        message,
+        whatsappWebUrl: shortUrl
+      });
+    } catch (error) {
+      await database.markShipmentNotificationFailed(shipment.id, 'customer', 'ready_for_pickup', String(error && error.message || 'pickup_webhook_failed'), Date.now());
+      json(res, 502, {
+        ok: false,
+        error: 'pickup_webhook_failed',
+        message: String(error && error.message || '').slice(0, 500),
+        trackingId: shipment.tracking_number,
+        shipmentId: Number(shipment.id),
+        orderRef: order.order_ref,
+        customerName,
+        parsed: parsedPickup,
+        customerPickupDetails: customerDetails,
+        whatsappWebUrl: shortUrl
+      });
+    }
+    return true;
+  }
+
   const shipmentOrderMatch = /^\/api\/admin\/orders\/([^/]+)\/shipments$/.exec(pathname);
   if (shipmentOrderMatch && (req.method === 'GET' || req.method === 'POST')) {
     let orderRef;
@@ -3248,6 +3481,7 @@ async function adminApi(req, res, pathname, parsed) {
       const isReadyForPickup = String(shipment.status || '') === 'ready_for_pickup';
       const message = isReadyForPickup ? shippingBotMessage({
         customerName,
+        orderRef: order && order.order_ref || null,
         items,
         trackingNumber: shipment.tracking_number,
         pickupMessageRaw: pickup.message,
@@ -3320,9 +3554,10 @@ async function adminApi(req, res, pathname, parsed) {
 
   if (pathname === '/api/admin/bot/shipping/mark-sent') {
     if (req.method !== 'POST') { json(res, 405, { ok: false, error: 'method_not_allowed' }); return true; }
-    const botAccess = await shippingBotAccessAllowed(req);
+    const orderBotAllowed = orderNotificationsBotKeyAllowed(req);
+    const botAccess = orderBotAllowed ? { ok: true, mode: 'bot_key' } : await shippingBotAccessAllowed(req);
     if (!botAccess.ok) {
-      json(res, 401, { ok: false, error: shippingBotKeyConfigured() ? 'bot_auth_required' : 'admin_auth_required' });
+      json(res, 401, { ok: false, error: (shippingBotKeyConfigured() || orderNotificationsBotKeyConfigured()) ? 'bot_auth_required' : 'admin_auth_required' });
       return true;
     }
     if (botAccess.mode !== 'bot_key' && !sameOriginAllowed(req)) { json(res, 403, { ok: false, error: 'origin_not_allowed' }); return true; }
@@ -4795,6 +5030,7 @@ const server = http.createServer(async (req, res) => {
       }
       const message = shippingBotMessage({
         customerName,
+        orderRef: order.order_ref,
         items,
         pickupMessageRaw: pickup.message,
         pickupLocation: pickup.location

@@ -150,6 +150,7 @@
     if (!response.ok) {
       var err = new Error(payload && (payload.message || payload.error) ? (payload.message || payload.error) : 'request_failed_' + response.status);
       err.code = payload && payload.error;
+      err.payload = payload || null;
       throw err;
     }
     return payload || {};
@@ -680,7 +681,7 @@
           providerTrackingUrl.autocomplete = 'off';
           if (shipment && shipment.providerTrackingUrl) providerTrackingUrl.value = shipment.providerTrackingUrl;
           providerUrlLabel.appendChild(providerTrackingUrl);
-          providerUrlLabel.appendChild(make('small', 'admin-table__muted', 'מומלץ להדביק את הקישור הישיר של פרטי המשלוח. ה-Pickup Collector יפתח אותו ישירות במקום לחפש את ההזמנה.'));
+          providerUrlLabel.appendChild(make('small', 'admin-table__muted', 'אופציונלי. אפשר לשמור כאן קישור ישיר לפרטי המשלוח ב-AliExpress לצורך בדיקה ידנית.'));
 
           var submit = make('button', 'admin-shipment-submit', shipment ? 'שמור / החלף Tracking ID' : 'חבר Tracking ID למוצר'); submit.type = 'submit';
           var formError = make('div', 'admin-shipment-form-error'); formError.hidden = true;
@@ -1020,6 +1021,102 @@
     content.replaceChildren(frag);
   }
 
+  function manualPickupErrorMessage(error) {
+    var code = error && error.code;
+    if (code === 'tracking_number_not_found') return 'לא נמצא מספר משלוח בהודעה. ודאו שמופיע למשל "משלוח מספר: DSVPH...".';
+    if (code === 'pickup_details_not_found') return 'נמצא מספר משלוח, אבל לא נמצאו בהודעה פרטי איסוף שימושיים.';
+    if (code === 'tracking_not_found') return 'מספר המשלוח נמצא בהודעה, אבל הוא לא מחובר כרגע להזמנה ב-VerSans.';
+    if (code === 'paid_order_not_found') return 'המשלוח נמצא, אבל לא נמצאה עבורו הזמנת Paid תקינה.';
+    if (code === 'missing_whatsapp_number') return 'להזמנה אין מספר WhatsApp תקין.';
+    if (code === 'pickup_notification_already_queued') return 'הודעת האיסוף כבר נמצאת בתהליך שליחה. נסו שוב בעוד כמה דקות רק אם לא נשלחה.';
+    if (code === 'pickup_webhook_failed') return 'הפרטים נשמרו, אבל לא הצלחנו להעביר את ההודעה ל-Order Notifications.';
+    return text(error && error.message, 'לא הצלחנו לעבד את הודעת האיסוף.');
+  }
+
+  function manualPickupMessageCard() {
+    var wrap = make('section', 'admin-card admin-pickup-message-card');
+    var head = make('div', 'admin-card__head');
+    var titleWrap = make('div');
+    titleWrap.appendChild(make('h2', '', 'הודעת איסוף מחברת המשלוחים'));
+    titleWrap.appendChild(make('p', '', 'מדביקים את ההודעה שקיבלתם. VerSans מזהה את מספר המשלוח, מוצא את ההזמנה ושולח ללקוח הודעת איסוף מסודרת.'));
+    head.appendChild(titleWrap);
+    head.appendChild(make('span', 'admin-pickup-message-card__badge', 'Parcel Home / DSV'));
+    wrap.appendChild(head);
+
+    var body = make('div', 'admin-card__body');
+    var form = make('form', 'admin-pickup-message-form');
+    var label = make('label');
+    label.appendChild(make('span', '', 'הדביקו כאן את ההודעה המלאה'));
+    var textarea = document.createElement('textarea');
+    textarea.name = 'pickupMessage';
+    textarea.rows = 10;
+    textarea.required = true;
+    textarea.placeholder = 'שלום...\nקוד איסוף: ...\nמספר ארונית: ...\nכתובת: ...\nמשלוח מספר: DSVPH...';
+    label.appendChild(textarea);
+    form.appendChild(label);
+
+    var actions = make('div', 'admin-pickup-message-form__actions');
+    var submit = make('button', 'admin-shipment-submit', 'זהה משלוח ושלח ללקוח');
+    submit.type = 'submit';
+    actions.appendChild(submit);
+    actions.appendChild(make('small', 'admin-table__muted', 'אין צורך לפתוח AliExpress או Cainiao. ההודעה נשלחת דרך Order Notifications הקיים.'));
+    form.appendChild(actions);
+
+    var result = make('div', 'admin-pickup-message-result');
+    result.hidden = true;
+    form.appendChild(result);
+
+    form.addEventListener('submit', async function (event) {
+      event.preventDefault();
+      var message = textarea.value.trim();
+      if (!message) return;
+      var old = submit.textContent;
+      submit.disabled = true;
+      submit.textContent = 'מעבד ושולח…';
+      result.hidden = true;
+      result.className = 'admin-pickup-message-result';
+      result.replaceChildren();
+      try {
+        var data = await apiAction('/api/admin/shipping/pickup-message', 'POST', { message: message });
+        result.classList.add('is-success');
+        result.appendChild(make('strong', '', data.alreadySent ? 'הודעת האיסוף כבר נשלחה ללקוח.' : 'הפרטים נקלטו וההודעה הועברה לשליחה ✅'));
+        var meta = [];
+        if (data.orderRef) meta.push('הזמנה: ' + data.orderRef);
+        if (data.trackingId) meta.push('משלוח: ' + data.trackingId);
+        if (data.customerName) meta.push('לקוח: ' + data.customerName);
+        if (meta.length) result.appendChild(make('div', 'admin-pickup-message-result__meta', meta.join(' · ')));
+        if (data.customerPickupDetails) {
+          var details = make('pre', 'admin-pickup-message-result__details', data.customerPickupDetails);
+          result.appendChild(details);
+        }
+        textarea.value = '';
+        showToast(data.alreadySent ? 'ההודעה כבר סומנה כנשלחה' : 'הודעת האיסוף הועברה ל-Order Notifications');
+      } catch (error) {
+        result.classList.add('is-error');
+        result.appendChild(make('strong', '', manualPickupErrorMessage(error)));
+        var payload = error && error.payload;
+        if (payload && payload.orderRef) result.appendChild(make('div', 'admin-pickup-message-result__meta', 'הזמנה: ' + payload.orderRef + (payload.trackingId ? ' · משלוח: ' + payload.trackingId : '')));
+        if (payload && payload.whatsappWebUrl) {
+          var fallback = document.createElement('a');
+          fallback.className = 'admin-pickup-message-result__fallback';
+          fallback.href = payload.whatsappWebUrl;
+          fallback.target = '_blank';
+          fallback.rel = 'noopener';
+          fallback.textContent = 'פתח WhatsApp ידנית עם ההודעה המוכנה';
+          result.appendChild(fallback);
+        }
+      } finally {
+        result.hidden = false;
+        submit.disabled = false;
+        submit.textContent = old;
+      }
+    });
+
+    body.appendChild(form);
+    wrap.appendChild(body);
+    return wrap;
+  }
+
   async function renderOrdersPage() {
     var range = state.ranges.orders;
     var status = state.ordersStatus;
@@ -1034,6 +1131,7 @@
     toolbar.appendChild(filters);
     toolbar.appendChild(make('span', 'admin-toolbar-note', 'אדום = לא חובר מעקב · צהוב = חובר רק חלק מההזמנה · ירוק = כל המוצרים מחוברים'));
     frag.appendChild(toolbar);
+    frag.appendChild(manualPickupMessageCard());
     frag.appendChild(renderKpis([
       { label: 'הזמנות בתצוגה', value: numberFmt(data.count), hint: status === 'all' ? 'כל הסטטוסים' : status, primary: status === 'paid', tone: status === 'paid' ? 'green' : 'amber' },
       { label: 'עמוד', value: numberFmt(Math.floor(data.offset / data.limit) + 1), hint: numberFmt(data.limit) + ' רשומות בעמוד' }
