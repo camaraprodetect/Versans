@@ -1062,6 +1062,18 @@ function newOrderWebhookConfig() {
   };
 }
 
+function pickupMessageWebhookConfig() {
+  return {
+    url: String(process.env.VERSANS_PICKUP_MESSAGE_WEBHOOK_URL || '').trim(),
+    secret: String(process.env.VERSANS_PICKUP_MESSAGE_WEBHOOK_SECRET || '').trim()
+  };
+}
+
+function isPickupMessageWebhookConfigured() {
+  const cfg = pickupMessageWebhookConfig();
+  return Boolean(cfg.url && cfg.secret);
+}
+
 function isNewOrderWebhookConfigured() {
   const cfg = newOrderWebhookConfig();
   return Boolean(cfg.url && cfg.secret);
@@ -2509,8 +2521,8 @@ async function postNewOrderWebhook(orderRef) {
 }
 
 async function postManualPickupWebhook({ shipment, order, message }) {
-  const cfg = newOrderWebhookConfig();
-  if (!cfg.url || !cfg.secret) return { ok: false, skipped: true, reason: 'new_order_webhook_not_configured' };
+  const cfg = pickupMessageWebhookConfig();
+  if (!cfg.url || !cfg.secret) return { ok: false, skipped: true, reason: 'pickup_message_webhook_not_configured' };
   const customer = parseStoredCustomer(order);
   const digits = whatsappDigits(order.customer_phone || customer.phone);
   const shortUrl = digits ? pickupShortWhatsAppUrl(shipment) : null;
@@ -2528,6 +2540,8 @@ async function postManualPickupWebhook({ shipment, order, message }) {
       shipmentId: Number(shipment.id),
       trackingId: shipment.tracking_number,
       orderRef: order.order_ref,
+      safeToSend: true,
+      source: 'admin_manual_pickup_message',
       message,
       exactMessage: message,
       mustSendExactMessage: true,
