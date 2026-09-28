@@ -1727,10 +1727,18 @@ function orderTotal() {
       savingsHtml(summary) +
     '</div>';
   }
+  function savingsResizableHtml(summary) {
+    var breakdown = savingsBreakdownHtml(summary);
+    if (!breakdown) return '';
+    return '<div class="cart-savings-resizable" data-cart-savings-resizable>' +
+      '<div class="cart-foot-resizer" data-cart-savings-resizer role="separator" aria-orientation="horizontal" aria-label="שינוי גובה פירוט החיסכון"><span class="cart-foot-resizer__icon" aria-hidden="true">↕</span></div>' +
+      '<div class="cart-savings-resizable__content" data-cart-savings-resizable-content>' + breakdown + '</div>' +
+    '</div>';
+  }
   function pricingCardHtml(summary, checkout) {
     return '<div class="cart-pricing-card cart-pricing-card--compact' + (checkout ? ' cart-pricing-card--checkout' : '') + '">' +
       '<div class="sum cart-summary-subtotal"><span>' + esc(t('cart.subtotal')) + '</span><span>' + money(summary.subtotal) + '</span></div>' +
-      savingsBreakdownHtml(summary) +
+      savingsResizableHtml(summary) +
       '<div class="sum cart-summary-shipping"><span>' + esc(t('cart.shipping')) + '</span><span>' + (summary.shipping ? money(summary.shipping) : esc(t('cart.free'))) + '</span></div>' +
       '<div class="sum sum--payable"><span>' + esc(state.lang === 'he' ? 'לתשלום' : 'To pay') + '</span><strong>' + money(summary.total) + '</strong></div>' +
     '</div>';

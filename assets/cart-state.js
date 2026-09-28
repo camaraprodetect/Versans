@@ -511,6 +511,85 @@
     else body.insertBefore(node, body.firstChild);
   }
 
+  function initCartFootResizer() {
+    if (window.__versansCartFootResizerReady) return;
+    window.__versansCartFootResizerReady = true;
+
+    var drag = null;
+
+    function endDrag(event) {
+      if (!drag) return;
+      if (event && drag.handle.releasePointerCapture) {
+        try { drag.handle.releasePointerCapture(event.pointerId); } catch (_) {}
+      }
+      drag.handle.classList.remove('is-dragging');
+      document.documentElement.classList.remove('is-resizing-cart-foot');
+      drag = null;
+    }
+
+    document.addEventListener('pointerdown', function (event) {
+      var handle = event.target.closest && event.target.closest('[data-cart-savings-resizer]');
+      if (!handle) return;
+      var box = handle.closest('[data-cart-savings-resizable]');
+      var content = box && box.querySelector('[data-cart-savings-resizable-content]');
+      var panel = handle.closest('.ov__panel');
+      if (!box || !content || !panel) return;
+
+      event.preventDefault();
+      var contentRect = content.getBoundingClientRect();
+      var panelRect = panel.getBoundingClientRect();
+      var foot = handle.closest('.drawer__foot');
+      var checkout = foot && foot.querySelector('.cart-checkout-cta');
+      var checkoutHeight = checkout ? checkout.getBoundingClientRect().height : 50;
+      var fixedReserve = checkoutHeight + 215;
+      var minHeight = Math.min(82, Math.max(58, content.scrollHeight > 0 ? Math.min(content.scrollHeight, 82) : 58));
+      var maxHeight = Math.max(minHeight, Math.min(360, panelRect.height - fixedReserve));
+
+      drag = {
+        handle: handle,
+        box: box,
+        content: content,
+        startY: event.clientY,
+        startHeight: contentRect.height,
+        minHeight: minHeight,
+        maxHeight: maxHeight
+      };
+
+      content.style.height = Math.round(contentRect.height) + 'px';
+      content.style.maxHeight = 'none';
+      box.setAttribute('data-cart-savings-resized', 'true');
+      handle.classList.add('is-dragging');
+      document.documentElement.classList.add('is-resizing-cart-foot');
+      if (handle.setPointerCapture) {
+        try { handle.setPointerCapture(event.pointerId); } catch (_) {}
+      }
+    });
+
+    document.addEventListener('pointermove', function (event) {
+      if (!drag) return;
+      event.preventDefault();
+      var nextHeight = drag.startHeight + (drag.startY - event.clientY);
+      nextHeight = Math.max(drag.minHeight, Math.min(drag.maxHeight, nextHeight));
+      drag.content.style.height = Math.round(nextHeight) + 'px';
+    }, { passive:false });
+
+    document.addEventListener('pointerup', endDrag);
+    document.addEventListener('pointercancel', endDrag);
+
+    document.addEventListener('dblclick', function (event) {
+      var handle = event.target.closest && event.target.closest('[data-cart-savings-resizer]');
+      if (!handle) return;
+      var box = handle.closest('[data-cart-savings-resizable]');
+      var content = box && box.querySelector('[data-cart-savings-resizable-content]');
+      if (!box || !content) return;
+      content.style.height = '';
+      content.style.maxHeight = '';
+      box.removeAttribute('data-cart-savings-resized');
+    });
+  }
+
+  initCartFootResizer();
+
   function renderAll() {
     scheduled = false;
     if (rendering) return;

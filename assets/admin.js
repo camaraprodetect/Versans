@@ -71,7 +71,7 @@
   }
 
   function text(value, fallback) {
-    if (value === null || value === undefined || value === '') return fallback === undefined ? '-' : fallback;
+    if (value === null || value === undefined || value === '') return fallback === undefined ? '—' : fallback;
     return String(value);
   }
 
@@ -87,27 +87,27 @@
   }
 
   function dateTime(value) {
-    if (!value) return '-';
+    if (!value) return '—';
     try {
       return new Intl.DateTimeFormat('he-IL', {
         timeZone: 'Asia/Jerusalem', dateStyle: 'short', timeStyle: 'short'
       }).format(new Date(Number(value)));
     } catch (_) {
-      return '-';
+      return '—';
     }
   }
 
   function dateOnly(value) {
-    if (!value) return '-';
+    if (!value) return '—';
     try {
       return new Intl.DateTimeFormat('he-IL', { timeZone: 'Asia/Jerusalem', dateStyle: 'short' }).format(new Date(Number(value)));
     } catch (_) {
-      return '-';
+      return '—';
     }
   }
 
   function relative(value) {
-    if (!value) return '-';
+    if (!value) return '—';
     var delta = Math.max(0, Date.now() - Number(value));
     var seconds = Math.round(delta / 1000);
     if (seconds < 60) return 'לפני ' + Math.max(1, seconds) + ' שנ׳';
@@ -804,8 +804,8 @@
   function systemHealthCard(system) {
     system = system || {};
     var body = make('div', 'detail-grid');
-    body.appendChild(detailItem('Checkout', String(system.checkoutMode || '-').toUpperCase()));
-    body.appendChild(detailItem('Database', system.databaseBackend || '-'));
+    body.appendChild(detailItem('Checkout', String(system.checkoutMode || '—').toUpperCase()));
+    body.appendChild(detailItem('Database', system.databaseBackend || '—'));
     body.appendChild(detailItem('הזמנות היום', numberFmt(system.todayAllOrders)));
     body.appendChild(detailItem('Paid היום', numberFmt(system.todayPaidOrders)));
     body.appendChild(detailItem('כל ההזמנות', numberFmt(system.lifetimeOrders)));
@@ -1023,7 +1023,7 @@
 
   function manualPickupErrorMessage(error) {
     var code = error && error.code;
-    if (code === 'tracking_number_not_found') return 'לא נמצא מספר משלוח בהודעה. ודאו שמופיע למשל "משלוח מספר: DSVPH...".';
+    if (code === 'tracking_number_not_found') return 'לא נמצא מספר משלוח בהודעה. ודאו שמספר המשלוח מופיע ליד המילה "משלוח".';
     if (code === 'pickup_details_not_found') return 'נמצא מספר משלוח, אבל לא נמצאו בהודעה פרטי איסוף שימושיים.';
     if (code === 'tracking_not_found') return 'מספר המשלוח נמצא בהודעה, אבל הוא לא מחובר כרגע להזמנה ב-VerSans.';
     if (code === 'paid_order_not_found') return 'המשלוח נמצא, אבל לא נמצאה עבורו הזמנת Paid תקינה.';
@@ -1040,7 +1040,7 @@
     titleWrap.appendChild(make('h2', '', 'הודעת איסוף מחברת המשלוחים'));
     titleWrap.appendChild(make('p', '', 'מדביקים את ההודעה שקיבלתם. VerSans מזהה את מספר המשלוח, מוצא את ההזמנה ושולח ללקוח הודעת איסוף מסודרת.'));
     head.appendChild(titleWrap);
-    head.appendChild(make('span', 'admin-pickup-message-card__badge', 'Parcel Home / DSV'));
+    head.appendChild(make('span', 'admin-pickup-message-card__badge', 'חברות משלוחים'));
     wrap.appendChild(head);
 
     var body = make('div', 'admin-card__body');
@@ -1051,7 +1051,7 @@
     textarea.name = 'pickupMessage';
     textarea.rows = 10;
     textarea.required = true;
-    textarea.placeholder = 'שלום...\nקוד איסוף: ...\nמספר ארונית: ...\nכתובת: ...\nמשלוח מספר: DSVPH...';
+    textarea.placeholder = 'הדביקו כאן את הודעת האיסוף המלאה כפי שהתקבלה מחברת המשלוחים או מדואר ישראל.';
     label.appendChild(textarea);
     form.appendChild(label);
 

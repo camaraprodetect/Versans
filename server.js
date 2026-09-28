@@ -1502,19 +1502,30 @@ function providerMessageField(text, pattern, max = 500) {
   return value ? value.slice(0, max) : null;
 }
 
+function cleanProviderInlineField(value, max = 500) {
+  const cleaned = String(value == null ? '' : value)
+    .replace(/\s+/g, ' ')
+    .replace(/\s*(?:[.。]\s*)?(?:לידיעתך|לאחר\s+קבלת|למידע\s+נוסף|לתשומת\s+לבך).*$/i, '')
+    .replace(/[\s,.;:–—-]+$/g, '')
+    .trim();
+  return cleaned ? cleaned.slice(0, max) : null;
+}
+
 function parseProviderPickupMessage(value, fallbackTrackingNumber = null) {
   const text = normalizeProviderMessageText(value);
-  const trackingNumber = providerMessageField(text, /(?:משלוח\s*מספר|מספר\s*משלוח)\s*[:：]\s*([A-Za-z0-9._-]+)/i, 120)
+  const trackingNumber = providerMessageField(text, /(?:משלוח(?:\s*מספר)?|מספר\s*משלוח)\s*[:：\-–—]?\s*([A-Za-z0-9][A-Za-z0-9._-]{5,})/i, 120)
     || providerMessageField(text, /\b(DSVPH[A-Za-z0-9._-]+)\b/i, 120)
     || (fallbackTrackingNumber ? normalizeTrackingNumber(fallbackTrackingNumber) : null);
-  const pickupCode = providerMessageField(text, /קוד\s*איסוף\s*[:：]\s*([^\n]+)/i, 160);
-  const lockerNumber = providerMessageField(text, /מספר\s*ארונית\s*[:：]\s*([^\n]+)/i, 80);
-  const shelfNumber = providerMessageField(text, /מספר\s*מדף\s*[:：]\s*([^\n]+)/i, 80);
-  const packageNumber = providerMessageField(text, /מספר\s*חבילה\s*[:：]\s*([^\n]+)/i, 120);
-  const verificationCode = providerMessageField(text, /קוד\s*אימות\s*[:：]\s*([^\n]+)/i, 120);
-  const address = providerMessageField(text, /כתובת\s*[:：]\s*([^\n]+)/i, 500);
-  const openingHours = providerMessageField(text, /שעות\s*פתיחה\s*[:：]\s*([^\n]+)/i, 900);
-  const pickupPoint = providerMessageField(text, /החבילה\s+שלך\s+הגיעה\s+ל-?\s*([^,\n]+)/i, 180);
+  const pickupCode = providerMessageField(text, /קוד\s*(?:איסוף|מסירה)\s*[:：\-]?\s*([^\n]+)/i, 160);
+  const lockerNumber = providerMessageField(text, /מספר\s*ארונית\s*[:：\-]?\s*([^\n]+)/i, 80);
+  const shelfNumber = providerMessageField(text, /מספר\s*מדף\s*[:：\-]?\s*([^\n]+)/i, 80);
+  const packageNumber = providerMessageField(text, /מספר\s*חבילה\s*[:：\-]?\s*([^\n]+)/i, 120);
+  const verificationCode = providerMessageField(text, /קוד\s*אימות\s*[:：\-]?\s*([^\n]+)/i, 120);
+  const rawAddress = providerMessageField(text, /כתובת\s*[:：\-]?\s*([^\n]+)/i, 700);
+  const address = cleanProviderInlineField(rawAddress, 500);
+  const openingHours = providerMessageField(text, /שעות\s*פתיחה\s*[:：\-]?\s*([^\n]+)/i, 900);
+  const pickupPoint = providerMessageField(text, /החבילה\s+שלך\s+הגיעה\s+ל-?\s*([^,\n]+)/i, 180)
+    || providerMessageField(text, /יחידת\s+הדואר\s*[-–—:]?\s*([^\n]+?)(?=\s*[-–—]\s*כתובת|\s+כתובת(?:\s|[:：])|[.。]\s*(?:לידיעתך|לאחר\s+קבלת)|\n|$)/i, 180);
   const deadline = providerMessageField(text, /נא\s+לאסוף\s+את\s+החבילה\s+תוך\s+([^\n,]+)/i, 180);
   const arrivalDate = providerMessageField(text, /בתאריך\s+(\d{1,2}\/\d{1,2}\/\d{4})/i, 40);
   return {
@@ -1526,7 +1537,7 @@ function parseProviderPickupMessage(value, fallbackTrackingNumber = null) {
     verificationCode,
     address,
     openingHours,
-    pickupPoint,
+    pickupPoint: cleanProviderInlineField(pickupPoint, 180),
     deadline,
     arrivalDate,
     rawText: text

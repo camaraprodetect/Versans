@@ -95,10 +95,19 @@
     '</div>';
   }
 
+  function savingsResizableHtml(summary) {
+    var breakdown = savingsBreakdownHtml(summary);
+    if (!breakdown) return '';
+    return '<div class="cart-savings-resizable" data-cart-savings-resizable>' +
+      '<div class="cart-foot-resizer" data-cart-savings-resizer role="separator" aria-orientation="horizontal" aria-label="שינוי גובה פירוט החיסכון"><span class="cart-foot-resizer__icon" aria-hidden="true">↕</span></div>' +
+      '<div class="cart-savings-resizable__content" data-cart-savings-resizable-content>' + breakdown + '</div>' +
+    '</div>';
+  }
+
   function pricingCardHtml(summary) {
     return '<div class="cart-pricing-card cart-pricing-card--compact">' +
       '<div class="sum cart-summary-subtotal"><span>' + (lang === 'he' ? 'סכום ביניים' : 'Subtotal') + '</span><span>' + money(summary.subtotal) + '</span></div>' +
-      savingsBreakdownHtml(summary) +
+      savingsResizableHtml(summary) +
       '<div class="sum cart-summary-shipping"><span>' + (lang === 'he' ? 'משלוח' : 'Shipping') + '</span><span>' + (summary.shipping ? money(summary.shipping) : (lang === 'he' ? 'חינם' : 'Free')) + '</span></div>' +
       '<div class="sum sum--payable"><span>' + (lang === 'he' ? 'לתשלום' : 'To pay') + '</span><strong>' + money(summary.total) + '</strong></div>' +
     '</div>';

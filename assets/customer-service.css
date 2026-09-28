@@ -12,6 +12,9 @@
   font-family:inherit;
 }
 .versans-support-float[hidden]{display:none!important}
+@media (min-width:761px){
+  .versans-support-float{display:none!important}
+}
 .versans-support-float__link,
 .versans-support-footer-link,
 .nav__support-link{
