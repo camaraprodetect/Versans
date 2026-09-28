@@ -1215,26 +1215,30 @@ function adminOrderPayload(row) {
 
 async function adminOrderPayloadWithFulfillment(row) {
   const payload = adminOrderPayload(row);
-  const totalItems = payload.items.length;
-  const linkedIndexes = new Set();
+  const totalUnits = payload.items.reduce((sum, item) => sum + Math.max(0, Number(item.qty || 0)), 0);
+  const linkedByIndex = new Map();
   const shipments = await database.listShipmentsForOrder(row.id);
 
   await Promise.all((shipments || []).map(async (shipment) => {
     const shipmentItems = await database.listShipmentItems(shipment.id);
     for (const item of shipmentItems || []) {
       const index = Number(item.item_index);
-      if (Number.isInteger(index) && index >= 0 && index < totalItems) linkedIndexes.add(index);
+      if (!Number.isInteger(index) || index < 0 || index >= payload.items.length) continue;
+      linkedByIndex.set(index, Number(linkedByIndex.get(index) || 0) + Math.max(0, Number(item.qty || 0)));
     }
   }));
 
-  const linkedItems = linkedIndexes.size;
+  const linkedUnits = payload.items.reduce((sum, item, index) => {
+    const ordered = Math.max(0, Number(item.qty || 0));
+    return sum + Math.min(ordered, Math.max(0, Number(linkedByIndex.get(index) || 0)));
+  }, 0);
   let state = 'none';
-  if (totalItems > 0 && linkedItems >= totalItems) state = 'complete';
-  else if (linkedItems > 0) state = 'partial';
+  if (totalUnits > 0 && linkedUnits >= totalUnits) state = 'complete';
+  else if (linkedUnits > 0) state = 'partial';
 
   return {
     ...payload,
-    fulfillment: { state, linkedItems, totalItems }
+    fulfillment: { state, linkedItems: linkedUnits, totalItems: totalUnits, linkedUnits, totalUnits }
   };
 }
 
@@ -1892,17 +1896,38 @@ async function shippingBotReadyPickups(limit = 200) {
   return out;
 }
 
-function shipmentForOrderItem(shipments, itemIndex) {
+function shipmentItemAllocation(shipment, itemIndex) {
   const index = Number(itemIndex);
-  return (Array.isArray(shipments) ? shipments : []).find((shipment) =>
-    Array.isArray(shipment && shipment.items)
-      && shipment.items.some((item) => Number(item.itemIndex) === index)
-  ) || null;
+  return Array.isArray(shipment && shipment.items)
+    ? shipment.items.find((item) => Number(item.itemIndex) === index) || null
+    : null;
+}
+
+function shipmentsForOrderItem(shipments, itemIndex) {
+  const index = Number(itemIndex);
+  return (Array.isArray(shipments) ? shipments : []).filter((shipment) => Boolean(shipmentItemAllocation(shipment, index)));
+}
+
+function shipmentForOrderItem(shipments, itemIndex) {
+  return shipmentsForOrderItem(shipments, itemIndex)[0] || null;
+}
+
+function allocatedQtyForOrderItem(shipments, itemIndex, excludeShipmentId = null) {
+  return shipmentsForOrderItem(shipments, itemIndex).reduce((sum, shipment) => {
+    if (excludeShipmentId != null && Number(shipment.id) === Number(excludeShipmentId)) return sum;
+    const allocation = shipmentItemAllocation(shipment, itemIndex);
+    return sum + Math.max(0, Number(allocation && allocation.qty || 0));
+  }, 0);
 }
 
 function orderItemPayload(orderRef, item, itemIndex, shipments) {
   const product = adminProductInfo(item && item.id);
-  const shipment = shipmentForOrderItem(shipments, itemIndex);
+  const orderedQty = Math.max(1, Number(item && item.qty || 1));
+  const linkedShipments = shipmentsForOrderItem(shipments, itemIndex).map((shipment) => {
+    const allocation = shipmentItemAllocation(shipment, itemIndex);
+    return { ...shipment, allocationQty: Math.max(1, Number(allocation && allocation.qty || 1)) };
+  });
+  const assignedQty = Math.min(orderedQty, linkedShipments.reduce((sum, shipment) => sum + Number(shipment.allocationQty || 0), 0));
   const rawImage = item && item.image ? String(item.image) : '';
   return {
     itemIndex,
@@ -1910,9 +1935,34 @@ function orderItemPayload(orderRef, item, itemIndex, shipments) {
     productId: item && item.id || null,
     productName: item && item.name || product.name || 'מוצר',
     productImage: rawImage ? (/^https?:\/\//i.test(rawImage) ? rawImage : '/' + rawImage.replace(/^\/+/, '')) : product.image,
-    qty: Number(item && item.qty || 1),
-    shipment
+    qty: orderedQty,
+    assignedQty,
+    unassignedQty: Math.max(0, orderedQty - assignedQty),
+    shipment: linkedShipments[0] || null,
+    shipments: linkedShipments
   };
+}
+
+function customerOrderShipmentPayloads(shipments, orderItems, orderRef) {
+  const rows = [];
+  (Array.isArray(orderItems) ? orderItems : []).forEach((item, itemIndex) => {
+    const orderedQty = Math.max(1, Number(item && item.qty || 1));
+    let assignedQty = 0;
+    for (const shipment of shipmentsForOrderItem(shipments, itemIndex)) {
+      const allocation = shipmentItemAllocation(shipment, itemIndex);
+      const allocationQty = Math.max(0, Number(allocation && allocation.qty || 0));
+      if (!allocationQty) continue;
+      const remaining = Math.max(0, orderedQty - assignedQty);
+      const qty = Math.min(allocationQty, remaining);
+      if (!qty) continue;
+      assignedQty += qty;
+      rows.push(customerShipmentPayload(shipment, itemIndex, { ...item, qty }, orderRef));
+    }
+    const unassignedQty = Math.max(0, orderedQty - assignedQty);
+    if (unassignedQty) rows.push(customerShipmentPayload(null, itemIndex, { ...item, qty: unassignedQty }, orderRef));
+  });
+  rows.forEach((row, index) => { row.packageNumber = index + 1; });
+  return rows;
 }
 
 function shipmentItemSummary(items) {
@@ -2728,10 +2778,10 @@ async function publicTrackingApi(req, res, pathname, parsed) {
   }
 
   const shipments = await listOrderShipmentsPayload(order.id);
-  const allCustomerItems = orderItems.map((item, itemIndex) =>
-    customerShipmentPayload(shipmentForOrderItem(shipments, itemIndex), itemIndex, item, order.order_ref)
-  );
-  const customerItems = itemFilter === null ? allCustomerItems : [allCustomerItems[itemFilter]];
+  const allCustomerItems = customerOrderShipmentPayloads(shipments, orderItems, order.order_ref);
+  const customerItems = itemFilter === null
+    ? allCustomerItems
+    : allCustomerItems.filter((item) => Number(item.itemIndex) === Number(itemFilter));
   const state = customerItemTrackingState(customerItems);
   json(res, 200, {
     ok: true,
@@ -3012,9 +3062,7 @@ async function adminApi(req, res, pathname, parsed) {
         shipments = await listOrderShipmentsPayload(order.id);
       }
       const itemPayloads = orderItems.map((item, itemIndex) => orderItemPayload(order.order_ref, item, itemIndex, shipments));
-      const customerItems = orderItems.map((item, itemIndex) =>
-        customerShipmentPayload(shipmentForOrderItem(shipments, itemIndex), itemIndex, item, order.order_ref)
-      );
+      const customerItems = customerOrderShipmentPayloads(shipments, orderItems, order.order_ref);
       const unassignedShipments = shipments.filter((shipment) => !Array.isArray(shipment.items) || !shipment.items.length);
       json(res, 200, {
         ok: true,
@@ -3051,76 +3099,76 @@ async function adminApi(req, res, pathname, parsed) {
     }
 
     const currentShipments = await listOrderShipmentsPayload(order.id);
-    const currentForItem = shipmentForOrderItem(currentShipments, itemIndex);
     const duplicateShipment = await database.getShipmentByTracking(trackingNumber);
 
-    // A tracking number is globally unique, but AliExpress can consolidate more
-    // than one product from the SAME VerSans order into the same parcel. In that
-    // case reuse the existing shipment and attach this product to it instead of
-    // rejecting the number as a duplicate. A tracking number that belongs to a
-    // different customer/order still remains protected and cannot be reused.
+    // One order line may be split across multiple physical parcels. shipment_items.qty
+    // is the quantity of this exact order line that belongs to this exact Tracking ID.
+    // A Tracking ID may also contain several different products from the same order.
     if (duplicateShipment && Number(duplicateShipment.order_id) !== Number(order.id)) {
       json(res, 409, { ok: false, error: 'tracking_already_exists' });
       return true;
     }
-    if (currentForItem && currentForItem.trackingNumber === trackingNumber) {
-      let storedShipment = await database.getShipmentById(currentForItem.id);
-      const previousProviderTrackingUrl = shipmentProviderTrackingUrl(storedShipment);
-      let providerTrackingUrlUpdated = false;
-      if (providerTrackingUrlProvided && previousProviderTrackingUrl !== providerTrackingUrl) {
-        storedShipment = await updateShipmentProviderTrackingUrl(storedShipment, providerTrackingUrl);
-        providerTrackingUrlUpdated = true;
+
+    const orderedQty = Math.max(1, Number(orderItem.qty || 1));
+    const targetShipmentPayload = duplicateShipment
+      ? currentShipments.find((shipment) => Number(shipment.id) === Number(duplicateShipment.id)) || await shipmentWithItems(duplicateShipment)
+      : null;
+    const existingTargetAllocation = shipmentItemAllocation(targetShipmentPayload, itemIndex);
+    const otherAssignedQty = allocatedQtyForOrderItem(currentShipments, itemIndex, duplicateShipment ? duplicateShipment.id : null);
+    const maxAssignableQty = Math.max(0, orderedQty - otherAssignedQty);
+    const qtyProvided = Boolean(body && Object.prototype.hasOwnProperty.call(body, 'qty'));
+    let allocationQty;
+    if (qtyProvided) {
+      allocationQty = Number(body.qty);
+      if (!Number.isInteger(allocationQty) || allocationQty < 1) {
+        json(res, 400, { ok: false, error: 'invalid_shipment_qty' });
+        return true;
       }
-      json(res, 200, {
-        ok: true,
-        shipment: await shipmentWithItems(storedShipment),
-        unchanged: !providerTrackingUrlUpdated,
-        providerTrackingUrlUpdated
+    } else if (existingTargetAllocation) {
+      allocationQty = Math.max(1, Number(existingTargetAllocation.qty || 1));
+    } else {
+      // Backwards-compatible API behavior: older admin builds that do not send
+      // qty attach all currently-unassigned units to the supplied Tracking ID.
+      allocationQty = maxAssignableQty;
+    }
+
+    if (!maxAssignableQty && !existingTargetAllocation) {
+      json(res, 409, { ok: false, error: 'order_item_fully_assigned', orderedQty, assignedQty: orderedQty });
+      return true;
+    }
+    if (allocationQty > maxAssignableQty) {
+      json(res, 409, {
+        ok: false,
+        error: 'shipment_qty_exceeds_order_item',
+        orderedQty,
+        assignedElsewhereQty: otherAssignedQty,
+        maxAssignableQty
       });
       return true;
     }
 
     if (duplicateShipment && Number(duplicateShipment.order_id) === Number(order.id)) {
-      // If this product was previously connected to another parcel, unlink only
-      // this product from that parcel. Keep the old parcel alive if it still
-      // belongs to other products in the same order.
-      if (currentForItem && Number(currentForItem.id) !== Number(duplicateShipment.id)) {
-        const currentRows = await database.listShipmentItems(currentForItem.id);
-        const remainingRows = currentRows.filter((row) => Number(row.item_index) !== itemIndex);
-        if (remainingRows.length) {
-          await database.setShipmentItems(currentForItem.id, remainingRows.map((row) => ({
-            itemIndex: Number(row.item_index),
-            productId: row.product_id || null,
-            productName: row.product_name || 'מוצר',
-            qty: Number(row.qty || 1)
-          })));
-        } else {
-          const oldShipment = await database.getShipmentById(currentForItem.id);
-          if (oldShipment && is17TrackConfigured()) {
-            try { await stop17Track(oldShipment.tracking_number, oldShipment.carrier_code); } catch (_) {}
-          }
-          await database.deleteShipment(currentForItem.id);
-        }
-      }
-
       const existingRows = await database.listShipmentItems(duplicateShipment.id);
       const mergedRows = existingRows.filter((row) => Number(row.item_index) !== itemIndex).map((row) => ({
         itemIndex: Number(row.item_index),
         productId: row.product_id || null,
         productName: row.product_name || 'מוצר',
-        qty: Number(row.qty || 1)
+        qty: Math.max(1, Number(row.qty || 1))
       }));
       mergedRows.push({
         itemIndex,
         productId: orderItem.id || null,
         productName: orderItem.name || 'מוצר',
-        qty: Number(orderItem.qty || 1)
+        qty: allocationQty
       });
       await database.setShipmentItems(duplicateShipment.id, mergedRows);
 
       let duplicateShipmentForRefresh = duplicateShipment;
-      if (providerTrackingUrlProvided) {
+      const previousProviderTrackingUrl = shipmentProviderTrackingUrl(duplicateShipment);
+      let providerTrackingUrlUpdated = false;
+      if (providerTrackingUrlProvided && previousProviderTrackingUrl !== providerTrackingUrl) {
         duplicateShipmentForRefresh = await updateShipmentProviderTrackingUrl(duplicateShipment, providerTrackingUrl) || duplicateShipment;
+        providerTrackingUrlUpdated = true;
       }
 
       if (is17TrackConfigured()) {
@@ -3135,8 +3183,11 @@ async function adminApi(req, res, pathname, parsed) {
         itemIndex,
         itemOrderRef: orderItemRef(order.order_ref, itemIndex),
         productName: orderItem.name || 'מוצר',
+        allocationQty,
         reused: true,
         shared: reusedShipment && Array.isArray(reusedShipment.items) && reusedShipment.items.length > 1,
+        unchanged: Boolean(existingTargetAllocation) && Number(existingTargetAllocation.qty || 1) === allocationQty && !providerTrackingUrlUpdated,
+        providerTrackingUrlUpdated,
         trackingConfigured: is17TrackConfigured()
       });
       return true;
@@ -3179,13 +3230,6 @@ async function adminApi(req, res, pathname, parsed) {
     const now = Date.now();
     let shipmentId;
     try {
-      if (currentForItem) {
-        const oldShipment = await database.getShipmentById(currentForItem.id);
-        if (oldShipment && is17TrackConfigured()) {
-          try { await stop17Track(oldShipment.tracking_number, oldShipment.carrier_code); } catch (_) {}
-        }
-        await database.deleteShipment(currentForItem.id);
-      }
       shipmentId = await database.createShipment({
         orderId: order.id,
         trackingNumber,
@@ -3201,7 +3245,7 @@ async function adminApi(req, res, pathname, parsed) {
         itemIndex,
         productId: orderItem.id || null,
         productName: orderItem.name || 'מוצר',
-        qty: Number(orderItem.qty || 1)
+        qty: allocationQty
       }]);
     } catch (error) {
       if (/unique|tracking_number/i.test(String(error && error.message))) { json(res, 409, { ok: false, error: 'tracking_already_exists' }); return true; }
@@ -3218,13 +3262,14 @@ async function adminApi(req, res, pathname, parsed) {
       }
     }
     const shipment = await shipmentWithItems(await database.getShipmentById(shipmentId));
-    json(res, currentForItem ? 200 : 201, {
+    json(res, 201, {
       ok: true,
       shipment,
       itemIndex,
       itemOrderRef: orderItemRef(order.order_ref, itemIndex),
       productName: orderItem.name || 'מוצר',
-      replaced: Boolean(currentForItem),
+      allocationQty,
+      replaced: false,
       trackingConfigured: is17TrackConfigured(),
       warning: !is17TrackConfigured() ? { error: '17track_not_configured' } : registrationWarning
     });
@@ -3245,7 +3290,11 @@ async function adminApi(req, res, pathname, parsed) {
       return true;
     }
     const shipments = await listOrderShipmentsPayload(order.id);
-    const current = shipmentForOrderItem(shipments, itemIndex);
+    const matchingShipments = shipmentsForOrderItem(shipments, itemIndex);
+    const requestedShipmentId = Number(parsed && parsed.searchParams && parsed.searchParams.get('shipmentId'));
+    const current = Number.isInteger(requestedShipmentId) && requestedShipmentId > 0
+      ? matchingShipments.find((shipment) => Number(shipment.id) === requestedShipmentId) || null
+      : matchingShipments[0] || null;
     if (!current) { json(res, 404, { ok: false, error: 'shipment_not_found' }); return true; }
 
     const rows = await database.listShipmentItems(current.id);

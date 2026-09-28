@@ -59,10 +59,10 @@
       var parcels=el('section','track-parcels');
       var parcelsHead=el('div','track-parcels__head');
       var parcelsTitle=el('div');
-      parcelsTitle.appendChild(el('span','track-status-card__eyebrow','מעקב לפי מוצר'));
-      parcelsTitle.appendChild(el('h3','',shipments.length===1?'מוצר אחד':'סה״כ '+shipments.length+' מוצרים'));
+      parcelsTitle.appendChild(el('span','track-status-card__eyebrow','מעקב לפי משלוח'));
+      parcelsTitle.appendChild(el('h3','',shipments.length===1?'משלוח אחד':'סה״כ '+shipments.length+' משלוחים'));
       parcelsHead.appendChild(parcelsTitle);
-      parcelsHead.appendChild(el('p','',data.itemSpecific?'זהו המעקב של המוצר שבחרת.':'לכל מוצר יש מספר הזמנה נפרד של VerSans ומעקב נפרד.'));
+      parcelsHead.appendChild(el('p','',data.itemSpecific?'אלה המשלוחים שמחוברים למוצר שבחרת.':'מוצר יכול להתחלק לכמה משלוחים, וכל משלוח מוצג בנפרד.'));
       parcels.appendChild(parcelsHead);
 
       var list=el('div','track-parcels__list');
@@ -70,7 +70,7 @@
         var card=el('article','track-parcel is-'+(shipment.status||'preparing')+(shipment.pickupReady?' is-pickup':''));
         var topRow=el('div','track-parcel__top');
         var name=el('div');
-        name.appendChild(el('span','track-parcel__number','מוצר '+(shipment.packageNumber||index+1)));
+        name.appendChild(el('span','track-parcel__number','משלוח '+(shipment.packageNumber||index+1)));
         name.appendChild(el('strong','',shipment.productName||'מוצר'));
         if(shipment.qty>1)name.appendChild(el('small','track-parcel__qty','כמות '+shipment.qty));
         topRow.appendChild(name);

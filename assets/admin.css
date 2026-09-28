@@ -127,3 +127,12 @@ button,input,select,a{font:inherit}.admin-app{display:grid;grid-template-columns
 .admin-pickup-message-resend{display:flex!important;grid-template-columns:auto 1fr!important;align-items:center;gap:9px;padding:10px 12px;border:1px solid #ead7a3;border-radius:9px;background:#fffaf0;color:#765b19;cursor:pointer}
 .admin-pickup-message-resend input{width:17px;height:17px;margin:0;accent-color:#142333}
 .admin-pickup-message-resend span{font-size:10px;font-weight:800;line-height:1.5}
+
+/* Split fulfillment: one order line can be divided between several parcels. */
+.admin-product-tracking-live + .admin-product-tracking-live{border-top:1px dashed #dfe6eb}
+.admin-tracking-row__allocation{display:inline-flex!important;width:max-content;max-width:100%;margin-top:3px;padding:4px 7px;border-radius:999px;background:#eef6f1;color:#2c6c4c!important;font-size:8px!important;font-weight:800!important}
+.admin-product-tracking-complete{display:grid;gap:3px;padding:10px 14px;border-top:1px solid #edf0f2;background:#f3faf6}
+.admin-product-tracking-complete strong{font-size:10px;color:#216444}
+.admin-product-tracking-form[hidden]{display:none!important}
+.admin-product-tracking-form__qty input{max-width:140px!important;text-align:center!important}
+@media(max-width:720px){.admin-product-tracking-form__qty input{max-width:100%!important}}
