@@ -1384,7 +1384,8 @@ function shipmentRowPayload(row, items = [], pickupNotification = null) {
       itemIndex: Number(item.item_index),
       productId: item.product_id || null,
       productName: item.product_name || 'מוצר',
-      qty: Number(item.qty || 1)
+      qty: Number(item.qty || 1),
+      unitIndexes: parseShipmentUnitIndexes(item.unit_indexes)
     }))
   };
 }
@@ -1896,6 +1897,57 @@ async function shippingBotReadyPickups(limit = 200) {
   return out;
 }
 
+function parseShipmentUnitIndexes(value) {
+  if (Array.isArray(value)) return value.map(Number).filter((n) => Number.isInteger(n) && n > 0);
+  const raw = String(value == null ? '' : value).trim();
+  if (!raw) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) return parsed.map(Number).filter((n) => Number.isInteger(n) && n > 0);
+  } catch (_) {}
+  return raw.split(',').map((part) => Number(part.trim())).filter((n) => Number.isInteger(n) && n > 0);
+}
+
+function orderItemUnitAssignments(shipments, itemIndex, orderedQty) {
+  const qty = Math.max(1, Number(orderedQty || 1));
+  const units = Array(qty).fill(null);
+  const linked = shipmentsForOrderItem(shipments, itemIndex);
+  const legacy = [];
+
+  for (const shipment of linked) {
+    const allocation = shipmentItemAllocation(shipment, itemIndex);
+    const explicit = parseShipmentUnitIndexes(allocation && allocation.unitIndexes)
+      .filter((unitNumber) => unitNumber >= 1 && unitNumber <= qty);
+    let placed = 0;
+    for (const unitNumber of explicit) {
+      const slot = unitNumber - 1;
+      if (!units[slot]) {
+        units[slot] = shipment;
+        placed += 1;
+      }
+    }
+    const allocationQty = Math.max(0, Number(allocation && allocation.qty || 0));
+    const missing = Math.max(0, allocationQty - placed);
+    if (missing) legacy.push({ shipment, count: missing });
+  }
+
+  for (const entry of legacy) {
+    let remaining = entry.count;
+    for (let index = 0; index < units.length && remaining > 0; index += 1) {
+      if (units[index]) continue;
+      units[index] = entry.shipment;
+      remaining -= 1;
+    }
+  }
+  return units;
+}
+
+function shipmentUnitIndexesForOrderItem(shipments, itemIndex, orderedQty, shipmentId) {
+  return orderItemUnitAssignments(shipments, itemIndex, orderedQty)
+    .map((shipment, index) => shipment && Number(shipment.id) === Number(shipmentId) ? index + 1 : null)
+    .filter(Boolean);
+}
+
 function shipmentItemAllocation(shipment, itemIndex) {
   const index = Number(itemIndex);
   return Array.isArray(shipment && shipment.items)
@@ -1927,7 +1979,12 @@ function orderItemPayload(orderRef, item, itemIndex, shipments) {
     const allocation = shipmentItemAllocation(shipment, itemIndex);
     return { ...shipment, allocationQty: Math.max(1, Number(allocation && allocation.qty || 1)) };
   });
-  const assignedQty = Math.min(orderedQty, linkedShipments.reduce((sum, shipment) => sum + Number(shipment.allocationQty || 0), 0));
+  const unitAssignments = orderItemUnitAssignments(shipments, itemIndex, orderedQty);
+  const units = unitAssignments.map((shipment, unitIndex) => ({
+    unitNumber: unitIndex + 1,
+    shipment: shipment ? { ...shipment, allocationQty: 1 } : null
+  }));
+  const assignedQty = units.filter((unit) => Boolean(unit.shipment)).length;
   const rawImage = item && item.image ? String(item.image) : '';
   return {
     itemIndex,
@@ -1939,7 +1996,8 @@ function orderItemPayload(orderRef, item, itemIndex, shipments) {
     assignedQty,
     unassignedQty: Math.max(0, orderedQty - assignedQty),
     shipment: linkedShipments[0] || null,
-    shipments: linkedShipments
+    shipments: linkedShipments,
+    units
   };
 }
 
@@ -3110,6 +3168,18 @@ async function adminApi(req, res, pathname, parsed) {
     }
 
     const orderedQty = Math.max(1, Number(orderItem.qty || 1));
+    const unitNumberProvided = Boolean(body && Object.prototype.hasOwnProperty.call(body, 'unitNumber'));
+    const unitNumber = unitNumberProvided ? Number(body.unitNumber) : null;
+    if (unitNumberProvided && (!Number.isInteger(unitNumber) || unitNumber < 1 || unitNumber > orderedQty)) {
+      json(res, 400, { ok: false, error: 'invalid_shipment_unit' });
+      return true;
+    }
+    const currentUnitAssignments = orderItemUnitAssignments(currentShipments, itemIndex, orderedQty);
+    if (unitNumberProvided && currentUnitAssignments[unitNumber - 1]) {
+      json(res, 409, { ok: false, error: 'shipment_unit_already_assigned', unitNumber });
+      return true;
+    }
+
     const targetShipmentPayload = duplicateShipment
       ? currentShipments.find((shipment) => Number(shipment.id) === Number(duplicateShipment.id)) || await shipmentWithItems(duplicateShipment)
       : null;
@@ -3118,7 +3188,15 @@ async function adminApi(req, res, pathname, parsed) {
     const maxAssignableQty = Math.max(0, orderedQty - otherAssignedQty);
     const qtyProvided = Boolean(body && Object.prototype.hasOwnProperty.call(body, 'qty'));
     let allocationQty;
-    if (qtyProvided) {
+    let allocationUnitIndexes = [];
+    if (unitNumberProvided) {
+      allocationUnitIndexes = duplicateShipment
+        ? shipmentUnitIndexesForOrderItem(currentShipments, itemIndex, orderedQty, duplicateShipment.id)
+        : [];
+      if (!allocationUnitIndexes.includes(unitNumber)) allocationUnitIndexes.push(unitNumber);
+      allocationUnitIndexes.sort((a, b) => a - b);
+      allocationQty = allocationUnitIndexes.length;
+    } else if (qtyProvided) {
       allocationQty = Number(body.qty);
       if (!Number.isInteger(allocationQty) || allocationQty < 1) {
         json(res, 400, { ok: false, error: 'invalid_shipment_qty' });
@@ -3127,8 +3205,7 @@ async function adminApi(req, res, pathname, parsed) {
     } else if (existingTargetAllocation) {
       allocationQty = Math.max(1, Number(existingTargetAllocation.qty || 1));
     } else {
-      // Backwards-compatible API behavior: older admin builds that do not send
-      // qty attach all currently-unassigned units to the supplied Tracking ID.
+      // Backwards-compatible API behavior for older admin builds.
       allocationQty = maxAssignableQty;
     }
 
@@ -3153,13 +3230,15 @@ async function adminApi(req, res, pathname, parsed) {
         itemIndex: Number(row.item_index),
         productId: row.product_id || null,
         productName: row.product_name || 'מוצר',
-        qty: Math.max(1, Number(row.qty || 1))
+        qty: Math.max(1, Number(row.qty || 1)),
+        unitIndexes: parseShipmentUnitIndexes(row.unit_indexes)
       }));
       mergedRows.push({
         itemIndex,
         productId: orderItem.id || null,
         productName: orderItem.name || 'מוצר',
-        qty: allocationQty
+        qty: allocationQty,
+        unitIndexes: unitNumberProvided ? allocationUnitIndexes : parseShipmentUnitIndexes(existingTargetAllocation && existingTargetAllocation.unitIndexes)
       });
       await database.setShipmentItems(duplicateShipment.id, mergedRows);
 
@@ -3245,7 +3324,8 @@ async function adminApi(req, res, pathname, parsed) {
         itemIndex,
         productId: orderItem.id || null,
         productName: orderItem.name || 'מוצר',
-        qty: allocationQty
+        qty: allocationQty,
+        unitIndexes: unitNumberProvided ? allocationUnitIndexes : []
       }]);
     } catch (error) {
       if (/unique|tracking_number/i.test(String(error && error.message))) { json(res, 409, { ok: false, error: 'tracking_already_exists' }); return true; }
@@ -3292,21 +3372,59 @@ async function adminApi(req, res, pathname, parsed) {
     const shipments = await listOrderShipmentsPayload(order.id);
     const matchingShipments = shipmentsForOrderItem(shipments, itemIndex);
     const requestedShipmentId = Number(parsed && parsed.searchParams && parsed.searchParams.get('shipmentId'));
+    const requestedUnitNumber = Number(parsed && parsed.searchParams && parsed.searchParams.get('unitNumber'));
+    const unitNumberProvided = Number.isInteger(requestedUnitNumber) && requestedUnitNumber > 0;
     const current = Number.isInteger(requestedShipmentId) && requestedShipmentId > 0
       ? matchingShipments.find((shipment) => Number(shipment.id) === requestedShipmentId) || null
       : matchingShipments[0] || null;
     if (!current) { json(res, 404, { ok: false, error: 'shipment_not_found' }); return true; }
 
+    const orderedQty = Math.max(1, Number(orderItems[itemIndex] && orderItems[itemIndex].qty || 1));
+    if (unitNumberProvided) {
+      if (requestedUnitNumber > orderedQty) { json(res, 400, { ok: false, error: 'invalid_shipment_unit' }); return true; }
+      const assignments = orderItemUnitAssignments(shipments, itemIndex, orderedQty);
+      const assignedShipment = assignments[requestedUnitNumber - 1];
+      if (!assignedShipment || Number(assignedShipment.id) !== Number(current.id)) {
+        json(res, 409, { ok: false, error: 'shipment_unit_mismatch' });
+        return true;
+      }
+    }
+
     const rows = await database.listShipmentItems(current.id);
-    const remainingRows = rows.filter((row) => Number(row.item_index) !== itemIndex);
-    if (remainingRows.length) {
-      await database.setShipmentItems(current.id, remainingRows.map((row) => ({
+    const targetRow = rows.find((row) => Number(row.item_index) === itemIndex) || null;
+    let remainingRows;
+    if (unitNumberProvided && targetRow) {
+      const effectiveIndexes = shipmentUnitIndexesForOrderItem(shipments, itemIndex, orderedQty, current.id)
+        .filter((unitNumber) => unitNumber !== requestedUnitNumber);
+      const nextQty = Math.max(0, Number(targetRow.qty || 1) - 1);
+      remainingRows = rows.filter((row) => Number(row.item_index) !== itemIndex).map((row) => ({
         itemIndex: Number(row.item_index),
         productId: row.product_id || null,
         productName: row.product_name || 'מוצר',
-        qty: Number(row.qty || 1)
-      })));
-      json(res, 200, { ok: true, unlinked: true, deletedShipment: false });
+        qty: Number(row.qty || 1),
+        unitIndexes: parseShipmentUnitIndexes(row.unit_indexes)
+      }));
+      if (nextQty > 0) {
+        remainingRows.push({
+          itemIndex,
+          productId: targetRow.product_id || null,
+          productName: targetRow.product_name || 'מוצר',
+          qty: nextQty,
+          unitIndexes: effectiveIndexes
+        });
+      }
+    } else {
+      remainingRows = rows.filter((row) => Number(row.item_index) !== itemIndex).map((row) => ({
+        itemIndex: Number(row.item_index),
+        productId: row.product_id || null,
+        productName: row.product_name || 'מוצר',
+        qty: Number(row.qty || 1),
+        unitIndexes: parseShipmentUnitIndexes(row.unit_indexes)
+      }));
+    }
+    if (remainingRows.length) {
+      await database.setShipmentItems(current.id, remainingRows);
+      json(res, 200, { ok: true, unlinked: true, deletedShipment: false, unitNumber: unitNumberProvided ? requestedUnitNumber : null });
       return true;
     }
 

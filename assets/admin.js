@@ -411,7 +411,10 @@
       invalid_provider_tracking_url: 'קישור המעקב של AliExpress לא תקין. יש להדביק קישור https מתוך AliExpress.',
       invalid_shipment_qty: 'הכמות במשלוח חייבת להיות מספר שלם של לפחות 1.',
       order_item_fully_assigned: 'כל היחידות של המוצר כבר מחוברות למשלוחים. כדי לשנות, נתק קודם את המשלוח המתאים.',
-      shipment_qty_exceeds_order_item: 'הכמות שבחרת גדולה מהכמות שנשארה לשיוך במוצר הזה.'
+      shipment_qty_exceeds_order_item: 'הכמות שבחרת גדולה מהכמות שנשארה לשיוך במוצר הזה.',
+      invalid_shipment_unit: 'לא ניתן לזהות את היחידה שנבחרה.',
+      shipment_unit_already_assigned: 'ליחידה הזאת כבר מחובר Tracking ID. נתק אותו קודם כדי להחליף.',
+      shipment_unit_mismatch: 'היחידה כבר לא מחוברת למשלוח הזה. רענן את החלון ונסה שוב.'
     };
     return map[code] || text(error && error.message, 'לא ניתן לבצע את הפעולה כרגע.');
   }
@@ -568,15 +571,37 @@
         var customerPreview = make('div', 'admin-shipping-customer-preview');
         customerPreview.appendChild(make('span', '', 'מה הלקוח רואה עכשיו'));
         customerPreview.appendChild(make('strong', '', customerState.label || 'ההזמנה בהכנה'));
-        customerPreview.appendChild(make('small', 'admin-table__muted', 'אפשר לחבר כל מוצר או חלק מהכמות שלו למשלוח נפרד. הודעת האיסוף תכלול רק את הכמות שמחוברת לאותו Tracking ID.'));
+        customerPreview.appendChild(make('small', 'admin-table__muted', 'כל יחידה בהזמנה מופיעה בנפרד ומקבלת Tracking ID משלה. הודעת האיסוף תכלול רק את היחידות שמחוברות לאותו משלוח.'));
         panel.appendChild(customerPreview);
 
         var productsSection = make('div', 'admin-shipping-section');
         productsSection.appendChild(make('h3', '', 'מעקב לפי מוצר'));
-        productsSection.appendChild(make('p', 'admin-order-shipping-help', 'אם כמה יחידות מאותו מוצר נשלחות בנפרד, בוחרים כמה יחידות נמצאות בכל Tracking ID. אפשר לחבר כמה משלוחים לאותה שורת מוצר.'));
+        productsSection.appendChild(make('p', 'admin-order-shipping-help', 'כל יחידה מוצגת כמוצר נפרד. אם הוזמנו 2 כובעים זהים, יופיעו שני כרטיסים נפרדים ולכל אחד מזינים Tracking ID משלו.'));
 
         var productTrackingList = make('div', 'admin-product-tracking-list');
-        (data.items || []).forEach(function (item) {
+        var unitItems = [];
+        (data.items || []).forEach(function (sourceItem) {
+          var orderedQty = Math.max(1, Number(sourceItem.qty || 1));
+          var units = Array.isArray(sourceItem.units) && sourceItem.units.length
+            ? sourceItem.units
+            : Array.from({ length: orderedQty }, function (_, index) {
+                var fallbackShipments = Array.isArray(sourceItem.shipments) ? sourceItem.shipments : (sourceItem.shipment ? [sourceItem.shipment] : []);
+                return { unitNumber: index + 1, shipment: fallbackShipments[index] || null };
+              });
+          units.forEach(function (unit, index) {
+            var unitShipment = unit && unit.shipment ? unit.shipment : null;
+            unitItems.push(Object.assign({}, sourceItem, {
+              qty: 1,
+              originalQty: orderedQty,
+              unitNumber: Number(unit && unit.unitNumber || index + 1),
+              shipment: unitShipment,
+              shipments: unitShipment ? [unitShipment] : [],
+              assignedQty: unitShipment ? 1 : 0,
+              unassignedQty: unitShipment ? 0 : 1
+            }));
+          });
+        });
+        unitItems.forEach(function (item) {
           var shipments = Array.isArray(item.shipments) ? item.shipments : (item.shipment ? [item.shipment] : []);
           var shipment = shipments[0] || null;
           var card = make('section', 'admin-product-tracking-card' + (shipments.length ? ' has-tracking' : ''));
@@ -590,7 +615,7 @@
           }
           var productCopy = make('div');
           productCopy.appendChild(make('strong', '', text(item.productName, item.productId)));
-          productCopy.appendChild(make('small', 'admin-table__muted', 'כמות ' + numberFmt(item.qty || 1)));
+          productCopy.appendChild(make('small', 'admin-table__muted', Number(item.originalQty || 1) > 1 ? ('יחידה ' + numberFmt(item.unitNumber || 1) + ' מתוך ' + numberFmt(item.originalQty || 1)) : 'יחידה אחת'));
           productMeta.appendChild(productCopy);
           var itemRef = make('div', 'admin-product-order-ref');
           itemRef.appendChild(make('span', '', 'מספר הזמנה VerSans'));
@@ -605,7 +630,6 @@
             meta.appendChild(make('small', 'admin-table__muted', 'Tracking ID / מספר מעקב מהספק'));
             meta.appendChild(make('strong', 'admin-table__strong admin-table__mono', shipment.trackingNumber));
             meta.appendChild(make('span', 'admin-tracking-row__carrier', text(shipment.carrierName, 'זיהוי אוטומטי')));
-            if (Number(item.qty || 1) > 1) meta.appendChild(make('span', 'admin-tracking-row__allocation', 'כמות במשלוח הזה: ' + numberFmt(shipment.allocationQty || 1) + ' מתוך ' + numberFmt(item.qty || 1)));
 
             var actions = make('div', 'admin-shipment-actions');
             var refresh = make('button', 'admin-small-button', 'רענון מעקב'); refresh.type = 'button'; refresh.disabled = !data.trackingConfigured;
@@ -616,9 +640,9 @@
             });
             var remove = make('button', 'admin-small-button admin-small-button--danger', 'ניתוק'); remove.type = 'button';
             remove.addEventListener('click', async function () {
-              if (!window.confirm('לנתק את המשלוח הזה מהמוצר ' + text(item.productName, '') + '?')) return;
+              if (!window.confirm('לנתק את ה-Tracking ID מהיחידה הזאת של ' + text(item.productName, '') + '?')) return;
               remove.disabled = true;
-              try { await apiAction('/api/admin/orders/' + encodeURIComponent(order.orderRef) + '/shipment-items/' + item.itemIndex + '?shipmentId=' + encodeURIComponent(shipment.id), 'DELETE'); showToast('המשלוח נותק מהמוצר'); await load(); }
+              try { await apiAction('/api/admin/orders/' + encodeURIComponent(order.orderRef) + '/shipment-items/' + item.itemIndex + '?shipmentId=' + encodeURIComponent(shipment.id) + '&unitNumber=' + encodeURIComponent(item.unitNumber || 1), 'DELETE'); showToast('המשלוח נותק מהיחידה'); await load(); }
               catch (e) { showToast(shippingErrorMessage(e)); remove.disabled = false; }
             });
             actions.append(refresh, remove); top.append(meta, actions); row.appendChild(top);
@@ -666,14 +690,14 @@
           } else {
             var waiting = make('div', 'admin-product-tracking-waiting');
             waiting.appendChild(make('strong', '', 'ההזמנה בהכנה'));
-            waiting.appendChild(make('span', 'admin-table__muted', 'עדיין לא הוזן Tracking ID עבור המוצר הזה.'));
+            waiting.appendChild(make('span', 'admin-table__muted', 'עדיין לא הוזן Tracking ID עבור היחידה הזאת.'));
             card.appendChild(waiting);
           }
 
           if (Number(item.unassignedQty || 0) === 0 && shipments.length) {
             var completeAssignment = make('div', 'admin-product-tracking-complete');
-            completeAssignment.appendChild(make('strong', '', 'כל הכמות משויכת למשלוחים ✓'));
-            completeAssignment.appendChild(make('span', 'admin-table__muted', 'כדי להעביר יחידה למשלוח אחר, נתק קודם את המשלוח שבו היא נמצאת.'));
+            completeAssignment.appendChild(make('strong', '', 'ליחידה הזאת מחובר Tracking ID ✓'));
+            completeAssignment.appendChild(make('span', 'admin-table__muted', 'כדי להחליף אותו, לחץ על ניתוק ואז הזן Tracking ID חדש.'));
             card.appendChild(completeAssignment);
           }
 
@@ -695,26 +719,10 @@
           providerUrlLabel.appendChild(providerTrackingUrl);
           providerUrlLabel.appendChild(make('small', 'admin-table__muted', 'אופציונלי. אפשר לשמור כאן קישור ישיר לפרטי המשלוח ב-AliExpress לצורך בדיקה ידנית.'));
 
-          var allocationQty = null;
-          var qtyLabel = null;
-          var remainingQty = Math.max(0, Number(item.unassignedQty != null ? item.unassignedQty : item.qty || 1));
-          if (Number(item.qty || 1) > 1) {
-            qtyLabel = make('label', 'admin-product-tracking-form__qty');
-            qtyLabel.appendChild(make('span', '', 'כמות במשלוח הזה'));
-            allocationQty = document.createElement('input');
-            allocationQty.type = 'number'; allocationQty.name = 'qty'; allocationQty.min = '1'; allocationQty.step = '1';
-            allocationQty.max = String(Math.max(1, remainingQty));
-            allocationQty.value = '1';
-            allocationQty.inputMode = 'numeric'; allocationQty.dir = 'ltr';
-            qtyLabel.appendChild(allocationQty);
-            qtyLabel.appendChild(make('small', 'admin-table__muted', remainingQty > 0 ? 'נשארו לשיוך ' + numberFmt(remainingQty) + ' מתוך ' + numberFmt(item.qty || 1) : 'כל היחידות כבר משויכות למשלוחים.'));
-          }
-
-          var submit = make('button', 'admin-shipment-submit', shipments.length ? 'חבר משלוח נוסף' : 'חבר Tracking ID למוצר'); submit.type = 'submit';
+          var remainingQty = Math.max(0, Number(item.unassignedQty != null ? item.unassignedQty : 1));
+          var submit = make('button', 'admin-shipment-submit', 'חבר Tracking ID ליחידה'); submit.type = 'submit';
           var formError = make('div', 'admin-shipment-form-error'); formError.hidden = true;
-          form.append(trackingLabel, providerUrlLabel);
-          if (qtyLabel) form.appendChild(qtyLabel);
-          form.append(submit, formError);
+          form.append(trackingLabel, providerUrlLabel, submit, formError);
           if (remainingQty <= 0) {
             form.hidden = true;
           }
@@ -723,14 +731,14 @@
             try {
               var created = await apiAction('/api/admin/orders/' + encodeURIComponent(order.orderRef) + '/shipments', 'POST', {
                 itemIndex: item.itemIndex,
-                qty: allocationQty ? Number(allocationQty.value) : 1,
+                unitNumber: item.unitNumber || 1,
                 trackingNumber: tracking.value.trim(),
                 providerTrackingUrl: providerTrackingUrl.value.trim()
               });
               if (created.warning && created.warning.error === 'tracking_registration_failed') showToast('ה-Tracking ID נשמר למוצר. 17TRACK עדיין לא הצליח לזהות אותו וינסה שוב.');
-              else if (created.reused && created.shared) showToast('ה-Tracking ID כבר היה בהזמנה וחובר גם ל-' + text(item.productName, 'המוצר'));
-              else if (created.reused) showToast('ה-Tracking ID הקיים שויך ל-' + text(item.productName, 'המוצר'));
-              else showToast('המשלוח חובר ל-' + text(item.productName, 'המוצר'));
+              else if (created.reused && created.shared) showToast('ה-Tracking ID כבר היה בהזמנה וחובר גם ליחידה הזאת');
+              else if (created.reused) showToast('ה-Tracking ID הקיים שויך ליחידה הזאת');
+              else showToast('המשלוח חובר ליחידה הזאת');
               await load();
             } catch (e) {
               formError.textContent = shippingErrorMessage(e); formError.hidden = false; submit.disabled = false; submit.textContent = oldText;
