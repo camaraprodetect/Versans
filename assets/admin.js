@@ -631,6 +631,7 @@
             meta.appendChild(make('span', 'admin-tracking-row__carrier', text(shipment.carrierName, 'זיהוי אוטומטי')));
 
             var actions = make('div', 'admin-shipment-actions');
+            var detailsToggle = make('button', 'admin-small-button admin-small-button--details', 'פרטים'); detailsToggle.type = 'button';
             var refresh = make('button', 'admin-small-button', 'רענון מעקב'); refresh.type = 'button'; refresh.disabled = !data.trackingConfigured;
             refresh.addEventListener('click', async function () {
               refresh.disabled = true;
@@ -644,22 +645,33 @@
               try { await apiAction('/api/admin/orders/' + encodeURIComponent(order.orderRef) + '/shipment-items/' + item.itemIndex + '?shipmentId=' + encodeURIComponent(shipment.id) + '&unitNumber=' + encodeURIComponent(item.unitNumber || 1), 'DELETE'); showToast('המשלוח נותק מהיחידה'); await load(); }
               catch (e) { showToast(shippingErrorMessage(e)); remove.disabled = false; }
             });
-            actions.append(refresh, remove); top.append(meta, actions); row.appendChild(top);
+            actions.append(detailsToggle, refresh, remove); top.append(meta, actions); row.appendChild(top);
+
+            var detailsPanel = make('div', 'admin-shipment-details-panel');
+            detailsPanel.hidden = true;
+            detailsToggle.setAttribute('aria-expanded', 'false');
+            detailsToggle.addEventListener('click', function () {
+              var willOpen = detailsPanel.hidden;
+              detailsPanel.hidden = !willOpen;
+              detailsToggle.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+              detailsToggle.textContent = willOpen ? 'סגור פרטים' : 'פרטים';
+              row.classList.toggle('is-details-open', willOpen);
+            });
 
             var statusLine = make('div', 'admin-tracking-status-line');
             statusLine.appendChild(make('strong', '', shipment.statusLabel));
             statusLine.appendChild(make('span', '', shipment.latestLocation ? 'מיקום אחרון: ' + shipment.latestLocation : 'מיקום אחרון טרם התקבל'));
-            row.appendChild(statusLine);
+            detailsPanel.appendChild(statusLine);
 
             if (shipment.pickupNotification && shipment.pickupNotification.state === 'sent') {
               var notice = make('div', 'admin-shipping-note admin-shipping-note--sent');
               notice.appendChild(make('strong', '', 'הודעת איסוף נשלחה ✓'));
               notice.appendChild(make('span', '', shipment.pickupNotification.sentAt ? dateTime(shipment.pickupNotification.sentAt) : 'נשלחה ללקוח'));
-              row.appendChild(notice);
+              detailsPanel.appendChild(notice);
             }
 
             var progress = make('div', 'admin-tracking-progress');
-            var progressFill = make('span'); progressFill.style.width = shipmentProgressValue(shipment.status) + '%'; progress.appendChild(progressFill); row.appendChild(progress);
+            var progressFill = make('span'); progressFill.style.width = shipmentProgressValue(shipment.status) + '%'; progress.appendChild(progressFill); detailsPanel.appendChild(progress);
 
             var details = make('div', 'admin-tracking-details');
             var sourceLabel = text(shipment.trackingSourceLabel, '17TRACK');
@@ -669,13 +681,13 @@
             var updatedBox = make('div'); updatedBox.appendChild(make('span', '', 'עדכון אחרון')); updatedBox.appendChild(make('strong', '', shipment.latestEventAt ? dateTime(shipment.latestEventAt) : 'ממתין לעדכון'));
             var etaBox = make('div'); etaBox.appendChild(make('span', '', 'הערכת מסירה')); etaBox.appendChild(make('strong', '', shipmentEtaLabel(shipment.estimatedDeliveryFrom, shipment.estimatedDeliveryTo)));
             var syncBox = make('div'); syncBox.appendChild(make('span', '', 'סנכרון')); syncBox.appendChild(make('strong', '', text(shipment.syncStatus, shipment.registeredAt ? 'מחובר ל-17TRACK' : 'ממתין לרישום')));
-            details.append(providerBox, locationBox, updatedBox, etaBox, syncBox); row.appendChild(details);
+            details.append(providerBox, locationBox, updatedBox, etaBox, syncBox); detailsPanel.appendChild(details);
 
             if (Array.isArray(shipment.providerTips) && shipment.providerTips.length) {
               var tips = make('div', 'admin-shipping-note');
               tips.appendChild(make('strong', '', 'הודעת חברת השילוח'));
               shipment.providerTips.forEach(function (tip) { tips.appendChild(make('div', '', translateTrackingText(text(tip)))); });
-              row.appendChild(tips);
+              detailsPanel.appendChild(tips);
             }
 
             var history = Array.isArray(shipment.history) ? shipment.history : [];
@@ -683,7 +695,8 @@
             historyWrap.appendChild(make('strong', 'admin-tracking-history__title', 'היסטוריית Tracking אמיתית · ' + sourceLabel));
             if (!history.length) historyWrap.appendChild(make('span', 'admin-table__muted', 'עדיין לא התקבלו אירועים ממקור המעקב.'));
             else history.slice(0, 20).forEach(function (event) { historyWrap.appendChild(eventLine(event)); });
-            row.appendChild(historyWrap);
+            detailsPanel.appendChild(historyWrap);
+            row.appendChild(detailsPanel);
             card.appendChild(row);
             });
           } else {

@@ -136,3 +136,11 @@ button,input,select,a{font:inherit}.admin-app{display:grid;grid-template-columns
 .admin-product-tracking-form[hidden]{display:none!important}
 .admin-product-tracking-form__qty input{max-width:140px!important;text-align:center!important}
 @media(max-width:720px){.admin-product-tracking-form__qty input{max-width:100%!important}}
+
+/* Shipment cards: keep the admin compact and reveal tracking details on demand. */
+.admin-shipment-details-panel{margin-top:10px;padding-top:2px}
+.admin-shipment-details-panel[hidden]{display:none!important}
+.admin-small-button--details{background:#eef3f6;border-color:#d7e1e7;color:var(--admin-navy)}
+.admin-small-button--details[aria-expanded="true"]{background:var(--admin-navy);border-color:var(--admin-navy);color:#fff}
+.admin-product-tracking-live.is-details-open{background:#fbfcfd}
+@media(max-width:720px){.admin-shipment-actions{flex-wrap:wrap}.admin-small-button--details{order:-1}}
