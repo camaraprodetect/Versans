@@ -788,7 +788,7 @@
                   : (p.cardMode === 'view'
                   ? '<a class="btn btn--primary" href="' + productPath(p) + '">' + esc(state.lang === 'he' ? 'לצפייה במוצר' : 'View product') + '</a>'
                   : '<button class="btn btn--primary" data-add="' + esc(p.id) + '">' + esc(t('card.add')) + '</button>'))))) +
-          (isGlasses ? '' : '<a class="btn btn--ghost" href="#" data-card-add="' + esc(p.id) + '">' + esc(state.lang === 'he' ? 'הוסף לסל' : 'Add to cart') + '</a>') +
+          '<a class="btn btn--ghost" href="#" data-card-add="' + esc(p.id) + '">' + esc(state.lang === 'he' ? 'הוסף לסל' : 'Add to cart') + '</a>' +
         '</div>' +
       '</div>' +
     '</article>';
@@ -1349,8 +1349,8 @@
       rows: summary.discountRows || []
     };
   }
-  function secondItemDiscount() {
-    return pricingSummary().discount || 0;
+  function buy2Get1Discount() {
+    return pricingSummary().buy2Get1Discount || 0;
   }
   function couponDiscount() {
     return pricingSummary().couponDiscount || 0;
@@ -1693,8 +1693,8 @@ function orderTotal() {
     if (el) { el.textContent = n; el.hidden = n === 0; }
   }
 
-  function secondItemDetailsHtml(row) {
-    if (!row || row.type !== 'second-item' || !Array.isArray(row.details) || !row.details.length) return '';
+  function buy2Get1DetailsHtml(row) {
+    if (!row || row.type !== 'buy-2-get-1' || !Array.isArray(row.details) || !row.details.length) return '';
     return '<div class="cart-discount-items">' + row.details.map(function (detail) {
       return '<div class="cart-discount-item">' +
         '<span class="cart-discount-item__name">' + esc(detail.label) + '</span>' +
@@ -1705,12 +1705,9 @@ function orderTotal() {
   function discountRowsHtml(summary) {
     return (summary.discountRows || []).map(function (row) {
       var labelHtml = esc(row.label);
-      if (row.type === 'second-item' && state.lang === 'he') {
-        labelHtml = labelHtml.replace('כל', '<strong>כל</strong>');
-      }
       return '<div class="cart-discount-group">' +
         '<div class="sum sum--discount"><span>' + labelHtml + '</span><span>−' + money(row.amount) + '</span></div>' +
-        secondItemDetailsHtml(row) +
+        buy2Get1DetailsHtml(row) +
       '</div>';
     }).join('');
   }

@@ -89,6 +89,35 @@
           alert.appendChild(el('strong','','החבילה מחכה לך לאיסוף'));
           alert.appendChild(el('span','','מומלץ לאסוף אותה בהקדם בהתאם להנחיות חברת השילוח, כדי למנוע החזרה לשולח.'));
           card.appendChild(alert);
+
+          var pickup=shipment.pickupDetails&&typeof shipment.pickupDetails==='object'?shipment.pickupDetails:null;
+          if(pickup){
+            var detailRows=[
+              ['נקודת איסוף',pickup.pickupPoint],
+              ['כתובת',pickup.address],
+              ['קוד איסוף',pickup.pickupCode],
+              ['מספר ארונית',pickup.lockerNumber],
+              ['מספר מדף',pickup.shelfNumber],
+              ['קוד אימות',pickup.verificationCode],
+              ['מספר חבילה',pickup.packageNumber],
+              ['שעות פתיחה',pickup.openingHours],
+              ['מועד אחרון לאיסוף',pickup.deadline],
+              ['תאריך הגעה',pickup.arrivalDate]
+            ].filter(function(row){return String(row[1]||'').trim()});
+            if(detailRows.length){
+              var details=el('section','track-pickup-details');
+              details.appendChild(el('h4','','פרטי איסוף'));
+              var detailsList=el('div','track-pickup-details__list');
+              detailRows.forEach(function(row){
+                var detail=el('div','track-pickup-details__row');
+                detail.appendChild(el('span','',row[0]));
+                detail.appendChild(el('strong','',String(row[1]).trim()));
+                detailsList.appendChild(detail);
+              });
+              details.appendChild(detailsList);
+              card.appendChild(details);
+            }
+          }
         }
         if(shipment.location||shipment.updatedAt){
           var meta=el('div','track-parcel__meta');

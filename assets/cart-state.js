@@ -223,38 +223,38 @@
   syncBadge();
 })();
 
-/* VerSans smart cart incentive meter — uses only existing VerSans promotions. */
+/* VerSans smart cart incentive meter - uses only existing VerSans promotions. */
 (function () {
   'use strict';
-  if (window.__VERSANS_CART_INCENTIVE_V3) return;
-  window.__VERSANS_CART_INCENTIVE_V3 = true;
+  if (window.__VERSANS_CART_INCENTIVE_V4) return;
+  window.__VERSANS_CART_INCENTIVE_V4 = true;
 
-  var styleId = 'versans-cart-incentive-styles-v3';
+  var styleId = 'versans-cart-incentive-styles-v4';
   if (!document.getElementById(styleId)) {
     var style = document.createElement('style');
     style.id = styleId;
     style.textContent = [
-      '.vs-cart-incentive{margin:0 0 14px;padding:14px 15px 13px;border:1px solid #e0e6eb;border-radius:17px;background:#fff;box-shadow:0 7px 24px rgba(20,35,51,.065);direction:rtl;color:#142333}',
-      '.vs-cart-incentive__head{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-bottom:8px}',
-      '.vs-cart-incentive__badge{display:inline-flex;align-items:center;gap:6px;color:#137a44;background:#eaf8f0;border-radius:999px;padding:4px 9px;white-space:nowrap;font-size:.76rem;font-weight:800}',
-      '.vs-cart-incentive__badge::before{content:"";width:7px;height:7px;border-radius:50%;background:#159455;box-shadow:0 0 0 3px rgba(21,148,85,.10)}',
-      '.vs-cart-incentive__title{margin:0;font-size:1rem;font-weight:850;line-height:1.5;color:#101820}',
-      '.vs-cart-incentive__title strong{color:#b61e24}',
-      '.vs-cart-incentive__sub{margin:4px 0 0;font-size:.8rem;line-height:1.45;color:#657481;font-weight:650}',
-      '.vs-cart-incentive__meter{position:relative;margin:13px 3px 1px;padding-top:2px}',
-      '.vs-cart-incentive__track{position:relative;height:36px}',
-      '.vs-cart-incentive__rail{position:absolute;right:0;left:0;top:15px;height:6px;border-radius:999px;background:#e4e8ec;overflow:hidden}',
-      '.vs-cart-incentive__fill{position:absolute;right:0;top:0;bottom:0;border-radius:inherit;background:#142333;transition:width .25s ease}',
-      '.vs-cart-incentive__dot{position:absolute;top:3px;width:30px;height:30px;border:3px solid #142333;border-radius:50%;background:#fff;color:#142333;display:grid;place-items:center;font-size:.76rem;font-weight:900;z-index:2}',
-      '.vs-cart-incentive__dot--current{right:var(--vs-progress);transform:translateX(50%);background:#142333;color:#fff}',
-      '.vs-cart-incentive__dot--target{left:0;transform:translateX(-50%)}',
-      '.vs-cart-incentive__meter-labels{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:2px;font-size:.72rem;line-height:1.35;color:#6a7884;font-weight:700}',
-      '.vs-cart-incentive__meter-labels span:first-child{text-align:right}',
-      '.vs-cart-incentive__meter-labels span:last-child{text-align:left}',
-      '.vs-cart-incentive__hint{display:flex;align-items:center;gap:7px;margin-top:10px;padding:8px 10px;border-radius:11px;background:#f6f8fa;color:#394a57;font-size:.77rem;line-height:1.4;font-weight:700}',
-      '.vs-cart-incentive__hint-icon{width:24px;height:24px;flex:0 0 24px;border-radius:50%;display:grid;place-items:center;background:#142333;color:#fff;font-size:.72rem}',
+      '.vs-cart-incentive{margin:0 0 11px;padding:11px 12px 10px;border:1px solid #e2e6ea;border-radius:14px;background:#fff;direction:rtl;color:#142333}',
+      '.vs-cart-incentive__title{margin:0;text-align:center;font-size:.9rem;font-weight:900;line-height:1.35;color:#17212b}',
+      '.vs-cart-incentive__title strong{color:#c91824}',
+      '.vs-cart-incentive__sub{margin:3px 0 0;text-align:center;font-size:.72rem;line-height:1.3;color:#687783;font-weight:700}',
+      '.vs-cart-incentive__meter{position:relative;margin:11px 3px 0;padding:0 1px}',
+      '.vs-cart-incentive__track{position:relative;min-height:70px;padding:0 16px}',
+      '.vs-cart-incentive__rail{position:absolute;right:16px;left:16px;top:17px;height:6px;border-radius:999px;background:#e1e4e7;overflow:hidden}',
+      '.vs-cart-incentive__fill{position:absolute;right:0;top:0;bottom:0;width:var(--vs-progress);border-radius:inherit;background:#142333;transition:width .25s ease}',
+      '.vs-cart-incentive__steps{position:relative;display:flex;justify-content:space-between;align-items:flex-start;direction:rtl}',
+      '.vs-cart-incentive__step{width:33.333%;min-width:0;display:flex;flex-direction:column;align-items:center;text-align:center;color:#66747f;font-size:.62rem;line-height:1.18;font-weight:750}',
+      '.vs-cart-incentive__step:first-child{align-items:flex-start;text-align:right}',
+      '.vs-cart-incentive__step:last-child{align-items:flex-end;text-align:left}',
+      '.vs-cart-incentive__dot{position:relative;z-index:2;width:36px;height:36px;border:2.5px solid #142333;border-radius:50%;background:#fff;color:#142333;display:grid;place-items:center;font-size:.76rem;font-weight:950;box-sizing:border-box;transition:background .2s ease,color .2s ease,transform .2s ease}',
+      '.vs-cart-incentive__step.is-done .vs-cart-incentive__dot{background:#142333;color:#fff}',
+      '.vs-cart-incentive__step.is-current .vs-cart-incentive__dot{transform:scale(1.08);box-shadow:0 0 0 4px rgba(20,35,51,.08)}',
+      '.vs-cart-incentive__step-label{display:block;max-width:94px;margin-top:5px;min-height:26px;white-space:pre-line}',
+      '.vs-cart-incentive__step.is-done .vs-cart-incentive__step-label{color:#142333;font-weight:850}',
+      '.vs-cart-incentive__tag{width:16px;height:16px;display:block}',
+      '.vs-cart-incentive__tag path,.vs-cart-incentive__tag circle{stroke:currentColor}',
       '#cartBody>.vs-cart-incentive,#versansGlobalCartBody>.vs-cart-incentive{position:relative}',
-      '@media(max-width:700px){.vs-cart-incentive{margin:0 0 12px;padding:12px;border-radius:14px}.vs-cart-incentive__title{font-size:.94rem}.vs-cart-incentive__sub{font-size:.76rem}.vs-cart-incentive__meter{margin-top:11px}.vs-cart-incentive__meter-labels{font-size:.68rem}.vs-cart-incentive__hint{font-size:.73rem;padding:7px 9px}}'
+      '@media(max-width:700px){.vs-cart-incentive{margin:0 0 9px;padding:9px 10px 8px;border-radius:12px}.vs-cart-incentive__title{font-size:.84rem}.vs-cart-incentive__sub{font-size:.67rem}.vs-cart-incentive__meter{margin-top:9px}.vs-cart-incentive__track{min-height:64px;padding:0 13px}.vs-cart-incentive__rail{right:13px;left:13px;top:15px;height:5px}.vs-cart-incentive__dot{width:32px;height:32px;border-width:2px;font-size:.7rem}.vs-cart-incentive__step{font-size:.57rem;line-height:1.15}.vs-cart-incentive__step-label{max-width:82px;margin-top:4px;min-height:23px}.vs-cart-incentive__tag{width:14px;height:14px}.vs-cart-incentive__step.is-current .vs-cart-incentive__dot{box-shadow:0 0 0 3px rgba(20,35,51,.08)}}'
     ].join('');
     document.head.appendChild(style);
   }
@@ -312,42 +312,61 @@
     });
   }
 
-  function pluralHat(n) { return n === 1 ? 'כובע' : 'כובעים'; }
-  function pluralItem(n) { return n === 1 ? 'פריט' : 'פריטים'; }
+  function numberStep(value, label) {
+    return { threshold:value, kind:'number', value:String(value), label:label };
+  }
+
+  function promoStep(value, label, kind) {
+    return { threshold:value, kind:kind || 'tag', label:label };
+  }
 
   function hatSuggestion(lines, hats) {
     if (!hats) return null;
     var rem = hats % 3;
     var unitPrice = representativeUnitPrice(lines, 'hats') || 139.90;
-    var needed, current, target, saving, title, sub, targetText;
+    var needed, current, target, saving, title, sub, steps;
 
     if (rem === 1) {
-      needed = 1; current = 1; target = 2;
+      needed = 1;
+      current = 1;
+      target = 2;
       saving = Math.max(0, (unitPrice * 2) - 239.90);
       title = 'הוסף עוד כובע וחסוך <strong>' + money(saving) + '</strong>';
-      sub = '2 כובעים ב־239.90 ₪ במקום ' + money(unitPrice * 2);
-      targetText = '2 כובעים ב־239.90 ₪';
+      sub = '2 כובעים ב-239.90 ₪ במקום ' + money(unitPrice * 2);
+      steps = [
+        numberStep(1, 'כובע אחד'),
+        promoStep(2, '2 כובעים\nב-239.90 ₪'),
+        promoStep(3, '3 כובעים\nב-299.90 ₪')
+      ];
     } else if (rem === 2) {
-      needed = 1; current = 2; target = 3;
+      needed = 1;
+      current = 2;
+      target = 3;
       saving = Math.max(0, (239.90 + unitPrice) - 299.90);
       title = 'הוסף עוד כובע וחסוך עוד <strong>' + money(saving) + '</strong>';
-      sub = '3 כובעים ב־299.90 ₪ — הכובע הנוסף עולה בפועל ' + money(299.90 - 239.90);
-      targetText = '3 כובעים ב־299.90 ₪';
+      sub = '3 כובעים ב-299.90 ₪';
+      steps = [
+        numberStep(1, 'כובע אחד'),
+        promoStep(2, '2 כובעים\nב-239.90 ₪'),
+        promoStep(3, '3 כובעים\nב-299.90 ₪')
+      ];
     } else {
-      needed = 2; current = 0; target = 2;
+      needed = 2;
+      current = hats;
+      target = hats + 2;
       saving = Math.max(0, (unitPrice * 2) - 239.90);
       title = 'הוסף עוד 2 כובעים וחסוך <strong>' + money(saving) + '</strong>';
-      sub = 'זוג הכובעים הבא יקבל אוטומטית מחיר של 239.90 ₪';
-      targetText = '2 כובעים נוספים ב־239.90 ₪';
+      sub = 'ההטבה הבאה: 2 כובעים נוספים ב-239.90 ₪';
+      steps = [
+        promoStep(hats, '3 כובעים\nב-299.90 ₪'),
+        numberStep(hats + 1, 'כובע נוסף'),
+        promoStep(hats + 2, '2 כובעים נוספים\nב-239.90 ₪')
+      ];
     }
 
     return {
-      score:(needed === 1 ? 3000 : 2200) + saving,
-      icon:'🧢', title:title, sub:sub,
-      current:current, target:target,
-      currentLabel: current + ' ' + pluralHat(current) + (current ? ' בסל' : ' בקבוצה הבאה'),
-      targetLabel:targetText,
-      hint: needed === 1 ? 'חסר רק כובע אחד כדי לקבל את המחיר המוזל' : 'שני כובעים נוספים יפתחו זוג נוסף במחיר המבצע'
+      type:'hats', priority:30, needed:needed, saving:saving,
+      title:title, sub:sub, current:current, target:target, steps:steps
     };
   }
 
@@ -355,51 +374,56 @@
     if (!glasses) return null;
     var rem = glasses % 2;
     var unitPrice = representativeUnitPrice(lines, 'glasses') || 139.90;
+    var saving = Math.max(0, (unitPrice * 2) - 249.90);
     var needed = rem === 1 ? 1 : 2;
     var current = rem === 1 ? 1 : 0;
-    var target = 2;
-    var saving = Math.max(0, (unitPrice * 2) - 249.90);
     return {
-      score:(needed === 1 ? 2800 : 2000) + saving,
-      icon:'◉',
+      type:'glasses', priority:20, needed:needed, saving:saving,
       title:(needed === 1 ? 'הוסף עוד זוג משקפיים' : 'הוסף עוד 2 זוגות משקפיים') + ' וחסוך <strong>' + money(saving) + '</strong>',
-      sub:'2 משקפיים ב־249.90 ₪ במקום ' + money(unitPrice * 2),
+      sub:'2 משקפיים ב-249.90 ₪ במקום ' + money(unitPrice * 2),
       current:current,
-      target:target,
-      currentLabel: current === 1 ? 'זוג אחד בסל' : '0 מתוך 2 לזוג הבא',
-      targetLabel:'2 משקפיים ב־249.90 ₪',
-      hint: needed === 1 ? 'חסר עוד זוג אחד כדי לקבל את מחיר המבצע' : 'שני זוגות נוספים יקבלו אוטומטית את מחיר המבצע'
+      target:2,
+      steps:[
+        numberStep(0, 'זוג חדש'),
+        numberStep(1, 'זוג אחד'),
+        promoStep(2, '2 משקפיים ב-249.90 ₪')
+      ]
     };
   }
 
-  function bundledHatUnits(hats) {
-    var rem = hats % 3;
-    return hats - (rem === 1 ? 1 : 0);
-  }
-
-  function bundledGlassesUnits(glasses) {
-    return glasses - (glasses % 2);
-  }
-
-  function secondItemSuggestion(lines, hats, glasses) {
+  function buy2Get1Suggestion(lines, hats) {
     var total = qty(lines);
     if (!total) return null;
-    var bundled = bundledHatUnits(hats) + bundledGlassesUnits(glasses);
-    var eligible = Math.max(0, total - bundled);
-    var current = eligible % 2;
-    var needed = current === 1 ? 1 : 2;
+
+    // Every full 3-hat bundle is already covered by the 3-for-299.90 offer,
+    // so those hats do not count toward the global 2+1 promotion.
+    var eligible = Math.max(0, total - (Math.floor((hats || 0) / 3) * 3));
+    var current = eligible % 3;
+    var needed = current === 0 ? 3 : (3 - current);
+    var completedGroups = Math.floor(eligible / 3);
+    var title;
+
+    if (current === 2) {
+      title = 'הוסף עוד פריט וקבל <strong>2+1</strong>';
+    } else if (current === 1) {
+      title = 'הוסף עוד 2 פריטים וקבל <strong>2+1</strong>';
+    } else if (completedGroups > 0) {
+      title = 'מבצע <strong>2+1</strong> הופעל - הוסף עוד 3 פריטים לקבלת מתנה נוספת';
+    } else {
+      title = 'הוסף 3 פריטים וקבל <strong>2+1</strong>';
+    }
+
     return {
-      score: needed === 1 ? 900 : 450,
-      icon:'%',
-      title: needed === 1
-        ? 'הוסף עוד פריט וקבל <strong>10% הנחה</strong> על הפריט הזול מבין השניים'
-        : 'הוסף עוד 2 פריטים וקבל <strong>10% הנחה</strong> על פריט נוסף',
-      sub:'10% הנחה על כל פריט שני מחושבת אוטומטית בסל',
+      type:'buy-2-get-1', priority:10, needed:needed, saving:0,
+      title:title,
+      sub:'מבצע 2+1 על כל שלישיית פריטים זכאית',
       current:current,
-      target:2,
-      currentLabel: current === 1 ? 'פריט אחד מתוך זוג' : '0 מתוך 2 לזוג הבא',
-      targetLabel:'2 פריטים = 10% על השני',
-      hint: needed === 1 ? 'חסר עוד פריט אחד כדי להפעיל הנחה נוספת' : 'כל זוג פריטים נוסף מפעיל עוד הנחת 10%'
+      target:3,
+      steps:[
+        numberStep(1, 'פריט 1'),
+        numberStep(2, 'פריט 2'),
+        promoStep(3, '2+1')
+      ]
     };
   }
 
@@ -411,29 +435,58 @@
     var suggestions = [
       hatSuggestion(lines, hats),
       glassesSuggestion(lines, glasses),
-      secondItemSuggestion(lines, hats, glasses)
-    ].filter(Boolean).sort(function (a, b) { return b.score - a.score; });
+      buy2Get1Suggestion(lines, hats)
+    ].filter(Boolean);
+
+    suggestions.sort(function (a, b) {
+      if (a.needed !== b.needed) return a.needed - b.needed;
+      if (a.saving !== b.saving) return b.saving - a.saving;
+      return b.priority - a.priority;
+    });
+
     var model = suggestions[0] || null;
     if (!model) return null;
-    model.progress = Math.max(0, Math.min(100, Math.round((model.current / model.target) * 100)));
+    var first = model.steps[0].threshold;
+    var last = model.steps[model.steps.length - 1].threshold;
+    var span = Math.max(1, last - first);
+    model.progress = Math.max(0, Math.min(100, Math.round(((model.current - first) / span) * 100)));
     return model;
+  }
+
+  function tagIcon() {
+    return '<svg class="vs-cart-incentive__tag" viewBox="0 0 24 24" fill="none" aria-hidden="true">' +
+      '<path d="M20.3 13.7 12.8 21.2a2 2 0 0 1-2.8 0L2.8 14a2 2 0 0 1-.6-1.4V5a2 2 0 0 1 2-2h7.6a2 2 0 0 1 1.4.6l7.1 7.1a2.1 2.1 0 0 1 0 3Z" stroke-width="2" stroke-linejoin="round"/>' +
+      '<circle cx="8" cy="9" r="1.5" stroke-width="2"/>' +
+    '</svg>';
+  }
+
+  function stepIcon(step) {
+    if (step.kind === 'tag') return tagIcon();
+    if (step.kind === 'percent') return '<span aria-hidden="true">%</span>';
+    return escapeHtml(step.value);
   }
 
   function htmlFor(model) {
     var progressCss = model.progress + '%';
+    var stepsHtml = model.steps.map(function (step) {
+      var done = model.current >= step.threshold;
+      var current = model.current === step.threshold;
+      var cls = 'vs-cart-incentive__step' + (done ? ' is-done' : '') + (current ? ' is-current' : '');
+      return '<div class="' + cls + '">' +
+        '<span class="vs-cart-incentive__dot">' + stepIcon(step) + '</span>' +
+        '<span class="vs-cart-incentive__step-label">' + escapeHtml(step.label) + '</span>' +
+      '</div>';
+    }).join('');
+
     return '<section class="vs-cart-incentive" data-versans-cart-incentive aria-label="הטבה זמינה בסל">' +
-      '<div class="vs-cart-incentive__head"><span class="vs-cart-incentive__badge">הטבות אוטומטיות</span></div>' +
       '<p class="vs-cart-incentive__title">' + model.title + '</p>' +
       '<p class="vs-cart-incentive__sub">' + escapeHtml(model.sub) + '</p>' +
       '<div class="vs-cart-incentive__meter" style="--vs-progress:' + progressCss + '">' +
         '<div class="vs-cart-incentive__track" aria-hidden="true">' +
-          '<div class="vs-cart-incentive__rail"><span class="vs-cart-incentive__fill" style="width:' + progressCss + '"></span></div>' +
-          '<span class="vs-cart-incentive__dot vs-cart-incentive__dot--current">' + escapeHtml(model.current) + '</span>' +
-          '<span class="vs-cart-incentive__dot vs-cart-incentive__dot--target">' + escapeHtml(model.target) + '</span>' +
+          '<div class="vs-cart-incentive__rail"><span class="vs-cart-incentive__fill"></span></div>' +
+          '<div class="vs-cart-incentive__steps">' + stepsHtml + '</div>' +
         '</div>' +
-        '<div class="vs-cart-incentive__meter-labels"><span>' + escapeHtml(model.currentLabel) + '</span><span>' + escapeHtml(model.targetLabel) + '</span></div>' +
       '</div>' +
-      '<div class="vs-cart-incentive__hint"><span class="vs-cart-incentive__hint-icon" aria-hidden="true">' + escapeHtml(model.icon) + '</span><span>' + escapeHtml(model.hint) + '</span></div>' +
     '</section>';
   }
 
@@ -446,8 +499,8 @@
       return;
     }
     var signature = JSON.stringify({
-      title:model.title, sub:model.sub, current:model.current, target:model.target,
-      currentLabel:model.currentLabel, targetLabel:model.targetLabel, hint:model.hint
+      type:model.type, title:model.title, sub:model.sub, current:model.current, target:model.target,
+      progress:model.progress, steps:model.steps
     });
     if (old && old.getAttribute('data-signature') === signature) return;
     var wrap = document.createElement('div');

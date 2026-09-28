@@ -1369,6 +1369,7 @@ function shipmentRowPayload(row, items = [], pickupNotification = null) {
     updatedAt: Number(row.updated_at || 0),
     providerTips: providerMeta.providerTips,
     history: providerMeta.history,
+    pickupDetails: customerPickupDetailsFromShipment(row),
     pickupNotification: pickupNotification ? {
       state: pickupNotification.state || null,
       recipient: pickupNotification.recipient || null,
@@ -2026,6 +2027,33 @@ function customerTrackingState(shipments) {
   return { key: 'preparing', ...CUSTOMER_TRACKING_STATES.preparing, detail: null, location: null, updatedAt: latest ? Number(latest.latestEventAt || latest.updatedAt || 0) || null : null };
 }
 
+function customerPickupDetailsFromShipment(shipment) {
+  if (!shipment || String(shipment.status || '') !== 'ready_for_pickup') return null;
+  let raw = null;
+  const rawValue = shipment.raw_json || shipment.rawJson || null;
+  try { raw = typeof rawValue === 'string' ? JSON.parse(rawValue) : rawValue; } catch (_) { raw = null; }
+  const parsed = raw && raw.versansProviderPickupMessage && raw.versansProviderPickupMessage.parsed;
+  if (!parsed || typeof parsed !== 'object') return null;
+
+  const clean = (value, max = 900) => {
+    const text = normalizeCustomerVisibleText(value == null ? '' : value).trim();
+    return text ? text.slice(0, max) : null;
+  };
+  const details = {
+    pickupPoint: clean(parsed.pickupPoint, 180),
+    address: clean(parsed.address, 500),
+    pickupCode: clean(parsed.pickupCode, 160),
+    lockerNumber: clean(parsed.lockerNumber, 80),
+    shelfNumber: clean(parsed.shelfNumber, 80),
+    verificationCode: clean(parsed.verificationCode, 120),
+    packageNumber: clean(parsed.packageNumber, 120),
+    openingHours: clean(parsed.openingHours, 900),
+    deadline: clean(parsed.deadline, 180),
+    arrivalDate: clean(parsed.arrivalDate, 40)
+  };
+  return Object.values(details).some(Boolean) ? details : null;
+}
+
 function customerShipmentPayload(shipment, index = 0, item = null, orderRef = '') {
   const status = String(shipment && shipment.status || 'registered');
   const local = shipment ? shipmentHasIsraelEvent(shipment) : false;
@@ -2064,6 +2092,7 @@ function customerShipmentPayload(shipment, index = 0, item = null, orderRef = ''
     statusLabel,
     description,
     pickupReady,
+    pickupDetails: pickupReady ? (shipment && shipment.pickupDetails || customerPickupDetailsFromShipment(shipment)) : null,
     location: local && shipment ? (shipment.latestLocation || null) : null,
     updatedAt: shipment ? (Number(shipment.latestEventAt || shipment.updatedAt || 0) || null) : null
   };

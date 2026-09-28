@@ -62,8 +62,8 @@
     return pricing.calculate(lines, { lang: lang, shipping: shipping });
   }
 
-  function secondItemDetailsHtml(row) {
-    if (!row || row.type !== 'second-item' || !Array.isArray(row.details) || !row.details.length) return '';
+  function buy2Get1DetailsHtml(row) {
+    if (!row || row.type !== 'buy-2-get-1' || !Array.isArray(row.details) || !row.details.length) return '';
     return '<div class="cart-discount-items">' + row.details.map(function (detail) {
       return '<div class="cart-discount-item">' +
         '<span class="cart-discount-item__name">' + esc(detail.label) + '</span>' +
@@ -75,12 +75,9 @@
   function discountRowsHtml(summary) {
     return (summary.discountRows || []).map(function (row) {
       var labelHtml = esc(row.label);
-      if (row.type === 'second-item' && lang === 'he') {
-        labelHtml = labelHtml.replace('כל', '<strong>כל</strong>');
-      }
       return '<div class="cart-discount-group">' +
         '<div class="sum sum--discount"><span>' + labelHtml + '</span><span>−' + money(row.amount) + '</span></div>' +
-        secondItemDetailsHtml(row) +
+        buy2Get1DetailsHtml(row) +
       '</div>';
     }).join('');
   }

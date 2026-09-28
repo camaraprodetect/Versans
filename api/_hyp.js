@@ -254,7 +254,7 @@ function priceOrder(items, lang, coupon = null) {
     discountLabel,
     discountRows: priced.discountRows || [],
     bundleDiscount: priced.bundleDiscount,
-    secondItemDiscount: priced.secondItemDiscount,
+    buy2Get1Discount: priced.buy2Get1Discount,
     couponDiscount: priced.couponDiscount,
     couponPercent: priced.couponPercent,
     couponCode: priced.couponCode,

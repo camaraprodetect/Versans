@@ -8,7 +8,6 @@
   var GLASSES_PAIR_PRICE = 249.90;
   var HATS_PAIR_PRICE = 239.90;
   var HATS_TRIPLE_PRICE = 299.90;
-  var SECOND_ITEM_PERCENT = 10;
 
   function toCents(value) {
     return Math.max(0, Math.round((Number(value) || 0) * 100));
@@ -61,6 +60,7 @@
           priceCents: priceCents,
           effectiveCents: priceCents,
           bundleApplied: false,
+          hatTripleApplied: false,
           isGlasses: !!line.isGlasses || categories.indexOf('glasses') !== -1,
           isHats: !!line.isHats || categories.indexOf('hats') !== -1
         });
@@ -118,7 +118,9 @@
     var hatCursor = 0;
     var hatsTripleDiscountCents = 0;
     for (var ht = 0; ht < hatTriples; ht += 1) {
-      hatsTripleDiscountCents += distributeBundle(units, hats.slice(hatCursor, hatCursor + 3), toCents(HATS_TRIPLE_PRICE));
+      var tripleIndexes = hats.slice(hatCursor, hatCursor + 3);
+      tripleIndexes.forEach(function (index) { units[index].hatTripleApplied = true; });
+      hatsTripleDiscountCents += distributeBundle(units, tripleIndexes, toCents(HATS_TRIPLE_PRICE));
       hatCursor += 3;
     }
     var hatsPairs = Math.floor((hats.length - hatCursor) / 2);
@@ -139,45 +141,47 @@
       });
     }
 
-    var bundleDiscountCents = glassesDiscountCents + hatsDiscountCents;
 
-    /* 2) 10% off every second item, using prices AFTER bundle promotions.
-       Bundle-priced hats/glasses remain eligible so promotions can accumulate in
-       the documented order: bundle first, then every-second-item discount.
-       Units are ordered high-to-low, so each pair gives 10% off the cheaper item. */
-    var byEffectivePrice = units.map(function (_, index) { return index; }).sort(function (a, b) {
-      return units[b].effectiveCents - units[a].effectiveCents || a - b;
+    /* 2) Buy 2 + get 1 free. The cheapest regular-priced item in each eligible
+       group of three becomes free, while the amount removed is its effective price
+       after category bundle promotions. Hats already used in a 3-for-299.90 bundle
+       are excluded from this promotion so the same three hats never receive both deals. */
+    var buy2Get1Indexes = units.map(function (_, index) { return index; }).filter(function (index) {
+      return !units[index].hatTripleApplied;
+    }).sort(function (a, b) {
+      return units[b].priceCents - units[a].priceCents || a - b;
     });
-    var secondItemDiscountCents = 0;
-    var secondItemCount = 0;
-    var secondItemDetails = [];
-    for (var si = 1; si < byEffectivePrice.length; si += 2) {
-      var discountedUnit = units[byEffectivePrice[si]];
-      var unitDiscount = Math.round(discountedUnit.effectiveCents * SECOND_ITEM_PERCENT / 100);
+    var buy2Get1DiscountCents = 0;
+    var buy2Get1Count = 0;
+    var buy2Get1Details = [];
+    for (var si = 2; si < buy2Get1Indexes.length; si += 3) {
+      var discountedUnit = units[buy2Get1Indexes[si]];
+      var unitDiscount = discountedUnit.effectiveCents;
       if (unitDiscount > 0) {
-        secondItemDiscountCents += unitDiscount;
-        secondItemCount += 1;
-        secondItemDetails.push({
+        buy2Get1DiscountCents += unitDiscount;
+        buy2Get1Count += 1;
+        buy2Get1Details.push({
           lineIndex: discountedUnit.lineIndex,
           quantityIndex: discountedUnit.quantityIndex,
           label: discountedUnit.label,
           amount: fromCents(unitDiscount),
           priceBefore: fromCents(discountedUnit.effectiveCents),
-          priceAfter: fromCents(Math.max(0, discountedUnit.effectiveCents - unitDiscount))
+          priceAfter: 0
         });
       }
     }
-    if (secondItemDiscountCents > 0) {
+    if (buy2Get1DiscountCents > 0) {
       discountRows.push({
-        type: 'second-item',
-        label: lang === 'he' ? '10% הנחה על כל מוצר שני' : '10% off every second item',
-        amount: fromCents(secondItemDiscountCents),
-        count: secondItemCount,
-        details: secondItemDetails
+        type: 'buy-2-get-1',
+        label: lang === 'he' ? 'מבצע 2+1' : 'Buy 2 get 1 free',
+        amount: fromCents(buy2Get1DiscountCents),
+        count: buy2Get1Count,
+        details: buy2Get1Details
       });
     }
 
-    var promotionDiscountCents = bundleDiscountCents + secondItemDiscountCents;
+    var bundleDiscountCents = glassesDiscountCents + hatsDiscountCents;
+    var promotionDiscountCents = bundleDiscountCents + buy2Get1DiscountCents;
 
     /* 3) Coupon is always applied after every other promotion. */
     var couponPercent = Math.max(0, Math.min(100, Number(options.couponPercent) || 0));
@@ -191,7 +195,7 @@
     return {
       subtotal: fromCents(subtotalCents),
       bundleDiscount: fromCents(bundleDiscountCents),
-      secondItemDiscount: fromCents(secondItemDiscountCents),
+      buy2Get1Discount: fromCents(buy2Get1DiscountCents),
       discount: fromCents(promotionDiscountCents),
       discountRows: discountRows,
       couponDiscount: fromCents(couponDiscountCents),
@@ -200,7 +204,7 @@
       shipping: fromCents(shippingCents),
       total: fromCents(totalCents),
       totalSavings: fromCents(promotionDiscountCents + couponDiscountCents),
-      secondItemCount: secondItemCount,
+      buy2Get1Count: buy2Get1Count,
       hatsTriples: hatTriples,
       hatsPairs: hatsPairs,
       glassesPairs: glassesPairs,
@@ -212,7 +216,6 @@
     GLASSES_PAIR_PRICE: GLASSES_PAIR_PRICE,
     HATS_PAIR_PRICE: HATS_PAIR_PRICE,
     HATS_TRIPLE_PRICE: HATS_TRIPLE_PRICE,
-    SECOND_ITEM_PERCENT: SECOND_ITEM_PERCENT,
     calculate: calculate
   };
 });
