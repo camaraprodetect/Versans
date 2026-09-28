@@ -1517,6 +1517,20 @@ function parseProviderPickupMessage(value, fallbackTrackingNumber = null) {
     || providerMessageField(text, /\b(DSVPH[A-Za-z0-9._-]+)\b/i, 120)
     || (fallbackTrackingNumber ? normalizeTrackingNumber(fallbackTrackingNumber) : null);
   const pickupCode = providerMessageField(text, /קוד\s*(?:איסוף|מסירה)\s*[:：\-]?\s*([^\n]+)/i, 160);
+  // Israel Post messages may place the collection reference on its own line,
+  // for example: "ג 2136". Preserve the full reference because it is needed
+  // by the customer when collecting the parcel.
+  const israelPostPickupRefMatch = text.match(/(?:^|\n)\s*([א-ת])\s*[-–—]?\s*(\d{3,8})\s*(?=\n|$)/m);
+  const pickupReference = israelPostPickupRefMatch
+    ? `${israelPostPickupRefMatch[1]} ${israelPostPickupRefMatch[2]}`
+    : null;
+  // Some Israel Post notifications include a dedicated confirmation link that
+  // must be opened only after the customer has physically received the parcel.
+  const confirmationUrl = providerMessageField(
+    text,
+    /לאחר\s+קבלת\s+המשלוח\s+יש\s+ללחוץ\s*[:：]?\s*(https?:\/\/[^\s]+)/i,
+    700
+  );
   const lockerNumber = providerMessageField(text, /מספר\s*ארונית\s*[:：\-]?\s*([^\n]+)/i, 80);
   const shelfNumber = providerMessageField(text, /מספר\s*מדף\s*[:：\-]?\s*([^\n]+)/i, 80);
   const packageNumber = providerMessageField(text, /מספר\s*חבילה\s*[:：\-]?\s*([^\n]+)/i, 120);
@@ -1531,6 +1545,8 @@ function parseProviderPickupMessage(value, fallbackTrackingNumber = null) {
   return {
     trackingNumber: trackingNumber ? normalizeTrackingNumber(trackingNumber) : null,
     pickupCode,
+    pickupReference,
+    confirmationUrl,
     lockerNumber,
     shelfNumber,
     packageNumber,
@@ -1550,18 +1566,23 @@ function providerPickupCustomerDetails(parsed) {
   if (parsed.pickupPoint) lines.push(`נקודת איסוף: ${parsed.pickupPoint}`);
   if (parsed.address) lines.push(`כתובת: ${parsed.address}`);
   if (parsed.pickupCode) lines.push(`קוד איסוף: ${parsed.pickupCode}`);
+  if (parsed.pickupReference) lines.push(`מספר לאיסוף: ${parsed.pickupReference}`);
   if (parsed.lockerNumber) lines.push(`מספר ארונית: ${parsed.lockerNumber}`);
   if (parsed.shelfNumber) lines.push(`מספר מדף: ${parsed.shelfNumber}`);
   if (parsed.verificationCode) lines.push(`קוד אימות: ${parsed.verificationCode}`);
   if (parsed.packageNumber) lines.push(`מספר חבילה: ${parsed.packageNumber}`);
   if (parsed.openingHours) lines.push(`שעות פתיחה: ${parsed.openingHours}`);
   if (parsed.deadline) lines.push(`יש לאסוף תוך ${parsed.deadline}`);
+  if (parsed.confirmationUrl) {
+    lines.push('לאחר קבלת המשלוח יש לאשר כאן:');
+    lines.push(parsed.confirmationUrl);
+  }
   return lines.length ? lines.join('\n') : null;
 }
 
 function providerPickupDetailsAreActionable(parsed) {
   return Boolean(parsed && parsed.trackingNumber && (
-    parsed.pickupCode || parsed.verificationCode || parsed.lockerNumber || parsed.address || parsed.pickupPoint
+    parsed.pickupCode || parsed.pickupReference || parsed.verificationCode || parsed.lockerNumber || parsed.address || parsed.pickupPoint
   ));
 }
 
@@ -2054,6 +2075,8 @@ function customerPickupDetailsFromShipment(shipment) {
     pickupPoint: clean(parsed.pickupPoint, 180),
     address: clean(parsed.address, 500),
     pickupCode: clean(parsed.pickupCode, 160),
+    pickupReference: clean(parsed.pickupReference, 80),
+    confirmationUrl: clean(parsed.confirmationUrl, 700),
     lockerNumber: clean(parsed.lockerNumber, 80),
     shelfNumber: clean(parsed.shelfNumber, 80),
     verificationCode: clean(parsed.verificationCode, 120),

@@ -96,6 +96,7 @@
               ['נקודת איסוף',pickup.pickupPoint],
               ['כתובת',pickup.address],
               ['קוד איסוף',pickup.pickupCode],
+              ['מספר לאיסוף',pickup.pickupReference],
               ['מספר ארונית',pickup.lockerNumber],
               ['מספר מדף',pickup.shelfNumber],
               ['קוד אימות',pickup.verificationCode],
@@ -115,6 +116,17 @@
                 detailsList.appendChild(detail);
               });
               details.appendChild(detailsList);
+              if(String(pickup.confirmationUrl||'').trim()){
+                var confirmWrap=el('div','track-pickup-confirm');
+                confirmWrap.appendChild(el('span','','לאחר קבלת המשלוח:'));
+                var confirmLink=document.createElement('a');
+                confirmLink.href=String(pickup.confirmationUrl).trim();
+                confirmLink.target='_blank';
+                confirmLink.rel='noopener noreferrer';
+                confirmLink.textContent='אישור קבלת המשלוח';
+                confirmWrap.appendChild(confirmLink);
+                details.appendChild(confirmWrap);
+              }
               card.appendChild(details);
             }
           }
