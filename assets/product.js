@@ -8,6 +8,7 @@
   var ROUTES = window.VERSANS_ROUTES || null;
   var LS = { lang: 'kw_lang', cart: 'kw_cart' };
   var PENDING_BUNDLE_KEY = 'kw_pending_love_forever_bundle';
+  var GREETING_SELECTION_STATE_PREFIX = 'kw_greeting_product_selection_';
   var lang = 'he';
   var qty = 1;
   var selectedNecklaceId = null;
@@ -217,6 +218,47 @@
   function selectedColor() { return findOption(product.colors, selectedColorId); }
   function hasSizeOptions() { return Array.isArray(product.sizes) && product.sizes.length; }
   function hasColorOptions() { return Array.isArray(product.colors) && product.colors.length; }
+  function greetingSelectionStateKey() { return GREETING_SELECTION_STATE_PREFIX + product.id; }
+  function saveGreetingSelectionState() {
+    var value = {
+      productId: product.id,
+      necklace: selectedNecklaceId || '',
+      box: selectedBoxId || '',
+      size: selectedSizeId || '',
+      color: selectedColorId || '',
+      packaging: selectedPackagingId || '',
+      customName: customNameValue || '',
+      qty: Math.max(1, parseInt(qty, 10) || 1),
+      savedAt: Date.now()
+    };
+    try { sessionStorage.setItem(greetingSelectionStateKey(), JSON.stringify(value)); } catch (e) {}
+  }
+  function clearGreetingSelectionState() {
+    try { sessionStorage.removeItem(greetingSelectionStateKey()); } catch (e) {}
+  }
+  function restoreGreetingSelectionState() {
+    var raw = null;
+    try { raw = sessionStorage.getItem(greetingSelectionStateKey()); } catch (e) {}
+    if (!raw) return false;
+    var value = null;
+    try { value = JSON.parse(raw); } catch (e) { clearGreetingSelectionState(); return false; }
+    if (!value || value.productId !== product.id) { clearGreetingSelectionState(); return false; }
+    if (value.savedAt && Date.now() - Number(value.savedAt) > (2 * 60 * 60 * 1000)) {
+      clearGreetingSelectionState();
+      return false;
+    }
+
+    if (value.necklace && findOption(product.necklaces, value.necklace)) selectedNecklaceId = value.necklace;
+    if (value.box && findOption(product.boxes, value.box)) selectedBoxId = value.box;
+    if (value.size && findOption(product.sizes, value.size)) selectedSizeId = value.size;
+    if (value.color && findOption(product.colors, value.color)) selectedColorId = value.color;
+    if (value.packaging && product.giftPackaging && findOption(product.giftPackaging.options, value.packaging)) selectedPackagingId = value.packaging;
+    if (typeof value.customName === 'string') customNameValue = cleanCustomName(value.customName);
+    qty = Math.max(1, parseInt(value.qty, 10) || 1);
+
+    clearGreetingSelectionState();
+    return true;
+  }
   function unavailableCombination(sizeId, colorId) {
     if (!sizeId || !colorId || !Array.isArray(product.unavailableCombinations)) return null;
     for (var i = 0; i < product.unavailableCombinations.length; i += 1) {
@@ -274,8 +316,7 @@
   }
   function hasCustomName() { return !!(product.customName && product.customName.required); }
   function hasCustomPhoto() { return !!(product.customPhoto && product.customPhoto.required); }
-  function customPhotoRightsConfirmed() { var el = $('#customPhotoRightsConsent'); return !hasCustomPhoto() || !!(el && el.checked); }
-  function customPhotoReady() { return !hasCustomPhoto() || (!!customPhotoValue && !!customPhotoValue.assetId && !customPhotoUploading && customPhotoRightsConfirmed()); }
+  function customPhotoReady() { return !hasCustomPhoto() || (!!customPhotoValue && !!customPhotoValue.assetId && !customPhotoUploading); }
   function customNameMax() { return Math.max(1, Number(product.customName && product.customName.maxLength) || 20); }
   function cleanCustomName(value) {
     var raw = String(value == null ? '' : value);
@@ -1140,11 +1181,7 @@ async function uploadProductPhoto(blob, meta) {
     if (status) {
       status.textContent = customPhotoUploading
         ? (lang === 'he' ? 'מעלה…' : 'Uploading…')
-        : (customPhotoReady()
-          ? (lang === 'he' ? 'נשמרה ✓' : 'Saved ✓')
-          : (customPhotoValue && !customPhotoRightsConfirmed()
-            ? (lang === 'he' ? 'נא לאשר הרשאות' : 'Confirm permissions')
-            : (lang === 'he' ? 'נא להעלות' : 'Required')));
+        : (customPhotoReady() ? (lang === 'he' ? 'נשמרה ✓' : 'Saved ✓') : (lang === 'he' ? 'נא להעלות' : 'Required'));
       status.classList.toggle('is-done', customPhotoReady());
     }
     if (previewWrap) previewWrap.hidden = !customPhotoValue;
@@ -1445,10 +1482,31 @@ async function uploadProductPhoto(blob, meta) {
 
     var salePill = $('#productSalePill');
     var saveAmount = $('#productSaveAmount');
-    // Do not expose reference/strike-through prices without verified price history.
-    if (compare) compare.hidden = true;
-    if (salePill) salePill.hidden = true;
-    if (saveAmount) saveAmount.hidden = true;
+    if (compare) {
+      if (product.compareAt) {
+        compare.hidden = false;
+        var packaging = selectedPackaging();
+        var selectedSizeOption = selectedSize();
+        var selectedColorOption = selectedColor();
+        var comparePrice = Number(product.compareAt) + (box ? Number(box.addPrice || 0) : 0) + (selectedSizeOption ? Number(selectedSizeOption.addPrice || 0) : 0) + (selectedColorOption ? Number(selectedColorOption.addPrice || 0) : 0) + (packaging ? Number(packaging.addPrice || 0) : 0) + (savedGreeting() ? CUSTOM_GREETING_ADD_PRICE : 0);
+        compare.textContent = money(comparePrice);
+
+        var discountPercent = Math.max(0, Math.round((1 - (Number(product.price) / Number(product.compareAt))) * 100));
+        if (salePill) {
+          salePill.hidden = discountPercent <= 0;
+          salePill.textContent = discountPercent > 0 ? (lang === 'he' ? discountPercent + '% הנחה' : discountPercent + '% off') : '';
+        }
+        if (saveAmount) {
+          var saved = Math.max(0, comparePrice - currentUnitPrice);
+          saveAmount.hidden = saved < 1;
+          saveAmount.textContent = saved >= 1 ? (lang === 'he' ? 'חיסכון ' + money(saved) : 'Save ' + money(saved)) : '';
+        }
+      } else {
+        compare.hidden = true;
+        if (salePill) salePill.hidden = true;
+        if (saveAmount) saveAmount.hidden = true;
+      }
+    }
 
     var ready = isReadyToBuy();
     if (addBtn) {
@@ -1657,11 +1715,7 @@ async function uploadProductPhoto(blob, meta) {
       return;
     }
     if (hasCustomPhoto() && !customPhotoReady()) {
-      if (customPhotoUploading) toast(lang === 'he' ? 'התמונה עדיין נשמרת' : 'The photo is still saving');
-      else if (customPhotoValue && !customPhotoRightsConfirmed()) {
-        toast(lang === 'he' ? 'נא לאשר שיש לכם את הזכויות וההרשאות הדרושות לתמונה' : 'Please confirm that you have the required rights and permissions for the photo');
-        var rightsConsent = $('#customPhotoRightsConsent'); if (rightsConsent) rightsConsent.focus();
-      } else toast(lang === 'he' ? 'נא להעלות תמונה אישית' : 'Please upload a custom photo');
+      toast(customPhotoUploading ? (lang === 'he' ? 'התמונה עדיין נשמרת' : 'The photo is still saving') : (lang === 'he' ? 'נא להעלות תמונה אישית' : 'Please upload a custom photo'));
       return;
     }
 
@@ -1680,7 +1734,6 @@ async function uploadProductPhoto(blob, meta) {
         packaging: packageColor,
         customName: hasCustomName() ? customNameValue : null,
         customPhoto: hasCustomPhoto() ? customPhotoValue : null,
-        customPhotoRightsConfirmed: hasCustomPhoto() ? customPhotoRightsConfirmed() : null,
         greeting: savedGreeting()
       };
       pendingItem.key = cartItemKey(pendingItem);
@@ -1710,7 +1763,6 @@ async function uploadProductPhoto(blob, meta) {
       if (existingKey === key) {
         item.qty = (parseInt(item.qty, 10) || 0) + qty;
         item.key = key;
-        if (hasCustomPhoto()) item.customPhotoRightsConfirmed = customPhotoRightsConfirmed();
         found = true;
       }
     });
@@ -1726,7 +1778,6 @@ async function uploadProductPhoto(blob, meta) {
         packaging: selectedPackagingId,
         customName: hasCustomName() ? customNameValue : null,
         customPhoto: hasCustomPhoto() ? customPhotoValue : null,
-        customPhotoRightsConfirmed: hasCustomPhoto() ? customPhotoRightsConfirmed() : null,
         greeting: savedGreeting(),
         key: key
       });
@@ -1839,7 +1890,7 @@ async function uploadProductPhoto(blob, meta) {
     var assureReturn = $('#assureReturn');
     if (assureShip) assureShip.textContent = lang === 'he' ? 'משלוח עד הבית' : 'Door delivery';
     if (assureSecure) assureSecure.textContent = lang === 'he' ? 'תשלום מאובטח' : 'Secure payment';
-    if (assureReturn) assureReturn.textContent = lang === 'he' ? 'ביטול והחזרה בהתאם למדיניות ולדין' : 'Cancellation and returns subject to policy and law';
+    if (assureReturn) assureReturn.textContent = lang === 'he' ? '30 יום להחזרה' : '30-day returns';
     $('#footAbout').textContent = lang === 'he' ? 'שרשראות מתנה שמגיעות עם המילים שנשארות.' : 'Gift necklaces that arrive with words that stay.';
     $('#footShopTitle').textContent = lang === 'he' ? 'קניות' : 'Shop';
     $('#footShopLink').textContent = lang === 'he' ? 'החנות' : 'Shop';
@@ -1936,6 +1987,8 @@ async function uploadProductPhoto(blob, meta) {
     if (e.target.closest('#addToCart')) { addToCart(); return; }
     var greetingDesignTarget = e.target.closest('#greetingDesignBtn');
     if (greetingDesignTarget && supportsCustomGreeting()) {
+      /* Preserve the customer's product selections while the greeting editor is open. */
+      saveGreetingSelectionState();
       /* Price approval happens only when the greeting is saved in the editor. */
     }
     if (e.target.closest('#greetingRemoveBtn')) { removeCustomGreeting(); return; }
@@ -1972,8 +2025,6 @@ async function uploadProductPhoto(blob, meta) {
   }
   var customPhotoRemove = $('#customPhotoRemove');
   if (customPhotoRemove) customPhotoRemove.addEventListener('click', function () { removeProductPhoto(); });
-  var customPhotoRightsConsent = $('#customPhotoRightsConsent');
-  if (customPhotoRightsConsent) customPhotoRightsConsent.addEventListener('change', function () { renderCustomPhoto(); updatePriceAndPurchase(); });
 
   var customInput = $('#customNameInput');
   if (customInput) {
@@ -2002,7 +2053,11 @@ async function uploadProductPhoto(blob, meta) {
       updatePriceAndPurchase();
     }
   });
-  window.addEventListener('pageshow', function () { updateCartCount(); });
+  window.addEventListener('pageshow', function (event) {
+    updateCartCount();
+    /* A bfcache return already preserved the in-memory selections, so the saved copy is no longer needed. */
+    if (event && event.persisted) clearGreetingSelectionState();
+  });
   window.addEventListener('focus', function () { updateCartCount(); });
   window.addEventListener('versans:cart-changed', function () {
     updateCartCount();
@@ -2039,6 +2094,7 @@ async function uploadProductPhoto(blob, meta) {
 
   $('#year').textContent = new Date().getFullYear();
   updateCartCount();
+  restoreGreetingSelectionState();
   renderProduct();
   scheduleGalleryThumbRailSync();
 })();

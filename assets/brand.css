@@ -21,3 +21,37 @@
   .ge-back{min-width:0;font-size:.8rem;line-height:1.5}
   .ge-top-actions{min-width:0}
 }
+
+/* ===== VerSans mobile footer logo restore 2026-09-28 =====
+   Header-specific mobile rules elsewhere target .brand__logo img globally on
+   product pages. Restore the intended crop for the footer logo only. */
+@media (max-width:700px){
+  .foot .foot__brand .brand__footer-link{
+    display:inline-block!important;
+    max-width:100%!important;
+    line-height:0!important;
+  }
+  .foot .foot__brand .brand__logo{
+    position:relative!important;
+    display:block!important;
+    width:200px!important;
+    max-width:min(62vw,200px)!important;
+    aspect-ratio:704/260!important;
+    overflow:hidden!important;
+    flex:none!important;
+    line-height:0!important;
+  }
+  .foot .foot__brand .brand__logo img{
+    position:absolute!important;
+    display:block!important;
+    left:-7.102273%!important;
+    top:-105.769231%!important;
+    width:113.636364%!important;
+    max-width:none!important;
+    height:auto!important;
+    max-height:none!important;
+    aspect-ratio:1!important;
+    object-fit:contain!important;
+    filter:brightness(0) invert(1)!important;
+  }
+}

@@ -575,6 +575,19 @@
 </style>
 <link rel="stylesheet" href="/assets/customer-service.css?v=20260922-whatsapp-support-v2">
 <link rel="stylesheet" href="assets/accessibility.css?v=20260928-a11y-v1">
+
+<style id="versans-home-hide-filter-button-v2">
+/* Home/all only: home banner is rendered immediately before the filter row. */
+#homeCollectionBanner:not([hidden]) + .shop__filter-row .shop__sidebar,
+#homeCollectionBanner:not([hidden]) + .shop__filter-row .shop__filter-toggle {
+  display: none !important;
+}
+#homeCollectionBanner:not([hidden]) + .shop__filter-row {
+  display: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+</style>
 </head>
 <body class="home-page">
 <a class="skip" href="#main">דילוג לתוכן</a>
