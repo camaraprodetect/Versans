@@ -1778,11 +1778,12 @@ function shippingBotMessage({ customerName, orderRef = null, items, pickupMessag
   const safeName = String(customerName || '').trim() || 'לקוח/ה';
   const linked = Array.isArray(items) ? items : [];
   const productLines = linked.length
-    ? ['המוצרים שהגיעו:', ...linked.map((item) => {
+    ? ['המוצרים שהגיעו:', '', ...linked.flatMap((item, index) => {
         const qty = Number(item.qty || item.quantity || 1) > 1 ? ` × ${Number(item.qty || item.quantity || 1)}` : '';
         const productName = safeCustomerProductText(item.productName || 'מוצר', 'מוצר VerSans');
         const itemRef = String(item.itemOrderRef || '').trim();
-        return `• ${productName}${qty}${itemRef ? ` | מספר הזמנה: ${itemRef}` : ''}`;
+        const line = `• ${productName}${qty}${itemRef ? ` | מספר הזמנה: ${itemRef}` : ''}`;
+        return index < linked.length - 1 ? [line, ''] : [line];
       })]
     : [];
   const pickupText = customerSafePickupText(pickupMessageRaw);
