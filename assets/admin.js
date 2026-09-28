@@ -1055,6 +1055,14 @@
     label.appendChild(textarea);
     form.appendChild(label);
 
+    var resendLabel = make('label', 'admin-pickup-message-resend');
+    var resend = document.createElement('input');
+    resend.type = 'checkbox';
+    resend.name = 'forceResend';
+    resendLabel.appendChild(resend);
+    resendLabel.appendChild(make('span', '', 'שלח שוב לבדיקה גם אם ההודעה כבר נשלחה'));
+    form.appendChild(resendLabel);
+
     var actions = make('div', 'admin-pickup-message-form__actions');
     var submit = make('button', 'admin-shipment-submit', 'זהה משלוח ושלח ללקוח');
     submit.type = 'submit';
@@ -1077,7 +1085,7 @@
       result.className = 'admin-pickup-message-result';
       result.replaceChildren();
       try {
-        var data = await apiAction('/api/admin/shipping/pickup-message', 'POST', { message: message });
+        var data = await apiAction('/api/admin/shipping/pickup-message', 'POST', { message: message, forceResend: resend.checked === true });
         result.classList.add('is-success');
         result.appendChild(make('strong', '', data.alreadySent ? 'הודעת האיסוף כבר נשלחה ללקוח.' : 'הפרטים נקלטו וההודעה הועברה לשליחה ✅'));
         var meta = [];
@@ -1090,7 +1098,8 @@
           result.appendChild(details);
         }
         textarea.value = '';
-        showToast(data.alreadySent ? 'ההודעה כבר סומנה כנשלחה' : 'הודעת האיסוף הועברה ל-Order Notifications');
+        resend.checked = false;
+        showToast(data.forceResend ? 'הודעת האיסוף הועברה שוב לבדיקה' : (data.alreadySent ? 'ההודעה כבר סומנה כנשלחה' : 'הודעת האיסוף הועברה לשליחה'));
       } catch (error) {
         result.classList.add('is-error');
         result.appendChild(make('strong', '', manualPickupErrorMessage(error)));

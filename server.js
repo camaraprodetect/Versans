@@ -1541,7 +1541,7 @@ function providerPickupCustomerDetails(parsed) {
   if (parsed.lockerNumber) lines.push(`מספר ארונית: ${parsed.lockerNumber}`);
   if (parsed.shelfNumber) lines.push(`מספר מדף: ${parsed.shelfNumber}`);
   if (parsed.verificationCode) lines.push(`קוד אימות: ${parsed.verificationCode}`);
-  if (!parsed.pickupCode && parsed.packageNumber) lines.push(`מספר חבילה: ${parsed.packageNumber}`);
+  if (parsed.packageNumber) lines.push(`מספר חבילה: ${parsed.packageNumber}`);
   if (parsed.openingHours) lines.push(`שעות פתיחה: ${parsed.openingHours}`);
   if (parsed.deadline) lines.push(`יש לאסוף תוך ${parsed.deadline}`);
   return lines.length ? lines.join('\n') : null;
@@ -2520,7 +2520,7 @@ async function postNewOrderWebhook(orderRef) {
   return { ok: true, status };
 }
 
-async function postManualPickupWebhook({ shipment, order, message }) {
+async function postManualPickupWebhook({ shipment, order, message, forceResend = false }) {
   const cfg = pickupMessageWebhookConfig();
   if (!cfg.url || !cfg.secret) return { ok: false, skipped: true, reason: 'pickup_message_webhook_not_configured' };
   const customer = parseStoredCustomer(order);
@@ -2541,6 +2541,7 @@ async function postManualPickupWebhook({ shipment, order, message }) {
       trackingId: shipment.tracking_number,
       orderRef: order.order_ref,
       safeToSend: true,
+      forceResend: Boolean(forceResend),
       source: 'admin_manual_pickup_message',
       message,
       exactMessage: message,
@@ -2552,7 +2553,9 @@ async function postManualPickupWebhook({ shipment, order, message }) {
       waMeUrl: shortUrl,
       markSentUrl: 'https://versans.com/api/admin/bot/shipping/mark-sent',
       messagePolicy: botVerbatimMessagePolicy(),
-      instruction: 'This is a pickup notification. Open the exact short whatsappWebUrl, wait for the VerSans redirect to WhatsApp with the message prefilled, click Send, then POST shipmentId/trackingId/messageId to markSentUrl. Do not type or rewrite the message.'
+      instruction: forceResend
+        ? 'TEST RESEND explicitly requested by VerSans Admin. Ignore local successful-send dedup for this webhook once, open the exact short whatsappWebUrl, click Send, then POST mark-sent. Do not type or rewrite the message.'
+        : 'This is a pickup notification. Open the exact short whatsappWebUrl, wait for the VerSans redirect to WhatsApp with the message prefilled, click Send, then POST shipmentId/trackingId/messageId to markSentUrl. Do not type or rewrite the message.'
     }),
     redirect: 'follow',
     signal: AbortSignal.timeout(ORDER_NOTIFICATION_WEBHOOK_TIMEOUT_MS)
@@ -2816,6 +2819,7 @@ async function adminApi(req, res, pathname, parsed) {
     if (!sameOriginAllowed(req)) { json(res, 403, { ok: false, error: 'origin_not_allowed' }); return true; }
     const body = await readJsonBody(req, 512 * 1024);
     const messageText = String(body && (body.message || body.rawText || body.text) || '').trim();
+    const forceResend = Boolean(body && body.forceResend === true);
     if (!messageText) { json(res, 400, { ok: false, error: 'missing_message_text' }); return true; }
 
     let saved;
@@ -2856,7 +2860,7 @@ async function adminApi(req, res, pathname, parsed) {
     }
 
     const existing = await database.getShipmentNotification(shipment.id, 'customer', 'ready_for_pickup');
-    if (existing && String(existing.state || '') === 'sent') {
+    if (existing && String(existing.state || '') === 'sent' && !forceResend) {
       json(res, 200, {
         ok: true,
         alreadySent: true,
@@ -2873,6 +2877,9 @@ async function adminApi(req, res, pathname, parsed) {
     }
 
     const now = Date.now();
+    if (forceResend && existing) {
+      await database.markShipmentNotificationFailed(shipment.id, 'customer', 'ready_for_pickup', 'admin_force_resend_test', now);
+    }
     const claimed = await database.claimShipmentNotification(shipment.id, 'customer', 'ready_for_pickup', phone || null, now, now - 2 * 60 * 1000);
     if (!claimed) {
       json(res, 409, { ok: false, error: 'pickup_notification_already_queued', trackingId: shipment.tracking_number, shipmentId: Number(shipment.id), orderRef: order.order_ref, whatsappWebUrl: shortUrl });
@@ -2880,11 +2887,12 @@ async function adminApi(req, res, pathname, parsed) {
     }
 
     try {
-      const webhook = await postManualPickupWebhook({ shipment, order, message });
+      const webhook = await postManualPickupWebhook({ shipment, order, message, forceResend });
       if (!webhook.ok) throw new Error(webhook.reason || 'pickup_webhook_not_available');
       json(res, 200, {
         ok: true,
         queued: true,
+        forceResend,
         event: 'VERSANS_PICKUP_MESSAGE_READY',
         trackingId: shipment.tracking_number,
         shipmentId: Number(shipment.id),

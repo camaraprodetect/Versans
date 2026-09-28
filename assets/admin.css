@@ -123,3 +123,7 @@ button,input,select,a{font:inherit}.admin-app{display:grid;grid-template-columns
 .admin-pickup-message-result__details{margin:2px 0 0;padding:10px;border:1px solid rgba(20,35,51,.08);border-radius:8px;background:rgba(255,255,255,.68);white-space:pre-wrap;font:500 10px/1.75 inherit;color:#34434d}
 .admin-pickup-message-result__fallback{justify-self:start;display:inline-flex;align-items:center;min-height:34px;padding:7px 11px;border-radius:8px;background:var(--admin-navy);color:#fff;text-decoration:none;font-size:10px;font-weight:800}
 @media(max-width:720px){.admin-pickup-message-card__badge{display:none}.admin-pickup-message-form textarea{min-height:250px}.admin-pickup-message-form__actions{display:grid}.admin-pickup-message-form__actions .admin-shipment-submit{width:100%;min-width:0}}
+
+.admin-pickup-message-resend{display:flex!important;grid-template-columns:auto 1fr!important;align-items:center;gap:9px;padding:10px 12px;border:1px solid #ead7a3;border-radius:9px;background:#fffaf0;color:#765b19;cursor:pointer}
+.admin-pickup-message-resend input{width:17px;height:17px;margin:0;accent-color:#142333}
+.admin-pickup-message-resend span{font-size:10px;font-weight:800;line-height:1.5}
