@@ -64,7 +64,7 @@ button,input,select,a{font:inherit}.admin-app{display:grid;grid-template-columns
 
 .admin-shipping-note--sent{border-color:#cce4d6;background:#f1faf5;color:#245f46}.admin-shipping-note--sent strong{color:#1f6d49}
 
-/* Product tracking form layout fix: keep Tracking ID and AliExpress URL fields stacked and readable. */
+/* Product tracking form layout: keep the Tracking ID field and action clear and readable. */
 .admin-product-tracking-form{
   grid-template-columns:minmax(0,1fr) !important;
   align-items:stretch !important;

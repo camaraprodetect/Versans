@@ -408,7 +408,6 @@
       order_not_paid: 'אפשר להוסיף משלוח רק להזמנה ששולמה.',
       '17track_not_configured': 'חסר VERSANS_17TRACK_API_KEY ב-Render.',
       tracking_registration_failed: '17TRACK לא קיבל את מספר המעקב. בדוק את המספר או את קוד חברת השילוח.',
-      invalid_provider_tracking_url: 'קישור המעקב של AliExpress לא תקין. יש להדביק קישור https מתוך AliExpress.',
       invalid_shipment_qty: 'הכמות במשלוח חייבת להיות מספר שלם של לפחות 1.',
       order_item_fully_assigned: 'כל היחידות של המוצר כבר מחוברות למשלוחים. כדי לשנות, נתק קודם את המשלוח המתאים.',
       shipment_qty_exceeds_order_item: 'הכמות שבחרת גדולה מהכמות שנשארה לשיוך במוצר הזה.',
@@ -703,26 +702,15 @@
 
           var form = make('form', 'admin-product-tracking-form');
           var trackingLabel = make('label');
-          trackingLabel.appendChild(make('span', '', 'Tracking ID / מספר מעקב מ-AliExpress'));
+          trackingLabel.appendChild(make('span', '', 'Tracking ID / מספר מעקב'));
           var tracking = document.createElement('input');
           tracking.name = 'tracking'; tracking.placeholder = 'הדביקו כאן את מספר המעקב'; tracking.autocomplete = 'off'; tracking.required = true;
           trackingLabel.appendChild(tracking);
 
-          var providerUrlLabel = make('label');
-          providerUrlLabel.appendChild(make('span', '', 'קישור ישיר לעמוד המשלוח ב-AliExpress (אופציונלי)'));
-          var providerTrackingUrl = document.createElement('input');
-          providerTrackingUrl.name = 'providerTrackingUrl';
-          providerTrackingUrl.type = 'url';
-          providerTrackingUrl.inputMode = 'url';
-          providerTrackingUrl.placeholder = 'https://www.aliexpress.com/...';
-          providerTrackingUrl.autocomplete = 'off';
-          providerUrlLabel.appendChild(providerTrackingUrl);
-          providerUrlLabel.appendChild(make('small', 'admin-table__muted', 'אופציונלי. אפשר לשמור כאן קישור ישיר לפרטי המשלוח ב-AliExpress לצורך בדיקה ידנית.'));
-
           var remainingQty = Math.max(0, Number(item.unassignedQty != null ? item.unassignedQty : 1));
           var submit = make('button', 'admin-shipment-submit', 'חבר Tracking ID ליחידה'); submit.type = 'submit';
           var formError = make('div', 'admin-shipment-form-error'); formError.hidden = true;
-          form.append(trackingLabel, providerUrlLabel, submit, formError);
+          form.append(trackingLabel, submit, formError);
           if (remainingQty <= 0) {
             form.hidden = true;
           }
@@ -732,8 +720,7 @@
               var created = await apiAction('/api/admin/orders/' + encodeURIComponent(order.orderRef) + '/shipments', 'POST', {
                 itemIndex: item.itemIndex,
                 unitNumber: item.unitNumber || 1,
-                trackingNumber: tracking.value.trim(),
-                providerTrackingUrl: providerTrackingUrl.value.trim()
+                trackingNumber: tracking.value.trim()
               });
               if (created.warning && created.warning.error === 'tracking_registration_failed') showToast('ה-Tracking ID נשמר למוצר. 17TRACK עדיין לא הצליח לזהות אותו וינסה שוב.');
               else if (created.reused && created.shared) showToast('ה-Tracking ID כבר היה בהזמנה וחובר גם ליחידה הזאת');
