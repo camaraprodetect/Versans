@@ -65,6 +65,44 @@
       parcelsHead.appendChild(el('p','',data.itemSpecific?'אלה המשלוחים שמחוברים למוצר שבחרת.':'מוצר יכול להתחלק לכמה משלוחים, וכל משלוח מוצג בנפרד.'));
       parcels.appendChild(parcelsHead);
 
+      if(data.pickupVerificationRequired){
+        var verifyBox=el('section','track-pickup-verify');
+        var verifyCopy=el('div','track-pickup-verify__copy');
+        verifyCopy.appendChild(el('strong','','אימות לפני הצגת פרטי האיסוף'));
+        verifyCopy.appendChild(el('span','','כדי לראות את כתובת האיסוף, הקוד או מספר החבילה, הזינו את מספר הטלפון ששויך להזמנה.'));
+        verifyBox.appendChild(verifyCopy);
+        var verifyForm=el('div','track-pickup-verify__form');
+        var phoneInput=document.createElement('input');
+        phoneInput.type='tel';
+        phoneInput.inputMode='tel';
+        phoneInput.autocomplete='tel';
+        phoneInput.placeholder='מספר טלפון';
+        phoneInput.setAttribute('aria-label','מספר טלפון לאימות ההזמנה');
+        var verifyButton=el('button','track-pickup-verify__button','הצגת פרטי האיסוף');
+        verifyButton.type='button';
+        var verifyError=el('p','track-pickup-verify__error','');
+        verifyError.hidden=true;
+        verifyButton.addEventListener('click',async function(){
+          var phone=String(phoneInput.value||'').trim();
+          verifyError.hidden=true;
+          if(!phone){verifyError.textContent='הזינו את מספר הטלפון ששויך להזמנה.';verifyError.hidden=false;phoneInput.focus();return}
+          verifyButton.disabled=true;verifyButton.textContent='מאמת…';
+          try{
+            var requestedOrder=String(data.orderRef||orderInput.value||'').trim();
+            var verifiedAttempt=await fetchTracking(requestedOrder,phone);
+            if(!verifiedAttempt.response.ok)throw new Error(trackingErrorMessage(verifiedAttempt.response,verifiedAttempt.body,true));
+            render(verifiedAttempt.body);
+          }catch(err){verifyError.textContent=err.message||'לא ניתן לאמת את המספר כרגע.';verifyError.hidden=false}
+          finally{verifyButton.disabled=false;verifyButton.textContent='הצגת פרטי האיסוף'}
+        });
+        phoneInput.addEventListener('keydown',function(event){if(event.key==='Enter'){event.preventDefault();verifyButton.click()}});
+        verifyForm.appendChild(phoneInput);
+        verifyForm.appendChild(verifyButton);
+        verifyBox.appendChild(verifyForm);
+        verifyBox.appendChild(verifyError);
+        parcels.appendChild(verifyBox);
+      }
+
       var list=el('div','track-parcels__list');
       shipments.forEach(function(shipment,index){
         var card=el('article','track-parcel is-'+(shipment.status||'preparing')+(shipment.pickupReady?' is-pickup':''));
@@ -89,6 +127,10 @@
           alert.appendChild(el('strong','','החבילה מחכה לך לאיסוף'));
           alert.appendChild(el('span','','מומלץ לאסוף אותה בהקדם בהתאם להנחיות חברת השילוח, כדי למנוע החזרה לשולח.'));
           card.appendChild(alert);
+
+          if(shipment.pickupDetailsLocked){
+            card.appendChild(el('p','track-pickup-locked-note','פרטי האיסוף יוצגו לאחר אימות מספר הטלפון של ההזמנה.'));
+          }
 
           var pickup=shipment.pickupDetails&&typeof shipment.pickupDetails==='object'?shipment.pickupDetails:null;
           if(pickup){
@@ -152,10 +194,27 @@
     return {parent:match[1],index:oneBased-1};
   }
 
-  async function fetchTracking(order){
-    var response=await fetch('/api/tracking?order='+encodeURIComponent(order),{headers:{Accept:'application/json'},credentials:'same-origin'});
+  async function fetchTracking(order,phone){
+    var options={headers:{Accept:'application/json'},credentials:'same-origin'};
+    var url='/api/tracking?order='+encodeURIComponent(order);
+    if(phone){
+      url='/api/tracking';
+      options.method='POST';
+      options.headers={'Accept':'application/json','Content-Type':'application/json'};
+      options.body=JSON.stringify({order:order,phone:phone});
+    }
+    var response=await fetch(url,options);
     var body=null;try{body=await response.json()}catch(_){}
     return {response:response,body:body};
+  }
+
+  function trackingErrorMessage(response,body,verifying){
+    var code=String(body&&body.error||'');
+    if(response&&response.status===429)return 'בוצעו יותר מדי ניסיונות. המתינו כמה דקות ונסו שוב.';
+    if(verifying&&(response&&response.status===403||code==='phone_verification_failed'))return 'מספר הטלפון לא תואם להזמנה.';
+    if(code==='invalid_phone')return 'הזינו מספר טלפון תקין.';
+    if(response&&response.status===404)return 'לא מצאנו הזמנה עם המספר הזה. בדקו שהמספר הוזן בדיוק כפי שקיבלתם אותו.';
+    return 'לא ניתן לבדוק את ההזמנה כרגע. נסו שוב בעוד רגע.';
   }
 
   // Compatibility fallback: if an older backend deployment does not yet resolve
@@ -195,7 +254,7 @@
           }
         }
       }
-      if(!response.ok)throw new Error(response.status===404?'לא מצאנו הזמנה עם המספר הזה. בדקו שהמספר הוזן בדיוק כפי שקיבלתם אותו.':'לא ניתן לבדוק את ההזמנה כרגע. נסו שוב בעוד רגע.');
+      if(!response.ok)throw new Error(trackingErrorMessage(response,body,false));
       render(body);history.replaceState(null,'','/track?order='+encodeURIComponent(order));
     }catch(err){errorBox.textContent=err.message||'אירעה שגיאה';errorBox.hidden=false}
     finally{submit.disabled=false;submit.textContent='בדיקת סטטוס'}

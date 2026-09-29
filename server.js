@@ -1816,6 +1816,47 @@ function shippingBotMessage({ customerName, orderRef = null, items, pickupMessag
   ].filter((line, index, arr) => !(line === '' && index > 0 && arr[index - 1] === '')).join('\n'));
 }
 
+function pickupReadyEmailHtml(message) {
+  const escaped = String(message || '').replace(/[&<>"']/g, (ch) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  })[ch]);
+  return `<!doctype html>
+<html lang="he" dir="rtl">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;background:#f5f7f8;font-family:Arial,Helvetica,sans-serif;color:#142333">
+  <div style="max-width:640px;margin:0 auto;padding:28px 16px">
+    <div style="background:#fff;border:1px solid #e2e8ec;border-radius:18px;padding:26px;box-shadow:0 8px 28px rgba(20,35,51,.08)">
+      <div style="font-size:30px;font-weight:700;margin-bottom:22px;text-align:center">VerSans</div>
+      <div style="font-size:16px;line-height:1.8;white-space:pre-wrap;text-align:right">${escaped}</div>
+    </div>
+  </div>
+</body>
+</html>`;
+}
+
+async function sendPickupReadyEmail({ shipment, order, message, forceResend = false }) {
+  if (!shipment || !order || !message || !isEmailConfigured()) {
+    return { sent: false, reason: 'email_not_configured_or_missing_data', to: null };
+  }
+  const customer = parseStoredCustomer(order);
+  const to = normalizeEmail(order.customer_email || customer.email);
+  if (!validEmail(to)) return { sent: false, reason: 'missing_customer_email', to: null };
+
+  const suffix = forceResend ? `-${Date.now()}` : '';
+  const result = await sendEmail({
+    to,
+    subject: 'הזמנת VerSans שלך מוכנה לאיסוף',
+    html: pickupReadyEmailHtml(message),
+    text: message,
+    idempotencyKey: `pickup-ready-email-shipment-${shipment.id}${suffix}`
+  });
+  return { sent: Boolean(result), reason: null, to };
+}
+
 async function shippingBotReadyPickups(limit = 200) {
   const createdAfter = Date.now() - 180 * 24 * 60 * 60 * 1000;
   const rows = await database.listShipmentsByStatus('ready_for_pickup', createdAfter, limit);
@@ -2131,11 +2172,11 @@ function shipmentHasIsraelEvent(shipment) {
 const CUSTOMER_TRACKING_STATES = {
   preparing: {
     label: 'ההזמנה בהכנה',
-    description: 'ההזמנה נקלטה ב-VerSans. אנחנו מטפלים בה ונעדכן כאן כשהיא תעבור לחברת השילוח בישראל.'
+    description: 'ההזמנה נקלטה ב-VerSans. אנחנו מטפלים בה ונעדכן כאן כשהיא תתקדם לשלב המשלוח.'
   },
   carrier: {
     label: 'ההזמנה בחברת השילוח',
-    description: 'ההזמנה הגיעה לשלב המסירה בישראל ונמצאת בטיפול חברת השילוח.'
+    description: 'ההזמנה נמצאת בטיפול חברת השילוח ומתקרבת לשלב המסירה.'
   },
   delivered: {
     label: 'ההזמנה הגיעה',
@@ -2206,7 +2247,7 @@ function customerShipmentPayload(shipment, index = 0, item = null, orderRef = ''
   let statusLabel = CUSTOMER_TRACKING_STATES.preparing.label;
   let description = shipment
     ? 'המשלוח עדיין בתהליך ההכנה וההעברה לחברת השילוח.'
-    : 'המוצר נקלט בהזמנה ועדיין לא חובר אליו מספר מעקב מהספק.';
+    : 'המוצר נקלט בהזמנה ועדיין לא חובר אליו מספר מעקב.';
 
   if (delivered) {
     stage = 'delivered';
@@ -2219,7 +2260,7 @@ function customerShipmentPayload(shipment, index = 0, item = null, orderRef = ''
       : CUSTOMER_TRACKING_STATES.carrier.label;
     description = pickupReady
       ? 'החבילה מוכנה לאיסוף. מומלץ לאסוף אותה בהקדם כדי למנוע החזרה לשולח.'
-      : 'החבילה נמצאת בטיפול חברת השילוח בישראל.';
+      : 'החבילה נמצאת בטיפול חברת השילוח ומתקרבת לשלב המסירה.';
   }
 
   const rawImage = item && item.image ? String(item.image) : '';
@@ -2796,10 +2837,65 @@ async function retryPendingNewOrderWebhooks() {
   return { processed, failed };
 }
 
+async function trackingVerificationPhones(order) {
+  const phones = new Set();
+  if (!order) return phones;
+  const storedCustomer = parseStoredCustomer(order);
+  for (const value of [order.customer_phone, storedCustomer && storedCustomer.phone]) {
+    const normalized = normalizePhone(value);
+    if (normalized) phones.add(normalized);
+  }
+  if (order.user_id) {
+    try {
+      const user = await database.findUserById(Number(order.user_id));
+      const accountPhone = normalizePhone(user && user.phone);
+      if (accountPhone) phones.add(accountPhone);
+    } catch (error) {
+      console.error(`Tracking phone lookup failed for order ${order.order_ref}:`, error && error.message);
+    }
+  }
+  return phones;
+}
+
+function protectCustomerPickupItems(items, phoneVerified) {
+  let verificationRequired = false;
+  const safeItems = (Array.isArray(items) ? items : []).map((item) => {
+    const hasSensitivePickupInfo = Boolean(item && item.pickupReady && (item.pickupDetails || item.location));
+    if (!hasSensitivePickupInfo || phoneVerified) {
+      return { ...item, pickupDetailsLocked: false };
+    }
+    verificationRequired = true;
+    return {
+      ...item,
+      pickupDetails: null,
+      location: null,
+      pickupDetailsLocked: true
+    };
+  });
+  return { items: safeItems, verificationRequired };
+}
+
 async function publicTrackingApi(req, res, pathname, parsed) {
   if (pathname !== '/api/tracking') return false;
-  if (req.method !== 'GET') { json(res, 405, { ok: false, error: 'method_not_allowed' }); return true; }
-  const requestedRef = String(parsed.searchParams.get('order') || '').trim().slice(0, 160);
+  if (!['GET', 'POST'].includes(req.method)) { json(res, 405, { ok: false, error: 'method_not_allowed' }); return true; }
+
+  let requestedRef = '';
+  let submittedPhone = '';
+  const verifyPhone = req.method === 'POST';
+  if (verifyPhone) {
+    if (!sameOriginAllowed(req)) { json(res, 403, { ok: false, error: 'origin_not_allowed' }); return true; }
+    const body = await readJsonBody(req);
+    requestedRef = String(body && (body.order || body.orderRef) || '').trim().slice(0, 160);
+    submittedPhone = normalizePhone(body && body.phone);
+    if (!submittedPhone) { json(res, 400, { ok: false, error: 'invalid_phone' }); return true; }
+    const bucketRef = requestedRef.toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 80) || 'unknown';
+    if (rateLimited(req, `tracking-phone:${bucketRef}`, 8, 15 * 60 * 1000)) {
+      json(res, 429, { ok: false, error: 'too_many_attempts' });
+      return true;
+    }
+  } else {
+    requestedRef = String(parsed.searchParams.get('order') || '').trim().slice(0, 160);
+  }
   if (!requestedRef) { json(res, 400, { ok: false, error: 'missing_order_number' }); return true; }
 
   let itemFilter = null;
@@ -2816,14 +2912,23 @@ async function publicTrackingApi(req, res, pathname, parsed) {
     return true;
   }
 
+  let phoneVerified = false;
+  if (verifyPhone) {
+    const allowedPhones = await trackingVerificationPhones(order);
+    phoneVerified = allowedPhones.has(submittedPhone);
+    if (!phoneVerified) {
+      json(res, 403, { ok: false, error: 'phone_verification_failed' });
+      return true;
+    }
+  }
+
   const orderItems = normalizeStoredOrderItems(order.items_json, PRODUCTS);
   if (itemFilter !== null && (itemFilter < 0 || itemFilter >= orderItems.length)) {
     json(res, 404, { ok: false, error: 'tracking_not_found' });
     return true;
   }
-  // Keep the customer page fresh even for AliExpress/Cainiao references that
-  // may not generate useful 17TRACK webhooks. We only refresh stale active
-  // shipments, so repeated page loads do not hammer either provider.
+  // Keep the customer page fresh even for marketplace references that may not
+  // generate useful tracking webhooks. We only refresh stale active shipments.
   if (is17TrackConfigured()) {
     const staleBefore = Date.now() - 10 * 60 * 1000;
     const rawShipments = await database.listShipmentsForOrder(order.id);
@@ -2837,9 +2942,11 @@ async function publicTrackingApi(req, res, pathname, parsed) {
 
   const shipments = await listOrderShipmentsPayload(order.id);
   const allCustomerItems = customerOrderShipmentPayloads(shipments, orderItems, order.order_ref);
-  const customerItems = itemFilter === null
+  const filteredItems = itemFilter === null
     ? allCustomerItems
     : allCustomerItems.filter((item) => Number(item.itemIndex) === Number(itemFilter));
+  const protectedPayload = protectCustomerPickupItems(filteredItems, phoneVerified);
+  const customerItems = protectedPayload.items;
   const state = customerItemTrackingState(customerItems);
   json(res, 200, {
     ok: true,
@@ -2852,6 +2959,8 @@ async function publicTrackingApi(req, res, pathname, parsed) {
     detail: state.detail,
     location: state.location,
     updatedAt: state.updatedAt,
+    pickupVerificationRequired: protectedPayload.verificationRequired,
+    phoneVerified,
     shipments: customerItems
   });
   return true;
@@ -3033,6 +3142,13 @@ async function adminApi(req, res, pathname, parsed) {
 
     const existing = await database.getShipmentNotification(shipment.id, 'customer', 'ready_for_pickup');
     if (existing && String(existing.state || '') === 'sent' && !forceResend) {
+      let pickupEmail = { sent: false, reason: 'not_attempted', to: null };
+      try {
+        pickupEmail = await sendPickupReadyEmail({ shipment, order, message, forceResend: false });
+      } catch (emailError) {
+        pickupEmail = { sent: false, reason: String(emailError && emailError.message || 'pickup_email_failed').slice(0, 300), to: null };
+        console.error('Pickup ready email failed:', emailError && emailError.message ? emailError.message : emailError);
+      }
       json(res, 200, {
         ok: true,
         alreadySent: true,
@@ -3043,7 +3159,10 @@ async function adminApi(req, res, pathname, parsed) {
         parsed: parsedPickup,
         customerPickupDetails: customerDetails,
         message,
-        whatsappWebUrl: shortUrl
+        whatsappWebUrl: shortUrl,
+        emailSent: pickupEmail.sent,
+        emailRecipient: pickupEmail.to,
+        emailIssue: pickupEmail.reason
       });
       return true;
     }
@@ -3061,6 +3180,13 @@ async function adminApi(req, res, pathname, parsed) {
     try {
       const webhook = await postManualPickupWebhook({ shipment, order, message, forceResend });
       if (!webhook.ok) throw new Error(webhook.reason || 'pickup_webhook_not_available');
+      let pickupEmail = { sent: false, reason: 'not_attempted', to: null };
+      try {
+        pickupEmail = await sendPickupReadyEmail({ shipment, order, message, forceResend });
+      } catch (emailError) {
+        pickupEmail = { sent: false, reason: String(emailError && emailError.message || 'pickup_email_failed').slice(0, 300), to: null };
+        console.error('Pickup ready email failed:', emailError && emailError.message ? emailError.message : emailError);
+      }
       json(res, 200, {
         ok: true,
         queued: true,
@@ -3073,7 +3199,10 @@ async function adminApi(req, res, pathname, parsed) {
         parsed: parsedPickup,
         customerPickupDetails: customerDetails,
         message,
-        whatsappWebUrl: shortUrl
+        whatsappWebUrl: shortUrl,
+        emailSent: pickupEmail.sent,
+        emailRecipient: pickupEmail.to,
+        emailIssue: pickupEmail.reason
       });
     } catch (error) {
       await database.markShipmentNotificationFailed(shipment.id, 'customer', 'ready_for_pickup', String(error && error.message || 'pickup_webhook_failed'), Date.now());

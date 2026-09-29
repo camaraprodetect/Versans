@@ -163,8 +163,34 @@
     };
     return labels[setting] || setting;
   }
+  function syncMotionMedia(){
+    var shouldPause = !!state.stopMotion;
+    document.querySelectorAll('video').forEach(function(video){
+      if (!video.__vsA11yMotionBound) {
+        video.__vsA11yMotionBound = true;
+        video.addEventListener('play', function(){
+          if (state.stopMotion && !video.paused) {
+            video.setAttribute('data-vs-a11y-paused', '1');
+            video.pause();
+          }
+        });
+      }
+
+      if (shouldPause) {
+        if (!video.paused) video.setAttribute('data-vs-a11y-paused', '1');
+        video.pause();
+      } else if (video.getAttribute('data-vs-a11y-paused') === '1') {
+        video.removeAttribute('data-vs-a11y-paused');
+        var playPromise;
+        try { playPromise = video.play(); } catch(e) {}
+        if (playPromise && typeof playPromise.catch === 'function') playPromise.catch(function(){});
+      }
+    });
+  }
+
   function applyState(){
     root.classList.toggle('vs-a11y-stop-motion', !!state.stopMotion);
+    syncMotionMedia();
     root.classList.toggle('vs-a11y-links', !!state.highlightLinks);
     root.classList.toggle('vs-a11y-headings', !!state.highlightHeadings);
     root.classList.toggle('vs-a11y-readable-font', !!state.readableFont);
@@ -194,6 +220,19 @@
   function updateGuide(y){
     lastGuideY = clamp(Math.round(y || lastGuideY || 0), 40, Math.max(40, window.innerHeight - 40));
     guide.style.top = lastGuideY + 'px';
+  }
+
+  if (window.MutationObserver) {
+    var motionObserver = new MutationObserver(function(mutations){
+      if (!state.stopMotion) return;
+      var hasNewVideo = mutations.some(function(mutation){
+        return Array.prototype.some.call(mutation.addedNodes || [], function(node){
+          return node && node.nodeType === 1 && (node.tagName === 'VIDEO' || (node.querySelector && node.querySelector('video')));
+        });
+      });
+      if (hasNewVideo) syncMotionMedia();
+    });
+    motionObserver.observe(document.body, {childList:true, subtree:true});
   }
 
   applyState();

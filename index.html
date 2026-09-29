@@ -650,6 +650,100 @@ html, body {
 }
 </style>
 
+
+<style id="versans-video-hero-v1">
+/* Video hero - desktop */
+@media (min-width: 768px) {
+  .home-page .hero.hero--full .hero__video {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 1986 / 780 !important;
+    object-fit: contain !important;
+    object-position: center top !important;
+    pointer-events: none !important;
+    filter: brightness(1.16) !important;
+  }
+  .home-page .desktop-hero-actions {
+    top: 74% !important;
+    left: 22.1% !important;
+    width: 32.5% !important;
+    gap: 7px !important;
+  }
+  .home-page .desktop-hero-cta {
+    height: 39px !important;
+    min-height: 39px !important;
+    padding: 0 .95rem !important;
+    border-radius: 999px !important;
+    font-size: clamp(.88rem, 1vw, 1rem) !important;
+    line-height: 1 !important;
+  }
+  .home-page .desktop-hero-cta--primary {
+    color: #17120a !important;
+    background: radial-gradient(ellipse 125% 190% at 50% 48%, #ffe8a4 0%, #f4cf6f 40%, #deb04c 74%, #c9952f 100%) !important;
+    border: 1px solid #f1cf77 !important;
+    box-shadow: 0 5px 14px rgba(0,0,0,.24) !important;
+  }
+  .home-page .desktop-hero-cta--primary:hover {
+    background: radial-gradient(ellipse 125% 190% at 50% 48%, #fff0bd 0%, #f8d982 40%, #e4b957 74%, #d09d38 100%) !important;
+  }
+  .home-page .desktop-hero-cta--secondary {
+    color: #fff !important;
+    background: rgba(6,7,8,.9) !important;
+    border: 1px solid rgba(230,194,100,.88) !important;
+    box-shadow: 0 5px 14px rgba(0,0,0,.22) !important;
+  }
+}
+
+/* Video hero - mobile */
+@media (max-width: 767px) {
+  .home-page .mobile-entry-banner {
+    position: relative !important;
+    overflow: hidden !important;
+    line-height: 0 !important;
+  }
+  .home-page .mobile-entry-banner__video {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 9 / 16 !important;
+    object-fit: contain !important;
+    object-position: center top !important;
+    pointer-events: none !important;
+    filter: brightness(1) !important;
+  }
+  .home-page .mobile-entry-banner__actions {
+    top: 81% !important;
+    left: 48% !important;
+    gap: 7px !important;
+  }
+  .home-page .mobile-entry-banner__cta {
+    height: 38px !important;
+    min-height: 38px !important;
+    padding: 0 .8rem !important;
+    border-radius: 999px !important;
+    line-height: 1 !important;
+  }
+  .home-page .mobile-entry-banner__cta--primary {
+    color: #17120a !important;
+    background: radial-gradient(circle at 50% 45%, #ffe9a6 0%, #f4ce6d 42%, #deaf48 76%, #c9952f 100%) !important;
+    border: 1px solid #efce78 !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,.22) !important;
+  }
+  .home-page .mobile-entry-banner__cta--primary:hover,
+  .home-page .mobile-entry-banner__cta--primary:active {
+    background: radial-gradient(circle at 50% 45%, #fff0bd 0%, #f8d77f 42%, #e4b754 76%, #d19e38 100%) !important;
+  }
+  .home-page .mobile-entry-banner__cta--secondary {
+    color: #fff !important;
+    background: rgba(6,7,8,.9) !important;
+    border: 1px solid rgba(230,194,100,.88) !important;
+  }
+}
+</style>
+
 </head>
 <body class="home-page">
 <a class="skip" href="#main">דילוג לתוכן</a>
@@ -760,7 +854,9 @@ html, body {
 <!-- הירו -->
 <section class="hero hero--full" id="top" aria-label="באנר VerSans">
   <div class="hero__visual" data-hero-slider aria-live="off">
-    <img class="hero__image hero__slide is-active" src="images/desktop-entry-promo.png" width="1600" height="654" alt="באנר VerSans" fetchpriority="high" data-hero-slide>
+    <video class="hero__image hero__video hero__slide is-active" width="1986" height="780" autoplay muted loop playsinline webkit-playsinline preload="auto" poster="images/hero-desktop-poster.jpg" aria-hidden="true" data-hero-slide disablepictureinpicture>
+      <source src="images/hero-desktop.mp4" type="video/mp4">
+    </video>
     <div class="desktop-hero-actions" aria-label="קישורים מהירים">
       <a class="desktop-hero-cta desktop-hero-cta--primary" href="#shopTitle">לגלות את הקולקציה</a>
       <a class="desktop-hero-cta desktop-hero-cta--secondary" href="#reviews">לביקורות הלקוחות</a>
@@ -772,7 +868,9 @@ html, body {
 <section class="section shop" id="shop" aria-labelledby="shopTitle">
   <div class="container">
     <div class="mobile-entry-banner" id="mobileEntryBanner" aria-label="מבצע VerSans עד 40% הנחה">
-      <img src="images/mobile-entry-promo.png" width="944" height="1665" alt="VerSans - עד 40% הנחה על כל קולקציית האתר" loading="eager" decoding="async">
+      <video class="mobile-entry-banner__video" width="1440" height="2560" autoplay muted loop playsinline webkit-playsinline preload="auto" poster="images/hero-mobile-poster.jpg" aria-hidden="true" disablepictureinpicture>
+        <source src="images/hero-mobile.mp4" type="video/mp4">
+      </video>
       <div class="mobile-entry-banner__actions" aria-label="קישורים מהירים">
         <a class="mobile-entry-banner__cta mobile-entry-banner__cta--primary" href="#shopTitle">לגלות את הקולקציה</a>
         <a class="mobile-entry-banner__cta mobile-entry-banner__cta--secondary" href="#reviews">לביקורות הלקוחות</a>
