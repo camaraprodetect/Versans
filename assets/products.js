@@ -281,8 +281,8 @@ var PRODUCTS = [
       "en": "Custom Greeting Design"
     },
     "subtitle": {
-      "he": "עצבו ברכה אישית, ולאחר השמירה בחרו דגם ועם או בלי קופסה.",
-      "en": "Design a custom greeting, then choose a style and whether to include a box."
+      "he": "עצבו ברכה אישית, ולאחר השמירה בחרו דגם וסוג קופסה.",
+      "en": "Design a custom greeting, then choose a style and box type."
     },
     "necklaceHeading": {
       "he": "בחרו דגם",
@@ -335,8 +335,8 @@ var PRODUCTS = [
       }
     ],
     "boxHeading": {
-      "he": "בחרו עם או בלי קופסה",
-      "en": "Choose with or without a box"
+      "he": "בחרו סוג קופסה",
+      "en": "Choose a box type"
     },
     "boxSummaryLabel": {
       "he": "קופסה",
@@ -344,29 +344,29 @@ var PRODUCTS = [
     },
     "boxes": [
       {
-        "id": "no-box",
-        "image": "images/products/product-3/mainproduct1.png",
-        "addPrice": 0,
-        "label": {
-          "he": "בלי קופסה",
-          "en": "Without box"
-        },
-        "priceLabel": {
-          "he": "ללא תוספת",
-          "en": "No extra charge"
-        }
-      },
-      {
-        "id": "with-box",
+        "id": "regular-box",
         "image": "images/products/product-1/mainproduct2.png",
         "addPrice": 0,
         "label": {
-          "he": "עם קופסה",
-          "en": "With box"
+          "he": "קופסה רגילה",
+          "en": "Classic box"
         },
         "priceLabel": {
-          "he": "ללא תוספת",
-          "en": "No extra charge"
+          "he": "כלולה במחיר",
+          "en": "Included"
+        }
+      },
+      {
+        "id": "red-box",
+        "image": "images/products/product-1/mainproduct1.png",
+        "addPrice": 10,
+        "label": {
+          "he": "קופסה אדומה עם תאורה",
+          "en": "Red illuminated box"
+        },
+        "priceLabel": {
+          "he": "+₪10",
+          "en": "+₪10"
         }
       }
     ],
@@ -387,13 +387,15 @@ var PRODUCTS = [
         "עיצוב ברכה אישית ב-Default החל מ-20 ₪",
         "תבנית שאינה Default או הוספת תמונה ל-Default מוסיפה 15 ₪",
         "בחירת דגם לאחר שמירת הברכה",
-        "בחירה עם או בלי קופסה"
+        "בחירה בין קופסה רגילה לקופסה אדומה עם תאורה",
+        "הקופסה האדומה מוסיפה ₪10 למחיר"
       ],
       "en": [
         "Custom greeting design in Default starts at ₪20",
         "A non-Default template or adding an image to Default adds ₪15",
         "Choose the style after saving the greeting",
-        "Choose with or without a box"
+        "Choose a classic box or a red illuminated box",
+        "The red box adds ₪10 to the price"
       ]
     },
     "deliveryBusinessDays": {
@@ -5954,135 +5956,6 @@ var PRODUCTS = [
     "hoverImage": "images/products/product-75/product-75-2.png"
   },
   {
-    "id": "watch-hannah-martin-01",
-    "slug": "product-76",
-    "urlSlug": "hannah-martin-40mm-gift-set",
-    "sku": "VS-WATCH-01",
-    "category": "watches",
-    "categories": [
-      "watches",
-      "watches-men",
-      "gift-boxes"
-    ],
-    "badge": null,
-    "cardMode": "view",
-    "hideMessageCard": true,
-    "images": [
-      "images/products/product-76/product-76-3.jpg",
-      "images/products/product-76/product-76-4.jpg",
-      "images/products/product-76/product-76-5.jpg",
-      "images/products/product-76/product-76-7.jpg",
-      "images/products/product-76/product-76-8.jpg",
-      "images/products/product-76/product-76-9.jpg"
-    ],
-    "hoverImage": "images/products/product-76/product-76-2.png",
-    "price": 449.9,
-    "title": {
-      "he": "שעון Hannah Martin 40mm עם Gift Box Set",
-      "en": "Hannah Martin 40mm Watch with Gift Box Set"
-    },
-    "subtitle": {
-      "he": "שעון קוורץ 40 מ״מ עם מארז מתנה מלא, כולל מספר צבעים לבחירה.",
-      "en": "40mm quartz watch gift set with multiple color options."
-    },
-    "cardTitle": {
-      "he": "",
-      "en": ""
-    },
-    "cardMessage": {
-      "he": "",
-      "en": ""
-    },
-    "signature": {
-      "he": "",
-      "en": ""
-    },
-    "details": {
-      "he": [
-        "קוטר שעון 40 מ״מ בעיצוב אלגנטי יומיומי",
-        "מנגנון Quartz מדויק ונוח לשימוש יום־יומי",
-        "מגיע עם Gift Box Set כמו בתמונות",
-        "במארז כלולים רצועה נוספת וכלי להתאמת הרצועה",
-        "עמידות למים 3Bar לשימוש יום־יומי",
-        "6 צבעים / שילובים לבחירה באותו דגם"
-      ],
-      "en": [
-        "40mm case with a clean everyday design",
-        "Reliable quartz movement",
-        "Includes the gift box set shown in the photos",
-        "Extra strap and adjustment tool included in the set",
-        "3Bar water resistance for everyday use",
-        "6 color / finish options available in the same model"
-      ]
-    },
-    "afterText": {
-      "he": "השעון, המארז, הרצועה הנוספת והאביזרים המצורפים מגיעים יחד - מוכן למתנה בלי שתצטרכו לארוז בעצמכם.",
-      "en": "The watch, gift box, extra strap and included accessories arrive together - ready to gift."
-    },
-    "deliveryBusinessDays": {
-      "min": 9,
-      "max": 14
-    },
-    "colors": [
-      {
-        "id": "black-blue",
-        "label": {
-          "he": "שחור / שחור",
-          "en": "Black / Black"
-        },
-        "image": "images/products/product-76/product-76-3.jpg",
-        "swatch": "linear-gradient(135deg,#131313 0 50%,#355b9a 50% 100%)"
-      },
-      {
-        "id": "silver-black",
-        "label": {
-          "he": "כסף / שחור",
-          "en": "Silver / Black"
-        },
-        "image": "images/products/product-76/product-76-4.jpg",
-        "swatch": "linear-gradient(135deg,#e8ecf0 0 50%,#171717 50% 100%)"
-      },
-      {
-        "id": "all-black",
-        "label": {
-          "he": "שחור מט",
-          "en": "Matte Black"
-        },
-        "image": "images/products/product-76/product-76-5.jpg",
-        "swatch": "#1a1a1a"
-      },
-      {
-        "id": "silver-blue",
-        "label": {
-          "he": "כסף / שחור",
-          "en": "Silver / Black"
-        },
-        "image": "images/products/product-76/product-76-7.jpg",
-        "swatch": "linear-gradient(135deg,#eef1f4 0 50%,#4a78be 50% 100%)"
-      },
-      {
-        "id": "gold-blue",
-        "label": {
-          "he": "זהב / שחור",
-          "en": "Gold / Black"
-        },
-        "image": "images/products/product-76/product-76-8.jpg",
-        "swatch": "linear-gradient(135deg,#d7aa48 0 50%,#355b9a 50% 100%)"
-      },
-      {
-        "id": "gold-black",
-        "label": {
-          "he": "זהב / שחור",
-          "en": "Gold / Black"
-        },
-        "image": "images/products/product-76/product-76-9.jpg",
-        "swatch": "linear-gradient(135deg,#d7aa48 0 50%,#171717 50% 100%)"
-      }
-    ],
-    "colorDisplay": "image-choice",
-    "cardImage": "images/products/product-76/product-76-1.png"
-  },
-  {
     "id": "watch-ice-silver-01",
     "slug": "product-77",
     "urlSlug": "ice-silver-watch",
@@ -6933,278 +6806,6 @@ var PRODUCTS = [
       }
     ],
     "colorDisplay": "image-choice"
-  },
-  {
-    "id": "watch-olevs-gift-white-01",
-    "slug": "product-85",
-    "urlSlug": "olevs-white-gift-set-watch",
-    "sku": "VS-WATCH-10",
-    "category": "watches",
-    "categories": [
-      "watches",
-      "watches-women",
-      "gift-boxes"
-    ],
-    "badge": null,
-    "cardMode": "view",
-    "hideMessageCard": true,
-    "cardImage": "images/products/product-85/product-85-1.png",
-    "hoverImage": "images/products/product-85/product-85-2.png",
-    "images": [
-      "images/products/product-85/product-85-1.png",
-      "images/products/product-85/product-85-2.png"
-    ],
-    "price": 489.9,
-    "title": {
-      "he": "שעון OLEVS Gift Box Set - צבע לבן",
-      "en": "OLEVS Gift Box Set Watch - White"
-    },
-    "subtitle": {
-      "he": "שעון OLEVS בגוון לבן עם מנגנון Quartz, חלון תאריך, עמידות למים 30 מטר ומארז מתנה מלא.",
-      "en": "OLEVS white dial quartz watch with date window, 30 m water resistance and a complete gift box set."
-    },
-    "cardTitle": {
-      "he": "",
-      "en": ""
-    },
-    "cardMessage": {
-      "he": "",
-      "en": ""
-    },
-    "signature": {
-      "he": "",
-      "en": ""
-    },
-    "details": {
-      "he": [
-        "מנגנון Quartz לשימוש יום-יומי",
-        "חלון תאריך מובנה בלוח השעון",
-        "עמידות למים 30 מטר לפי סימון היצרן על לוח השעון",
-        "רצועת מתכת בגימור כסף",
-        "מגיע במארז מתנה הכולל שעון, צמיד ושרשרת לב כפי שמופיע בתמונות",
-        "צבע לוח השעון: לבן"
-      ],
-      "en": [
-        "Quartz movement for everyday use",
-        "Built-in date window on the dial",
-        "30 m water resistance as marked by the manufacturer on the dial",
-        "Silver-tone metal bracelet",
-        "Gift box set includes the watch, bracelet and heart necklace shown in the photos",
-        "Dial color: White"
-      ]
-    },
-    "afterText": {
-      "he": "מארז OLEVS בצבע לבן שמגיע מוכן למתנה עם שעון, צמיד ושרשרת לב.",
-      "en": "White OLEVS gift set supplied ready to gift with a watch, bracelet and heart necklace."
-    },
-    "deliveryBusinessDays": {
-      "min": 9,
-      "max": 14
-    }
-  },
-  {
-    "id": "watch-olevs-gift-pink-01",
-    "slug": "product-86",
-    "urlSlug": "olevs-pink-gift-set-watch",
-    "sku": "VS-WATCH-11",
-    "category": "watches",
-    "categories": [
-      "watches",
-      "watches-women",
-      "gift-boxes"
-    ],
-    "badge": null,
-    "cardMode": "view",
-    "hideMessageCard": true,
-    "cardImage": "images/products/product-86/product-86-1.png",
-    "hoverImage": "images/products/product-86/product-86-2.png",
-    "images": [
-      "images/products/product-86/product-86-1.png",
-      "images/products/product-86/product-86-2.png"
-    ],
-    "price": 489.9,
-    "title": {
-      "he": "שעון OLEVS Gift Box Set - צבע ורוד",
-      "en": "OLEVS Gift Box Set Watch - Pink"
-    },
-    "subtitle": {
-      "he": "שעון OLEVS בגוון ורוד עם מנגנון Quartz, חלון תאריך, עמידות למים 30 מטר ומארז מתנה מלא.",
-      "en": "OLEVS pink dial quartz watch with date window, 30 m water resistance and a complete gift box set."
-    },
-    "cardTitle": {
-      "he": "",
-      "en": ""
-    },
-    "cardMessage": {
-      "he": "",
-      "en": ""
-    },
-    "signature": {
-      "he": "",
-      "en": ""
-    },
-    "details": {
-      "he": [
-        "מנגנון Quartz לשימוש יום-יומי",
-        "חלון תאריך מובנה בלוח השעון",
-        "עמידות למים 30 מטר לפי סימון היצרן על לוח השעון",
-        "רצועת מתכת בגימור כסף",
-        "מגיע במארז מתנה הכולל שעון, צמיד ושרשרת לב כפי שמופיע בתמונות",
-        "צבע לוח השעון: ורוד"
-      ],
-      "en": [
-        "Quartz movement for everyday use",
-        "Built-in date window on the dial",
-        "30 m water resistance as marked by the manufacturer on the dial",
-        "Silver-tone metal bracelet",
-        "Gift box set includes the watch, bracelet and heart necklace shown in the photos",
-        "Dial color: Pink"
-      ]
-    },
-    "afterText": {
-      "he": "מארז OLEVS בצבע ורוד שמגיע מוכן למתנה עם שעון, צמיד ושרשרת לב.",
-      "en": "Pink OLEVS gift set supplied ready to gift with a watch, bracelet and heart necklace."
-    },
-    "deliveryBusinessDays": {
-      "min": 9,
-      "max": 14
-    }
-  },
-  {
-    "id": "watch-olevs-gift-cyan-01",
-    "slug": "product-87",
-    "urlSlug": "olevs-light-blue-gift-set-watch",
-    "sku": "VS-WATCH-12",
-    "category": "watches",
-    "categories": [
-      "watches",
-      "watches-women",
-      "gift-boxes"
-    ],
-    "badge": null,
-    "cardMode": "view",
-    "hideMessageCard": true,
-    "cardImage": "images/products/product-87/product-87-1.png",
-    "hoverImage": "images/products/product-87/product-87-2.png",
-    "images": [
-      "images/products/product-87/product-87-1.png",
-      "images/products/product-87/product-87-2.png"
-    ],
-    "price": 489.9,
-    "title": {
-      "he": "שעון OLEVS Gift Box Set - צבע תכלת",
-      "en": "OLEVS Gift Box Set Watch - Light Blue"
-    },
-    "subtitle": {
-      "he": "שעון OLEVS בגוון תכלת עם מנגנון Quartz, חלון תאריך, עמידות למים 30 מטר ומארז מתנה מלא.",
-      "en": "OLEVS light blue dial quartz watch with date window, 30 m water resistance and a complete gift box set."
-    },
-    "cardTitle": {
-      "he": "",
-      "en": ""
-    },
-    "cardMessage": {
-      "he": "",
-      "en": ""
-    },
-    "signature": {
-      "he": "",
-      "en": ""
-    },
-    "details": {
-      "he": [
-        "מנגנון Quartz לשימוש יום-יומי",
-        "חלון תאריך מובנה בלוח השעון",
-        "עמידות למים 30 מטר לפי סימון היצרן על לוח השעון",
-        "רצועת מתכת בגימור כסף",
-        "מגיע במארז מתנה הכולל שעון, צמיד ושרשרת לב כפי שמופיע בתמונות",
-        "צבע לוח השעון: תכלת"
-      ],
-      "en": [
-        "Quartz movement for everyday use",
-        "Built-in date window on the dial",
-        "30 m water resistance as marked by the manufacturer on the dial",
-        "Silver-tone metal bracelet",
-        "Gift box set includes the watch, bracelet and heart necklace shown in the photos",
-        "Dial color: Light Blue"
-      ]
-    },
-    "afterText": {
-      "he": "מארז OLEVS בצבע תכלת שמגיע מוכן למתנה עם שעון, צמיד ושרשרת לב.",
-      "en": "Light Blue OLEVS gift set supplied ready to gift with a watch, bracelet and heart necklace."
-    },
-    "deliveryBusinessDays": {
-      "min": 9,
-      "max": 14
-    }
-  },
-  {
-    "id": "watch-olevs-gift-purple-01",
-    "slug": "product-88",
-    "urlSlug": "olevs-purple-gift-set-watch",
-    "sku": "VS-WATCH-13",
-    "category": "watches",
-    "categories": [
-      "watches",
-      "watches-women",
-      "gift-boxes"
-    ],
-    "badge": null,
-    "cardMode": "view",
-    "hideMessageCard": true,
-    "cardImage": "images/products/product-88/product-88-1.png",
-    "hoverImage": "images/products/product-88/product-88-2.png",
-    "images": [
-      "images/products/product-88/product-88-1.png",
-      "images/products/product-88/product-88-2.png"
-    ],
-    "price": 489.9,
-    "title": {
-      "he": "שעון OLEVS Gift Box Set - צבע סגול",
-      "en": "OLEVS Gift Box Set Watch - Purple"
-    },
-    "subtitle": {
-      "he": "שעון OLEVS בגוון סגול עם מנגנון Quartz, חלון תאריך, עמידות למים 30 מטר ומארז מתנה מלא.",
-      "en": "OLEVS purple dial quartz watch with date window, 30 m water resistance and a complete gift box set."
-    },
-    "cardTitle": {
-      "he": "",
-      "en": ""
-    },
-    "cardMessage": {
-      "he": "",
-      "en": ""
-    },
-    "signature": {
-      "he": "",
-      "en": ""
-    },
-    "details": {
-      "he": [
-        "מנגנון Quartz לשימוש יום-יומי",
-        "חלון תאריך מובנה בלוח השעון",
-        "עמידות למים 30 מטר לפי סימון היצרן על לוח השעון",
-        "רצועת מתכת בגימור כסף",
-        "מגיע במארז מתנה הכולל שעון, צמיד ושרשרת לב כפי שמופיע בתמונות",
-        "צבע לוח השעון: סגול"
-      ],
-      "en": [
-        "Quartz movement for everyday use",
-        "Built-in date window on the dial",
-        "30 m water resistance as marked by the manufacturer on the dial",
-        "Silver-tone metal bracelet",
-        "Gift box set includes the watch, bracelet and heart necklace shown in the photos",
-        "Dial color: Purple"
-      ]
-    },
-    "afterText": {
-      "he": "מארז OLEVS בצבע סגול שמגיע מוכן למתנה עם שעון, צמיד ושרשרת לב.",
-      "en": "Purple OLEVS gift set supplied ready to gift with a watch, bracelet and heart necklace."
-    },
-    "deliveryBusinessDays": {
-      "min": 9,
-      "max": 14
-    }
   },
   {
     "id": "watch-tachymeter-pro-black-01",

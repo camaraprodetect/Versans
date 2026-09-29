@@ -710,16 +710,39 @@
   }
 
   function productColorMetaHTML(p) {
-    if (!(p && Array.isArray(p.colors) && p.colors.length)) return '';
+    if (!p) return '';
+
+    // Some products store a real color selector in `sizes` (with sizeDisplay=color-row),
+    // while `colors` is used for a secondary color selector. Prefer the visible outer/color-row
+    // choices for the collection-card count so the number matches what shoppers actually see.
+    var options = (p.sizeDisplay === 'color-row' && Array.isArray(p.sizes) && p.sizes.length)
+      ? p.sizes
+      : (Array.isArray(p.colors) ? p.colors : []);
+    if (!options.length) return '';
+
+    // Some products reuse the `colors` array for width/thickness choices (e.g. 3/4/5 mm).
+    // Those are not real color variants and should not be advertised on collection cards
+    // as "X colors available". Product-page option selection remains unchanged.
+    var headingHe = (options === p.sizes)
+      ? (p.sizeHeading && p.sizeHeading.he ? String(p.sizeHeading.he) : '')
+      : (p.colorHeading && p.colorHeading.he ? String(p.colorHeading.he) : '');
+    var isDimensionHeading = /רוחב|עובי/.test(headingHe);
+    var allDimensionLabels = options.every(function (option) {
+      var he = option && option.label && option.label.he ? String(option.label.he) : '';
+      var en = option && option.label && option.label.en ? String(option.label.en) : '';
+      return /מ[״"]?מ/.test(he) || /\bmm\b/i.test(en);
+    });
+    if (isDimensionHeading || allDimensionLabels) return '';
+
     var max = 6;
-    var items = p.colors.slice(0, max).map(function (option) {
+    var items = options.slice(0, max).map(function (option) {
       var style = option.swatch ? ' style="background:' + esc(option.swatch) + '"' : '';
       return '<span class="prod__variant-swatch"' + style + ' aria-hidden="true"></span>';
     }).join('');
-    var extra = p.colors.length > max ? '<span class="prod__variant-more">+' + (p.colors.length - max) + '</span>' : '';
+    var extra = options.length > max ? '<span class="prod__variant-more">+' + (options.length - max) + '</span>' : '';
     var text = state.lang === 'he'
-      ? p.colors.length + ' צבעים לבחירה'
-      : p.colors.length + ' colors available';
+      ? options.length + ' צבעים לבחירה'
+      : options.length + ' colors available';
     return '<div class="prod__variant-hint"><div class="prod__variant-swatches" aria-hidden="true">' + items + extra + '</div><span class="prod__variant-text">' + esc(text) + '</span></div>';
   }
 
@@ -886,9 +909,10 @@
   /* END TESTABLE: hats category grouping */
 
   function allCollectionGroupLimit() {
-    /* Mobile: 2 columns × 2 rows = 4 products.
+    /* Home page collection groups:
+       Mobile: 2 columns × 1 row = 2 products.
        Desktop / narrow desktop: exactly 1 row. */
-    if (window.matchMedia('(max-width: 700px)').matches) return 4;
+    if (window.matchMedia('(max-width: 700px)').matches) return 2;
     if (window.matchMedia('(min-width: 1600px)').matches) return 4;
     return 3;
   }
