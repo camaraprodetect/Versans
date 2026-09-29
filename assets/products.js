@@ -602,6 +602,171 @@ var PRODUCTS = [
     }
   },
   {
+      "id": "classic-tennis-bracelet-237",
+      "slug": "product-237",
+      "urlSlug": "classic-tennis-bracelet",
+      "sku": "VS-BR-237",
+      "category": "bracelets",
+      "categories": [
+          "bracelets"
+      ],
+      "badge": null,
+      "cardMode": "view",
+      "hideMessageCard": true,
+      "hoverImage": "images/products/product-237/product-237-2.png",
+      "collectionMedia": {
+          "women": {
+              "image": "images/products/product-237/product-237-1.png",
+              "hoverImage": "images/products/product-237/product-237-2.png"
+          },
+          "men": {
+              "image": "images/products/product-237/product-237-1.png",
+              "hoverImage": "images/products/product-237/product-237-2.png"
+          }
+      },
+      "images": [
+          "images/products/product-237/product-237-1.png",
+          "images/products/product-237/product-237-2.png"
+      ],
+      "price": 249.9,
+      "title": {
+          "he": "צמיד טניס קלאסי - מצופה 18 קראט זהב לבן",
+          "en": "Classic Tennis Bracelet - 18K White Gold Plated"
+      },
+      "subtitle": {
+          "he": "צמיד טניס קלאסי מצופה 18 קראט זהב לבן ומשובץ זירקוניה · לבחירה באורך 17, 20 או 22 ס״מ ובעובי 3, 4 או 5 מ״מ",
+          "en": "18K white gold plated classic tennis bracelet set with zirconia · choose 17, 20 or 22 cm length and 3, 4 or 5 mm width"
+      },
+      "sizeHeading": {
+          "he": "בחרו אורך",
+          "en": "Choose length"
+      },
+      "colorHeading": {
+          "he": "בחרו עובי",
+          "en": "Choose width"
+      },
+      "colorRequiredText": {
+          "he": "נא לבחור עובי",
+          "en": "Please choose a width"
+      },
+      "sizes": [
+          {
+              "id": "17cm",
+              "addPrice": 0,
+              "priceLabel": {
+                  "he": "249.90 ₪",
+                  "en": "₪249.90"
+              },
+              "label": {
+                  "he": "17 ס״מ",
+                  "en": "17 cm"
+              }
+          },
+          {
+              "id": "20cm",
+              "addPrice": 5,
+              "priceLabel": {
+                  "he": "254.90 ₪",
+                  "en": "₪254.90"
+              },
+              "label": {
+                  "he": "20 ס״מ",
+                  "en": "20 cm"
+              }
+          },
+          {
+              "id": "22cm",
+              "addPrice": 10,
+              "priceLabel": {
+                  "he": "259.90 ₪",
+                  "en": "₪259.90"
+              },
+              "label": {
+                  "he": "22 ס״מ",
+                  "en": "22 cm"
+              }
+          }
+      ],
+      "colors": [
+          {
+              "id": "3mm",
+              "addPrice": 0,
+              "priceLabel": {
+                  "he": "ללא תוספת",
+                  "en": "Included"
+              },
+              "label": {
+                  "he": "3 מ״מ",
+                  "en": "3 mm"
+              }
+          },
+          {
+              "id": "4mm",
+              "addPrice": 5,
+              "priceLabel": {
+                  "he": "+5 ₪",
+                  "en": "+₪5"
+              },
+              "label": {
+                  "he": "4 מ״מ",
+                  "en": "4 mm"
+              }
+          },
+          {
+              "id": "5mm",
+              "addPrice": 10,
+              "priceLabel": {
+                  "he": "+10 ₪",
+                  "en": "+₪10"
+              },
+              "label": {
+                  "he": "5 מ״מ",
+                  "en": "5 mm"
+              }
+          }
+      ],
+      "cardTitle": {
+          "he": "צמיד טניס קלאסי",
+          "en": "Classic Tennis Bracelet"
+      },
+      "cardMessage": {
+          "he": "צמיד טניס קלאסי מצופה 18 קראט זהב לבן, משובץ זירקוניה במראה נקי ויוקרתי, עם בחירה של אורך ועובי.",
+          "en": "A classic tennis bracelet plated in 18K white gold and set with zirconia, with selectable length and width."
+      },
+      "signature": {
+          "he": "",
+          "en": ""
+      },
+      "details": {
+          "he": [
+              "צמיד טניס קלאסי מצופה 18 קראט זהב לבן",
+              "משובץ זירקוניה",
+              "אורכים לבחירה: 17, 20 או 22 ס״מ",
+              "עובי לבחירה: 3, 4 או 5 מ״מ",
+              "מחיר התחלתי: 249.90 ₪",
+              "כל עלייה באורך מוסיפה 5 ₪",
+              "כל עלייה בעובי מוסיפה 5 ₪"
+          ],
+          "en": [
+              "Classic tennis bracelet plated in 18K white gold",
+              "Set with zirconia stones",
+              "Available lengths: 17, 20 or 22 cm",
+              "Available widths: 3, 4 or 5 mm",
+              "Starting price: ₪249.90",
+              "Each length step adds ₪5",
+              "Each width step adds ₪5"
+          ]
+      },
+      "afterText": {
+          "he": "בחרו אורך ועובי והמחיר יתעדכן אוטומטית בהתאם לבחירה.",
+          "en": "Choose a length and width and the price will update automatically."
+      },
+      "deliveryBusinessDays": {
+          "min": 9,
+          "max": 14
+      }
+  },
+  {
     "id": "star-tennis-bracelet-11",
     "slug": "product-11",
     "urlSlug": "star-tennis-bracelet-6-5mm",

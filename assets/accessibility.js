@@ -38,7 +38,7 @@
   widget.className = 'vs-a11y-widget';
   widget.innerHTML = [
     '<button type="button" class="vs-a11y-trigger" aria-expanded="false" aria-controls="vs-a11y-panel" aria-label="פתח תפריט נגישות">',
-      '<span class="vs-a11y-trigger__icon" aria-hidden="true">♿</span>',
+      '<img class="vs-a11y-trigger__image" src="/images/accessibility-button.png" alt="" aria-hidden="true">',
     '</button>',
     '<div class="vs-a11y-panel" id="vs-a11y-panel" role="dialog" aria-modal="false" aria-label="הגדרות נגישות">',
       '<div class="vs-a11y-panel__head">',
@@ -84,7 +84,114 @@
   document.body.appendChild(guide);
   document.body.appendChild(mask);
 
+  // Keep accessibility on the left and use its former bottom-right position for a floating cart button.
+  var floatingUiStyle = document.createElement('style');
+  floatingUiStyle.id = 'vs-floating-ui-v1';
+  floatingUiStyle.textContent = [
+    '.vs-a11y-widget{left:max(14px,env(safe-area-inset-left))!important;right:auto!important}',
+    '.vs-a11y-widget .vs-a11y-panel{left:0!important;right:auto!important;transform-origin:bottom left!important}',
+    '.vs-a11y-trigger{padding:0!important;overflow:hidden!important;background:transparent!important;border:0!important;box-shadow:none!important}',
+    '.vs-a11y-trigger__image{display:block;width:100%;height:100%;object-fit:contain;border-radius:50%;pointer-events:none}',
+    '.vs-floating-cart{position:fixed;right:max(14px,env(safe-area-inset-right));bottom:max(14px,env(safe-area-inset-bottom));z-index:2147482000;display:grid;place-items:center;padding:0;cursor:pointer;box-sizing:border-box;-webkit-tap-highlight-color:transparent;transition:transform .18s ease,box-shadow .18s ease}',
+    '.vs-floating-cart:hover{transform:translateY(-1px)}',
+    '.vs-floating-cart:active{transform:scale(.96)}',
+    '.vs-floating-cart svg{width:53%;height:53%;display:block;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}',
+    '.vs-floating-cart__count{position:absolute;top:-5px;right:-5px;min-width:18px;height:18px;padding:0 4px;border-radius:999px;display:flex;align-items:center;justify-content:center;background:#c91824;color:#fff;border:2px solid #fff;font:800 10px/1 Arial,sans-serif;box-sizing:border-box;box-shadow:0 2px 6px rgba(0,0,0,.18)}',
+    '.vs-floating-cart__count[hidden]{display:none!important}',
+    '@media(max-width:700px){.vs-a11y-widget{left:max(11px,env(safe-area-inset-left))!important}.vs-floating-cart{right:max(11px,env(safe-area-inset-right));bottom:max(11px,env(safe-area-inset-bottom))}}'
+  ].join('');
+  document.head.appendChild(floatingUiStyle);
+
   var trigger = widget.querySelector('.vs-a11y-trigger');
+
+  var floatingCart = document.createElement('button');
+  floatingCart.type = 'button';
+  floatingCart.className = 'vs-floating-cart';
+  floatingCart.setAttribute('aria-label', 'פתיחת סל הקניות');
+  floatingCart.innerHTML = [
+    '<svg viewBox="0 0 24 24" aria-hidden="true">',
+      '<path d="M6 8h12l1 13H5L6 8Z"></path>',
+      '<path d="M9 9V6.5a3 3 0 0 1 6 0V9"></path>',
+    '</svg>',
+    '<span class="vs-floating-cart__count" data-cart-count hidden>0</span>'
+  ].join('');
+  document.body.appendChild(floatingCart);
+
+  function syncFloatingCartLook(){
+    if (!trigger || !floatingCart) return;
+    var rect = trigger.getBoundingClientRect();
+    if (rect.width) floatingCart.style.width = rect.width + 'px';
+    if (rect.height) floatingCart.style.height = rect.height + 'px';
+    floatingCart.style.borderRadius = '50%';
+    floatingCart.style.background = '#0b0b0b';
+    floatingCart.style.border = '0';
+    floatingCart.style.boxShadow = '0 8px 22px rgba(0,0,0,.28)';
+    floatingCart.style.color = '#ffffff';
+  }
+
+  function syncFloatingCartCount(){
+    if (window.VERSANS_CART_STATE && typeof window.VERSANS_CART_STATE.syncBadge === 'function') {
+      window.VERSANS_CART_STATE.syncBadge(floatingCart);
+      return;
+    }
+    var count = 0;
+    try {
+      var rows = JSON.parse(localStorage.getItem('kw_cart') || '[]');
+      if (Array.isArray(rows)) rows.forEach(function(row){ count += Math.max(0, parseInt(row && row.qty, 10) || 0); });
+    } catch(e) {}
+    var badge = floatingCart.querySelector('[data-cart-count]');
+    if (!badge) return;
+    badge.textContent = String(count);
+    badge.hidden = count === 0;
+  }
+
+  function findExistingCartOpener(){
+    var selectors = ['#cartBtn','[data-cart-open]','.product-cart-link','.cartbtn'];
+    for (var i = 0; i < selectors.length; i += 1) {
+      var nodes = document.querySelectorAll(selectors[i]);
+      for (var j = 0; j < nodes.length; j += 1) {
+        if (nodes[j] !== floatingCart && !nodes[j].classList.contains('vs-floating-cart')) return nodes[j];
+      }
+    }
+    return null;
+  }
+
+  function isCartOverlayOpen(){
+    var overlay = document.getElementById('cartOverlay');
+    if (!overlay) return false;
+    if (overlay.classList.contains('is-open') || overlay.classList.contains('open') || overlay.classList.contains('on') || overlay.classList.contains('active')) return true;
+    if (overlay.getAttribute('aria-hidden') === 'false') return true;
+    var cs = window.getComputedStyle(overlay);
+    return cs.display !== 'none' && cs.visibility !== 'hidden' && cs.pointerEvents !== 'none' && parseFloat(cs.opacity || '1') > 0.01;
+  }
+
+  function closeExistingCart(){
+    var overlay = document.getElementById('cartOverlay');
+    if (!overlay) return false;
+    var closeBtn = overlay.querySelector('.ov__close,[data-close]');
+    if (closeBtn) {
+      closeBtn.click();
+      return true;
+    }
+    return false;
+  }
+
+  floatingCart.addEventListener('click', function(){
+    if (isCartOverlayOpen() && closeExistingCart()) return;
+    var opener = findExistingCartOpener();
+    if (opener) {
+      opener.click();
+      return;
+    }
+    window.location.href = '/#shop';
+  });
+
+  syncFloatingCartLook();
+  syncFloatingCartCount();
+  window.addEventListener('resize', syncFloatingCartLook, {passive:true});
+  window.addEventListener('versans:cart-changed', syncFloatingCartCount);
+  window.addEventListener('storage', function(e){ if (!e || e.key === 'kw_cart') syncFloatingCartCount(); });
+  window.addEventListener('pageshow', syncFloatingCartCount);
   var panel = widget.querySelector('.vs-a11y-panel');
   var statusEl = widget.querySelector('.vs-a11y-status');
   var lastGuideY = Math.round(window.innerHeight * 0.38);

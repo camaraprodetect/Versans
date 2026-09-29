@@ -298,3 +298,54 @@ html.vs-a11y-root.vs-a11y-page-larger .vs-a11y-screen-mask{ display:block; }
   .vs-a11y-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); }
   .vs-a11y-footer{ grid-template-columns:1fr; }
 }
+
+/* ===== VerSans desktop consistency v2 =====
+   Leave laptop desktop sizes untouched.
+   Only wide monitors are constrained to the same 1536px design canvas. */
+@media (min-width:1600px){
+  :root{
+    --wrap:1536px;
+    --gut:61px;
+  }
+
+  .container{
+    max-width:1536px!important;
+  }
+
+  /* Keep the same three-product desktop layout used on the laptop. */
+  .grid{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+  .home-page .all-collection-group__products{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+  .hat-carousel__track{
+    grid-auto-columns:calc((100% - 2rem) / 3)!important;
+  }
+  .hat-group-page__products{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+
+  /* Match the header scale from a 1536px laptop instead of enlarging it on wide screens. */
+  .home-page .nav__inner,
+  .product-page-body .nav__inner{
+    gap:.72rem!important;
+  }
+  .home-page .nav__inner .brand__logo img,
+  .product-page-body .nav__inner .brand__logo img{
+    width:145px!important;
+    max-width:145px!important;
+  }
+  .home-page .nav__menu,
+  .product-page-body .nav__menu{
+    gap:.67rem!important;
+  }
+  .home-page .nav__menu a,
+  .product-page-body .nav__menu a{
+    font-size:.88rem!important;
+  }
+
+  .home-page .faq>.container{
+    max-width:1536px!important;
+  }
+}
