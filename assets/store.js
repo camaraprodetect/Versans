@@ -149,11 +149,23 @@
     var v = (Math.round(n * 100) / 100).toFixed(2).replace(/\.00$/, '');
     return CFG.currency.code === 'ILS' ? v + ' ' + CFG.currency.symbol : CFG.currency.symbol + v;
   }
+  function greetingAddPrice(greeting) {
+    if (!greeting || typeof greeting !== 'object') return 0;
+    var hasUpgrade = greeting.template !== 'template-1' || (greeting.template === 'template-1' && greeting.hasCustomBackground === true);
+    return 20 + (hasUpgrade ? 15 : 0);
+  }
   function byId(id) { for (var i = 0; i < PRODUCTS.length; i++) if (PRODUCTS[i].id === id) return PRODUCTS[i]; return null; }
   function productPath(productOrId) {
     var product = typeof productOrId === 'string' ? byId(productOrId) : productOrId;
+    if (product && product.greetingEditorEntry) {
+      return '/greeting-editor?id=' + encodeURIComponent(product.slug || product.id) + '&entry=1';
+    }
     if (ROUTES && ROUTES.productPath) return ROUTES.productPath(product);
     return product && product.urlSlug ? '/' + encodeURIComponent(product.urlSlug) : '/';
+  }
+  function catalogPrice(product) {
+    if (!product) return 0;
+    return Number(product.catalogPrice != null ? product.catalogPrice : product.price) || 0;
   }
   function collectionPath(category) {
     if (ROUTES && ROUTES.collectionPath) return ROUTES.collectionPath(category);
@@ -280,7 +292,7 @@
   function availablePriceRanges(list) {
     return PRICE_RANGES.map(function (range) {
       var count = list.reduce(function (total, p) {
-        var price = Number(p && p.price);
+        var price = catalogPrice(p);
         return total + (isFinite(price) && price >= range.min && price <= range.max ? 1 : 0);
       }, 0);
       return { key: range.key, label: range.label, min: range.min, max: range.max, count: count };
@@ -362,7 +374,7 @@
     }
     if (!matchesAnySelected(filters.colors, productColorKeys(p))) return false;
 
-    var price = Number(p && p.price);
+    var price = catalogPrice(p);
     var hasMin = filters.priceMin !== '' && filters.priceMin != null;
     var hasMax = filters.priceMax !== '' && filters.priceMax != null;
     var minPrice = hasMin ? Number(filters.priceMin) : null;
@@ -757,6 +769,9 @@
   }
 
   function renderProductCardHTML(p) {
+    var isGreetingEditorEntry = !!p.greetingEditorEntry;
+    var cardPrice = catalogPrice(p);
+    var cardHref = productPath(p);
     var isHat = ((Array.isArray(p.categories) ? p.categories : [p.category]).indexOf('hats') !== -1);
     var badge = isHat
       ? (state.lang === 'he' ? '2 ב־239.90 ₪ | 3 ב־299.90 ₪' : '2 for ₪239.90 | 3 for ₪299.90')
@@ -769,26 +784,28 @@
           ? ' style="inset-inline-start:auto!important;inset-inline-end:auto!important;right:auto!important;left:10px!important;font-size:clamp(10px,2.6vw,13px)!important;line-height:1.2!important;padding:6px 8px!important;white-space:nowrap!important;"'
           : '') +
         '>' + esc(badge) + '</span>' : '') +
-      '<a class="prod__media prod__link" href="' + productPath(p) + '" aria-label="' + esc(L(p.title)) + '">' + mediaHTML(p) + '</a>' +
+      '<a class="prod__media prod__link" href="' + cardHref + '" aria-label="' + esc(L(p.title)) + '">' + mediaHTML(p) + '</a>' +
       '<div class="prod__body">' +
-        '<h3 class="prod__name"><a class="prod__titlelink" href="' + productPath(p) + '">' + esc(L(p.title)) + '</a></h3>' +
+        '<h3 class="prod__name"><a class="prod__titlelink" href="' + cardHref + '">' + esc(L(p.title)) + '</a></h3>' +
         (isGlasses ? '' : '<p class="prod__sub">' + esc(L(p.subtitle)) + '</p>') +
         productColorMetaHTML(p) +
-        '<p class="prod__price">' + (p.startingPrice ? (state.lang === 'he' ? 'החל מ־' : 'From ') : '') + money(p.price) +
+        '<p class="prod__price">' + (p.startingPrice ? (state.lang === 'he' ? 'החל מ־' : 'From ') : '') + money(cardPrice) +
         '</p>' +
         '<div class="prod__actions">' +
-          ((p.necklaces && p.necklaces.length && p.boxes && p.boxes.length)
-            ? '<a class="btn btn--primary" href="' + productPath(p) + '">' + esc(state.lang === 'he' ? 'לבחירת אפשרויות' : 'Choose options') + '</a>'
-            : (p.customName && p.customName.required
-              ? '<a class="btn btn--primary" href="' + productPath(p) + '">' + esc(state.lang === 'he' ? 'לעיצוב אישי' : 'Customize') + '</a>'
-              : ((p.sizes && p.sizes.length)
-                ? '<a class="btn btn--primary" href="' + productPath(p) + '">' + esc(state.lang === 'he' ? 'לבחירת אורך' : 'Choose length') + '</a>'
-                : ((p.colors && p.colors.length)
-                  ? '<a class="btn btn--primary" href="' + productPath(p) + '">' + esc(state.lang === 'he' ? 'לבחירת צבע' : 'Choose color') + '</a>'
-                  : (p.cardMode === 'view'
-                  ? '<a class="btn btn--primary" href="' + productPath(p) + '">' + esc(state.lang === 'he' ? 'לצפייה במוצר' : 'View product') + '</a>'
-                  : '<button class="btn btn--primary" data-add="' + esc(p.id) + '">' + esc(t('card.add')) + '</button>'))))) +
-          '<a class="btn btn--ghost" href="#" data-card-add="' + esc(p.id) + '">' + esc(state.lang === 'he' ? 'הוסף לסל' : 'Add to cart') + '</a>' +
+          (isGreetingEditorEntry
+            ? '<a class="btn btn--primary" href="' + cardHref + '">' + esc(state.lang === 'he' ? 'עיצוב ברכה אישית' : 'Design greeting') + '</a>'
+            : (((p.necklaces && p.necklaces.length && p.boxes && p.boxes.length)
+              ? '<a class="btn btn--primary" href="' + cardHref + '">' + esc(state.lang === 'he' ? 'לבחירת אפשרויות' : 'Choose options') + '</a>'
+              : (p.customName && p.customName.required
+                ? '<a class="btn btn--primary" href="' + cardHref + '">' + esc(state.lang === 'he' ? 'לעיצוב אישי' : 'Customize') + '</a>'
+                : ((p.sizes && p.sizes.length)
+                  ? '<a class="btn btn--primary" href="' + cardHref + '">' + esc(state.lang === 'he' ? 'לבחירת אורך' : 'Choose length') + '</a>'
+                  : ((p.colors && p.colors.length)
+                    ? '<a class="btn btn--primary" href="' + cardHref + '">' + esc(state.lang === 'he' ? 'לבחירת צבע' : 'Choose color') + '</a>'
+                    : (p.cardMode === 'view'
+                    ? '<a class="btn btn--primary" href="' + cardHref + '">' + esc(state.lang === 'he' ? 'לצפייה במוצר' : 'View product') + '</a>'
+                    : '<button class="btn btn--primary" data-add="' + esc(p.id) + '">' + esc(t('card.add')) + '</button>'))))) +
+              '<a class="btn btn--ghost" href="#" data-card-add="' + esc(p.id) + '">' + esc(state.lang === 'he' ? 'הוסף לסל' : 'Add to cart') + '</a>')) +
         '</div>' +
       '</div>' +
     '</article>';
@@ -1213,7 +1230,7 @@
       '<div class="pdp__body">' +
         '<h3 class="pdp__name" id="pdpName">' + esc(L(p.title)) + '</h3>' +
         '<p class="pdp__sub">' + esc(L(p.subtitle)) + '</p>' +
-        '<p class="pdp__price">' + money(p.price) + '</p>' +
+        '<p class="pdp__price">' + money(catalogPrice(p)) + '</p>' +
         '<div class="pdp__quote"><h4>' + esc(t('modal.message')) + '</h4><p>' + esc(L(p.cardMessage)) +
           '</p><p style="margin-top:.6rem;font-weight:700">' + esc(L(p.signature)) + '</p></div>' +
         '<ul class="pdp__list">' + details.map(function (d) {
@@ -1294,7 +1311,7 @@
       var extra = box ? Number(box.addPrice || 0) : 0;
       var sizeExtra = size ? Number(size.addPrice || 0) : 0;
       var packagingExtra = packaging ? Number(packaging.addPrice || 0) : 0;
-      var greetingExtra = (it.greeting && typeof it.greeting === 'object') ? 35 : 0;
+      var greetingExtra = greetingAddPrice(it.greeting);
       return {
         p: p,
         item: it,
@@ -1731,7 +1748,7 @@ function orderTotal() {
     var breakdown = savingsBreakdownHtml(summary);
     if (!breakdown) return '';
     return '<div class="cart-savings-resizable" data-cart-savings-resizable>' +
-      '<div class="cart-foot-resizer" data-cart-savings-resizer role="separator" aria-orientation="horizontal" aria-label="שינוי גובה פירוט החיסכון"><span class="cart-foot-resizer__icon" aria-hidden="true">↕</span></div>' +
+      '<div class="cart-foot-resizer" data-cart-savings-resizer role="separator" aria-orientation="horizontal" aria-label="שינוי גובה פירוט החיסכון"><span class="cart-foot-resizer__grip" aria-hidden="true"></span></div>' +
       '<div class="cart-savings-resizable__content" data-cart-savings-resizable-content>' + breakdown + '</div>' +
     '</div>';
   }
@@ -1770,7 +1787,7 @@ function orderTotal() {
       if (l.customName) { var customLabel = l.p.customName && L(l.p.customName.cartLabel); meta.push((customLabel || (state.lang === 'he' ? 'שם' : 'Name')) + ': ' + l.customName); }
       if (l.customPhoto) { var photoLabel = l.p.customPhoto && L(l.p.customPhoto.cartLabel); meta.push((photoLabel || (state.lang === 'he' ? 'תמונה אישית' : 'Custom photo')) + ' ✓'); }
       if (l.pendingRequirements && l.pendingRequirements.length) meta.push(state.lang === 'he' ? 'נדרשת השלמת פרטים לפני התשלום' : 'Details must be completed before checkout');
-      if (l.greeting) meta.push(state.lang === 'he' ? 'ברכה אישית (+35 ₪)' : 'Custom greeting (+₪35)');
+      if (l.greeting) { var greetingPrice = greetingAddPrice(l.greeting); meta.push(state.lang === 'he' ? 'ברכה אישית (+' + greetingPrice + ' ₪)' : 'Custom greeting (+₪' + greetingPrice + ')'); }
       return '<div class="line">' +
         '<div class="line__thumb">' + (img ? '<img src="' + esc(img) + '" alt="">' : '<span>' + esc(L(l.p.cardTitle)) + '</span>') + '</div>' +
         '<div class="line__main">' +
@@ -1813,7 +1830,7 @@ function orderTotal() {
       if (l.customName) { var customLabel = l.p.customName && L(l.p.customName.cartLabel); meta.push((customLabel || (state.lang === 'he' ? 'שם' : 'Name')) + ': ' + l.customName); }
       if (l.customPhoto) { var photoLabel = l.p.customPhoto && L(l.p.customPhoto.cartLabel); meta.push((photoLabel || (state.lang === 'he' ? 'תמונה אישית' : 'Custom photo')) + ' ✓'); }
       if (l.pendingRequirements && l.pendingRequirements.length) meta.push(state.lang === 'he' ? 'נדרשת השלמת פרטים לפני התשלום' : 'Details must be completed before checkout');
-      if (l.greeting) meta.push(state.lang === 'he' ? 'ברכה אישית (+35 ₪)' : 'Custom greeting (+₪35)');
+      if (l.greeting) { var greetingPrice = greetingAddPrice(l.greeting); meta.push(state.lang === 'he' ? 'ברכה אישית (+' + greetingPrice + ' ₪)' : 'Custom greeting (+₪' + greetingPrice + ')'); }
       var combinedTitle = L(l.p.title) + (l.packaging ? (state.lang === 'he' ? ' + מארז LOVE FOREVER' : ' + LOVE FOREVER packaging') : '');
       return '<div class="sum"><span>' + esc(combinedTitle + (meta.length ? ' - ' + meta.join(' · ') : '')) + ' × ' + l.qty + '</span><span>' + money(l.unitPrice * l.qty) + '</span></div>';
     }).join('') +

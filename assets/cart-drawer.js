@@ -29,6 +29,12 @@
     return CFG.currency && CFG.currency.code === 'ILS' ? text + ' ' + (CFG.currency.symbol || '₪') : (CFG.currency && CFG.currency.symbol || '₪') + text;
   }
 
+  function greetingAddPrice(greeting) {
+    if (!greeting || typeof greeting !== 'object') return 0;
+    var hasUpgrade = greeting.template !== 'template-1' || (greeting.template === 'template-1' && greeting.hasCustomBackground === true);
+    return 20 + (hasUpgrade ? 15 : 0);
+  }
+
   function productImage(line) {
     var p = line.p || {};
     var variantImg = p.variantImages && line.size && line.necklace ? p.variantImages[line.size.id + '|' + line.necklace.id] : '';
@@ -99,7 +105,7 @@
     var breakdown = savingsBreakdownHtml(summary);
     if (!breakdown) return '';
     return '<div class="cart-savings-resizable" data-cart-savings-resizable>' +
-      '<div class="cart-foot-resizer" data-cart-savings-resizer role="separator" aria-orientation="horizontal" aria-label="שינוי גובה פירוט החיסכון"><span class="cart-foot-resizer__icon" aria-hidden="true">↕</span></div>' +
+      '<div class="cart-foot-resizer" data-cart-savings-resizer role="separator" aria-orientation="horizontal" aria-label="שינוי גובה פירוט החיסכון"><span class="cart-foot-resizer__grip" aria-hidden="true"></span></div>' +
       '<div class="cart-savings-resizable__content" data-cart-savings-resizable-content>' + breakdown + '</div>' +
     '</div>';
   }
@@ -166,7 +172,7 @@
       if (line.customName) meta.push((lang === 'he' ? 'שם: ' : 'Name: ') + line.customName);
       if (line.customPhoto) meta.push(lang === 'he' ? 'תמונה אישית ✓' : 'Custom photo ✓');
       if (line.pendingRequirements && line.pendingRequirements.length) meta.push(lang === 'he' ? 'נדרשת השלמת פרטים לפני התשלום' : 'Details must be completed before checkout');
-      if (line.greeting) meta.push(lang === 'he' ? 'ברכה אישית (+35 ₪)' : 'Custom greeting (+₪35)');
+      if (line.greeting) { var greetingPrice = greetingAddPrice(line.greeting); meta.push(lang === 'he' ? 'ברכה אישית (+' + greetingPrice + ' ₪)' : 'Custom greeting (+₪' + greetingPrice + ')'); }
       var image = productImage(line);
       return '<div class="line">' +
         '<div class="line__thumb">' + (image ? '<img src="' + esc(image) + '" alt="">' : '<span>V</span>') + '</div>' +

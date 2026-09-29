@@ -8,6 +8,7 @@
   var GLASSES_PAIR_PRICE = 249.90;
   var HATS_PAIR_PRICE = 239.90;
   var HATS_TRIPLE_PRICE = 299.90;
+  var BUY2_GET1_CATEGORIES = ['greeting', 'necklaces', 'bracelets', 'rings', 'photo-bracelets', 'watches'];
 
   function toCents(value) {
     return Math.max(0, Math.round((Number(value) || 0) * 100));
@@ -23,6 +24,12 @@
     if (line.p && Array.isArray(line.p.categories) && line.p.categories.length) return line.p.categories;
     var category = line.category || (line.p && line.p.category);
     return category ? [category] : [];
+  }
+
+  function isBuy2Get1Eligible(categories) {
+    return (categories || []).some(function (category) {
+      return BUY2_GET1_CATEGORIES.indexOf(category) !== -1;
+    });
   }
 
   function linePrice(line) {
@@ -62,7 +69,8 @@
           bundleApplied: false,
           hatTripleApplied: false,
           isGlasses: !!line.isGlasses || categories.indexOf('glasses') !== -1,
-          isHats: !!line.isHats || categories.indexOf('hats') !== -1
+          isHats: !!line.isHats || categories.indexOf('hats') !== -1,
+          isBuy2Get1Eligible: isBuy2Get1Eligible(categories)
         });
       }
     });
@@ -142,12 +150,11 @@
     }
 
 
-    /* 2) Buy 2 + get 1 free. The cheapest regular-priced item in each eligible
-       group of three becomes free, while the amount removed is its effective price
-       after category bundle promotions. Hats already used in a 3-for-299.90 bundle
-       are excluded from this promotion so the same three hats never receive both deals. */
+    /* 2) Buy 2 + get 1 free applies only to jewelry categories:
+       greeting jewelry, necklaces, bracelets, rings, photo jewelry and watches.
+       Hats, glasses and every other category never count toward a 2+1 group. */
     var buy2Get1Indexes = units.map(function (_, index) { return index; }).filter(function (index) {
-      return !units[index].hatTripleApplied;
+      return units[index].isBuy2Get1Eligible;
     }).sort(function (a, b) {
       return units[b].priceCents - units[a].priceCents || a - b;
     });
@@ -173,7 +180,7 @@
     if (buy2Get1DiscountCents > 0) {
       discountRows.push({
         type: 'buy-2-get-1',
-        label: lang === 'he' ? 'מבצע 2+1' : 'Buy 2 get 1 free',
+        label: lang === 'he' ? 'מבצע 2+1 על תכשיטים' : 'Buy 2 get 1 free on jewelry',
         amount: fromCents(buy2Get1DiscountCents),
         count: buy2Get1Count,
         details: buy2Get1Details
@@ -216,6 +223,7 @@
     GLASSES_PAIR_PRICE: GLASSES_PAIR_PRICE,
     HATS_PAIR_PRICE: HATS_PAIR_PRICE,
     HATS_TRIPLE_PRICE: HATS_TRIPLE_PRICE,
+    BUY2_GET1_CATEGORIES: BUY2_GET1_CATEGORIES.slice(),
     calculate: calculate
   };
 });

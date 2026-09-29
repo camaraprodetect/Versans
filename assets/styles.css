@@ -4465,44 +4465,41 @@ body.site-overlay-open{overflow:hidden}
   align-items:center;
   justify-content:center;
   flex:0 0 auto;
-  width:68px;
-  height:25px;
-  margin:0 auto .2rem;
+  width:72px;
+  height:32px;
+  margin:-7px auto .12rem;
+  padding:0;
   border:0;
-  border-radius:12px;
-  background:#eff3f6;
-  color:#142333;
+  border-radius:999px;
+  background:transparent;
   cursor:ns-resize;
   touch-action:none;
+  -webkit-user-select:none;
   user-select:none;
+  -webkit-touch-callout:none;
   -webkit-user-select:none;
   position:relative;
   z-index:8;
 }
-.cart-foot-resizer::before{
-  content:"";
-  position:absolute;
-  top:3px;
-  width:40px;
+.cart-foot-resizer__grip{
+  pointer-events:none;
+  touch-action:none;
+  display:block;
+  width:34px;
   height:4px;
   border-radius:999px;
   background:#aab7c0;
+  transition:width .16s ease, background .16s ease, transform .16s ease;
 }
-.cart-foot-resizer__icon{
-  display:block;
-  margin-top:8px;
-  font-size:15px;
-  line-height:1;
-  font-weight:800;
-  transform:scaleX(1.15);
+.cart-foot-resizer:hover .cart-foot-resizer__grip{
+  width:40px;
+  background:#7f909c;
 }
-.cart-foot-resizer:hover{
-  background:#e4ebf0;
-  color:#0b1f30;
-}
-.cart-foot-resizer.is-dragging,
-.is-resizing-cart-foot .cart-foot-resizer{
-  color:#0b1f30;
+.cart-foot-resizer.is-dragging .cart-foot-resizer__grip,
+.is-resizing-cart-foot .cart-foot-resizer__grip{
+  width:42px;
+  background:#657884;
+  transform:scaleY(1.08);
 }
 .is-resizing-cart-foot,
 .is-resizing-cart-foot body,
@@ -4526,15 +4523,17 @@ body.site-overlay-open{overflow:hidden}
   .drawer__foot{max-height:76vh}
   .cart-savings-resizable__content{max-height:165px}
   .cart-foot-resizer{
-    width:62px;
-    height:24px;
-    margin-bottom:.15rem;
+    width:76px;
+    height:40px;
+    margin:-11px auto -2px;
   }
-  .cart-foot-resizer::before{
-    top:2px;
-    width:36px;
+  .cart-foot-resizer__grip{
+    width:30px;
+    height:4px;
   }
-  .cart-foot-resizer__icon{
-    margin-top:7px;
+  .cart-foot-resizer:hover .cart-foot-resizer__grip,
+  .cart-foot-resizer.is-dragging .cart-foot-resizer__grip,
+  .is-resizing-cart-foot .cart-foot-resizer__grip{
+    width:34px;
   }
 }

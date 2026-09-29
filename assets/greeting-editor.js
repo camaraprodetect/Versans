@@ -5,17 +5,31 @@
   var params=new URLSearchParams(window.location.search);
   var id=params.get('id');
   var product=(window.PRODUCTS||[]).find(function(p){return p.id===id||p.slug===id||p.urlSlug===id;});
-  if(!product||!/^product-[1-9]$/.test(String(product.slug||''))){window.location.href='/shop#shop';return;}
+  if(!product||(!/^product-[1-9]$/.test(String(product.slug||''))&&!product.greetingEditorEntry)){window.location.href='/shop#shop';return;}
 
   var lang='he';
   function L(v){return v?(v.he||''):'';}
-  function productPath(p){if(ROUTES&&ROUTES.productPath)return ROUTES.productPath(p);return p&&p.urlSlug?'/'+encodeURIComponent(p.urlSlug):'/';}
+  function greetingEntryTargetProduct(){
+    return (window.PRODUCTS||[]).find(function(p){
+      return p && (p.id==='mom-heart-01' || p.slug==='product-1');
+    }) || null;
+  }
+  function productPath(p){
+    if(p&&p.greetingEditorEntry){
+      /* The catalog item is only an entry point to the greeting editor.
+         After saving, continue on the existing Mom necklace product page. */
+      var target=greetingEntryTargetProduct();
+      if(target)return '/product.html?id=' + encodeURIComponent(target.slug || target.id) + '&greetingSaved=1';
+    }
+    if(ROUTES&&ROUTES.productPath)return ROUTES.productPath(p);
+    return p&&p.urlSlug?'/'+encodeURIComponent(p.urlSlug):'/';
+  }
   var UI={
     he:{
-      back:'‹ חזרה למוצר',topnote:'עיצוב ברכה אישית',langBtn:'English',introEyebrow:'ברכה אישית',introTitle:'הטקסט שלכם. העיצוב נשאר מדויק.',introText:'אפשר לערוך את הטקסט בכל תבנית. ב־Default אפשר גם לבחור צבע רקע, להעלות תמונת רקע לתוך המסגרת הפנימית עם חיתוך מותאם, לבחור גופן, צבע טקסט ואפקטים כמו Bold, צל וקונטור; בשאר התבניות העיצוב נשאר נעול כדי לשמור על תוצאה נקייה להדפסה.',preview:'תצוגה מקדימה',pngReady:'בשמירה נוצר קובץ PNG מוכן לייצור ונשמר אצלנו.',pngExists:'קיים PNG שמור עבור הברכה הזאת.',templateTitle:'תבנית',templateDesc:'בחרו את סגנון הכרטיס. בכל תבנית נפתחים רק השדות שבאמת קיימים בה.',more:'עוד תבניות',less:'הצג פחות תבניות',bgTitle:'צבע רקע',bgDesc:'זמין בתבנית Default בלבד.',chooseBg:'בחרו צבע רקע',reset:'איפוס',styleTitle:'סגנון טקסט',styleDesc:'זמין ב־Default בלבד. בחרו גופן, צבע ואפקטים שיעזרו לטקסט לבלוט.',font:'גופן',textColor:'צבע הטקסט',chooseTextColor:'בחרו צבע טקסט',eyebrowTitle:'שורה עליונה',eyebrowDesc:'מופיעה רק בתבניות שיש בהן אזור כזה.',eyebrowLabel:'לדוגמה: באהבה גדולה',titleTitle:'כותרת',titleDesc:'האזור העליון קבוע.',titleLabel:'מה יהיה רשום בכותרת?',subtitleTitle:'שורת משנה',subtitleDesc:'מופיעה רק בתבניות שיש בהן אזור נוסף מתחת לכותרת.',subtitleLabel:'לדוגמה: שלי',messageTitle:'הברכה',messageDesc:'אזור הברכה והמיקום שלו קבועים.',messageLabel:'הברכה שלכם',signatureTitle:'ממי הברכה',signatureDesc:'השורה התחתונה קבועה, ואפשר לכתוב רווחים כרגיל.',signatureLabel:'לדוגמה: אוהבת אחותך',save:'שמור ברכה וחזור למוצר',resetGreeting:'איפוס לברכה המקורית',required:'יש למלא כותרת, ברכה וממי הברכה לפני השמירה.',requiredEyebrow:'יש למלא גם את השורה העליונה בתבנית שבחרתם.',requiredSubtitle:'יש למלא גם את שורת המשנה בתבנית שבחרתם.',saving:'שומר ברכה ויוצר PNG…',creating:'יוצר קובץ PNG…',uploadOk:'הברכה נשמרה ונשלחה לייצור ✓',uploadFail:'לא הצלחנו לשמור את קובץ ה־PNG אצלנו. נסו שוב.',pngFail:'יצירת ה־PNG נכשלה',pngCreateError:'לא הצלחנו ליצור את קובץ ה־PNG. נסו שוב.',max:function(n){return 'מקסימום '+n+' תווים';},titlePlaceholder:'כותרת הברכה',messagePlaceholder:'כאן תופיע הברכה האישית שלכם.',signaturePlaceholder:'ממי הברכה',lockDefault:'ב־Default אפשר לבחור צבע או תמונת רקע, גופן, צבע ואפקטים לטקסט · המיקום והגדלים נשארים נעולים',lockOther:'המיקומים, הגופן והצבע קבועים בתבנית הזאת כדי לשמור על העיצוב',fontSample:'לאמא באהבה',bgImageLabel:'או העלו תמונה לרקע',bgImageChoose:'בחרו תמונה',bgImageRemove:'הסר תמונה',bgImageNote:'התמונה תופיע רק בתוך המסגרת הפנימית. אחרי בחירת הקובץ תוכלו להזיז ולקרב אותה לפני האישור.',bgImageReady:'תמונת הרקע מוכנה ✓',bgImageError:'לא הצלחנו לקרוא את התמונה. נסו קובץ אחר.',effects:'הבלטת טקסט',presetNone:'ללא',presetSoft:'צל עדין',presetStrong:'צל חזק',presetOutline:'קונטור',presetSticker:'בולט מאוד',boldLabel:'טקסט מודגש (Bold)',shadowStrength:'עוצמת צל',shadowColor:'צבע הצל',outlineWidth:'עובי קונטור',outlineColor:'צבע הקונטור',cropTitle:'התאמת תמונת רקע',cropDesc:'גררו את התמונה ובחרו את החיתוך שמתאים לכם. הריבוע הזה הוא האזור שיופיע בתוך המסגרת הפנימית.',cropZoom:'זום',cropCancel:'ביטול',cropApply:'אישור ושימוש בתמונה',cropTip:'טיפ: גררו את התמונה בתוך הריבוע עד שהיא נראית בדיוק כמו שאתם רוצים.'
+      back:'‹ חזרה למוצר',topnote:'עיצוב ברכה אישית',langBtn:'English',introEyebrow:'ברכה אישית',introTitle:'הטקסט שלכם. העיצוב נשאר מדויק.',introText:'אפשר לערוך את הטקסט בכל תבנית. ב־Default אפשר גם לבחור צבע רקע, להעלות תמונת רקע לתוך המסגרת הפנימית עם חיתוך מותאם, לבחור גופן, צבע טקסט ואפקטים כמו Bold, צל וקונטור; בשאר התבניות העיצוב נשאר נעול כדי לשמור על תוצאה נקייה להדפסה.',preview:'תצוגה מקדימה',pngReady:'בשמירה נוצר קובץ PNG מוכן לייצור ונשמר אצלנו.',pngExists:'קיים PNG שמור עבור הברכה הזאת.',templateTitle:'תבנית',templateDesc:'בחרו את סגנון הכרטיס שמתאים לברכה שלכם.',more:'עוד תבניות',less:'הצג פחות תבניות',bgTitle:'צבע רקע',bgDesc:'זמין בתבנית Default בלבד.',chooseBg:'בחרו צבע רקע',reset:'איפוס',styleTitle:'סגנון טקסט',styleDesc:'זמין ב־Default בלבד. בחרו גופן, צבע ואפקטים שיעזרו לטקסט לבלוט.',font:'גופן',textColor:'צבע הטקסט',chooseTextColor:'בחרו צבע טקסט',eyebrowTitle:'שורה עליונה',eyebrowDesc:'מופיעה רק בתבניות שיש בהן אזור כזה.',eyebrowLabel:'לדוגמה: באהבה גדולה',titleTitle:'כותרת',titleDesc:'האזור העליון קבוע.',titleLabel:'מה יהיה רשום בכותרת?',subtitleTitle:'שורת משנה',subtitleDesc:'מופיעה רק בתבניות שיש בהן אזור נוסף מתחת לכותרת.',subtitleLabel:'לדוגמה: שלי',messageTitle:'הברכה',messageDesc:'אזור הברכה והמיקום שלו קבועים.',messageLabel:'הברכה שלכם',signatureTitle:'ממי הברכה',signatureDesc:'השורה התחתונה קבועה, ואפשר לכתוב רווחים כרגיל.',signatureLabel:'לדוגמה: אוהבת אחותך',save:'שמור ברכה וחזור למוצר',resetGreeting:'איפוס לברכה המקורית',required:'יש למלא כותרת, ברכה וממי הברכה לפני השמירה.',requiredEyebrow:'יש למלא גם את השורה העליונה בתבנית שבחרתם.',requiredSubtitle:'יש למלא גם את שורת המשנה בתבנית שבחרתם.',saving:'שומר ברכה ויוצר PNG…',creating:'יוצר קובץ PNG…',uploadOk:'הברכה נשמרה ונשלחה לייצור ✓',uploadFail:'לא הצלחנו לשמור את קובץ ה־PNG אצלנו. נסו שוב.',pngFail:'יצירת ה־PNG נכשלה',pngCreateError:'לא הצלחנו ליצור את קובץ ה־PNG. נסו שוב.',max:function(n){return 'מקסימום '+n+' תווים';},titlePlaceholder:'כותרת הברכה',messagePlaceholder:'כאן תופיע הברכה האישית שלכם.',signaturePlaceholder:'ממי הברכה',lockDefault:'ב־Default אפשר לבחור צבע או תמונת רקע, גופן, צבע ואפקטים לטקסט · המיקום והגדלים נשארים נעולים',lockOther:'המיקומים, הגופן והצבע קבועים בתבנית הזאת כדי לשמור על העיצוב',fontSample:'לאמא באהבה',bgImageLabel:'או העלו תמונה לרקע',bgImageChoose:'בחרו תמונה',bgImageRemove:'הסר תמונה',bgImageNote:'התמונה תופיע רק בתוך המסגרת הפנימית ותוכלו להזיז ולקרב אותה לפני האישור.',bgImageReady:'תמונת הרקע מוכנה ✓',bgImageError:'לא הצלחנו לקרוא את התמונה. נסו קובץ אחר.',effects:'הבלטת טקסט',presetNone:'ללא',presetSoft:'צל עדין',presetStrong:'צל חזק',presetOutline:'קונטור',presetSticker:'בולט מאוד',boldLabel:'טקסט מודגש (Bold)',shadowStrength:'עוצמת צל',shadowColor:'צבע הצל',outlineWidth:'עובי קונטור',outlineColor:'צבע הקונטור',cropTitle:'התאמת תמונת רקע',cropDesc:'גררו את התמונה ובחרו את החיתוך שמתאים לכם. הריבוע הזה הוא האזור שיופיע בתוך המסגרת הפנימית.',cropZoom:'זום',cropCancel:'ביטול',cropApply:'אישור ושימוש בתמונה',cropTip:'טיפ: גררו את התמונה בתוך הריבוע עד שהיא נראית בדיוק כמו שאתם רוצים.'
     },
     en:{
-      back:'‹ Back to product',topnote:'Personal greeting design',langBtn:'עברית',introEyebrow:'Personal greeting',introTitle:'Your words. A polished design.',introText:'Edit the wording on any template. In Default you can also choose a background colour, upload a background image inside the inner frame with a custom crop, and control the font, text colour and emphasis effects like bold, shadow and outline; the other templates keep their design locked for a clean print-ready result.',preview:'Preview',pngReady:'When you save, a production-ready PNG is created and stored with us.',pngExists:'A PNG is already saved for this greeting.',templateTitle:'Template',templateDesc:'Choose a card style. Each template only shows the fields that belong to that design.',more:'More templates',less:'Show fewer templates',bgTitle:'Background colour',bgDesc:'Available in Default only.',chooseBg:'Choose background colour',reset:'Reset',styleTitle:'Text style',styleDesc:'Available in Default only. Choose a font, colour and emphasis effects that help the text stand out.',font:'Font',textColor:'Text colour',chooseTextColor:'Choose text colour',eyebrowTitle:'Top line',eyebrowDesc:'Shown only on templates that include this area.',eyebrowLabel:'Example: With lots of love',titleTitle:'Title',titleDesc:'The top area stays fixed.',titleLabel:'What should the title say?',subtitleTitle:'Subtitle',subtitleDesc:'Shown only on templates with an extra line under the title.',subtitleLabel:'Example: My',messageTitle:'Message',messageDesc:'The message area and its position are fixed.',messageLabel:'Your message',signatureTitle:'From',signatureDesc:'The bottom line stays fixed; spaces are allowed.',signatureLabel:'Example: With love, your son',save:'Save greeting and return to product',resetGreeting:'Reset to original greeting',required:'Please fill in the title, message and signature before saving.',requiredEyebrow:'Please fill in the top line for this template.',requiredSubtitle:'Please fill in the subtitle for this template.',saving:'Saving greeting and creating PNG…',creating:'Creating PNG…',uploadOk:'Your greeting was saved for production ✓',uploadFail:'We could not store the PNG. Please try again.',pngFail:'PNG creation failed',pngCreateError:'We could not create the PNG. Please try again.',max:function(n){return 'Maximum '+n+' characters';},titlePlaceholder:'Greeting title',messagePlaceholder:'Your personal message will appear here.',signaturePlaceholder:'From',lockDefault:'In Default you can choose a background colour or image, font, text colour and emphasis effects · positions and sizes stay locked',lockOther:'Positions, font and colour are locked in this template to preserve the design',fontSample:'For Mom with love',bgImageLabel:'Or upload a background image',bgImageChoose:'Choose image',bgImageRemove:'Remove image',bgImageNote:'The image appears only inside the inner frame. After choosing a file you can move and zoom it before applying.',bgImageReady:'Background image ready ✓',bgImageError:'We could not read that image. Please try another file.',effects:'Text emphasis',presetNone:'None',presetSoft:'Soft shadow',presetStrong:'Strong shadow',presetOutline:'Outline',presetSticker:'High contrast',boldLabel:'Bold text',shadowStrength:'Shadow strength',shadowColor:'Shadow colour',outlineWidth:'Outline width',outlineColor:'Outline colour',cropTitle:'Adjust background image',cropDesc:'Drag the image and choose the crop you want. This square is the area that will appear inside the inner frame.',cropZoom:'Zoom',cropCancel:'Cancel',cropApply:'Use this image',cropTip:'Tip: drag the image inside the square until it looks exactly the way you want.'
+      back:'‹ Back to product',topnote:'Personal greeting design',langBtn:'עברית',introEyebrow:'Personal greeting',introTitle:'Your words. A polished design.',introText:'Edit the wording on any template. In Default you can also choose a background colour, upload a background image inside the inner frame with a custom crop, and control the font, text colour and emphasis effects like bold, shadow and outline; the other templates keep their design locked for a clean print-ready result.',preview:'Preview',pngReady:'When you save, a production-ready PNG is created and stored with us.',pngExists:'A PNG is already saved for this greeting.',templateTitle:'Template',templateDesc:'Choose the card style that fits your greeting.',more:'More templates',less:'Show fewer templates',bgTitle:'Background colour',bgDesc:'Available in Default only.',chooseBg:'Choose background colour',reset:'Reset',styleTitle:'Text style',styleDesc:'Available in Default only. Choose a font, colour and emphasis effects that help the text stand out.',font:'Font',textColor:'Text colour',chooseTextColor:'Choose text colour',eyebrowTitle:'Top line',eyebrowDesc:'Shown only on templates that include this area.',eyebrowLabel:'Example: With lots of love',titleTitle:'Title',titleDesc:'The top area stays fixed.',titleLabel:'What should the title say?',subtitleTitle:'Subtitle',subtitleDesc:'Shown only on templates with an extra line under the title.',subtitleLabel:'Example: My',messageTitle:'Message',messageDesc:'The message area and its position are fixed.',messageLabel:'Your message',signatureTitle:'From',signatureDesc:'The bottom line stays fixed; spaces are allowed.',signatureLabel:'Example: With love, your son',save:'Save greeting and return to product',resetGreeting:'Reset to original greeting',required:'Please fill in the title, message and signature before saving.',requiredEyebrow:'Please fill in the top line for this template.',requiredSubtitle:'Please fill in the subtitle for this template.',saving:'Saving greeting and creating PNG…',creating:'Creating PNG…',uploadOk:'Your greeting was saved for production ✓',uploadFail:'We could not store the PNG. Please try again.',pngFail:'PNG creation failed',pngCreateError:'We could not create the PNG. Please try again.',max:function(n){return 'Maximum '+n+' characters';},titlePlaceholder:'Greeting title',messagePlaceholder:'Your personal message will appear here.',signaturePlaceholder:'From',lockDefault:'In Default you can choose a background colour or image, font, text colour and emphasis effects · positions and sizes stay locked',lockOther:'Positions, font and colour are locked in this template to preserve the design',fontSample:'For Mom with love',bgImageLabel:'Or upload a background image',bgImageChoose:'Choose image',bgImageRemove:'Remove image',bgImageNote:'The image appears only inside the inner frame and can be moved and zoomed before applying.',bgImageReady:'Background image ready ✓',bgImageError:'We could not read that image. Please try another file.',effects:'Text emphasis',presetNone:'None',presetSoft:'Soft shadow',presetStrong:'Strong shadow',presetOutline:'Outline',presetSticker:'High contrast',boldLabel:'Bold text',shadowStrength:'Shadow strength',shadowColor:'Shadow colour',outlineWidth:'Outline width',outlineColor:'Outline colour',cropTitle:'Adjust background image',cropDesc:'Drag the image and choose the crop you want. This square is the area that will appear inside the inner frame.',cropZoom:'Zoom',cropCancel:'Cancel',cropApply:'Use this image',cropTip:'Tip: drag the image inside the square until it looks exactly the way you want.'
     }
   };
   function tr(key){var d=UI[lang]||UI.he;var v=d[key];return typeof v==='function'?v.apply(null,Array.prototype.slice.call(arguments,1)):v;}
@@ -23,8 +37,22 @@
   function $$(s){return Array.prototype.slice.call(document.querySelectorAll(s));}
   function storageKey(){return 'kw_greeting_'+product.id;}
   function greetingOptInKey(){return 'kw_greeting_optin_'+product.id;}
+  function greetingPriceApprovalKey(){return 'kw_greeting_price_approval_'+product.id;}
   function hasGreetingOptIn(){try{return localStorage.getItem(greetingOptInKey())==='1';}catch(e){return false;}}
-  function saveGreetingOptIn(){try{localStorage.setItem(greetingOptInKey(),'1');}catch(e){}}
+  function approvedGreetingPrice(){
+    try{
+      var saved=parseInt(localStorage.getItem(greetingPriceApprovalKey()),10);
+      if(Number.isFinite(saved)&&saved>0)return saved;
+      return hasGreetingOptIn()?35:0;
+    }catch(e){return hasGreetingOptIn()?35:0;}
+  }
+  function saveGreetingOptIn(price){
+    try{
+      localStorage.setItem(greetingOptInKey(),'1');
+      var current=approvedGreetingPrice();
+      localStorage.setItem(greetingPriceApprovalKey(),String(Math.max(current,parseInt(price,10)||0)));
+    }catch(e){}
+  }
 
   var TEMPLATES={
     'template-1':{title:'Template 1',titleMax:15,messageMax:170,messageCharsPerLine:34,signatureMax:30,eyebrow:false,subtitle:false,featured:true},
@@ -181,9 +209,19 @@
     try{return normalizeSaved(JSON.parse(localStorage.getItem(storageKey())||'null'));}catch(e){return null;}
   }
 
-  var state=readSaved()||defaults('template-1');
+  var freshGreetingEntry=!!(product.greetingEditorEntry&&params.get('entry')==='1');
+  if(freshGreetingEntry){
+    try{localStorage.removeItem(storageKey());localStorage.removeItem(greetingOptInKey());localStorage.removeItem(greetingPriceApprovalKey());}catch(e){}
+  }
+  var state=freshGreetingEntry?defaults('template-1'):(readSaved()||defaults('template-1'));
   var title=$('#titleInput'),message=$('#messageInput'),signature=$('#signatureInput');
   var eyebrow=$('#eyebrowInput'),subtitle=$('#subtitleInput');
+  var greetingLibrary=window.VERSANS_GREETING_LIBRARY||null;
+  var greetingGenerator=$('#greetingGenerator');
+  var greetingRecipient=$('#greetingRecipient');
+  var generateGreetingBtn=$('#generateGreeting');
+  var greetingGeneratorStatus=$('#greetingGeneratorStatus');
+  var lastGeneratedByRecipient={};
   var previewTitle=$('#previewTitle'),previewMessage=$('#previewMessage'),previewSignature=$('#previewSignature');
   var previewEyebrow=$('#previewEyebrow'),previewSubtitle=$('#previewSubtitle');
   var card=$('#cardPreview');
@@ -229,6 +267,43 @@
   var priceConfirmResolver=null;
   var priceConfirmLastFocus=null;
 
+  function greetingAddPrice(value){
+    if(!value||typeof value!=='object')return 0;
+    var template=value.template||'template-1';
+    var hasUpgrade=template!=='template-1'||(template==='template-1'&&value.hasCustomBackground===true);
+    return 20+(hasUpgrade?15:0);
+  }
+  function updateGreetingPriceConfirm(value){
+    if(!priceConfirmModal)return;
+    var price=greetingAddPrice(value);
+    var textEl=$('#greetingPriceConfirmText');
+    var priceEl=priceConfirmModal.querySelector('.ge-price-confirm__price');
+    if(textEl){
+      if(lang==='he'){
+        if(product.greetingEditorEntry){
+          if(price===20)textEl.textContent='מחיר עיצוב הברכה הוא 20 ₪.';
+          else if(value&&value.template!=='template-1')textEl.textContent='עיצוב ברכה אישית 20 ₪ + תבנית מעוצבת 15 ₪. סה״כ 35 ₪.';
+          else textEl.textContent='עיצוב ברכה אישית 20 ₪ + תמונה אישית ב-Default 15 ₪. סה״כ 35 ₪.';
+        }else{
+          if(price===20)textEl.textContent='עיצוב הברכה האישית יתווסף למוצר בתוספת של 20 ₪.';
+          else if(value&&value.template!=='template-1')textEl.textContent='עיצוב ברכה אישית 20 ₪ + תבנית מעוצבת 15 ₪. סה״כ תוספת 35 ₪.';
+          else textEl.textContent='עיצוב ברכה אישית 20 ₪ + תמונה אישית ב-Default 15 ₪. סה״כ תוספת 35 ₪.';
+        }
+      }else{
+        if(product.greetingEditorEntry){
+          if(price===20)textEl.textContent='Custom greeting design price: ₪20.';
+          else if(value&&value.template!=='template-1')textEl.textContent='Custom greeting ₪20 + premium template ₪15. Total: ₪35.';
+          else textEl.textContent='Custom greeting ₪20 + image in Default ₪15. Total: ₪35.';
+        }else{
+          if(price===20)textEl.textContent='Custom greeting design adds ₪20 to this item.';
+          else if(value&&value.template!=='template-1')textEl.textContent='Custom greeting ₪20 + premium template ₪15. Total add-on: ₪35.';
+          else textEl.textContent='Custom greeting ₪20 + image in Default ₪15. Total add-on: ₪35.';
+        }
+      }
+    }
+    if(priceEl)priceEl.textContent=product.greetingEditorEntry?(lang==='he'?(price+' ₪'):('₪'+price)):(lang==='he'?('+'+price+' ₪'):('+₪'+price));
+  }
+
   function closeGreetingPriceConfirm(approved){
     if(!priceConfirmModal||priceConfirmModal.hidden)return;
     priceConfirmModal.hidden=true;document.body.classList.remove('ge-price-confirm-open');
@@ -236,9 +311,11 @@
     if(priceConfirmLastFocus&&priceConfirmLastFocus.focus){try{priceConfirmLastFocus.focus();}catch(e){}}
     if(resolve)resolve(!!approved);
   }
-  function confirmGreetingPrice(){
-    if(hasGreetingOptIn())return Promise.resolve(true);
+  function confirmGreetingPrice(value){
+    var price=greetingAddPrice(value);
+    if(approvedGreetingPrice()>=price)return Promise.resolve(true);
     if(!priceConfirmModal)return Promise.resolve(false);
+    updateGreetingPriceConfirm(value);
     priceConfirmLastFocus=document.activeElement;priceConfirmModal.hidden=false;document.body.classList.add('ge-price-confirm-open');
     return new Promise(function(resolve){priceConfirmResolver=resolve;setTimeout(function(){try{priceConfirmApprove.focus();}catch(e){}},10);});
   }
@@ -321,6 +398,55 @@
     var FONT_NAMES_HE={'noto-serif':'קלאסי','frank-ruhl':'אלגנטי','david':'דוד','heebo':'מודרני','assistant':'נקי','rubik':'רוביק','alef':'אלף','varela':'רך','miriam':'מרים','secular':'בולט'};
     $$('.ge-font-option').forEach(function(btn){var strong=btn.querySelector('strong'),sample=btn.querySelector('span');if(strong)strong.textContent=FONT_NAMES_HE[btn.getAttribute('data-font')]||btn.getAttribute('data-font');if(sample)sample.textContent=tr('fontSample');});
     updateFieldLimits();syncExtraTemplates();render();
+  }
+
+  function initGreetingGenerator(){
+    if(!greetingGenerator||!greetingRecipient||!generateGreetingBtn||!greetingLibrary||!Array.isArray(greetingLibrary.recipients)){
+      if(greetingGenerator)greetingGenerator.hidden=true;
+      return;
+    }
+    var sections={};
+    greetingLibrary.recipients.forEach(function(recipient){
+      var section=recipient.section||'נוספים';
+      if(!sections[section]){
+        var group=document.createElement('optgroup');
+        group.label=section;
+        sections[section]=group;
+        greetingRecipient.appendChild(group);
+      }
+      var option=document.createElement('option');
+      option.value=recipient.id;
+      option.textContent=recipient.label;
+      sections[section].appendChild(option);
+    });
+    var count=$('#greetingLibraryCount');
+    if(count&&greetingLibrary.totalCount)count.textContent=greetingLibrary.totalCount+' ברכות';
+  }
+
+  function generateGreetingFromLibrary(){
+    if(!greetingLibrary||!greetingRecipient||!generateGreetingBtn)return;
+    var recipientId=String(greetingRecipient.value||'');
+    if(!recipientId){
+      if(greetingGeneratorStatus){greetingGeneratorStatus.textContent='בחרו קודם למי הברכה מיועדת.';greetingGeneratorStatus.className='is-error';}
+      greetingRecipient.focus();
+      return;
+    }
+    var result=greetingLibrary.randomFor(recipientId,lastGeneratedByRecipient[recipientId]||'');
+    if(!result||!result.message)return;
+    lastGeneratedByRecipient[recipientId]=result.message;
+    var t=templateDef(state.template);
+    message.value=liveText(result.message,t.messageMax);
+    state.message=message.value;
+    render();
+    generateGreetingBtn.textContent='צור לי ברכה אחרת';
+    if(greetingGeneratorStatus){
+      greetingGeneratorStatus.textContent='הברכה נכנסה לעורך. אפשר לשנות כל מילה לפני השמירה.';
+      greetingGeneratorStatus.className='is-ok';
+    }
+    message.classList.remove('is-generated');
+    void message.offsetWidth;
+    message.classList.add('is-generated');
+    window.setTimeout(function(){message.classList.remove('is-generated');},700);
   }
 
   function syncExtraTemplates(){
@@ -602,11 +728,53 @@ function paymentSyncMessage(){
 }
 
   function saveTextValue(value){try{localStorage.setItem(storageKey(),JSON.stringify(value));}catch(e){}}
+  async function mirrorGreetingEntryToTarget(value,pngBlob,meta,price){
+    if(!product.greetingEditorEntry)return;
+    var target=greetingEntryTargetProduct();
+    if(!target)return;
+
+    /* Store the exact saved greeting under the real product so its normal
+       product page immediately loads the customer's design. */
+    try{
+      localStorage.setItem('kw_greeting_'+target.id,JSON.stringify(value));
+      localStorage.setItem('kw_greeting_optin_'+target.id,'1');
+      localStorage.setItem('kw_greeting_price_approval_'+target.id,String(parseInt(price,10)||20));
+    }catch(e){}
+
+    try{
+      var backgroundBlob=value&&value.hasCustomBackground?await loadBackgroundLocally():null;
+      var db=await openAssetDb();
+      await new Promise(function(resolve,reject){
+        var tx=db.transaction(['pngs','backgrounds'],'readwrite');
+        tx.objectStore('pngs').put({
+          productId:target.id,
+          assetId:meta.assetId,
+          fileName:meta.fileName,
+          blob:pngBlob,
+          savedAt:Date.now()
+        });
+        if(backgroundBlob){
+          tx.objectStore('backgrounds').put({productId:target.id,blob:backgroundBlob,savedAt:Date.now()});
+        }else{
+          tx.objectStore('backgrounds').delete(target.id);
+        }
+        tx.oncomplete=resolve;
+        tx.onerror=function(){reject(tx.error||new Error('Greeting mirror failed'));};
+      });
+      db.close();
+    }catch(e){}
+  }
 
   apply(state);
   $('#brandName').textContent=L(CFG.brand&&CFG.brand.name)||'VerSans';
-  $('#backLink').href=productPath(product);
+  $('#backLink').href=(product.greetingEditorEntry&&freshGreetingEntry)?'/message-jewelry#shop':productPath(product);
   applyUiLanguage();
+  initGreetingGenerator();
+  if(generateGreetingBtn)generateGreetingBtn.addEventListener('click',generateGreetingFromLibrary);
+  if(greetingRecipient)greetingRecipient.addEventListener('change',function(){
+    if(generateGreetingBtn)generateGreetingBtn.textContent='צור לי ברכה';
+    if(greetingGeneratorStatus){greetingGeneratorStatus.textContent='';greetingGeneratorStatus.className='';}
+  });
   loadLocalPng().then(function(row){if(row&&state.assetId&&row.assetId===state.assetId){pngStatus.textContent=paymentSyncMessage();pngStatus.className='ge-png-status is-ok';}});
   if(state.hasCustomBackground){loadBackgroundLocally().then(function(blob){if(blob){setBackgroundObjectUrl(blob);if(backgroundImageStatus){backgroundImageStatus.textContent=tr('bgImageReady');backgroundImageStatus.className='ge-bg-upload-status is-ok';}}else{state.hasCustomBackground=false;render();}});}
 
@@ -695,7 +863,7 @@ function paymentSyncMessage(){
     if(t.eyebrow&&!value.eyebrow){err.hidden=false;err.textContent=tr('requiredEyebrow');return;}
     if(t.subtitle&&!value.subtitle){err.hidden=false;err.textContent=tr('requiredSubtitle');return;}
 
-    var priceAccepted=await confirmGreetingPrice();
+    var priceAccepted=await confirmGreetingPrice(value);
     if(!priceAccepted)return;
 
     err.hidden=true;
@@ -709,7 +877,9 @@ function paymentSyncMessage(){
       try{
         await uploadPng(blob,{assetId:assetId,fileName:fileName},value);
         saveTextValue(value);
-        saveGreetingOptIn();
+        var approvedPrice=greetingAddPrice(value);
+        saveGreetingOptIn(approvedPrice);
+        await mirrorGreetingEntryToTarget(value,blob,{assetId:assetId,fileName:fileName},approvedPrice);
         pngStatus.textContent=paymentSyncMessage();pngStatus.className='ge-png-status is-ok';
         setTimeout(function(){window.location.href=productPath(product);},350);
       }catch(uploadErr){

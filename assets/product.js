@@ -22,7 +22,8 @@
   var customPhotoUploading = false;
   var customPhotoPreviewUrl = '';
   var activeImageIndex = 0;
-  var CUSTOM_GREETING_ADD_PRICE = 35;
+  var CUSTOM_GREETING_BASE_PRICE = 20;
+  var CUSTOM_GREETING_UPGRADE_PRICE = 15;
   var greetingPreviewObjectUrl = '';
 
   var params = new URLSearchParams(window.location.search);
@@ -95,7 +96,7 @@
       offers: {
         '@type': 'Offer', url: canonicalUrl,
         priceCurrency: (CFG.currency && CFG.currency.code) || 'ILS',
-        price: Number(product.price || 0).toFixed(2),
+        price: Number(product.catalogPrice != null ? product.catalogPrice : (product.price || 0)).toFixed(2),
         availability: 'https://schema.org/InStock'
       }
     });
@@ -317,6 +318,11 @@
   function hasCustomName() { return !!(product.customName && product.customName.required); }
   function hasCustomPhoto() { return !!(product.customPhoto && product.customPhoto.required); }
   function customPhotoReady() { return !hasCustomPhoto() || (!!customPhotoValue && !!customPhotoValue.assetId && !customPhotoUploading); }
+  function greetingAddPrice(greeting) {
+    if (!greeting || typeof greeting !== 'object') return 0;
+    var hasUpgrade = greeting.template !== 'template-1' || (greeting.template === 'template-1' && greeting.hasCustomBackground === true);
+    return CUSTOM_GREETING_BASE_PRICE + (hasUpgrade ? CUSTOM_GREETING_UPGRADE_PRICE : 0);
+  }
   function customNameMax() { return Math.max(1, Number(product.customName && product.customName.maxLength) || 20); }
   function cleanCustomName(value) {
     var raw = String(value == null ? '' : value);
@@ -345,7 +351,7 @@
     if (size) total += Number(size.addPrice || 0);
     if (color) total += Number(color.addPrice || 0);
     if (packaging) total += Number(packaging.addPrice || 0);
-    if (item.greeting) total += CUSTOM_GREETING_ADD_PRICE;
+    if (item.greeting) total += greetingAddPrice(item.greeting);
     return total;
   }
   function unitPrice() {
@@ -354,7 +360,7 @@
     var size = selectedSize();
     var color = selectedColor();
     var packaging = selectedPackaging();
-    var greetingExtra = savedGreeting() ? CUSTOM_GREETING_ADD_PRICE : 0;
+    var greetingExtra = greetingAddPrice(savedGreeting());
     return Number(product.price) + (box ? Number(box.addPrice || 0) : 0) + (size ? Number(size.addPrice || 0) : 0) + (color ? Number(color.addPrice || 0) : 0) + (packaging ? Number(packaging.addPrice || 0) : 0) + greetingExtra;
   }
   function variantKey() {
@@ -412,7 +418,7 @@
     var textColor = /^#[0-9a-fA-F]{6}$/.test(String(value.textColor || '')) ? String(value.textColor).toLowerCase() : '#111111';
     var allowedFonts = {'noto-serif':1,'frank-ruhl':1,'david':1,'heebo':1,'assistant':1,'rubik':1,'alef':1,'varela':1,'miriam':1,'secular':1};
     var fontKey = allowedFonts[value.fontKey] ? value.fontKey : 'noto-serif';
-    return { template: template, title: title, message: message, signature: signature, eyebrow: '', subtitle: '', backgroundColor: backgroundColor, textColor: textColor, fontKey: fontKey, assetId: String(value.assetId || '').slice(0,80), pngUrl: String(value.pngUrl || '').slice(0,600), pngFileName: String(value.pngFileName || '').slice(0,120) };
+    return { template: template, title: title, message: message, signature: signature, eyebrow: '', subtitle: '', backgroundColor: backgroundColor, textColor: textColor, fontKey: fontKey, hasCustomBackground: template === 'template-1' && value.hasCustomBackground === true, assetId: String(value.assetId || '').slice(0,80), pngUrl: String(value.pngUrl || '').slice(0,600), pngFileName: String(value.pngFileName || '').slice(0,120) };
   }
   function savedGreeting() {
     if (!supportsCustomGreeting() || !hasGreetingOptIn()) return null;
@@ -420,7 +426,7 @@
   }
   function greetingFingerprint(greeting) {
     if (!greeting) return '';
-    var value = [greeting.template, greeting.backgroundColor || '', greeting.textColor || '', greeting.fontKey || '', greeting.eyebrow || '', greeting.title, greeting.subtitle || '', greeting.message, greeting.signature, greeting.assetId || ''].join('\u241f');
+    var value = [greeting.template, greeting.backgroundColor || '', greeting.textColor || '', greeting.fontKey || '', greeting.hasCustomBackground ? 'custom-bg' : '', greeting.eyebrow || '', greeting.title, greeting.subtitle || '', greeting.message, greeting.signature, greeting.assetId || ''].join('\u241f');
     var hash = 2166136261;
     for (var i = 0; i < value.length; i++) {
       hash ^= value.charCodeAt(i);
@@ -487,7 +493,7 @@
     img.alt = lang === 'he' ? 'תצוגה של הברכה האישית שנשמרה' : 'Preview of your saved custom greeting';
   }
   async function removeCustomGreeting() {
-    try { localStorage.removeItem(greetingStorageKey()); localStorage.removeItem(greetingOptInKey()); } catch (e) {}
+    try { localStorage.removeItem(greetingStorageKey()); localStorage.removeItem(greetingOptInKey()); localStorage.removeItem('kw_greeting_price_approval_' + product.id); } catch (e) {}
     await deleteGreetingAsset();
     renderProduct();
     updatePriceAndPurchase();
@@ -1440,7 +1446,7 @@ async function uploadProductPhoto(blob, meta) {
            selected LOVE FOREVER package, so show only the necklace surcharge. */
         if (product.startingPrice || (hasBoxOptions() && !box)) {
           var pickerBasePrice = hasBoxOptions() && !box
-            ? Number(product.price) + (savedGreeting() ? CUSTOM_GREETING_ADD_PRICE : 0)
+            ? Number(product.price) + greetingAddPrice(savedGreeting())
             : currentUnitPrice;
           price.textContent = '+' + (lang === 'he' ? 'החל מ־' : 'From ') + money(pickerBasePrice);
         } else {
@@ -1449,7 +1455,7 @@ async function uploadProductPhoto(blob, meta) {
       } else if (product.startingPrice && !(requiresCompanion() && companionReady())) {
         price.textContent = (lang === 'he' ? 'החל מ־' : 'From ') + money(currentUnitPrice);
       } else if (hasBoxOptions() && !box) {
-        price.textContent = (lang === 'he' ? 'החל מ־' : 'From ') + money(Number(product.price) + (savedGreeting() ? CUSTOM_GREETING_ADD_PRICE : 0));
+        price.textContent = (lang === 'he' ? 'החל מ־' : 'From ') + money(Number(product.price) + greetingAddPrice(savedGreeting()));
       } else if (isGlassesProduct(product)) {
         price.textContent = glassesPriceDisplay(currentUnitPrice, qty);
       } else if (isHatsProduct(product)) {
@@ -1488,7 +1494,7 @@ async function uploadProductPhoto(blob, meta) {
         var packaging = selectedPackaging();
         var selectedSizeOption = selectedSize();
         var selectedColorOption = selectedColor();
-        var comparePrice = Number(product.compareAt) + (box ? Number(box.addPrice || 0) : 0) + (selectedSizeOption ? Number(selectedSizeOption.addPrice || 0) : 0) + (selectedColorOption ? Number(selectedColorOption.addPrice || 0) : 0) + (packaging ? Number(packaging.addPrice || 0) : 0) + (savedGreeting() ? CUSTOM_GREETING_ADD_PRICE : 0);
+        var comparePrice = Number(product.compareAt) + (box ? Number(box.addPrice || 0) : 0) + (selectedSizeOption ? Number(selectedSizeOption.addPrice || 0) : 0) + (selectedColorOption ? Number(selectedColorOption.addPrice || 0) : 0) + (packaging ? Number(packaging.addPrice || 0) : 0) + greetingAddPrice(savedGreeting());
         compare.textContent = money(comparePrice);
 
         var discountPercent = Math.max(0, Math.round((1 - (Number(product.price) / Number(product.compareAt))) * 100));
@@ -1852,15 +1858,23 @@ async function uploadProductPhoto(blob, meta) {
           : (lang === 'he' ? 'עיצוב ברכה אישית' : 'Design a custom greeting');
         $('#greetingCustomizerEyebrow').textContent = lang === 'he' ? 'ברכה אישית' : 'Custom greeting';
         $('#greetingCustomizerTitle').textContent = lang === 'he' ? 'רוצים לכתוב את המילים שלכם?' : 'Want to use your own words?';
+        var greetingPrice = greetingAddPrice(greeting);
         $('#greetingCustomizerStatus').textContent = greeting
-          ? (lang === 'he' ? 'הברכה האישית נשמרה ונוספה להזמנה בתוספת 35 ₪ ✓' : 'Your custom greeting is saved and adds ₪35 to this item ✓')
-          : (lang === 'he' ? 'הברכה המקורית כלולה במחיר. אפשר ליצור ברכה אישית בעיצוב משלכם.' : 'The original greeting is included. You can create your own custom greeting.');
+          ? (product.greetingEditorEntry
+            ? (lang === 'he' ? 'הברכה האישית נשמרה ✓' : 'Your custom greeting is saved ✓')
+            : (lang === 'he' ? 'הברכה האישית נשמרה ונוספה להזמנה בתוספת ' + greetingPrice + ' ₪ ✓' : 'Your custom greeting is saved and adds ₪' + greetingPrice + ' to this item ✓'))
+          : (lang === 'he' ? 'עצבו ברכה אישית בדיוק כמו שאתם רוצים.' : 'Design a personal greeting exactly the way you want.');
         var removeBtn = $('#greetingRemoveBtn');
         if (removeBtn) { removeBtn.hidden = !greeting; removeBtn.textContent = lang === 'he' ? 'חזרה לברכה המקורית' : 'Use original greeting'; }
       }
       var previewEyebrow = $('#greetingPreviewEyebrow'); if (previewEyebrow) previewEyebrow.textContent = lang === 'he' ? 'העיצוב שבחרתם' : 'Your selected design';
       var previewTitle = $('#greetingPreviewTitle'); if (previewTitle) previewTitle.textContent = lang === 'he' ? 'הברכה האישית שלכם' : 'Your custom greeting';
-      var previewPrice = $('#greetingPreviewPrice'); if (previewPrice) previewPrice.textContent = lang === 'he' ? '+35 ₪' : '+₪35';
+      var previewPrice = $('#greetingPreviewPrice'); if (previewPrice) {
+        var previewGreetingPrice = greetingAddPrice(greeting);
+        previewPrice.textContent = product.greetingEditorEntry
+          ? (lang === 'he' ? money(previewGreetingPrice) : money(previewGreetingPrice))
+          : (lang === 'he' ? '+' + previewGreetingPrice + ' ₪' : '+₪' + previewGreetingPrice);
+      }
       renderGreetingPngPreview(greeting);
     } else if (greetingCustomizer) {
       greetingCustomizer.hidden = true;
@@ -2095,6 +2109,10 @@ async function uploadProductPhoto(blob, meta) {
   $('#year').textContent = new Date().getFullYear();
   updateCartCount();
   restoreGreetingSelectionState();
+  if (product.greetingEditorEntry && !savedGreeting()) {
+    window.location.replace('/greeting-editor?id=' + encodeURIComponent(product.slug || product.id) + '&entry=1');
+    return;
+  }
   renderProduct();
   scheduleGalleryThumbRailSync();
 })();

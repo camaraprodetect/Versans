@@ -102,7 +102,7 @@ var PRODUCTS = [
       "en": "To Mom"
     },
     "cardMessage": {
-      "he": "אני יודע שזה קשה לאמא לדבר על ואין שום דרך שאוכל להחזיר לך על זה. רק רציתי להגיד לך כמה אני אוהב אותך, ולא משנה לאיפה אלך בחיים, תמיד אזכור כמה עשית בשבילי וכמה נתת לי.",
+      "he": "אני יודע שזה קשה לאמא לגדל ילד ואין שום דרך שאוכל להחזיר לך על זה. רק רציתי להגיד לך כמה אני אוהב אותך. לא משנה לאיפה אלך בחיים, תמיד אזכור כמה עשית בשבילי וכמה נתת לי",
       "en": "I know there is no way I can ever repay you for everything you have given me. I just wanted to tell you how much I love you. No matter where life takes me, I will always remember everything you did for me and everything you gave me."
     },
     "signature": {
@@ -126,313 +126,9 @@ var PRODUCTS = [
       ]
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
-  },
-  {
-    "id": "beloved-infinity-01",
-    "slug": "product-5",
-    "urlSlug": "infinity-love-necklace",
-    "sku": "KW-BELOVED-01",
-    "category": "greeting",
-    "categories": [
-      "greeting",
-      "greeting-partner",
-      "custom"
-    ],
-    "badge": null,
-    "hoverImage": "images/products/product-5/mainproduct2.png",
-    "images": [
-      "images/products/product-5/mainproduct1.png"
-    ],
-    "price": 149.9,
-    "title": {
-      "he": "שרשרת לאהובתך \"אני אוהב אותך עד אין סוף ובחזרה\"",
-      "en": "Necklace for Your Beloved - I Love You to Infinity and Back"
-    },
-    "subtitle": {
-      "he": "דגם שרשרת אחד לבחירה ובחירה בין שתי קופסאות מתנה",
-      "en": "One necklace style with your choice of two gift boxes"
-    },
-    "necklaces": [
-      {
-        "id": "necklace-1",
-        "image": "images/products/product-5/product-5-3.png",
-        "label": {
-          "he": "דגם 1",
-          "en": "Style 1"
-        }
-      }
-    ],
-    "boxes": [
-      {
-        "id": "regular-box",
-        "image": "images/products/product-5/mainproduct2.png",
-        "addPrice": 0,
-        "label": {
-          "he": "קופסה רגילה",
-          "en": "Classic box"
-        },
-        "priceLabel": {
-          "he": "כלולה במחיר",
-          "en": "Included"
-        }
-      },
-      {
-        "id": "red-box",
-        "image": "images/products/product-5/mainproduct1.png",
-        "addPrice": 10,
-        "label": {
-          "he": "קופסה אדומה עם תאורה",
-          "en": "Red illuminated box"
-        },
-        "priceLabel": {
-          "he": "+₪10",
-          "en": "+₪10"
-        }
-      }
-    ],
-    "cardTitle": {
-      "he": "לאהובתי",
-      "en": "To My Beloved"
-    },
-    "cardMessage": {
-      "he": "כל רגע איתך הוא רגע מושלם, אהבה כמו שלנו אין בעולם! אין מילים שיכולות לתאר את האהבה שלי אלייך!",
-      "en": "Every moment with you is a perfect moment. There is no love in the world like ours. There are no words that can describe how much I love you!"
-    },
-    "signature": {
-      "he": "אני אוהב אותך עד אין סוף ובחזרה.",
-      "en": "I love you to infinity and back."
-    },
-    "details": {
-      "he": [
-        "דגם שרשרת אחד - product-1-3",
-        "בחירה בין קופסה רגילה לקופסה אדומה עם תאורה",
-        "הקופסה האדומה מוסיפה ₪10 למחיר",
-        "כרטיס המסר מודפס ומגיע בתוך הקופסה",
-        "מגיע מוכן למסירה כמתנה"
-      ],
-      "en": [
-        "One necklace style",
-        "Choose a classic box or a red illuminated box",
-        "The red box adds ₪10 to the price",
-        "Printed message card included inside the box",
-        "Arrives ready to give as a gift"
-      ]
-    },
-    "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
-  },
-  {
-    "id": "daughter-love-01",
-    "slug": "product-3",
-    "urlSlug": "daughter-love-necklace",
-    "sku": "KW-DAU-01",
-    "category": "greeting",
-    "categories": [
-      "greeting",
-      "greeting-daughter",
-      "custom"
-    ],
-    "badge": null,
-    "hoverImage": "images/products/product-3/mainproduct2.png",
-    "images": [
-      "images/products/product-3/mainproduct1.png"
-    ],
-    "price": 149.9,
-    "title": {
-      "he": "שרשרת לילדה שלנו \"אוהבים אמא ואבא\"",
-      "en": "Necklace for Our Daughter - Love, Mom & Dad"
-    },
-    "subtitle": {
-      "he": "בחרו אחת מתוך 2 שרשראות ואת הקופסה שמתאימה לכם",
-      "en": "Choose one of 2 necklaces and the gift box you prefer"
-    },
-    "necklaces": [
-      {
-        "id": "necklace-1",
-        "image": "images/products/product-3/product-3-5.png",
-        "label": {
-          "he": "דגם 1",
-          "en": "Style 1"
-        }
-      },
-      {
-        "id": "necklace-2",
-        "image": "images/products/product-3/product-3-6.png",
-        "label": {
-          "he": "דגם 2",
-          "en": "Style 2"
-        }
-      }
-    ],
-    "boxes": [
-      {
-        "id": "regular-box",
-        "image": "images/products/product-3/mainproduct2.png",
-        "addPrice": 0,
-        "label": {
-          "he": "קופסה רגילה",
-          "en": "Classic box"
-        },
-        "priceLabel": {
-          "he": "כלולה במחיר",
-          "en": "Included"
-        }
-      },
-      {
-        "id": "red-box",
-        "image": "images/products/product-3/mainproduct1.png",
-        "addPrice": 10,
-        "label": {
-          "he": "קופסה אדומה עם תאורה",
-          "en": "Red illuminated box"
-        },
-        "priceLabel": {
-          "he": "+₪10",
-          "en": "+₪10"
-        }
-      }
-    ],
-    "cardTitle": {
-      "he": "לילדה שלנו",
-      "en": "To Our Daughter"
-    },
-    "cardMessage": {
-      "he": "לילדה אהובה ומוצלחת, תמשיכי להיות בריאה ומאושרת. זכינו בילדה שאנו כל כך אוהבים, גרמת לנו לקבל את הילדה שחלמנו. אין מילים שיכולות לתאר את האהבה שלנו אלייך! אנחנו אוהבים אותך עד אין סוף ובחזרה.",
-      "en": "To our beloved and wonderful daughter, keep being healthy and happy. We were blessed with a daughter we love so much; you gave us the daughter we dreamed of. There are no words that can describe how much we love you. We love you to infinity and back."
-    },
-    "signature": {
-      "he": "אוהבים אמא ואבא",
-      "en": "Love, Mom and Dad"
-    },
-    "details": {
-      "he": [
-        "2 דגמי שרשרת לבחירה",
-        "בחירה בין קופסה רגילה לקופסה אדומה עם תאורה",
-        "הקופסה האדומה מוסיפה ₪10 למחיר",
-        "כרטיס המסר מודפס ומגיע בתוך הקופסה",
-        "מגיע מוכן למסירה כמתנה"
-      ],
-      "en": [
-        "Choose from 2 necklace styles",
-        "Choose a classic box or a red illuminated box",
-        "The red box adds ₪10 to the price",
-        "Printed message card included inside the box",
-        "Arrives ready to give as a gift"
-      ]
-    },
-    "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
-  },
-  {
-    "id": "love-of-my-life-01",
-    "slug": "product-4",
-    "urlSlug": "love-of-my-life-necklace",
-    "sku": "KW-LOVE-01",
-    "category": "greeting",
-    "categories": [
-      "greeting",
-      "greeting-partner",
-      "custom"
-    ],
-    "badge": null,
-    "hoverImage": "images/products/product-4/mainproduct2.png",
-    "images": [
-      "images/products/product-4/mainproduct1.png"
-    ],
-    "price": 149.9,
-    "title": {
-      "he": "שרשרת לאהבת חייך \"אני אוהב אותך\"",
-      "en": "Necklace for the Love of Your Life - I Love You"
-    },
-    "subtitle": {
-      "he": "בחרו אחת מתוך 2 שרשראות ואת הקופסה שמתאימה לכם",
-      "en": "Choose one of 2 necklaces and the gift box you prefer"
-    },
-    "necklaces": [
-      {
-        "id": "necklace-1",
-        "image": "images/products/product-4/product-4-5.png",
-        "label": {
-          "he": "דגם 1",
-          "en": "Style 1"
-        }
-      },
-      {
-        "id": "necklace-2",
-        "image": "images/products/product-4/product-4-6.png",
-        "label": {
-          "he": "דגם 2",
-          "en": "Style 2"
-        }
-      }
-    ],
-    "boxes": [
-      {
-        "id": "regular-box",
-        "image": "images/products/product-4/mainproduct2.png",
-        "addPrice": 0,
-        "label": {
-          "he": "קופסה רגילה",
-          "en": "Classic box"
-        },
-        "priceLabel": {
-          "he": "כלולה במחיר",
-          "en": "Included"
-        }
-      },
-      {
-        "id": "red-box",
-        "image": "images/products/product-4/mainproduct1.png",
-        "addPrice": 10,
-        "label": {
-          "he": "קופסה אדומה עם תאורה",
-          "en": "Red illuminated box"
-        },
-        "priceLabel": {
-          "he": "+₪10",
-          "en": "+₪10"
-        }
-      }
-    ],
-    "cardTitle": {
-      "he": "לאהבת חיי",
-      "en": "To the Love of My Life"
-    },
-    "cardMessage": {
-      "he": "רק רציתי להגיד לך כמה אני מאושר שאת נמצאת בחיים שלי. כמה אהבה ושמחה את מביאה לחיים שלי, אני מודה על כל רגע שלנו ביחד. אין מילים שיכולות לתאר את האהבה שלי אלייך!",
-      "en": "I just wanted to tell you how happy I am that you are in my life. You bring so much love and joy into my life, and I am grateful for every moment we share. There are no words that can describe how much I love you!"
-    },
-    "signature": {
-      "he": "אני אוהב אותך",
-      "en": "I love you"
-    },
-    "details": {
-      "he": [
-        "2 דגמי שרשרת לבחירה",
-        "בחירה בין קופסה רגילה לקופסה אדומה עם תאורה",
-        "הקופסה האדומה מוסיפה ₪10 למחיר",
-        "כרטיס המסר מודפס ומגיע בתוך הקופסה",
-        "מגיע מוכן למסירה כמתנה"
-      ],
-      "en": [
-        "Choose from 2 necklace styles",
-        "Choose a classic box or a red illuminated box",
-        "The red box adds ₪10 to the price",
-        "Printed message card included inside the box",
-        "Arrives ready to give as a gift"
-      ]
-    },
-    "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "wife-love-01",
@@ -558,39 +254,48 @@ var PRODUCTS = [
       ]
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
-    "id": "sister-love-01",
-    "slug": "product-6",
-    "urlSlug": "sister-love-necklace",
-    "sku": "KW-SIS-01",
+    "id": "custom-greeting-design-01",
+    "slug": "product-3",
+    "urlSlug": "custom-greeting-design",
+    "sku": "VS-CUSTOM-GREETING-01",
     "category": "greeting",
     "categories": [
       "greeting",
-      "greeting-sister",
       "custom"
     ],
     "badge": null,
-    "hoverImage": "images/products/product-6/mainproduct2.png",
+    "greetingEditorEntry": true,
+    "catalogPrice": 20,
+    "hoverImage": "images/products/product-3/mainproduct2.png",
     "images": [
-      "images/products/product-6/mainproduct1.png"
+      "images/products/product-3/mainproduct1.png"
     ],
-    "price": 149.9,
+    "price": 0,
     "title": {
-      "he": "שרשרת לאחותך \"אוהבת אחותך\"",
-      "en": "Necklace for Your Sister - Love, Your Sister"
+      "he": "עיצוב ברכה אישית",
+      "en": "Custom Greeting Design"
     },
     "subtitle": {
-      "he": "בחרו אחת מתוך 5 שרשראות ואת הקופסה שמתאימה לכם",
-      "en": "Choose one of 5 necklaces and the gift box you prefer"
+      "he": "עצבו ברכה אישית, ולאחר השמירה בחרו דגם ועם או בלי קופסה.",
+      "en": "Design a custom greeting, then choose a style and whether to include a box."
+    },
+    "necklaceHeading": {
+      "he": "בחרו דגם",
+      "en": "Choose a style"
+    },
+    "necklaceSummaryLabel": {
+      "he": "דגם",
+      "en": "Style"
     },
     "necklaces": [
       {
         "id": "necklace-1",
-        "image": "images/products/product-6/product-6-2.png",
+        "image": "images/products/product-1/product-1-2.png",
         "label": {
           "he": "דגם 1",
           "en": "Style 1"
@@ -598,7 +303,7 @@ var PRODUCTS = [
       },
       {
         "id": "necklace-2",
-        "image": "images/products/product-6/product-6-3.png",
+        "image": "images/products/product-1/product-1-3.png",
         "label": {
           "he": "דגם 2",
           "en": "Style 2"
@@ -606,7 +311,7 @@ var PRODUCTS = [
       },
       {
         "id": "necklace-3",
-        "image": "images/products/product-6/product-6-4.png",
+        "image": "images/products/product-1/product-1-4.png",
         "label": {
           "he": "דגם 3",
           "en": "Style 3"
@@ -614,7 +319,7 @@ var PRODUCTS = [
       },
       {
         "id": "necklace-4",
-        "image": "images/products/product-6/product-6-5.png",
+        "image": "images/products/product-1/product-1-5.png",
         "label": {
           "he": "דגם 4",
           "en": "Style 4"
@@ -622,270 +327,46 @@ var PRODUCTS = [
       },
       {
         "id": "necklace-5",
-        "image": "images/products/product-6/product-6-6.png",
+        "image": "images/products/product-1/product-1-6.png",
         "label": {
           "he": "דגם 5",
           "en": "Style 5"
         }
       }
     ],
+    "boxHeading": {
+      "he": "בחרו עם או בלי קופסה",
+      "en": "Choose with or without a box"
+    },
+    "boxSummaryLabel": {
+      "he": "קופסה",
+      "en": "Box"
+    },
     "boxes": [
       {
-        "id": "regular-box",
-        "image": "images/products/product-6/mainproduct2.png",
+        "id": "no-box",
+        "image": "images/products/product-3/mainproduct1.png",
         "addPrice": 0,
         "label": {
-          "he": "קופסה רגילה",
-          "en": "Classic box"
+          "he": "בלי קופסה",
+          "en": "Without box"
         },
         "priceLabel": {
-          "he": "כלולה במחיר",
-          "en": "Included"
+          "he": "ללא תוספת",
+          "en": "No extra charge"
         }
       },
       {
-        "id": "red-box",
-        "image": "images/products/product-6/mainproduct1.png",
-        "addPrice": 10,
-        "label": {
-          "he": "קופסה אדומה עם תאורה",
-          "en": "Red illuminated box"
-        },
-        "priceLabel": {
-          "he": "+₪10",
-          "en": "+₪10"
-        }
-      }
-    ],
-    "cardTitle": {
-      "he": "לאחותי המדהימה",
-      "en": "To My Amazing Sister"
-    },
-    "cardMessage": {
-      "he": "אין חברה יותר טובה מאחות, ואף אחות לא טובה יותר ממך. אני כל כך מודה שיש לי אותך בחיים שלי ויש לי אדם כמוך בחיים שאני יכולה לסמוך עליו. את אחות מדהימה!",
-      "en": "There is no better friend than a sister, and no sister better than you. I am so grateful to have you in my life and to have someone like you I can always count on. You are an amazing sister!"
-    },
-    "signature": {
-      "he": "אוהבת אחותך",
-      "en": "Love, your sister"
-    },
-    "details": {
-      "he": [
-        "5 דגמי שרשרת לבחירה",
-        "בחירה בין קופסה רגילה לקופסה אדומה עם תאורה",
-        "הקופסה האדומה מוסיפה ₪10 למחיר",
-        "כרטיס המסר מודפס ומגיע בתוך הקופסה",
-        "מגיע מוכן למסירה כמתנה"
-      ],
-      "en": [
-        "Choose from 5 necklace styles",
-        "Choose a classic box or a red illuminated box",
-        "The red box adds ₪10 to the price",
-        "Printed message card included inside the box",
-        "Arrives ready to give as a gift"
-      ]
-    },
-    "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
-  },
-  {
-    "id": "wife-embrace-01",
-    "slug": "product-7",
-    "urlSlug": "beloved-heart-necklace",
-    "sku": "KW-WIFE-02",
-    "category": "greeting",
-    "categories": [
-      "greeting",
-      "greeting-partner",
-      "custom"
-    ],
-    "badge": null,
-    "hoverImage": "images/products/product-7/mainproduct2.png",
-    "images": [
-      "images/products/product-7/mainproduct1.png"
-    ],
-    "price": 149.9,
-    "title": {
-      "he": "שרשרת לאהובה שלך \"אני אוהב אותך\"",
-      "en": "Necklace for Your Beloved - I Love You"
-    },
-    "subtitle": {
-      "he": "בחרו אחת מתוך 2 שרשראות ואת הקופסה שמתאימה לכם",
-      "en": "Choose one of 2 necklaces and the gift box you prefer"
-    },
-    "necklaces": [
-      {
-        "id": "necklace-1",
-        "image": "images/products/product-7/product-7-5.png",
-        "label": {
-          "he": "דגם 1",
-          "en": "Style 1"
-        }
-      },
-      {
-        "id": "necklace-2",
-        "image": "images/products/product-7/product-7-6.png",
-        "label": {
-          "he": "דגם 2",
-          "en": "Style 2"
-        }
-      }
-    ],
-    "boxes": [
-      {
-        "id": "regular-box",
-        "image": "images/products/product-7/mainproduct2.png",
+        "id": "with-box",
+        "image": "images/products/product-1/mainproduct2.png",
         "addPrice": 0,
         "label": {
-          "he": "קופסה רגילה",
-          "en": "Classic box"
+          "he": "עם קופסה",
+          "en": "With box"
         },
         "priceLabel": {
-          "he": "כלולה במחיר",
-          "en": "Included"
-        }
-      },
-      {
-        "id": "red-box",
-        "image": "images/products/product-7/mainproduct1.png",
-        "addPrice": 10,
-        "label": {
-          "he": "קופסה אדומה עם תאורה",
-          "en": "Red illuminated box"
-        },
-        "priceLabel": {
-          "he": "+₪10",
-          "en": "+₪10"
-        }
-      }
-    ],
-    "cardTitle": {
-      "he": "אהובה שלי",
-      "en": "My Love"
-    },
-    "cardMessage": {
-      "he": "השרשרת הזאת מלאה באהבה ובאור שלי. אם אי פעם לא אהיה כאן ואת תזדקקי לחיבוק, פשוט תחזיקי אותה קרוב אלייך ותוכלי להרגיש את האהבה שלי. אני אסיר תודה על היום שבו הכרתי אותך.",
-      "en": "This necklace is filled with my love and light. If I am ever not there and you need a hug, hold it close and feel my love. I am grateful for the day I met you."
-    },
-    "signature": {
-      "he": "אני אוהב אותך",
-      "en": "I love you"
-    },
-    "details": {
-      "he": [
-        "2 דגמי שרשרת לבחירה",
-        "בחירה בין קופסה רגילה לקופסה אדומה עם תאורה",
-        "הקופסה האדומה מוסיפה ₪10 למחיר",
-        "כרטיס המסר מודפס ומגיע בתוך הקופסה",
-        "מגיע מוכן למסירה כמתנה"
-      ],
-      "en": [
-        "Choose from 2 necklace styles",
-        "Choose a classic box or a red illuminated box",
-        "The red box adds ₪10 to the price",
-        "Printed message card included inside the box",
-        "Arrives ready to give as a gift"
-      ]
-    },
-    "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
-  },
-  {
-    "id": "mom-daughter-01",
-    "slug": "product-8",
-    "urlSlug": "mom-daughter-necklace",
-    "sku": "KW-MOM-02",
-    "category": "greeting",
-    "categories": [
-      "greeting",
-      "greeting-mom",
-      "custom"
-    ],
-    "badge": null,
-    "hoverImage": "images/products/product-8/mainproduct2.png",
-    "images": [
-      "images/products/product-8/mainproduct1.png"
-    ],
-    "price": 149.9,
-    "title": {
-      "he": "שרשרת לאמא \"אוהבת המון הבת שלך\"",
-      "en": "Necklace for Mom - Love, Your Daughter"
-    },
-    "subtitle": {
-      "he": "בחרו אחת מתוך 5 שרשראות ואת הקופסה שמתאימה לכם",
-      "en": "Choose one of 5 necklaces and the gift box you prefer"
-    },
-    "necklaces": [
-      {
-        "id": "necklace-1",
-        "image": "images/products/product-8/product-8-2.png",
-        "label": {
-          "he": "דגם 1",
-          "en": "Style 1"
-        }
-      },
-      {
-        "id": "necklace-2",
-        "image": "images/products/product-8/product-8-3.png",
-        "label": {
-          "he": "דגם 2",
-          "en": "Style 2"
-        }
-      },
-      {
-        "id": "necklace-3",
-        "image": "images/products/product-8/product-8-4.png",
-        "label": {
-          "he": "דגם 3",
-          "en": "Style 3"
-        }
-      },
-      {
-        "id": "necklace-4",
-        "image": "images/products/product-8/product-8-5.png",
-        "label": {
-          "he": "דגם 4",
-          "en": "Style 4"
-        }
-      },
-      {
-        "id": "necklace-5",
-        "image": "images/products/product-8/product-8-6.png",
-        "label": {
-          "he": "דגם 5",
-          "en": "Style 5"
-        }
-      }
-    ],
-    "boxes": [
-      {
-        "id": "regular-box",
-        "image": "images/products/product-8/mainproduct2.png",
-        "addPrice": 0,
-        "label": {
-          "he": "קופסה רגילה",
-          "en": "Classic box"
-        },
-        "priceLabel": {
-          "he": "כלולה במחיר",
-          "en": "Included"
-        }
-      },
-      {
-        "id": "red-box",
-        "image": "images/products/product-8/mainproduct1.png",
-        "addPrice": 10,
-        "label": {
-          "he": "קופסה אדומה עם תאורה",
-          "en": "Red illuminated box"
-        },
-        "priceLabel": {
-          "he": "+₪10",
-          "en": "+₪10"
+          "he": "ללא תוספת",
+          "en": "No extra charge"
         }
       }
     ],
@@ -894,137 +375,31 @@ var PRODUCTS = [
       "en": "To Mom"
     },
     "cardMessage": {
-      "he": "אני תמיד אהיה אסירת תודה על כל הדברים שעשית בשבילי. אני גאה להיות הבת שלך ושמחה בעולם שיש לי אמא מדהימה כמוך.",
-      "en": "I will always be grateful for everything you did for me. I am proud to be your daughter and so happy to have an amazing mother like you."
+      "he": "אני יודע שזה קשה לאמא לגדל ילד ואין שום דרך שאוכל להחזיר לך על זה. רק רציתי להגיד לך כמה אני אוהב אותך. לא משנה לאיפה אלך בחיים, תמיד אזכור כמה עשית בשבילי וכמה נתת לי",
+      "en": "I know how much you have given me and there is no way I could ever repay you. I just wanted to tell you how much I love you and that I will always remember everything you have done for me."
     },
     "signature": {
-      "he": "אוהבת המון הבת שלך",
-      "en": "With lots of love, your daughter"
+      "he": "אוהב המון הבן שלך",
+      "en": "With all my love, your son"
     },
     "details": {
       "he": [
-        "5 דגמי שרשרת לבחירה",
-        "בחירה בין קופסה רגילה לקופסה אדומה עם תאורה",
-        "הקופסה האדומה מוסיפה ₪10 למחיר",
-        "כרטיס המסר מודפס ומגיע בתוך הקופסה",
-        "מגיע מוכן למסירה כמתנה"
+        "עיצוב ברכה אישית ב-Default החל מ-20 ₪",
+        "תבנית שאינה Default או הוספת תמונה ל-Default מוסיפה 15 ₪",
+        "בחירת דגם לאחר שמירת הברכה",
+        "בחירה עם או בלי קופסה"
       ],
       "en": [
-        "Choose from 5 necklace styles",
-        "Choose a classic box or a red illuminated box",
-        "The red box adds ₪10 to the price",
-        "Printed message card included inside the box",
-        "Arrives ready to give as a gift"
+        "Custom greeting design in Default starts at ₪20",
+        "A non-Default template or adding an image to Default adds ₪15",
+        "Choose the style after saving the greeting",
+        "Choose with or without a box"
       ]
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
-  },
-  {
-    "id": "mom-son-gratitude-01",
-    "slug": "product-9",
-    "urlSlug": "mom-son-necklace",
-    "sku": "KW-MOM-03",
-    "category": "greeting",
-    "categories": [
-      "greeting",
-      "greeting-mom",
-      "custom"
-    ],
-    "badge": null,
-    "hoverImage": "images/products/product-9/mainproduct2.png",
-    "images": [
-      "images/products/product-9/mainproduct1.png"
-    ],
-    "price": 149.9,
-    "title": {
-      "he": "שרשרת לאמא \"אוהב המון הבן שלך\"",
-      "en": "Necklace for Mom - Lots of Love, Your Son"
-    },
-    "subtitle": {
-      "he": "בחרו אחת מתוך 2 שרשראות ואת הקופסה שמתאימה לכם",
-      "en": "Choose one of 2 necklaces and the gift box you prefer"
-    },
-    "necklaces": [
-      {
-        "id": "necklace-1",
-        "image": "images/products/product-9/product-9-5.png",
-        "label": {
-          "he": "דגם 1",
-          "en": "Style 1"
-        }
-      },
-      {
-        "id": "necklace-2",
-        "image": "images/products/product-9/product-9-6.png",
-        "label": {
-          "he": "דגם 2",
-          "en": "Style 2"
-        }
-      }
-    ],
-    "boxes": [
-      {
-        "id": "regular-box",
-        "image": "images/products/product-9/mainproduct2.png",
-        "addPrice": 0,
-        "label": {
-          "he": "קופסה רגילה",
-          "en": "Classic box"
-        },
-        "priceLabel": {
-          "he": "כלולה במחיר",
-          "en": "Included"
-        }
-      },
-      {
-        "id": "red-box",
-        "image": "images/products/product-9/mainproduct1.png",
-        "addPrice": 10,
-        "label": {
-          "he": "קופסה אדומה עם תאורה",
-          "en": "Red illuminated box"
-        },
-        "priceLabel": {
-          "he": "+₪10",
-          "en": "+₪10"
-        }
-      }
-    ],
-    "cardTitle": {
-      "he": "לאמא היקרה",
-      "en": "To My Dear Mom"
-    },
-    "cardMessage": {
-      "he": "על כל המילים שלפעמים לא נאמרות, אני חייב לומר לך: אני אוהב אותך, אמא. על כל הפעמים ששכחתי להודות לך, על כל הדברים המיוחדים שאת עושה. מה שאני היום - זה בזכותך. אין מילים שיכולות לתאר את האהבה, ההקרבה והדאגה האינסופית שלך. אני יודע שלגדל ילד זה לא דבר פשוט ואין לי דרך באמת להחזיר לך על כל מה שעשית עבורי. לא משנה לאן אלך בחיים, את תמיד תהיי בליבי, חלק ממי שאני.",
-      "en": "For all the words that sometimes go unsaid, I have to tell you: I love you, Mom. For all the times I forgot to thank you, for all the special things you do. Who I am today is because of you. There are no words that can describe your love, sacrifice and endless care. I know raising a child is not easy, and there is no way I can truly repay you for everything you have done for me. No matter where I go in life, you will always be in my heart, a part of who I am."
-    },
-    "signature": {
-      "he": "אוהב המון, הבן שלך",
-      "en": "Lots of love, your son"
-    },
-    "details": {
-      "he": [
-        "2 דגמי שרשרת לבחירה",
-        "בחירה בין קופסה רגילה לקופסה אדומה עם תאורה",
-        "הקופסה האדומה מוסיפה ₪10 למחיר",
-        "כרטיס המסר מודפס ומגיע בתוך הקופסה",
-        "מגיע מוכן למסירה כמתנה"
-      ],
-      "en": [
-        "Choose from 2 necklace styles",
-        "Choose a classic box or a red illuminated box",
-        "The red box adds ₪10 to the price",
-        "Printed message card included inside the box",
-        "Arrives ready to give as a gift"
-      ]
-    },
-    "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "tennis-chain-3mm-01",
@@ -1220,9 +595,9 @@ var PRODUCTS = [
       "en": "Choose a length and width and the price updates automatically. For example, 55 cm at 5mm width costs ₪339.90. Gold versions, where offered, use 5 layers of 18K gold plating."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "star-tennis-bracelet-11",
@@ -1336,9 +711,9 @@ var PRODUCTS = [
       "en": "The gallery shows the bracelet as a clean product shot, on-wrist, and in a close-up angle. The version shown here has a silver/white-gold tone and a white-gold plated finish."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "star-tennis-bracelet-12",
@@ -1452,9 +827,9 @@ var PRODUCTS = [
       "en": "The gallery shows the bracelet as a clean product shot, on-wrist, and in a close-up angle. The version shown here has a silver/white-gold tone with a white-gold plated finish."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "tennis-bracelet-emerald-3mm-13",
@@ -1566,9 +941,9 @@ var PRODUCTS = [
       "en": "The gallery shows the bracelet as a clean product shot, on-wrist, and in a close-up angle. This is a refined 3mm model with emerald-cut stones and a premium look."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "noir-black-tennis-bracelet-14",
@@ -1708,9 +1083,9 @@ var PRODUCTS = [
       "en": "The gallery shows the bracelet as a clean product shot, on-wrist, and in a close-up angle. This black model has a sharp, clean look suited for both everyday wear and evening styling."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "flora-cuban-chain-01",
@@ -1849,9 +1224,9 @@ var PRODUCTS = [
       "en": "Choose your preferred length and the price will update automatically."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "flora-gold-chain-01",
@@ -1990,9 +1365,9 @@ var PRODUCTS = [
       "en": "Choose your preferred length and the price will update automatically."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "flora-rose-gold-chain-01",
@@ -2131,9 +1506,9 @@ var PRODUCTS = [
       "en": "Choose your preferred length and the price will update automatically."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "tennis-chain-gold-18",
@@ -2329,9 +1704,9 @@ var PRODUCTS = [
       "en": "Choose a length and width and the price updates automatically. For example, 55 cm at 5mm width costs ₪339.90. The chain has a gold-tone finish with 5 layers of 18K gold plating."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "noya-black-tennis-necklace-20",
@@ -2507,9 +1882,9 @@ var PRODUCTS = [
       "en": "Choose a length and width and the price updates automatically. Starting price: ₪259.90 for 40 cm at 3 mm width."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "custom-photo-projection-bracelet-01",
@@ -2708,9 +2083,9 @@ var PRODUCTS = [
       "en": "Choose all three bracelet options, upload the photo you want inside the projection bead, and add it to cart."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "caterside-retro-round-crystal-smoke",
@@ -2779,9 +2154,9 @@ var PRODUCTS = [
       "en": "A compact retro model with a transparent frame that pairs easily with everyday looks."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-22/product-22-2.png"
   },
   {
@@ -2851,9 +2226,9 @@ var PRODUCTS = [
       "en": "A classic minimalist choice for everyday wear and outings."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-23/product-23-2.png"
   },
   {
@@ -2923,9 +2298,9 @@ var PRODUCTS = [
       "en": "A dark-to-clear frame combination for a distinctive yet easy-to-style look."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-24/product-24-2.png"
   },
   {
@@ -2995,9 +2370,9 @@ var PRODUCTS = [
       "en": "A square frame with subtle amber accents for added depth and character."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-25/product-25-2.png?v=12"
   },
   {
@@ -3067,9 +2442,9 @@ var PRODUCTS = [
       "en": "Blue lenses give the square silhouette a bold summer-ready look."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-26/product-26-2.png"
   },
   {
@@ -3139,9 +2514,9 @@ var PRODUCTS = [
       "en": "A clean black model that works easily with both casual and evening outfits."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-27/product-27-2.png?v=12"
   },
   {
@@ -3211,9 +2586,9 @@ var PRODUCTS = [
       "en": "Green lenses add color while keeping the frame refined and wearable."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-28/product-28-2.png?v=12"
   },
   {
@@ -3283,9 +2658,9 @@ var PRODUCTS = [
       "en": "A transparent frame and silver-toned lenses create a bright modern finish."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-29/product-29-2.png"
   },
   {
@@ -3355,9 +2730,9 @@ var PRODUCTS = [
       "en": "The tortoise finish gives the square frame a warm classic character."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-30/product-30-2.png?v=12"
   },
   {
@@ -3427,9 +2802,9 @@ var PRODUCTS = [
       "en": "A bright refined model that pairs beautifully with summer and everyday outfits."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-31/product-31-2.png"
   },
   {
@@ -3499,9 +2874,9 @@ var PRODUCTS = [
       "en": "A subtle olive tone that stands out while still feeling elegant and wearable."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-32/product-32-2.png"
   },
   {
@@ -3571,9 +2946,9 @@ var PRODUCTS = [
       "en": "A smoky frame with gold details for a refined and contemporary finish."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-33/product-33-2.png"
   },
   {
@@ -3643,9 +3018,9 @@ var PRODUCTS = [
       "en": "A clean translucent gray model that works effortlessly with almost any outfit."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-34/product-34-2.png"
   },
   {
@@ -3715,9 +3090,9 @@ var PRODUCTS = [
       "en": "A standout frame for anyone who likes bold eyewear with character."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-35/product-35-2.png"
   },
   {
@@ -3787,9 +3162,9 @@ var PRODUCTS = [
       "en": "A classic black model with strong presence that works with almost any outfit."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-36/product-36-2.png"
   },
   {
@@ -3859,9 +3234,9 @@ var PRODUCTS = [
       "en": "A stylish blend of clear crystal and warm tortoise for a sharp fashion-forward feel."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-37/product-37-2.png"
   },
   {
@@ -3931,9 +3306,9 @@ var PRODUCTS = [
       "en": "A warm statement frame that pairs beautifully with summer and polished outfits."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-38/product-38-2.png"
   },
   {
@@ -4003,9 +3378,9 @@ var PRODUCTS = [
       "en": "A clean high-contrast combination that creates a distinctive and confident style."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-39/product-39-2.png"
   },
   {
@@ -4075,9 +3450,9 @@ var PRODUCTS = [
       "en": "A clean standout frame that pairs effortlessly with almost any look."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-40/product-40-2.png"
   },
   {
@@ -4147,9 +3522,9 @@ var PRODUCTS = [
       "en": "A fresh refined choice for anyone who loves clear frames with a hint of color."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-41/product-41-2.png"
   },
   {
@@ -4219,9 +3594,9 @@ var PRODUCTS = [
       "en": "A color-forward model that instantly elevates any look."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-42/product-42-2.png"
   },
   {
@@ -4291,9 +3666,9 @@ var PRODUCTS = [
       "en": "A refined olive tone that adds character without feeling overdone."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-43/product-43-2.png"
   },
   {
@@ -4363,9 +3738,9 @@ var PRODUCTS = [
       "en": "A stylish model with lighter lenses that feels polished and premium."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-44/product-44-2.png"
   },
   {
@@ -4433,9 +3808,9 @@ var PRODUCTS = [
       "en": "A radiant, fresh model that adds standout style to any outfit."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-45/product-45-2.png"
   },
   {
@@ -4503,9 +3878,9 @@ var PRODUCTS = [
       "en": "A soft feminine frame with a flattering fashion touch."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-46/product-46-2.png"
   },
   {
@@ -4573,9 +3948,9 @@ var PRODUCTS = [
       "en": "A warm elegant colorway that feels classic yet stylish."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-47/product-47-2.png"
   },
   {
@@ -4643,9 +4018,9 @@ var PRODUCTS = [
       "en": "The classic choice for anyone who loves a sharp, sophisticated look."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-48/product-48-2.png"
   },
   {
@@ -4713,9 +4088,9 @@ var PRODUCTS = [
       "en": "An elegant refined model that complements almost any outfit."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-49/product-49-2.png"
   },
   {
@@ -4783,9 +4158,9 @@ var PRODUCTS = [
       "en": "A fashion-forward style that adds energy and glow."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-50/product-50-2.png"
   },
   {
@@ -4853,9 +4228,9 @@ var PRODUCTS = [
       "en": "A perfect balance between fashion presence and soft minimal elegance."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-51/product-51-2.png"
   },
   {
@@ -4923,9 +4298,9 @@ var PRODUCTS = [
       "en": "A flattering style with warm radiance and strong presence."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-52/product-52-2.png"
   },
   {
@@ -4993,9 +4368,9 @@ var PRODUCTS = [
       "en": "A distinctive shade that gives the look a stylish unique vibe."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-53/product-53-2.png"
   },
   {
@@ -5063,9 +4438,9 @@ var PRODUCTS = [
       "en": "A warm elegant style that adds rich character to any look."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-54/product-54-2.png"
   },
   {
@@ -5133,9 +4508,9 @@ var PRODUCTS = [
       "en": "A delicate trendy frame with a flattering feminine touch."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-55/product-55-2.png"
   },
   {
@@ -5203,9 +4578,9 @@ var PRODUCTS = [
       "en": "A fresh standout colorway with distinctive fashion presence."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-56/product-56-2.png"
   },
   {
@@ -5273,9 +4648,9 @@ var PRODUCTS = [
       "en": "A chic classic choice that fits effortlessly into any look."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-57/product-57-2.png"
   },
   {
@@ -5343,9 +4718,9 @@ var PRODUCTS = [
       "en": "An elegant warm colorway with a refined feminine touch."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-58/product-58-2.png"
   },
   {
@@ -5413,9 +4788,9 @@ var PRODUCTS = [
       "en": "A flattering delicate shade that adds a romantic fashion-forward vibe."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-59/product-59-2.png"
   },
   {
@@ -5483,9 +4858,9 @@ var PRODUCTS = [
       "en": "A soft chic choice with an elegant hint of color."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-60/product-60-2.png"
   },
   {
@@ -5553,9 +4928,9 @@ var PRODUCTS = [
       "en": "A colorful refined frame that adds a fresh retro touch to any look."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-61/product-61-2.png"
   },
   {
@@ -5623,9 +4998,9 @@ var PRODUCTS = [
       "en": "A warm flattering colorway that pairs easily with polished and casual looks."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-62/product-62-2.png"
   },
   {
@@ -5693,9 +5068,9 @@ var PRODUCTS = [
       "en": "A standout frame with a distinctive color that instantly adds character."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-63/product-63-2.png"
   },
   {
@@ -5763,9 +5138,9 @@ var PRODUCTS = [
       "en": "A clean classic choice that works with almost any look."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-64/product-64-2.png"
   },
   {
@@ -5833,9 +5208,9 @@ var PRODUCTS = [
       "en": "A flattering delicate frame with a clean retro vibe."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-65/product-65-2.png"
   },
   {
@@ -5903,9 +5278,9 @@ var PRODUCTS = [
       "en": "A chic standout frame with classic tortoise styling and dark lenses."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-66/product-66-2.png"
   },
   {
@@ -5973,9 +5348,9 @@ var PRODUCTS = [
       "en": "An elegant style combining warm gold, tortoise and tea tones."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-67/product-67-2.png"
   },
   {
@@ -6043,9 +5418,9 @@ var PRODUCTS = [
       "en": "A bright fresh combination with a clean modern presence."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-68/product-68-2.png"
   },
   {
@@ -6113,9 +5488,9 @@ var PRODUCTS = [
       "en": "A feminine statement style blending soft pink with black and gold."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-69/product-69-2.png"
   },
   {
@@ -6183,9 +5558,9 @@ var PRODUCTS = [
       "en": "A sharp classic choice with a timeless black-and-gold combination."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-70/product-70-2.png"
   },
   {
@@ -6261,9 +5636,9 @@ var PRODUCTS = [
       "en": "A sharp modern frame with a distinctive star detail."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-71/product-71-2.png"
   },
   {
@@ -6339,9 +5714,9 @@ var PRODUCTS = [
       "en": "A black-and-brown combination that gives the frame a warm wearable finish."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-72/product-72-2.png"
   },
   {
@@ -6417,9 +5792,9 @@ var PRODUCTS = [
       "en": "Light blue lenses add a fresh distinctive touch to the black frame."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-73/product-73-2.png"
   },
   {
@@ -6495,9 +5870,9 @@ var PRODUCTS = [
       "en": "Soft champagne lenses balance the black frame for an elevated, easy-to-style finish."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-74/product-74-2.png"
   },
   {
@@ -6573,9 +5948,9 @@ var PRODUCTS = [
       "en": "The clear frame highlights the silver star detail for a look that feels clean and distinctive at once."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "hoverImage": "images/products/product-75/product-75-2.png"
   },
   {
@@ -6645,9 +6020,9 @@ var PRODUCTS = [
       "en": "The watch, gift box, extra strap and included accessories arrive together - ready to gift."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "colors": [
       {
         "id": "black-blue",
@@ -6773,9 +6148,9 @@ var PRODUCTS = [
       "en": "A silver ICE watch with a glittering black dial - a premium look for both everyday wear and special occasions."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "watch-ice-gold-01",
@@ -6843,9 +6218,9 @@ var PRODUCTS = [
       "en": "A gold ICE watch with a glittering black dial - a premium look for both everyday wear and special occasions."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "watch-chrono-royal-01",
@@ -6917,9 +6292,9 @@ var PRODUCTS = [
       "en": "Chrono Royal combines a bold premium look with a detailed dial and metal bracelet for both everyday wear and special occasions."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "colors": [
       {
         "id": "black-gold",
@@ -7040,9 +6415,9 @@ var PRODUCTS = [
       "en": "Luna Date combines a clean dial, day-date display and metal bracelet for both everyday and polished looks."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "colors": [
       {
         "id": "silver-white",
@@ -7180,9 +6555,9 @@ var PRODUCTS = [
       "en": "Royal Day combines a day-date display, metal bracelet and multiple color options for an elegant everyday or occasion-ready look."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "colors": [
       {
         "id": "silver-green",
@@ -7301,9 +6676,9 @@ var PRODUCTS = [
       "en": "Royal Day combines a black dial, day-date display and metal bracelet for an elegant everyday or occasion-ready look."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "colors": [
       {
         "id": "silver-black",
@@ -7412,9 +6787,9 @@ var PRODUCTS = [
       "en": "Royal Day combines a silver-tone dial, day-date display and metal bracelet for an elegant everyday or occasion-ready look."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "colors": [
       {
         "id": "silver-white",
@@ -7516,9 +6891,9 @@ var PRODUCTS = [
       "en": "Royal Day combines gold tones, day-date display and a metal bracelet for an elegant everyday or occasion-ready look."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "colors": [
       {
         "id": "silver-gold-white",
@@ -7623,9 +6998,9 @@ var PRODUCTS = [
       "en": "White OLEVS gift set supplied ready to gift with a watch, bracelet and heart necklace."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "watch-olevs-gift-pink-01",
@@ -7691,9 +7066,9 @@ var PRODUCTS = [
       "en": "Pink OLEVS gift set supplied ready to gift with a watch, bracelet and heart necklace."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "watch-olevs-gift-cyan-01",
@@ -7759,9 +7134,9 @@ var PRODUCTS = [
       "en": "Light Blue OLEVS gift set supplied ready to gift with a watch, bracelet and heart necklace."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "watch-olevs-gift-purple-01",
@@ -7827,9 +7202,9 @@ var PRODUCTS = [
       "en": "Purple OLEVS gift set supplied ready to gift with a watch, bracelet and heart necklace."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "watch-tachymeter-pro-black-01",
@@ -7896,9 +7271,9 @@ var PRODUCTS = [
       "en": "Tachymeter Pro combines a black finish, sporty dial and tachymeter scale for a modern statement look."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "watch-ice-supra-90",
@@ -7964,9 +7339,9 @@ var PRODUCTS = [
       "en": "Ice Supra in silver combines a high-impact iced-out look with day and date displays."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "watch-ice-supra-91",
@@ -8032,9 +7407,9 @@ var PRODUCTS = [
       "en": "Ice Supra in silver & gold combines a high-impact iced-out look with day and date displays."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "watch-ice-supra-92",
@@ -8100,9 +7475,9 @@ var PRODUCTS = [
       "en": "Ice Supra in black combines a high-impact iced-out look with day and date displays."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "watch-ice-supra-93",
@@ -8168,9 +7543,9 @@ var PRODUCTS = [
       "en": "Ice Supra in gold combines a high-impact iced-out look with day and date displays."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "flora-tennis-bracelet-sky-blue-94",
@@ -8293,9 +7668,9 @@ var PRODUCTS = [
       "en": "The gallery includes all six variants, a shared hover image, showcase photos, and an on-wrist image for wear reference."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "colorHeading": {
       "he": "בחרו צבע",
       "en": "Choose color"
@@ -8489,9 +7864,9 @@ var PRODUCTS = [
       "en": "The gallery includes all six variants, a shared hover image, showcase photos, and an on-wrist image for wear reference."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "colorHeading": {
       "he": "בחרו צבע",
       "en": "Choose color"
@@ -8685,9 +8060,9 @@ var PRODUCTS = [
       "en": "The gallery includes all six variants, a shared hover image, showcase photos, and an on-wrist image for wear reference."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "colorHeading": {
       "he": "בחרו צבע",
       "en": "Choose color"
@@ -8881,9 +8256,9 @@ var PRODUCTS = [
       "en": "The gallery includes all six variants, a shared hover image, showcase photos, and an on-wrist image for wear reference."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "colorHeading": {
       "he": "בחרו צבע",
       "en": "Choose color"
@@ -9077,9 +8452,9 @@ var PRODUCTS = [
       "en": "The gallery includes all six variants, a shared hover image, showcase photos, and an on-wrist image for wear reference."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "colorHeading": {
       "he": "בחרו צבע",
       "en": "Choose color"
@@ -9273,9 +8648,9 @@ var PRODUCTS = [
       "en": "The gallery includes all six variants, a shared hover image, showcase photos, and an on-wrist image for wear reference."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "colorHeading": {
       "he": "בחרו צבע",
       "en": "Choose color"
@@ -13443,9 +12818,9 @@ var PRODUCTS = [
       "en": "Classic Date combines a minimalist black dial with a metal bracelet and clean lines for both everyday wear and special occasions."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "colors": [
       {
         "id": "black",
@@ -13537,9 +12912,9 @@ var PRODUCTS = [
       "en": "Roma Watch combines a black case and bracelet with a clean dial, minute markers and a date window for an elegant everyday look."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "colors": [
       {
         "id": "black-accent",
@@ -13642,9 +13017,9 @@ var PRODUCTS = [
       "en": "Milano Chrono combines a detailed black dial, leather strap and a classic-sport look for everyday wear and occasions."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "colors": [
       {
         "id": "black",
@@ -13741,9 +13116,9 @@ var PRODUCTS = [
       "en": "Bella Watch combines a clean white dial with a metal mesh bracelet and a feminine minimalist look for everyday wear and occasions."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "colors": [
       {
         "id": "rose-gold",
@@ -13839,9 +13214,9 @@ var PRODUCTS = [
       "en": "Emma Watch combines a clean white dial with a square case and elegant metal bracelet for a feminine minimalist look suited to everyday wear and occasions."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "colors": [
       {
         "id": "rose-gold",
@@ -13928,9 +13303,9 @@ var PRODUCTS = [
       "en": "May Watch combines a striking green dial with an elegant feminine design suited to everyday wear and occasions."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "colors": [
       {
         "id": "two-tone",
@@ -14022,9 +13397,9 @@ var PRODUCTS = [
       "en": "Noga Watch combines a sparkling blue dial with a metal mesh bracelet and elegant finish for a distinctive feminine look."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "colors": [
       {
         "id": "black",
@@ -14128,9 +13503,9 @@ var PRODUCTS = [
       "en": "Liam Watch - White Dial combines a clean white dial with a leather strap and slim case for a classic everyday look."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "colors": [
       {
         "id": "brown-rose-gold",
@@ -14234,9 +13609,9 @@ var PRODUCTS = [
       "en": "Liam Watch - Black Dial combines a clean black dial with a leather strap and slim case for a classic unisex everyday look."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  },
+      "min": 9,
+      "max": 14
+    },
     "colors": [
       {
         "id": "brown-rose-gold",
@@ -18300,7 +17675,6 @@ var PRODUCTS = [
     "sku": "VS-PHOTO-204",
     "category": "photo-bracelets",
     "categories": [
-      "necklaces",
       "photo-bracelets",
       "custom"
     ],
@@ -18417,9 +17791,9 @@ var PRODUCTS = [
       "en": "Choose a color, upload the photo you want inside the pendant and add it to cart."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "photo-projection-necklace-paw-205",
@@ -18428,7 +17802,6 @@ var PRODUCTS = [
     "sku": "VS-PHOTO-205",
     "category": "photo-bracelets",
     "categories": [
-      "necklaces",
       "photo-bracelets",
       "custom"
     ],
@@ -18545,9 +17918,9 @@ var PRODUCTS = [
       "en": "Choose a color, upload the photo you want inside the pendant and add it to cart."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "photo-projection-necklace-double-heart-206",
@@ -18556,7 +17929,6 @@ var PRODUCTS = [
     "sku": "VS-PHOTO-206",
     "category": "photo-bracelets",
     "categories": [
-      "necklaces",
       "photo-bracelets",
       "custom"
     ],
@@ -18673,9 +18045,9 @@ var PRODUCTS = [
       "en": "Choose a color, upload the photo you want inside the pendant and add it to cart."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "photo-projection-necklace-lock-207",
@@ -18684,7 +18056,6 @@ var PRODUCTS = [
     "sku": "VS-PHOTO-207",
     "category": "photo-bracelets",
     "categories": [
-      "necklaces",
       "photo-bracelets",
       "custom"
     ],
@@ -18801,9 +18172,9 @@ var PRODUCTS = [
       "en": "Choose a color, upload the photo you want inside the pendant and add it to cart."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "photo-projection-necklace-crystal-spiral-208",
@@ -18812,7 +18183,6 @@ var PRODUCTS = [
     "sku": "VS-PHOTO-208",
     "category": "photo-bracelets",
     "categories": [
-      "necklaces",
       "photo-bracelets",
       "custom"
     ],
@@ -18929,9 +18299,9 @@ var PRODUCTS = [
       "en": "Choose a color, upload the photo you want inside the pendant and add it to cart."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "photo-projection-necklace-mom-heart-209",
@@ -18940,7 +18310,6 @@ var PRODUCTS = [
     "sku": "VS-PHOTO-209",
     "category": "photo-bracelets",
     "categories": [
-      "necklaces",
       "photo-bracelets",
       "custom"
     ],
@@ -19057,9 +18426,9 @@ var PRODUCTS = [
       "en": "Choose a color, upload the photo you want inside the pendant and add it to cart."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "photo-projection-necklace-open-heart-210",
@@ -19068,7 +18437,6 @@ var PRODUCTS = [
     "sku": "VS-PHOTO-210",
     "category": "photo-bracelets",
     "categories": [
-      "necklaces",
       "photo-bracelets",
       "custom"
     ],
@@ -19185,9 +18553,9 @@ var PRODUCTS = [
       "en": "Choose a color, upload the photo you want inside the pendant and add it to cart."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "photo-projection-necklace-decorated-heart-211",
@@ -19196,7 +18564,6 @@ var PRODUCTS = [
     "sku": "VS-PHOTO-211",
     "category": "photo-bracelets",
     "categories": [
-      "necklaces",
       "photo-bracelets",
       "custom"
     ],
@@ -19313,9 +18680,9 @@ var PRODUCTS = [
       "en": "Choose a color, upload the photo you want inside the pendant and add it to cart."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "photo-projection-necklace-crystal-heart-212",
@@ -19324,7 +18691,6 @@ var PRODUCTS = [
     "sku": "VS-PHOTO-212",
     "category": "photo-bracelets",
     "categories": [
-      "necklaces",
       "photo-bracelets",
       "custom"
     ],
@@ -19441,9 +18807,9 @@ var PRODUCTS = [
       "en": "Choose a color, upload the photo you want inside the pendant and add it to cart."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "photo-projection-necklace-star-of-david-213",
@@ -19452,7 +18818,6 @@ var PRODUCTS = [
     "sku": "VS-PHOTO-213",
     "category": "photo-bracelets",
     "categories": [
-      "necklaces",
       "photo-bracelets",
       "custom"
     ],
@@ -19569,9 +18934,9 @@ var PRODUCTS = [
       "en": "Choose a color, upload the photo you want inside the pendant and add it to cart."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "photo-projection-necklace-double-heart-214",
@@ -19580,7 +18945,6 @@ var PRODUCTS = [
     "sku": "VS-PHOTO-214",
     "category": "photo-bracelets",
     "categories": [
-      "necklaces",
       "photo-bracelets",
       "custom"
     ],
@@ -19697,9 +19061,9 @@ var PRODUCTS = [
       "en": "Choose a color, upload the photo you want inside the pendant and add it to cart."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "photo-projection-necklace-elegant-heart-215",
@@ -19708,7 +19072,6 @@ var PRODUCTS = [
     "sku": "VS-PHOTO-215",
     "category": "photo-bracelets",
     "categories": [
-      "necklaces",
       "photo-bracelets",
       "custom"
     ],
@@ -19825,9 +19188,9 @@ var PRODUCTS = [
       "en": "Choose a color, upload the photo you want inside the pendant and add it to cart."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "photo-projection-necklace-floral-heart-216",
@@ -19836,7 +19199,6 @@ var PRODUCTS = [
     "sku": "VS-PHOTO-216",
     "category": "photo-bracelets",
     "categories": [
-      "necklaces",
       "photo-bracelets",
       "custom"
     ],
@@ -19953,9 +19315,9 @@ var PRODUCTS = [
       "en": "Choose a color, upload the photo you want inside the pendant and add it to cart."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "royal-crystal-bracelet-silver-217",
@@ -20060,9 +19422,9 @@ var PRODUCTS = [
       "en": "Choose your preferred color. The product page includes all 8 images of the silver and gold versions."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "royal-crystal-bracelet-gold-218",
@@ -20167,9 +19529,9 @@ var PRODUCTS = [
       "en": "Choose your preferred color. The product page includes all 8 images of the silver and gold versions."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "floral-zircon-bracelet-silver-219",
@@ -20270,9 +19632,9 @@ var PRODUCTS = [
       "en": "Choose your preferred color. The product page includes all 4 images of the silver and gold versions."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "floral-zircon-bracelet-gold-220",
@@ -20373,9 +19735,9 @@ var PRODUCTS = [
       "en": "Choose your preferred color. The product page includes all 4 images of the silver and gold versions."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "halo-zircon-bracelet-silver-221",
@@ -20476,9 +19838,9 @@ var PRODUCTS = [
       "en": "Choose your preferred color. The product page includes all 4 images of the silver and gold versions."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "halo-zircon-bracelet-gold-222",
@@ -20579,9 +19941,9 @@ var PRODUCTS = [
       "en": "Choose your preferred color. The product page includes all 4 images of the silver and gold versions."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "aurora-zircon-ring-gold-223",
@@ -20739,9 +20101,9 @@ var PRODUCTS = [
       "en": "Choose a color and size. Each product page shows all 6 images of the silver and gold versions."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "aurora-zircon-ring-silver-224",
@@ -20899,9 +20261,9 @@ var PRODUCTS = [
       "en": "Choose a color and size. Each product page shows all 6 images of the silver and gold versions."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "classic-crown-ring-silver-225",
@@ -21060,9 +20422,9 @@ var PRODUCTS = [
       "en": "Choose a color and size. The product page displays all 7 images of the silver and gold versions."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "classic-crown-ring-gold-226",
@@ -21221,9 +20583,9 @@ var PRODUCTS = [
       "en": "Choose a color and size. The product page displays all 7 images of the silver and gold versions."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "heart-solitaire-ring-silver-227",
@@ -21379,9 +20741,9 @@ var PRODUCTS = [
       "en": "Choose a color and size. The product page displays all 4 images of the silver and gold versions."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "heart-solitaire-ring-gold-228",
@@ -21537,9 +20899,9 @@ var PRODUCTS = [
       "en": "Choose a color and size. The product page displays all 4 images of the silver and gold versions."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "classic-tennis-ring-gold-229",
@@ -21711,9 +21073,9 @@ var PRODUCTS = [
       "en": "Choose a color and size. The product page displays all 8 images of the silver and gold versions."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "classic-tennis-ring-silver-230",
@@ -21885,9 +21247,9 @@ var PRODUCTS = [
       "en": "Choose a color and size. The product page displays all 8 images of the silver and gold versions."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "butterfly-double-ring-gold-231",
@@ -21952,7 +21314,7 @@ var PRODUCTS = [
       }
     ],
     "defaultColorId": "gold",
-  "cardTitle": {
+    "cardTitle": {
       "he": "טבעת פרפר כפולה - צבע זהב",
       "en": "Double Butterfly Ring - Gold"
     },
@@ -21987,9 +21349,9 @@ var PRODUCTS = [
       "en": "Choose a color. The product page displays all 4 images of the silver and gold versions."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "butterfly-double-ring-silver-232",
@@ -22089,541 +21451,540 @@ var PRODUCTS = [
       "en": "Choose a color. The product page displays all 4 images of the silver and gold versions."
     },
     "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
-  },
-{
-  "id": "marquise-open-ring-silver-233",
-  "slug": "product-233",
-  "urlSlug": "marquise-open-ring-silver",
-  "sku": "VS-RING-233",
-  "category": "rings",
-  "categories": [
-    "rings"
-  ],
-  "badge": {
-    "he": "Sterling Silver 999",
-    "en": "Sterling Silver 999"
-  },
-  "cardMode": "view",
-  "hideMessageCard": true,
-  "cardImage": "images/products/product-233/product-233-1.png",
-  "hoverImage": "images/products/product-233/product-233-2.png",
-  "images": [
-    "images/products/product-233/product-233-1.png",
-    "images/products/product-233/product-233-2.png",
-    "images/products/product-234/product-234-1.png",
-    "images/products/product-234/product-234-2.png",
-    "images/products/product-233/product-233-5.png"
-  ],
-  "showAllGalleryThumbs": true,
-  "price": 169.9,
-  "title": {
-    "he": "טבעת מרקיזה פתוחה - צבע כסף",
-    "en": "Open Marquise Ring - Silver"
-  },
-  "subtitle": {
-    "he": "Sterling Silver 999 · טבעת פתוחה עדינה · לבחירה בצבע כסף או זהב",
-    "en": "Sterling Silver 999 · Delicate open ring · choose silver or gold"
-  },
-  "colorHeading": {
-    "he": "בחרו צבע",
-    "en": "Choose color"
-  },
-  "colorRequiredText": {
-    "he": "נא לבחור צבע",
-    "en": "Please choose a color"
-  },
-  "colorDisplay": "color-row",
-  "colors": [
-    {
-      "id": "silver",
-      "label": {
-        "he": "כסף",
-        "en": "Silver"
-      },
-      "swatch": "linear-gradient(135deg,#fbfbfb 0%,#bfc5cc 48%,#f7f8fa 72%,#9da4ac 100%)",
-      "image": "images/products/product-233/product-233-1.png"
-    },
-    {
-      "id": "gold",
-      "label": {
-        "he": "זהב",
-        "en": "Gold"
-      },
-      "swatch": "linear-gradient(135deg,#fff0a8 0%,#d5a233 48%,#ffe28a 72%,#b67d18 100%)",
-      "image": "images/products/product-234/product-234-1.png"
+      "min": 9,
+      "max": 14
     }
-  ],
-  "defaultColorId": "silver",
-  "cardTitle": {
-    "he": "טבעת מרקיזה פתוחה - צבע כסף",
-    "en": "Open Marquise Ring - Silver"
   },
-  "cardMessage": {
-    "he": "טבעת פתוחה ועדינה מכסף סטרלינג 999 עם זירקונים, לבחירה בכסף או זהב.",
-    "en": "A delicate open ring in 999 sterling silver with zircon stones. Available in silver or gold."
-  },
-  "signature": {
-    "he": "",
-    "en": ""
-  },
-  "details": {
-    "he": [
-      "חומר: Sterling Silver 999",
-      "אבנים: זירקון",
-      "עיצוב: טבעת פתוחה עם אבני מרקיזה וטיפה",
-      "צבעים לבחירה: כסף או זהב",
-      "מחיר: 169.90 ₪",
-      "הגלריה כוללת את כל 5 התמונות של גרסאות הכסף והזהב"
+  {
+    "id": "marquise-open-ring-silver-233",
+    "slug": "product-233",
+    "urlSlug": "marquise-open-ring-silver",
+    "sku": "VS-RING-233",
+    "category": "rings",
+    "categories": [
+      "rings"
     ],
-    "en": [
-      "Material: 999 Sterling Silver",
-      "Stones: Zircon",
-      "Design: Open ring with marquise and pear-cut stones",
-      "Available colors: Silver or Gold",
-      "Price: ₪169.90",
-      "Gallery includes all 5 images of the silver and gold versions"
-    ]
-  },
-  "afterText": {
-    "he": "בחרו צבע. בעמוד המוצר מוצגות כל 5 התמונות של גרסאות הכסף והזהב.",
-    "en": "Choose a color. The product page displays all 5 images of the silver and gold versions."
-  },
-  "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
-},
-{
-  "id": "marquise-open-ring-gold-234",
-  "slug": "product-234",
-  "urlSlug": "marquise-open-ring-gold",
-  "sku": "VS-RING-234",
-  "category": "rings",
-  "categories": [
-    "rings"
-  ],
-  "badge": {
-    "he": "Sterling Silver 999",
-    "en": "Sterling Silver 999"
-  },
-  "cardMode": "view",
-  "hideMessageCard": true,
-  "cardImage": "images/products/product-234/product-234-1.png",
-  "hoverImage": "images/products/product-234/product-234-2.png",
-  "images": [
-    "images/products/product-234/product-234-1.png",
-    "images/products/product-234/product-234-2.png",
-    "images/products/product-233/product-233-1.png",
-    "images/products/product-233/product-233-2.png",
-    "images/products/product-234/product-234-5.png"
-  ],
-  "showAllGalleryThumbs": true,
-  "price": 169.9,
-  "title": {
-    "he": "טבעת מרקיזה פתוחה - צבע זהב",
-    "en": "Open Marquise Ring - Gold"
-  },
-  "subtitle": {
-    "he": "Sterling Silver 999 · טבעת פתוחה עדינה · לבחירה בצבע כסף או זהב",
-    "en": "Sterling Silver 999 · Delicate open ring · choose silver or gold"
-  },
-  "colorHeading": {
-    "he": "בחרו צבע",
-    "en": "Choose color"
-  },
-  "colorRequiredText": {
-    "he": "נא לבחור צבע",
-    "en": "Please choose a color"
-  },
-  "colorDisplay": "color-row",
-  "colors": [
-    {
-      "id": "silver",
-      "label": {
-        "he": "כסף",
-        "en": "Silver"
-      },
-      "swatch": "linear-gradient(135deg,#fbfbfb 0%,#bfc5cc 48%,#f7f8fa 72%,#9da4ac 100%)",
-      "image": "images/products/product-233/product-233-1.png"
+    "badge": {
+      "he": "Sterling Silver 999",
+      "en": "Sterling Silver 999"
     },
-    {
-      "id": "gold",
-      "label": {
-        "he": "זהב",
-        "en": "Gold"
-      },
-      "swatch": "linear-gradient(135deg,#fff0a8 0%,#d5a233 48%,#ffe28a 72%,#b67d18 100%)",
-      "image": "images/products/product-234/product-234-1.png"
-    }
-  ],
-  "defaultColorId": "gold",
-  "cardTitle": {
-    "he": "טבעת מרקיזה פתוחה - צבע זהב",
-    "en": "Open Marquise Ring - Gold"
-  },
-  "cardMessage": {
-    "he": "טבעת פתוחה ועדינה מכסף סטרלינג 999 עם זירקונים, לבחירה בכסף או זהב.",
-    "en": "A delicate open ring in 999 sterling silver with zircon stones. Available in silver or gold."
-  },
-  "signature": {
-    "he": "",
-    "en": ""
-  },
-  "details": {
-    "he": [
-      "חומר: Sterling Silver 999",
-      "אבנים: זירקון",
-      "עיצוב: טבעת פתוחה עם אבני מרקיזה וטיפה",
-      "צבעים לבחירה: כסף או זהב",
-      "מחיר: 169.90 ₪",
-      "הגלריה כוללת את כל 5 התמונות של גרסאות הכסף והזהב"
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-233/product-233-1.png",
+    "hoverImage": "images/products/product-233/product-233-2.png",
+    "images": [
+      "images/products/product-233/product-233-1.png",
+      "images/products/product-233/product-233-2.png",
+      "images/products/product-234/product-234-1.png",
+      "images/products/product-234/product-234-2.png",
+      "images/products/product-233/product-233-5.png"
     ],
-    "en": [
-      "Material: 999 Sterling Silver",
-      "Stones: Zircon",
-      "Design: Open ring with marquise and pear-cut stones",
-      "Available colors: Silver or Gold",
-      "Price: ₪169.90",
-      "Gallery includes all 5 images of the silver and gold versions"
-    ]
-  },
-  "afterText": {
-    "he": "בחרו צבע. בעמוד המוצר מוצגות כל 5 התמונות של גרסאות הכסף והזהב.",
-    "en": "Choose a color. The product page displays all 5 images of the silver and gold versions."
-  },
-  "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
-},
-{
-  "id": "zircon-clover-ring-silver-235",
-  "slug": "product-235",
-  "urlSlug": "zircon-clover-ring-silver",
-  "sku": "VS-RING-235",
-  "category": "rings",
-  "categories": [
-    "rings"
-  ],
-  "badge": {
-    "he": "Sterling Silver 925",
-    "en": "Sterling Silver 925"
-  },
-  "cardMode": "view",
-  "hideMessageCard": true,
-  "cardImage": "images/products/product-235/product-235-1.png",
-  "hoverImage": "images/products/product-235/product-235-2.png",
-  "images": [
-    "images/products/product-235/product-235-1.png",
-    "images/products/product-235/product-235-2.png",
-    "images/products/product-235/product-235-3.png",
-    "images/products/product-236/product-236-1.png",
-    "images/products/product-236/product-236-2.png",
-    "images/products/product-236/product-236-3.png"
-  ],
-  "showAllGalleryThumbs": true,
-  "price": 169.9,
-  "title": {
-    "he": "טבעת תלתן זירקון - צבע כסף",
-    "en": "Zircon Clover Ring - Silver"
-  },
-  "subtitle": {
-    "he": "Sterling Silver 925 · משובצת זירקון · לבחירה בצבע כסף או זהב ובמידות 5–8",
-    "en": "Sterling Silver 925 · Zircon set · choose silver or gold in sizes 5–8"
-  },
-  "sizeHeading": {
-    "he": "בחרו מידה",
-    "en": "Choose size"
-  },
-  "sizes": [
-    {
-      "id": "5",
-      "addPrice": 0,
-      "priceLabel": {
-        "he": "169.90 ₪",
-        "en": "₪169.90"
-      },
-      "label": {
-        "he": "5",
-        "en": "5"
-      }
+    "showAllGalleryThumbs": true,
+    "price": 169.9,
+    "title": {
+      "he": "טבעת מרקיזה פתוחה - צבע כסף",
+      "en": "Open Marquise Ring - Silver"
     },
-    {
-      "id": "6",
-      "addPrice": 2.9,
-      "priceLabel": {
-        "he": "172.80 ₪",
-        "en": "₪172.80"
-      },
-      "label": {
-        "he": "6",
-        "en": "6"
-      }
+    "subtitle": {
+      "he": "Sterling Silver 999 · טבעת פתוחה עדינה · לבחירה בצבע כסף או זהב",
+      "en": "Sterling Silver 999 · Delicate open ring · choose silver or gold"
     },
-    {
-      "id": "7",
-      "addPrice": 5.8,
-      "priceLabel": {
-        "he": "175.70 ₪",
-        "en": "₪175.70"
-      },
-      "label": {
-        "he": "7",
-        "en": "7"
-      }
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
     },
-    {
-      "id": "8",
-      "addPrice": 8.7,
-      "priceLabel": {
-        "he": "178.60 ₪",
-        "en": "₪178.60"
-      },
-      "label": {
-        "he": "8",
-        "en": "8"
-      }
-    }
-  ],
-  "colorHeading": {
-    "he": "בחרו צבע",
-    "en": "Choose color"
-  },
-  "colorRequiredText": {
-    "he": "נא לבחור צבע",
-    "en": "Please choose a color"
-  },
-  "colorDisplay": "color-row",
-  "colors": [
-    {
-      "id": "silver",
-      "label": {
-        "he": "כסף",
-        "en": "Silver"
-      },
-      "swatch": "linear-gradient(135deg,#fbfbfb 0%,#bfc5cc 48%,#f7f8fa 72%,#9da4ac 100%)",
-      "image": "images/products/product-235/product-235-1.png"
+    "colorRequiredText": {
+      "he": "נא לבחור צבע",
+      "en": "Please choose a color"
     },
-    {
-      "id": "gold",
-      "label": {
-        "he": "זהב",
-        "en": "Gold"
+    "colorDisplay": "color-row",
+    "colors": [
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "swatch": "linear-gradient(135deg,#fbfbfb 0%,#bfc5cc 48%,#f7f8fa 72%,#9da4ac 100%)",
+        "image": "images/products/product-233/product-233-1.png"
       },
-      "swatch": "linear-gradient(135deg,#fff0a8 0%,#d5a233 48%,#ffe28a 72%,#b67d18 100%)",
-      "image": "images/products/product-236/product-236-1.png"
-    }
-  ],
-  "defaultColorId": "silver",
-  "cardTitle": {
-    "he": "טבעת תלתן זירקון - צבע כסף",
-    "en": "Zircon Clover Ring - Silver"
-  },
-  "cardMessage": {
-    "he": "טבעת תלתן עדינה מכסף סטרלינג 925, משובצת אבני זירקון. לבחירה בכסף או זהב ובמידות 5–8.",
-    "en": "A delicate 925 sterling silver clover ring set with zircon stones. Available in silver or gold, sizes 5–8."
-  },
-  "signature": {
-    "he": "",
-    "en": ""
-  },
-  "details": {
-    "he": [
-      "חומר: Sterling Silver 925",
-      "אבנים: זירקון",
-      "עיצוב: תלתן ארבעה עלים עם חישוק כדורי עדין",
-      "צבעים לבחירה: כסף או זהב",
-      "מידות לבחירה: 5, 6, 7, 8",
-      "מחיר התחלתי: 169.90 ₪",
-      "כל עלייה במידה מוסיפה 2.90 ₪ למחיר",
-      "הגלריה כוללת את כל 6 התמונות של גרסאות הכסף והזהב"
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "swatch": "linear-gradient(135deg,#fff0a8 0%,#d5a233 48%,#ffe28a 72%,#b67d18 100%)",
+        "image": "images/products/product-234/product-234-1.png"
+      }
     ],
-    "en": [
-      "Material: 925 Sterling Silver",
-      "Stones: Zircon",
-      "Design: Four-leaf clover with a delicate beaded band",
-      "Available colors: Silver or Gold",
-      "Available sizes: 5, 6, 7, 8",
-      "Starting price: ₪169.90",
-      "Each size step adds ₪2.90 to the price",
-      "Gallery includes all 6 images of the silver and gold versions"
-    ]
-  },
-  "afterText": {
-    "he": "בחרו צבע ומידה. בעמוד המוצר מוצגות כל 6 התמונות של גרסאות הכסף והזהב.",
-    "en": "Choose a color and size. The product page displays all 6 images of the silver and gold versions."
-  },
-  "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
-},
-{
-  "id": "zircon-clover-ring-gold-236",
-  "slug": "product-236",
-  "urlSlug": "zircon-clover-ring-gold",
-  "sku": "VS-RING-236",
-  "category": "rings",
-  "categories": [
-    "rings"
-  ],
-  "badge": {
-    "he": "Sterling Silver 925",
-    "en": "Sterling Silver 925"
-  },
-  "cardMode": "view",
-  "hideMessageCard": true,
-  "cardImage": "images/products/product-236/product-236-1.png",
-  "hoverImage": "images/products/product-236/product-236-2.png",
-  "images": [
-    "images/products/product-236/product-236-1.png",
-    "images/products/product-236/product-236-2.png",
-    "images/products/product-236/product-236-3.png",
-    "images/products/product-235/product-235-1.png",
-    "images/products/product-235/product-235-2.png",
-    "images/products/product-235/product-235-3.png"
-  ],
-  "showAllGalleryThumbs": true,
-  "price": 169.9,
-  "title": {
-    "he": "טבעת תלתן זירקון - צבע זהב",
-    "en": "Zircon Clover Ring - Gold"
-  },
-  "subtitle": {
-    "he": "Sterling Silver 925 · משובצת זירקון · לבחירה בצבע כסף או זהב ובמידות 5–8",
-    "en": "Sterling Silver 925 · Zircon set · choose silver or gold in sizes 5–8"
-  },
-  "sizeHeading": {
-    "he": "בחרו מידה",
-    "en": "Choose size"
-  },
-  "sizes": [
-    {
-      "id": "5",
-      "addPrice": 0,
-      "priceLabel": {
-        "he": "169.90 ₪",
-        "en": "₪169.90"
-      },
-      "label": {
-        "he": "5",
-        "en": "5"
-      }
+    "defaultColorId": "silver",
+    "cardTitle": {
+      "he": "טבעת מרקיזה פתוחה - צבע כסף",
+      "en": "Open Marquise Ring - Silver"
     },
-    {
-      "id": "6",
-      "addPrice": 2.9,
-      "priceLabel": {
-        "he": "172.80 ₪",
-        "en": "₪172.80"
-      },
-      "label": {
-        "he": "6",
-        "en": "6"
-      }
+    "cardMessage": {
+      "he": "טבעת פתוחה ועדינה מכסף סטרלינג 999 עם זירקונים, לבחירה בכסף או זהב.",
+      "en": "A delicate open ring in 999 sterling silver with zircon stones. Available in silver or gold."
     },
-    {
-      "id": "7",
-      "addPrice": 5.8,
-      "priceLabel": {
-        "he": "175.70 ₪",
-        "en": "₪175.70"
-      },
-      "label": {
-        "he": "7",
-        "en": "7"
-      }
+    "signature": {
+      "he": "",
+      "en": ""
     },
-    {
-      "id": "8",
-      "addPrice": 8.7,
-      "priceLabel": {
-        "he": "178.60 ₪",
-        "en": "₪178.60"
-      },
-      "label": {
-        "he": "8",
-        "en": "8"
-      }
+    "details": {
+      "he": [
+        "חומר: Sterling Silver 999",
+        "אבנים: זירקון",
+        "עיצוב: טבעת פתוחה עם אבני מרקיזה וטיפה",
+        "צבעים לבחירה: כסף או זהב",
+        "מחיר: 169.90 ₪",
+        "הגלריה כוללת את כל 5 התמונות של גרסאות הכסף והזהב"
+      ],
+      "en": [
+        "Material: 999 Sterling Silver",
+        "Stones: Zircon",
+        "Design: Open ring with marquise and pear-cut stones",
+        "Available colors: Silver or Gold",
+        "Price: ₪169.90",
+        "Gallery includes all 5 images of the silver and gold versions"
+      ]
+    },
+    "afterText": {
+      "he": "בחרו צבע. בעמוד המוצר מוצגות כל 5 התמונות של גרסאות הכסף והזהב.",
+      "en": "Choose a color. The product page displays all 5 images of the silver and gold versions."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
     }
-  ],
-  "colorHeading": {
-    "he": "בחרו צבע",
-    "en": "Choose color"
   },
-  "colorRequiredText": {
-    "he": "נא לבחור צבע",
-    "en": "Please choose a color"
-  },
-  "colorDisplay": "color-row",
-  "colors": [
-    {
-      "id": "silver",
-      "label": {
-        "he": "כסף",
-        "en": "Silver"
-      },
-      "swatch": "linear-gradient(135deg,#fbfbfb 0%,#bfc5cc 48%,#f7f8fa 72%,#9da4ac 100%)",
-      "image": "images/products/product-235/product-235-1.png"
-    },
-    {
-      "id": "gold",
-      "label": {
-        "he": "זהב",
-        "en": "Gold"
-      },
-      "swatch": "linear-gradient(135deg,#fff0a8 0%,#d5a233 48%,#ffe28a 72%,#b67d18 100%)",
-      "image": "images/products/product-236/product-236-1.png"
-    }
-  ],
-  "defaultColorId": "gold",
-  "cardTitle": {
-    "he": "טבעת תלתן זירקון - צבע זהב",
-    "en": "Zircon Clover Ring - Gold"
-  },
-  "cardMessage": {
-    "he": "טבעת תלתן עדינה מכסף סטרלינג 925, משובצת אבני זירקון. לבחירה בכסף או זהב ובמידות 5–8.",
-    "en": "A delicate 925 sterling silver clover ring set with zircon stones. Available in silver or gold, sizes 5–8."
-  },
-  "signature": {
-    "he": "",
-    "en": ""
-  },
-  "details": {
-    "he": [
-      "חומר: Sterling Silver 925",
-      "אבנים: זירקון",
-      "עיצוב: תלתן ארבעה עלים עם חישוק כדורי עדין",
-      "צבעים לבחירה: כסף או זהב",
-      "מידות לבחירה: 5, 6, 7, 8",
-      "מחיר התחלתי: 169.90 ₪",
-      "כל עלייה במידה מוסיפה 2.90 ₪ למחיר",
-      "הגלריה כוללת את כל 6 התמונות של גרסאות הכסף והזהב"
+  {
+    "id": "marquise-open-ring-gold-234",
+    "slug": "product-234",
+    "urlSlug": "marquise-open-ring-gold",
+    "sku": "VS-RING-234",
+    "category": "rings",
+    "categories": [
+      "rings"
     ],
-    "en": [
-      "Material: 925 Sterling Silver",
-      "Stones: Zircon",
-      "Design: Four-leaf clover with a delicate beaded band",
-      "Available colors: Silver or Gold",
-      "Available sizes: 5, 6, 7, 8",
-      "Starting price: ₪169.90",
-      "Each size step adds ₪2.90 to the price",
-      "Gallery includes all 6 images of the silver and gold versions"
-    ]
+    "badge": {
+      "he": "Sterling Silver 999",
+      "en": "Sterling Silver 999"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-234/product-234-1.png",
+    "hoverImage": "images/products/product-234/product-234-2.png",
+    "images": [
+      "images/products/product-234/product-234-1.png",
+      "images/products/product-234/product-234-2.png",
+      "images/products/product-233/product-233-1.png",
+      "images/products/product-233/product-233-2.png",
+      "images/products/product-234/product-234-5.png"
+    ],
+    "showAllGalleryThumbs": true,
+    "price": 169.9,
+    "title": {
+      "he": "טבעת מרקיזה פתוחה - צבע זהב",
+      "en": "Open Marquise Ring - Gold"
+    },
+    "subtitle": {
+      "he": "Sterling Silver 999 · טבעת פתוחה עדינה · לבחירה בצבע כסף או זהב",
+      "en": "Sterling Silver 999 · Delicate open ring · choose silver or gold"
+    },
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "colorRequiredText": {
+      "he": "נא לבחור צבע",
+      "en": "Please choose a color"
+    },
+    "colorDisplay": "color-row",
+    "colors": [
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "swatch": "linear-gradient(135deg,#fbfbfb 0%,#bfc5cc 48%,#f7f8fa 72%,#9da4ac 100%)",
+        "image": "images/products/product-233/product-233-1.png"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "swatch": "linear-gradient(135deg,#fff0a8 0%,#d5a233 48%,#ffe28a 72%,#b67d18 100%)",
+        "image": "images/products/product-234/product-234-1.png"
+      }
+    ],
+    "defaultColorId": "gold",
+    "cardTitle": {
+      "he": "טבעת מרקיזה פתוחה - צבע זהב",
+      "en": "Open Marquise Ring - Gold"
+    },
+    "cardMessage": {
+      "he": "טבעת פתוחה ועדינה מכסף סטרלינג 999 עם זירקונים, לבחירה בכסף או זהב.",
+      "en": "A delicate open ring in 999 sterling silver with zircon stones. Available in silver or gold."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "חומר: Sterling Silver 999",
+        "אבנים: זירקון",
+        "עיצוב: טבעת פתוחה עם אבני מרקיזה וטיפה",
+        "צבעים לבחירה: כסף או זהב",
+        "מחיר: 169.90 ₪",
+        "הגלריה כוללת את כל 5 התמונות של גרסאות הכסף והזהב"
+      ],
+      "en": [
+        "Material: 999 Sterling Silver",
+        "Stones: Zircon",
+        "Design: Open ring with marquise and pear-cut stones",
+        "Available colors: Silver or Gold",
+        "Price: ₪169.90",
+        "Gallery includes all 5 images of the silver and gold versions"
+      ]
+    },
+    "afterText": {
+      "he": "בחרו צבע. בעמוד המוצר מוצגות כל 5 התמונות של גרסאות הכסף והזהב.",
+      "en": "Choose a color. The product page displays all 5 images of the silver and gold versions."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    }
   },
-  "afterText": {
-    "he": "בחרו צבע ומידה. בעמוד המוצר מוצגות כל 6 התמונות של גרסאות הכסף והזהב.",
-    "en": "Choose a color and size. The product page displays all 6 images of the silver and gold versions."
+  {
+    "id": "zircon-clover-ring-silver-235",
+    "slug": "product-235",
+    "urlSlug": "zircon-clover-ring-silver",
+    "sku": "VS-RING-235",
+    "category": "rings",
+    "categories": [
+      "rings"
+    ],
+    "badge": {
+      "he": "Sterling Silver 925",
+      "en": "Sterling Silver 925"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-235/product-235-1.png",
+    "hoverImage": "images/products/product-235/product-235-2.png",
+    "images": [
+      "images/products/product-235/product-235-1.png",
+      "images/products/product-235/product-235-2.png",
+      "images/products/product-235/product-235-3.png",
+      "images/products/product-236/product-236-1.png",
+      "images/products/product-236/product-236-2.png",
+      "images/products/product-236/product-236-3.png"
+    ],
+    "showAllGalleryThumbs": true,
+    "price": 169.9,
+    "title": {
+      "he": "טבעת תלתן זירקון - צבע כסף",
+      "en": "Zircon Clover Ring - Silver"
+    },
+    "subtitle": {
+      "he": "Sterling Silver 925 · משובצת זירקון · לבחירה בצבע כסף או זהב ובמידות 5–8",
+      "en": "Sterling Silver 925 · Zircon set · choose silver or gold in sizes 5–8"
+    },
+    "sizeHeading": {
+      "he": "בחרו מידה",
+      "en": "Choose size"
+    },
+    "sizes": [
+      {
+        "id": "5",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "169.90 ₪",
+          "en": "₪169.90"
+        },
+        "label": {
+          "he": "5",
+          "en": "5"
+        }
+      },
+      {
+        "id": "6",
+        "addPrice": 2.9,
+        "priceLabel": {
+          "he": "172.80 ₪",
+          "en": "₪172.80"
+        },
+        "label": {
+          "he": "6",
+          "en": "6"
+        }
+      },
+      {
+        "id": "7",
+        "addPrice": 5.8,
+        "priceLabel": {
+          "he": "175.70 ₪",
+          "en": "₪175.70"
+        },
+        "label": {
+          "he": "7",
+          "en": "7"
+        }
+      },
+      {
+        "id": "8",
+        "addPrice": 8.7,
+        "priceLabel": {
+          "he": "178.60 ₪",
+          "en": "₪178.60"
+        },
+        "label": {
+          "he": "8",
+          "en": "8"
+        }
+      }
+    ],
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "colorRequiredText": {
+      "he": "נא לבחור צבע",
+      "en": "Please choose a color"
+    },
+    "colorDisplay": "color-row",
+    "colors": [
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "swatch": "linear-gradient(135deg,#fbfbfb 0%,#bfc5cc 48%,#f7f8fa 72%,#9da4ac 100%)",
+        "image": "images/products/product-235/product-235-1.png"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "swatch": "linear-gradient(135deg,#fff0a8 0%,#d5a233 48%,#ffe28a 72%,#b67d18 100%)",
+        "image": "images/products/product-236/product-236-1.png"
+      }
+    ],
+    "defaultColorId": "silver",
+    "cardTitle": {
+      "he": "טבעת תלתן זירקון - צבע כסף",
+      "en": "Zircon Clover Ring - Silver"
+    },
+    "cardMessage": {
+      "he": "טבעת תלתן עדינה מכסף סטרלינג 925, משובצת אבני זירקון. לבחירה בכסף או זהב ובמידות 5–8.",
+      "en": "A delicate 925 sterling silver clover ring set with zircon stones. Available in silver or gold, sizes 5–8."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "חומר: Sterling Silver 925",
+        "אבנים: זירקון",
+        "עיצוב: תלתן ארבעה עלים עם חישוק כדורי עדין",
+        "צבעים לבחירה: כסף או זהב",
+        "מידות לבחירה: 5, 6, 7, 8",
+        "מחיר התחלתי: 169.90 ₪",
+        "כל עלייה במידה מוסיפה 2.90 ₪ למחיר",
+        "הגלריה כוללת את כל 6 התמונות של גרסאות הכסף והזהב"
+      ],
+      "en": [
+        "Material: 925 Sterling Silver",
+        "Stones: Zircon",
+        "Design: Four-leaf clover with a delicate beaded band",
+        "Available colors: Silver or Gold",
+        "Available sizes: 5, 6, 7, 8",
+        "Starting price: ₪169.90",
+        "Each size step adds ₪2.90 to the price",
+        "Gallery includes all 6 images of the silver and gold versions"
+      ]
+    },
+    "afterText": {
+      "he": "בחרו צבע ומידה. בעמוד המוצר מוצגות כל 6 התמונות של גרסאות הכסף והזהב.",
+      "en": "Choose a color and size. The product page displays all 6 images of the silver and gold versions."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    }
   },
-  "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
+  {
+    "id": "zircon-clover-ring-gold-236",
+    "slug": "product-236",
+    "urlSlug": "zircon-clover-ring-gold",
+    "sku": "VS-RING-236",
+    "category": "rings",
+    "categories": [
+      "rings"
+    ],
+    "badge": {
+      "he": "Sterling Silver 925",
+      "en": "Sterling Silver 925"
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-236/product-236-1.png",
+    "hoverImage": "images/products/product-236/product-236-2.png",
+    "images": [
+      "images/products/product-236/product-236-1.png",
+      "images/products/product-236/product-236-2.png",
+      "images/products/product-236/product-236-3.png",
+      "images/products/product-235/product-235-1.png",
+      "images/products/product-235/product-235-2.png",
+      "images/products/product-235/product-235-3.png"
+    ],
+    "showAllGalleryThumbs": true,
+    "price": 169.9,
+    "title": {
+      "he": "טבעת תלתן זירקון - צבע זהב",
+      "en": "Zircon Clover Ring - Gold"
+    },
+    "subtitle": {
+      "he": "Sterling Silver 925 · משובצת זירקון · לבחירה בצבע כסף או זהב ובמידות 5–8",
+      "en": "Sterling Silver 925 · Zircon set · choose silver or gold in sizes 5–8"
+    },
+    "sizeHeading": {
+      "he": "בחרו מידה",
+      "en": "Choose size"
+    },
+    "sizes": [
+      {
+        "id": "5",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "169.90 ₪",
+          "en": "₪169.90"
+        },
+        "label": {
+          "he": "5",
+          "en": "5"
+        }
+      },
+      {
+        "id": "6",
+        "addPrice": 2.9,
+        "priceLabel": {
+          "he": "172.80 ₪",
+          "en": "₪172.80"
+        },
+        "label": {
+          "he": "6",
+          "en": "6"
+        }
+      },
+      {
+        "id": "7",
+        "addPrice": 5.8,
+        "priceLabel": {
+          "he": "175.70 ₪",
+          "en": "₪175.70"
+        },
+        "label": {
+          "he": "7",
+          "en": "7"
+        }
+      },
+      {
+        "id": "8",
+        "addPrice": 8.7,
+        "priceLabel": {
+          "he": "178.60 ₪",
+          "en": "₪178.60"
+        },
+        "label": {
+          "he": "8",
+          "en": "8"
+        }
+      }
+    ],
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "colorRequiredText": {
+      "he": "נא לבחור צבע",
+      "en": "Please choose a color"
+    },
+    "colorDisplay": "color-row",
+    "colors": [
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "swatch": "linear-gradient(135deg,#fbfbfb 0%,#bfc5cc 48%,#f7f8fa 72%,#9da4ac 100%)",
+        "image": "images/products/product-235/product-235-1.png"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "swatch": "linear-gradient(135deg,#fff0a8 0%,#d5a233 48%,#ffe28a 72%,#b67d18 100%)",
+        "image": "images/products/product-236/product-236-1.png"
+      }
+    ],
+    "defaultColorId": "gold",
+    "cardTitle": {
+      "he": "טבעת תלתן זירקון - צבע זהב",
+      "en": "Zircon Clover Ring - Gold"
+    },
+    "cardMessage": {
+      "he": "טבעת תלתן עדינה מכסף סטרלינג 925, משובצת אבני זירקון. לבחירה בכסף או זהב ובמידות 5–8.",
+      "en": "A delicate 925 sterling silver clover ring set with zircon stones. Available in silver or gold, sizes 5–8."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "חומר: Sterling Silver 925",
+        "אבנים: זירקון",
+        "עיצוב: תלתן ארבעה עלים עם חישוק כדורי עדין",
+        "צבעים לבחירה: כסף או זהב",
+        "מידות לבחירה: 5, 6, 7, 8",
+        "מחיר התחלתי: 169.90 ₪",
+        "כל עלייה במידה מוסיפה 2.90 ₪ למחיר",
+        "הגלריה כוללת את כל 6 התמונות של גרסאות הכסף והזהב"
+      ],
+      "en": [
+        "Material: 925 Sterling Silver",
+        "Stones: Zircon",
+        "Design: Four-leaf clover with a delicate beaded band",
+        "Available colors: Silver or Gold",
+        "Available sizes: 5, 6, 7, 8",
+        "Starting price: ₪169.90",
+        "Each size step adds ₪2.90 to the price",
+        "Gallery includes all 6 images of the silver and gold versions"
+      ]
+    },
+    "afterText": {
+      "he": "בחרו צבע ומידה. בעמוד המוצר מוצגות כל 6 התמונות של גרסאות הכסף והזהב.",
+      "en": "Choose a color and size. The product page displays all 6 images of the silver and gold versions."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    }
   }
-}
-
 ];
 
 var CATEGORIES = [
@@ -22639,37 +22000,7 @@ var CATEGORIES = [
     "label": {
       "he": "תכשיט עם ברכה",
       "en": "Jewelry with a message"
-    },
-    "children": [
-      {
-        "key": "greeting-mom",
-        "label": {
-          "he": "לאמא",
-          "en": "For Mom"
-        }
-      },
-      {
-        "key": "greeting-partner",
-        "label": {
-          "he": "לבת זוג",
-          "en": "For Partner"
-        }
-      },
-      {
-        "key": "greeting-daughter",
-        "label": {
-          "he": "לבת (לילדה)",
-          "en": "For Daughter"
-        }
-      },
-      {
-        "key": "greeting-sister",
-        "label": {
-          "he": "לאחות",
-          "en": "For Sister"
-        }
-      }
-    ]
+    }
   },
   {
     "key": "necklaces",

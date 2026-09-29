@@ -213,8 +213,12 @@ function priceOrder(items, lang, coupon = null) {
         }
         const assetId = clean(item.greeting.assetId, 80).replace(/[^A-Za-z0-9_-]/g, '');
         if (assetId) greetingParts.push((lang === 'he' ? 'קובץ' : 'File') + ': ' + assetId);
-        unitPrice += 35;
-        nameParts.push((lang === 'he' ? 'ברכה אישית (+35 ₪)' : 'Custom greeting (+₪35)') + ': ' + greetingParts.join(' / '));
+        const hasCustomBackground = greetingTemplate === 'template-1' && item.greeting.hasCustomBackground === true;
+        if (hasCustomBackground) greetingParts.push(lang === 'he' ? 'תמונת רקע אישית' : 'Custom background image');
+        const greetingUpgrade = greetingTemplate !== 'template-1' || hasCustomBackground;
+        const greetingPrice = 20 + (greetingUpgrade ? 15 : 0);
+        unitPrice += greetingPrice;
+        nameParts.push((lang === 'he' ? 'ברכה אישית (+' + greetingPrice + ' ₪)' : 'Custom greeting (+₪' + greetingPrice + ')') + ': ' + greetingParts.join(' / '));
       }
     }
 
@@ -226,6 +230,7 @@ function priceOrder(items, lang, coupon = null) {
       price: unitPrice,
       qty: qty,
       total: Number((unitPrice * qty).toFixed(2)),
+      categories: productCollections.slice(),
       isGlasses: productCollections.includes('glasses'),
       isHats: productCollections.includes('hats')
     });

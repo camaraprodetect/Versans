@@ -22,6 +22,12 @@
     return null;
   }
 
+  function greetingAddPrice(greeting) {
+    if (!greeting || typeof greeting !== 'object') return 0;
+    var hasUpgrade = greeting.template !== 'template-1' || (greeting.template === 'template-1' && greeting.hasCustomBackground === true);
+    return 20 + (hasUpgrade ? 15 : 0);
+  }
+
   function optionById(list, id) {
     if (!Array.isArray(list) || !id) return null;
     for (var i = 0; i < list.length; i += 1) if (String(list[i].id) === String(id)) return list[i];
@@ -74,7 +80,7 @@
     var extra = box ? Number(box.addPrice || 0) : 0;
     var sizeExtra = size ? Number(size.addPrice || 0) : 0;
     var packagingExtra = packaging ? Number(packaging.addPrice || 0) : 0;
-    var greetingExtra = item.greeting && typeof item.greeting === 'object' ? 35 : 0;
+    var greetingExtra = greetingAddPrice(item.greeting);
 
     return {
       p: product,
@@ -276,6 +282,43 @@
     return c ? [c] : [];
   }
 
+  var BUY2_GET1_CATEGORIES = ['greeting', 'necklaces', 'bracelets', 'rings', 'photo-bracelets', 'watches'];
+
+  function isBuy2Get1Line(line) {
+    var cats = categories(line);
+    return cats.some(function (category) {
+      return BUY2_GET1_CATEGORIES.indexOf(category) !== -1;
+    });
+  }
+
+  function buy2Get1Qty(lines) {
+    return (lines || []).reduce(function (sum, line) {
+      if (!isBuy2Get1Line(line)) return sum;
+      return sum + Math.max(0, parseInt(line && line.qty, 10) || 0);
+    }, 0);
+  }
+
+  function buy2Get1PotentialSaving(lines) {
+    var prices = [];
+    (lines || []).forEach(function (line) {
+      if (!isBuy2Get1Line(line)) return;
+      var n = Math.max(0, parseInt(line && line.qty, 10) || 0);
+      var price = Number(line && (line.unitPrice != null ? line.unitPrice : (line.price != null ? line.price : (line.p && line.p.price)))) || 0;
+      for (var i = 0; i < n; i += 1) prices.push(price);
+    });
+    if (!prices.length) return 0;
+    prices.sort(function (a, b) { return b - a; });
+
+    // Only value an unfinished 2+1 group. The next product is unknown, so use
+    // the cheapest jewelry item already waiting in that group as the maximum
+    // discount potential. This is used only to rank the meter suggestion; the
+    // real checkout discount is still calculated by pricing.js.
+    var remainder = prices.length % 3;
+    if (!remainder) return 0;
+    var pending = prices.slice(prices.length - remainder);
+    return pending.length ? Math.min.apply(Math, pending) : 0;
+  }
+
   function categoryLines(lines, category) {
     return (lines || []).filter(function (line) {
       return categories(line).indexOf(category) !== -1;
@@ -391,37 +434,34 @@
     };
   }
 
-  function buy2Get1Suggestion(lines, hats) {
-    var total = qty(lines);
-    if (!total) return null;
+  function buy2Get1Suggestion(lines) {
+    var eligible = buy2Get1Qty(lines);
+    if (!eligible) return null;
 
-    // Every full 3-hat bundle is already covered by the 3-for-299.90 offer,
-    // so those hats do not count toward the global 2+1 promotion.
-    var eligible = Math.max(0, total - (Math.floor((hats || 0) / 3) * 3));
     var current = eligible % 3;
     var needed = current === 0 ? 3 : (3 - current);
     var completedGroups = Math.floor(eligible / 3);
     var title;
 
     if (current === 2) {
-      title = 'הוסף עוד פריט וקבל <strong>2+1</strong>';
+      title = 'הוסף עוד תכשיט וקבל <strong>2+1</strong>';
     } else if (current === 1) {
-      title = 'הוסף עוד 2 פריטים וקבל <strong>2+1</strong>';
+      title = 'הוסף עוד 2 תכשיטים וקבל <strong>2+1</strong>';
     } else if (completedGroups > 0) {
-      title = 'מבצע <strong>2+1</strong> הופעל - הוסף עוד 3 פריטים לקבלת מתנה נוספת';
+      title = 'מבצע <strong>2+1</strong> הופעל - הוסף עוד 3 תכשיטים לקבלת מתנה נוספת';
     } else {
-      title = 'הוסף 3 פריטים וקבל <strong>2+1</strong>';
+      title = 'הוסף 3 תכשיטים וקבל <strong>2+1</strong>';
     }
 
     return {
-      type:'buy-2-get-1', priority:10, needed:needed, saving:0,
+      type:'buy-2-get-1', priority:10, needed:needed, saving:buy2Get1PotentialSaving(lines),
       title:title,
-      sub:'מבצע 2+1 על כל שלישיית פריטים זכאית',
+      sub:'מבצע 2+1 על תכשיטים',
       current:current,
       target:3,
       steps:[
-        numberStep(1, 'פריט 1'),
-        numberStep(2, 'פריט 2'),
+        numberStep(1, 'תכשיט 1'),
+        numberStep(2, 'תכשיט 2'),
         promoStep(3, '2+1')
       ]
     };
@@ -435,12 +475,15 @@
     var suggestions = [
       hatSuggestion(lines, hats),
       glassesSuggestion(lines, glasses),
-      buy2Get1Suggestion(lines, hats)
+      buy2Get1Suggestion(lines)
     ].filter(Boolean);
 
     suggestions.sort(function (a, b) {
-      if (a.needed !== b.needed) return a.needed - b.needed;
+      // The meter should lead with the promotion that can save the customer
+      // the most money. If two offers have the same value, prefer the one
+      // requiring fewer additional items.
       if (a.saving !== b.saving) return b.saving - a.saving;
+      if (a.needed !== b.needed) return a.needed - b.needed;
       return b.priority - a.priority;
     });
 
@@ -575,6 +618,57 @@
 
     document.addEventListener('pointerup', endDrag);
     document.addEventListener('pointercancel', endDrag);
+
+    // Touch fallback for iOS/in-app browsers where pointer capture can be unreliable.
+    var touchDrag = null;
+    document.addEventListener('touchstart', function (event) {
+      if (!event.touches || event.touches.length !== 1) return;
+      var handle = event.target.closest && event.target.closest('[data-cart-savings-resizer]');
+      if (!handle) return;
+      var box = handle.closest('[data-cart-savings-resizable]');
+      var content = box && box.querySelector('[data-cart-savings-resizable-content]');
+      var panel = handle.closest('.ov__panel');
+      if (!box || !content || !panel) return;
+
+      var touch = event.touches[0];
+      var contentRect = content.getBoundingClientRect();
+      var panelRect = panel.getBoundingClientRect();
+      var foot = handle.closest('.drawer__foot');
+      var checkout = foot && foot.querySelector('.cart-checkout-cta');
+      var checkoutHeight = checkout ? checkout.getBoundingClientRect().height : 50;
+      var fixedReserve = checkoutHeight + 215;
+      var minHeight = Math.min(82, Math.max(58, content.scrollHeight > 0 ? Math.min(content.scrollHeight, 82) : 58));
+      var maxHeight = Math.max(minHeight, Math.min(360, panelRect.height - fixedReserve));
+
+      touchDrag = {
+        handle:handle, box:box, content:content,
+        startY:touch.clientY, startHeight:contentRect.height,
+        minHeight:minHeight, maxHeight:maxHeight
+      };
+      content.style.height = Math.round(contentRect.height) + 'px';
+      content.style.maxHeight = 'none';
+      box.setAttribute('data-cart-savings-resized', 'true');
+      handle.classList.add('is-dragging');
+      document.documentElement.classList.add('is-resizing-cart-foot');
+      event.preventDefault();
+    }, { passive:false });
+
+    document.addEventListener('touchmove', function (event) {
+      if (!touchDrag || !event.touches || !event.touches.length) return;
+      var nextHeight = touchDrag.startHeight + (touchDrag.startY - event.touches[0].clientY);
+      nextHeight = Math.max(touchDrag.minHeight, Math.min(touchDrag.maxHeight, nextHeight));
+      touchDrag.content.style.height = Math.round(nextHeight) + 'px';
+      event.preventDefault();
+    }, { passive:false });
+
+    function endTouchDrag() {
+      if (!touchDrag) return;
+      touchDrag.handle.classList.remove('is-dragging');
+      document.documentElement.classList.remove('is-resizing-cart-foot');
+      touchDrag = null;
+    }
+    document.addEventListener('touchend', endTouchDrag, { passive:true });
+    document.addEventListener('touchcancel', endTouchDrag, { passive:true });
 
     document.addEventListener('dblclick', function (event) {
       var handle = event.target.closest && event.target.closest('[data-cart-savings-resizer]');

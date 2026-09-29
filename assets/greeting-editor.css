@@ -285,3 +285,21 @@ body.ge-price-confirm-open{overflow:hidden}
 .ge-price-confirm__approve:hover,.ge-price-confirm__cancel:hover{transform:translateY(-1px)}
 .ge-price-confirm__approve:focus-visible,.ge-price-confirm__cancel:focus-visible{outline:3px solid rgba(20,35,51,.16);outline-offset:2px}
 @media(max-width:560px){.ge-price-confirm{padding:14px}.ge-price-confirm__dialog{width:94vw;padding:1.2rem 1rem 1rem;border-radius:20px}.ge-price-confirm__actions{gap:.55rem}.ge-price-confirm__approve,.ge-price-confirm__cancel{flex:1 1 0;min-width:0;padding:.72rem .85rem}}
+
+/* ===== Greeting generator 2026-09-29 ===== */
+.ge-sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+.ge-greeting-generator{margin:0 0 1rem;padding:1rem;border:1px solid #d8e0e6;border-radius:12px;background:linear-gradient(180deg,#f8fbfd 0%,#f4f7f9 100%)}
+.ge-greeting-generator__head{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-bottom:.35rem}
+.ge-greeting-generator__head strong{font-size:.95rem;color:#172330}
+.ge-greeting-generator__head span{display:inline-flex;align-items:center;min-height:26px;padding:.2rem .55rem;border-radius:999px;background:#e7f3f8;color:#345568;font-size:.7rem;font-weight:700;white-space:nowrap}
+.ge-greeting-generator>p{margin:.1rem 0 .8rem;color:#697680;font-size:.78rem;line-height:1.55}
+.ge-greeting-generator__controls{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.55rem;align-items:stretch}
+.ge-greeting-generator select{min-width:0;width:100%;min-height:46px;padding:.65rem .8rem;border:1px solid #cbd5dc;border-radius:8px;background:#fff;color:#172330;outline:none;cursor:pointer}
+.ge-greeting-generator select:focus{border-color:#172330;box-shadow:0 0 0 2px rgba(23,35,48,.08)}
+.ge-greeting-generator button{min-height:46px;padding:.65rem 1rem;border:1px solid #172330;border-radius:8px;background:#172330;color:#fff;font-weight:700;cursor:pointer;white-space:nowrap}
+.ge-greeting-generator button:hover{background:#223447}
+.ge-greeting-generator small{display:block;min-height:18px;margin-top:.55rem;font-size:.72rem;line-height:1.45;color:#77838c}
+.ge-greeting-generator small.is-ok{color:#2f6c45}.ge-greeting-generator small.is-error{color:#9d3434}
+#messageInput.is-generated{animation:geGeneratedMessage .7s ease}
+@keyframes geGeneratedMessage{0%{box-shadow:0 0 0 0 rgba(38,116,145,.28);border-color:#267491}45%{box-shadow:0 0 0 5px rgba(38,116,145,.1);border-color:#267491}100%{box-shadow:0 0 0 0 rgba(38,116,145,0)}}
+@media(max-width:560px){.ge-greeting-generator{padding:.85rem}.ge-greeting-generator__controls{grid-template-columns:1fr}.ge-greeting-generator button,.ge-greeting-generator select{width:100%}.ge-greeting-generator__head{align-items:flex-start}.ge-greeting-generator__head span{margin-top:1px}}

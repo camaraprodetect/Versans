@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&amp;family=Assistant:wght@400;500;600;700&amp;family=David+Libre:wght@400;500;700&amp;family=Frank+Ruhl+Libre:wght@400;500;600;700&amp;family=Heebo:wght@400;500;600;700&amp;family=Miriam+Libre:wght@400;700&amp;family=Noto+Serif+Hebrew:wght@400;500;600;700&amp;family=Rubik:wght@400;500;600;700&amp;family=Secular+One&amp;family=Varela+Round&amp;display=swap" rel="stylesheet"/>
-<link href="assets/greeting-editor.css?v=20260914-cream-gold-title-force-v2" rel="stylesheet"/>
+<link href="assets/greeting-editor.css?v=20260929-generator-v1" rel="stylesheet"/>
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="96x96" href="/images/favicon-96.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
@@ -53,7 +53,7 @@
 </section>
 <section aria-label="עריכת הברכה" class="ge-controls">
 <div class="ge-fieldset">
-<div class="ge-section-title"><span>1</span><div><strong>תבנית</strong><small>בחרו את סגנון הכרטיס. בכל תבנית נפתחים רק השדות שבאמת קיימים בה.</small></div></div>
+<div class="ge-section-title"><span>1</span><div><strong>תבנית</strong><small>בחרו את סגנון הכרטיס שמתאים לברכה שלכם.</small></div></div>
 <div class="ge-template-grid" id="templateOptions">
 <label class="ge-template-option is-selected" data-template="template-1">
 <input checked="" name="template" type="radio" value="template-1"/>
@@ -149,7 +149,7 @@
 </label>
 <button class="ge-color-reset" id="removeBackgroundImage" type="button" hidden>הסר תמונה</button>
 </div>
-<small class="ge-bg-upload-note" id="backgroundImageNote">התמונה תופיע רק בתוך המסגרת הפנימית. אחרי בחירת הקובץ תוכלו להזיז ולקרב אותה לפני האישור.</small>
+<small class="ge-bg-upload-note" id="backgroundImageNote">התמונה תופיע רק בתוך המסגרת הפנימית ותוכלו להזיז ולקרב אותה לפני האישור.</small>
 <span class="ge-bg-upload-status" id="backgroundImageStatus"></span>
 </div>
 </div>
@@ -252,6 +252,21 @@
 </div>
 <div class="ge-fieldset">
 <div class="ge-section-title"><span class="ge-step-number">3</span><div><strong>הברכה</strong><small>אזור הברכה והמיקום שלו קבועים.</small></div></div>
+<div class="ge-greeting-generator" id="greetingGenerator">
+  <div class="ge-greeting-generator__head">
+    <strong>לא יודעים מה לכתוב?</strong>
+    <span id="greetingLibraryCount">300+ ברכות</span>
+  </div>
+  <p>בחרו למי הברכה מיועדת ונציע לכם נוסח מוכן. אפשר לערוך אותו חופשי אחרי היצירה.</p>
+  <div class="ge-greeting-generator__controls">
+    <label class="ge-sr-only" for="greetingRecipient">למי הברכה?</label>
+    <select id="greetingRecipient" aria-label="למי הברכה?">
+      <option value="">למי הברכה?</option>
+    </select>
+    <button id="generateGreeting" type="button">צור לי ברכה</button>
+  </div>
+  <small id="greetingGeneratorStatus" aria-live="polite"></small>
+</div>
 <label for="messageInput">הברכה שלכם</label>
 <textarea id="messageInput" maxlength="170" rows="7" dir="auto"></textarea>
 <div class="ge-counter"><span>מקסימום 170 תווים</span><b id="messageCount">0/170</b></div>
@@ -301,8 +316,8 @@
   <div class="ge-price-confirm__dialog" role="dialog" aria-modal="true" aria-labelledby="greetingPriceConfirmTitle" aria-describedby="greetingPriceConfirmText">
     <p class="ge-price-confirm__eyebrow">ברכה אישית</p>
     <h2 id="greetingPriceConfirmTitle">לאשר את הוספת הברכה?</h2>
-    <p id="greetingPriceConfirmText">הברכה המעוצבת תתווסף למוצר בתוספת של 35 ₪.</p>
-    <div class="ge-price-confirm__price">+35 ₪</div>
+    <p id="greetingPriceConfirmText">עיצוב הברכה האישית יתווסף למוצר בתוספת של 20 ₪.</p>
+    <div class="ge-price-confirm__price">+20 ₪</div>
     <div class="ge-price-confirm__actions">
       <button class="ge-price-confirm__approve" id="greetingPriceConfirmApprove" type="button">אישור ושמירה</button>
       <button class="ge-price-confirm__cancel" id="greetingPriceConfirmCancel" type="button">ביטול</button>
@@ -311,10 +326,11 @@
 </div>
 
 <script src="assets/config.js?v=20260924-whatsapp-restore-v1"></script>
-<script src="assets/products.js?v=20260914-pretty-urls-v1"></script>
+<script src="assets/products.js?v=20260929-custom-greeting-product-v1"></script>
 <script src="assets/routes.js?v=20260914-pretty-urls-v1"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-<script src="assets/greeting-editor.js?v=20260914-pretty-urls-v1"></script>
+<script src="assets/greeting-library.js?v=20260929-v1"></script>
+<script src="assets/greeting-editor.js?v=20260929-custom-greeting-product-v1"></script>
   <script src="/assets/presence.js?v=20260915-presence-v1"></script>
 <script src="assets/accessibility.js?v=20260928-a11y-v1"></script>
 </body>
