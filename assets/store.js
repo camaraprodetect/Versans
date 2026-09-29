@@ -911,9 +911,8 @@
   function allCollectionGroupLimit() {
     /* Home page collection groups:
        Mobile: 2 columns × 1 row = 2 products.
-       Desktop / narrow desktop: exactly 1 row. */
+       Desktop at every width: 3 columns × 1 row = 3 products. */
     if (window.matchMedia('(max-width: 700px)').matches) return 2;
-    if (window.matchMedia('(min-width: 1600px)').matches) return 4;
     return 3;
   }
 
