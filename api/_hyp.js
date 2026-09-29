@@ -104,6 +104,7 @@ function priceOrder(items, lang, coupon = null) {
         err.status = 400;
         throw err;
       }
+      unitPrice += Number(necklace.addPrice || 0);
       nameParts.push(localText(necklace.label, lang) || necklace.id);
     }
 
@@ -136,6 +137,7 @@ function priceOrder(items, lang, coupon = null) {
         err.status = 400;
         throw err;
       }
+      unitPrice += Number(color.addPrice || 0);
       nameParts.push(localText(color.label, lang) || color.id);
     }
 

@@ -1331,8 +1331,10 @@
       var allowsPendingPhoto = pendingRequirements.indexOf('customPhoto') !== -1;
       var allowsPendingCompanion = pendingRequirements.indexOf('companion') !== -1;
       if ((needsNecklace && !necklace) || (needsBox && !box) || (needsSize && !size) || (needsColor && !color) || invalidPackaging || (!companionReady && !allowsPendingCompanion) || (needsCustomName && !customName && !allowsPendingName) || (needsCustomPhoto && (!customPhoto || !customPhoto.assetId) && !allowsPendingPhoto)) return null;
-      var extra = box ? Number(box.addPrice || 0) : 0;
+      var necklaceExtra = necklace ? Number(necklace.addPrice || 0) : 0;
+      var boxExtra = box ? Number(box.addPrice || 0) : 0;
       var sizeExtra = size ? Number(size.addPrice || 0) : 0;
+      var colorExtra = color ? Number(color.addPrice || 0) : 0;
       var packagingExtra = packaging ? Number(packaging.addPrice || 0) : 0;
       var greetingExtra = greetingAddPrice(it.greeting);
       return {
@@ -1349,7 +1351,7 @@
         customPhoto: customPhoto,
         greeting: it.greeting && typeof it.greeting === 'object' ? it.greeting : null,
         pendingRequirements: pendingRequirements,
-        unitPrice: Number(p.price) + extra + sizeExtra + packagingExtra + greetingExtra
+        unitPrice: Number(p.price) + necklaceExtra + boxExtra + sizeExtra + colorExtra + packagingExtra + greetingExtra
       };
     }).filter(Boolean);
   }

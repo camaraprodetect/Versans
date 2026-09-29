@@ -77,8 +77,10 @@
     var qty = parseInt(item.qty, 10);
     if (!Number.isFinite(qty) || qty <= 0) return null;
 
-    var extra = box ? Number(box.addPrice || 0) : 0;
+    var necklaceExtra = necklace ? Number(necklace.addPrice || 0) : 0;
+    var boxExtra = box ? Number(box.addPrice || 0) : 0;
     var sizeExtra = size ? Number(size.addPrice || 0) : 0;
+    var colorExtra = color ? Number(color.addPrice || 0) : 0;
     var packagingExtra = packaging ? Number(packaging.addPrice || 0) : 0;
     var greetingExtra = greetingAddPrice(item.greeting);
 
@@ -96,7 +98,7 @@
       customPhoto: customPhoto,
       greeting: item.greeting && typeof item.greeting === 'object' ? item.greeting : null,
       pendingRequirements: pendingRequirements,
-      unitPrice: Number(product.price || 0) + extra + sizeExtra + packagingExtra + greetingExtra
+      unitPrice: Number(product.price || 0) + necklaceExtra + boxExtra + sizeExtra + colorExtra + packagingExtra + greetingExtra
     };
   }
 
