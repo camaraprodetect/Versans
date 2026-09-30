@@ -1484,7 +1484,10 @@ function customerSafePickupText(value, max = 1400) {
   return text
     .replace(/AliExpress/gi, 'חברת המשלוחים')
     .replace(/Cainiao/gi, 'חברת המשלוחים')
-    .replace(/^.*(?:משלוח\s*מספר|מספר\s*משלוח)\s*[:：]?\s*DSVPH[A-Za-z0-9._-]*.*$/gim, '')
+    // The provider's "משלוח" value is an internal tracking identifier used only
+    // to locate the shipment in VerSans. Never expose that line to the customer,
+    // regardless of the identifier format (DSVPH..., letters, random tokens, etc.).
+    .replace(/^\s*(?:משלוח(?:\s*מספר)?|מספר\s*משלוח)\s*[:：\-–—]?\s*[^\n]*$/gim, '')
     .replace(/\bDSVPH[A-Za-z0-9._-]+\b/gi, '')
     .replace(/[ \t]{2,}/g, ' ')
     .replace(/\n{3,}/g, '\n\n')
@@ -1538,7 +1541,17 @@ function parseProviderPickupMessage(value, fallbackTrackingNumber = null) {
   );
   const lockerNumber = providerMessageField(text, /מספר\s*ארונית\s*[:：\-]?\s*([^\n]+)/i, 80);
   const shelfNumber = providerMessageField(text, /מספר\s*מדף\s*[:：\-]?\s*([^\n]+)/i, 80);
-  const packageNumber = providerMessageField(text, /מספר\s*חבילה\s*[:：\-]?\s*([^\n]+)/i, 120);
+  const packageNumber = cleanProviderInlineField(
+    providerMessageField(text, /מספר\s*חבילה\s*[:：\-]?\s*([^\n]+)/i, 120),
+    120
+  );
+  // Provider pickup notices sometimes call the customer-facing parcel reference
+  // "מספר הזמנה" (for example 3293 or ג123). This is NOT the same as the
+  // internal "משלוח" tracking token used to match the shipment in VerSans.
+  const pickupOrderNumber = cleanProviderInlineField(
+    providerMessageField(text, /מספר\s*הזמנה\s*[:：\-]?\s*([^\n]+)/i, 120),
+    120
+  );
   const verificationCode = providerMessageField(text, /קוד\s*אימות\s*[:：\-]?\s*([^\n]+)/i, 120);
   const rawAddress = providerMessageField(text, /כתובת\s*[:：\-]?\s*([^\n]+)/i, 700);
   const address = cleanProviderInlineField(rawAddress, 500);
@@ -1555,6 +1568,7 @@ function parseProviderPickupMessage(value, fallbackTrackingNumber = null) {
     lockerNumber,
     shelfNumber,
     packageNumber,
+    pickupOrderNumber,
     verificationCode,
     address,
     openingHours,
@@ -1568,6 +1582,11 @@ function parseProviderPickupMessage(value, fallbackTrackingNumber = null) {
 function providerPickupCustomerDetails(parsed) {
   if (!parsed) return null;
   const lines = [];
+  // Only customer-facing parcel/order references may be shown here.
+  // parsed.trackingNumber comes from the provider's "משלוח" field and is
+  // strictly internal; it must never be included in a customer message.
+  const customerPackageNumber = parsed.packageNumber || parsed.pickupOrderNumber;
+  if (customerPackageNumber) lines.push(`מספר חבילה: ${customerPackageNumber}`);
   if (parsed.pickupPoint) lines.push(`נקודת איסוף: ${parsed.pickupPoint}`);
   if (parsed.address) lines.push(`כתובת: ${parsed.address}`);
   if (parsed.pickupCode) lines.push(`קוד איסוף: ${parsed.pickupCode}`);
@@ -1575,7 +1594,6 @@ function providerPickupCustomerDetails(parsed) {
   if (parsed.lockerNumber) lines.push(`מספר ארונית: ${parsed.lockerNumber}`);
   if (parsed.shelfNumber) lines.push(`מספר מדף: ${parsed.shelfNumber}`);
   if (parsed.verificationCode) lines.push(`קוד אימות: ${parsed.verificationCode}`);
-  if (parsed.packageNumber) lines.push(`מספר חבילה: ${parsed.packageNumber}`);
   if (parsed.openingHours) lines.push(`שעות פתיחה: ${parsed.openingHours}`);
   if (parsed.deadline) lines.push(`יש לאסוף תוך ${parsed.deadline}`);
   if (parsed.confirmationUrl) {
