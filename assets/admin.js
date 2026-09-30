@@ -198,20 +198,42 @@
     });
   }
 
+  function waitForWorkerActivation(worker, timeoutMs) {
+    if (!worker || worker.state === 'activated') return Promise.resolve();
+    return promiseWithTimeout(new Promise(function (resolve) {
+      function onStateChange() {
+        if (worker.state === 'activated' || worker.state === 'redundant') {
+          worker.removeEventListener('statechange', onStateChange);
+          resolve();
+        }
+      }
+      worker.addEventListener('statechange', onStateChange);
+    }), timeoutMs || 12000, 'service_worker_update_timeout');
+  }
+
   async function ensureAdminPushRegistration() {
     if (!pushSupported()) throw new Error('push_not_supported');
 
-    // Do not rely only on navigator.serviceWorker.ready. If registration failed
-    // (for example because /admin-sw.js was not publicly served), ready can wait forever.
-    var existing = await navigator.serviceWorker.getRegistration('/admin');
-    if (!existing) {
-      existing = await navigator.serviceWorker.register('/admin-sw.js?v=20260930-order-push-v3', { scope: '/' });
+    // Always register the current script URL. The previous code reused an
+    // existing registration without updating it, which allowed iPhone to keep
+    // the old notification wording indefinitely.
+    var registration = await navigator.serviceWorker.register('/admin-sw.js?v=20260930-clean-v5', {
+      scope: '/',
+      updateViaCache: 'none'
+    });
+
+    try { await registration.update(); } catch (_) {}
+
+    if (registration.waiting) {
+      registration.waiting.postMessage({ type: 'SKIP_WAITING' });
     }
 
-    // A first-time registration can still be installing. ready resolves once an
-    // active worker controls a page, but we cap the wait so the button never hangs.
-    var ready = await promiseWithTimeout(navigator.serviceWorker.ready, 12000, 'service_worker_timeout');
-    return ready || existing;
+    if (registration.installing) {
+      try { await waitForWorkerActivation(registration.installing, 12000); } catch (_) {}
+    }
+
+    var latest = await navigator.serviceWorker.getRegistration('/');
+    return latest || registration;
   }
 
   async function refreshAdminPushButton() {

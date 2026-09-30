@@ -5316,8 +5316,12 @@ function serveStatic(req, res, pathname) {
     // Service workers must be immediately refreshable and may control the admin app.
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.setHeader('Service-Worker-Allowed', '/');
-  } else if (pathname === '/admin-manifest.webmanifest') {
-    res.setHeader('Cache-Control', 'no-cache');
+  } else if (
+    pathname === '/admin-manifest.webmanifest' ||
+    pathname === '/assets/admin.js' ||
+    pathname === '/assets/admin.css'
+  ) {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
   } else {
     res.setHeader('Cache-Control', 'public, max-age=3600');
   }

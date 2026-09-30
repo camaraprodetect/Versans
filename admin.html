@@ -15,7 +15,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
   <title>VerSans Admin</title>
   <link rel="stylesheet" href="/assets/fonts.css?v=20260930-admin-font-v1">
-  <link rel="stylesheet" href="/assets/admin.css?v=20260930-order-push-v3">
+  <link rel="stylesheet" href="/assets/admin.css?v=20260930-clean-v5">
 </head>
 <body class="admin-body">
   <script>
@@ -83,13 +83,33 @@
   <div class="admin-toast" id="adminToast" role="status" aria-live="polite" hidden></div>
   <script>
     if ("serviceWorker" in navigator) {
-      window.addEventListener("load", function () {
-        navigator.serviceWorker.register("/admin-sw.js?v=20260930-order-push-v3", { scope: "/" }).catch(function (error) {
+      window.addEventListener("load", async function () {
+        try {
+          const registration = await navigator.serviceWorker.register("/admin-sw.js?v=20260930-clean-v5", {
+            scope: "/",
+            updateViaCache: "none"
+          });
+
+          // Force Safari/iPhone to refresh an already-installed VerSans worker.
+          try { await registration.update(); } catch (_) {}
+
+          if (registration.waiting) {
+            registration.waiting.postMessage({ type: "SKIP_WAITING" });
+          }
+
+          if (registration.installing) {
+            registration.installing.addEventListener("statechange", function () {
+              if (registration.waiting) {
+                registration.waiting.postMessage({ type: "SKIP_WAITING" });
+              }
+            });
+          }
+        } catch (error) {
           console.warn("VerSans Admin service worker registration failed:", error);
-        });
+        }
       });
     }
   </script>
-  <script src="/assets/admin.js?v=20260930-order-push-v3"></script>
+  <script src="/assets/admin.js?v=20260930-clean-v5"></script>
 </body>
 </html>

@@ -1,8 +1,20 @@
-const CACHE_VERSION = "versans-admin-v4-clean-order-push";
+const CACHE_VERSION = "versans-admin-20260930-clean-v5";
+const SW_VERSION = "20260930-clean-v5";
 const NOTIFICATION_ICON = "/images/apple-touch-icon.png";
 
 self.addEventListener("install", () => {
   self.skipWaiting();
+});
+
+self.addEventListener("message", (event) => {
+  const type = event && event.data && event.data.type;
+  if (type === "SKIP_WAITING") {
+    self.skipWaiting();
+    return;
+  }
+  if (type === "GET_VERSION" && event.ports && event.ports[0]) {
+    event.ports[0].postMessage({ version: SW_VERSION });
+  }
 });
 
 self.addEventListener("activate", (event) => {
