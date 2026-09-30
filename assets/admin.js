@@ -211,26 +211,89 @@
     }), timeoutMs || 12000, 'service_worker_update_timeout');
   }
 
-  async function ensureAdminPushRegistration() {
-    if (!pushSupported()) throw new Error('push_not_supported');
+  async function readAdminWorkerVersion(worker) {
+    if (!worker) return '';
+    try {
+      return await promiseWithTimeout(new Promise(function (resolve) {
+        var channel = new MessageChannel();
+        channel.port1.onmessage = function (event) {
+          resolve(String(event && event.data && event.data.version || ''));
+        };
+        worker.postMessage({ type: 'GET_VERSION' }, [channel.port2]);
+      }), 2500, 'worker_version_timeout');
+    } catch (_) {
+      return '';
+    }
+  }
 
-    // Always register the current script URL. The previous code reused an
-    // existing registration without updating it, which allowed iPhone to keep
-    // the old notification wording indefinitely.
-    var registration = await navigator.serviceWorker.register('/admin-sw.js?v=20260930-english-v7', {
+  async function removeOldAdminWorkerRegistration(registration) {
+    if (!registration) return;
+
+    try {
+      var oldSubscription = await registration.pushManager.getSubscription();
+      if (oldSubscription) {
+        var endpoint = String(oldSubscription.endpoint || '');
+        if (endpoint) {
+          try {
+            await apiAction('/api/admin/push/unsubscribe', 'POST', { endpoint: endpoint });
+          } catch (_) {}
+        }
+        try { await oldSubscription.unsubscribe(); } catch (_) {}
+      }
+    } catch (_) {}
+
+    try { await registration.unregister(); } catch (_) {}
+  }
+
+  async function forceCurrentEnglishAdminWorker() {
+    var registrations = await navigator.serviceWorker.getRegistrations();
+
+    for (var i = 0; i < registrations.length; i += 1) {
+      var registration = registrations[i];
+      var worker = registration.active || registration.waiting || registration.installing;
+      var scriptUrl = String(worker && worker.scriptURL || '');
+
+      if (scriptUrl.indexOf('/admin-sw.js') === -1) continue;
+
+      var version = await readAdminWorkerVersion(registration.active);
+      if (version === '20260930-bilingual-v9') return registration;
+
+      // An older VerSans Admin worker is still actually receiving pushes.
+      // Remove its subscription and registration so iOS cannot keep using it.
+      await removeOldAdminWorkerRegistration(registration);
+    }
+
+    var fresh = await navigator.serviceWorker.register('/admin-sw.js?v=20260930-bilingual-v9', {
       scope: '/',
       updateViaCache: 'none'
     });
 
-    try { await registration.update(); } catch (_) {}
+    try { await fresh.update(); } catch (_) {}
+
+    if (fresh.waiting) {
+      fresh.waiting.postMessage({ type: 'SKIP_WAITING' });
+    }
+
+    return fresh;
+  }
+
+  async function ensureAdminPushRegistration() {
+    if (!pushSupported()) throw new Error('push_not_supported');
+
+    var registration = await forceCurrentEnglishAdminWorker();
+
+    if (registration.installing) {
+      try { await waitForWorkerActivation(registration.installing, 12000); } catch (_) {}
+    }
 
     if (registration.waiting) {
       registration.waiting.postMessage({ type: 'SKIP_WAITING' });
     }
 
-    if (registration.installing) {
-      try { await waitForWorkerActivation(registration.installing, 12000); } catch (_) {}
-    }
+    // Wait briefly for the new worker to become the live registration.
+    try {
+      await promiseWithTimeout(navigator.serviceWorker.ready, 12000, 'service_worker_timeout');
+    } catch (_) {}
 
     var latest = await navigator.serviceWorker.getRegistration('/');
     return latest || registration;
@@ -366,9 +429,7 @@
     if (!pushButton) return;
 
     if (pushSupported()) {
-      // Start registration immediately instead of waiting forever on serviceWorker.ready.
       pushRegistrationPromise = ensureAdminPushRegistration();
-      // Prevent an early rejected promise from becoming an unhandled rejection.
       pushRegistrationPromise.catch(function () {});
       pushConfigPromise = api('/api/admin/push/config').catch(function () { return null; });
     }
@@ -382,6 +443,28 @@
         showToast('לא ניתן להפעיל התראות כרגע. נסה שוב.');
       });
     });
+
+    // If iOS permission was already granted, automatically recreate the
+    // subscription after replacing an old worker. No second permission prompt.
+    if (pushSupported() && Notification.permission === 'granted') {
+      try {
+        var registration = await pushRegistrationPromise;
+        var existing = await registration.pushManager.getSubscription();
+        if (!existing) {
+          var config = pushConfigPromise ? await pushConfigPromise : null;
+          if (!config || !config.publicKey) {
+            config = await api('/api/admin/push/config');
+          }
+          var subscription = await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(config.publicKey)
+          });
+          await apiAction('/api/admin/push/subscribe', 'POST', {
+            subscription: subscription.toJSON ? subscription.toJSON() : JSON.parse(JSON.stringify(subscription))
+          });
+        }
+      } catch (_) {}
+    }
 
     await refreshAdminPushButton();
   }

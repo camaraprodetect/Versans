@@ -1,5 +1,5 @@
-const CACHE_VERSION = "versans-admin-20260930-english-v7";
-const SW_VERSION = "20260930-english-v7";
+const CACHE_VERSION = "versans-admin-20260930-bilingual-v9";
+const SW_VERSION = "20260930-bilingual-v9";
 const NOTIFICATION_ICON = "/images/apple-touch-icon.png";
 
 self.addEventListener("install", () => {
@@ -36,18 +36,40 @@ self.addEventListener("fetch", (event) => {
   event.respondWith(fetch(event.request));
 });
 
-function moneyAgorot(value, currency) {
+function moneyAgorot(value, currency, isHebrew) {
   const amount = Number(value || 0) / 100;
+  const safeAmount = Number.isFinite(amount) ? amount : 0;
+  const currencyCode = String(currency || "ILS");
+
+  // Keep the visible line fully in the same language/direction as the customer name.
+  if (isHebrew) {
+    if (currencyCode === "ILS") return `${safeAmount.toFixed(2)} ₪`;
+    try {
+      return new Intl.NumberFormat("he-IL", {
+        style: "currency",
+        currency: currencyCode,
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(safeAmount);
+    } catch (_) {
+      return safeAmount.toFixed(2);
+    }
+  }
+
   try {
     return new Intl.NumberFormat("en-IL", {
       style: "currency",
-      currency: String(currency || "ILS"),
+      currency: currencyCode,
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
-    }).format(Number.isFinite(amount) ? amount : 0);
+    }).format(safeAmount);
   } catch (_) {
-    return "₪" + (Number.isFinite(amount) ? amount.toFixed(2) : "0.00");
+    return currencyCode === "ILS" ? `₪${safeAmount.toFixed(2)}` : safeAmount.toFixed(2);
   }
+}
+
+function hasHebrewText(value) {
+  return /[\u0590-\u05FF]/.test(String(value || ""));
 }
 
 async function showPendingOrderNotifications() {
@@ -67,14 +89,21 @@ async function showPendingOrderNotifications() {
   for (const order of orders) {
     const orderId = Number(order.orderId || 0);
     highestOrderId = Math.max(highestOrderId, orderId);
-    const customerName = String(order.customerName || "Customer");
+    const rawCustomerName = String(order.customerName || "").trim();
+    const isHebrew = hasHebrewText(rawCustomerName);
+    const customerName = rawCustomerName || (isHebrew ? "לקוח/ה" : "Customer");
     const orderRef = String(order.orderRef || "");
-    const total = moneyAgorot(order.amountAgorot, order.currency);
+    const total = moneyAgorot(order.amountAgorot, order.currency, isHebrew);
     const unitCount = Math.max(1, Number(order.unitCount || 1));
-    const itemText = unitCount === 1 ? "1 item" : `${unitCount} items`;
+    const itemText = isHebrew
+      ? (unitCount === 1 ? "פריט 1" : `${unitCount} פריטים`)
+      : (unitCount === 1 ? "1 item" : `${unitCount} items`);
     const displayOrderNumber = orderId > 0 ? orderId : orderRef;
+    const title = isHebrew
+      ? `הזמנה #${displayOrderNumber}`
+      : `Order #${displayOrderNumber}`;
 
-    await self.registration.showNotification(`Order #${displayOrderNumber}`, {
+    await self.registration.showNotification(title, {
       body: `${total}, ${itemText} • ${customerName}`,
       icon: NOTIFICATION_ICON,
       badge: NOTIFICATION_ICON,

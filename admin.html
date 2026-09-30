@@ -85,7 +85,7 @@
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", async function () {
         try {
-          const registration = await navigator.serviceWorker.register("/admin-sw.js?v=20260930-english-v7", {
+          const registration = await navigator.serviceWorker.register("/admin-sw.js?v=20260930-bilingual-v9", {
             scope: "/",
             updateViaCache: "none"
           });
@@ -110,6 +110,6 @@
       });
     }
   </script>
-  <script src="/assets/admin.js?v=20260930-english-v7"></script>
+  <script src="/assets/admin.js?v=20260930-bilingual-v9"></script>
 </body>
 </html>
