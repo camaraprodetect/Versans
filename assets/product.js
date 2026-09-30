@@ -31,6 +31,9 @@
   var pathSlug = '';
   try { pathSlug = decodeURIComponent(window.location.pathname.replace(/^\/+|\/+$/g, '')); } catch (e) {}
   var product = findProduct(pathSlug) || findProduct(id) || PRODUCTS[0];
+  if (product.defaultNecklaceId && findOption(product.necklaces, product.defaultNecklaceId)) {
+    selectedNecklaceId = product.defaultNecklaceId;
+  }
   var initialColorParam = params.get('color');
   if (initialColorParam && findOption(product.colors, initialColorParam)) {
     selectedColorId = initialColorParam;
@@ -393,11 +396,12 @@
   }
   function galleryImages() {
     var images = Array.isArray(product.images) ? product.images.slice() : [];
-    var isGlasses = product.category === 'glasses' || (Array.isArray(product.categories) && product.categories.indexOf('glasses') !== -1);
-    if (isGlasses && product.hoverImage && images.indexOf(product.hoverImage) === -1) {
+    if (product.hoverImage && images.indexOf(product.hoverImage) === -1) {
       images.push(product.hoverImage);
     }
-    return images;
+    return images.filter(function (src, index, list) {
+      return !!src && list.indexOf(src) === index;
+    });
   }
   function galleryVideos() {
     if (!Array.isArray(product.videos)) return [];
@@ -1581,6 +1585,11 @@ async function uploadProductPhoto(blob, meta) {
     renderGiftPackaging();
     renderRequiredCompanion();
 
+    // Always build the image/video selector when the product has more than one
+    // media item. Previously configurable products needed showAllGalleryThumbs,
+    // which left many product pages with no way to switch images.
+    renderStaticGallery();
+
     if (!isConfigurable()) {
       if (optionsSection) {
         optionsSection.hidden = true;
@@ -1593,7 +1602,6 @@ async function uploadProductPhoto(blob, meta) {
       activeImageIndex = Math.max(0, Math.min(activeImageIndex, Math.max(0, galleryImages().length - 1)));
       var img = galleryImages()[activeImageIndex] || (product.images && product.images[0]);
       if (img) setMainImage(img, L(product.title));
-      renderStaticGallery();
       updateOptionSteps();
       updatePriceAndPurchase();
       return;
@@ -1606,7 +1614,6 @@ async function uploadProductPhoto(blob, meta) {
     if (summary) summary.hidden = false;
     renderNecklaceOptions();
     renderBoxOptions();
-    if (product.showAllGalleryThumbs) renderStaticGallery();
     renderSelectionSummary();
     updateOptionSteps();
     updatePriceAndPurchase();
@@ -1940,7 +1947,11 @@ async function uploadProductPhoto(blob, meta) {
 
     var initialImage = (product.images && product.images[0]) || (product.boxes && product.boxes[0] && product.boxes[0].image) || (product.necklaces && product.necklaces[0] && product.necklaces[0].image);
     if (initialImage && !selectedNecklaceId && !selectedBoxId) setMainImage(initialImage, L(product.title));
-    if (selectedColor() && selectedColor().image) {
+    if (selectedNecklaceId && selectedNecklace() && selectedNecklace().image) {
+      var restoredNecklaceIndex = galleryImages().indexOf(selectedNecklace().image);
+      if (restoredNecklaceIndex >= 0) showGalleryImage(restoredNecklaceIndex);
+      else setMainImage(selectedNecklace().image, L(selectedNecklace().label));
+    } else if (selectedColor() && selectedColor().image) {
       var restoredColorIndex = galleryImages().indexOf(selectedColor().image);
       if (restoredColorIndex >= 0) showGalleryImage(restoredColorIndex);
       else setMainImage(selectedColor().image, L(selectedColor().label));
@@ -2044,6 +2055,42 @@ async function uploadProductPhoto(blob, meta) {
     if (e.target.closest('#burger')) { setMenu(!$('#navmenu').classList.contains('is-open')); return; }
     if (e.target.closest('#navScrim, [data-nav-close]') || e.target.closest('.nav__menu a')) { setMenu(false); }
   });
+
+  // Mobile gallery swipe: allow switching photos directly on the main image.
+  // A swipe is accepted only when horizontal movement clearly exceeds vertical
+  // movement, so normal page scrolling is unaffected.
+  (function bindProductGallerySwipe() {
+    var stage = document.querySelector('.product-gallery__stage');
+    if (!stage) return;
+    var startX = 0;
+    var startY = 0;
+    var tracking = false;
+
+    stage.addEventListener('touchstart', function (event) {
+      if (!event.touches || event.touches.length !== 1) return;
+      startX = event.touches[0].clientX;
+      startY = event.touches[0].clientY;
+      tracking = true;
+    }, { passive: true });
+
+    stage.addEventListener('touchend', function (event) {
+      if (!tracking || !event.changedTouches || !event.changedTouches.length) return;
+      tracking = false;
+
+      var dx = event.changedTouches[0].clientX - startX;
+      var dy = event.changedTouches[0].clientY - startY;
+      if (Math.abs(dx) < 45 || Math.abs(dx) <= Math.abs(dy) * 1.2) return;
+
+      var imgs = galleryImages();
+      if (imgs.length < 2) return;
+
+      // In RTL a left swipe moves forward through the image list.
+      var nextIndex = dx < 0 ? activeImageIndex + 1 : activeImageIndex - 1;
+      if (nextIndex < 0) nextIndex = imgs.length - 1;
+      if (nextIndex >= imgs.length) nextIndex = 0;
+      showGalleryImage(nextIndex);
+    }, { passive: true });
+  })();
 
   var customPhotoInput = $('#customPhotoInput');
   if (customPhotoInput) {
