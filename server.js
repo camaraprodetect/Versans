@@ -5169,6 +5169,7 @@ function mimeType(filePath) {
     '.css': 'text/css; charset=utf-8',
     '.js': 'text/javascript; charset=utf-8',
     '.json': 'application/json; charset=utf-8',
+    '.webmanifest': 'application/manifest+json; charset=utf-8',
     '.xml': 'application/xml; charset=utf-8',
     '.png': 'image/png',
     '.webp': 'image/webp',
@@ -5216,7 +5217,15 @@ function prettyRouteFile(pathname) {
 }
 
 function isPublicPath(pathname) {
-  if (prettyRouteFile(pathname) || pathname === '/robots.txt' || pathname === '/sitemap.xml' || pathname === '/favicon.ico' || /^\/[A-Za-z0-9_-]+\.html$/.test(pathname)) return true;
+  if (
+    prettyRouteFile(pathname) ||
+    pathname === '/robots.txt' ||
+    pathname === '/sitemap.xml' ||
+    pathname === '/favicon.ico' ||
+    pathname === '/admin-sw.js' ||
+    pathname === '/admin-manifest.webmanifest' ||
+    /^\/[A-Za-z0-9_-]+\.html$/.test(pathname)
+  ) return true;
   return pathname.startsWith('/assets/') || pathname.startsWith('/images/');
 }
 
@@ -5303,7 +5312,15 @@ function serveStatic(req, res, pathname) {
 
   res.statusCode = 200;
   res.setHeader('Content-Type', mimeType(filePath));
-  res.setHeader('Cache-Control', 'public, max-age=3600');
+  if (pathname === '/admin-sw.js') {
+    // Service workers must be immediately refreshable and may control the admin app.
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Service-Worker-Allowed', '/');
+  } else if (pathname === '/admin-manifest.webmanifest') {
+    res.setHeader('Cache-Control', 'no-cache');
+  } else {
+    res.setHeader('Cache-Control', 'public, max-age=3600');
+  }
   res.setHeader('Content-Length', stat.size);
   if (req.method === 'HEAD') return void res.end();
   fs.createReadStream(filePath).pipe(res);

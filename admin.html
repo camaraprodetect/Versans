@@ -15,7 +15,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
   <title>VerSans Admin</title>
   <link rel="stylesheet" href="/assets/fonts.css?v=20260930-admin-font-v1">
-  <link rel="stylesheet" href="/assets/admin.css?v=20260930-order-push-v1">
+  <link rel="stylesheet" href="/assets/admin.css?v=20260930-order-push-v2">
 </head>
 <body class="admin-body">
   <script>
@@ -84,12 +84,12 @@
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", function () {
-        navigator.serviceWorker.register("/admin-sw.js?v=20260930-order-push-v1", { scope: "/" }).catch(function (error) {
+        navigator.serviceWorker.register("/admin-sw.js?v=20260930-order-push-v2", { scope: "/" }).catch(function (error) {
           console.warn("VerSans Admin service worker registration failed:", error);
         });
       });
     }
   </script>
-  <script src="/assets/admin.js?v=20260930-order-push-v1"></script>
+  <script src="/assets/admin.js?v=20260930-order-push-v2"></script>
 </body>
 </html>

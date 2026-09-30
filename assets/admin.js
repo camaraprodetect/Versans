@@ -182,6 +182,38 @@
     return 'serviceWorker' in navigator && 'PushManager' in window && typeof Notification !== 'undefined';
   }
 
+  function promiseWithTimeout(promise, timeoutMs, code) {
+    var timer;
+    return Promise.race([
+      Promise.resolve(promise),
+      new Promise(function (_, reject) {
+        timer = window.setTimeout(function () {
+          var error = new Error(code || 'timeout');
+          error.code = code || 'timeout';
+          reject(error);
+        }, timeoutMs);
+      })
+    ]).finally(function () {
+      if (timer) window.clearTimeout(timer);
+    });
+  }
+
+  async function ensureAdminPushRegistration() {
+    if (!pushSupported()) throw new Error('push_not_supported');
+
+    // Do not rely only on navigator.serviceWorker.ready. If registration failed
+    // (for example because /admin-sw.js was not publicly served), ready can wait forever.
+    var existing = await navigator.serviceWorker.getRegistration('/admin');
+    if (!existing) {
+      existing = await navigator.serviceWorker.register('/admin-sw.js?v=20260930-order-push-v2', { scope: '/' });
+    }
+
+    // A first-time registration can still be installing. ready resolves once an
+    // active worker controls a page, but we cap the wait so the button never hangs.
+    var ready = await promiseWithTimeout(navigator.serviceWorker.ready, 12000, 'service_worker_timeout');
+    return ready || existing;
+  }
+
   async function refreshAdminPushButton() {
     if (!pushButton) return;
     if (!pushSupported()) {
@@ -191,6 +223,7 @@
       pushButton.title = 'הדפדפן הזה לא תומך בהתראות Web Push';
       return;
     }
+
     pushButton.hidden = false;
     if (Notification.permission === 'denied') {
       pushButton.disabled = false;
@@ -200,14 +233,28 @@
       pushButton.title = 'יש לאפשר התראות ל-VerSans Admin בהגדרות המכשיר';
       return;
     }
-    var registration = await (pushRegistrationPromise || navigator.serviceWorker.ready);
-    var subscription = await registration.pushManager.getSubscription();
-    var active = Notification.permission === 'granted' && !!subscription;
-    pushButton.disabled = false;
-    pushButton.dataset.active = active ? '1' : '0';
-    pushButton.classList.toggle('is-active', active);
-    pushButton.textContent = active ? '🔔 התראות פעילות' : '🔔 הפעל התראות';
-    pushButton.title = active ? 'התראות על הזמנות חדשות פעילות במכשיר הזה' : 'קבל התראה בכל פעם שנכנסת הזמנה חדשה';
+
+    try {
+      var registration = await promiseWithTimeout(
+        pushRegistrationPromise || ensureAdminPushRegistration(),
+        15000,
+        'service_worker_timeout'
+      );
+      pushRegistrationPromise = Promise.resolve(registration);
+      var subscription = await registration.pushManager.getSubscription();
+      var active = Notification.permission === 'granted' && !!subscription;
+      pushButton.disabled = false;
+      pushButton.dataset.active = active ? '1' : '0';
+      pushButton.classList.toggle('is-active', active);
+      pushButton.textContent = active ? '🔔 התראות פעילות' : '🔔 הפעל התראות';
+      pushButton.title = active ? 'התראות על הזמנות חדשות פעילות במכשיר הזה' : 'קבל התראה בכל פעם שנכנסת הזמנה חדשה';
+    } catch (_) {
+      pushButton.disabled = false;
+      pushButton.dataset.active = '0';
+      pushButton.classList.remove('is-active');
+      pushButton.textContent = '🔔 הפעל התראות';
+      pushButton.title = 'לחץ כדי לנסות שוב להפעיל התראות';
+    }
   }
 
   async function enableAdminPush() {
@@ -224,7 +271,7 @@
       return;
     }
 
-    // Permission must be requested directly from the button tap, especially on iPhone.
+    // On iPhone the permission request must happen directly from the user's tap.
     var permission = Notification.permission;
     if (permission !== 'granted') permission = await Notification.requestPermission();
     if (permission !== 'granted') {
@@ -233,38 +280,87 @@
       return;
     }
 
-    if (pushButton) { pushButton.disabled = true; pushButton.textContent = 'מפעיל התראות…'; }
+    if (pushButton) {
+      pushButton.disabled = true;
+      pushButton.textContent = 'מפעיל התראות…';
+    }
+
     try {
-      var registration = await (pushRegistrationPromise || navigator.serviceWorker.ready);
-      var config = pushConfigPromise ? await pushConfigPromise : null;
-      if (!config || !config.publicKey) config = await api('/api/admin/push/config');
+      var registration = await promiseWithTimeout(
+        pushRegistrationPromise || ensureAdminPushRegistration(),
+        15000,
+        'service_worker_timeout'
+      );
+      pushRegistrationPromise = Promise.resolve(registration);
+
+      var config = pushConfigPromise ? await promiseWithTimeout(pushConfigPromise, 10000, 'push_config_timeout') : null;
+      if (!config || !config.publicKey) {
+        config = await promiseWithTimeout(api('/api/admin/push/config'), 10000, 'push_config_timeout');
+      }
       if (!config || !config.publicKey) throw new Error('push_config_unavailable');
+
       var subscription = await registration.pushManager.getSubscription();
       if (!subscription) {
-        subscription = await registration.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: urlBase64ToUint8Array(config.publicKey)
-        });
+        subscription = await promiseWithTimeout(
+          registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(config.publicKey)
+          }),
+          15000,
+          'push_subscription_timeout'
+        );
       }
-      await apiAction('/api/admin/push/subscribe', 'POST', {
-        subscription: subscription.toJSON ? subscription.toJSON() : JSON.parse(JSON.stringify(subscription))
-      });
+
+      await promiseWithTimeout(
+        apiAction('/api/admin/push/subscribe', 'POST', {
+          subscription: subscription.toJSON ? subscription.toJSON() : JSON.parse(JSON.stringify(subscription))
+        }),
+        10000,
+        'push_server_timeout'
+      );
+
       await refreshAdminPushButton();
       showToast('התראות על הזמנות חדשות הופעלו ✓');
     } catch (error) {
-      if (pushButton) pushButton.disabled = false;
-      showToast('לא ניתן להפעיל התראות כרגע. נסה שוב.');
-      await refreshAdminPushButton().catch(function () {});
+      if (pushButton) {
+        pushButton.disabled = false;
+        pushButton.dataset.active = '0';
+        pushButton.classList.remove('is-active');
+        pushButton.textContent = '🔔 הפעל התראות';
+      }
+
+      var code = String(error && (error.code || error.message) || '');
+      if (code.indexOf('service_worker') !== -1) {
+        showToast('שירות ההתראות לא נטען. רענן את האפליקציה ונסה שוב.');
+      } else if (code.indexOf('push_config') !== -1 || code.indexOf('push_server') !== -1) {
+        showToast('השרת לא הצליח להפעיל התראות כרגע. נסה שוב.');
+      } else {
+        showToast('לא ניתן להפעיל התראות כרגע. נסה שוב.');
+      }
     }
   }
 
   async function initAdminPush() {
     if (!pushButton) return;
+
     if (pushSupported()) {
-      pushRegistrationPromise = navigator.serviceWorker.ready;
+      // Start registration immediately instead of waiting forever on serviceWorker.ready.
+      pushRegistrationPromise = ensureAdminPushRegistration();
+      // Prevent an early rejected promise from becoming an unhandled rejection.
+      pushRegistrationPromise.catch(function () {});
       pushConfigPromise = api('/api/admin/push/config').catch(function () { return null; });
     }
-    pushButton.addEventListener('click', function () { enableAdminPush(); });
+
+    pushButton.addEventListener('click', function () {
+      enableAdminPush().catch(function () {
+        if (pushButton) {
+          pushButton.disabled = false;
+          pushButton.textContent = '🔔 הפעל התראות';
+        }
+        showToast('לא ניתן להפעיל התראות כרגע. נסה שוב.');
+      });
+    });
+
     await refreshAdminPushButton();
   }
 
