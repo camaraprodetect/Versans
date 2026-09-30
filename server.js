@@ -10,7 +10,6 @@ const { createPaymentUrl, verifyPayment, priceOrder } = require('./api/_hyp.js')
 const { PRODUCTS } = require('./assets/products.js');
 const ROUTES = require('./assets/routes.js');
 const { normalizeAdminRange, normalizeStoredOrderItems, aggregatePaidOrders } = require('./lib/admin-analytics.js');
-const { shipmentItemsUseAlibabaTrackSmart, pickupTrackingPage } = require('./lib/shipment-tracking-source.js');
 const { absoluteUrl, isEmailConfigured, orderConfirmationEmail, passwordResetEmail, productAnnouncementEmail, sendEmail, termsUpdateEmail, welcomeEmail } = require('./lib/email.js');
 const { buildPaidOrderPayload, sendPaidOrderToGoogleSheet } = require('./lib/google-orders.js');
 const { orderItemRef, parseOrderItemRef } = require('./lib/order-item-refs.js');
@@ -1510,11 +1509,6 @@ function shipmentProviderTrackingUrl(row) {
   return value || null;
 }
 
-async function shipmentUsesAlibabaTrackSmart(shipment) {
-  if (!shipment || !shipment.id) return false;
-  const items = await database.listShipmentItems(shipment.id);
-  return shipmentItemsUseAlibabaTrackSmart(items, PRODUCTS);
-}
 
 function shipmentRawJsonWithProviderTrackingUrl(row, providerTrackingUrl) {
   let raw = parseShipmentRaw(row);
@@ -2659,13 +2653,9 @@ function trackingLookupOptions(order) {
 async function refreshShipmentFrom17Track(shipment, { realTime = false } = {}) {
   if (!shipment || !is17TrackConfigured()) return null;
   const order = await database.getOrderById(shipment.order_id);
-  const usesAlibabaTrackSmart = await shipmentUsesAlibabaTrackSmart(shipment);
   const options = {
     ...trackingLookupOptions(order),
-    originCountry: String(shipment.tracking_number || '').toUpperCase().startsWith('DSVPH') ? 'CN' : null,
-    // Hat shipments are sourced through Alibaba.com Logistics TrackSmart.
-    // Never leak them into the Cainiao fallback path.
-    skipCainiaoFallback: usesAlibabaTrackSmart
+    originCountry: String(shipment.tracking_number || '').toUpperCase().startsWith('DSVPH') ? 'CN' : null
   };
   let info = null;
   if (realTime) {
@@ -3980,8 +3970,7 @@ async function adminApi(req, res, pathname, parsed) {
     const jobs = [];
     for (const shipment of rows) {
       if (jobs.length >= limit) break;
-      const usesAlibabaTrackSmart = await shipmentUsesAlibabaTrackSmart(shipment);
-      if (!shipmentRequiresProviderPickupDetails(shipment) && !usesAlibabaTrackSmart) continue;
+      if (!shipmentRequiresProviderPickupDetails(shipment)) continue;
       const pickup = shipmentPickupDetails(shipment);
       if (shipmentHasActionablePickupDetails(shipment, pickup)) continue;
       const order = await database.getOrderById(shipment.order_id);
@@ -3989,11 +3978,6 @@ async function adminApi(req, res, pathname, parsed) {
       const trackingId = normalizeTrackingNumber(shipment.tracking_number);
       if (!trackingId) continue;
       const directProviderTrackingUrl = shipmentProviderTrackingUrl(shipment);
-      const trackingPage = pickupTrackingPage({
-        trackingId,
-        directProviderTrackingUrl,
-        useAlibabaTrackSmart: usesAlibabaTrackSmart
-      });
       jobs.push({
         shipmentId: Number(shipment.id),
         orderRef: order.order_ref,
@@ -4001,11 +3985,13 @@ async function adminApi(req, res, pathname, parsed) {
         status: shipment.status,
         latestEvent: shipment.latest_event || null,
         latestEventAt: shipment.latest_event_at == null ? null : Number(shipment.latest_event_at),
-        provider: trackingPage.provider,
-        trackingPageSource: trackingPage.trackingPageSource,
-        trackingPageUrl: trackingPage.trackingPageUrl,
+        provider: directProviderTrackingUrl ? 'AliExpress direct tracking page' : 'Cainiao / AliExpress',
+        trackingPageSource: directProviderTrackingUrl ? 'aliexpress_direct' : 'cainiao_public',
+        trackingPageUrl: directProviderTrackingUrl || `https://global.cainiao.com/newDetail.htm?mailNoList=${encodeURIComponent(trackingId)}`,
         submitEndpoint: 'https://versans.com/api/admin/bot/shipping/pickup-collector/submit',
-        instruction: trackingPage.instruction
+        instruction: directProviderTrackingUrl
+          ? 'Open trackingPageUrl directly. It is the saved AliExpress shipment page for this parcel. If pickup instructions are visible, copy the complete visible pickup instruction text exactly (including pickup code, locker/shelf, address and hours when present) and POST it to submitEndpoint with shipmentId, trackingId and message. Do not navigate through My Orders and do not mark the customer pickup notification as sent.'
+          : 'Open trackingPageUrl. If pickup instructions are visible, copy the complete visible pickup instruction text exactly (including pickup code, locker/shelf, address and hours when present) and POST it to submitEndpoint with shipmentId, trackingId and message. Do not mark the customer pickup notification as sent.'
       });
     }
     json(res, 200, {
@@ -4053,11 +4039,10 @@ async function adminApi(req, res, pathname, parsed) {
     let rawJson = {};
     try { rawJson = shipment.raw_json ? JSON.parse(shipment.raw_json) : {}; } catch (_) { rawJson = {}; }
     if (!rawJson || typeof rawJson !== 'object' || Array.isArray(rawJson)) rawJson = {};
-    const usesAlibabaTrackSmart = await shipmentUsesAlibabaTrackSmart(shipment);
     rawJson.versansProviderPickupMessage = {
       receivedAt: now,
-      sender: usesAlibabaTrackSmart ? 'Alibaba TrackSmart web collector' : 'Cainiao web collector',
-      source: String(body && body.source || (usesAlibabaTrackSmart ? 'alibaba_tracksmart_web_collector' : 'cainiao_web_collector')).trim().slice(0, 120),
+      sender: 'Cainiao web collector',
+      source: String(body && body.source || 'cainiao_web_collector').trim().slice(0, 120),
       parsed: parsedPickup,
       rawText: normalizeProviderMessageText(messageText).slice(0, 12000)
     };
@@ -5764,11 +5749,11 @@ setInterval(async () => {
   try { await syncPendingTrackingRegistrations(); } catch (err) { console.error('Pending 17TRACK registration sync failed:', err); }
 }, 60 * 60 * 1000).unref();
 
-// Marketplace references do not always receive useful 17TRACK webhook events.
-// Poll active shipments periodically using the normal (non-Instant) lookup.
-// Non-hat shipments may still use the Cainiao fallback; hat shipments explicitly
-// skip Cainiao because their provider-side checks are routed through Alibaba.com
-// Logistics TrackSmart.
+// Cainiao marketplace references do not always receive useful 17TRACK webhook
+// events. Poll active shipments periodically using the normal (non-Instant)
+// lookup; if 17TRACK is empty, lib/shipping.js transparently falls back to
+// Cainiao. This also lets ready-for-pickup WhatsApp notifications fire without
+// waiting for an admin or customer to manually open the tracking page.
 setInterval(async () => {
   try { await syncActiveShipmentTracking(); } catch (err) { console.error('Active shipment tracking sync failed:', err); }
 }, 30 * 60 * 1000).unref();
