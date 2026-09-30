@@ -1866,9 +1866,10 @@ async function uploadProductPhoto(blob, meta) {
     $('#productBadge').hidden = !badge;
     $('#productBadge').textContent = badge;
 
-    $('#necklaceHeading').textContent = L(product.necklaceHeading) || (lang === 'he' ? 'בחרו שרשרת' : 'Choose a necklace');
+    var isBraceletProduct = product.category === 'bracelets' || product.category === 'photo-bracelets' || (Array.isArray(product.categories) && product.categories.indexOf('bracelets') !== -1);
+    $('#necklaceHeading').textContent = L(product.necklaceHeading) || (isBraceletProduct ? (lang === 'he' ? 'בחרו צבע' : 'Choose color') : (lang === 'he' ? 'בחרו שרשרת' : 'Choose a necklace'));
     $('#boxHeading').textContent = L(product.boxHeading) || (lang === 'he' ? 'בחרו קופסה' : 'Choose a box');
-    $('#summaryNecklaceLabel').textContent = L(product.necklaceSummaryLabel) || (lang === 'he' ? 'שרשרת' : 'Necklace');
+    $('#summaryNecklaceLabel').textContent = L(product.necklaceSummaryLabel) || (isBraceletProduct ? (lang === 'he' ? 'צמיד' : 'Bracelet') : (lang === 'he' ? 'שרשרת' : 'Necklace'));
     $('#summaryBoxLabel').textContent = L(product.boxSummaryLabel) || (lang === 'he' ? 'קופסה' : 'Box');
     var sizeHeading = $('#sizeHeading'); if (sizeHeading) sizeHeading.textContent = L(product.sizeHeading) || (lang === 'he' ? 'בחרו אורך' : 'Choose a length');
     var colorHeading = $('#colorHeading'); if (colorHeading) colorHeading.textContent = L(product.colorHeading) || (lang === 'he' ? 'בחרו צבע' : 'Choose a color');

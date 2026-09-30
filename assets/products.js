@@ -22403,6 +22403,10 @@ var PRODUCTS = [
       "he": "בחרו צבע",
       "en": "Choose color"
     },
+    "necklaceSummaryLabel": {
+      "he": "צמיד",
+      "en": "Bracelet"
+    },
     "necklaces": [
       {
         "id": "silver",
@@ -22631,6 +22635,10 @@ var PRODUCTS = [
     "necklaceHeading": {
       "he": "בחרו צבע",
       "en": "Choose color"
+    },
+    "necklaceSummaryLabel": {
+      "he": "צמיד",
+      "en": "Bracelet"
     },
     "necklaces": [
       {
@@ -22964,6 +22972,14 @@ var PRODUCTS = [
       "images/products/product-244/product-244-9.png"
     ],
     "price": 239.9,
+    "necklaceHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "necklaceSummaryLabel": {
+      "he": "צמיד",
+      "en": "Bracelet"
+    },
     "necklaces": [
       {
         "id": "silver",
@@ -23112,6 +23128,14 @@ var PRODUCTS = [
       "images/products/product-245/product-245-9.png"
     ],
     "price": 239.9,
+    "necklaceHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "necklaceSummaryLabel": {
+      "he": "צמיד",
+      "en": "Bracelet"
+    },
     "necklaces": [
       {
         "id": "silver",
@@ -23261,6 +23285,10 @@ var PRODUCTS = [
       "he": "בחרו צבע",
       "en": "Choose color"
     },
+    "necklaceSummaryLabel": {
+      "he": "צמיד",
+      "en": "Bracelet"
+    },
     "necklaces": [
       {
         "id": "silver",
@@ -23402,6 +23430,10 @@ var PRODUCTS = [
       "he": "בחרו צבע",
       "en": "Choose color"
     },
+    "necklaceSummaryLabel": {
+      "he": "צמיד",
+      "en": "Bracelet"
+    },
     "necklaces": [
       {
         "id": "silver",
@@ -23499,6 +23531,553 @@ var PRODUCTS = [
     "afterText": {
       "he": "מחיר התחלתי: 259.90 ₪ לאורך 17 ס״מ. 20 ס״מ מוסיף 10 ₪ ו-22 ס״מ מוסיף 20 ₪.",
       "en": "Starting price: ₪259.90 for 17 cm. 20 cm adds ₪10 and 22 cm adds ₪20."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    }
+  }
+  ,{
+    "id": "soline-womens-vvs-moissanite-silver-248",
+    "slug": "product-248",
+    "urlSlug": "soline-womens-vvs-moissanite-silver",
+    "sku": "VS-BR-248",
+    "category": "bracelets",
+    "categories": [
+      "bracelets",
+      "women"
+    ],
+    "badge": null,
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "showAllGalleryThumbs": true,
+    "defaultNecklaceId": "silver",
+    "hoverImage": "images/products/product-248/product-248-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-248/product-248-1.png",
+        "hoverImage": "images/products/product-248/product-248-2.png"
+      },
+      "men": {
+        "image": "images/products/product-248/product-248-1.png",
+        "hoverImage": "images/products/product-248/product-248-2.png"
+      }
+    },
+    "sourceUrl": "https://he.aliexpress.com/item/1005012047853872.html?spm=a2g0o.store_pc_home.promoteWysiwyg_2001826959721.1005012047853872&gatewayAdapt=glo2isr",
+    "images": [
+      "images/products/product-248/product-248-1.png",
+      "images/products/product-248/product-248-2.png",
+      "images/products/product-248/product-248-3.png",
+      "images/products/product-248/product-248-4.png",
+      "images/products/product-248/product-248-5.png",
+      "images/products/product-248/product-248-6.png"
+    ],
+    "price": 289.9,
+    "necklaceHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "necklaceSummaryLabel": {
+      "he": "צמיד",
+      "en": "Bracelet"
+    },
+    "necklaces": [
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "image": "images/products/product-248/product-248-1.png"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "image": "images/products/product-248/product-248-4.png"
+      }
+    ],
+    "title": {
+      "he": "צמיד טניס סולין לנשים VVS Moissanite - מצופה 18 קראט זהב לבן - צבע כסף",
+      "en": "Soline Women's VVS Moissanite Tennis Bracelet - 18K White Gold Plated - Silver"
+    },
+    "subtitle": {
+      "he": "צמיד טניס לנשים 2 מ״מ משובץ VVS Moissanite · בסיס פליז · מצופה 18 קראט זהב לבן · כולל תעודת GRA",
+      "en": "2 mm women's tennis bracelet with VVS Moissanite · brass base · 18K White Gold Plated · includes GRA certificate"
+    },
+    "sizeHeading": {
+      "he": "בחרו אורך",
+      "en": "Choose length"
+    },
+    "sizes": [
+      {
+        "id": "6in",
+        "addPrice": 0,
+        "label": {
+          "he": "15 ס״מ",
+          "en": "15 cm"
+        }
+      },
+      {
+        "id": "6.5in",
+        "addPrice": 5,
+        "label": {
+          "he": "16 ס״מ",
+          "en": "16 cm"
+        }
+      },
+      {
+        "id": "7in",
+        "addPrice": 10,
+        "label": {
+          "he": "17 ס״מ",
+          "en": "17 cm"
+        }
+      },
+      {
+        "id": "7.5in",
+        "addPrice": 15,
+        "label": {
+          "he": "19 ס״מ",
+          "en": "19 cm"
+        }
+      },
+      {
+        "id": "8in",
+        "addPrice": 20,
+        "label": {
+          "he": "20 ס״מ",
+          "en": "20 cm"
+        }
+      }
+    ],
+    "cardTitle": {
+      "he": "צמיד טניס סולין לנשים VVS Moissanite - מצופה 18 קראט זהב לבן - צבע כסף",
+      "en": "Soline Women's VVS Moissanite Tennis Bracelet - 18K White Gold Plated - Silver"
+    },
+    "cardMessage": {
+      "he": "צמיד טניס עדין לנשים ברוחב 2 מ״מ, משובץ VVS Moissanite ומצופה 18 קראט זהב לבן.",
+      "en": "A delicate 2 mm women's tennis bracelet set with VVS Moissanite and finished in 18k white gold plated."
+    },
+    "description": {
+      "he": "צמיד טניס לנשים ברוחב 2 מ״מ, משובץ אבני VVS Moissanite עם בסיס פליז וציפוי 18 קראט זהב לבן. מגיע עם תעודת GRA.",
+      "en": "A 2 mm women's tennis bracelet set with VVS Moissanite, built on a brass base with 18k white gold plated. Includes a GRA certificate."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צמיד טניס לנשים בעיצוב עדין ואלגנטי",
+        "רוחב קבוע: 2 מ״מ",
+        "משובץ אבני VVS Moissanite",
+        "בסיס עשוי פליז (Brass)",
+        "מצופה 18 קראט זהב לבן",
+        "לבחירה באורכים: 15, 16, 17, 19 או 20 ס״מ",
+        "כולל תעודת GRA לאימות אבני ה-Moissanite",
+        "אבני ה-Moissanite מתאימות לבדיקת Diamond Tester",
+        "משקל משוער: כ-10 גרם"
+      ],
+      "en": [
+        "Women's tennis bracelet with a delicate, elegant design",
+        "Fixed width: 2 mm",
+        "Set with VVS Moissanite stones",
+        "Brass base construction",
+        "18K White Gold Plated",
+        "Available lengths: 15, 16, 17, 19 or 20 cm",
+        "Includes a GRA certificate for the Moissanite stones",
+        "Moissanite stones are suitable for Diamond Tester verification",
+        "Approximate weight: 10 g"
+      ]
+    },
+    "afterText": {
+      "he": "מחיר התחלתי: 289.90 ₪ לאורך 15 ס״מ. כל חצי אינץ׳ נוסף מוסיף 5 ₪.",
+      "en": "Starting price: ₪289.90 for 15 cm. Each additional half inch adds ₪5."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    }
+  }
+  ,{
+    "id": "soline-womens-vvs-moissanite-gold-249",
+    "slug": "product-249",
+    "urlSlug": "soline-womens-vvs-moissanite-gold",
+    "sku": "VS-BR-249",
+    "category": "bracelets",
+    "categories": [
+      "bracelets",
+      "women"
+    ],
+    "badge": null,
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "showAllGalleryThumbs": true,
+    "defaultNecklaceId": "gold",
+    "hoverImage": "images/products/product-249/product-249-5.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-249/product-249-4.png",
+        "hoverImage": "images/products/product-249/product-249-5.png"
+      },
+      "men": {
+        "image": "images/products/product-249/product-249-4.png",
+        "hoverImage": "images/products/product-249/product-249-5.png"
+      }
+    },
+    "sourceUrl": "https://he.aliexpress.com/item/1005012047853872.html?spm=a2g0o.store_pc_home.promoteWysiwyg_2001826959721.1005012047853872&gatewayAdapt=glo2isr",
+    "images": [
+      "images/products/product-249/product-249-4.png",
+      "images/products/product-249/product-249-5.png",
+      "images/products/product-249/product-249-6.png",
+      "images/products/product-249/product-249-1.png",
+      "images/products/product-249/product-249-2.png",
+      "images/products/product-249/product-249-3.png"
+    ],
+    "price": 289.9,
+    "necklaceHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "necklaceSummaryLabel": {
+      "he": "צמיד",
+      "en": "Bracelet"
+    },
+    "necklaces": [
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "image": "images/products/product-249/product-249-1.png"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "image": "images/products/product-249/product-249-4.png"
+      }
+    ],
+    "title": {
+      "he": "צמיד טניס סולין לנשים VVS Moissanite - מצופה 18 קראט זהב - צבע זהב",
+      "en": "Soline Women's VVS Moissanite Tennis Bracelet - 18K Gold Plated - Gold"
+    },
+    "subtitle": {
+      "he": "צמיד טניס לנשים 2 מ״מ משובץ VVS Moissanite · בסיס פליז · מצופה 18 קראט זהב · כולל תעודת GRA",
+      "en": "2 mm women's tennis bracelet with VVS Moissanite · brass base · 18K Gold Plated · includes GRA certificate"
+    },
+    "sizeHeading": {
+      "he": "בחרו אורך",
+      "en": "Choose length"
+    },
+    "sizes": [
+      {
+        "id": "6in",
+        "addPrice": 0,
+        "label": {
+          "he": "15 ס״מ",
+          "en": "15 cm"
+        }
+      },
+      {
+        "id": "6.5in",
+        "addPrice": 5,
+        "label": {
+          "he": "16 ס״מ",
+          "en": "16 cm"
+        }
+      },
+      {
+        "id": "7in",
+        "addPrice": 10,
+        "label": {
+          "he": "17 ס״מ",
+          "en": "17 cm"
+        }
+      },
+      {
+        "id": "7.5in",
+        "addPrice": 15,
+        "label": {
+          "he": "19 ס״מ",
+          "en": "19 cm"
+        }
+      },
+      {
+        "id": "8in",
+        "addPrice": 20,
+        "label": {
+          "he": "20 ס״מ",
+          "en": "20 cm"
+        }
+      }
+    ],
+    "cardTitle": {
+      "he": "צמיד טניס סולין לנשים VVS Moissanite - מצופה 18 קראט זהב - צבע זהב",
+      "en": "Soline Women's VVS Moissanite Tennis Bracelet - 18K Gold Plated - Gold"
+    },
+    "cardMessage": {
+      "he": "צמיד טניס עדין לנשים ברוחב 2 מ״מ, משובץ VVS Moissanite ומצופה 18 קראט זהב.",
+      "en": "A delicate 2 mm women's tennis bracelet set with VVS Moissanite and finished in 18k gold plated."
+    },
+    "description": {
+      "he": "צמיד טניס לנשים ברוחב 2 מ״מ, משובץ אבני VVS Moissanite עם בסיס פליז וציפוי 18 קראט זהב. מגיע עם תעודת GRA.",
+      "en": "A 2 mm women's tennis bracelet set with VVS Moissanite, built on a brass base with 18k gold plated. Includes a GRA certificate."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צמיד טניס לנשים בעיצוב עדין ואלגנטי",
+        "רוחב קבוע: 2 מ״מ",
+        "משובץ אבני VVS Moissanite",
+        "בסיס עשוי פליז (Brass)",
+        "מצופה 18 קראט זהב",
+        "לבחירה באורכים: 15, 16, 17, 19 או 20 ס״מ",
+        "כולל תעודת GRA לאימות אבני ה-Moissanite",
+        "אבני ה-Moissanite מתאימות לבדיקת Diamond Tester",
+        "משקל משוער: כ-10 גרם"
+      ],
+      "en": [
+        "Women's tennis bracelet with a delicate, elegant design",
+        "Fixed width: 2 mm",
+        "Set with VVS Moissanite stones",
+        "Brass base construction",
+        "18K Gold Plated",
+        "Available lengths: 15, 16, 17, 19 or 20 cm",
+        "Includes a GRA certificate for the Moissanite stones",
+        "Moissanite stones are suitable for Diamond Tester verification",
+        "Approximate weight: 10 g"
+      ]
+    },
+    "afterText": {
+      "he": "מחיר התחלתי: 289.90 ₪ לאורך 15 ס״מ. כל חצי אינץ׳ נוסף מוסיף 5 ₪.",
+      "en": "Starting price: ₪289.90 for 15 cm. Each additional half inch adds ₪5."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    }
+  }
+  ,{
+    "id": "emerald-royal-bracelet-silver-250",
+    "slug": "product-250",
+    "urlSlug": "emerald-royal-bracelet-silver",
+    "sku": "VS-BR-250",
+    "category": "bracelets",
+    "categories": [
+      "bracelets"
+    ],
+    "badge": null,
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "showAllGalleryThumbs": true,
+    "hoverImage": "images/products/product-250/product-250-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-250/product-250-1.png",
+        "hoverImage": "images/products/product-250/product-250-2.png"
+      },
+      "men": {
+        "image": "images/products/product-250/product-250-1.png",
+        "hoverImage": "images/products/product-250/product-250-2.png"
+      }
+    },
+    "sourceUrl": "https://he.aliexpress.com/item/1005007915638954.html?spm=a2g0o.store_pc_home.promoteRecommendProducts_2001826959723.1005007915638954&gatewayAdapt=glo2isr",
+    "images": [
+      "images/products/product-250/product-250-1.png",
+      "images/products/product-250/product-250-2.png",
+      "images/products/product-250/product-250-3.png",
+      "images/products/product-250/product-250-4.png",
+      "images/products/product-250/product-250-5.png"
+    ],
+    "price": 219.9,
+    "title": {
+      "he": "צמיד אמרלד רויאל 7 מ״מ - צבע כסף",
+      "en": "Emerald Royal Bracelet 7 mm - Silver"
+    },
+    "subtitle": {
+      "he": "צמיד אמרלד משובץ 7 מ״מ בגימור זהב לבן · אבנים ירוקות בחיתוך מלבני · לבחירה באורך",
+      "en": "7 mm iced emerald bracelet in a white-gold finish · rectangular green stones · choose your length"
+    },
+    "sizeHeading": {
+      "he": "בחרו אורך",
+      "en": "Choose length"
+    },
+    "sizes": [
+      {
+        "id": "7in",
+        "addPrice": 0,
+        "label": {
+          "he": "17 ס״מ",
+          "en": "17 cm"
+        }
+      },
+      {
+        "id": "8in",
+        "addPrice": 10,
+        "label": {
+          "he": "20 ס״מ",
+          "en": "20 cm"
+        }
+      }
+    ],
+    "cardTitle": {
+      "he": "צמיד אמרלד רויאל 7 מ״מ - צבע כסף",
+      "en": "Emerald Royal Bracelet 7 mm - Silver"
+    },
+    "cardMessage": {
+      "he": "צמיד 7 מ״מ עם אבני אמרלד ירוקות ושיבוץ הילה נוצץ סביב כל אבן.",
+      "en": "A 7 mm bracelet with green emerald-style stones and a sparkling halo setting around each stone."
+    },
+    "description": {
+      "he": "צמיד אמרלד רויאל בעיצוב יוקרתי עם אבנים ירוקות בחיתוך מלבני, מסגרת שיבוץ נוצצת וסוגר משובץ.",
+      "en": "A luxury emerald-style bracelet with rectangular green stones, sparkling halo settings and a stone-set clasp."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "רוחב קבוע: 7 מ״מ",
+        "לבחירה באורכים: 17 או 20 ס״מ",
+        "אבנים ירוקות בחיתוך מלבני בסגנון אמרלד",
+        "מסגרת שיבוץ נוצצת סביב כל אבן",
+        "חוליות משובצות בין אבני האמרלד",
+        "גימור בצבע זהב לבן",
+        "סוגר Box משובץ לאחיזה בטוחה ולמראה אחיד",
+        "עיצוב יוניסקס שמתאים לנשים ולגברים"
+      ],
+      "en": [
+        "Fixed width: 7 mm",
+        "Available lengths: 17 or 20 cm",
+        "Rectangular green emerald-style stones",
+        "Sparkling halo setting around each center stone",
+        "Stone-set links between the emerald-style stones",
+        "White-gold color finish",
+        "Stone-set box clasp for secure closure and a cohesive look",
+        "Unisex design suitable for women and men"
+      ]
+    },
+    "afterText": {
+      "he": "מחיר: 219.90 ₪ לאורך 17 ס״מ ו-229.90 ₪ לאורך 20 ס״מ.",
+      "en": "Price: ₪219.90 for 17 cm and ₪229.90 for 20 cm."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    }
+  }
+  ,{
+    "id": "emerald-royal-necklace-silver-251",
+    "slug": "product-251",
+    "urlSlug": "emerald-royal-necklace-silver",
+    "sku": "VS-NE-251",
+    "category": "necklaces",
+    "categories": [
+      "necklaces"
+    ],
+    "badge": null,
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "showAllGalleryThumbs": true,
+    "hoverImage": "images/products/product-251/product-251-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-251/product-251-1.png",
+        "hoverImage": "images/products/product-251/product-251-2.png"
+      },
+      "men": {
+        "image": "images/products/product-251/product-251-1.png",
+        "hoverImage": "images/products/product-251/product-251-2.png"
+      }
+    },
+    "sourceUrl": "https://he.aliexpress.com/item/1005007915638954.html?spm=a2g0o.store_pc_home.promoteRecommendProducts_2001826959723.1005007915638954&gatewayAdapt=glo2isr",
+    "images": [
+      "images/products/product-251/product-251-1.png",
+      "images/products/product-251/product-251-2.png"
+    ],
+    "price": 349.9,
+    "title": {
+      "he": "שרשרת אמרלד רויאל 7 מ״מ - צבע כסף",
+      "en": "Emerald Royal Necklace 7 mm - Silver"
+    },
+    "subtitle": {
+      "he": "שרשרת אמרלד 7 מ״מ בגימור זהב לבן · אבנים ירוקות בחיתוך מלבני · לבחירה באורך",
+      "en": "7 mm emerald-style necklace in a white-gold finish · rectangular green stones · choose your length"
+    },
+    "sizeHeading": {
+      "he": "בחרו אורך",
+      "en": "Choose length"
+    },
+    "sizes": [
+      {
+        "id": "18in",
+        "addPrice": 0,
+        "label": {
+          "he": "45 ס״מ",
+          "en": "45 cm"
+        }
+      },
+      {
+        "id": "20in",
+        "addPrice": 20,
+        "label": {
+          "he": "50 ס״מ",
+          "en": "50 cm"
+        }
+      }
+    ],
+    "cardTitle": {
+      "he": "שרשרת אמרלד רויאל 7 מ״מ - צבע כסף",
+      "en": "Emerald Royal Necklace 7 mm - Silver"
+    },
+    "cardMessage": {
+      "he": "שרשרת 7 מ״מ עם אבני אמרלד ירוקות בחיתוך מלבני ומסגרת שיבוץ נוצצת סביב כל אבן.",
+      "en": "A 7 mm necklace with rectangular green emerald-style stones and a sparkling halo setting around each stone."
+    },
+    "description": {
+      "he": "שרשרת אמרלד רויאל בעיצוב יוקרתי עם אבנים ירוקות בחיתוך מלבני, שיבוץ נוצץ וגימור בצבע זהב לבן.",
+      "en": "A luxury emerald-style necklace with rectangular green stones, sparkling detailing and a white-gold color finish."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "רוחב קבוע: 7 מ״מ",
+        "לבחירה באורכים: 45 או 50 ס״מ",
+        "אבנים ירוקות בחיתוך מלבני בסגנון אמרלד",
+        "מסגרת שיבוץ נוצצת סביב כל אבן",
+        "חוליות משובצות בין אבני האמרלד",
+        "גימור בצבע זהב לבן",
+        "סוגר משובץ למראה אחיד ואחיזה בטוחה",
+        "עיצוב יוניסקס שמתאים לנשים ולגברים"
+      ],
+      "en": [
+        "Fixed width: 7 mm",
+        "Available lengths: 45 or 50 cm",
+        "Rectangular green emerald-style stones",
+        "Sparkling halo setting around each center stone",
+        "Stone-set links between the emerald-style stones",
+        "White-gold color finish",
+        "Stone-set clasp for a cohesive look and secure closure",
+        "Unisex design suitable for women and men"
+      ]
+    },
+    "afterText": {
+      "he": "מחיר: 349.90 ₪ לאורך 45 ס״מ ו-369.90 ₪ לאורך 50 ס״מ.",
+      "en": "Price: ₪349.90 for 45 cm and ₪369.90 for 50 cm."
     },
     "deliveryBusinessDays": {
       "min": 9,
