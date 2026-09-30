@@ -1103,12 +1103,15 @@ async function sendAdminOrderPush(order) {
 function adminPushOrderSummary(order) {
   const customer = parseStoredCustomer(order);
   const customerName = [customer.firstName, customer.lastName].filter(Boolean).join(' ').trim() || customer.name || order.customer_email || 'לקוח/ה';
+  const items = normalizeStoredOrderItems(order.items_json, PRODUCTS);
+  const unitCount = items.reduce((sum, item) => sum + Math.max(1, Number(item.qty || 1)), 0);
   return {
     orderId: Number(order.id),
     orderRef: String(order.order_ref || ''),
     customerName,
     amountAgorot: Number(order.amount_agorot || 0),
     currency: String(order.currency || 'ILS'),
+    unitCount,
     createdAt: Number(order.paid_at || order.created_at || 0),
     url: `/admin/orders?order=${encodeURIComponent(String(order.order_ref || ''))}`
   };

@@ -1,5 +1,5 @@
-const CACHE_VERSION = "versans-admin-20260930-clean-v5";
-const SW_VERSION = "20260930-clean-v5";
+const CACHE_VERSION = "versans-admin-20260930-shopify-v6";
+const SW_VERSION = "20260930-shopify-v6";
 const NOTIFICATION_ICON = "/images/apple-touch-icon.png";
 
 self.addEventListener("install", () => {
@@ -70,9 +70,12 @@ async function showPendingOrderNotifications() {
     const customerName = String(order.customerName || "לקוח/ה");
     const orderRef = String(order.orderRef || "");
     const total = moneyAgorot(order.amountAgorot, order.currency);
+    const unitCount = Math.max(1, Number(order.unitCount || 1));
+    const itemText = unitCount === 1 ? "פריט 1" : `${unitCount} פריטים`;
+    const displayOrderNumber = orderId > 0 ? orderId : orderRef;
 
-    await self.registration.showNotification("הזמנה חדשה", {
-      body: `${customerName}\nסכום: ${total}`,
+    await self.registration.showNotification(`הזמנה #${displayOrderNumber}`, {
+      body: `${total}, ${itemText} • ${customerName}`,
       icon: NOTIFICATION_ICON,
       badge: NOTIFICATION_ICON,
       tag: `versans-order-${orderId || orderRef}`,

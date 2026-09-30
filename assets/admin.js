@@ -217,7 +217,7 @@
     // Always register the current script URL. The previous code reused an
     // existing registration without updating it, which allowed iPhone to keep
     // the old notification wording indefinitely.
-    var registration = await navigator.serviceWorker.register('/admin-sw.js?v=20260930-clean-v5', {
+    var registration = await navigator.serviceWorker.register('/admin-sw.js?v=20260930-shopify-v6', {
       scope: '/',
       updateViaCache: 'none'
     });
