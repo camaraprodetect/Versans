@@ -205,7 +205,7 @@
     // (for example because /admin-sw.js was not publicly served), ready can wait forever.
     var existing = await navigator.serviceWorker.getRegistration('/admin');
     if (!existing) {
-      existing = await navigator.serviceWorker.register('/admin-sw.js?v=20260930-order-push-v2', { scope: '/' });
+      existing = await navigator.serviceWorker.register('/admin-sw.js?v=20260930-order-push-v3', { scope: '/' });
     }
 
     // A first-time registration can still be installing. ready resolves once an

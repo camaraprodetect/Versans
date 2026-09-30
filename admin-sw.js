@@ -1,4 +1,4 @@
-const CACHE_VERSION = "versans-admin-v3-order-push";
+const CACHE_VERSION = "versans-admin-v4-clean-order-push";
 const NOTIFICATION_ICON = "/images/apple-touch-icon.png";
 
 self.addEventListener("install", () => {
@@ -59,8 +59,8 @@ async function showPendingOrderNotifications() {
     const orderRef = String(order.orderRef || "");
     const total = moneyAgorot(order.amountAgorot, order.currency);
 
-    await self.registration.showNotification("הזמנה חדשה ב-VerSans 🎉", {
-      body: `${customerName}\nמספר הזמנה: ${orderRef}\nסכום: ${total}`,
+    await self.registration.showNotification("הזמנה חדשה", {
+      body: `${customerName}\nסכום: ${total}`,
       icon: NOTIFICATION_ICON,
       badge: NOTIFICATION_ICON,
       tag: `versans-order-${orderId || orderRef}`,
