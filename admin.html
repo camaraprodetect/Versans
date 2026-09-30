@@ -5,7 +5,14 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
   <meta name="theme-color" content="#142333">
-  <title>VerSans</title>
+  <meta name="application-name" content="VerSans Admin">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="VerSans Admin">
+  <link rel="manifest" href="/admin-manifest.webmanifest">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/admin-icon-180.png">
+  <title>VerSans Admin</title>
   <link rel="stylesheet" href="/assets/fonts.css?v=20260930-admin-font-v1">
   <link rel="stylesheet" href="/assets/admin.css?v=20260930-readable-font-v1">
 </head>
@@ -66,6 +73,15 @@
   </div>
 
   <div class="admin-toast" id="adminToast" role="status" aria-live="polite" hidden></div>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register("/admin-sw.js").catch(function (error) {
+          console.warn("VerSans Admin service worker registration failed:", error);
+        });
+      });
+    }
+  </script>
   <script src="/assets/admin.js?v=20260928-unit-tracking-v2"></script>
 </body>
 </html>
