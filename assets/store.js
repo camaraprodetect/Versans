@@ -158,7 +158,8 @@
   function productPath(productOrId) {
     var product = typeof productOrId === 'string' ? byId(productOrId) : productOrId;
     if (product && product.greetingEditorEntry) {
-      return '/greeting-editor?id=' + encodeURIComponent(product.slug || product.id) + '&entry=1';
+      var greetingEditorId = product.greetingEditorSource || product.slug || product.id;
+      return '/greeting-editor?id=' + encodeURIComponent(greetingEditorId) + '&entry=1';
     }
     if (ROUTES && ROUTES.productPath) return ROUTES.productPath(product);
     return product && product.urlSlug ? '/' + encodeURIComponent(product.urlSlug) : '/';
@@ -272,12 +273,14 @@
   }
 
   function currentCollectionProducts() {
-    return PRODUCTS.filter(function (p) {
+    var list = PRODUCTS.filter(function (p) {
       if (state.filter === 'all') return true;
       if (state.filter.indexOf('glasses') === 0 && !isCurrentGlassesCollectionProduct(p)) return false;
       var collections = Array.isArray(p.categories) && p.categories.length ? p.categories : [p.category];
       return collections.indexOf(state.filter) !== -1;
     });
+    if (state.filter === 'greeting') list = orderGreetingCatalogProducts(list);
+    return list;
   }
 
   function availableColorOptions(list) {
@@ -432,6 +435,27 @@
       var d = allCatalogShuffleKey(a) - allCatalogShuffleKey(b);
       if (d) return d;
       return String(a.id || a.slug || '').localeCompare(String(b.id || b.slug || ''));
+    });
+  }
+
+  function orderGreetingCatalogProducts(list) {
+    var priority = {
+      'product-1': 0,
+      'product-3': 1,
+      'product-2': 2,
+      'product-238': 3
+    };
+    return list.map(function (product, index) {
+      return { product: product, index: index };
+    }).sort(function (a, b) {
+      var aRank = Object.prototype.hasOwnProperty.call(priority, a.product && a.product.slug)
+        ? priority[a.product.slug] : 1000 + a.index;
+      var bRank = Object.prototype.hasOwnProperty.call(priority, b.product && b.product.slug)
+        ? priority[b.product.slug] : 1000 + b.index;
+      if (aRank !== bRank) return aRank - bRank;
+      return a.index - b.index;
+    }).map(function (entry) {
+      return entry.product;
     });
   }
 
@@ -933,7 +957,10 @@
       });
       if (!groupProducts.length) return '';
 
-      groupProducts = shuffleAllProductsStable(groupProducts).slice(0, limit);
+      groupProducts = (group.key === 'greeting'
+        ? orderGreetingCatalogProducts(groupProducts)
+        : shuffleAllProductsStable(groupProducts)
+      ).slice(0, limit);
       return '' +
         '<section class="all-collection-group" data-all-collection-group="' + esc(group.key) + '">' +
           '<div class="all-collection-group__head">' +

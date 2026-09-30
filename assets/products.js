@@ -404,6 +404,152 @@ var PRODUCTS = [
     }
   },
   {
+    "id": "custom-greeting-design-02",
+    "slug": "product-238",
+    "urlSlug": "custom-greeting-design-blue",
+    "sku": "VS-CUSTOM-GREETING-02",
+    "category": "greeting",
+    "categories": [
+      "greeting",
+      "custom"
+    ],
+    "badge": null,
+    "greetingEditorEntry": true,
+    "catalogPrice": 20,
+    "hoverImage": "images/products/product-238/mainproduct2.png",
+    "images": [
+      "images/products/product-238/mainproduct1.png"
+    ],
+    "price": 0,
+    "title": {
+      "he": "עיצוב ברכה אישית",
+      "en": "Custom Greeting Design"
+    },
+    "subtitle": {
+      "he": "עצבו ברכה אישית, ולאחר השמירה בחרו דגם וסוג קופסה.",
+      "en": "Design a custom greeting, then choose a style and box type."
+    },
+    "necklaceHeading": {
+      "he": "בחרו דגם",
+      "en": "Choose a style"
+    },
+    "necklaceSummaryLabel": {
+      "he": "דגם",
+      "en": "Style"
+    },
+    "necklaces": [
+      {
+        "id": "necklace-1",
+        "image": "images/products/product-1/product-1-2.png",
+        "label": {
+          "he": "דגם 1",
+          "en": "Style 1"
+        }
+      },
+      {
+        "id": "necklace-2",
+        "image": "images/products/product-1/product-1-3.png",
+        "label": {
+          "he": "דגם 2",
+          "en": "Style 2"
+        }
+      },
+      {
+        "id": "necklace-3",
+        "image": "images/products/product-1/product-1-4.png",
+        "label": {
+          "he": "דגם 3",
+          "en": "Style 3"
+        }
+      },
+      {
+        "id": "necklace-4",
+        "image": "images/products/product-1/product-1-5.png",
+        "label": {
+          "he": "דגם 4",
+          "en": "Style 4"
+        }
+      },
+      {
+        "id": "necklace-5",
+        "image": "images/products/product-1/product-1-6.png",
+        "label": {
+          "he": "דגם 5",
+          "en": "Style 5"
+        }
+      }
+    ],
+    "boxHeading": {
+      "he": "בחרו סוג קופסה",
+      "en": "Choose a box type"
+    },
+    "boxSummaryLabel": {
+      "he": "קופסה",
+      "en": "Box"
+    },
+    "boxes": [
+      {
+        "id": "regular-box",
+        "image": "images/products/product-1/mainproduct2.png",
+        "addPrice": 0,
+        "label": {
+          "he": "קופסה רגילה",
+          "en": "Classic box"
+        },
+        "priceLabel": {
+          "he": "כלולה במחיר",
+          "en": "Included"
+        }
+      },
+      {
+        "id": "red-box",
+        "image": "images/products/product-1/mainproduct1.png",
+        "addPrice": 10,
+        "label": {
+          "he": "קופסה אדומה עם תאורה",
+          "en": "Red illuminated box"
+        },
+        "priceLabel": {
+          "he": "+₪10",
+          "en": "+₪10"
+        }
+      }
+    ],
+    "cardTitle": {
+      "he": "לאמא",
+      "en": "To Mom"
+    },
+    "cardMessage": {
+      "he": "אני יודע שזה קשה לאמא לגדל ילד ואין שום דרך שאוכל להחזיר לך על זה. רק רציתי להגיד לך כמה אני אוהב אותך. לא משנה לאיפה אלך בחיים, תמיד אזכור כמה עשית בשבילי וכמה נתת לי",
+      "en": "I know how much you have given me and there is no way I could ever repay you. I just wanted to tell you how much I love you and that I will always remember everything you have done for me."
+    },
+    "signature": {
+      "he": "אוהב המון הבן שלך",
+      "en": "With all my love, your son"
+    },
+    "details": {
+      "he": [
+        "עיצוב ברכה אישית ב-Default החל מ-20 ₪",
+        "תבנית שאינה Default או הוספת תמונה ל-Default מוסיפה 15 ₪",
+        "בחירת דגם לאחר שמירת הברכה",
+        "בחירה בין קופסה רגילה לקופסה אדומה עם תאורה",
+        "הקופסה האדומה מוסיפה ₪10 למחיר"
+      ],
+      "en": [
+        "Custom greeting design in Default starts at ₪20",
+        "A non-Default template or adding an image to Default adds ₪15",
+        "Choose the style after saving the greeting",
+        "Choose a classic box or a red illuminated box",
+        "The red box adds ₪10 to the price"
+      ]
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    },
+    "greetingEditorSource": "product-3"
+  },
+  {
     "id": "tennis-chain-3mm-01",
     "slug": "product-10",
     "urlSlug": "tennis-chain-3mm-silver",
@@ -602,169 +748,169 @@ var PRODUCTS = [
     }
   },
   {
-      "id": "classic-tennis-bracelet-237",
-      "slug": "product-237",
-      "urlSlug": "classic-tennis-bracelet",
-      "sku": "VS-BR-237",
-      "category": "bracelets",
-      "categories": [
-          "bracelets"
-      ],
-      "badge": null,
-      "cardMode": "view",
-      "hideMessageCard": true,
-      "hoverImage": "images/products/product-237/product-237-2.png",
-      "collectionMedia": {
-          "women": {
-              "image": "images/products/product-237/product-237-1.png",
-              "hoverImage": "images/products/product-237/product-237-2.png"
-          },
-          "men": {
-              "image": "images/products/product-237/product-237-1.png",
-              "hoverImage": "images/products/product-237/product-237-2.png"
-          }
+    "id": "classic-tennis-bracelet-237",
+    "slug": "product-237",
+    "urlSlug": "classic-tennis-bracelet",
+    "sku": "VS-BR-237",
+    "category": "bracelets",
+    "categories": [
+      "bracelets"
+    ],
+    "badge": null,
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "hoverImage": "images/products/product-237/product-237-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-237/product-237-1.png",
+        "hoverImage": "images/products/product-237/product-237-2.png"
       },
-      "images": [
-          "images/products/product-237/product-237-1.png",
-          "images/products/product-237/product-237-2.png"
-      ],
-      "price": 249.9,
-      "title": {
-          "he": "צמיד טניס קלאסי - מצופה 18 קראט זהב לבן",
-          "en": "Classic Tennis Bracelet - 18K White Gold Plated"
-      },
-      "subtitle": {
-          "he": "צמיד טניס קלאסי מצופה 18 קראט זהב לבן ומשובץ זירקוניה · לבחירה באורך 17, 20 או 22 ס״מ ובעובי 3, 4 או 5 מ״מ",
-          "en": "18K white gold plated classic tennis bracelet set with zirconia · choose 17, 20 or 22 cm length and 3, 4 or 5 mm width"
-      },
-      "sizeHeading": {
-          "he": "בחרו אורך",
-          "en": "Choose length"
-      },
-      "colorHeading": {
-          "he": "בחרו עובי",
-          "en": "Choose width"
-      },
-      "colorRequiredText": {
-          "he": "נא לבחור עובי",
-          "en": "Please choose a width"
-      },
-      "sizes": [
-          {
-              "id": "17cm",
-              "addPrice": 0,
-              "priceLabel": {
-                  "he": "249.90 ₪",
-                  "en": "₪249.90"
-              },
-              "label": {
-                  "he": "17 ס״מ",
-                  "en": "17 cm"
-              }
-          },
-          {
-              "id": "20cm",
-              "addPrice": 5,
-              "priceLabel": {
-                  "he": "254.90 ₪",
-                  "en": "₪254.90"
-              },
-              "label": {
-                  "he": "20 ס״מ",
-                  "en": "20 cm"
-              }
-          },
-          {
-              "id": "22cm",
-              "addPrice": 10,
-              "priceLabel": {
-                  "he": "259.90 ₪",
-                  "en": "₪259.90"
-              },
-              "label": {
-                  "he": "22 ס״מ",
-                  "en": "22 cm"
-              }
-          }
-      ],
-      "colors": [
-          {
-              "id": "3mm",
-              "addPrice": 0,
-              "priceLabel": {
-                  "he": "ללא תוספת",
-                  "en": "Included"
-              },
-              "label": {
-                  "he": "3 מ״מ",
-                  "en": "3 mm"
-              }
-          },
-          {
-              "id": "4mm",
-              "addPrice": 5,
-              "priceLabel": {
-                  "he": "+5 ₪",
-                  "en": "+₪5"
-              },
-              "label": {
-                  "he": "4 מ״מ",
-                  "en": "4 mm"
-              }
-          },
-          {
-              "id": "5mm",
-              "addPrice": 10,
-              "priceLabel": {
-                  "he": "+10 ₪",
-                  "en": "+₪10"
-              },
-              "label": {
-                  "he": "5 מ״מ",
-                  "en": "5 mm"
-              }
-          }
-      ],
-      "cardTitle": {
-          "he": "צמיד טניס קלאסי",
-          "en": "Classic Tennis Bracelet"
-      },
-      "cardMessage": {
-          "he": "צמיד טניס קלאסי מצופה 18 קראט זהב לבן, משובץ זירקוניה במראה נקי ויוקרתי, עם בחירה של אורך ועובי.",
-          "en": "A classic tennis bracelet plated in 18K white gold and set with zirconia, with selectable length and width."
-      },
-      "signature": {
-          "he": "",
-          "en": ""
-      },
-      "details": {
-          "he": [
-              "צמיד טניס קלאסי מצופה 18 קראט זהב לבן",
-              "משובץ זירקוניה",
-              "אורכים לבחירה: 17, 20 או 22 ס״מ",
-              "עובי לבחירה: 3, 4 או 5 מ״מ",
-              "מחיר התחלתי: 249.90 ₪",
-              "כל עלייה באורך מוסיפה 5 ₪",
-              "כל עלייה בעובי מוסיפה 5 ₪"
-          ],
-          "en": [
-              "Classic tennis bracelet plated in 18K white gold",
-              "Set with zirconia stones",
-              "Available lengths: 17, 20 or 22 cm",
-              "Available widths: 3, 4 or 5 mm",
-              "Starting price: ₪249.90",
-              "Each length step adds ₪5",
-              "Each width step adds ₪5"
-          ]
-      },
-      "afterText": {
-          "he": "בחרו אורך ועובי והמחיר יתעדכן אוטומטית בהתאם לבחירה.",
-          "en": "Choose a length and width and the price will update automatically."
-      },
-      "deliveryBusinessDays": {
-          "min": 9,
-          "max": 14
+      "men": {
+        "image": "images/products/product-237/product-237-1.png",
+        "hoverImage": "images/products/product-237/product-237-2.png"
       }
+    },
+    "images": [
+      "images/products/product-237/product-237-1.png",
+      "images/products/product-237/product-237-2.png"
+    ],
+    "price": 249.9,
+    "title": {
+      "he": "צמיד טניס קלאסי - מצופה 18 קראט זהב לבן",
+      "en": "Classic Tennis Bracelet - 18K White Gold Plated"
+    },
+    "subtitle": {
+      "he": "צמיד טניס קלאסי מצופה 18 קראט זהב לבן ומשובץ זירקוניה · לבחירה באורך 17, 20 או 22 ס״מ ובעובי 3, 4 או 5 מ״מ",
+      "en": "18K white gold plated classic tennis bracelet set with zirconia · choose 17, 20 or 22 cm length and 3, 4 or 5 mm width"
+    },
+    "sizeHeading": {
+      "he": "בחרו אורך",
+      "en": "Choose length"
+    },
+    "colorHeading": {
+      "he": "בחרו עובי",
+      "en": "Choose width"
+    },
+    "colorRequiredText": {
+      "he": "נא לבחור עובי",
+      "en": "Please choose a width"
+    },
+    "sizes": [
+      {
+        "id": "17cm",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "249.90 ₪",
+          "en": "₪249.90"
+        },
+        "label": {
+          "he": "17 ס״מ",
+          "en": "17 cm"
+        }
+      },
+      {
+        "id": "20cm",
+        "addPrice": 5,
+        "priceLabel": {
+          "he": "254.90 ₪",
+          "en": "₪254.90"
+        },
+        "label": {
+          "he": "20 ס״מ",
+          "en": "20 cm"
+        }
+      },
+      {
+        "id": "22cm",
+        "addPrice": 10,
+        "priceLabel": {
+          "he": "259.90 ₪",
+          "en": "₪259.90"
+        },
+        "label": {
+          "he": "22 ס״מ",
+          "en": "22 cm"
+        }
+      }
+    ],
+    "colors": [
+      {
+        "id": "3mm",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "ללא תוספת",
+          "en": "Included"
+        },
+        "label": {
+          "he": "3 מ״מ",
+          "en": "3 mm"
+        }
+      },
+      {
+        "id": "4mm",
+        "addPrice": 5,
+        "priceLabel": {
+          "he": "+5 ₪",
+          "en": "+₪5"
+        },
+        "label": {
+          "he": "4 מ״מ",
+          "en": "4 mm"
+        }
+      },
+      {
+        "id": "5mm",
+        "addPrice": 10,
+        "priceLabel": {
+          "he": "+10 ₪",
+          "en": "+₪10"
+        },
+        "label": {
+          "he": "5 מ״מ",
+          "en": "5 mm"
+        }
+      }
+    ],
+    "cardTitle": {
+      "he": "צמיד טניס קלאסי",
+      "en": "Classic Tennis Bracelet"
+    },
+    "cardMessage": {
+      "he": "צמיד טניס קלאסי מצופה 18 קראט זהב לבן, משובץ זירקוניה במראה נקי ויוקרתי, עם בחירה של אורך ועובי.",
+      "en": "A classic tennis bracelet plated in 18K white gold and set with zirconia, with selectable length and width."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צמיד טניס קלאסי מצופה 18 קראט זהב לבן",
+        "משובץ זירקוניה",
+        "אורכים לבחירה: 17, 20 או 22 ס״מ",
+        "עובי לבחירה: 3, 4 או 5 מ״מ",
+        "מחיר התחלתי: 249.90 ₪",
+        "כל עלייה באורך מוסיפה 5 ₪",
+        "כל עלייה בעובי מוסיפה 5 ₪"
+      ],
+      "en": [
+        "Classic tennis bracelet plated in 18K white gold",
+        "Set with zirconia stones",
+        "Available lengths: 17, 20 or 22 cm",
+        "Available widths: 3, 4 or 5 mm",
+        "Starting price: ₪249.90",
+        "Each length step adds ₪5",
+        "Each width step adds ₪5"
+      ]
+    },
+    "afterText": {
+      "he": "בחרו אורך ועובי והמחיר יתעדכן אוטומטית בהתאם לבחירה.",
+      "en": "Choose a length and width and the price will update automatically."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "star-tennis-bracelet-11",
