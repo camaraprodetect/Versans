@@ -10,6 +10,11 @@
   var sidebarBackdrop = document.getElementById('adminSidebarBackdrop');
   var mobileNav = document.getElementById('adminMobileNav');
   var toast = document.getElementById('adminToast');
+  var pushButton = document.getElementById('adminPushToggle');
+  var requestedOrderRef = new URLSearchParams(window.location.search).get('order') || '';
+  var requestedOrderOpened = false;
+  var pushConfigPromise = null;
+  var pushRegistrationPromise = null;
 
   var pageMeta = {
     dashboard: ['Dashboard', 'תמונה מהירה של המכירות, המבקרים והלקוחות של VerSans'],
@@ -123,7 +128,7 @@
   async function api(url) {
     var response = await fetch(url, { credentials: 'same-origin', headers: { Accept: 'application/json' } });
     if (response.status === 401 || response.status === 403) {
-      window.location.href = '/login';
+      window.location.href = '/login?next=' + encodeURIComponent(window.location.pathname + window.location.search);
       throw new Error('admin_required');
     }
     if (!response.ok) {
@@ -142,7 +147,7 @@
     }
     var response = await fetch(url, options);
     if (response.status === 401 || response.status === 403) {
-      window.location.href = '/login';
+      window.location.href = '/login?next=' + encodeURIComponent(window.location.pathname + window.location.search);
       throw new Error('admin_required');
     }
     var payload = null;
@@ -162,6 +167,105 @@
     toast.hidden = false;
     window.clearTimeout(showToast.timer);
     showToast.timer = window.setTimeout(function () { toast.hidden = true; }, 2600);
+  }
+
+  function urlBase64ToUint8Array(value) {
+    var padding = '='.repeat((4 - String(value || '').length % 4) % 4);
+    var base64 = (String(value || '') + padding).replace(/-/g, '+').replace(/_/g, '/');
+    var raw = window.atob(base64);
+    var output = new Uint8Array(raw.length);
+    for (var i = 0; i < raw.length; i += 1) output[i] = raw.charCodeAt(i);
+    return output;
+  }
+
+  function pushSupported() {
+    return 'serviceWorker' in navigator && 'PushManager' in window && typeof Notification !== 'undefined';
+  }
+
+  async function refreshAdminPushButton() {
+    if (!pushButton) return;
+    if (!pushSupported()) {
+      pushButton.hidden = false;
+      pushButton.disabled = true;
+      pushButton.textContent = '🔕 לא נתמך';
+      pushButton.title = 'הדפדפן הזה לא תומך בהתראות Web Push';
+      return;
+    }
+    pushButton.hidden = false;
+    if (Notification.permission === 'denied') {
+      pushButton.disabled = false;
+      pushButton.dataset.active = '0';
+      pushButton.classList.remove('is-active');
+      pushButton.textContent = '🔕 התראות חסומות';
+      pushButton.title = 'יש לאפשר התראות ל-VerSans Admin בהגדרות המכשיר';
+      return;
+    }
+    var registration = await (pushRegistrationPromise || navigator.serviceWorker.ready);
+    var subscription = await registration.pushManager.getSubscription();
+    var active = Notification.permission === 'granted' && !!subscription;
+    pushButton.disabled = false;
+    pushButton.dataset.active = active ? '1' : '0';
+    pushButton.classList.toggle('is-active', active);
+    pushButton.textContent = active ? '🔔 התראות פעילות' : '🔔 הפעל התראות';
+    pushButton.title = active ? 'התראות על הזמנות חדשות פעילות במכשיר הזה' : 'קבל התראה בכל פעם שנכנסת הזמנה חדשה';
+  }
+
+  async function enableAdminPush() {
+    if (!pushSupported()) {
+      showToast('המכשיר או הדפדפן הזה לא תומך בהתראות Push.');
+      return;
+    }
+    if (Notification.permission === 'denied') {
+      showToast('ההתראות חסומות. יש לאפשר אותן בהגדרות ההתראות של VerSans Admin.');
+      return;
+    }
+    if (pushButton && pushButton.dataset.active === '1') {
+      showToast('ההתראות כבר פעילות במכשיר הזה ✓');
+      return;
+    }
+
+    // Permission must be requested directly from the button tap, especially on iPhone.
+    var permission = Notification.permission;
+    if (permission !== 'granted') permission = await Notification.requestPermission();
+    if (permission !== 'granted') {
+      await refreshAdminPushButton();
+      showToast('לא ניתנה הרשאה להתראות.');
+      return;
+    }
+
+    if (pushButton) { pushButton.disabled = true; pushButton.textContent = 'מפעיל התראות…'; }
+    try {
+      var registration = await (pushRegistrationPromise || navigator.serviceWorker.ready);
+      var config = pushConfigPromise ? await pushConfigPromise : null;
+      if (!config || !config.publicKey) config = await api('/api/admin/push/config');
+      if (!config || !config.publicKey) throw new Error('push_config_unavailable');
+      var subscription = await registration.pushManager.getSubscription();
+      if (!subscription) {
+        subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(config.publicKey)
+        });
+      }
+      await apiAction('/api/admin/push/subscribe', 'POST', {
+        subscription: subscription.toJSON ? subscription.toJSON() : JSON.parse(JSON.stringify(subscription))
+      });
+      await refreshAdminPushButton();
+      showToast('התראות על הזמנות חדשות הופעלו ✓');
+    } catch (error) {
+      if (pushButton) pushButton.disabled = false;
+      showToast('לא ניתן להפעיל התראות כרגע. נסה שוב.');
+      await refreshAdminPushButton().catch(function () {});
+    }
+  }
+
+  async function initAdminPush() {
+    if (!pushButton) return;
+    if (pushSupported()) {
+      pushRegistrationPromise = navigator.serviceWorker.ready;
+      pushConfigPromise = api('/api/admin/push/config').catch(function () { return null; });
+    }
+    pushButton.addEventListener('click', function () { enableAdminPush(); });
+    await refreshAdminPushButton();
   }
 
   function setPageMeta(title, subtitle) {
@@ -528,6 +632,105 @@
       row.classList.remove('admin-order-row--connected', 'admin-order-row--partial', 'admin-order-row--unconnected');
       row.classList.add(fulfillmentState === 'complete' ? 'admin-order-row--connected' : (fulfillmentState === 'partial' ? 'admin-order-row--partial' : 'admin-order-row--unconnected'));
     });
+  }
+
+  function orderShippingAddress(shipping) {
+    shipping = shipping || {};
+    var first = [shipping.street, shipping.houseNumber].filter(Boolean).join(' ');
+    var extra = [];
+    if (shipping.apartment) extra.push('דירה ' + shipping.apartment);
+    if (shipping.entrance) extra.push('כניסה ' + shipping.entrance);
+    if (shipping.floor) extra.push('קומה ' + shipping.floor);
+    var location = [shipping.city, shipping.zip ? 'מיקוד ' + shipping.zip : ''].filter(Boolean).join(' · ');
+    return [first, extra.join(' · '), location].filter(Boolean).join(', ');
+  }
+
+  async function openOrderDetailsByRef(orderRef) {
+    closeShippingModal();
+    var modal = make('div', 'admin-shipping-modal admin-order-details-modal');
+    var backdrop = make('button', 'admin-shipping-backdrop');
+    backdrop.type = 'button'; backdrop.setAttribute('aria-label', 'סגירה');
+    var panel = make('section', 'admin-shipping-panel admin-order-details-panel');
+    var loading = make('div', 'admin-page-loading'); loading.appendChild(make('span')); loading.appendChild(make('p', '', 'טוען פרטי הזמנה…'));
+    panel.appendChild(loading); modal.append(backdrop, panel); document.body.appendChild(modal);
+    backdrop.addEventListener('click', closeShippingModal);
+
+    try {
+      var data = await api('/api/admin/orders/' + encodeURIComponent(orderRef));
+      var order = data.order || {};
+      panel.replaceChildren();
+
+      var head = make('div', 'admin-shipping-head');
+      var headText = make('div');
+      headText.appendChild(make('small', '', 'פרטי הזמנה'));
+      headText.appendChild(make('h2', '', order.orderRef || orderRef));
+      var close = make('button', 'admin-shipping-close', '×'); close.type = 'button'; close.addEventListener('click', closeShippingModal);
+      head.append(headText, close); panel.appendChild(head);
+
+      var hero = make('section', 'admin-order-detail-hero');
+      var customerCopy = make('div');
+      customerCopy.appendChild(make('span', '', 'לקוח'));
+      customerCopy.appendChild(make('strong', '', text(order.customerName, 'אורח')));
+      if (order.customerEmail) customerCopy.appendChild(make('small', '', order.customerEmail));
+      if (order.customerPhone) customerCopy.appendChild(make('small', '', order.customerPhone));
+      var totalCopy = make('div', 'admin-order-detail-total');
+      totalCopy.appendChild(make('span', '', 'סה״כ הזמנה'));
+      totalCopy.appendChild(make('strong', '', moneyAgorot(order.amountAgorot)));
+      totalCopy.appendChild(make('small', '', order.paidAt ? 'שולם · ' + dateTime(order.paidAt) : dateTime(order.createdAt)));
+      hero.append(customerCopy, totalCopy); panel.appendChild(hero);
+
+      var overview = make('div', 'admin-order-detail-grid');
+      [
+        ['מספר הזמנה', order.orderRef || orderRef],
+        ['סטטוס', order.status === 'paid' ? 'שולם' : text(order.status)],
+        ['כמות יחידות', numberFmt(order.units || 0)],
+        ['משלוחים', order.fulfillment && order.fulfillment.state === 'complete' ? 'הכול מחובר' : (order.fulfillment && order.fulfillment.state === 'partial' ? 'מחובר חלקית' : 'טרם חובר')]
+      ].forEach(function (entry) {
+        var box = make('div'); box.appendChild(make('span', '', entry[0])); box.appendChild(make('strong', '', entry[1])); overview.appendChild(box);
+      });
+      panel.appendChild(overview);
+
+      var itemsSection = make('section', 'admin-shipping-section admin-order-detail-items');
+      itemsSection.appendChild(make('h3', '', 'המוצרים בהזמנה'));
+      (order.items || []).forEach(function (item) {
+        var row = make('div', 'admin-order-detail-item');
+        var copy = make('div'); copy.appendChild(make('strong', '', text(item.name, item.id))); copy.appendChild(make('small', '', 'כמות: ' + numberFmt(item.qty || 1) + (item.itemOrderRef ? ' · ' + item.itemOrderRef : '')));
+        var line = item.lineTotal != null ? Number(item.lineTotal) : (Number(item.unitPrice || 0) * Number(item.qty || 1));
+        row.append(copy, make('strong', '', new Intl.NumberFormat('he-IL', { style: 'currency', currency: 'ILS', minimumFractionDigits: 2 }).format(Number(line || 0))));
+        itemsSection.appendChild(row);
+      });
+      panel.appendChild(itemsSection);
+
+      var address = orderShippingAddress(order.shipping);
+      if (address || (order.shipping && order.shipping.notes)) {
+        var shippingSection = make('section', 'admin-shipping-section admin-order-detail-address');
+        shippingSection.appendChild(make('h3', '', 'פרטי משלוח'));
+        if (address) shippingSection.appendChild(make('p', '', address));
+        if (order.shipping && order.shipping.notes) {
+          var notes = make('div', 'admin-order-detail-notes'); notes.appendChild(make('span', '', 'הערות לקוח')); notes.appendChild(make('strong', '', order.shipping.notes)); shippingSection.appendChild(notes);
+        }
+        panel.appendChild(shippingSection);
+      }
+
+      var actions = make('div', 'admin-order-detail-actions');
+      var shippingButton = make('button', 'admin-shipment-submit', 'ניהול משלוחים'); shippingButton.type = 'button'; shippingButton.disabled = order.status !== 'paid';
+      shippingButton.addEventListener('click', function () { closeShippingModal(); openShipmentManager(order); });
+      var done = make('button', 'admin-order-detail-close-button', 'סגור'); done.type = 'button'; done.addEventListener('click', closeShippingModal);
+      actions.append(shippingButton, done); panel.appendChild(actions);
+    } catch (error) {
+      panel.replaceChildren();
+      var err = make('div', 'admin-error'); err.appendChild(make('strong', '', 'לא ניתן לטעון את פרטי ההזמנה.')); err.appendChild(make('div', 'admin-table__muted', text(error && error.message))); panel.appendChild(err);
+    }
+  }
+
+  async function maybeOpenRequestedOrder() {
+    if (state.page !== 'orders' || requestedOrderOpened || !requestedOrderRef) return;
+    requestedOrderOpened = true;
+    var orderRef = requestedOrderRef;
+    var cleanUrl = new URL(window.location.href);
+    cleanUrl.searchParams.delete('order');
+    window.history.replaceState(null, '', cleanUrl.pathname + (cleanUrl.search ? cleanUrl.search : '') + cleanUrl.hash);
+    await openOrderDetailsByRef(orderRef);
   }
 
   async function openShipmentManager(order) {
@@ -1190,6 +1393,7 @@
     table.appendChild(renderPagination({ count: data.count, limit: data.limit, offset: data.offset, onChange: function (next) { state.offsets.orders = next; renderCurrentPage(); } }));
     frag.appendChild(table);
     content.replaceChildren(frag);
+    await maybeOpenRequestedOrder();
   }
 
   async function renderProductsPage() {
@@ -1428,5 +1632,6 @@
     renderCurrentPage({ keepContent: true }).then(function () { showToast('הנתונים עודכנו'); });
   });
 
+  initAdminPush().catch(function () {});
   renderCurrentPage();
 })();

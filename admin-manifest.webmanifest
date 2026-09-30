@@ -1,12 +1,12 @@
 {
-  "id": "/admin/dashboard",
+  "id": "/admin",
   "name": "VerSans Admin",
   "short_name": "VerSans Admin",
   "description": "VerSans administration panel",
   "lang": "he",
   "dir": "rtl",
-  "start_url": "/admin/dashboard",
-  "scope": "/",
+  "start_url": "/admin",
+  "scope": "/admin",
   "display": "standalone",
   "display_override": [
     "standalone",

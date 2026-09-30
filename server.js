@@ -10,6 +10,7 @@ const { createPaymentUrl, verifyPayment, priceOrder } = require('./api/_hyp.js')
 const { PRODUCTS } = require('./assets/products.js');
 const ROUTES = require('./assets/routes.js');
 const { normalizeAdminRange, normalizeStoredOrderItems, aggregatePaidOrders } = require('./lib/admin-analytics.js');
+const { shipmentItemsUseAlibabaTrackSmart, pickupTrackingPage } = require('./lib/shipment-tracking-source.js');
 const { absoluteUrl, isEmailConfigured, orderConfirmationEmail, passwordResetEmail, productAnnouncementEmail, sendEmail, termsUpdateEmail, welcomeEmail } = require('./lib/email.js');
 const { buildPaidOrderPayload, sendPaidOrderToGoogleSheet } = require('./lib/google-orders.js');
 const { orderItemRef, parseOrderItemRef } = require('./lib/order-item-refs.js');
@@ -48,6 +49,11 @@ const VISITOR_TTL_MS = 90 * 24 * 60 * 60 * 1000;
 const PRESENCE_RETENTION_MS = 90 * 24 * 60 * 60 * 1000;
 const ONLINE_WINDOW_MS = 75 * 1000;
 const ADMIN_EMAIL = 'camaraprodetect@gmail.com';
+const ADMIN_PUSH_DEVICE_COOKIE = 'versans_admin_push_device';
+const ADMIN_PUSH_DEVICE_TTL_MS = 365 * 24 * 60 * 60 * 1000;
+const ADMIN_PUSH_VAPID_PUBLIC_META_KEY = 'admin_push_vapid_public_v1';
+const ADMIN_PUSH_VAPID_PRIVATE_META_KEY = 'admin_push_vapid_private_jwk_v1';
+const ADMIN_PUSH_TIMEOUT_MS = 10 * 1000;
 const USER_PURGE_META_KEY = 'purge_users_except_camaraprodetect_20260922_v1';
 const REVIEWS_PURGE_META_KEY = 'purge_all_reviews_20260924_v1';
 const ADMIN_PAGES = new Set(['', 'dashboard', 'visitors', 'sales', 'orders', 'products', 'customers', 'traffic', 'reviews']);
@@ -964,7 +970,173 @@ function adminCanAccess(user, pathname, method) {
   if (normalizeEmail(user.email) === ADMIN_EMAIL || String(user.role || '') === 'admin') return true;
   if (String(user.role || '') !== 'staff') return false;
   if (method !== 'GET') return false;
-  return pathname === '/api/admin/orders' || /^\/api\/admin\/orders\/[^/]+\/shipments$/.test(pathname);
+  return pathname === '/api/admin/orders' || /^\/api\/admin\/orders\/[^/]+$/.test(pathname) || /^\/api\/admin\/orders\/[^/]+\/shipments$/.test(pathname);
+}
+
+function adminPushDeviceCookie(deviceToken, req) {
+  const secure = process.env.NODE_ENV === 'production' || String(req.headers['x-forwarded-proto'] || '').split(',')[0].trim() === 'https';
+  return `${ADMIN_PUSH_DEVICE_COOKIE}=${encodeURIComponent(deviceToken)}; Path=/api/admin/push/; HttpOnly; SameSite=Strict; Max-Age=${Math.floor(ADMIN_PUSH_DEVICE_TTL_MS / 1000)}${secure ? '; Secure' : ''}`;
+}
+
+function clearAdminPushDeviceCookie(req) {
+  const secure = process.env.NODE_ENV === 'production' || String(req.headers['x-forwarded-proto'] || '').split(',')[0].trim() === 'https';
+  return `${ADMIN_PUSH_DEVICE_COOKIE}=; Path=/api/admin/push/; HttpOnly; SameSite=Strict; Max-Age=0${secure ? '; Secure' : ''}`;
+}
+
+function getAdminPushDeviceToken(req) {
+  const token = String(parseCookies(req.headers.cookie)[ADMIN_PUSH_DEVICE_COOKIE] || '').trim();
+  return /^[A-Za-z0-9_-]{32,128}$/.test(token) ? token : '';
+}
+
+function base64UrlJson(value) {
+  return Buffer.from(JSON.stringify(value), 'utf8').toString('base64url');
+}
+
+let adminPushVapidPromise = null;
+async function ensureAdminPushVapidKeys() {
+  if (!adminPushVapidPromise) {
+    adminPushVapidPromise = (async () => {
+      let publicKey = await database.getSchemaMeta(ADMIN_PUSH_VAPID_PUBLIC_META_KEY);
+      let privateJwkText = await database.getSchemaMeta(ADMIN_PUSH_VAPID_PRIVATE_META_KEY);
+      if (publicKey && privateJwkText) {
+        try {
+          const privateJwk = JSON.parse(privateJwkText);
+          const privateKeyObject = crypto.createPrivateKey({ key: privateJwk, format: 'jwk' });
+          return { publicKey, privateJwk, privateKeyObject };
+        } catch (_) {
+          publicKey = '';
+          privateJwkText = '';
+        }
+      }
+
+      const pair = crypto.generateKeyPairSync('ec', { namedCurve: 'prime256v1' });
+      const publicJwk = pair.publicKey.export({ format: 'jwk' });
+      const privateJwk = pair.privateKey.export({ format: 'jwk' });
+      const rawPublic = Buffer.concat([
+        Buffer.from([4]),
+        Buffer.from(String(publicJwk.x || ''), 'base64url'),
+        Buffer.from(String(publicJwk.y || ''), 'base64url')
+      ]).toString('base64url');
+      await database.setSchemaMeta(ADMIN_PUSH_VAPID_PUBLIC_META_KEY, rawPublic);
+      await database.setSchemaMeta(ADMIN_PUSH_VAPID_PRIVATE_META_KEY, JSON.stringify(privateJwk));
+      return { publicKey: rawPublic, privateJwk, privateKeyObject: pair.privateKey };
+    })().catch((error) => {
+      adminPushVapidPromise = null;
+      throw error;
+    });
+  }
+  return adminPushVapidPromise;
+}
+
+function adminPushVapidAuthorization(endpoint, vapid) {
+  const audience = new URL(endpoint).origin;
+  const now = Math.floor(Date.now() / 1000);
+  const header = base64UrlJson({ typ: 'JWT', alg: 'ES256' });
+  const claims = base64UrlJson({ aud: audience, exp: now + (12 * 60 * 60), sub: `mailto:${ADMIN_EMAIL}` });
+  const unsigned = `${header}.${claims}`;
+  const signature = crypto.sign('sha256', Buffer.from(unsigned, 'utf8'), {
+    key: vapid.privateKeyObject,
+    dsaEncoding: 'ieee-p1363'
+  }).toString('base64url');
+  return `vapid t=${unsigned}.${signature}, k=${vapid.publicKey}`;
+}
+
+async function sendAdminPushWake(subscription, vapid) {
+  const endpoint = String(subscription && subscription.endpoint || '').trim();
+  if (!endpoint || !/^https:\/\//i.test(endpoint)) throw new Error('invalid_push_endpoint');
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      TTL: '60',
+      Urgency: 'high',
+      Authorization: adminPushVapidAuthorization(endpoint, vapid),
+      'Content-Length': '0'
+    },
+    redirect: 'manual',
+    signal: AbortSignal.timeout(ADMIN_PUSH_TIMEOUT_MS)
+  });
+  return response;
+}
+
+async function sendAdminOrderPush(order) {
+  if (!order || String(order.status || '') !== 'paid' || !order.id) return { ok: false, skipped: true };
+  const orderRef = String(order.order_ref || '').trim();
+  if (!orderRef) return { ok: false, skipped: true };
+  const now = Date.now();
+  const claimed = await database.claimAdminOrderPush(Number(order.id), orderRef, now);
+  if (!claimed) return { ok: true, duplicate: true, delivered: 0 };
+
+  const subscriptions = await database.listAdminPushSubscriptions();
+  if (!subscriptions.length) {
+    await database.finishAdminOrderPush(Number(order.id), 'skipped', 0, 'no_admin_push_subscriptions', Date.now());
+    return { ok: true, skipped: true, delivered: 0 };
+  }
+
+  let vapid;
+  try {
+    vapid = await ensureAdminPushVapidKeys();
+  } catch (error) {
+    await database.finishAdminOrderPush(Number(order.id), 'failed', 0, error && error.message || 'vapid_init_failed', Date.now());
+    throw error;
+  }
+
+  let delivered = 0;
+  const errors = [];
+  for (const subscription of subscriptions) {
+    try {
+      const response = await sendAdminPushWake(subscription, vapid);
+      if (response.ok) {
+        delivered += 1;
+        await database.markAdminPushSubscriptionSuccess(subscription.endpoint, Date.now());
+      } else {
+        const code = Number(response.status || 0);
+        if (code === 404 || code === 410) await database.deleteAdminPushSubscription(subscription.endpoint);
+        errors.push(`HTTP ${code || 'error'}`);
+      }
+    } catch (error) {
+      errors.push(error && error.message ? error.message : 'push_send_failed');
+    }
+  }
+  await database.finishAdminOrderPush(Number(order.id), delivered ? 'sent' : 'failed', delivered, errors.join(' | '), Date.now());
+  return { ok: delivered > 0, delivered, errors };
+}
+
+function adminPushOrderSummary(order) {
+  const customer = parseStoredCustomer(order);
+  const customerName = [customer.firstName, customer.lastName].filter(Boolean).join(' ').trim() || customer.name || order.customer_email || 'לקוח/ה';
+  return {
+    orderId: Number(order.id),
+    orderRef: String(order.order_ref || ''),
+    customerName,
+    amountAgorot: Number(order.amount_agorot || 0),
+    currency: String(order.currency || 'ILS'),
+    createdAt: Number(order.paid_at || order.created_at || 0),
+    url: `/admin/orders?order=${encodeURIComponent(String(order.order_ref || ''))}`
+  };
+}
+
+async function adminPushDeviceApi(req, res, pathname) {
+  if (pathname !== '/api/admin/push/pending' && pathname !== '/api/admin/push/ack') return false;
+  const deviceToken = getAdminPushDeviceToken(req);
+  if (!deviceToken) { json(res, 401, { ok: false, error: 'push_device_required' }); return true; }
+  const subscription = await database.getAdminPushSubscriptionByDeviceToken(deviceToken);
+  if (!subscription) { json(res, 401, { ok: false, error: 'push_device_unknown' }, { 'Set-Cookie': clearAdminPushDeviceCookie(req) }); return true; }
+
+  if (pathname === '/api/admin/push/pending') {
+    if (req.method !== 'GET') { json(res, 405, { ok: false, error: 'method_not_allowed' }); return true; }
+    const rows = await database.listPaidOrdersAfterId(Number(subscription.last_notified_order_id || 0), 20);
+    json(res, 200, { ok: true, orders: rows.map(adminPushOrderSummary) });
+    return true;
+  }
+
+  if (req.method !== 'POST') { json(res, 405, { ok: false, error: 'method_not_allowed' }); return true; }
+  if (String(req.headers['x-versans-admin-push'] || '') !== '1') { json(res, 403, { ok: false, error: 'push_header_required' }); return true; }
+  const body = await readJsonBody(req, 16 * 1024);
+  const orderId = Number(body && body.orderId);
+  if (!Number.isInteger(orderId) || orderId <= 0) { json(res, 400, { ok: false, error: 'invalid_order_id' }); return true; }
+  await database.advanceAdminPushCursor(deviceToken, orderId, Date.now());
+  json(res, 200, { ok: true, orderId });
+  return true;
 }
 
 
@@ -1275,6 +1447,29 @@ async function adminSalesData(range, now = Date.now()) {
 }
 
 
+async function adminOrderDetailPayload(row) {
+  const payload = await adminOrderPayloadWithFulfillment(row);
+  const customer = parseStoredCustomer(row);
+  const customerName = payload.customerName || [customer.firstName, customer.lastName].filter(Boolean).join(' ').trim() || customer.name || payload.customerEmail || 'אורח';
+  return {
+    ...payload,
+    customerName,
+    customerEmail: payload.customerEmail || customer.email || null,
+    customerPhone: payload.customerPhone || customer.phone || null,
+    shipping: {
+      country: customer.country || null,
+      city: customer.city || null,
+      street: customer.street || null,
+      houseNumber: customer.houseNumber || null,
+      apartment: customer.apartment || null,
+      entrance: customer.entrance || null,
+      floor: customer.floor || null,
+      zip: customer.zip || null,
+      notes: customer.notes || null
+    }
+  };
+}
+
 function parseStoredCustomer(order) {
   try {
     const value = typeof order.customer_json === 'string' ? JSON.parse(order.customer_json || '{}') : (order.customer_json || {});
@@ -1313,6 +1508,12 @@ function shipmentProviderTrackingUrl(row) {
   if (!raw || Array.isArray(raw)) return null;
   const value = normalizeProviderTrackingUrl(raw.versans_provider_tracking_url);
   return value || null;
+}
+
+async function shipmentUsesAlibabaTrackSmart(shipment) {
+  if (!shipment || !shipment.id) return false;
+  const items = await database.listShipmentItems(shipment.id);
+  return shipmentItemsUseAlibabaTrackSmart(items, PRODUCTS);
 }
 
 function shipmentRawJsonWithProviderTrackingUrl(row, providerTrackingUrl) {
@@ -2458,9 +2659,13 @@ function trackingLookupOptions(order) {
 async function refreshShipmentFrom17Track(shipment, { realTime = false } = {}) {
   if (!shipment || !is17TrackConfigured()) return null;
   const order = await database.getOrderById(shipment.order_id);
+  const usesAlibabaTrackSmart = await shipmentUsesAlibabaTrackSmart(shipment);
   const options = {
     ...trackingLookupOptions(order),
-    originCountry: String(shipment.tracking_number || '').toUpperCase().startsWith('DSVPH') ? 'CN' : null
+    originCountry: String(shipment.tracking_number || '').toUpperCase().startsWith('DSVPH') ? 'CN' : null,
+    // Hat shipments are sourced through Alibaba.com Logistics TrackSmart.
+    // Never leak them into the Cainiao fallback path.
+    skipCainiaoFallback: usesAlibabaTrackSmart
   };
   let info = null;
   if (realTime) {
@@ -2809,6 +3014,11 @@ async function queueNewOrderNotificationAfterSheet(order) {
   const recipient = normalizePhone(order.customer_phone || customer.phone);
   await database.ensureOrderNotification(order.id, orderRef, recipient || null, Date.now());
 
+  // Wake every subscribed VerSans Admin app immediately. The service worker then
+  // securely fetches all unseen paid-order summaries for that device.
+  try { await sendAdminOrderPush(order); }
+  catch (pushError) { console.error(`Admin order push failed for ${orderRef}:`, pushError && pushError.message ? pushError.message : pushError); }
+
   // Attempt the webhook immediately instead of postponing it with setImmediate.
   // If delivery fails, the pending notification remains in the DB and the retry
   // loop will try again later.
@@ -3111,6 +3321,42 @@ async function adminApi(req, res, pathname, parsed) {
   }
   if (admin && !adminCanAccess(admin, pathname, req.method)) {
     json(res, 403, { ok: false, error: 'permission_denied' });
+    return true;
+  }
+  if (pathname === '/api/admin/push/config' && req.method === 'GET') {
+    const vapid = await ensureAdminPushVapidKeys();
+    const subscriptions = await database.listAdminPushSubscriptions();
+    json(res, 200, { ok: true, publicKey: vapid.publicKey, subscriptionCount: subscriptions.length });
+    return true;
+  }
+  if (pathname === '/api/admin/push/subscribe' && req.method === 'POST') {
+    if (!sameOriginAllowed(req)) { json(res, 403, { ok: false, error: 'origin_not_allowed' }); return true; }
+    const body = await readJsonBody(req, 64 * 1024);
+    const subscription = body && body.subscription;
+    const endpoint = String(subscription && subscription.endpoint || '').trim();
+    const keys = subscription && subscription.keys || {};
+    if (!/^https:\/\//i.test(endpoint) || !String(keys.p256dh || '').trim() || !String(keys.auth || '').trim()) {
+      json(res, 400, { ok: false, error: 'invalid_push_subscription' });
+      return true;
+    }
+    let deviceToken = getAdminPushDeviceToken(req);
+    let cursor = null;
+    if (deviceToken) {
+      const existing = await database.getAdminPushSubscriptionByDeviceToken(deviceToken);
+      if (existing) cursor = Number(existing.last_notified_order_id || 0);
+    }
+    if (!deviceToken) deviceToken = crypto.randomBytes(32).toString('base64url');
+    if (cursor === null) cursor = await database.maxPaidOrderId();
+    await database.upsertAdminPushSubscription(Number(admin.id), deviceToken, subscription, String(req.headers['user-agent'] || ''), cursor, Date.now());
+    json(res, 200, { ok: true }, { 'Set-Cookie': adminPushDeviceCookie(deviceToken, req) });
+    return true;
+  }
+  if (pathname === '/api/admin/push/unsubscribe' && req.method === 'POST') {
+    if (!sameOriginAllowed(req)) { json(res, 403, { ok: false, error: 'origin_not_allowed' }); return true; }
+    const body = await readJsonBody(req, 32 * 1024);
+    const endpoint = String(body && body.endpoint || '').trim();
+    if (endpoint) await database.deleteAdminPushSubscription(endpoint);
+    json(res, 200, { ok: true }, { 'Set-Cookie': clearAdminPushDeviceCookie(req) });
     return true;
   }
   if (pathname === '/api/admin/shipping/pickup-message' && req.method === 'POST') {
@@ -3734,7 +3980,8 @@ async function adminApi(req, res, pathname, parsed) {
     const jobs = [];
     for (const shipment of rows) {
       if (jobs.length >= limit) break;
-      if (!shipmentRequiresProviderPickupDetails(shipment)) continue;
+      const usesAlibabaTrackSmart = await shipmentUsesAlibabaTrackSmart(shipment);
+      if (!shipmentRequiresProviderPickupDetails(shipment) && !usesAlibabaTrackSmart) continue;
       const pickup = shipmentPickupDetails(shipment);
       if (shipmentHasActionablePickupDetails(shipment, pickup)) continue;
       const order = await database.getOrderById(shipment.order_id);
@@ -3742,6 +3989,11 @@ async function adminApi(req, res, pathname, parsed) {
       const trackingId = normalizeTrackingNumber(shipment.tracking_number);
       if (!trackingId) continue;
       const directProviderTrackingUrl = shipmentProviderTrackingUrl(shipment);
+      const trackingPage = pickupTrackingPage({
+        trackingId,
+        directProviderTrackingUrl,
+        useAlibabaTrackSmart: usesAlibabaTrackSmart
+      });
       jobs.push({
         shipmentId: Number(shipment.id),
         orderRef: order.order_ref,
@@ -3749,13 +4001,11 @@ async function adminApi(req, res, pathname, parsed) {
         status: shipment.status,
         latestEvent: shipment.latest_event || null,
         latestEventAt: shipment.latest_event_at == null ? null : Number(shipment.latest_event_at),
-        provider: directProviderTrackingUrl ? 'AliExpress direct tracking page' : 'Cainiao / AliExpress',
-        trackingPageSource: directProviderTrackingUrl ? 'aliexpress_direct' : 'cainiao_public',
-        trackingPageUrl: directProviderTrackingUrl || `https://global.cainiao.com/newDetail.htm?mailNoList=${encodeURIComponent(trackingId)}`,
+        provider: trackingPage.provider,
+        trackingPageSource: trackingPage.trackingPageSource,
+        trackingPageUrl: trackingPage.trackingPageUrl,
         submitEndpoint: 'https://versans.com/api/admin/bot/shipping/pickup-collector/submit',
-        instruction: directProviderTrackingUrl
-          ? 'Open trackingPageUrl directly. It is the saved AliExpress shipment page for this parcel. If pickup instructions are visible, copy the complete visible pickup instruction text exactly (including pickup code, locker/shelf, address and hours when present) and POST it to submitEndpoint with shipmentId, trackingId and message. Do not navigate through My Orders and do not mark the customer pickup notification as sent.'
-          : 'Open trackingPageUrl. If pickup instructions are visible, copy the complete visible pickup instruction text exactly (including pickup code, locker/shelf, address and hours when present) and POST it to submitEndpoint with shipmentId, trackingId and message. Do not mark the customer pickup notification as sent.'
+        instruction: trackingPage.instruction
       });
     }
     json(res, 200, {
@@ -3803,10 +4053,11 @@ async function adminApi(req, res, pathname, parsed) {
     let rawJson = {};
     try { rawJson = shipment.raw_json ? JSON.parse(shipment.raw_json) : {}; } catch (_) { rawJson = {}; }
     if (!rawJson || typeof rawJson !== 'object' || Array.isArray(rawJson)) rawJson = {};
+    const usesAlibabaTrackSmart = await shipmentUsesAlibabaTrackSmart(shipment);
     rawJson.versansProviderPickupMessage = {
       receivedAt: now,
-      sender: 'Cainiao web collector',
-      source: String(body && body.source || 'cainiao_web_collector').trim().slice(0, 120),
+      sender: usesAlibabaTrackSmart ? 'Alibaba TrackSmart web collector' : 'Cainiao web collector',
+      source: String(body && body.source || (usesAlibabaTrackSmart ? 'alibaba_tracksmart_web_collector' : 'cainiao_web_collector')).trim().slice(0, 120),
       parsed: parsedPickup,
       rawText: normalizeProviderMessageText(messageText).slice(0, 12000)
     };
@@ -4045,6 +4296,17 @@ async function adminApi(req, res, pathname, parsed) {
     const rows=await database.listAdminCancellationRequests(200); json(res,200,{ok:true,requests:rows}); return true;
   }
 
+  const orderDetailMatch = /^\/api\/admin\/orders\/([^/]+)$/.exec(pathname);
+  if (orderDetailMatch && req.method === 'GET') {
+    let orderRef;
+    try { orderRef = decodeURIComponent(orderDetailMatch[1]); } catch (_) { orderRef = orderDetailMatch[1]; }
+    const order = await database.getOrderByRef(orderRef);
+    if (!order) { json(res, 404, { ok: false, error: 'order_not_found' }); return true; }
+    const payload = await adminOrderDetailPayload(order);
+    json(res, 200, { ok: true, order: payload });
+    return true;
+  }
+
   if (req.method !== 'GET') {
     json(res, 405, { ok: false, error: 'method_not_allowed' });
     return true;
@@ -4231,7 +4493,8 @@ async function adminPage(req, res, pathname) {
   if (req.method !== 'GET' && req.method !== 'HEAD') return false;
   const currentUser = await getCurrentUser(req);
   if (!currentUser) {
-    redirect(res, '/login', 302);
+    const next = String(req.url || '/admin');
+    redirect(res, '/login?next=' + encodeURIComponent(next.startsWith('/') ? next : '/admin'), 302);
     return true;
   }
   if (normalizeEmail(currentUser.email) !== ADMIN_EMAIL) {
@@ -5129,6 +5392,7 @@ const server = http.createServer(async (req, res) => {
     if (await trackingWebhookApi(req, res, pathname)) return;
     if (await publicTrackingApi(req, res, pathname, parsed)) return;
     if (await presenceApi(req, res, pathname)) return;
+    if (await adminPushDeviceApi(req, res, pathname)) return;
     if (await adminApi(req, res, pathname, parsed)) return;
     if (await authApi(req, res, pathname, parsed)) return;
     if (await reviewsApi(req, res, pathname)) return;
@@ -5500,11 +5764,11 @@ setInterval(async () => {
   try { await syncPendingTrackingRegistrations(); } catch (err) { console.error('Pending 17TRACK registration sync failed:', err); }
 }, 60 * 60 * 1000).unref();
 
-// Cainiao marketplace references do not always receive useful 17TRACK webhook
-// events. Poll active shipments periodically using the normal (non-Instant)
-// lookup; if 17TRACK is empty, lib/shipping.js transparently falls back to
-// Cainiao. This also lets ready-for-pickup WhatsApp notifications fire without
-// waiting for an admin or customer to manually open the tracking page.
+// Marketplace references do not always receive useful 17TRACK webhook events.
+// Poll active shipments periodically using the normal (non-Instant) lookup.
+// Non-hat shipments may still use the Cainiao fallback; hat shipments explicitly
+// skip Cainiao because their provider-side checks are routed through Alibaba.com
+// Logistics TrackSmart.
 setInterval(async () => {
   try { await syncActiveShipmentTracking(); } catch (err) { console.error('Active shipment tracking sync failed:', err); }
 }, 30 * 60 * 1000).unref();
