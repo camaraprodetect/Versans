@@ -24177,12 +24177,12 @@ var PRODUCTS = [
       "en": "Women's Teardrop Tennis Bracelet - Silver"
     },
     "cardMessage": {
-      "he": "צמיד טניס לנשים במראה יוקרתי עם אבני טיפה נוצצות וגימור כסף.",
-      "en": "A luxury women's tennis bracelet with sparkling teardrop stones and a silver plated finish."
+      "he": "צמיד טניס לנשים במראה יוקרתי עם אבני טיפה נוצצות.",
+      "en": "A luxury women's tennis bracelet with sparkling teardrop stones."
     },
     "description": {
-      "he": "צמיד טניס לנשים בעיצוב טיפות משובצות, עם אבני CZ נוצצות וגימור כסף.",
-      "en": "A women's teardrop tennis bracelet with sparkling CZ stones and a silver plated finish."
+      "he": "צמיד טניס לנשים בעיצוב טיפות משובצות, עם אבני CZ נוצצות.",
+      "en": "A women's teardrop tennis bracelet with sparkling CZ stones."
     },
     "signature": {
       "he": "",
@@ -24194,7 +24194,6 @@ var PRODUCTS = [
         "משובץ אבני CZ זירקוניה שקופות במראה נוצץ",
         "חומר בסיס: פליז",
         "אבנים: זירקון (CZ)",
-        "גימור: מצופה כסף",
         "לבחירה באורכים: 17 או 20 ס״מ",
         "סוגר קופסה עם נעילה לאחיזה בטוחה",
         "מראה אלגנטי שמתאים לאירועים ולשימוש יומיומי"
@@ -24204,7 +24203,6 @@ var PRODUCTS = [
         "Set with clear CZ zirconia stones",
         "Base metal: Brass",
         "Stones: Zircon (CZ)",
-        "Finish: Silver plated",
         "Available lengths: 17 or 20 cm",
         "Box clasp with secure locking mechanism",
         "Elegant look for both events and everyday wear"
@@ -24312,12 +24310,12 @@ var PRODUCTS = [
       "en": "Women's Teardrop Tennis Bracelet - Gold"
     },
     "cardMessage": {
-      "he": "צמיד טניס לנשים במראה יוקרתי עם אבני טיפה נוצצות וגימור זהב.",
-      "en": "A luxury women's tennis bracelet with sparkling teardrop stones and a gold plated finish."
+      "he": "צמיד טניס לנשים במראה יוקרתי עם אבני טיפה נוצצות.",
+      "en": "A luxury women's tennis bracelet with sparkling teardrop stones."
     },
     "description": {
-      "he": "צמיד טניס לנשים בעיצוב טיפות משובצות, עם אבני CZ נוצצות וגימור זהב יוקרתי.",
-      "en": "A women's teardrop tennis bracelet with sparkling CZ stones and a luxury gold plated finish."
+      "he": "צמיד טניס לנשים בעיצוב טיפות משובצות, עם אבני CZ נוצצות.",
+      "en": "A women's teardrop tennis bracelet with sparkling CZ stones."
     },
     "signature": {
       "he": "",
@@ -24329,7 +24327,6 @@ var PRODUCTS = [
         "משובץ אבני CZ זירקוניה שקופות במראה נוצץ",
         "חומר בסיס: פליז",
         "אבנים: זירקון (CZ)",
-        "גימור: מצופה 18 קראט זהב",
         "לבחירה באורכים: 17 או 20 ס״מ",
         "סוגר קופסה עם נעילה לאחיזה בטוחה",
         "מראה אלגנטי שמתאים לאירועים ולשימוש יומיומי"
@@ -24339,7 +24336,6 @@ var PRODUCTS = [
         "Set with clear CZ zirconia stones",
         "Base metal: Brass",
         "Stones: Zircon (CZ)",
-        "Finish: 18K gold plated",
         "Available lengths: 17 or 20 cm",
         "Box clasp with secure locking mechanism",
         "Elegant look for both events and everyday wear"
