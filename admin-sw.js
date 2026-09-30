@@ -1,5 +1,5 @@
-const CACHE_VERSION = "versans-admin-20260930-shopify-v6";
-const SW_VERSION = "20260930-shopify-v6";
+const CACHE_VERSION = "versans-admin-20260930-english-v7";
+const SW_VERSION = "20260930-english-v7";
 const NOTIFICATION_ICON = "/images/apple-touch-icon.png";
 
 self.addEventListener("install", () => {
@@ -39,7 +39,7 @@ self.addEventListener("fetch", (event) => {
 function moneyAgorot(value, currency) {
   const amount = Number(value || 0) / 100;
   try {
-    return new Intl.NumberFormat("he-IL", {
+    return new Intl.NumberFormat("en-IL", {
       style: "currency",
       currency: String(currency || "ILS"),
       minimumFractionDigits: 2,
@@ -67,14 +67,14 @@ async function showPendingOrderNotifications() {
   for (const order of orders) {
     const orderId = Number(order.orderId || 0);
     highestOrderId = Math.max(highestOrderId, orderId);
-    const customerName = String(order.customerName || "לקוח/ה");
+    const customerName = String(order.customerName || "Customer");
     const orderRef = String(order.orderRef || "");
     const total = moneyAgorot(order.amountAgorot, order.currency);
     const unitCount = Math.max(1, Number(order.unitCount || 1));
-    const itemText = unitCount === 1 ? "פריט 1" : `${unitCount} פריטים`;
+    const itemText = unitCount === 1 ? "1 item" : `${unitCount} items`;
     const displayOrderNumber = orderId > 0 ? orderId : orderRef;
 
-    await self.registration.showNotification(`הזמנה #${displayOrderNumber}`, {
+    await self.registration.showNotification(`Order #${displayOrderNumber}`, {
       body: `${total}, ${itemText} • ${customerName}`,
       icon: NOTIFICATION_ICON,
       badge: NOTIFICATION_ICON,
