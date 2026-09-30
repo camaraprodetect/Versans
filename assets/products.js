@@ -21912,25 +21912,25 @@ var PRODUCTS = [
     "showAllGalleryThumbs": true,
     "defaultNecklaceId": "silver",
     "defaultColorId": "8mm",
-    "hoverImage": "images/products/product-239/product-239-2.png",
+    "hoverImage": "images/products/product-239/product-239-1.png",
     "collectionMedia": {
       "women": {
-        "image": "images/products/product-239/product-239-1.png",
-        "hoverImage": "images/products/product-239/product-239-2.png"
+        "image": "images/products/product-239/product-239-3.png",
+        "hoverImage": "images/products/product-239/product-239-1.png"
       },
       "men": {
-        "image": "images/products/product-239/product-239-1.png",
-        "hoverImage": "images/products/product-239/product-239-2.png"
+        "image": "images/products/product-239/product-239-3.png",
+        "hoverImage": "images/products/product-239/product-239-1.png"
       }
     },
     "sourceUrl": "https://he.aliexpress.com/item/1005006169687156.html",
     "images": [
+      "images/products/product-239/product-239-3.png",
       "images/products/product-239/product-239-1.png",
       "images/products/product-239/product-239-2.png",
-      "images/products/product-239/product-239-3.png",
+      "images/products/product-239/product-239-6.png",
       "images/products/product-239/product-239-4.png",
-      "images/products/product-239/product-239-5.png",
-      "images/products/product-239/product-239-6.png"
+      "images/products/product-239/product-239-5.png"
     ],
     "price": 259.9,
     "title": {
@@ -21952,7 +21952,7 @@ var PRODUCTS = [
           "he": "כסף",
           "en": "Silver"
         },
-        "image": "images/products/product-239/product-239-1.png"
+        "image": "images/products/product-239/product-239-3.png"
       },
       {
         "id": "gold",
@@ -21960,7 +21960,7 @@ var PRODUCTS = [
           "he": "זהב",
           "en": "Gold"
         },
-        "image": "images/products/product-239/product-239-4.png"
+        "image": "images/products/product-239/product-239-6.png"
       }
     ],
     "sizeHeading": {
@@ -22141,25 +22141,25 @@ var PRODUCTS = [
     "showAllGalleryThumbs": true,
     "defaultNecklaceId": "gold",
     "defaultColorId": "8mm",
-    "hoverImage": "images/products/product-240/product-240-5.png",
+    "hoverImage": "images/products/product-240/product-240-4.png",
     "collectionMedia": {
       "women": {
-        "image": "images/products/product-240/product-240-4.png",
-        "hoverImage": "images/products/product-240/product-240-5.png"
+        "image": "images/products/product-240/product-240-6.png",
+        "hoverImage": "images/products/product-240/product-240-4.png"
       },
       "men": {
-        "image": "images/products/product-240/product-240-4.png",
-        "hoverImage": "images/products/product-240/product-240-5.png"
+        "image": "images/products/product-240/product-240-6.png",
+        "hoverImage": "images/products/product-240/product-240-4.png"
       }
     },
     "sourceUrl": "https://he.aliexpress.com/item/1005006169687156.html",
     "images": [
+      "images/products/product-240/product-240-6.png",
       "images/products/product-240/product-240-4.png",
       "images/products/product-240/product-240-5.png",
-      "images/products/product-240/product-240-6.png",
+      "images/products/product-240/product-240-3.png",
       "images/products/product-240/product-240-1.png",
-      "images/products/product-240/product-240-2.png",
-      "images/products/product-240/product-240-3.png"
+      "images/products/product-240/product-240-2.png"
     ],
     "price": 259.9,
     "title": {
@@ -22181,7 +22181,7 @@ var PRODUCTS = [
           "he": "כסף",
           "en": "Silver"
         },
-        "image": "images/products/product-240/product-240-1.png"
+        "image": "images/products/product-240/product-240-3.png"
       },
       {
         "id": "gold",
@@ -22189,7 +22189,7 @@ var PRODUCTS = [
           "he": "זהב",
           "en": "Gold"
         },
-        "image": "images/products/product-240/product-240-4.png"
+        "image": "images/products/product-240/product-240-6.png"
       }
     ],
     "sizeHeading": {
@@ -22805,8 +22805,8 @@ var PRODUCTS = [
       ]
     },
     "afterText": {
-      "he": "מחיר התחלתי של הצמיד הוא 219.90 ₪ לאורך 17 ס״מ וברוחב 8 מ״מ. כל חצי אינץ׳ מוסיף 5 ₪ וכל 2 מ״מ מוסיפים 10 ₪.",
-      "en": "The bracelet starts at ₪219.90 for 17 cm in 8 mm. Each extra half inch adds ₪5 and each extra 2 mm adds ₪10."
+      "he": "מחיר התחלתי: 419.90 ₪ לאורך 16 ס״מ. 17 ס״מ מוסיף 5 ₪ ו-20 ס״מ מוסיף 10 ₪.",
+      "en": "Starting price: ₪419.90 for 16 cm. 17 cm adds ₪5 and 20 cm adds ₪10."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -22845,7 +22845,7 @@ var PRODUCTS = [
       "images/products/product-243/product-243-4.png",
       "images/products/product-243/product-243-5.png"
     ],
-    "price": 349.9,
+    "price": 419.9,
     "title": {
       "he": "צמיד קיובן משובץ VVS1 Moissanite - צבע כסף",
       "en": "VVS1 Moissanite Iced Cuban Bracelet - Silver"
@@ -22869,7 +22869,7 @@ var PRODUCTS = [
       },
       {
         "id": "7in",
-        "addPrice": 0,
+        "addPrice": 5,
         "label": {
           "he": "17 ס״מ",
           "en": "17 cm"
@@ -22877,7 +22877,7 @@ var PRODUCTS = [
       },
       {
         "id": "8in",
-        "addPrice": 0,
+        "addPrice": 10,
         "label": {
           "he": "20 ס״מ",
           "en": "20 cm"
@@ -22921,6 +22921,584 @@ var PRODUCTS = [
     "afterText": {
       "he": "צמיד אייס יוקרתי עם שיבוץ VVS1 Moissanite לכל אורך החוליות וסוגר משובץ תואם.",
       "en": "A premium iced bracelet with VVS1 Moissanite set across the links and a matching iced clasp."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    }
+  }
+  ,{
+    "id": "aurora-tennis-bracelet-silver-244",
+    "slug": "product-244",
+    "urlSlug": "aurora-tennis-bracelet-silver",
+    "sku": "VS-BR-244",
+    "category": "bracelets",
+    "categories": [
+      "bracelets"
+    ],
+    "badge": null,
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "showAllGalleryThumbs": true,
+    "hoverImage": "images/products/product-244/product-244-9.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-244/product-244-1.png",
+        "hoverImage": "images/products/product-244/product-244-9.png"
+      },
+      "men": {
+        "image": "images/products/product-244/product-244-1.png",
+        "hoverImage": "images/products/product-244/product-244-9.png"
+      }
+    },
+    "sourceUrl": "https://he.aliexpress.com/item/1005009526183006.html?spm=a2g0o.store_pc_home.promoteRecommendProducts_2001826959723.1005009526183006&gatewayAdapt=glo2isr",
+    "images": [
+      "images/products/product-244/product-244-1.png",
+      "images/products/product-244/product-244-2.png",
+      "images/products/product-244/product-244-3.png",
+      "images/products/product-244/product-244-4.png",
+      "images/products/product-244/product-244-5.png",
+      "images/products/product-244/product-244-6.png",
+      "images/products/product-244/product-244-7.png",
+      "images/products/product-244/product-244-8.png",
+      "images/products/product-244/product-244-9.png"
+    ],
+    "price": 239.9,
+    "necklaces": [
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "image": "images/products/product-244/product-244-1.png"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "image": "images/products/product-244/product-244-5.png"
+      }
+    ],
+    "title": {
+      "he": "צמיד טניס אורורה - מצופה 18 קראט זהב לבן - צבע כסף",
+      "en": "Aurora Tennis Bracelet - 18K White Gold Plated - Silver"
+    },
+    "subtitle": {
+      "he": "צמיד טניס 5 מ״מ משובץ זרקונים · פליז איכותי · מצופה 18 קראט זהב לבן · לבחירה באורך ובצבע",
+      "en": "5 mm tennis bracelet with zircon stones · premium brass base · 18K white gold plated · choose your length and color"
+    },
+    "sizeHeading": {
+      "he": "בחרו אורך",
+      "en": "Choose length"
+    },
+    "sizes": [
+      {
+        "id": "6in",
+        "addPrice": 0,
+        "label": {
+          "he": "15 ס״מ",
+          "en": "15 cm"
+        }
+      },
+      {
+        "id": "7in",
+        "addPrice": 10,
+        "label": {
+          "he": "17 ס״מ",
+          "en": "17 cm"
+        }
+      },
+      {
+        "id": "8in",
+        "addPrice": 20,
+        "label": {
+          "he": "20 ס״מ",
+          "en": "20 cm"
+        }
+      },
+      {
+        "id": "9in",
+        "addPrice": 30,
+        "label": {
+          "he": "22 ס״מ",
+          "en": "22 cm"
+        }
+      }
+    ],
+    "cardTitle": {
+      "he": "צמיד טניס אורורה - מצופה 18 קראט זהב לבן - צבע כסף",
+      "en": "Aurora Tennis Bracelet - 18K White Gold Plated - Silver"
+    },
+    "cardMessage": {
+      "he": "צמיד טניס 5 מ״מ עם אבנים נוצצות, בסיס פליז איכותי וציפוי 18 קראט זהב לבן.",
+      "en": "A 5 mm tennis bracelet with brilliant stones, a premium brass base and 18K white gold plating."
+    },
+    "description": {
+      "he": "צמיד טניס 5 מ״מ משובץ אבני זרקון, עם בסיס פליז איכותי וציפוי 18 קראט זהב או זהב לבן. בחרו צבע ואורך לפי מה שמתאים לכם.",
+      "en": "A 5 mm tennis bracelet set with zircon stones, built on a premium brass base with 18K gold or white gold plating. Choose the color and length that suit you best."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צמיד טניס יוניסקס - מתאים לנשים ולגברים",
+        "רוחב קבוע: 5 מ״מ",
+        "לבחירה באורכים: 15, 17, 20 או 22 ס״מ",
+        "עשוי פליז איכותי ומשובץ אבני Zircon",
+        "זמין בצבע כסף או זהב עם ציפוי 18 קראט זהב / זהב לבן",
+        "חוליות בסגנון טניס עם אבן מרכזית ומסגרת שיבוץ נוצצת בכל חוליה",
+        "סוגר משובץ למראה אחיד ואחיזה בטוחה",
+        "מראה יוקרתי שמתאים ללבישה יומיומית וגם לערב"
+      ],
+      "en": [
+        "Unisex tennis bracelet suitable for women and men",
+        "Fixed width: 5 mm",
+        "Available lengths: 15, 17, 20 or 22 cm",
+        "Made from premium brass and set with zircon stones",
+        "Available in silver or gold with 18K gold / white gold plating",
+        "Tennis-style links with a center stone and a halo setting on every link",
+        "Stone-set clasp for a cohesive look and secure closure",
+        "A luxury look suited for both everyday wear and evening styling"
+      ]
+    },
+    "afterText": {
+      "he": "מחיר התחלתי של הצמיד הוא 239.90 ₪ לאורך 15 ס״מ. כל אינץ׳ נוסף מוסיף 10 ₪.",
+      "en": "The bracelet starts at ₪239.90 for 15 cm. Each additional inch adds ₪10."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    }
+  }
+  ,{
+    "id": "aurora-tennis-bracelet-gold-245",
+    "slug": "product-245",
+    "urlSlug": "aurora-tennis-bracelet-gold",
+    "sku": "VS-BR-245",
+    "category": "bracelets",
+    "categories": [
+      "bracelets"
+    ],
+    "badge": null,
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "showAllGalleryThumbs": true,
+    "hoverImage": "images/products/product-245/product-245-9.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-245/product-245-5.png",
+        "hoverImage": "images/products/product-245/product-245-9.png"
+      },
+      "men": {
+        "image": "images/products/product-245/product-245-5.png",
+        "hoverImage": "images/products/product-245/product-245-9.png"
+      }
+    },
+    "sourceUrl": "https://he.aliexpress.com/item/1005009526183006.html?spm=a2g0o.store_pc_home.promoteRecommendProducts_2001826959723.1005009526183006&gatewayAdapt=glo2isr",
+    "images": [
+      "images/products/product-245/product-245-5.png",
+      "images/products/product-245/product-245-6.png",
+      "images/products/product-245/product-245-7.png",
+      "images/products/product-245/product-245-8.png",
+      "images/products/product-245/product-245-1.png",
+      "images/products/product-245/product-245-2.png",
+      "images/products/product-245/product-245-3.png",
+      "images/products/product-245/product-245-4.png",
+      "images/products/product-245/product-245-9.png"
+    ],
+    "price": 239.9,
+    "necklaces": [
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "image": "images/products/product-245/product-245-1.png"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "image": "images/products/product-245/product-245-5.png"
+      }
+    ],
+    "title": {
+      "he": "צמיד טניס אורורה - מצופה 18 קראט זהב - צבע זהב",
+      "en": "Aurora Tennis Bracelet - 18K Gold Plated - Gold"
+    },
+    "subtitle": {
+      "he": "צמיד טניס 5 מ״מ משובץ זרקונים · פליז איכותי · מצופה 18 קראט זהב · לבחירה באורך ובצבע",
+      "en": "5 mm tennis bracelet with zircon stones · premium brass base · 18K gold plated · choose your length and color"
+    },
+    "sizeHeading": {
+      "he": "בחרו אורך",
+      "en": "Choose length"
+    },
+    "sizes": [
+      {
+        "id": "6in",
+        "addPrice": 0,
+        "label": {
+          "he": "15 ס״מ",
+          "en": "15 cm"
+        }
+      },
+      {
+        "id": "7in",
+        "addPrice": 10,
+        "label": {
+          "he": "17 ס״מ",
+          "en": "17 cm"
+        }
+      },
+      {
+        "id": "8in",
+        "addPrice": 20,
+        "label": {
+          "he": "20 ס״מ",
+          "en": "20 cm"
+        }
+      },
+      {
+        "id": "9in",
+        "addPrice": 30,
+        "label": {
+          "he": "22 ס״מ",
+          "en": "22 cm"
+        }
+      }
+    ],
+    "cardTitle": {
+      "he": "צמיד טניס אורורה - מצופה 18 קראט זהב - צבע זהב",
+      "en": "Aurora Tennis Bracelet - 18K Gold Plated - Gold"
+    },
+    "cardMessage": {
+      "he": "צמיד טניס 5 מ״מ עם אבנים נוצצות, בסיס פליז איכותי וציפוי 18 קראט זהב.",
+      "en": "A 5 mm tennis bracelet with brilliant stones, a premium brass base and 18K gold plating."
+    },
+    "description": {
+      "he": "צמיד טניס 5 מ״מ משובץ אבני זרקון, עם בסיס פליז איכותי וציפוי 18 קראט זהב או זהב לבן. בחרו צבע ואורך לפי מה שמתאים לכם.",
+      "en": "A 5 mm tennis bracelet set with zircon stones, built on a premium brass base with 18K gold or white gold plating. Choose the color and length that suit you best."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צמיד טניס יוניסקס - מתאים לנשים ולגברים",
+        "רוחב קבוע: 5 מ״מ",
+        "לבחירה באורכים: 15, 17, 20 או 22 ס״מ",
+        "עשוי פליז איכותי ומשובץ אבני Zircon",
+        "זמין בצבע כסף או זהב עם ציפוי 18 קראט זהב / זהב לבן",
+        "חוליות בסגנון טניס עם אבן מרכזית ומסגרת שיבוץ נוצצת בכל חוליה",
+        "סוגר משובץ למראה אחיד ואחיזה בטוחה",
+        "מראה יוקרתי שמתאים ללבישה יומיומית וגם לערב"
+      ],
+      "en": [
+        "Unisex tennis bracelet suitable for women and men",
+        "Fixed width: 5 mm",
+        "Available lengths: 15, 17, 20 or 22 cm",
+        "Made from premium brass and set with zircon stones",
+        "Available in silver or gold with 18K gold / white gold plating",
+        "Tennis-style links with a center stone and a halo setting on every link",
+        "Stone-set clasp for a cohesive look and secure closure",
+        "A luxury look suited for both everyday wear and evening styling"
+      ]
+    },
+    "afterText": {
+      "he": "מחיר התחלתי של הצמיד הוא 239.90 ₪ לאורך 15 ס״מ. כל אינץ׳ נוסף מוסיף 10 ₪.",
+      "en": "The bracelet starts at ₪239.90 for 15 cm. Each additional inch adds ₪10."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    }
+  }
+  ,{
+    "id": "miami-double-row-iced-silver-246",
+    "slug": "product-246",
+    "urlSlug": "miami-double-row-iced-silver",
+    "sku": "VS-BR-246",
+    "category": "bracelets",
+    "categories": [
+      "bracelets"
+    ],
+    "badge": null,
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "showAllGalleryThumbs": true,
+    "defaultNecklaceId": "silver",
+    "hoverImage": "images/products/product-246/product-246-5.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-246/product-246-1.png",
+        "hoverImage": "images/products/product-246/product-246-5.png"
+      },
+      "men": {
+        "image": "images/products/product-246/product-246-1.png",
+        "hoverImage": "images/products/product-246/product-246-5.png"
+      }
+    },
+    "sourceUrl": "https://he.aliexpress.com/item/1005009340429194.html?pdp_npi=4%40pre%21ILS%21%E2%82%AA+109.52%21%21%E2%82%AA+74.47%21%21233.81%21%21%400baf88fb17907748272264838d6bab%2112000048806073227%21sh%21IL%212751809487%21X&spm=a2g0o.store_pc_home.promotePruductList_2017557793395.1005009340429194&gatewayAdapt=glo2isr",
+    "images": [
+      "images/products/product-246/product-246-1.png",
+      "images/products/product-246/product-246-2.png",
+      "images/products/product-246/product-246-3.png",
+      "images/products/product-246/product-246-4.png",
+      "images/products/product-246/product-246-5.png"
+    ],
+    "price": 259.9,
+    "necklaceHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "necklaces": [
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "image": "images/products/product-246/product-246-1.png"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "image": "images/products/product-246/product-246-3.png"
+      }
+    ],
+    "title": {
+      "he": "צמיד מיאמי דאבל משובץ - מצופה 18 קראט זהב לבן - צבע כסף",
+      "en": "Miami Double Row Iced Bracelet - 18K White Gold Plated - Silver"
+    },
+    "subtitle": {
+      "he": "צמיד Cuban Miami Double Row משובץ Cubic Zirconia · מצופה 18 קראט זהב לבן · לבחירה באורך ובצבע",
+      "en": "Miami double-row Cuban bracelet with Cubic Zirconia · 18K White Gold Plated · choose length and color"
+    },
+    "sizeHeading": {
+      "he": "בחרו אורך",
+      "en": "Choose length"
+    },
+    "sizes": [
+      {
+        "id": "7in",
+        "addPrice": 0,
+        "label": {
+          "he": "17 ס״מ",
+          "en": "17 cm"
+        }
+      },
+      {
+        "id": "8in",
+        "addPrice": 10,
+        "label": {
+          "he": "20 ס״מ",
+          "en": "20 cm"
+        }
+      },
+      {
+        "id": "9in",
+        "addPrice": 20,
+        "label": {
+          "he": "22 ס״מ",
+          "en": "22 cm"
+        }
+      }
+    ],
+    "cardTitle": {
+      "he": "צמיד מיאמי דאבל משובץ - מצופה 18 קראט זהב לבן - צבע כסף",
+      "en": "Miami Double Row Iced Bracelet - 18K White Gold Plated - Silver"
+    },
+    "cardMessage": {
+      "he": "צמיד מיאמי דאבל משובץ Cubic Zirconia עם סוגר משובץ וציפוי 18 קראט זהב לבן.",
+      "en": "Miami double-row bracelet set with Cubic Zirconia, finished with an iced clasp and 18k white gold plated."
+    },
+    "description": {
+      "he": "צמיד Miami Double Row במראה קיובני בולט, משובץ Cubic Zirconia לאורך החוליות והסוגר, עם ציפוי 18 קראט זהב לבן.",
+      "en": "A bold Miami Double Row Cuban bracelet with Cubic Zirconia set across the links and clasp, finished in 18k white gold plated."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צמיד Cuban Miami Double Row בעיצוב יוניסקס",
+        "לבחירה באורכים: 17, 20 או 22 ס״מ",
+        "משובץ אבני Cubic Zirconia לאורך החוליות",
+        "מבנה מתכתי עם ציפוי 18 קראט זהב לבן",
+        "סוגר Box משובץ לאחיזה חזקה ולמראה אחיד",
+        "שיבוץ מלא גם על החוליות וגם על חזית הסוגר",
+        "זמין בצבע כסף או זהב",
+        "מראה אייס בולט שמתאים ללבישה יומיומית ולערב"
+      ],
+      "en": [
+        "Unisex Miami Double Row Cuban bracelet",
+        "Available lengths: 17, 20 or 22 cm",
+        "Cubic Zirconia set across the links",
+        "Metal construction with 18k white gold plated",
+        "Stone-set box clasp for a secure closure and cohesive finish",
+        "Full iced detailing across both the links and clasp face",
+        "Available in silver or gold",
+        "Bold iced look for everyday wear or evening styling"
+      ]
+    },
+    "afterText": {
+      "he": "מחיר התחלתי: 259.90 ₪ לאורך 17 ס״מ. 20 ס״מ מוסיף 10 ₪ ו-22 ס״מ מוסיף 20 ₪.",
+      "en": "Starting price: ₪259.90 for 17 cm. 20 cm adds ₪10 and 22 cm adds ₪20."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    }
+  }
+  ,{
+    "id": "miami-double-row-iced-gold-247",
+    "slug": "product-247",
+    "urlSlug": "miami-double-row-iced-gold",
+    "sku": "VS-BR-247",
+    "category": "bracelets",
+    "categories": [
+      "bracelets"
+    ],
+    "badge": null,
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "showAllGalleryThumbs": true,
+    "defaultNecklaceId": "gold",
+    "hoverImage": "images/products/product-247/product-247-5.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-247/product-247-3.png",
+        "hoverImage": "images/products/product-247/product-247-5.png"
+      },
+      "men": {
+        "image": "images/products/product-247/product-247-3.png",
+        "hoverImage": "images/products/product-247/product-247-5.png"
+      }
+    },
+    "sourceUrl": "https://he.aliexpress.com/item/1005009340429194.html?pdp_npi=4%40pre%21ILS%21%E2%82%AA+109.52%21%21%E2%82%AA+74.47%21%21233.81%21%21%400baf88fb17907748272264838d6bab%2112000048806073227%21sh%21IL%212751809487%21X&spm=a2g0o.store_pc_home.promotePruductList_2017557793395.1005009340429194&gatewayAdapt=glo2isr",
+    "images": [
+      "images/products/product-247/product-247-3.png",
+      "images/products/product-247/product-247-4.png",
+      "images/products/product-247/product-247-1.png",
+      "images/products/product-247/product-247-2.png",
+      "images/products/product-247/product-247-5.png"
+    ],
+    "price": 259.9,
+    "necklaceHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "necklaces": [
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "image": "images/products/product-247/product-247-1.png"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "image": "images/products/product-247/product-247-3.png"
+      }
+    ],
+    "title": {
+      "he": "צמיד מיאמי דאבל משובץ - מצופה 18 קראט זהב - צבע זהב",
+      "en": "Miami Double Row Iced Bracelet - 18K Gold Plated - Gold"
+    },
+    "subtitle": {
+      "he": "צמיד Cuban Miami Double Row משובץ Cubic Zirconia · מצופה 18 קראט זהב · לבחירה באורך ובצבע",
+      "en": "Miami double-row Cuban bracelet with Cubic Zirconia · 18K Gold Plated · choose length and color"
+    },
+    "sizeHeading": {
+      "he": "בחרו אורך",
+      "en": "Choose length"
+    },
+    "sizes": [
+      {
+        "id": "7in",
+        "addPrice": 0,
+        "label": {
+          "he": "17 ס״מ",
+          "en": "17 cm"
+        }
+      },
+      {
+        "id": "8in",
+        "addPrice": 10,
+        "label": {
+          "he": "20 ס״מ",
+          "en": "20 cm"
+        }
+      },
+      {
+        "id": "9in",
+        "addPrice": 20,
+        "label": {
+          "he": "22 ס״מ",
+          "en": "22 cm"
+        }
+      }
+    ],
+    "cardTitle": {
+      "he": "צמיד מיאמי דאבל משובץ - מצופה 18 קראט זהב - צבע זהב",
+      "en": "Miami Double Row Iced Bracelet - 18K Gold Plated - Gold"
+    },
+    "cardMessage": {
+      "he": "צמיד מיאמי דאבל משובץ Cubic Zirconia עם סוגר משובץ וציפוי 18 קראט זהב.",
+      "en": "Miami double-row bracelet set with Cubic Zirconia, finished with an iced clasp and 18k gold plated."
+    },
+    "description": {
+      "he": "צמיד Miami Double Row במראה קיובני בולט, משובץ Cubic Zirconia לאורך החוליות והסוגר, עם ציפוי 18 קראט זהב.",
+      "en": "A bold Miami Double Row Cuban bracelet with Cubic Zirconia set across the links and clasp, finished in 18k gold plated."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צמיד Cuban Miami Double Row בעיצוב יוניסקס",
+        "לבחירה באורכים: 17, 20 או 22 ס״מ",
+        "משובץ אבני Cubic Zirconia לאורך החוליות",
+        "מבנה מתכתי עם ציפוי 18 קראט זהב",
+        "סוגר Box משובץ לאחיזה חזקה ולמראה אחיד",
+        "שיבוץ מלא גם על החוליות וגם על חזית הסוגר",
+        "זמין בצבע כסף או זהב",
+        "מראה אייס בולט שמתאים ללבישה יומיומית ולערב"
+      ],
+      "en": [
+        "Unisex Miami Double Row Cuban bracelet",
+        "Available lengths: 17, 20 or 22 cm",
+        "Cubic Zirconia set across the links",
+        "Metal construction with 18k gold plated",
+        "Stone-set box clasp for a secure closure and cohesive finish",
+        "Full iced detailing across both the links and clasp face",
+        "Available in silver or gold",
+        "Bold iced look for everyday wear or evening styling"
+      ]
+    },
+    "afterText": {
+      "he": "מחיר התחלתי: 259.90 ₪ לאורך 17 ס״מ. 20 ס״מ מוסיף 10 ₪ ו-22 ס״מ מוסיף 20 ₪.",
+      "en": "Starting price: ₪259.90 for 17 cm. 20 cm adds ₪10 and 22 cm adds ₪20."
     },
     "deliveryBusinessDays": {
       "min": 9,
