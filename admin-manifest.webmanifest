@@ -1,12 +1,12 @@
 {
-  "id": "/admin",
+  "id": "/admin/dashboard",
   "name": "VerSans Admin",
   "short_name": "VerSans Admin",
   "description": "VerSans administration panel",
   "lang": "he",
   "dir": "rtl",
-  "start_url": "/admin",
-  "scope": "/admin",
+  "start_url": "/admin/dashboard",
+  "scope": "/",
   "display": "standalone",
   "display_override": [
     "standalone",
@@ -17,13 +17,13 @@
   "theme_color": "#142333",
   "icons": [
     {
-      "src": "/images/admin-icon-192.png",
+      "src": "/images/favicon-app-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/images/admin-icon-512.png",
+      "src": "/images/favicon-app-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
