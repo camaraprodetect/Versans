@@ -319,18 +319,18 @@ html.vs-a11y-root.vs-a11y-page-larger .vs-a11y-screen-mask{ display:block; }
     max-width:none!important;
   }
 
-  /* Keep the laptop composition: same number of columns, larger cards. */
+  /* Wide desktop: four balanced product columns while preserving the same fluid proportions. */
   .grid{
-    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
   }
   .home-page .all-collection-group__products{
-    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
   }
   .hat-carousel__track{
-    grid-auto-columns:calc((100% - 2rem) / 3)!important;
+    grid-auto-columns:calc((100% - 3rem) / 4)!important;
   }
   .hat-group-page__products{
-    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
   }
 
   /* Collection banners scale with the desktop canvas instead of stopping at 1600px. */

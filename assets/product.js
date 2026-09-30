@@ -96,7 +96,7 @@
       offers: {
         '@type': 'Offer', url: canonicalUrl,
         priceCurrency: (CFG.currency && CFG.currency.code) || 'ILS',
-        price: Number(product.catalogPrice != null ? product.catalogPrice : (product.price || 0)).toFixed(2),
+        price: Number(product.price || 0).toFixed(2),
         availability: 'https://schema.org/InStock'
       }
     });
@@ -334,7 +334,16 @@
   }
   function customNameReady() { return !hasCustomName() || cleanCustomName(customNameValue).length > 0; }
   function isConfigurable() {
-    return !!(hasNecklaceOptions() || hasBoxOptions());
+    return !!(
+      hasNecklaceOptions() ||
+      hasBoxOptions() ||
+      hasSizeOptions() ||
+      hasColorOptions() ||
+      hasGiftPackaging() ||
+      hasCustomName() ||
+      hasCustomPhoto() ||
+      requiresCompanion()
+    );
   }
   function pendingCompanionUnitPrice() {
     var pending = pendingCompanion();
@@ -356,12 +365,19 @@
   }
   function unitPrice() {
     if (requiresCompanion() && companionReady()) return pendingCompanionUnitPrice();
+    var necklace = selectedNecklace();
     var box = selectedBox();
     var size = selectedSize();
     var color = selectedColor();
     var packaging = selectedPackaging();
     var greetingExtra = greetingAddPrice(savedGreeting());
-    return Number(product.price) + (box ? Number(box.addPrice || 0) : 0) + (size ? Number(size.addPrice || 0) : 0) + (color ? Number(color.addPrice || 0) : 0) + (packaging ? Number(packaging.addPrice || 0) : 0) + greetingExtra;
+    return Number(product.price) +
+      (necklace ? Number(necklace.addPrice || 0) : 0) +
+      (box ? Number(box.addPrice || 0) : 0) +
+      (size ? Number(size.addPrice || 0) : 0) +
+      (color ? Number(color.addPrice || 0) : 0) +
+      (packaging ? Number(packaging.addPrice || 0) : 0) +
+      greetingExtra;
   }
   function variantKey() {
     var greeting = savedGreeting();
@@ -1516,7 +1532,9 @@ async function uploadProductPhoto(blob, meta) {
 
     var ready = isReadyToBuy();
     if (addBtn) {
-      addBtn.disabled = !ready;
+      addBtn.disabled = false;
+      addBtn.setAttribute('aria-disabled', String(!ready));
+      addBtn.classList.toggle('is-not-ready', !ready);
       if (hasNecklaceOptions() && !selectedNecklace()) {
         addBtn.textContent = L(product.necklaceRequiredText) || (lang === 'he' ? 'נא לבחור אפשרות' : 'Please choose an option');
       } else if (hasBoxOptions() && !selectedBox()) {
@@ -1673,11 +1691,15 @@ async function uploadProductPhoto(blob, meta) {
       return;
     }
     if (hasSizeOptions() && !selectedSize()) {
-      toast(lang === 'he' ? 'נא לבחור אורך' : 'Please choose a length');
+      toast(L(product.sizeRequiredText) || (lang === 'he' ? 'נא לבחור אפשרות' : 'Please choose an option'));
+      var sizeBlock = $('#sizeBlock');
+      if (sizeBlock && sizeBlock.scrollIntoView) sizeBlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
     if (hasColorOptions() && !selectedColor()) {
-      toast(lang === 'he' ? 'נא לבחור צבע' : 'Please choose a color');
+      toast(L(product.colorRequiredText) || (lang === 'he' ? 'נא לבחור אפשרות' : 'Please choose an option'));
+      var colorBlock = $('#colorBlock');
+      if (colorBlock && colorBlock.scrollIntoView) colorBlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
     if (requiresCompanion()) {
@@ -1860,21 +1882,14 @@ async function uploadProductPhoto(blob, meta) {
         $('#greetingCustomizerTitle').textContent = lang === 'he' ? 'רוצים לכתוב את המילים שלכם?' : 'Want to use your own words?';
         var greetingPrice = greetingAddPrice(greeting);
         $('#greetingCustomizerStatus').textContent = greeting
-          ? (product.greetingEditorEntry
-            ? (lang === 'he' ? 'הברכה האישית נשמרה ✓' : 'Your custom greeting is saved ✓')
-            : (lang === 'he' ? 'הברכה האישית נשמרה ונוספה להזמנה בתוספת ' + greetingPrice + ' ₪ ✓' : 'Your custom greeting is saved and adds ₪' + greetingPrice + ' to this item ✓'))
+          ? (lang === 'he' ? 'הברכה האישית נשמרה ונוספה להזמנה בתוספת ' + greetingPrice + ' ₪ ✓' : 'Your custom greeting is saved and adds ₪' + greetingPrice + ' to this item ✓')
           : (lang === 'he' ? 'עצבו ברכה אישית בדיוק כמו שאתם רוצים.' : 'Design a personal greeting exactly the way you want.');
         var removeBtn = $('#greetingRemoveBtn');
         if (removeBtn) { removeBtn.hidden = !greeting; removeBtn.textContent = lang === 'he' ? 'חזרה לברכה המקורית' : 'Use original greeting'; }
       }
       var previewEyebrow = $('#greetingPreviewEyebrow'); if (previewEyebrow) previewEyebrow.textContent = lang === 'he' ? 'העיצוב שבחרתם' : 'Your selected design';
       var previewTitle = $('#greetingPreviewTitle'); if (previewTitle) previewTitle.textContent = lang === 'he' ? 'הברכה האישית שלכם' : 'Your custom greeting';
-      var previewPrice = $('#greetingPreviewPrice'); if (previewPrice) {
-        var previewGreetingPrice = greetingAddPrice(greeting);
-        previewPrice.textContent = product.greetingEditorEntry
-          ? (lang === 'he' ? money(previewGreetingPrice) : money(previewGreetingPrice))
-          : (lang === 'he' ? '+' + previewGreetingPrice + ' ₪' : '+₪' + previewGreetingPrice);
-      }
+      var previewPrice = $('#greetingPreviewPrice'); if (previewPrice) previewPrice.textContent = lang === 'he' ? '+' + greetingAddPrice(greeting) + ' ₪' : '+₪' + greetingAddPrice(greeting);
       renderGreetingPngPreview(greeting);
     } else if (greetingCustomizer) {
       greetingCustomizer.hidden = true;
@@ -2109,10 +2124,6 @@ async function uploadProductPhoto(blob, meta) {
   $('#year').textContent = new Date().getFullYear();
   updateCartCount();
   restoreGreetingSelectionState();
-  if (product.greetingEditorEntry && !savedGreeting()) {
-    window.location.replace('/greeting-editor?id=' + encodeURIComponent(product.slug || product.id) + '&entry=1');
-    return;
-  }
   renderProduct();
   scheduleGalleryThumbRailSync();
 })();

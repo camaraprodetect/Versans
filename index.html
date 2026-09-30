@@ -652,6 +652,23 @@ html, body {
 
 
 <style id="versans-video-hero-v1">
+/* Hero videos are decorative autoplay loops: never expose native playback UI. */
+.home-page video[data-versans-hero-video]{
+  pointer-events:none!important;
+  -webkit-user-select:none!important;
+  user-select:none!important;
+}
+.home-page video[data-versans-hero-video]::-webkit-media-controls,
+.home-page video[data-versans-hero-video]::-webkit-media-controls-panel,
+.home-page video[data-versans-hero-video]::-webkit-media-controls-enclosure,
+.home-page video[data-versans-hero-video]::-webkit-media-controls-overlay-play-button,
+.home-page video[data-versans-hero-video]::-webkit-media-controls-start-playback-button{
+  display:none!important;
+  -webkit-appearance:none!important;
+  opacity:0!important;
+  pointer-events:none!important;
+}
+
 /* Video hero - desktop */
 @media (min-width: 768px) {
   .home-page .hero.hero--full .hero__video {
@@ -854,7 +871,7 @@ html, body {
 <!-- הירו -->
 <section class="hero hero--full" id="top" aria-label="באנר VerSans">
   <div class="hero__visual" data-hero-slider aria-live="off">
-    <video class="hero__image hero__video hero__slide is-active" width="1986" height="780" autoplay muted loop playsinline webkit-playsinline preload="auto" poster="images/hero-desktop-poster.jpg" aria-hidden="true" data-hero-slide disablepictureinpicture>
+    <video class="hero__image hero__video hero__slide is-active" width="1986" height="780" autoplay muted loop playsinline webkit-playsinline preload="auto" poster="images/hero-desktop-poster.jpg" aria-hidden="true" data-hero-slide data-versans-hero-video controlslist="nodownload noplaybackrate nofullscreen" disablepictureinpicture disableremoteplayback x-webkit-airplay="deny" tabindex="-1">
       <source src="images/hero-desktop.mp4" type="video/mp4">
     </video>
     <div class="desktop-hero-actions" aria-label="קישורים מהירים">
@@ -868,7 +885,7 @@ html, body {
 <section class="section shop" id="shop" aria-labelledby="shopTitle">
   <div class="container">
     <div class="mobile-entry-banner" id="mobileEntryBanner" aria-label="מבצע VerSans עד 40% הנחה">
-      <video class="mobile-entry-banner__video" width="1440" height="2560" autoplay muted loop playsinline webkit-playsinline preload="auto" poster="images/hero-mobile-poster.jpg" aria-hidden="true" disablepictureinpicture>
+      <video class="mobile-entry-banner__video" width="1440" height="2560" autoplay muted loop playsinline webkit-playsinline preload="auto" poster="images/hero-mobile-poster.jpg" aria-hidden="true" data-versans-hero-video controlslist="nodownload noplaybackrate nofullscreen" disablepictureinpicture disableremoteplayback x-webkit-airplay="deny" tabindex="-1">
         <source src="images/hero-mobile.mp4" type="video/mp4">
       </video>
       <div class="mobile-entry-banner__actions" aria-label="קישורים מהירים">
@@ -1340,6 +1357,6 @@ html, body {
 <script src="assets/auth-nav.js?v=20260914-pretty-urls-v1"></script>
   <script src="/assets/presence.js?v=20260915-presence-v1"></script>
   <script src="/assets/customer-service.js?v=20260926-support-label-v3"></script>
-<script src="assets/accessibility.js?v=20260928-a11y-v1"></script>
+<script src="assets/accessibility.js?v=20260930-hero-loop-resume-v2"></script>
 </body>
 </html>

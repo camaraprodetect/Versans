@@ -562,6 +562,86 @@
 
     var drag = null;
 
+    function visibleViewportHeight() {
+      var vv = window.visualViewport;
+      var height = vv && Number(vv.height || 0);
+      if (!(height > 0)) height = Number(window.innerHeight || document.documentElement.clientHeight || 0);
+      return Math.max(320, Math.round(height || 320));
+    }
+
+    function syncCartViewportHeight() {
+      document.documentElement.style.setProperty('--vs-cart-mobile-vh', visibleViewportHeight() + 'px');
+    }
+
+    function savingsBounds(handle, content, panel) {
+      var contentRect = content.getBoundingClientRect();
+      var panelRect = panel.getBoundingClientRect();
+      var foot = handle.closest('.drawer__foot');
+      var head = panel.querySelector('.drawer__head');
+      var checkout = foot && foot.querySelector('.cart-checkout-cta');
+
+      var viewportHeight = visibleViewportHeight();
+      var panelHeight = Math.min(panelRect.height || viewportHeight, viewportHeight);
+      var headHeight = head ? head.getBoundingClientRect().height : 68;
+      var checkoutHeight = checkout ? checkout.getBoundingClientRect().height : 50;
+
+      /* Always preserve a visible product/body area plus the fixed payment rows. */
+      var minBodyHeight = Math.max(110, Math.min(165, panelHeight * 0.24));
+      var fixedFootHeight = foot ? Math.max(145, foot.scrollHeight - contentRect.height) : (checkoutHeight + 150);
+      var minHeight = Math.min(82, Math.max(58, content.scrollHeight > 0 ? Math.min(content.scrollHeight, 82) : 58));
+      var mobile = window.matchMedia('(max-width: 700px)').matches;
+      var hardCap = mobile ? Math.min(190, panelHeight * 0.27) : 360;
+      var available = panelHeight - headHeight - minBodyHeight - fixedFootHeight;
+      var maxHeight = Math.max(minHeight, Math.min(hardCap, available));
+
+      return {
+        contentRect: contentRect,
+        minHeight: minHeight,
+        maxHeight: maxHeight
+      };
+    }
+
+    function clampResizedSavings() {
+      syncCartViewportHeight();
+      if (!window.matchMedia('(max-width: 700px)').matches) return;
+      document.querySelectorAll('[data-cart-savings-resizable-content]').forEach(function(content) {
+        if (!content.style.height) return;
+        var box = content.closest('[data-cart-savings-resizable]');
+        var handle = box && box.querySelector('[data-cart-savings-resizer]');
+        var panel = content.closest('.ov__panel');
+        if (!box || !handle || !panel) return;
+        var bounds = savingsBounds(handle, content, panel);
+        var current = parseFloat(content.style.height) || content.getBoundingClientRect().height;
+        current = Math.max(bounds.minHeight, Math.min(bounds.maxHeight, current));
+        content.style.height = Math.round(current) + 'px';
+      });
+    }
+
+    function queueCartViewportClamp() {
+      syncCartViewportHeight();
+      if (window.requestAnimationFrame) {
+        window.requestAnimationFrame(clampResizedSavings);
+      } else {
+        setTimeout(clampResizedSavings, 0);
+      }
+      setTimeout(clampResizedSavings, 120);
+    }
+
+    syncCartViewportHeight();
+    window.addEventListener('resize', queueCartViewportClamp, { passive:true });
+    window.addEventListener('pageshow', queueCartViewportClamp);
+    document.addEventListener('visibilitychange', function(){
+      if (!document.hidden) queueCartViewportClamp();
+    });
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', queueCartViewportClamp, { passive:true });
+      window.visualViewport.addEventListener('scroll', queueCartViewportClamp, { passive:true });
+    }
+    document.addEventListener('click', function(event){
+      var target = event.target && event.target.closest && event.target.closest('[data-cart-open],#cartBtn,.vs-floating-cart,[data-global-cart-close]');
+      if (target) queueCartViewportClamp();
+    }, true);
+
     function endDrag(event) {
       if (!drag) return;
       if (event && drag.handle.releasePointerCapture) {
@@ -581,23 +661,17 @@
       if (!box || !content || !panel) return;
 
       event.preventDefault();
-      var contentRect = content.getBoundingClientRect();
-      var panelRect = panel.getBoundingClientRect();
-      var foot = handle.closest('.drawer__foot');
-      var checkout = foot && foot.querySelector('.cart-checkout-cta');
-      var checkoutHeight = checkout ? checkout.getBoundingClientRect().height : 50;
-      var fixedReserve = checkoutHeight + 215;
-      var minHeight = Math.min(82, Math.max(58, content.scrollHeight > 0 ? Math.min(content.scrollHeight, 82) : 58));
-      var maxHeight = Math.max(minHeight, Math.min(360, panelRect.height - fixedReserve));
+      syncCartViewportHeight();
+      var bounds = savingsBounds(handle, content, panel);
 
       drag = {
         handle: handle,
         box: box,
         content: content,
         startY: event.clientY,
-        startHeight: contentRect.height,
-        minHeight: minHeight,
-        maxHeight: maxHeight
+        startHeight: bounds.contentRect.height,
+        minHeight: bounds.minHeight,
+        maxHeight: bounds.maxHeight
       };
 
       content.style.height = Math.round(contentRect.height) + 'px';
@@ -633,19 +707,13 @@
       if (!box || !content || !panel) return;
 
       var touch = event.touches[0];
-      var contentRect = content.getBoundingClientRect();
-      var panelRect = panel.getBoundingClientRect();
-      var foot = handle.closest('.drawer__foot');
-      var checkout = foot && foot.querySelector('.cart-checkout-cta');
-      var checkoutHeight = checkout ? checkout.getBoundingClientRect().height : 50;
-      var fixedReserve = checkoutHeight + 215;
-      var minHeight = Math.min(82, Math.max(58, content.scrollHeight > 0 ? Math.min(content.scrollHeight, 82) : 58));
-      var maxHeight = Math.max(minHeight, Math.min(360, panelRect.height - fixedReserve));
+      syncCartViewportHeight();
+      var bounds = savingsBounds(handle, content, panel);
 
       touchDrag = {
         handle:handle, box:box, content:content,
-        startY:touch.clientY, startHeight:contentRect.height,
-        minHeight:minHeight, maxHeight:maxHeight
+        startY:touch.clientY, startHeight:bounds.contentRect.height,
+        minHeight:bounds.minHeight, maxHeight:bounds.maxHeight
       };
       content.style.height = Math.round(contentRect.height) + 'px';
       content.style.maxHeight = 'none';

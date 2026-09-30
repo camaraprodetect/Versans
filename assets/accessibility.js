@@ -270,6 +270,119 @@
     };
     return labels[setting] || setting;
   }
+  function isManagedHeroVideo(video){
+    return !!(video && video.matches && video.matches('video[data-versans-hero-video]'));
+  }
+
+  function heroVideoMatchesViewport(video){
+    if (!isManagedHeroVideo(video)) return true;
+    if (video.classList.contains('mobile-entry-banner__video')) {
+      return window.matchMedia('(max-width: 767px)').matches;
+    }
+    if (video.classList.contains('hero__video')) {
+      return window.matchMedia('(min-width: 768px)').matches;
+    }
+    return true;
+  }
+
+  function prepareAutoplayVideo(video){
+    if (!video) return;
+    try { video.controls = false; } catch(e) {}
+    try { video.muted = true; } catch(e) {}
+    try { video.defaultMuted = true; } catch(e) {}
+    try { video.autoplay = true; } catch(e) {}
+    try { video.loop = true; } catch(e) {}
+    try { video.playsInline = true; } catch(e) {}
+    video.setAttribute('muted', '');
+    video.setAttribute('autoplay', '');
+    video.setAttribute('loop', '');
+    video.setAttribute('playsinline', '');
+    video.setAttribute('webkit-playsinline', '');
+    video.setAttribute('disablepictureinpicture', '');
+    video.setAttribute('disableremoteplayback', '');
+    video.setAttribute('x-webkit-airplay', 'deny');
+    video.removeAttribute('controls');
+  }
+
+  function playManagedHeroVideo(video){
+    if (!isManagedHeroVideo(video)) return;
+    prepareAutoplayVideo(video);
+    if (state.stopMotion || document.hidden || !heroVideoMatchesViewport(video)) return;
+
+    if (video.ended) {
+      try { video.currentTime = 0; } catch(e) {}
+    }
+
+    var promise;
+    try { promise = video.play(); } catch(e) {}
+    if (promise && typeof promise.catch === 'function') {
+      promise.catch(function(){});
+    }
+  }
+
+  function resumeManagedHeroVideos(){
+    if (state.stopMotion || document.hidden) return;
+    document.querySelectorAll('video[data-versans-hero-video]').forEach(function(video){
+      playManagedHeroVideo(video);
+    });
+  }
+
+  function queueHeroResume(){
+    resumeManagedHeroVideos();
+    window.setTimeout(resumeManagedHeroVideos, 80);
+    window.setTimeout(resumeManagedHeroVideos, 320);
+    window.setTimeout(resumeManagedHeroVideos, 900);
+  }
+
+  function bindManagedHeroVideo(video){
+    if (!isManagedHeroVideo(video) || video.__vsHeroLoopBound) return;
+    video.__vsHeroLoopBound = true;
+    prepareAutoplayVideo(video);
+
+    video.addEventListener('ended', function(){
+      if (state.stopMotion || document.hidden || !heroVideoMatchesViewport(video)) return;
+      try { video.currentTime = 0; } catch(e) {}
+      playManagedHeroVideo(video);
+    });
+
+    video.addEventListener('pause', function(){
+      if (state.stopMotion || document.hidden || !heroVideoMatchesViewport(video)) return;
+      window.setTimeout(function(){
+        if (!state.stopMotion && !document.hidden && video.paused) playManagedHeroVideo(video);
+      }, 70);
+    });
+  }
+
+  document.querySelectorAll('video[data-versans-hero-video]').forEach(bindManagedHeroVideo);
+
+  window.addEventListener('pageshow', function(){
+    queueHeroResume();
+  });
+
+  window.addEventListener('focus', function(){
+    queueHeroResume();
+  });
+
+  window.addEventListener('popstate', function(){
+    queueHeroResume();
+  });
+
+  window.addEventListener('resize', function(){
+    queueHeroResume();
+  }, {passive:true});
+
+  document.addEventListener('visibilitychange', function(){
+    if (!document.hidden) queueHeroResume();
+  });
+
+  /* iOS may defer autoplay after restoring a page from memory.
+     Any normal user interaction retries playback, without ever showing controls. */
+  ['touchstart','pointerdown','keydown'].forEach(function(eventName){
+    document.addEventListener(eventName, function(){
+      if (!state.stopMotion) resumeManagedHeroVideos();
+    }, {passive:true, capture:true});
+  });
+
   function syncMotionMedia(){
     var shouldPause = !!state.stopMotion;
     document.querySelectorAll('video').forEach(function(video){
@@ -337,10 +450,15 @@
           return node && node.nodeType === 1 && (node.tagName === 'VIDEO' || (node.querySelector && node.querySelector('video')));
         });
       });
-      if (hasNewVideo) syncMotionMedia();
+      if (hasNewVideo) {
+        document.querySelectorAll('video[data-versans-hero-video]').forEach(bindManagedHeroVideo);
+        syncMotionMedia();
+        if (!state.stopMotion) queueHeroResume();
+      }
     });
     motionObserver.observe(document.body, {childList:true, subtree:true});
   }
 
   applyState();
+  if (!state.stopMotion) queueHeroResume();
 })();

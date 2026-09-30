@@ -4537,3 +4537,68 @@ body.site-overlay-open{overflow:hidden}
     width:34px;
   }
 }
+
+
+/* ===== Mobile cart viewport stability fix =====
+   Use the actually visible mobile viewport and never let the drawer/footer
+   grow past the screen when browser bars change height. */
+@media(max-width:700px){
+  #cartOverlay,
+  #versansGlobalCartOverlay{
+    height:var(--vs-cart-mobile-vh,100dvh)!important;
+    max-height:var(--vs-cart-mobile-vh,100dvh)!important;
+    overflow:hidden!important;
+  }
+
+  #cartOverlay.ov--side .ov__panel,
+  #versansGlobalCartOverlay.ov--side .ov__panel{
+    position:fixed!important;
+    top:0!important;
+    bottom:auto!important;
+    height:var(--vs-cart-mobile-vh,100dvh)!important;
+    max-height:var(--vs-cart-mobile-vh,100dvh)!important;
+    min-height:0!important;
+    overflow:hidden!important;
+  }
+
+  #cartOverlay .drawer__head,
+  #versansGlobalCartOverlay .drawer__head{
+    flex:0 0 auto!important;
+    min-height:0!important;
+    padding-top:max(1.1rem,env(safe-area-inset-top))!important;
+  }
+
+  #cartOverlay .drawer__body,
+  #versansGlobalCartOverlay .drawer__body{
+    flex:1 1 auto!important;
+    min-height:110px!important;
+    overflow-y:auto!important;
+    overscroll-behavior:contain!important;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  #cartOverlay .drawer__foot,
+  #versansGlobalCartOverlay .drawer__foot{
+    flex:0 1 auto!important;
+    min-height:0!important;
+    max-height:min(62dvh,calc(var(--vs-cart-mobile-vh,100dvh) - 180px))!important;
+    overflow:hidden!important;
+    padding-bottom:max(1.2rem,env(safe-area-inset-bottom))!important;
+  }
+
+  #cartOverlay .cart-savings-resizable__content,
+  #versansGlobalCartOverlay .cart-savings-resizable__content{
+    max-height:min(165px,24dvh)!important;
+    overscroll-behavior:contain!important;
+  }
+
+  #cartOverlay .cart-savings-resizable[data-cart-savings-resized="true"] .cart-savings-resizable__content,
+  #versansGlobalCartOverlay .cart-savings-resizable[data-cart-savings-resized="true"] .cart-savings-resizable__content{
+    max-height:min(190px,27dvh)!important;
+  }
+
+  #cartOverlay .cart-checkout-cta,
+  #versansGlobalCartOverlay .cart-checkout-cta{
+    flex:0 0 auto!important;
+  }
+}
