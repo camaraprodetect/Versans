@@ -674,7 +674,7 @@
         maxHeight: bounds.maxHeight
       };
 
-      content.style.height = Math.round(contentRect.height) + 'px';
+      content.style.height = Math.round(bounds.contentRect.height) + 'px';
       content.style.maxHeight = 'none';
       box.setAttribute('data-cart-savings-resized', 'true');
       handle.classList.add('is-dragging');
@@ -715,7 +715,7 @@
         startY:touch.clientY, startHeight:bounds.contentRect.height,
         minHeight:bounds.minHeight, maxHeight:bounds.maxHeight
       };
-      content.style.height = Math.round(contentRect.height) + 'px';
+      content.style.height = Math.round(bounds.contentRect.height) + 'px';
       content.style.maxHeight = 'none';
       box.setAttribute('data-cart-savings-resized', 'true');
       handle.classList.add('is-dragging');
