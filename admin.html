@@ -10,13 +10,20 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="VerSans Admin">
-  <link rel="manifest" href="/admin-manifest.webmanifest">
+  <link rel="manifest" href="/admin-manifest.webmanifest?v=20260930-admin-url-v2">
+  <link rel="canonical" href="https://versans.com/admin">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/admin-icon-180.png">
   <title>VerSans Admin</title>
   <link rel="stylesheet" href="/assets/fonts.css?v=20260930-admin-font-v1">
   <link rel="stylesheet" href="/assets/admin.css?v=20260930-readable-font-v1">
 </head>
 <body class="admin-body">
+  <script>
+    // Keep the install URL anchored to /admin instead of the site root or legacy admin URLs.
+    if (window.location.pathname === "/admin.html" || window.location.pathname === "/admin/dashboard") {
+      window.history.replaceState(null, "", "/admin" + window.location.search + window.location.hash);
+    }
+  </script>
   <div class="admin-app">
     <aside class="admin-sidebar" id="adminSidebar" aria-label="ניווט אדמין">
       <div class="admin-sidebar__top">
@@ -76,8 +83,17 @@
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", function () {
-        navigator.serviceWorker.register("/admin-sw.js").catch(function (error) {
-          console.warn("VerSans Admin service worker registration failed:", error);
+        navigator.serviceWorker.getRegistrations().then(function (registrations) {
+          registrations.forEach(function (registration) {
+            var worker = registration.active || registration.waiting || registration.installing;
+            if (worker && /\/admin-sw\.js(?:$|\?)/.test(worker.scriptURL) && registration.scope === window.location.origin + "/") {
+              registration.unregister();
+            }
+          });
+        }).finally(function () {
+          navigator.serviceWorker.register("/admin-sw.js?v=20260930-admin-url-v2", { scope: "/admin" }).catch(function (error) {
+            console.warn("VerSans Admin service worker registration failed:", error);
+          });
         });
       });
     }
