@@ -2032,19 +2032,6 @@ body[data-product-slug="product-80"] .product-choice--color .product-choice__ima
   pointer-events:none;
 }
 
-/* Product 89 collection-card hover: keep the full branded hover artwork inside the square card. */
-.prod__img--hover[src*="product-89/product-89-2.png"]{
-  object-fit:contain!important;
-  object-position:center!important;
-  background:#111!important;
-  transform:none!important;
-}
-@media(hover:hover) and (pointer:fine){
-  .prod:hover .prod__img--hover[src*="product-89/product-89-2.png"]{
-    transform:none!important;
-  }
-}
-
 /* Ice Supra collection-card hover: keep the full branded hover artwork visible. */
 .prod__img--hover[src*="product-90/product-90-2.png"],
 .prod__img--hover[src*="product-91/product-91-2.png"],

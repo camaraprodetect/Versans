@@ -438,9 +438,8 @@
     });
   }
 
-  /* Priority catalog products: badge labels + family grouping.  A badge is
-     applied only to the exact color/variant listed in the configuration,
-     while all variants in the same family stay adjacent. */
+  /* Highlighted catalog products. Each rule controls both the social-proof
+     label shown on the index card and the product's priority in its category. */
   var PRIORITY_PRODUCT_RULES = [
     { slug: 'product-10',  badge: 'הכי נמכר', family: 'classic-tennis-chain' },
     { slug: 'product-18',  badge: 'פופולרי', family: 'classic-tennis-chain' },
@@ -462,110 +461,116 @@
   ];
 
   var PRIORITY_PRODUCT_MAP = {};
+  var PRIORITY_FAMILY_MAP = {};
+  var PRIORITY_RANK_MAP = {};
   PRIORITY_PRODUCT_RULES.forEach(function (rule, index) {
-    PRIORITY_PRODUCT_MAP[rule.slug] = {
-      rank: index,
-      family: rule.family,
-      badge: rule.badge
-    };
-  });
-
-  var PRIORITY_FAMILY_SLUGS = {
-    'classic-tennis-chain': ['product-10', 'product-18'],
-    'titan-chain': ['product-239', 'product-240'],
-    'cuban-tennis-6mm-chain': ['product-254', 'product-255'],
-    'classic-tennis-bracelet': ['product-237'],
-    'clover-black': ['product-94', 'product-95', 'product-96', 'product-97', 'product-98', 'product-99'],
-    'titan-bracelet': ['product-241', 'product-242'],
-    'vvs1-moissanite-cuban': ['product-243'],
-    'soline-vvs-womens': ['product-248', 'product-249'],
-    'iced-cuban-24mm': ['product-256', 'product-257'],
-    'royal-tennis-bracelet': ['product-11'],
-    'emerald-tennis-bracelet': ['product-13'],
-    'emerald-royal-bracelet': ['product-250'],
-    'emerald-royal-necklace': ['product-251']
-  };
-
-  var PRIORITY_FAMILY_BY_SLUG = {};
-  Object.keys(PRIORITY_FAMILY_SLUGS).forEach(function (family) {
-    PRIORITY_FAMILY_SLUGS[family].forEach(function (slug) {
-      PRIORITY_FAMILY_BY_SLUG[slug] = family;
-    });
+    PRIORITY_PRODUCT_MAP[rule.slug] = { badge: rule.badge };
+    PRIORITY_RANK_MAP[rule.slug] = index;
+    if (rule.family) PRIORITY_FAMILY_MAP[rule.slug] = rule.family;
   });
 
   function priorityInfo(p) {
     return PRIORITY_PRODUCT_MAP[p && p.slug] || null;
   }
 
-  function priorityFamilyForProduct(p) {
-    return PRIORITY_FAMILY_BY_SLUG[p && p.slug] || null;
-  }
+  /* Keep variants from the same product family beside each other in category
+     pages. Most VerSans variants share the same title before the first " - "
+     (for example silver/gold). Highlighted products can also declare an
+     explicit family above, which lets an unlabelled sibling travel with them
+     to the top of the category instead of being left several cards below. */
+  function catalogFamilyKey(product) {
+    if (!product) return '';
+    var slug = String(product.slug || product.id || '');
 
-  function priorityFamilyRank(family) {
-    var best = Infinity;
-    PRIORITY_PRODUCT_RULES.forEach(function (rule, index) {
-      if (rule.family === family) best = Math.min(best, index);
-    });
-    return best;
-  }
+    /* Family grouping must be based on the shared visible product name first.
+       A highlighted variant may have an explicit priority-family id, but using
+       that id before the title would split it from an unlabelled sibling.
+       Example: product-239 (Titan Heavy Chain - Silver) is highlighted while
+       product-240 (Gold) is not; both still need the exact same family key. */
+    var title = product.title && (product.title.he || product.title.en);
+    title = String(title || '').trim();
+    if (title) {
+      var base = title.split(/\s+[-–—]\s+/)[0]
+        .replace(/\s+/g, ' ')
+        .trim()
+        .toLowerCase();
+      if (base) return 'title:' + base;
+    }
 
-  function priorityFamilyKey(p) {
-    var info = priorityInfo(p);
-    return info ? info.family : null;
+    /* Keep the explicit family only as a fallback for products without a
+       usable title. This preserves the old escape hatch without allowing a
+       priority badge to separate colour/finish variants. */
+    if (PRIORITY_FAMILY_MAP[slug]) return 'explicit:' + PRIORITY_FAMILY_MAP[slug];
+    return 'single:' + slug;
   }
 
   function orderPriorityCatalogProducts(list) {
     var source = list.slice();
-    var familyMembers = {};
-    var familyMeta = {};
+    var groups = [];
+    var groupsByKey = {};
 
-    source.forEach(function (p, index) {
-      var family = priorityFamilyForProduct(p);
-      if (!family) return;
-      var info = priorityInfo(p);
-      if (!familyMembers[family]) familyMembers[family] = [];
-      familyMembers[family].push({
-        product: p,
-        index: index,
-        rank: info ? info.rank : 1000000
-      });
-      var familyRank = priorityFamilyRank(family);
-      if (!familyMeta[family] || familyRank < familyMeta[family].rank) {
-        familyMeta[family] = { rank: familyRank, index: index };
+    source.forEach(function (product, sourceIndex) {
+      var key = catalogFamilyKey(product);
+      var group = groupsByKey[key];
+      if (!group) {
+        group = {
+          key: key,
+          firstIndex: sourceIndex,
+          priorityRank: Number.POSITIVE_INFINITY,
+          products: []
+        };
+        groupsByKey[key] = group;
+        groups.push(group);
       }
+
+      var slug = product && product.slug;
+      var rank = Object.prototype.hasOwnProperty.call(PRIORITY_RANK_MAP, slug)
+        ? PRIORITY_RANK_MAP[slug]
+        : Number.POSITIVE_INFINITY;
+      if (rank < group.priorityRank) group.priorityRank = rank;
+      group.products.push({ product: product, sourceIndex: sourceIndex, priorityRank: rank });
     });
 
-    var priorityFamilies = Object.keys(familyMembers).sort(function (a, b) {
-      var ar = familyMeta[a].rank, br = familyMeta[b].rank;
-      if (ar !== br) return ar - br;
-      return familyMeta[a].index - familyMeta[b].index;
+    /* A family containing a highlighted product rises as one block. Families
+       without a highlighted item keep the position of their first appearance,
+       so grouping variants does not otherwise reshuffle the whole catalogue. */
+    groups.sort(function (a, b) {
+      var aPriority = Number.isFinite(a.priorityRank);
+      var bPriority = Number.isFinite(b.priorityRank);
+      if (aPriority && bPriority && a.priorityRank !== b.priorityRank) return a.priorityRank - b.priorityRank;
+      if (aPriority !== bPriority) return aPriority ? -1 : 1;
+      return a.firstIndex - b.firstIndex;
     });
 
-    var used = {};
     var ordered = [];
-    priorityFamilies.forEach(function (family) {
-      familyMembers[family].sort(function (a, b) {
-        if (a.rank !== b.rank) return a.rank - b.rank;
-        return a.index - b.index;
-      }).forEach(function (entry) {
-        used[entry.index] = true;
-        ordered.push(entry.product);
+    groups.forEach(function (group) {
+      /* Inside a family, labelled variants keep their requested priority order;
+         the remaining colour/finish variants follow immediately afterwards in
+         their original catalogue order. */
+      group.products.sort(function (a, b) {
+        var aPriority = Number.isFinite(a.priorityRank);
+        var bPriority = Number.isFinite(b.priorityRank);
+        if (aPriority && bPriority && a.priorityRank !== b.priorityRank) return a.priorityRank - b.priorityRank;
+        if (aPriority !== bPriority) return aPriority ? -1 : 1;
+        return a.sourceIndex - b.sourceIndex;
       });
+      group.products.forEach(function (entry) { ordered.push(entry.product); });
     });
 
-    source.forEach(function (p, index) {
-      if (!used[index]) ordered.push(p);
-    });
     return ordered;
   }
 
-  /* Homepage groups show only a small number of cards. Keep prioritized
-     families together and, when there are more priority families than fit,
-     use a stable pseudo-random order so the chosen families can vary without
-     jumping on every render. */
-  var PRIORITY_HOME_SEED = 20261001;
-  function priorityHomeKey(family) {
-    var text = String(PRIORITY_HOME_SEED) + ':' + family;
+
+  /* Homepage groups show a single row. Highlighted products are preferred;
+     when more highlighted products exist than fit, choose a random subset for
+     this page load and keep that order stable for subsequent re-renders. */
+  var PRIORITY_HOME_SEED = (function () {
+    /* Pick a fresh order for each page load, then keep it stable while that
+       page is open so re-renders do not make the visible row jump around. */
+    return String(Date.now()) + ':' + String(Math.random());
+  }());
+  function priorityHomeKey(slug) {
+    var text = String(PRIORITY_HOME_SEED) + ':' + slug;
     var h = 2166136261;
     for (var i = 0; i < text.length; i++) {
       h ^= text.charCodeAt(i);
@@ -575,55 +580,30 @@
   }
 
   function orderHomeCollectionProducts(list, limit) {
-    var nonPriority = [];
-    var families = {};
-    var familyOrder = [];
+    var highlighted = [];
+    var ordinary = [];
 
-    list.forEach(function (p, index) {
-      var family = priorityFamilyForProduct(p);
-      if (!family) {
-        nonPriority.push({ product: p, index: index });
-        return;
-      }
-      var info = priorityInfo(p);
-      if (!families[family]) {
-        families[family] = [];
-        familyOrder.push(family);
-      }
-      families[family].push({
-        product: p,
-        index: index,
-        rank: info ? info.rank : 1000000
-      });
+    list.forEach(function (p) {
+      if (priorityInfo(p)) highlighted.push(p);
+      else ordinary.push(p);
     });
 
-    familyOrder.sort(function (a, b) {
-      var ka = priorityHomeKey(a), kb = priorityHomeKey(b);
+    /* The home row always prefers highlighted products. When more highlighted
+       products exist than fit in the single visible row, choose a random
+       subset for this page load, as requested. */
+    highlighted.sort(function (a, b) {
+      var ka = priorityHomeKey(String(a && a.slug || ''));
+      var kb = priorityHomeKey(String(b && b.slug || ''));
       if (ka !== kb) return ka - kb;
-      return priorityFamilyRank(a) - priorityFamilyRank(b);
+      return String(a && a.slug || '').localeCompare(String(b && b.slug || ''));
     });
 
-    var selected = [];
-    var usedFamilies = {};
-    familyOrder.forEach(function (family) {
-      var members = families[family].slice().sort(function (a, b) {
-        if (a.rank !== b.rank) return a.rank - b.rank;
-        return a.index - b.index;
-      });
-      if (selected.length + members.length <= limit) {
-        usedFamilies[family] = true;
-        selected = selected.concat(members.map(function (entry) { return entry.product; }));
-      }
-    });
+    if (highlighted.length >= limit) return highlighted.slice(0, limit);
 
-    if (selected.length >= limit) return selected.slice(0, limit);
-
-    /* Never split a prioritized color family on the homepage. If a family no
-       longer fits in the remaining slots, fill those slots with ordinary
-       catalog products instead of showing only one color of that family. */
-    var fallback = shuffleAllProductsStable(nonPriority.map(function (entry) { return entry.product; }));
-    return selected.concat(fallback.slice(0, limit - selected.length));
+    var fallback = shuffleAllProductsStable(ordinary);
+    return highlighted.concat(fallback.slice(0, limit - highlighted.length));
   }
+
 
   function orderGreetingCatalogProducts(list) {
     var priority = {
@@ -1007,9 +987,10 @@
     var cardPrice = catalogPrice(p);
     var cardHref = productPath(p);
     var isHat = ((Array.isArray(p.categories) ? p.categories : [p.category]).indexOf('hats') !== -1);
+    var priority = priorityInfo(p);
     var badge = isHat
       ? (state.lang === 'he' ? '2 ב־239.90 ₪ | 3 ב־299.90 ₪' : '2 for ₪239.90 | 3 for ₪299.90')
-      : L(p.badge);
+      : (priority ? priority.badge : L(p.badge));
     var isGlasses = isGlassesProduct(p);
     return '' +
     '<article class="prod">' +

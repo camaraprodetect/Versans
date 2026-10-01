@@ -613,10 +613,10 @@ var PRODUCTS = [
       },
       {
         "id": "18in",
-        "addPrice": 20,
+        "addPrice": 10,
         "priceLabel": {
-          "he": "289.90 ₪",
-          "en": "₪289.90"
+          "he": "279.90 ₪",
+          "en": "₪279.90"
         },
         "label": {
           "he": "45 ס״מ",
@@ -625,10 +625,10 @@ var PRODUCTS = [
       },
       {
         "id": "20in",
-        "addPrice": 40,
+        "addPrice": 20,
         "priceLabel": {
-          "he": "309.90 ₪",
-          "en": "₪309.90"
+          "he": "289.90 ₪",
+          "en": "₪289.90"
         },
         "label": {
           "he": "50 ס״מ",
@@ -637,10 +637,10 @@ var PRODUCTS = [
       },
       {
         "id": "22in",
-        "addPrice": 60,
+        "addPrice": 30,
         "priceLabel": {
-          "he": "329.90 ₪",
-          "en": "₪329.90"
+          "he": "299.90 ₪",
+          "en": "₪299.90"
         },
         "label": {
           "he": "55 ס״מ",
@@ -649,10 +649,10 @@ var PRODUCTS = [
       },
       {
         "id": "24in",
-        "addPrice": 80,
+        "addPrice": 40,
         "priceLabel": {
-          "he": "349.90 ₪",
-          "en": "₪349.90"
+          "he": "309.90 ₪",
+          "en": "₪309.90"
         },
         "label": {
           "he": "60 ס״מ",
@@ -739,8 +739,8 @@ var PRODUCTS = [
       ]
     },
     "afterText": {
-      "he": "בחרו אורך ורוחב והמחיר יתעדכן אוטומטית. לדוגמה, 55 ס״מ ברוחב 5 מ״מ עולה 339.90 ₪. גרסאות הזהב, אם מוצגות, הן בציפוי 5 שכבות זהב 18 קראט.",
-      "en": "Choose a length and width and the price updates automatically. For example, 55 cm at 5mm width costs ₪339.90. Gold versions, where offered, use 5 layers of 18K gold plating."
+      "he": "בחרו אורך ורוחב והמחיר יתעדכן אוטומטית. לדוגמה, 55 ס״מ ברוחב 5 מ״מ עולה 309.90 ₪. גרסאות הזהב, אם מוצגות, הן בציפוי 5 שכבות זהב 18 קראט.",
+      "en": "Choose a length and width and the price updates automatically. For example, 55 cm at 5mm width costs ₪309.90. Gold versions, where offered, use 5 layers of 18K gold plating."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -1887,10 +1887,10 @@ var PRODUCTS = [
       },
       {
         "id": "18in",
-        "addPrice": 20,
+        "addPrice": 10,
         "priceLabel": {
-          "he": "289.90 ₪",
-          "en": "₪289.90"
+          "he": "279.90 ₪",
+          "en": "₪279.90"
         },
         "label": {
           "he": "45 ס״מ",
@@ -1899,10 +1899,10 @@ var PRODUCTS = [
       },
       {
         "id": "20in",
-        "addPrice": 40,
+        "addPrice": 20,
         "priceLabel": {
-          "he": "309.90 ₪",
-          "en": "₪309.90"
+          "he": "289.90 ₪",
+          "en": "₪289.90"
         },
         "label": {
           "he": "50 ס״מ",
@@ -1911,10 +1911,10 @@ var PRODUCTS = [
       },
       {
         "id": "22in",
-        "addPrice": 60,
+        "addPrice": 30,
         "priceLabel": {
-          "he": "329.90 ₪",
-          "en": "₪329.90"
+          "he": "299.90 ₪",
+          "en": "₪299.90"
         },
         "label": {
           "he": "55 ס״מ",
@@ -1923,10 +1923,10 @@ var PRODUCTS = [
       },
       {
         "id": "24in",
-        "addPrice": 80,
+        "addPrice": 40,
         "priceLabel": {
-          "he": "349.90 ₪",
-          "en": "₪349.90"
+          "he": "309.90 ₪",
+          "en": "₪309.90"
         },
         "label": {
           "he": "60 ס״מ",
@@ -2013,8 +2013,8 @@ var PRODUCTS = [
       ]
     },
     "afterText": {
-      "he": "בחרו אורך ורוחב והמחיר יתעדכן אוטומטית. לדוגמה, 55 ס״מ ברוחב 5 מ״מ עולה 339.90 ₪. השרשרת בצבע זהב ומצופה ב-5 שכבות זהב 18 קראט.",
-      "en": "Choose a length and width and the price updates automatically. For example, 55 cm at 5mm width costs ₪339.90. The chain has a gold-tone finish with 5 layers of 18K gold plating."
+      "he": "בחרו אורך ורוחב והמחיר יתעדכן אוטומטית. לדוגמה, 55 ס״מ ברוחב 5 מ״מ עולה 309.90 ₪. השרשרת בצבע זהב ומצופה ב-5 שכבות זהב 18 קראט.",
+      "en": "Choose a length and width and the price updates automatically. For example, 55 cm at 5mm width costs ₪309.90. The chain has a gold-tone finish with 5 layers of 18K gold plating."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -7116,75 +7116,6 @@ var PRODUCTS = [
       }
     ],
     "colorDisplay": "image-choice"
-  },
-  {
-    "id": "watch-tachymeter-pro-black-01",
-    "slug": "product-89",
-    "urlSlug": "tachymeter-pro-black-watch",
-    "sku": "VS-WATCH-14",
-    "category": "watches",
-    "categories": [
-      "watches",
-      "watches-men"
-    ],
-    "badge": null,
-    "cardMode": "view",
-    "hideMessageCard": true,
-    "cardImage": "images/products/product-89/product-89-1.png",
-    "hoverImage": "images/products/product-89/product-89-2.png",
-    "images": [
-      "images/products/product-89/product-89-1.png",
-      "images/products/product-89/product-89-2.png"
-    ],
-    "price": 419.9,
-    "title": {
-      "he": "שעון טכימטר פרו - צבע שחור",
-      "en": "Tachymeter Pro Watch - Black"
-    },
-    "subtitle": {
-      "he": "שעון גברים MARK FAIRWHALE מדגם FW-5016 בעיצוב ספורטיבי שחור, עם מנגנון Quartz, סקלת טכימטר ותצוגה זוהרת.",
-      "en": "MARK FAIRWHALE FW-5016 men's black sport watch with quartz movement, tachymeter scale and luminous display."
-    },
-    "cardTitle": {
-      "he": "",
-      "en": ""
-    },
-    "cardMessage": {
-      "he": "",
-      "en": ""
-    },
-    "signature": {
-      "he": "",
-      "en": ""
-    },
-    "details": {
-      "he": [
-        "דגם MARK FAIRWHALE FW-5016",
-        "מנגנון Quartz לשימוש יום-יומי",
-        "רצועת Premium Stainless Steel בגימור שחור בדגם המצולם",
-        "סקלת טכימטר על מסגרת השעון למראה ספורטיבי",
-        "מחוגים וסימונים זוהרים לקריאות טובה יותר בתאורה חלשה",
-        "חלון תאריך מובנה בחלק התחתון של לוח השעון",
-        "עיצוב גברים עם לוח רב-שכבתי ושלושה לוחות משנה"
-      ],
-      "en": [
-        "MARK FAIRWHALE model FW-5016",
-        "Quartz movement for everyday use",
-        "Black-finish Premium Stainless Steel bracelet on the pictured variant",
-        "Tachymeter scale around the bezel for a sporty look",
-        "Luminous hands and markers for improved low-light readability",
-        "Built-in date window at the lower part of the dial",
-        "Men's multi-layer dial design with three sub-dials"
-      ]
-    },
-    "afterText": {
-      "he": "שעון טכימטר פרו משלב גימור שחור, לוח ספורטיבי וסקלת טכימטר למראה מודרני ובולט.",
-      "en": "Tachymeter Pro combines a black finish, sporty dial and tachymeter scale for a modern statement look."
-    },
-    "deliveryBusinessDays": {
-      "min": 9,
-      "max": 14
-    }
   },
   {
     "id": "watch-ice-supra-90",
