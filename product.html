@@ -26,6 +26,79 @@
 <link rel="stylesheet" href="assets/typography-only.css?v=20260909-fonts-only">
 <link rel="stylesheet" href="/assets/customer-service.css?v=20260922-whatsapp-support-v2">
 <link rel="stylesheet" href="assets/accessibility.css?v=20260928-a11y-v1">
+
+<style id="versans-product-help-links-v2">
+.product-help-links{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+  margin:18px 0 8px;
+}
+.product-help-link{
+  min-width:0;
+  min-height:62px;
+  display:grid;
+  grid-template-columns:34px minmax(0,1fr) 18px;
+  align-items:center;
+  gap:10px;
+  padding:10px 12px;
+  border:1px solid #dde2e6;
+  border-radius:14px;
+  background:#fff;
+  color:#142333;
+  text-decoration:none!important;
+  box-shadow:0 4px 14px rgba(20,35,51,.045);
+  transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease;
+}
+.product-help-link:hover{
+  border-color:#b8c3cb;
+  box-shadow:0 7px 18px rgba(20,35,51,.08);
+  transform:translateY(-1px);
+}
+.product-help-link__icon{
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:#f3f5f6;
+  font-size:16px;
+  font-weight:800;
+  line-height:1;
+}
+.product-help-link__copy{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+  line-height:1.25;
+}
+.product-help-link__copy strong{
+  display:block;
+  font-size:.93rem;
+  font-weight:800;
+  white-space:normal;
+}
+.product-help-link__copy small{
+  display:block;
+  color:#6b747c;
+  font-size:.75rem;
+  font-weight:500;
+  white-space:normal;
+}
+.product-help-link__arrow{
+  font-size:17px;
+  line-height:1;
+  opacity:.65;
+}
+@media(max-width:700px){
+  .product-help-links{grid-template-columns:1fr;gap:8px;margin-top:14px}
+  .product-help-link{min-height:54px;padding:8px 10px;border-radius:12px;grid-template-columns:30px minmax(0,1fr) 16px;gap:8px}
+  .product-help-link__icon{width:30px;height:30px;font-size:14px}
+  .product-help-link__copy strong{font-size:.88rem}
+  .product-help-link__copy small{font-size:.7rem}
+}
+</style>
 </head>
 <body class="product-page-body">
 <!-- VERSANS-PRODUCT-MOBILE-NAV-FIX-V4 -->
@@ -85,7 +158,15 @@
       <a href="/#shopTitle" data-nav-cat="all">עמוד בית</a>
       <a href="/message-jewelry#shop" data-cat="greeting" data-nav-cat="greeting">תכשיט עם ברכה</a>
       <a href="/necklaces#shop" data-cat="necklaces" data-nav-cat="necklaces">שרשראות</a>
-      <a href="/bracelets#shop" data-cat="bracelets" data-nav-cat="bracelets">צמידים</a>
+      <div class="nav__item nav__item--has-submenu" data-nav-group="bracelets">
+        <a href="/bracelets#shop" data-cat="bracelets" data-nav-cat="bracelets" data-nav-parent-toggle="bracelets" aria-haspopup="true" aria-expanded="false">צמידים</a>
+        <div class="nav__submenu" aria-label="תתי קטגוריות צמידים">
+          <a href="/bracelets#shop" data-cat="bracelets" class="nav__submenu-all">כל הצמידים</a>
+          <a href="/bracelets-men#shop" data-cat="bracelets-men" data-nav-subcat="bracelets-men">גברים</a>
+          <a href="/bracelets-women#shop" data-cat="bracelets-women" data-nav-subcat="bracelets-women">נשים</a>
+          <a href="/bracelets-fashion#shop" data-cat="bracelets-fashion" data-nav-subcat="bracelets-fashion">צמידי אופנה</a>
+        </div>
+      </div>
       <a href="/rings#shop" data-cat="rings" data-nav-cat="rings">טבעות</a>
       <a href="/photo-bracelets#shop" data-cat="photo-bracelets" data-nav-cat="photo-bracelets">תכשיטי תמונה</a>
       <div class="nav__item nav__item--has-submenu" data-nav-group="watches">
@@ -422,7 +503,7 @@
 <script src="/assets/pricing.js?v=20260928-buy2get1-v1"></script>
 <script src="/assets/cart-drawer.js?v=20260928-buy2get1-v1"></script>
 <script src="assets/i18n.js?v=20260905-versans-v1"></script>
-<script src="assets/product.js?v=20261001-size-guide-exclusions-v3"></script>
+<script src="assets/product.js?v=20261001-fashion-no-size-guide-v4"></script>
 <script src="assets/product-reviews.js?v=20260924-product-review-name-v2"></script>
 <script src="assets/auth-nav.js?v=20260914-pretty-urls-v1"></script>
   <script src="/assets/presence.js?v=20260915-presence-v1"></script>

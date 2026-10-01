@@ -1871,7 +1871,8 @@ async function uploadProductPhoto(blob, meta) {
     var guideCategory = String(product.category || '').toLowerCase();
     var isGreetingJewelryForGuide = guideCategory === 'greeting' || guideCategory === 'message-jewelry' || guideCategories.indexOf('greeting') !== -1 || guideCategories.indexOf('message-jewelry') !== -1 || /תכשיט\s*עם\s*ברכה|ברכה\s*אישית/.test(productTitleForGuide);
     var isPhotoJewelryForGuide = guideCategory === 'photo-bracelets' || guideCategory === 'photo-jewelry' || guideCategory === 'photo-jewellery' || guideCategory === 'projection-jewelry' || guideCategory === 'projection-jewellery' || guideCategory === 'photo' || guideCategories.indexOf('photo-bracelets') !== -1 || guideCategories.indexOf('photo-jewelry') !== -1 || guideCategories.indexOf('photo-jewellery') !== -1 || guideCategories.indexOf('projection-jewelry') !== -1 || guideCategories.indexOf('projection-jewellery') !== -1 || guideCategories.indexOf('photo') !== -1 || /תכשיט\s*עם\s*תמונה|תמונה\s*מוקרנת|תכשיטי\s*תמונה/.test(productTitleForGuide);
-    var suppressAllSizeGuides = isGreetingJewelryForGuide || isPhotoJewelryForGuide;
+    var isFashionBraceletForGuide = guideCategory === 'bracelets-fashion' || guideCategories.indexOf('bracelets-fashion') !== -1;
+    var suppressAllSizeGuides = isGreetingJewelryForGuide || isPhotoJewelryForGuide || isFashionBraceletForGuide;
 
     var isBraceletProduct = !suppressAllSizeGuides && (product.category === 'bracelets' || (Array.isArray(product.categories) && product.categories.indexOf('bracelets') !== -1));
     var braceletSizeGuideLink = $('#braceletSizeGuideLink');

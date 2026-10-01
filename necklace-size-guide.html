@@ -58,7 +58,7 @@
 <body>
   <header class="topbar">
     <div class="topbar__inner">
-      <a class="topbar__back" href="/necklaces">חזרה לשרשראות</a>
+      <a class="topbar__back" href="/necklaces" data-smart-back>חזרה לשרשראות</a>
       <a class="topbar__brand" href="/" aria-label="VerSans"><img src="/images/VersansLogoWordmarkWhite.png" alt="VerSans" width="719" height="171" decoding="async"></a>
       <a class="topbar__warranty" href="/warranty">אחריות לחצי שנה</a>
     </div>
@@ -106,5 +106,21 @@
     <a href="/necklaces">לכל השרשראות</a> · <a href="/warranty">אחריות לחצי שנה</a> · <a href="/policies">תקנון ומדיניות</a>
   </footer>
   <script src="/assets/accessibility.js?v=20260928-a11y-v1"></script>
+
+<script>
+(function(){
+  var back = document.querySelector('[data-smart-back]');
+  if (!back) return;
+  back.addEventListener('click', function(event){
+    try {
+      var ref = document.referrer ? new URL(document.referrer) : null;
+      if (ref && ref.origin === window.location.origin && history.length > 1) {
+        event.preventDefault();
+        history.back();
+      }
+    } catch (e) {}
+  });
+})();
+</script>
 </body>
 </html>

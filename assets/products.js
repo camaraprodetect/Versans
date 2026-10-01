@@ -25026,6 +25026,4380 @@ var PRODUCTS = [
       "min": 9,
       "max": 14
     }
+  },
+  {
+    "id": "fashion-h-bracelet-white-258",
+    "slug": "product-258",
+    "urlSlug": "fashion-h-bracelet-white",
+    "title": {
+      "he": "צמיד אופנה HERMES - צבע לבן",
+      "en": "HERMES Fashion Bracelet - White"
+    },
+    "subtitle": {
+      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי נירוסטה פרימיום · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
+      "en": "Adjustable braided rope bracelet with H charm · Premium Stainless Steel components · waterproof rope · fade-resistant color · unisex for women and men"
+    },
+    "badge": {
+      "he": "צמידי אופנה",
+      "en": "Fashion Bracelets"
+    },
+    "price": 129.9,
+    "images": [
+      "/images/products/fashion-bracelets/fashion-bracelet-white.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-black.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-brown.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-black-gold.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-pastel-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-turquoise.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-red.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-gold.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-coral.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-light-gray.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-dusty-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-fuchsia.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-neon-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-green.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-silver.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-royal-blue.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-mint.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-orange.png"
+    ],
+    "hoverImage": "/images/products/fashion-bracelets/fashion-bracelets-group.png",
+    "categories": [
+      "bracelets",
+      "bracelets-fashion"
+    ],
+    "description": {
+      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי נירוסטה פרימיום בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
+      "en": "HERMES fashion bracelet with a colorful braided-rope design and central H charm. Adjustable and unisex, combining waterproof rope with Premium Stainless Steel gold-tone components. Every product page includes the full color selection."
+    },
+    "details": {
+      "he": [
+        "חומרי מתכת: נירוסטה פרימיום",
+        "רצועה: חבל קלוע עמיד במים",
+        "מבנה: צמיד מתכוונן להתאמה נוחה לפרק היד",
+        "צבע: גימור עמיד לדהייה בשימוש רגיל",
+        "עיצוב: אלמנט H מרכזי בגימור זהב",
+        "התאמה: יוניסקס - לנשים ולגברים",
+        "צבעים: כל צבעי הקולקציה זמינים לבחירה בתוך עמוד המוצר"
+      ],
+      "en": [
+        "Metal components: Premium Stainless Steel",
+        "Band: waterproof braided rope",
+        "Fit: adjustable for a comfortable wrist fit",
+        "Color: fade-resistant finish for normal use",
+        "Design: central H charm in a gold-tone finish",
+        "Fit: unisex - for women and men",
+        "Colors: the full collection is selectable inside each product page"
+      ]
+    },
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "colorDisplay": "image-choice",
+    "colors": [
+      {
+        "id": "white",
+        "label": {
+          "he": "לבן",
+          "en": "White"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-white.png",
+        "swatch": "#f0f0f0"
+      },
+      {
+        "id": "black",
+        "label": {
+          "he": "שחור",
+          "en": "Black"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-black.png",
+        "swatch": "#111111"
+      },
+      {
+        "id": "brown",
+        "label": {
+          "he": "חום",
+          "en": "Brown"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-brown.png",
+        "swatch": "#724f3e"
+      },
+      {
+        "id": "black-gold",
+        "label": {
+          "he": "שחור זהב",
+          "en": "Black Gold"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-black-gold.png",
+        "swatch": "linear-gradient(135deg,#111 0 50%,#d4a63a 50% 100%)"
+      },
+      {
+        "id": "pastel-pink",
+        "label": {
+          "he": "ורוד פסטל",
+          "en": "Pastel Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-pastel-pink.png",
+        "swatch": "#efb3c0"
+      },
+      {
+        "id": "turquoise",
+        "label": {
+          "he": "טורקיז",
+          "en": "Turquoise"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-turquoise.png",
+        "swatch": "#44d3e2"
+      },
+      {
+        "id": "red",
+        "label": {
+          "he": "אדום",
+          "en": "Red"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-red.png",
+        "swatch": "#cc1f27"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-gold.png",
+        "swatch": "#d6a52c"
+      },
+      {
+        "id": "coral",
+        "label": {
+          "he": "קורל",
+          "en": "Coral"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-coral.png",
+        "swatch": "#f46f55"
+      },
+      {
+        "id": "light-gray",
+        "label": {
+          "he": "אפור בהיר",
+          "en": "Light Gray"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-light-gray.png",
+        "swatch": "#bec4c6"
+      },
+      {
+        "id": "dusty-pink",
+        "label": {
+          "he": "ורוד מעושן",
+          "en": "Dusty Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-dusty-pink.png",
+        "swatch": "#bf7a95"
+      },
+      {
+        "id": "hot-pink",
+        "label": {
+          "he": "פוקסיה",
+          "en": "Fuchsia"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-fuchsia.png",
+        "swatch": "#e8318a"
+      },
+      {
+        "id": "neon-pink",
+        "label": {
+          "he": "ורוד ניאון",
+          "en": "Neon Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-neon-pink.png",
+        "swatch": "#ff1493"
+      },
+      {
+        "id": "green",
+        "label": {
+          "he": "ירוק",
+          "en": "Green"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-green.png",
+        "swatch": "#39b64a"
+      },
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-silver.png",
+        "swatch": "#d3d3d3"
+      },
+      {
+        "id": "royal-blue",
+        "label": {
+          "he": "כחול רויאל",
+          "en": "Royal Blue"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-royal-blue.png",
+        "swatch": "#2052e5"
+      },
+      {
+        "id": "mint",
+        "label": {
+          "he": "ירוק מנטה",
+          "en": "Mint Green"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-mint.png",
+        "swatch": "#c8e9c8"
+      },
+      {
+        "id": "orange",
+        "label": {
+          "he": "כתום",
+          "en": "Orange"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-orange.png",
+        "swatch": "#f07a22"
+      }
+    ],
+    "defaultColorId": "white",
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    },
+    "hideMessageCard": true,
+    "cardMode": "view"
+  },
+  {
+    "id": "fashion-h-bracelet-black-259",
+    "slug": "product-259",
+    "urlSlug": "fashion-h-bracelet-black",
+    "title": {
+      "he": "צמיד אופנה HERMES - צבע שחור",
+      "en": "HERMES Fashion Bracelet - Black"
+    },
+    "subtitle": {
+      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי נירוסטה פרימיום · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
+      "en": "Adjustable braided rope bracelet with H charm · Premium Stainless Steel components · waterproof rope · fade-resistant color · unisex for women and men"
+    },
+    "badge": {
+      "he": "צמידי אופנה",
+      "en": "Fashion Bracelets"
+    },
+    "price": 129.9,
+    "images": [
+      "/images/products/fashion-bracelets/fashion-bracelet-black.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-white.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-brown.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-black-gold.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-pastel-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-turquoise.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-red.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-gold.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-coral.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-light-gray.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-dusty-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-fuchsia.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-neon-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-green.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-silver.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-royal-blue.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-mint.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-orange.png"
+    ],
+    "hoverImage": "/images/products/fashion-bracelets/fashion-bracelets-group.png",
+    "categories": [
+      "bracelets",
+      "bracelets-fashion"
+    ],
+    "description": {
+      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי נירוסטה פרימיום בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
+      "en": "HERMES fashion bracelet with a colorful braided-rope design and central H charm. Adjustable and unisex, combining waterproof rope with Premium Stainless Steel gold-tone components. Every product page includes the full color selection."
+    },
+    "details": {
+      "he": [
+        "חומרי מתכת: נירוסטה פרימיום",
+        "רצועה: חבל קלוע עמיד במים",
+        "מבנה: צמיד מתכוונן להתאמה נוחה לפרק היד",
+        "צבע: גימור עמיד לדהייה בשימוש רגיל",
+        "עיצוב: אלמנט H מרכזי בגימור זהב",
+        "התאמה: יוניסקס - לנשים ולגברים",
+        "צבעים: כל צבעי הקולקציה זמינים לבחירה בתוך עמוד המוצר"
+      ],
+      "en": [
+        "Metal components: Premium Stainless Steel",
+        "Band: waterproof braided rope",
+        "Fit: adjustable for a comfortable wrist fit",
+        "Color: fade-resistant finish for normal use",
+        "Design: central H charm in a gold-tone finish",
+        "Fit: unisex - for women and men",
+        "Colors: the full collection is selectable inside each product page"
+      ]
+    },
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "colorDisplay": "image-choice",
+    "colors": [
+      {
+        "id": "white",
+        "label": {
+          "he": "לבן",
+          "en": "White"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-white.png",
+        "swatch": "#f0f0f0"
+      },
+      {
+        "id": "black",
+        "label": {
+          "he": "שחור",
+          "en": "Black"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-black.png",
+        "swatch": "#111111"
+      },
+      {
+        "id": "brown",
+        "label": {
+          "he": "חום",
+          "en": "Brown"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-brown.png",
+        "swatch": "#724f3e"
+      },
+      {
+        "id": "black-gold",
+        "label": {
+          "he": "שחור זהב",
+          "en": "Black Gold"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-black-gold.png",
+        "swatch": "linear-gradient(135deg,#111 0 50%,#d4a63a 50% 100%)"
+      },
+      {
+        "id": "pastel-pink",
+        "label": {
+          "he": "ורוד פסטל",
+          "en": "Pastel Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-pastel-pink.png",
+        "swatch": "#efb3c0"
+      },
+      {
+        "id": "turquoise",
+        "label": {
+          "he": "טורקיז",
+          "en": "Turquoise"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-turquoise.png",
+        "swatch": "#44d3e2"
+      },
+      {
+        "id": "red",
+        "label": {
+          "he": "אדום",
+          "en": "Red"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-red.png",
+        "swatch": "#cc1f27"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-gold.png",
+        "swatch": "#d6a52c"
+      },
+      {
+        "id": "coral",
+        "label": {
+          "he": "קורל",
+          "en": "Coral"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-coral.png",
+        "swatch": "#f46f55"
+      },
+      {
+        "id": "light-gray",
+        "label": {
+          "he": "אפור בהיר",
+          "en": "Light Gray"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-light-gray.png",
+        "swatch": "#bec4c6"
+      },
+      {
+        "id": "dusty-pink",
+        "label": {
+          "he": "ורוד מעושן",
+          "en": "Dusty Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-dusty-pink.png",
+        "swatch": "#bf7a95"
+      },
+      {
+        "id": "hot-pink",
+        "label": {
+          "he": "פוקסיה",
+          "en": "Fuchsia"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-fuchsia.png",
+        "swatch": "#e8318a"
+      },
+      {
+        "id": "neon-pink",
+        "label": {
+          "he": "ורוד ניאון",
+          "en": "Neon Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-neon-pink.png",
+        "swatch": "#ff1493"
+      },
+      {
+        "id": "green",
+        "label": {
+          "he": "ירוק",
+          "en": "Green"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-green.png",
+        "swatch": "#39b64a"
+      },
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-silver.png",
+        "swatch": "#d3d3d3"
+      },
+      {
+        "id": "royal-blue",
+        "label": {
+          "he": "כחול רויאל",
+          "en": "Royal Blue"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-royal-blue.png",
+        "swatch": "#2052e5"
+      },
+      {
+        "id": "mint",
+        "label": {
+          "he": "ירוק מנטה",
+          "en": "Mint Green"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-mint.png",
+        "swatch": "#c8e9c8"
+      },
+      {
+        "id": "orange",
+        "label": {
+          "he": "כתום",
+          "en": "Orange"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-orange.png",
+        "swatch": "#f07a22"
+      }
+    ],
+    "defaultColorId": "black",
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    },
+    "hideMessageCard": true,
+    "cardMode": "view"
+  },
+  {
+    "id": "fashion-h-bracelet-brown-260",
+    "slug": "product-260",
+    "urlSlug": "fashion-h-bracelet-brown",
+    "title": {
+      "he": "צמיד אופנה HERMES - צבע חום",
+      "en": "HERMES Fashion Bracelet - Brown"
+    },
+    "subtitle": {
+      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי נירוסטה פרימיום · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
+      "en": "Adjustable braided rope bracelet with H charm · Premium Stainless Steel components · waterproof rope · fade-resistant color · unisex for women and men"
+    },
+    "badge": {
+      "he": "צמידי אופנה",
+      "en": "Fashion Bracelets"
+    },
+    "price": 129.9,
+    "images": [
+      "/images/products/fashion-bracelets/fashion-bracelet-brown.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-white.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-black.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-black-gold.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-pastel-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-turquoise.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-red.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-gold.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-coral.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-light-gray.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-dusty-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-fuchsia.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-neon-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-green.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-silver.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-royal-blue.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-mint.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-orange.png"
+    ],
+    "hoverImage": "/images/products/fashion-bracelets/fashion-bracelets-group.png",
+    "categories": [
+      "bracelets",
+      "bracelets-fashion"
+    ],
+    "description": {
+      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי נירוסטה פרימיום בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
+      "en": "HERMES fashion bracelet with a colorful braided-rope design and central H charm. Adjustable and unisex, combining waterproof rope with Premium Stainless Steel gold-tone components. Every product page includes the full color selection."
+    },
+    "details": {
+      "he": [
+        "חומרי מתכת: נירוסטה פרימיום",
+        "רצועה: חבל קלוע עמיד במים",
+        "מבנה: צמיד מתכוונן להתאמה נוחה לפרק היד",
+        "צבע: גימור עמיד לדהייה בשימוש רגיל",
+        "עיצוב: אלמנט H מרכזי בגימור זהב",
+        "התאמה: יוניסקס - לנשים ולגברים",
+        "צבעים: כל צבעי הקולקציה זמינים לבחירה בתוך עמוד המוצר"
+      ],
+      "en": [
+        "Metal components: Premium Stainless Steel",
+        "Band: waterproof braided rope",
+        "Fit: adjustable for a comfortable wrist fit",
+        "Color: fade-resistant finish for normal use",
+        "Design: central H charm in a gold-tone finish",
+        "Fit: unisex - for women and men",
+        "Colors: the full collection is selectable inside each product page"
+      ]
+    },
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "colorDisplay": "image-choice",
+    "colors": [
+      {
+        "id": "white",
+        "label": {
+          "he": "לבן",
+          "en": "White"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-white.png",
+        "swatch": "#f0f0f0"
+      },
+      {
+        "id": "black",
+        "label": {
+          "he": "שחור",
+          "en": "Black"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-black.png",
+        "swatch": "#111111"
+      },
+      {
+        "id": "brown",
+        "label": {
+          "he": "חום",
+          "en": "Brown"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-brown.png",
+        "swatch": "#724f3e"
+      },
+      {
+        "id": "black-gold",
+        "label": {
+          "he": "שחור זהב",
+          "en": "Black Gold"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-black-gold.png",
+        "swatch": "linear-gradient(135deg,#111 0 50%,#d4a63a 50% 100%)"
+      },
+      {
+        "id": "pastel-pink",
+        "label": {
+          "he": "ורוד פסטל",
+          "en": "Pastel Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-pastel-pink.png",
+        "swatch": "#efb3c0"
+      },
+      {
+        "id": "turquoise",
+        "label": {
+          "he": "טורקיז",
+          "en": "Turquoise"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-turquoise.png",
+        "swatch": "#44d3e2"
+      },
+      {
+        "id": "red",
+        "label": {
+          "he": "אדום",
+          "en": "Red"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-red.png",
+        "swatch": "#cc1f27"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-gold.png",
+        "swatch": "#d6a52c"
+      },
+      {
+        "id": "coral",
+        "label": {
+          "he": "קורל",
+          "en": "Coral"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-coral.png",
+        "swatch": "#f46f55"
+      },
+      {
+        "id": "light-gray",
+        "label": {
+          "he": "אפור בהיר",
+          "en": "Light Gray"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-light-gray.png",
+        "swatch": "#bec4c6"
+      },
+      {
+        "id": "dusty-pink",
+        "label": {
+          "he": "ורוד מעושן",
+          "en": "Dusty Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-dusty-pink.png",
+        "swatch": "#bf7a95"
+      },
+      {
+        "id": "hot-pink",
+        "label": {
+          "he": "פוקסיה",
+          "en": "Fuchsia"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-fuchsia.png",
+        "swatch": "#e8318a"
+      },
+      {
+        "id": "neon-pink",
+        "label": {
+          "he": "ורוד ניאון",
+          "en": "Neon Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-neon-pink.png",
+        "swatch": "#ff1493"
+      },
+      {
+        "id": "green",
+        "label": {
+          "he": "ירוק",
+          "en": "Green"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-green.png",
+        "swatch": "#39b64a"
+      },
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-silver.png",
+        "swatch": "#d3d3d3"
+      },
+      {
+        "id": "royal-blue",
+        "label": {
+          "he": "כחול רויאל",
+          "en": "Royal Blue"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-royal-blue.png",
+        "swatch": "#2052e5"
+      },
+      {
+        "id": "mint",
+        "label": {
+          "he": "ירוק מנטה",
+          "en": "Mint Green"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-mint.png",
+        "swatch": "#c8e9c8"
+      },
+      {
+        "id": "orange",
+        "label": {
+          "he": "כתום",
+          "en": "Orange"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-orange.png",
+        "swatch": "#f07a22"
+      }
+    ],
+    "defaultColorId": "brown",
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    },
+    "hideMessageCard": true,
+    "cardMode": "view"
+  },
+  {
+    "id": "fashion-h-bracelet-black-gold-261",
+    "slug": "product-261",
+    "urlSlug": "fashion-h-bracelet-black-gold",
+    "title": {
+      "he": "צמיד אופנה HERMES - צבע שחור זהב",
+      "en": "HERMES Fashion Bracelet - Black Gold"
+    },
+    "subtitle": {
+      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי נירוסטה פרימיום · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
+      "en": "Adjustable braided rope bracelet with H charm · Premium Stainless Steel components · waterproof rope · fade-resistant color · unisex for women and men"
+    },
+    "badge": {
+      "he": "צמידי אופנה",
+      "en": "Fashion Bracelets"
+    },
+    "price": 129.9,
+    "images": [
+      "/images/products/fashion-bracelets/fashion-bracelet-black-gold.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-white.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-black.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-brown.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-pastel-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-turquoise.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-red.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-gold.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-coral.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-light-gray.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-dusty-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-fuchsia.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-neon-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-green.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-silver.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-royal-blue.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-mint.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-orange.png"
+    ],
+    "hoverImage": "/images/products/fashion-bracelets/fashion-bracelets-group.png",
+    "categories": [
+      "bracelets",
+      "bracelets-fashion"
+    ],
+    "description": {
+      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי נירוסטה פרימיום בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
+      "en": "HERMES fashion bracelet with a colorful braided-rope design and central H charm. Adjustable and unisex, combining waterproof rope with Premium Stainless Steel gold-tone components. Every product page includes the full color selection."
+    },
+    "details": {
+      "he": [
+        "חומרי מתכת: נירוסטה פרימיום",
+        "רצועה: חבל קלוע עמיד במים",
+        "מבנה: צמיד מתכוונן להתאמה נוחה לפרק היד",
+        "צבע: גימור עמיד לדהייה בשימוש רגיל",
+        "עיצוב: אלמנט H מרכזי בגימור זהב",
+        "התאמה: יוניסקס - לנשים ולגברים",
+        "צבעים: כל צבעי הקולקציה זמינים לבחירה בתוך עמוד המוצר"
+      ],
+      "en": [
+        "Metal components: Premium Stainless Steel",
+        "Band: waterproof braided rope",
+        "Fit: adjustable for a comfortable wrist fit",
+        "Color: fade-resistant finish for normal use",
+        "Design: central H charm in a gold-tone finish",
+        "Fit: unisex - for women and men",
+        "Colors: the full collection is selectable inside each product page"
+      ]
+    },
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "colorDisplay": "image-choice",
+    "colors": [
+      {
+        "id": "white",
+        "label": {
+          "he": "לבן",
+          "en": "White"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-white.png",
+        "swatch": "#f0f0f0"
+      },
+      {
+        "id": "black",
+        "label": {
+          "he": "שחור",
+          "en": "Black"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-black.png",
+        "swatch": "#111111"
+      },
+      {
+        "id": "brown",
+        "label": {
+          "he": "חום",
+          "en": "Brown"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-brown.png",
+        "swatch": "#724f3e"
+      },
+      {
+        "id": "black-gold",
+        "label": {
+          "he": "שחור זהב",
+          "en": "Black Gold"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-black-gold.png",
+        "swatch": "linear-gradient(135deg,#111 0 50%,#d4a63a 50% 100%)"
+      },
+      {
+        "id": "pastel-pink",
+        "label": {
+          "he": "ורוד פסטל",
+          "en": "Pastel Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-pastel-pink.png",
+        "swatch": "#efb3c0"
+      },
+      {
+        "id": "turquoise",
+        "label": {
+          "he": "טורקיז",
+          "en": "Turquoise"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-turquoise.png",
+        "swatch": "#44d3e2"
+      },
+      {
+        "id": "red",
+        "label": {
+          "he": "אדום",
+          "en": "Red"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-red.png",
+        "swatch": "#cc1f27"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-gold.png",
+        "swatch": "#d6a52c"
+      },
+      {
+        "id": "coral",
+        "label": {
+          "he": "קורל",
+          "en": "Coral"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-coral.png",
+        "swatch": "#f46f55"
+      },
+      {
+        "id": "light-gray",
+        "label": {
+          "he": "אפור בהיר",
+          "en": "Light Gray"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-light-gray.png",
+        "swatch": "#bec4c6"
+      },
+      {
+        "id": "dusty-pink",
+        "label": {
+          "he": "ורוד מעושן",
+          "en": "Dusty Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-dusty-pink.png",
+        "swatch": "#bf7a95"
+      },
+      {
+        "id": "hot-pink",
+        "label": {
+          "he": "פוקסיה",
+          "en": "Fuchsia"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-fuchsia.png",
+        "swatch": "#e8318a"
+      },
+      {
+        "id": "neon-pink",
+        "label": {
+          "he": "ורוד ניאון",
+          "en": "Neon Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-neon-pink.png",
+        "swatch": "#ff1493"
+      },
+      {
+        "id": "green",
+        "label": {
+          "he": "ירוק",
+          "en": "Green"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-green.png",
+        "swatch": "#39b64a"
+      },
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-silver.png",
+        "swatch": "#d3d3d3"
+      },
+      {
+        "id": "royal-blue",
+        "label": {
+          "he": "כחול רויאל",
+          "en": "Royal Blue"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-royal-blue.png",
+        "swatch": "#2052e5"
+      },
+      {
+        "id": "mint",
+        "label": {
+          "he": "ירוק מנטה",
+          "en": "Mint Green"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-mint.png",
+        "swatch": "#c8e9c8"
+      },
+      {
+        "id": "orange",
+        "label": {
+          "he": "כתום",
+          "en": "Orange"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-orange.png",
+        "swatch": "#f07a22"
+      }
+    ],
+    "defaultColorId": "black-gold",
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    },
+    "hideMessageCard": true,
+    "cardMode": "view"
+  },
+  {
+    "id": "fashion-h-bracelet-pastel-pink-262",
+    "slug": "product-262",
+    "urlSlug": "fashion-h-bracelet-pastel-pink",
+    "title": {
+      "he": "צמיד אופנה HERMES - צבע ורוד פסטל",
+      "en": "HERMES Fashion Bracelet - Pastel Pink"
+    },
+    "subtitle": {
+      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי נירוסטה פרימיום · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
+      "en": "Adjustable braided rope bracelet with H charm · Premium Stainless Steel components · waterproof rope · fade-resistant color · unisex for women and men"
+    },
+    "badge": {
+      "he": "צמידי אופנה",
+      "en": "Fashion Bracelets"
+    },
+    "price": 129.9,
+    "images": [
+      "/images/products/fashion-bracelets/fashion-bracelet-pastel-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-white.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-black.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-brown.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-black-gold.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-turquoise.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-red.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-gold.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-coral.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-light-gray.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-dusty-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-fuchsia.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-neon-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-green.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-silver.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-royal-blue.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-mint.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-orange.png"
+    ],
+    "hoverImage": "/images/products/fashion-bracelets/fashion-bracelets-group.png",
+    "categories": [
+      "bracelets",
+      "bracelets-fashion"
+    ],
+    "description": {
+      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי נירוסטה פרימיום בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
+      "en": "HERMES fashion bracelet with a colorful braided-rope design and central H charm. Adjustable and unisex, combining waterproof rope with Premium Stainless Steel gold-tone components. Every product page includes the full color selection."
+    },
+    "details": {
+      "he": [
+        "חומרי מתכת: נירוסטה פרימיום",
+        "רצועה: חבל קלוע עמיד במים",
+        "מבנה: צמיד מתכוונן להתאמה נוחה לפרק היד",
+        "צבע: גימור עמיד לדהייה בשימוש רגיל",
+        "עיצוב: אלמנט H מרכזי בגימור זהב",
+        "התאמה: יוניסקס - לנשים ולגברים",
+        "צבעים: כל צבעי הקולקציה זמינים לבחירה בתוך עמוד המוצר"
+      ],
+      "en": [
+        "Metal components: Premium Stainless Steel",
+        "Band: waterproof braided rope",
+        "Fit: adjustable for a comfortable wrist fit",
+        "Color: fade-resistant finish for normal use",
+        "Design: central H charm in a gold-tone finish",
+        "Fit: unisex - for women and men",
+        "Colors: the full collection is selectable inside each product page"
+      ]
+    },
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "colorDisplay": "image-choice",
+    "colors": [
+      {
+        "id": "white",
+        "label": {
+          "he": "לבן",
+          "en": "White"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-white.png",
+        "swatch": "#f0f0f0"
+      },
+      {
+        "id": "black",
+        "label": {
+          "he": "שחור",
+          "en": "Black"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-black.png",
+        "swatch": "#111111"
+      },
+      {
+        "id": "brown",
+        "label": {
+          "he": "חום",
+          "en": "Brown"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-brown.png",
+        "swatch": "#724f3e"
+      },
+      {
+        "id": "black-gold",
+        "label": {
+          "he": "שחור זהב",
+          "en": "Black Gold"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-black-gold.png",
+        "swatch": "linear-gradient(135deg,#111 0 50%,#d4a63a 50% 100%)"
+      },
+      {
+        "id": "pastel-pink",
+        "label": {
+          "he": "ורוד פסטל",
+          "en": "Pastel Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-pastel-pink.png",
+        "swatch": "#efb3c0"
+      },
+      {
+        "id": "turquoise",
+        "label": {
+          "he": "טורקיז",
+          "en": "Turquoise"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-turquoise.png",
+        "swatch": "#44d3e2"
+      },
+      {
+        "id": "red",
+        "label": {
+          "he": "אדום",
+          "en": "Red"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-red.png",
+        "swatch": "#cc1f27"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-gold.png",
+        "swatch": "#d6a52c"
+      },
+      {
+        "id": "coral",
+        "label": {
+          "he": "קורל",
+          "en": "Coral"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-coral.png",
+        "swatch": "#f46f55"
+      },
+      {
+        "id": "light-gray",
+        "label": {
+          "he": "אפור בהיר",
+          "en": "Light Gray"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-light-gray.png",
+        "swatch": "#bec4c6"
+      },
+      {
+        "id": "dusty-pink",
+        "label": {
+          "he": "ורוד מעושן",
+          "en": "Dusty Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-dusty-pink.png",
+        "swatch": "#bf7a95"
+      },
+      {
+        "id": "hot-pink",
+        "label": {
+          "he": "פוקסיה",
+          "en": "Fuchsia"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-fuchsia.png",
+        "swatch": "#e8318a"
+      },
+      {
+        "id": "neon-pink",
+        "label": {
+          "he": "ורוד ניאון",
+          "en": "Neon Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-neon-pink.png",
+        "swatch": "#ff1493"
+      },
+      {
+        "id": "green",
+        "label": {
+          "he": "ירוק",
+          "en": "Green"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-green.png",
+        "swatch": "#39b64a"
+      },
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-silver.png",
+        "swatch": "#d3d3d3"
+      },
+      {
+        "id": "royal-blue",
+        "label": {
+          "he": "כחול רויאל",
+          "en": "Royal Blue"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-royal-blue.png",
+        "swatch": "#2052e5"
+      },
+      {
+        "id": "mint",
+        "label": {
+          "he": "ירוק מנטה",
+          "en": "Mint Green"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-mint.png",
+        "swatch": "#c8e9c8"
+      },
+      {
+        "id": "orange",
+        "label": {
+          "he": "כתום",
+          "en": "Orange"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-orange.png",
+        "swatch": "#f07a22"
+      }
+    ],
+    "defaultColorId": "pastel-pink",
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    },
+    "hideMessageCard": true,
+    "cardMode": "view"
+  },
+  {
+    "id": "fashion-h-bracelet-turquoise-263",
+    "slug": "product-263",
+    "urlSlug": "fashion-h-bracelet-turquoise",
+    "title": {
+      "he": "צמיד אופנה HERMES - צבע טורקיז",
+      "en": "HERMES Fashion Bracelet - Turquoise"
+    },
+    "subtitle": {
+      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי נירוסטה פרימיום · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
+      "en": "Adjustable braided rope bracelet with H charm · Premium Stainless Steel components · waterproof rope · fade-resistant color · unisex for women and men"
+    },
+    "badge": {
+      "he": "צמידי אופנה",
+      "en": "Fashion Bracelets"
+    },
+    "price": 129.9,
+    "images": [
+      "/images/products/fashion-bracelets/fashion-bracelet-turquoise.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-white.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-black.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-brown.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-black-gold.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-pastel-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-red.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-gold.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-coral.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-light-gray.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-dusty-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-fuchsia.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-neon-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-green.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-silver.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-royal-blue.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-mint.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-orange.png"
+    ],
+    "hoverImage": "/images/products/fashion-bracelets/fashion-bracelets-group.png",
+    "categories": [
+      "bracelets",
+      "bracelets-fashion"
+    ],
+    "description": {
+      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי נירוסטה פרימיום בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
+      "en": "HERMES fashion bracelet with a colorful braided-rope design and central H charm. Adjustable and unisex, combining waterproof rope with Premium Stainless Steel gold-tone components. Every product page includes the full color selection."
+    },
+    "details": {
+      "he": [
+        "חומרי מתכת: נירוסטה פרימיום",
+        "רצועה: חבל קלוע עמיד במים",
+        "מבנה: צמיד מתכוונן להתאמה נוחה לפרק היד",
+        "צבע: גימור עמיד לדהייה בשימוש רגיל",
+        "עיצוב: אלמנט H מרכזי בגימור זהב",
+        "התאמה: יוניסקס - לנשים ולגברים",
+        "צבעים: כל צבעי הקולקציה זמינים לבחירה בתוך עמוד המוצר"
+      ],
+      "en": [
+        "Metal components: Premium Stainless Steel",
+        "Band: waterproof braided rope",
+        "Fit: adjustable for a comfortable wrist fit",
+        "Color: fade-resistant finish for normal use",
+        "Design: central H charm in a gold-tone finish",
+        "Fit: unisex - for women and men",
+        "Colors: the full collection is selectable inside each product page"
+      ]
+    },
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "colorDisplay": "image-choice",
+    "colors": [
+      {
+        "id": "white",
+        "label": {
+          "he": "לבן",
+          "en": "White"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-white.png",
+        "swatch": "#f0f0f0"
+      },
+      {
+        "id": "black",
+        "label": {
+          "he": "שחור",
+          "en": "Black"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-black.png",
+        "swatch": "#111111"
+      },
+      {
+        "id": "brown",
+        "label": {
+          "he": "חום",
+          "en": "Brown"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-brown.png",
+        "swatch": "#724f3e"
+      },
+      {
+        "id": "black-gold",
+        "label": {
+          "he": "שחור זהב",
+          "en": "Black Gold"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-black-gold.png",
+        "swatch": "linear-gradient(135deg,#111 0 50%,#d4a63a 50% 100%)"
+      },
+      {
+        "id": "pastel-pink",
+        "label": {
+          "he": "ורוד פסטל",
+          "en": "Pastel Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-pastel-pink.png",
+        "swatch": "#efb3c0"
+      },
+      {
+        "id": "turquoise",
+        "label": {
+          "he": "טורקיז",
+          "en": "Turquoise"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-turquoise.png",
+        "swatch": "#44d3e2"
+      },
+      {
+        "id": "red",
+        "label": {
+          "he": "אדום",
+          "en": "Red"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-red.png",
+        "swatch": "#cc1f27"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-gold.png",
+        "swatch": "#d6a52c"
+      },
+      {
+        "id": "coral",
+        "label": {
+          "he": "קורל",
+          "en": "Coral"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-coral.png",
+        "swatch": "#f46f55"
+      },
+      {
+        "id": "light-gray",
+        "label": {
+          "he": "אפור בהיר",
+          "en": "Light Gray"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-light-gray.png",
+        "swatch": "#bec4c6"
+      },
+      {
+        "id": "dusty-pink",
+        "label": {
+          "he": "ורוד מעושן",
+          "en": "Dusty Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-dusty-pink.png",
+        "swatch": "#bf7a95"
+      },
+      {
+        "id": "hot-pink",
+        "label": {
+          "he": "פוקסיה",
+          "en": "Fuchsia"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-fuchsia.png",
+        "swatch": "#e8318a"
+      },
+      {
+        "id": "neon-pink",
+        "label": {
+          "he": "ורוד ניאון",
+          "en": "Neon Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-neon-pink.png",
+        "swatch": "#ff1493"
+      },
+      {
+        "id": "green",
+        "label": {
+          "he": "ירוק",
+          "en": "Green"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-green.png",
+        "swatch": "#39b64a"
+      },
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-silver.png",
+        "swatch": "#d3d3d3"
+      },
+      {
+        "id": "royal-blue",
+        "label": {
+          "he": "כחול רויאל",
+          "en": "Royal Blue"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-royal-blue.png",
+        "swatch": "#2052e5"
+      },
+      {
+        "id": "mint",
+        "label": {
+          "he": "ירוק מנטה",
+          "en": "Mint Green"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-mint.png",
+        "swatch": "#c8e9c8"
+      },
+      {
+        "id": "orange",
+        "label": {
+          "he": "כתום",
+          "en": "Orange"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-orange.png",
+        "swatch": "#f07a22"
+      }
+    ],
+    "defaultColorId": "turquoise",
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    },
+    "hideMessageCard": true,
+    "cardMode": "view"
+  },
+  {
+    "id": "fashion-h-bracelet-red-264",
+    "slug": "product-264",
+    "urlSlug": "fashion-h-bracelet-red",
+    "title": {
+      "he": "צמיד אופנה HERMES - צבע אדום",
+      "en": "HERMES Fashion Bracelet - Red"
+    },
+    "subtitle": {
+      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי נירוסטה פרימיום · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
+      "en": "Adjustable braided rope bracelet with H charm · Premium Stainless Steel components · waterproof rope · fade-resistant color · unisex for women and men"
+    },
+    "badge": {
+      "he": "צמידי אופנה",
+      "en": "Fashion Bracelets"
+    },
+    "price": 129.9,
+    "images": [
+      "/images/products/fashion-bracelets/fashion-bracelet-red.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-white.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-black.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-brown.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-black-gold.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-pastel-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-turquoise.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-gold.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-coral.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-light-gray.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-dusty-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-fuchsia.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-neon-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-green.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-silver.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-royal-blue.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-mint.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-orange.png"
+    ],
+    "hoverImage": "/images/products/fashion-bracelets/fashion-bracelets-group.png",
+    "categories": [
+      "bracelets",
+      "bracelets-fashion"
+    ],
+    "description": {
+      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי נירוסטה פרימיום בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
+      "en": "HERMES fashion bracelet with a colorful braided-rope design and central H charm. Adjustable and unisex, combining waterproof rope with Premium Stainless Steel gold-tone components. Every product page includes the full color selection."
+    },
+    "details": {
+      "he": [
+        "חומרי מתכת: נירוסטה פרימיום",
+        "רצועה: חבל קלוע עמיד במים",
+        "מבנה: צמיד מתכוונן להתאמה נוחה לפרק היד",
+        "צבע: גימור עמיד לדהייה בשימוש רגיל",
+        "עיצוב: אלמנט H מרכזי בגימור זהב",
+        "התאמה: יוניסקס - לנשים ולגברים",
+        "צבעים: כל צבעי הקולקציה זמינים לבחירה בתוך עמוד המוצר"
+      ],
+      "en": [
+        "Metal components: Premium Stainless Steel",
+        "Band: waterproof braided rope",
+        "Fit: adjustable for a comfortable wrist fit",
+        "Color: fade-resistant finish for normal use",
+        "Design: central H charm in a gold-tone finish",
+        "Fit: unisex - for women and men",
+        "Colors: the full collection is selectable inside each product page"
+      ]
+    },
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "colorDisplay": "image-choice",
+    "colors": [
+      {
+        "id": "white",
+        "label": {
+          "he": "לבן",
+          "en": "White"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-white.png",
+        "swatch": "#f0f0f0"
+      },
+      {
+        "id": "black",
+        "label": {
+          "he": "שחור",
+          "en": "Black"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-black.png",
+        "swatch": "#111111"
+      },
+      {
+        "id": "brown",
+        "label": {
+          "he": "חום",
+          "en": "Brown"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-brown.png",
+        "swatch": "#724f3e"
+      },
+      {
+        "id": "black-gold",
+        "label": {
+          "he": "שחור זהב",
+          "en": "Black Gold"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-black-gold.png",
+        "swatch": "linear-gradient(135deg,#111 0 50%,#d4a63a 50% 100%)"
+      },
+      {
+        "id": "pastel-pink",
+        "label": {
+          "he": "ורוד פסטל",
+          "en": "Pastel Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-pastel-pink.png",
+        "swatch": "#efb3c0"
+      },
+      {
+        "id": "turquoise",
+        "label": {
+          "he": "טורקיז",
+          "en": "Turquoise"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-turquoise.png",
+        "swatch": "#44d3e2"
+      },
+      {
+        "id": "red",
+        "label": {
+          "he": "אדום",
+          "en": "Red"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-red.png",
+        "swatch": "#cc1f27"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-gold.png",
+        "swatch": "#d6a52c"
+      },
+      {
+        "id": "coral",
+        "label": {
+          "he": "קורל",
+          "en": "Coral"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-coral.png",
+        "swatch": "#f46f55"
+      },
+      {
+        "id": "light-gray",
+        "label": {
+          "he": "אפור בהיר",
+          "en": "Light Gray"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-light-gray.png",
+        "swatch": "#bec4c6"
+      },
+      {
+        "id": "dusty-pink",
+        "label": {
+          "he": "ורוד מעושן",
+          "en": "Dusty Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-dusty-pink.png",
+        "swatch": "#bf7a95"
+      },
+      {
+        "id": "hot-pink",
+        "label": {
+          "he": "פוקסיה",
+          "en": "Fuchsia"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-fuchsia.png",
+        "swatch": "#e8318a"
+      },
+      {
+        "id": "neon-pink",
+        "label": {
+          "he": "ורוד ניאון",
+          "en": "Neon Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-neon-pink.png",
+        "swatch": "#ff1493"
+      },
+      {
+        "id": "green",
+        "label": {
+          "he": "ירוק",
+          "en": "Green"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-green.png",
+        "swatch": "#39b64a"
+      },
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-silver.png",
+        "swatch": "#d3d3d3"
+      },
+      {
+        "id": "royal-blue",
+        "label": {
+          "he": "כחול רויאל",
+          "en": "Royal Blue"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-royal-blue.png",
+        "swatch": "#2052e5"
+      },
+      {
+        "id": "mint",
+        "label": {
+          "he": "ירוק מנטה",
+          "en": "Mint Green"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-mint.png",
+        "swatch": "#c8e9c8"
+      },
+      {
+        "id": "orange",
+        "label": {
+          "he": "כתום",
+          "en": "Orange"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-orange.png",
+        "swatch": "#f07a22"
+      }
+    ],
+    "defaultColorId": "red",
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    },
+    "hideMessageCard": true,
+    "cardMode": "view"
+  },
+  {
+    "id": "fashion-h-bracelet-gold-265",
+    "slug": "product-265",
+    "urlSlug": "fashion-h-bracelet-gold",
+    "title": {
+      "he": "צמיד אופנה HERMES - צבע זהב",
+      "en": "HERMES Fashion Bracelet - Gold"
+    },
+    "subtitle": {
+      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי נירוסטה פרימיום · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
+      "en": "Adjustable braided rope bracelet with H charm · Premium Stainless Steel components · waterproof rope · fade-resistant color · unisex for women and men"
+    },
+    "badge": {
+      "he": "צמידי אופנה",
+      "en": "Fashion Bracelets"
+    },
+    "price": 129.9,
+    "images": [
+      "/images/products/fashion-bracelets/fashion-bracelet-gold.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-white.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-black.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-brown.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-black-gold.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-pastel-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-turquoise.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-red.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-coral.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-light-gray.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-dusty-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-fuchsia.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-neon-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-green.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-silver.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-royal-blue.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-mint.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-orange.png"
+    ],
+    "hoverImage": "/images/products/fashion-bracelets/fashion-bracelets-group.png",
+    "categories": [
+      "bracelets",
+      "bracelets-fashion"
+    ],
+    "description": {
+      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי נירוסטה פרימיום בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
+      "en": "HERMES fashion bracelet with a colorful braided-rope design and central H charm. Adjustable and unisex, combining waterproof rope with Premium Stainless Steel gold-tone components. Every product page includes the full color selection."
+    },
+    "details": {
+      "he": [
+        "חומרי מתכת: נירוסטה פרימיום",
+        "רצועה: חבל קלוע עמיד במים",
+        "מבנה: צמיד מתכוונן להתאמה נוחה לפרק היד",
+        "צבע: גימור עמיד לדהייה בשימוש רגיל",
+        "עיצוב: אלמנט H מרכזי בגימור זהב",
+        "התאמה: יוניסקס - לנשים ולגברים",
+        "צבעים: כל צבעי הקולקציה זמינים לבחירה בתוך עמוד המוצר"
+      ],
+      "en": [
+        "Metal components: Premium Stainless Steel",
+        "Band: waterproof braided rope",
+        "Fit: adjustable for a comfortable wrist fit",
+        "Color: fade-resistant finish for normal use",
+        "Design: central H charm in a gold-tone finish",
+        "Fit: unisex - for women and men",
+        "Colors: the full collection is selectable inside each product page"
+      ]
+    },
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "colorDisplay": "image-choice",
+    "colors": [
+      {
+        "id": "white",
+        "label": {
+          "he": "לבן",
+          "en": "White"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-white.png",
+        "swatch": "#f0f0f0"
+      },
+      {
+        "id": "black",
+        "label": {
+          "he": "שחור",
+          "en": "Black"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-black.png",
+        "swatch": "#111111"
+      },
+      {
+        "id": "brown",
+        "label": {
+          "he": "חום",
+          "en": "Brown"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-brown.png",
+        "swatch": "#724f3e"
+      },
+      {
+        "id": "black-gold",
+        "label": {
+          "he": "שחור זהב",
+          "en": "Black Gold"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-black-gold.png",
+        "swatch": "linear-gradient(135deg,#111 0 50%,#d4a63a 50% 100%)"
+      },
+      {
+        "id": "pastel-pink",
+        "label": {
+          "he": "ורוד פסטל",
+          "en": "Pastel Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-pastel-pink.png",
+        "swatch": "#efb3c0"
+      },
+      {
+        "id": "turquoise",
+        "label": {
+          "he": "טורקיז",
+          "en": "Turquoise"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-turquoise.png",
+        "swatch": "#44d3e2"
+      },
+      {
+        "id": "red",
+        "label": {
+          "he": "אדום",
+          "en": "Red"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-red.png",
+        "swatch": "#cc1f27"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-gold.png",
+        "swatch": "#d6a52c"
+      },
+      {
+        "id": "coral",
+        "label": {
+          "he": "קורל",
+          "en": "Coral"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-coral.png",
+        "swatch": "#f46f55"
+      },
+      {
+        "id": "light-gray",
+        "label": {
+          "he": "אפור בהיר",
+          "en": "Light Gray"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-light-gray.png",
+        "swatch": "#bec4c6"
+      },
+      {
+        "id": "dusty-pink",
+        "label": {
+          "he": "ורוד מעושן",
+          "en": "Dusty Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-dusty-pink.png",
+        "swatch": "#bf7a95"
+      },
+      {
+        "id": "hot-pink",
+        "label": {
+          "he": "פוקסיה",
+          "en": "Fuchsia"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-fuchsia.png",
+        "swatch": "#e8318a"
+      },
+      {
+        "id": "neon-pink",
+        "label": {
+          "he": "ורוד ניאון",
+          "en": "Neon Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-neon-pink.png",
+        "swatch": "#ff1493"
+      },
+      {
+        "id": "green",
+        "label": {
+          "he": "ירוק",
+          "en": "Green"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-green.png",
+        "swatch": "#39b64a"
+      },
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-silver.png",
+        "swatch": "#d3d3d3"
+      },
+      {
+        "id": "royal-blue",
+        "label": {
+          "he": "כחול רויאל",
+          "en": "Royal Blue"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-royal-blue.png",
+        "swatch": "#2052e5"
+      },
+      {
+        "id": "mint",
+        "label": {
+          "he": "ירוק מנטה",
+          "en": "Mint Green"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-mint.png",
+        "swatch": "#c8e9c8"
+      },
+      {
+        "id": "orange",
+        "label": {
+          "he": "כתום",
+          "en": "Orange"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-orange.png",
+        "swatch": "#f07a22"
+      }
+    ],
+    "defaultColorId": "gold",
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    },
+    "hideMessageCard": true,
+    "cardMode": "view"
+  },
+  {
+    "id": "fashion-h-bracelet-coral-266",
+    "slug": "product-266",
+    "urlSlug": "fashion-h-bracelet-coral",
+    "title": {
+      "he": "צמיד אופנה HERMES - צבע קורל",
+      "en": "HERMES Fashion Bracelet - Coral"
+    },
+    "subtitle": {
+      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי נירוסטה פרימיום · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
+      "en": "Adjustable braided rope bracelet with H charm · Premium Stainless Steel components · waterproof rope · fade-resistant color · unisex for women and men"
+    },
+    "badge": {
+      "he": "צמידי אופנה",
+      "en": "Fashion Bracelets"
+    },
+    "price": 129.9,
+    "images": [
+      "/images/products/fashion-bracelets/fashion-bracelet-coral.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-white.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-black.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-brown.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-black-gold.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-pastel-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-turquoise.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-red.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-gold.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-light-gray.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-dusty-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-fuchsia.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-neon-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-green.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-silver.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-royal-blue.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-mint.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-orange.png"
+    ],
+    "hoverImage": "/images/products/fashion-bracelets/fashion-bracelets-group.png",
+    "categories": [
+      "bracelets",
+      "bracelets-fashion"
+    ],
+    "description": {
+      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי נירוסטה פרימיום בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
+      "en": "HERMES fashion bracelet with a colorful braided-rope design and central H charm. Adjustable and unisex, combining waterproof rope with Premium Stainless Steel gold-tone components. Every product page includes the full color selection."
+    },
+    "details": {
+      "he": [
+        "חומרי מתכת: נירוסטה פרימיום",
+        "רצועה: חבל קלוע עמיד במים",
+        "מבנה: צמיד מתכוונן להתאמה נוחה לפרק היד",
+        "צבע: גימור עמיד לדהייה בשימוש רגיל",
+        "עיצוב: אלמנט H מרכזי בגימור זהב",
+        "התאמה: יוניסקס - לנשים ולגברים",
+        "צבעים: כל צבעי הקולקציה זמינים לבחירה בתוך עמוד המוצר"
+      ],
+      "en": [
+        "Metal components: Premium Stainless Steel",
+        "Band: waterproof braided rope",
+        "Fit: adjustable for a comfortable wrist fit",
+        "Color: fade-resistant finish for normal use",
+        "Design: central H charm in a gold-tone finish",
+        "Fit: unisex - for women and men",
+        "Colors: the full collection is selectable inside each product page"
+      ]
+    },
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "colorDisplay": "image-choice",
+    "colors": [
+      {
+        "id": "white",
+        "label": {
+          "he": "לבן",
+          "en": "White"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-white.png",
+        "swatch": "#f0f0f0"
+      },
+      {
+        "id": "black",
+        "label": {
+          "he": "שחור",
+          "en": "Black"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-black.png",
+        "swatch": "#111111"
+      },
+      {
+        "id": "brown",
+        "label": {
+          "he": "חום",
+          "en": "Brown"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-brown.png",
+        "swatch": "#724f3e"
+      },
+      {
+        "id": "black-gold",
+        "label": {
+          "he": "שחור זהב",
+          "en": "Black Gold"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-black-gold.png",
+        "swatch": "linear-gradient(135deg,#111 0 50%,#d4a63a 50% 100%)"
+      },
+      {
+        "id": "pastel-pink",
+        "label": {
+          "he": "ורוד פסטל",
+          "en": "Pastel Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-pastel-pink.png",
+        "swatch": "#efb3c0"
+      },
+      {
+        "id": "turquoise",
+        "label": {
+          "he": "טורקיז",
+          "en": "Turquoise"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-turquoise.png",
+        "swatch": "#44d3e2"
+      },
+      {
+        "id": "red",
+        "label": {
+          "he": "אדום",
+          "en": "Red"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-red.png",
+        "swatch": "#cc1f27"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-gold.png",
+        "swatch": "#d6a52c"
+      },
+      {
+        "id": "coral",
+        "label": {
+          "he": "קורל",
+          "en": "Coral"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-coral.png",
+        "swatch": "#f46f55"
+      },
+      {
+        "id": "light-gray",
+        "label": {
+          "he": "אפור בהיר",
+          "en": "Light Gray"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-light-gray.png",
+        "swatch": "#bec4c6"
+      },
+      {
+        "id": "dusty-pink",
+        "label": {
+          "he": "ורוד מעושן",
+          "en": "Dusty Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-dusty-pink.png",
+        "swatch": "#bf7a95"
+      },
+      {
+        "id": "hot-pink",
+        "label": {
+          "he": "פוקסיה",
+          "en": "Fuchsia"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-fuchsia.png",
+        "swatch": "#e8318a"
+      },
+      {
+        "id": "neon-pink",
+        "label": {
+          "he": "ורוד ניאון",
+          "en": "Neon Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-neon-pink.png",
+        "swatch": "#ff1493"
+      },
+      {
+        "id": "green",
+        "label": {
+          "he": "ירוק",
+          "en": "Green"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-green.png",
+        "swatch": "#39b64a"
+      },
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-silver.png",
+        "swatch": "#d3d3d3"
+      },
+      {
+        "id": "royal-blue",
+        "label": {
+          "he": "כחול רויאל",
+          "en": "Royal Blue"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-royal-blue.png",
+        "swatch": "#2052e5"
+      },
+      {
+        "id": "mint",
+        "label": {
+          "he": "ירוק מנטה",
+          "en": "Mint Green"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-mint.png",
+        "swatch": "#c8e9c8"
+      },
+      {
+        "id": "orange",
+        "label": {
+          "he": "כתום",
+          "en": "Orange"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-orange.png",
+        "swatch": "#f07a22"
+      }
+    ],
+    "defaultColorId": "coral",
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    },
+    "hideMessageCard": true,
+    "cardMode": "view"
+  },
+  {
+    "id": "fashion-h-bracelet-light-gray-267",
+    "slug": "product-267",
+    "urlSlug": "fashion-h-bracelet-light-gray",
+    "title": {
+      "he": "צמיד אופנה HERMES - צבע אפור בהיר",
+      "en": "HERMES Fashion Bracelet - Light Gray"
+    },
+    "subtitle": {
+      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי נירוסטה פרימיום · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
+      "en": "Adjustable braided rope bracelet with H charm · Premium Stainless Steel components · waterproof rope · fade-resistant color · unisex for women and men"
+    },
+    "badge": {
+      "he": "צמידי אופנה",
+      "en": "Fashion Bracelets"
+    },
+    "price": 129.9,
+    "images": [
+      "/images/products/fashion-bracelets/fashion-bracelet-light-gray.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-white.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-black.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-brown.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-black-gold.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-pastel-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-turquoise.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-red.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-gold.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-coral.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-dusty-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-fuchsia.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-neon-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-green.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-silver.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-royal-blue.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-mint.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-orange.png"
+    ],
+    "hoverImage": "/images/products/fashion-bracelets/fashion-bracelets-group.png",
+    "categories": [
+      "bracelets",
+      "bracelets-fashion"
+    ],
+    "description": {
+      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי נירוסטה פרימיום בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
+      "en": "HERMES fashion bracelet with a colorful braided-rope design and central H charm. Adjustable and unisex, combining waterproof rope with Premium Stainless Steel gold-tone components. Every product page includes the full color selection."
+    },
+    "details": {
+      "he": [
+        "חומרי מתכת: נירוסטה פרימיום",
+        "רצועה: חבל קלוע עמיד במים",
+        "מבנה: צמיד מתכוונן להתאמה נוחה לפרק היד",
+        "צבע: גימור עמיד לדהייה בשימוש רגיל",
+        "עיצוב: אלמנט H מרכזי בגימור זהב",
+        "התאמה: יוניסקס - לנשים ולגברים",
+        "צבעים: כל צבעי הקולקציה זמינים לבחירה בתוך עמוד המוצר"
+      ],
+      "en": [
+        "Metal components: Premium Stainless Steel",
+        "Band: waterproof braided rope",
+        "Fit: adjustable for a comfortable wrist fit",
+        "Color: fade-resistant finish for normal use",
+        "Design: central H charm in a gold-tone finish",
+        "Fit: unisex - for women and men",
+        "Colors: the full collection is selectable inside each product page"
+      ]
+    },
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "colorDisplay": "image-choice",
+    "colors": [
+      {
+        "id": "white",
+        "label": {
+          "he": "לבן",
+          "en": "White"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-white.png",
+        "swatch": "#f0f0f0"
+      },
+      {
+        "id": "black",
+        "label": {
+          "he": "שחור",
+          "en": "Black"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-black.png",
+        "swatch": "#111111"
+      },
+      {
+        "id": "brown",
+        "label": {
+          "he": "חום",
+          "en": "Brown"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-brown.png",
+        "swatch": "#724f3e"
+      },
+      {
+        "id": "black-gold",
+        "label": {
+          "he": "שחור זהב",
+          "en": "Black Gold"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-black-gold.png",
+        "swatch": "linear-gradient(135deg,#111 0 50%,#d4a63a 50% 100%)"
+      },
+      {
+        "id": "pastel-pink",
+        "label": {
+          "he": "ורוד פסטל",
+          "en": "Pastel Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-pastel-pink.png",
+        "swatch": "#efb3c0"
+      },
+      {
+        "id": "turquoise",
+        "label": {
+          "he": "טורקיז",
+          "en": "Turquoise"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-turquoise.png",
+        "swatch": "#44d3e2"
+      },
+      {
+        "id": "red",
+        "label": {
+          "he": "אדום",
+          "en": "Red"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-red.png",
+        "swatch": "#cc1f27"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-gold.png",
+        "swatch": "#d6a52c"
+      },
+      {
+        "id": "coral",
+        "label": {
+          "he": "קורל",
+          "en": "Coral"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-coral.png",
+        "swatch": "#f46f55"
+      },
+      {
+        "id": "light-gray",
+        "label": {
+          "he": "אפור בהיר",
+          "en": "Light Gray"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-light-gray.png",
+        "swatch": "#bec4c6"
+      },
+      {
+        "id": "dusty-pink",
+        "label": {
+          "he": "ורוד מעושן",
+          "en": "Dusty Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-dusty-pink.png",
+        "swatch": "#bf7a95"
+      },
+      {
+        "id": "hot-pink",
+        "label": {
+          "he": "פוקסיה",
+          "en": "Fuchsia"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-fuchsia.png",
+        "swatch": "#e8318a"
+      },
+      {
+        "id": "neon-pink",
+        "label": {
+          "he": "ורוד ניאון",
+          "en": "Neon Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-neon-pink.png",
+        "swatch": "#ff1493"
+      },
+      {
+        "id": "green",
+        "label": {
+          "he": "ירוק",
+          "en": "Green"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-green.png",
+        "swatch": "#39b64a"
+      },
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-silver.png",
+        "swatch": "#d3d3d3"
+      },
+      {
+        "id": "royal-blue",
+        "label": {
+          "he": "כחול רויאל",
+          "en": "Royal Blue"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-royal-blue.png",
+        "swatch": "#2052e5"
+      },
+      {
+        "id": "mint",
+        "label": {
+          "he": "ירוק מנטה",
+          "en": "Mint Green"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-mint.png",
+        "swatch": "#c8e9c8"
+      },
+      {
+        "id": "orange",
+        "label": {
+          "he": "כתום",
+          "en": "Orange"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-orange.png",
+        "swatch": "#f07a22"
+      }
+    ],
+    "defaultColorId": "light-gray",
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    },
+    "hideMessageCard": true,
+    "cardMode": "view"
+  },
+  {
+    "id": "fashion-h-bracelet-dusty-pink-268",
+    "slug": "product-268",
+    "urlSlug": "fashion-h-bracelet-dusty-pink",
+    "title": {
+      "he": "צמיד אופנה HERMES - צבע ורוד מעושן",
+      "en": "HERMES Fashion Bracelet - Dusty Pink"
+    },
+    "subtitle": {
+      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי נירוסטה פרימיום · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
+      "en": "Adjustable braided rope bracelet with H charm · Premium Stainless Steel components · waterproof rope · fade-resistant color · unisex for women and men"
+    },
+    "badge": {
+      "he": "צמידי אופנה",
+      "en": "Fashion Bracelets"
+    },
+    "price": 129.9,
+    "images": [
+      "/images/products/fashion-bracelets/fashion-bracelet-dusty-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-white.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-black.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-brown.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-black-gold.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-pastel-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-turquoise.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-red.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-gold.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-coral.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-light-gray.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-fuchsia.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-neon-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-green.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-silver.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-royal-blue.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-mint.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-orange.png"
+    ],
+    "hoverImage": "/images/products/fashion-bracelets/fashion-bracelets-group.png",
+    "categories": [
+      "bracelets",
+      "bracelets-fashion"
+    ],
+    "description": {
+      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי נירוסטה פרימיום בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
+      "en": "HERMES fashion bracelet with a colorful braided-rope design and central H charm. Adjustable and unisex, combining waterproof rope with Premium Stainless Steel gold-tone components. Every product page includes the full color selection."
+    },
+    "details": {
+      "he": [
+        "חומרי מתכת: נירוסטה פרימיום",
+        "רצועה: חבל קלוע עמיד במים",
+        "מבנה: צמיד מתכוונן להתאמה נוחה לפרק היד",
+        "צבע: גימור עמיד לדהייה בשימוש רגיל",
+        "עיצוב: אלמנט H מרכזי בגימור זהב",
+        "התאמה: יוניסקס - לנשים ולגברים",
+        "צבעים: כל צבעי הקולקציה זמינים לבחירה בתוך עמוד המוצר"
+      ],
+      "en": [
+        "Metal components: Premium Stainless Steel",
+        "Band: waterproof braided rope",
+        "Fit: adjustable for a comfortable wrist fit",
+        "Color: fade-resistant finish for normal use",
+        "Design: central H charm in a gold-tone finish",
+        "Fit: unisex - for women and men",
+        "Colors: the full collection is selectable inside each product page"
+      ]
+    },
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "colorDisplay": "image-choice",
+    "colors": [
+      {
+        "id": "white",
+        "label": {
+          "he": "לבן",
+          "en": "White"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-white.png",
+        "swatch": "#f0f0f0"
+      },
+      {
+        "id": "black",
+        "label": {
+          "he": "שחור",
+          "en": "Black"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-black.png",
+        "swatch": "#111111"
+      },
+      {
+        "id": "brown",
+        "label": {
+          "he": "חום",
+          "en": "Brown"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-brown.png",
+        "swatch": "#724f3e"
+      },
+      {
+        "id": "black-gold",
+        "label": {
+          "he": "שחור זהב",
+          "en": "Black Gold"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-black-gold.png",
+        "swatch": "linear-gradient(135deg,#111 0 50%,#d4a63a 50% 100%)"
+      },
+      {
+        "id": "pastel-pink",
+        "label": {
+          "he": "ורוד פסטל",
+          "en": "Pastel Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-pastel-pink.png",
+        "swatch": "#efb3c0"
+      },
+      {
+        "id": "turquoise",
+        "label": {
+          "he": "טורקיז",
+          "en": "Turquoise"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-turquoise.png",
+        "swatch": "#44d3e2"
+      },
+      {
+        "id": "red",
+        "label": {
+          "he": "אדום",
+          "en": "Red"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-red.png",
+        "swatch": "#cc1f27"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-gold.png",
+        "swatch": "#d6a52c"
+      },
+      {
+        "id": "coral",
+        "label": {
+          "he": "קורל",
+          "en": "Coral"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-coral.png",
+        "swatch": "#f46f55"
+      },
+      {
+        "id": "light-gray",
+        "label": {
+          "he": "אפור בהיר",
+          "en": "Light Gray"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-light-gray.png",
+        "swatch": "#bec4c6"
+      },
+      {
+        "id": "dusty-pink",
+        "label": {
+          "he": "ורוד מעושן",
+          "en": "Dusty Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-dusty-pink.png",
+        "swatch": "#bf7a95"
+      },
+      {
+        "id": "hot-pink",
+        "label": {
+          "he": "פוקסיה",
+          "en": "Fuchsia"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-fuchsia.png",
+        "swatch": "#e8318a"
+      },
+      {
+        "id": "neon-pink",
+        "label": {
+          "he": "ורוד ניאון",
+          "en": "Neon Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-neon-pink.png",
+        "swatch": "#ff1493"
+      },
+      {
+        "id": "green",
+        "label": {
+          "he": "ירוק",
+          "en": "Green"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-green.png",
+        "swatch": "#39b64a"
+      },
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-silver.png",
+        "swatch": "#d3d3d3"
+      },
+      {
+        "id": "royal-blue",
+        "label": {
+          "he": "כחול רויאל",
+          "en": "Royal Blue"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-royal-blue.png",
+        "swatch": "#2052e5"
+      },
+      {
+        "id": "mint",
+        "label": {
+          "he": "ירוק מנטה",
+          "en": "Mint Green"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-mint.png",
+        "swatch": "#c8e9c8"
+      },
+      {
+        "id": "orange",
+        "label": {
+          "he": "כתום",
+          "en": "Orange"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-orange.png",
+        "swatch": "#f07a22"
+      }
+    ],
+    "defaultColorId": "dusty-pink",
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    },
+    "hideMessageCard": true,
+    "cardMode": "view"
+  },
+  {
+    "id": "fashion-h-bracelet-hot-pink-269",
+    "slug": "product-269",
+    "urlSlug": "fashion-h-bracelet-hot-pink",
+    "title": {
+      "he": "צמיד אופנה HERMES - צבע פוקסיה",
+      "en": "HERMES Fashion Bracelet - Fuchsia"
+    },
+    "subtitle": {
+      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי נירוסטה פרימיום · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
+      "en": "Adjustable braided rope bracelet with H charm · Premium Stainless Steel components · waterproof rope · fade-resistant color · unisex for women and men"
+    },
+    "badge": {
+      "he": "צמידי אופנה",
+      "en": "Fashion Bracelets"
+    },
+    "price": 129.9,
+    "images": [
+      "/images/products/fashion-bracelets/fashion-bracelet-fuchsia.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-white.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-black.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-brown.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-black-gold.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-pastel-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-turquoise.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-red.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-gold.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-coral.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-light-gray.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-dusty-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-neon-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-green.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-silver.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-royal-blue.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-mint.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-orange.png"
+    ],
+    "hoverImage": "/images/products/fashion-bracelets/fashion-bracelets-group.png",
+    "categories": [
+      "bracelets",
+      "bracelets-fashion"
+    ],
+    "description": {
+      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי נירוסטה פרימיום בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
+      "en": "HERMES fashion bracelet with a colorful braided-rope design and central H charm. Adjustable and unisex, combining waterproof rope with Premium Stainless Steel gold-tone components. Every product page includes the full color selection."
+    },
+    "details": {
+      "he": [
+        "חומרי מתכת: נירוסטה פרימיום",
+        "רצועה: חבל קלוע עמיד במים",
+        "מבנה: צמיד מתכוונן להתאמה נוחה לפרק היד",
+        "צבע: גימור עמיד לדהייה בשימוש רגיל",
+        "עיצוב: אלמנט H מרכזי בגימור זהב",
+        "התאמה: יוניסקס - לנשים ולגברים",
+        "צבעים: כל צבעי הקולקציה זמינים לבחירה בתוך עמוד המוצר"
+      ],
+      "en": [
+        "Metal components: Premium Stainless Steel",
+        "Band: waterproof braided rope",
+        "Fit: adjustable for a comfortable wrist fit",
+        "Color: fade-resistant finish for normal use",
+        "Design: central H charm in a gold-tone finish",
+        "Fit: unisex - for women and men",
+        "Colors: the full collection is selectable inside each product page"
+      ]
+    },
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "colorDisplay": "image-choice",
+    "colors": [
+      {
+        "id": "white",
+        "label": {
+          "he": "לבן",
+          "en": "White"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-white.png",
+        "swatch": "#f0f0f0"
+      },
+      {
+        "id": "black",
+        "label": {
+          "he": "שחור",
+          "en": "Black"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-black.png",
+        "swatch": "#111111"
+      },
+      {
+        "id": "brown",
+        "label": {
+          "he": "חום",
+          "en": "Brown"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-brown.png",
+        "swatch": "#724f3e"
+      },
+      {
+        "id": "black-gold",
+        "label": {
+          "he": "שחור זהב",
+          "en": "Black Gold"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-black-gold.png",
+        "swatch": "linear-gradient(135deg,#111 0 50%,#d4a63a 50% 100%)"
+      },
+      {
+        "id": "pastel-pink",
+        "label": {
+          "he": "ורוד פסטל",
+          "en": "Pastel Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-pastel-pink.png",
+        "swatch": "#efb3c0"
+      },
+      {
+        "id": "turquoise",
+        "label": {
+          "he": "טורקיז",
+          "en": "Turquoise"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-turquoise.png",
+        "swatch": "#44d3e2"
+      },
+      {
+        "id": "red",
+        "label": {
+          "he": "אדום",
+          "en": "Red"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-red.png",
+        "swatch": "#cc1f27"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-gold.png",
+        "swatch": "#d6a52c"
+      },
+      {
+        "id": "coral",
+        "label": {
+          "he": "קורל",
+          "en": "Coral"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-coral.png",
+        "swatch": "#f46f55"
+      },
+      {
+        "id": "light-gray",
+        "label": {
+          "he": "אפור בהיר",
+          "en": "Light Gray"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-light-gray.png",
+        "swatch": "#bec4c6"
+      },
+      {
+        "id": "dusty-pink",
+        "label": {
+          "he": "ורוד מעושן",
+          "en": "Dusty Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-dusty-pink.png",
+        "swatch": "#bf7a95"
+      },
+      {
+        "id": "hot-pink",
+        "label": {
+          "he": "פוקסיה",
+          "en": "Fuchsia"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-fuchsia.png",
+        "swatch": "#e8318a"
+      },
+      {
+        "id": "neon-pink",
+        "label": {
+          "he": "ורוד ניאון",
+          "en": "Neon Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-neon-pink.png",
+        "swatch": "#ff1493"
+      },
+      {
+        "id": "green",
+        "label": {
+          "he": "ירוק",
+          "en": "Green"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-green.png",
+        "swatch": "#39b64a"
+      },
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-silver.png",
+        "swatch": "#d3d3d3"
+      },
+      {
+        "id": "royal-blue",
+        "label": {
+          "he": "כחול רויאל",
+          "en": "Royal Blue"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-royal-blue.png",
+        "swatch": "#2052e5"
+      },
+      {
+        "id": "mint",
+        "label": {
+          "he": "ירוק מנטה",
+          "en": "Mint Green"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-mint.png",
+        "swatch": "#c8e9c8"
+      },
+      {
+        "id": "orange",
+        "label": {
+          "he": "כתום",
+          "en": "Orange"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-orange.png",
+        "swatch": "#f07a22"
+      }
+    ],
+    "defaultColorId": "hot-pink",
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    },
+    "hideMessageCard": true,
+    "cardMode": "view"
+  },
+  {
+    "id": "fashion-h-bracelet-neon-pink-270",
+    "slug": "product-270",
+    "urlSlug": "fashion-h-bracelet-neon-pink",
+    "title": {
+      "he": "צמיד אופנה HERMES - צבע ורוד ניאון",
+      "en": "HERMES Fashion Bracelet - Neon Pink"
+    },
+    "subtitle": {
+      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי נירוסטה פרימיום · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
+      "en": "Adjustable braided rope bracelet with H charm · Premium Stainless Steel components · waterproof rope · fade-resistant color · unisex for women and men"
+    },
+    "badge": {
+      "he": "צמידי אופנה",
+      "en": "Fashion Bracelets"
+    },
+    "price": 129.9,
+    "images": [
+      "/images/products/fashion-bracelets/fashion-bracelet-neon-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-white.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-black.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-brown.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-black-gold.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-pastel-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-turquoise.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-red.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-gold.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-coral.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-light-gray.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-dusty-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-fuchsia.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-green.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-silver.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-royal-blue.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-mint.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-orange.png"
+    ],
+    "hoverImage": "/images/products/fashion-bracelets/fashion-bracelets-group.png",
+    "categories": [
+      "bracelets",
+      "bracelets-fashion"
+    ],
+    "description": {
+      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי נירוסטה פרימיום בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
+      "en": "HERMES fashion bracelet with a colorful braided-rope design and central H charm. Adjustable and unisex, combining waterproof rope with Premium Stainless Steel gold-tone components. Every product page includes the full color selection."
+    },
+    "details": {
+      "he": [
+        "חומרי מתכת: נירוסטה פרימיום",
+        "רצועה: חבל קלוע עמיד במים",
+        "מבנה: צמיד מתכוונן להתאמה נוחה לפרק היד",
+        "צבע: גימור עמיד לדהייה בשימוש רגיל",
+        "עיצוב: אלמנט H מרכזי בגימור זהב",
+        "התאמה: יוניסקס - לנשים ולגברים",
+        "צבעים: כל צבעי הקולקציה זמינים לבחירה בתוך עמוד המוצר"
+      ],
+      "en": [
+        "Metal components: Premium Stainless Steel",
+        "Band: waterproof braided rope",
+        "Fit: adjustable for a comfortable wrist fit",
+        "Color: fade-resistant finish for normal use",
+        "Design: central H charm in a gold-tone finish",
+        "Fit: unisex - for women and men",
+        "Colors: the full collection is selectable inside each product page"
+      ]
+    },
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "colorDisplay": "image-choice",
+    "colors": [
+      {
+        "id": "white",
+        "label": {
+          "he": "לבן",
+          "en": "White"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-white.png",
+        "swatch": "#f0f0f0"
+      },
+      {
+        "id": "black",
+        "label": {
+          "he": "שחור",
+          "en": "Black"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-black.png",
+        "swatch": "#111111"
+      },
+      {
+        "id": "brown",
+        "label": {
+          "he": "חום",
+          "en": "Brown"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-brown.png",
+        "swatch": "#724f3e"
+      },
+      {
+        "id": "black-gold",
+        "label": {
+          "he": "שחור זהב",
+          "en": "Black Gold"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-black-gold.png",
+        "swatch": "linear-gradient(135deg,#111 0 50%,#d4a63a 50% 100%)"
+      },
+      {
+        "id": "pastel-pink",
+        "label": {
+          "he": "ורוד פסטל",
+          "en": "Pastel Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-pastel-pink.png",
+        "swatch": "#efb3c0"
+      },
+      {
+        "id": "turquoise",
+        "label": {
+          "he": "טורקיז",
+          "en": "Turquoise"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-turquoise.png",
+        "swatch": "#44d3e2"
+      },
+      {
+        "id": "red",
+        "label": {
+          "he": "אדום",
+          "en": "Red"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-red.png",
+        "swatch": "#cc1f27"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-gold.png",
+        "swatch": "#d6a52c"
+      },
+      {
+        "id": "coral",
+        "label": {
+          "he": "קורל",
+          "en": "Coral"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-coral.png",
+        "swatch": "#f46f55"
+      },
+      {
+        "id": "light-gray",
+        "label": {
+          "he": "אפור בהיר",
+          "en": "Light Gray"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-light-gray.png",
+        "swatch": "#bec4c6"
+      },
+      {
+        "id": "dusty-pink",
+        "label": {
+          "he": "ורוד מעושן",
+          "en": "Dusty Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-dusty-pink.png",
+        "swatch": "#bf7a95"
+      },
+      {
+        "id": "hot-pink",
+        "label": {
+          "he": "פוקסיה",
+          "en": "Fuchsia"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-fuchsia.png",
+        "swatch": "#e8318a"
+      },
+      {
+        "id": "neon-pink",
+        "label": {
+          "he": "ורוד ניאון",
+          "en": "Neon Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-neon-pink.png",
+        "swatch": "#ff1493"
+      },
+      {
+        "id": "green",
+        "label": {
+          "he": "ירוק",
+          "en": "Green"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-green.png",
+        "swatch": "#39b64a"
+      },
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-silver.png",
+        "swatch": "#d3d3d3"
+      },
+      {
+        "id": "royal-blue",
+        "label": {
+          "he": "כחול רויאל",
+          "en": "Royal Blue"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-royal-blue.png",
+        "swatch": "#2052e5"
+      },
+      {
+        "id": "mint",
+        "label": {
+          "he": "ירוק מנטה",
+          "en": "Mint Green"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-mint.png",
+        "swatch": "#c8e9c8"
+      },
+      {
+        "id": "orange",
+        "label": {
+          "he": "כתום",
+          "en": "Orange"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-orange.png",
+        "swatch": "#f07a22"
+      }
+    ],
+    "defaultColorId": "neon-pink",
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    },
+    "hideMessageCard": true,
+    "cardMode": "view"
+  },
+  {
+    "id": "fashion-h-bracelet-green-271",
+    "slug": "product-271",
+    "urlSlug": "fashion-h-bracelet-green",
+    "title": {
+      "he": "צמיד אופנה HERMES - צבע ירוק",
+      "en": "HERMES Fashion Bracelet - Green"
+    },
+    "subtitle": {
+      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי נירוסטה פרימיום · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
+      "en": "Adjustable braided rope bracelet with H charm · Premium Stainless Steel components · waterproof rope · fade-resistant color · unisex for women and men"
+    },
+    "badge": {
+      "he": "צמידי אופנה",
+      "en": "Fashion Bracelets"
+    },
+    "price": 129.9,
+    "images": [
+      "/images/products/fashion-bracelets/fashion-bracelet-green.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-white.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-black.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-brown.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-black-gold.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-pastel-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-turquoise.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-red.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-gold.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-coral.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-light-gray.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-dusty-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-fuchsia.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-neon-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-silver.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-royal-blue.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-mint.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-orange.png"
+    ],
+    "hoverImage": "/images/products/fashion-bracelets/fashion-bracelets-group.png",
+    "categories": [
+      "bracelets",
+      "bracelets-fashion"
+    ],
+    "description": {
+      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי נירוסטה פרימיום בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
+      "en": "HERMES fashion bracelet with a colorful braided-rope design and central H charm. Adjustable and unisex, combining waterproof rope with Premium Stainless Steel gold-tone components. Every product page includes the full color selection."
+    },
+    "details": {
+      "he": [
+        "חומרי מתכת: נירוסטה פרימיום",
+        "רצועה: חבל קלוע עמיד במים",
+        "מבנה: צמיד מתכוונן להתאמה נוחה לפרק היד",
+        "צבע: גימור עמיד לדהייה בשימוש רגיל",
+        "עיצוב: אלמנט H מרכזי בגימור זהב",
+        "התאמה: יוניסקס - לנשים ולגברים",
+        "צבעים: כל צבעי הקולקציה זמינים לבחירה בתוך עמוד המוצר"
+      ],
+      "en": [
+        "Metal components: Premium Stainless Steel",
+        "Band: waterproof braided rope",
+        "Fit: adjustable for a comfortable wrist fit",
+        "Color: fade-resistant finish for normal use",
+        "Design: central H charm in a gold-tone finish",
+        "Fit: unisex - for women and men",
+        "Colors: the full collection is selectable inside each product page"
+      ]
+    },
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "colorDisplay": "image-choice",
+    "colors": [
+      {
+        "id": "white",
+        "label": {
+          "he": "לבן",
+          "en": "White"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-white.png",
+        "swatch": "#f0f0f0"
+      },
+      {
+        "id": "black",
+        "label": {
+          "he": "שחור",
+          "en": "Black"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-black.png",
+        "swatch": "#111111"
+      },
+      {
+        "id": "brown",
+        "label": {
+          "he": "חום",
+          "en": "Brown"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-brown.png",
+        "swatch": "#724f3e"
+      },
+      {
+        "id": "black-gold",
+        "label": {
+          "he": "שחור זהב",
+          "en": "Black Gold"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-black-gold.png",
+        "swatch": "linear-gradient(135deg,#111 0 50%,#d4a63a 50% 100%)"
+      },
+      {
+        "id": "pastel-pink",
+        "label": {
+          "he": "ורוד פסטל",
+          "en": "Pastel Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-pastel-pink.png",
+        "swatch": "#efb3c0"
+      },
+      {
+        "id": "turquoise",
+        "label": {
+          "he": "טורקיז",
+          "en": "Turquoise"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-turquoise.png",
+        "swatch": "#44d3e2"
+      },
+      {
+        "id": "red",
+        "label": {
+          "he": "אדום",
+          "en": "Red"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-red.png",
+        "swatch": "#cc1f27"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-gold.png",
+        "swatch": "#d6a52c"
+      },
+      {
+        "id": "coral",
+        "label": {
+          "he": "קורל",
+          "en": "Coral"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-coral.png",
+        "swatch": "#f46f55"
+      },
+      {
+        "id": "light-gray",
+        "label": {
+          "he": "אפור בהיר",
+          "en": "Light Gray"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-light-gray.png",
+        "swatch": "#bec4c6"
+      },
+      {
+        "id": "dusty-pink",
+        "label": {
+          "he": "ורוד מעושן",
+          "en": "Dusty Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-dusty-pink.png",
+        "swatch": "#bf7a95"
+      },
+      {
+        "id": "hot-pink",
+        "label": {
+          "he": "פוקסיה",
+          "en": "Fuchsia"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-fuchsia.png",
+        "swatch": "#e8318a"
+      },
+      {
+        "id": "neon-pink",
+        "label": {
+          "he": "ורוד ניאון",
+          "en": "Neon Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-neon-pink.png",
+        "swatch": "#ff1493"
+      },
+      {
+        "id": "green",
+        "label": {
+          "he": "ירוק",
+          "en": "Green"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-green.png",
+        "swatch": "#39b64a"
+      },
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-silver.png",
+        "swatch": "#d3d3d3"
+      },
+      {
+        "id": "royal-blue",
+        "label": {
+          "he": "כחול רויאל",
+          "en": "Royal Blue"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-royal-blue.png",
+        "swatch": "#2052e5"
+      },
+      {
+        "id": "mint",
+        "label": {
+          "he": "ירוק מנטה",
+          "en": "Mint Green"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-mint.png",
+        "swatch": "#c8e9c8"
+      },
+      {
+        "id": "orange",
+        "label": {
+          "he": "כתום",
+          "en": "Orange"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-orange.png",
+        "swatch": "#f07a22"
+      }
+    ],
+    "defaultColorId": "green",
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    },
+    "hideMessageCard": true,
+    "cardMode": "view"
+  },
+  {
+    "id": "fashion-h-bracelet-silver-272",
+    "slug": "product-272",
+    "urlSlug": "fashion-h-bracelet-silver",
+    "title": {
+      "he": "צמיד אופנה HERMES - צבע כסף",
+      "en": "HERMES Fashion Bracelet - Silver"
+    },
+    "subtitle": {
+      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי נירוסטה פרימיום · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
+      "en": "Adjustable braided rope bracelet with H charm · Premium Stainless Steel components · waterproof rope · fade-resistant color · unisex for women and men"
+    },
+    "badge": {
+      "he": "צמידי אופנה",
+      "en": "Fashion Bracelets"
+    },
+    "price": 129.9,
+    "images": [
+      "/images/products/fashion-bracelets/fashion-bracelet-silver.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-white.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-black.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-brown.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-black-gold.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-pastel-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-turquoise.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-red.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-gold.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-coral.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-light-gray.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-dusty-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-fuchsia.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-neon-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-green.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-royal-blue.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-mint.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-orange.png"
+    ],
+    "hoverImage": "/images/products/fashion-bracelets/fashion-bracelets-group.png",
+    "categories": [
+      "bracelets",
+      "bracelets-fashion"
+    ],
+    "description": {
+      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי נירוסטה פרימיום בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
+      "en": "HERMES fashion bracelet with a colorful braided-rope design and central H charm. Adjustable and unisex, combining waterproof rope with Premium Stainless Steel gold-tone components. Every product page includes the full color selection."
+    },
+    "details": {
+      "he": [
+        "חומרי מתכת: נירוסטה פרימיום",
+        "רצועה: חבל קלוע עמיד במים",
+        "מבנה: צמיד מתכוונן להתאמה נוחה לפרק היד",
+        "צבע: גימור עמיד לדהייה בשימוש רגיל",
+        "עיצוב: אלמנט H מרכזי בגימור זהב",
+        "התאמה: יוניסקס - לנשים ולגברים",
+        "צבעים: כל צבעי הקולקציה זמינים לבחירה בתוך עמוד המוצר"
+      ],
+      "en": [
+        "Metal components: Premium Stainless Steel",
+        "Band: waterproof braided rope",
+        "Fit: adjustable for a comfortable wrist fit",
+        "Color: fade-resistant finish for normal use",
+        "Design: central H charm in a gold-tone finish",
+        "Fit: unisex - for women and men",
+        "Colors: the full collection is selectable inside each product page"
+      ]
+    },
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "colorDisplay": "image-choice",
+    "colors": [
+      {
+        "id": "white",
+        "label": {
+          "he": "לבן",
+          "en": "White"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-white.png",
+        "swatch": "#f0f0f0"
+      },
+      {
+        "id": "black",
+        "label": {
+          "he": "שחור",
+          "en": "Black"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-black.png",
+        "swatch": "#111111"
+      },
+      {
+        "id": "brown",
+        "label": {
+          "he": "חום",
+          "en": "Brown"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-brown.png",
+        "swatch": "#724f3e"
+      },
+      {
+        "id": "black-gold",
+        "label": {
+          "he": "שחור זהב",
+          "en": "Black Gold"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-black-gold.png",
+        "swatch": "linear-gradient(135deg,#111 0 50%,#d4a63a 50% 100%)"
+      },
+      {
+        "id": "pastel-pink",
+        "label": {
+          "he": "ורוד פסטל",
+          "en": "Pastel Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-pastel-pink.png",
+        "swatch": "#efb3c0"
+      },
+      {
+        "id": "turquoise",
+        "label": {
+          "he": "טורקיז",
+          "en": "Turquoise"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-turquoise.png",
+        "swatch": "#44d3e2"
+      },
+      {
+        "id": "red",
+        "label": {
+          "he": "אדום",
+          "en": "Red"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-red.png",
+        "swatch": "#cc1f27"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-gold.png",
+        "swatch": "#d6a52c"
+      },
+      {
+        "id": "coral",
+        "label": {
+          "he": "קורל",
+          "en": "Coral"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-coral.png",
+        "swatch": "#f46f55"
+      },
+      {
+        "id": "light-gray",
+        "label": {
+          "he": "אפור בהיר",
+          "en": "Light Gray"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-light-gray.png",
+        "swatch": "#bec4c6"
+      },
+      {
+        "id": "dusty-pink",
+        "label": {
+          "he": "ורוד מעושן",
+          "en": "Dusty Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-dusty-pink.png",
+        "swatch": "#bf7a95"
+      },
+      {
+        "id": "hot-pink",
+        "label": {
+          "he": "פוקסיה",
+          "en": "Fuchsia"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-fuchsia.png",
+        "swatch": "#e8318a"
+      },
+      {
+        "id": "neon-pink",
+        "label": {
+          "he": "ורוד ניאון",
+          "en": "Neon Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-neon-pink.png",
+        "swatch": "#ff1493"
+      },
+      {
+        "id": "green",
+        "label": {
+          "he": "ירוק",
+          "en": "Green"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-green.png",
+        "swatch": "#39b64a"
+      },
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-silver.png",
+        "swatch": "#d3d3d3"
+      },
+      {
+        "id": "royal-blue",
+        "label": {
+          "he": "כחול רויאל",
+          "en": "Royal Blue"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-royal-blue.png",
+        "swatch": "#2052e5"
+      },
+      {
+        "id": "mint",
+        "label": {
+          "he": "ירוק מנטה",
+          "en": "Mint Green"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-mint.png",
+        "swatch": "#c8e9c8"
+      },
+      {
+        "id": "orange",
+        "label": {
+          "he": "כתום",
+          "en": "Orange"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-orange.png",
+        "swatch": "#f07a22"
+      }
+    ],
+    "defaultColorId": "silver",
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    },
+    "hideMessageCard": true,
+    "cardMode": "view"
+  },
+  {
+    "id": "fashion-h-bracelet-royal-blue-273",
+    "slug": "product-273",
+    "urlSlug": "fashion-h-bracelet-royal-blue",
+    "title": {
+      "he": "צמיד אופנה HERMES - צבע כחול רויאל",
+      "en": "HERMES Fashion Bracelet - Royal Blue"
+    },
+    "subtitle": {
+      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי נירוסטה פרימיום · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
+      "en": "Adjustable braided rope bracelet with H charm · Premium Stainless Steel components · waterproof rope · fade-resistant color · unisex for women and men"
+    },
+    "badge": {
+      "he": "צמידי אופנה",
+      "en": "Fashion Bracelets"
+    },
+    "price": 129.9,
+    "images": [
+      "/images/products/fashion-bracelets/fashion-bracelet-royal-blue.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-white.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-black.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-brown.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-black-gold.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-pastel-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-turquoise.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-red.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-gold.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-coral.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-light-gray.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-dusty-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-fuchsia.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-neon-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-green.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-silver.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-mint.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-orange.png"
+    ],
+    "hoverImage": "/images/products/fashion-bracelets/fashion-bracelets-group.png",
+    "categories": [
+      "bracelets",
+      "bracelets-fashion"
+    ],
+    "description": {
+      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי נירוסטה פרימיום בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
+      "en": "HERMES fashion bracelet with a colorful braided-rope design and central H charm. Adjustable and unisex, combining waterproof rope with Premium Stainless Steel gold-tone components. Every product page includes the full color selection."
+    },
+    "details": {
+      "he": [
+        "חומרי מתכת: נירוסטה פרימיום",
+        "רצועה: חבל קלוע עמיד במים",
+        "מבנה: צמיד מתכוונן להתאמה נוחה לפרק היד",
+        "צבע: גימור עמיד לדהייה בשימוש רגיל",
+        "עיצוב: אלמנט H מרכזי בגימור זהב",
+        "התאמה: יוניסקס - לנשים ולגברים",
+        "צבעים: כל צבעי הקולקציה זמינים לבחירה בתוך עמוד המוצר"
+      ],
+      "en": [
+        "Metal components: Premium Stainless Steel",
+        "Band: waterproof braided rope",
+        "Fit: adjustable for a comfortable wrist fit",
+        "Color: fade-resistant finish for normal use",
+        "Design: central H charm in a gold-tone finish",
+        "Fit: unisex - for women and men",
+        "Colors: the full collection is selectable inside each product page"
+      ]
+    },
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "colorDisplay": "image-choice",
+    "colors": [
+      {
+        "id": "white",
+        "label": {
+          "he": "לבן",
+          "en": "White"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-white.png",
+        "swatch": "#f0f0f0"
+      },
+      {
+        "id": "black",
+        "label": {
+          "he": "שחור",
+          "en": "Black"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-black.png",
+        "swatch": "#111111"
+      },
+      {
+        "id": "brown",
+        "label": {
+          "he": "חום",
+          "en": "Brown"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-brown.png",
+        "swatch": "#724f3e"
+      },
+      {
+        "id": "black-gold",
+        "label": {
+          "he": "שחור זהב",
+          "en": "Black Gold"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-black-gold.png",
+        "swatch": "linear-gradient(135deg,#111 0 50%,#d4a63a 50% 100%)"
+      },
+      {
+        "id": "pastel-pink",
+        "label": {
+          "he": "ורוד פסטל",
+          "en": "Pastel Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-pastel-pink.png",
+        "swatch": "#efb3c0"
+      },
+      {
+        "id": "turquoise",
+        "label": {
+          "he": "טורקיז",
+          "en": "Turquoise"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-turquoise.png",
+        "swatch": "#44d3e2"
+      },
+      {
+        "id": "red",
+        "label": {
+          "he": "אדום",
+          "en": "Red"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-red.png",
+        "swatch": "#cc1f27"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-gold.png",
+        "swatch": "#d6a52c"
+      },
+      {
+        "id": "coral",
+        "label": {
+          "he": "קורל",
+          "en": "Coral"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-coral.png",
+        "swatch": "#f46f55"
+      },
+      {
+        "id": "light-gray",
+        "label": {
+          "he": "אפור בהיר",
+          "en": "Light Gray"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-light-gray.png",
+        "swatch": "#bec4c6"
+      },
+      {
+        "id": "dusty-pink",
+        "label": {
+          "he": "ורוד מעושן",
+          "en": "Dusty Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-dusty-pink.png",
+        "swatch": "#bf7a95"
+      },
+      {
+        "id": "hot-pink",
+        "label": {
+          "he": "פוקסיה",
+          "en": "Fuchsia"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-fuchsia.png",
+        "swatch": "#e8318a"
+      },
+      {
+        "id": "neon-pink",
+        "label": {
+          "he": "ורוד ניאון",
+          "en": "Neon Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-neon-pink.png",
+        "swatch": "#ff1493"
+      },
+      {
+        "id": "green",
+        "label": {
+          "he": "ירוק",
+          "en": "Green"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-green.png",
+        "swatch": "#39b64a"
+      },
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-silver.png",
+        "swatch": "#d3d3d3"
+      },
+      {
+        "id": "royal-blue",
+        "label": {
+          "he": "כחול רויאל",
+          "en": "Royal Blue"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-royal-blue.png",
+        "swatch": "#2052e5"
+      },
+      {
+        "id": "mint",
+        "label": {
+          "he": "ירוק מנטה",
+          "en": "Mint Green"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-mint.png",
+        "swatch": "#c8e9c8"
+      },
+      {
+        "id": "orange",
+        "label": {
+          "he": "כתום",
+          "en": "Orange"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-orange.png",
+        "swatch": "#f07a22"
+      }
+    ],
+    "defaultColorId": "royal-blue",
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    },
+    "hideMessageCard": true,
+    "cardMode": "view"
+  },
+  {
+    "id": "fashion-h-bracelet-mint-274",
+    "slug": "product-274",
+    "urlSlug": "fashion-h-bracelet-mint",
+    "title": {
+      "he": "צמיד אופנה HERMES - צבע ירוק מנטה",
+      "en": "HERMES Fashion Bracelet - Mint Green"
+    },
+    "subtitle": {
+      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי נירוסטה פרימיום · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
+      "en": "Adjustable braided rope bracelet with H charm · Premium Stainless Steel components · waterproof rope · fade-resistant color · unisex for women and men"
+    },
+    "badge": {
+      "he": "צמידי אופנה",
+      "en": "Fashion Bracelets"
+    },
+    "price": 129.9,
+    "images": [
+      "/images/products/fashion-bracelets/fashion-bracelet-mint.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-white.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-black.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-brown.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-black-gold.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-pastel-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-turquoise.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-red.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-gold.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-coral.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-light-gray.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-dusty-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-fuchsia.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-neon-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-green.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-silver.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-royal-blue.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-orange.png"
+    ],
+    "hoverImage": "/images/products/fashion-bracelets/fashion-bracelets-group.png",
+    "categories": [
+      "bracelets",
+      "bracelets-fashion"
+    ],
+    "description": {
+      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי נירוסטה פרימיום בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
+      "en": "HERMES fashion bracelet with a colorful braided-rope design and central H charm. Adjustable and unisex, combining waterproof rope with Premium Stainless Steel gold-tone components. Every product page includes the full color selection."
+    },
+    "details": {
+      "he": [
+        "חומרי מתכת: נירוסטה פרימיום",
+        "רצועה: חבל קלוע עמיד במים",
+        "מבנה: צמיד מתכוונן להתאמה נוחה לפרק היד",
+        "צבע: גימור עמיד לדהייה בשימוש רגיל",
+        "עיצוב: אלמנט H מרכזי בגימור זהב",
+        "התאמה: יוניסקס - לנשים ולגברים",
+        "צבעים: כל צבעי הקולקציה זמינים לבחירה בתוך עמוד המוצר"
+      ],
+      "en": [
+        "Metal components: Premium Stainless Steel",
+        "Band: waterproof braided rope",
+        "Fit: adjustable for a comfortable wrist fit",
+        "Color: fade-resistant finish for normal use",
+        "Design: central H charm in a gold-tone finish",
+        "Fit: unisex - for women and men",
+        "Colors: the full collection is selectable inside each product page"
+      ]
+    },
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "colorDisplay": "image-choice",
+    "colors": [
+      {
+        "id": "white",
+        "label": {
+          "he": "לבן",
+          "en": "White"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-white.png",
+        "swatch": "#f0f0f0"
+      },
+      {
+        "id": "black",
+        "label": {
+          "he": "שחור",
+          "en": "Black"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-black.png",
+        "swatch": "#111111"
+      },
+      {
+        "id": "brown",
+        "label": {
+          "he": "חום",
+          "en": "Brown"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-brown.png",
+        "swatch": "#724f3e"
+      },
+      {
+        "id": "black-gold",
+        "label": {
+          "he": "שחור זהב",
+          "en": "Black Gold"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-black-gold.png",
+        "swatch": "linear-gradient(135deg,#111 0 50%,#d4a63a 50% 100%)"
+      },
+      {
+        "id": "pastel-pink",
+        "label": {
+          "he": "ורוד פסטל",
+          "en": "Pastel Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-pastel-pink.png",
+        "swatch": "#efb3c0"
+      },
+      {
+        "id": "turquoise",
+        "label": {
+          "he": "טורקיז",
+          "en": "Turquoise"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-turquoise.png",
+        "swatch": "#44d3e2"
+      },
+      {
+        "id": "red",
+        "label": {
+          "he": "אדום",
+          "en": "Red"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-red.png",
+        "swatch": "#cc1f27"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-gold.png",
+        "swatch": "#d6a52c"
+      },
+      {
+        "id": "coral",
+        "label": {
+          "he": "קורל",
+          "en": "Coral"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-coral.png",
+        "swatch": "#f46f55"
+      },
+      {
+        "id": "light-gray",
+        "label": {
+          "he": "אפור בהיר",
+          "en": "Light Gray"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-light-gray.png",
+        "swatch": "#bec4c6"
+      },
+      {
+        "id": "dusty-pink",
+        "label": {
+          "he": "ורוד מעושן",
+          "en": "Dusty Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-dusty-pink.png",
+        "swatch": "#bf7a95"
+      },
+      {
+        "id": "hot-pink",
+        "label": {
+          "he": "פוקסיה",
+          "en": "Fuchsia"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-fuchsia.png",
+        "swatch": "#e8318a"
+      },
+      {
+        "id": "neon-pink",
+        "label": {
+          "he": "ורוד ניאון",
+          "en": "Neon Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-neon-pink.png",
+        "swatch": "#ff1493"
+      },
+      {
+        "id": "green",
+        "label": {
+          "he": "ירוק",
+          "en": "Green"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-green.png",
+        "swatch": "#39b64a"
+      },
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-silver.png",
+        "swatch": "#d3d3d3"
+      },
+      {
+        "id": "royal-blue",
+        "label": {
+          "he": "כחול רויאל",
+          "en": "Royal Blue"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-royal-blue.png",
+        "swatch": "#2052e5"
+      },
+      {
+        "id": "mint",
+        "label": {
+          "he": "ירוק מנטה",
+          "en": "Mint Green"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-mint.png",
+        "swatch": "#c8e9c8"
+      },
+      {
+        "id": "orange",
+        "label": {
+          "he": "כתום",
+          "en": "Orange"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-orange.png",
+        "swatch": "#f07a22"
+      }
+    ],
+    "defaultColorId": "mint",
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    },
+    "hideMessageCard": true,
+    "cardMode": "view"
+  },
+  {
+    "id": "fashion-h-bracelet-orange-275",
+    "slug": "product-275",
+    "urlSlug": "fashion-h-bracelet-orange",
+    "title": {
+      "he": "צמיד אופנה HERMES - צבע כתום",
+      "en": "HERMES Fashion Bracelet - Orange"
+    },
+    "subtitle": {
+      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי נירוסטה פרימיום · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
+      "en": "Adjustable braided rope bracelet with H charm · Premium Stainless Steel components · waterproof rope · fade-resistant color · unisex for women and men"
+    },
+    "badge": {
+      "he": "צמידי אופנה",
+      "en": "Fashion Bracelets"
+    },
+    "price": 129.9,
+    "images": [
+      "/images/products/fashion-bracelets/fashion-bracelet-orange.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-white.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-black.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-brown.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-black-gold.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-pastel-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-turquoise.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-red.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-gold.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-coral.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-light-gray.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-dusty-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-fuchsia.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-neon-pink.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-green.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-silver.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-royal-blue.png",
+      "/images/products/fashion-bracelets/fashion-bracelet-mint.png"
+    ],
+    "hoverImage": "/images/products/fashion-bracelets/fashion-bracelets-group.png",
+    "categories": [
+      "bracelets",
+      "bracelets-fashion"
+    ],
+    "description": {
+      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי נירוסטה פרימיום בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
+      "en": "HERMES fashion bracelet with a colorful braided-rope design and central H charm. Adjustable and unisex, combining waterproof rope with Premium Stainless Steel gold-tone components. Every product page includes the full color selection."
+    },
+    "details": {
+      "he": [
+        "חומרי מתכת: נירוסטה פרימיום",
+        "רצועה: חבל קלוע עמיד במים",
+        "מבנה: צמיד מתכוונן להתאמה נוחה לפרק היד",
+        "צבע: גימור עמיד לדהייה בשימוש רגיל",
+        "עיצוב: אלמנט H מרכזי בגימור זהב",
+        "התאמה: יוניסקס - לנשים ולגברים",
+        "צבעים: כל צבעי הקולקציה זמינים לבחירה בתוך עמוד המוצר"
+      ],
+      "en": [
+        "Metal components: Premium Stainless Steel",
+        "Band: waterproof braided rope",
+        "Fit: adjustable for a comfortable wrist fit",
+        "Color: fade-resistant finish for normal use",
+        "Design: central H charm in a gold-tone finish",
+        "Fit: unisex - for women and men",
+        "Colors: the full collection is selectable inside each product page"
+      ]
+    },
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "colorDisplay": "image-choice",
+    "colors": [
+      {
+        "id": "white",
+        "label": {
+          "he": "לבן",
+          "en": "White"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-white.png",
+        "swatch": "#f0f0f0"
+      },
+      {
+        "id": "black",
+        "label": {
+          "he": "שחור",
+          "en": "Black"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-black.png",
+        "swatch": "#111111"
+      },
+      {
+        "id": "brown",
+        "label": {
+          "he": "חום",
+          "en": "Brown"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-brown.png",
+        "swatch": "#724f3e"
+      },
+      {
+        "id": "black-gold",
+        "label": {
+          "he": "שחור זהב",
+          "en": "Black Gold"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-black-gold.png",
+        "swatch": "linear-gradient(135deg,#111 0 50%,#d4a63a 50% 100%)"
+      },
+      {
+        "id": "pastel-pink",
+        "label": {
+          "he": "ורוד פסטל",
+          "en": "Pastel Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-pastel-pink.png",
+        "swatch": "#efb3c0"
+      },
+      {
+        "id": "turquoise",
+        "label": {
+          "he": "טורקיז",
+          "en": "Turquoise"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-turquoise.png",
+        "swatch": "#44d3e2"
+      },
+      {
+        "id": "red",
+        "label": {
+          "he": "אדום",
+          "en": "Red"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-red.png",
+        "swatch": "#cc1f27"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-gold.png",
+        "swatch": "#d6a52c"
+      },
+      {
+        "id": "coral",
+        "label": {
+          "he": "קורל",
+          "en": "Coral"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-coral.png",
+        "swatch": "#f46f55"
+      },
+      {
+        "id": "light-gray",
+        "label": {
+          "he": "אפור בהיר",
+          "en": "Light Gray"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-light-gray.png",
+        "swatch": "#bec4c6"
+      },
+      {
+        "id": "dusty-pink",
+        "label": {
+          "he": "ורוד מעושן",
+          "en": "Dusty Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-dusty-pink.png",
+        "swatch": "#bf7a95"
+      },
+      {
+        "id": "hot-pink",
+        "label": {
+          "he": "פוקסיה",
+          "en": "Fuchsia"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-fuchsia.png",
+        "swatch": "#e8318a"
+      },
+      {
+        "id": "neon-pink",
+        "label": {
+          "he": "ורוד ניאון",
+          "en": "Neon Pink"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-neon-pink.png",
+        "swatch": "#ff1493"
+      },
+      {
+        "id": "green",
+        "label": {
+          "he": "ירוק",
+          "en": "Green"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-green.png",
+        "swatch": "#39b64a"
+      },
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-silver.png",
+        "swatch": "#d3d3d3"
+      },
+      {
+        "id": "royal-blue",
+        "label": {
+          "he": "כחול רויאל",
+          "en": "Royal Blue"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-royal-blue.png",
+        "swatch": "#2052e5"
+      },
+      {
+        "id": "mint",
+        "label": {
+          "he": "ירוק מנטה",
+          "en": "Mint Green"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-mint.png",
+        "swatch": "#c8e9c8"
+      },
+      {
+        "id": "orange",
+        "label": {
+          "he": "כתום",
+          "en": "Orange"
+        },
+        "image": "/images/products/fashion-bracelets/fashion-bracelet-orange.png",
+        "swatch": "#f07a22"
+      }
+    ],
+    "defaultColorId": "orange",
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    },
+    "hideMessageCard": true,
+    "cardMode": "view"
   }
 ];
 
@@ -25070,6 +29444,13 @@ var CATEGORIES = [
         "label": {
           "he": "נשים",
           "en": "Women"
+        }
+      },
+      {
+        "key": "bracelets-fashion",
+        "label": {
+          "he": "צמידי אופנה",
+          "en": "Fashion Bracelets"
         }
       }
     ]
