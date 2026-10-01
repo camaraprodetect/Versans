@@ -132,7 +132,7 @@
 <main id="productMain" class="product-page">
   <div class="container">
     <div class="product-back-row">
-      <a class="product-back-to-shop" href="/#shopTitle" aria-label="חזרה לאזור הקולקציה שלנו">
+      <a class="product-back-to-shop" id="productBackToShop" href="/#shopTitle" aria-label="חזרה לעמוד שממנו הגעתם">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
         <span>חזרה לחנות</span>
       </a>
@@ -428,5 +428,21 @@
   <script src="/assets/presence.js?v=20260915-presence-v1"></script>
   <script src="/assets/customer-service.js?v=20260926-support-label-v3"></script>
 <script src="assets/accessibility.js?v=20260928-a11y-v1"></script>
+<script>
+(function(){
+  var backLink=document.getElementById('productBackToShop');
+  if(!backLink) return;
+  backLink.addEventListener('click',function(event){
+    var sameSitePrevious=false;
+    try{
+      sameSitePrevious=Boolean(document.referrer)&&new URL(document.referrer,window.location.href).origin===window.location.origin;
+    }catch(e){}
+    if(sameSitePrevious&&window.history.length>1){
+      event.preventDefault();
+      window.history.back();
+    }
+  });
+})();
+</script>
 </body>
 </html>
