@@ -1867,6 +1867,8 @@ async function uploadProductPhoto(blob, meta) {
     $('#productBadge').textContent = badge;
 
     var isBraceletProduct = product.category === 'bracelets' || product.category === 'photo-bracelets' || (Array.isArray(product.categories) && product.categories.indexOf('bracelets') !== -1);
+    var braceletSizeGuideLink = $('#braceletSizeGuideLink');
+    if (braceletSizeGuideLink) braceletSizeGuideLink.hidden = !isBraceletProduct;
     $('#necklaceHeading').textContent = L(product.necklaceHeading) || (isBraceletProduct ? (lang === 'he' ? 'בחרו צבע' : 'Choose color') : (lang === 'he' ? 'בחרו שרשרת' : 'Choose a necklace'));
     $('#boxHeading').textContent = L(product.boxHeading) || (lang === 'he' ? 'בחרו קופסה' : 'Choose a box');
     $('#summaryNecklaceLabel').textContent = L(product.necklaceSummaryLabel) || (isBraceletProduct ? (lang === 'he' ? 'צמיד' : 'Bracelet') : (lang === 'he' ? 'שרשרת' : 'Necklace'));

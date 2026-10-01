@@ -5180,6 +5180,7 @@ function mimeType(filePath) {
     '.jpeg': 'image/jpeg',
     '.svg': 'image/svg+xml',
     '.gif': 'image/gif',
+    '.mp4': 'video/mp4',
     '.ico': 'image/x-icon',
     '.txt': 'text/plain; charset=utf-8',
     '.ttf': 'font/ttf',
@@ -5253,12 +5254,12 @@ function injectStorefrontRouting(html, bootRoute) {
   const late = '<script src="/assets/url-mask.js?v=20260924-home-reviews-anchor-v4"></script>';
   let out = String(html || '');
   out = out
-    .replace(/(\/?assets\/config\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20260924-delivery-cart-9-14-v1')
-    .replace(/(\/?assets\/styles\.css)(?:\?v=[^"'\s>]+)?/g, '$1?v=20260924-delivery-cart-9-14-v1')
-    .replace(/(\/?assets\/store\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20260924-delivery-cart-9-14-v1')
-    .replace(/(\/?assets\/products\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20260924-delivery-cart-9-14-v1')
-    .replace(/(\/?assets\/product\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20260924-delivery-cart-9-14-v1')
-    .replace(/(\/?assets\/cart-drawer\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20260924-delivery-cart-9-14-v1')
+    .replace(/(\/?assets\/config\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261001-product-help-v1')
+    .replace(/(\/?assets\/styles\.css)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261001-product-help-v1')
+    .replace(/(\/?assets\/store\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261001-product-help-v1')
+    .replace(/(\/?assets\/products\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261001-product-help-v1')
+    .replace(/(\/?assets\/product\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261001-product-help-v1')
+    .replace(/(\/?assets\/cart-drawer\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261001-product-help-v1')
     .replace(/(\/?assets\/site-header\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20260922-favorites-sync-v1')
     .replace(/(\/?assets\/presence\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20260922-urlmask-v2');
   if (out.includes('</head>')) out = out.replace('</head>', `${early}\n</head>`);

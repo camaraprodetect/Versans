@@ -30,6 +30,7 @@
   var PAGE_FILES = {
     '/policies': 'policies.html',
     '/warranty': 'warranty.html',
+    '/bracelet-size-guide': 'bracelet-size-guide.html',
     '/login': 'login.html',
     '/forgot-password': 'forgot-password.html',
     '/reset-password': 'reset-password.html',
@@ -73,7 +74,7 @@
 
   function pagePath(name) {
     var names = {
-      policies: '/policies', warranty: '/warranty', login: '/login', forgotPassword: '/forgot-password', resetPassword: '/reset-password', register: '/register', account: '/account',
+      policies: '/policies', warranty: '/warranty', braceletSizeGuide: '/bracelet-size-guide', login: '/login', forgotPassword: '/forgot-password', resetPassword: '/reset-password', register: '/register', account: '/account',
       thankYou: '/thank-you', greetingEditor: '/greeting-editor', chooseNecklace: '/choose-necklace', track: '/track'
     };
     return names[name] || '/';
