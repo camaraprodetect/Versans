@@ -1866,9 +1866,24 @@ async function uploadProductPhoto(blob, meta) {
     $('#productBadge').hidden = !badge;
     $('#productBadge').textContent = badge;
 
-    var isBraceletProduct = product.category === 'bracelets' || product.category === 'photo-bracelets' || (Array.isArray(product.categories) && product.categories.indexOf('bracelets') !== -1);
+    var productTitleForGuide = L(product.title) || '';
+    var guideCategories = Array.isArray(product.categories) ? product.categories.map(function (value) { return String(value || '').toLowerCase(); }) : [];
+    var guideCategory = String(product.category || '').toLowerCase();
+    var isGreetingJewelryForGuide = guideCategory === 'greeting' || guideCategory === 'message-jewelry' || guideCategories.indexOf('greeting') !== -1 || guideCategories.indexOf('message-jewelry') !== -1 || /תכשיט\s*עם\s*ברכה|ברכה\s*אישית/.test(productTitleForGuide);
+    var isPhotoJewelryForGuide = guideCategory === 'photo-bracelets' || guideCategory === 'photo-jewelry' || guideCategory === 'photo-jewellery' || guideCategory === 'projection-jewelry' || guideCategory === 'projection-jewellery' || guideCategory === 'photo' || guideCategories.indexOf('photo-bracelets') !== -1 || guideCategories.indexOf('photo-jewelry') !== -1 || guideCategories.indexOf('photo-jewellery') !== -1 || guideCategories.indexOf('projection-jewelry') !== -1 || guideCategories.indexOf('projection-jewellery') !== -1 || guideCategories.indexOf('photo') !== -1 || /תכשיט\s*עם\s*תמונה|תמונה\s*מוקרנת|תכשיטי\s*תמונה/.test(productTitleForGuide);
+    var suppressAllSizeGuides = isGreetingJewelryForGuide || isPhotoJewelryForGuide;
+
+    var isBraceletProduct = !suppressAllSizeGuides && (product.category === 'bracelets' || (Array.isArray(product.categories) && product.categories.indexOf('bracelets') !== -1));
     var braceletSizeGuideLink = $('#braceletSizeGuideLink');
     if (braceletSizeGuideLink) braceletSizeGuideLink.hidden = !isBraceletProduct;
+
+    var isRingProduct = !suppressAllSizeGuides && (product.category === 'rings' || (Array.isArray(product.categories) && product.categories.indexOf('rings') !== -1));
+    var ringSizeGuideLink = $('#ringSizeGuideLink');
+    if (ringSizeGuideLink) ringSizeGuideLink.hidden = !isRingProduct;
+
+    var isNecklaceProduct = !suppressAllSizeGuides && (product.category === 'necklaces' || (Array.isArray(product.categories) && product.categories.indexOf('necklaces') !== -1) || /שרשרת/.test(productTitleForGuide) || /necklace/i.test(productTitleForGuide));
+    var necklaceSizeGuideLink = $('#necklaceSizeGuideLink');
+    if (necklaceSizeGuideLink) necklaceSizeGuideLink.hidden = !isNecklaceProduct;
     $('#necklaceHeading').textContent = L(product.necklaceHeading) || (isBraceletProduct ? (lang === 'he' ? 'בחרו צבע' : 'Choose color') : (lang === 'he' ? 'בחרו שרשרת' : 'Choose a necklace'));
     $('#boxHeading').textContent = L(product.boxHeading) || (lang === 'he' ? 'בחרו קופסה' : 'Choose a box');
     $('#summaryNecklaceLabel').textContent = L(product.necklaceSummaryLabel) || (isBraceletProduct ? (lang === 'he' ? 'צמיד' : 'Bracelet') : (lang === 'he' ? 'שרשרת' : 'Necklace'));

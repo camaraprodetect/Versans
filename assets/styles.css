@@ -4640,3 +4640,47 @@ body.site-overlay-open{overflow:hidden}
   .product-help-link__copy strong{font-size:.82rem}
   .product-help-link__copy small{font-size:.68rem}
 }
+
+/* ===== VerSans category banners subtle radius 2026-10-01 =====
+   Applies only to collection/category promo banners. The homepage hero and mobile hero are intentionally excluded. */
+.home-page .glasses-collection-banner,
+.home-page .watches-collection-banner,
+.home-page .other-collections-banner,
+.home-page .greeting-custom-collection-banner,
+.home-page .gift-boxes-collection-banner,
+.home-page .photo-jewelry-collection-banner,
+.home-page .rings-collection-banner,
+.home-page .bracelets-collection-banner,
+.home-page .necklaces-collection-banner,
+.home-page .home-collection-banner,
+.home-page .hats-collection-banner{
+  border-radius:14px!important;
+  overflow:hidden!important;
+}
+.home-page .glasses-collection-banner__picture,
+.home-page .watches-collection-banner__picture,
+.home-page .other-collections-banner__picture,
+.home-page .greeting-custom-collection-banner__picture,
+.home-page .gift-boxes-collection-banner__picture,
+.home-page .photo-jewelry-collection-banner__picture,
+.home-page .rings-collection-banner__picture,
+.home-page .bracelets-collection-banner__picture,
+.home-page .necklaces-collection-banner__picture,
+.home-page .home-collection-banner__picture,
+.home-page .hats-collection-banner__picture{
+  border-radius:inherit;
+  overflow:hidden;
+}
+.home-page .glasses-collection-banner img,
+.home-page .watches-collection-banner img,
+.home-page .other-collections-banner img,
+.home-page .greeting-custom-collection-banner img,
+.home-page .gift-boxes-collection-banner img,
+.home-page .photo-jewelry-collection-banner img,
+.home-page .rings-collection-banner img,
+.home-page .bracelets-collection-banner img,
+.home-page .necklaces-collection-banner img,
+.home-page .home-collection-banner img,
+.home-page .hats-collection-banner img{
+  border-radius:inherit;
+}

@@ -613,10 +613,10 @@ var PRODUCTS = [
       },
       {
         "id": "18in",
-        "addPrice": 10,
+        "addPrice": 20,
         "priceLabel": {
-          "he": "279.90 ₪",
-          "en": "₪279.90"
+          "he": "289.90 ₪",
+          "en": "₪289.90"
         },
         "label": {
           "he": "45 ס״מ",
@@ -625,10 +625,10 @@ var PRODUCTS = [
       },
       {
         "id": "20in",
-        "addPrice": 20,
+        "addPrice": 40,
         "priceLabel": {
-          "he": "289.90 ₪",
-          "en": "₪289.90"
+          "he": "309.90 ₪",
+          "en": "₪309.90"
         },
         "label": {
           "he": "50 ס״מ",
@@ -637,10 +637,10 @@ var PRODUCTS = [
       },
       {
         "id": "22in",
-        "addPrice": 30,
+        "addPrice": 60,
         "priceLabel": {
-          "he": "299.90 ₪",
-          "en": "₪299.90"
+          "he": "329.90 ₪",
+          "en": "₪329.90"
         },
         "label": {
           "he": "55 ס״מ",
@@ -649,10 +649,10 @@ var PRODUCTS = [
       },
       {
         "id": "24in",
-        "addPrice": 40,
+        "addPrice": 80,
         "priceLabel": {
-          "he": "309.90 ₪",
-          "en": "₪309.90"
+          "he": "349.90 ₪",
+          "en": "₪349.90"
         },
         "label": {
           "he": "60 ס״מ",
@@ -739,8 +739,8 @@ var PRODUCTS = [
       ]
     },
     "afterText": {
-      "he": "בחרו אורך ורוחב והמחיר יתעדכן אוטומטית. לדוגמה, 55 ס״מ ברוחב 5 מ״מ עולה 309.90 ₪. גרסאות הזהב, אם מוצגות, הן בציפוי 5 שכבות זהב 18 קראט.",
-      "en": "Choose a length and width and the price updates automatically. For example, 55 cm at 5mm width costs ₪309.90. Gold versions, where offered, use 5 layers of 18K gold plating."
+      "he": "בחרו אורך ורוחב והמחיר יתעדכן אוטומטית. לדוגמה, 55 ס״מ ברוחב 5 מ״מ עולה 339.90 ₪. גרסאות הזהב, אם מוצגות, הן בציפוי 5 שכבות זהב 18 קראט.",
+      "en": "Choose a length and width and the price updates automatically. For example, 55 cm at 5mm width costs ₪339.90. Gold versions, where offered, use 5 layers of 18K gold plating."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -942,7 +942,7 @@ var PRODUCTS = [
     ],
     "price": 189.9,
     "title": {
-      "he": "צמיד טניס פרח",
+      "he": "צמיד טניס רויאל",
       "en": "Flower Tennis Bracelet"
     },
     "subtitle": {
@@ -988,7 +988,7 @@ var PRODUCTS = [
       }
     ],
     "cardTitle": {
-      "he": "צמיד טניס פרח",
+      "he": "צמיד טניס רויאל",
       "en": "Flower Tennis Bracelet"
     },
     "cardMessage": {
@@ -1412,22 +1412,22 @@ var PRODUCTS = [
     "badge": null,
     "cardMode": "view",
     "hideMessageCard": true,
-    "hoverImage": "images/products/product-15/product-15-2.png",
+    "hoverImage": "images/products/product-15/product-15-1.png",
     "collectionMedia": {
       "women": {
-        "image": "images/products/product-15/product-15-1.png",
-        "hoverImage": "images/products/product-15/product-15-2.png"
+        "image": "images/products/product-15/product-15-4.png",
+        "hoverImage": "images/products/product-15/product-15-1.png"
       },
       "men": {
-        "image": "images/products/product-15/product-15-1.png",
-        "hoverImage": "images/products/product-15/product-15-2.png"
+        "image": "images/products/product-15/product-15-4.png",
+        "hoverImage": "images/products/product-15/product-15-1.png"
       }
     },
     "sourceUrl": "https://he.aliexpress.com/item/1005009350329550.html",
     "images": [
+      "images/products/product-15/product-15-4.png",
       "images/products/product-15/product-15-1.png",
-      "images/products/product-15/product-15-2.png",
-      "images/products/product-15/product-15-3.png"
+      "images/products/product-15/product-15-2.png"
     ],
     "price": 339.9,
     "title": {
@@ -1553,22 +1553,22 @@ var PRODUCTS = [
     "badge": null,
     "cardMode": "view",
     "hideMessageCard": true,
-    "hoverImage": "images/products/product-16/product-16-3.png",
+    "hoverImage": "images/products/product-16/product-16-2.png",
     "collectionMedia": {
       "women": {
-        "image": "images/products/product-16/product-16-2.png",
-        "hoverImage": "images/products/product-16/product-16-3.png"
+        "image": "images/products/product-16/product-16-4.png",
+        "hoverImage": "images/products/product-16/product-16-2.png"
       },
       "men": {
-        "image": "images/products/product-16/product-16-2.png",
-        "hoverImage": "images/products/product-16/product-16-3.png"
+        "image": "images/products/product-16/product-16-4.png",
+        "hoverImage": "images/products/product-16/product-16-2.png"
       }
     },
     "sourceUrl": "https://he.aliexpress.com/item/1005009350329550.html",
     "images": [
+      "images/products/product-16/product-16-4.png",
       "images/products/product-16/product-16-2.png",
-      "images/products/product-16/product-16-3.png",
-      "images/products/product-16/product-16-1.png"
+      "images/products/product-16/product-16-3.png"
     ],
     "price": 339.9,
     "title": {
@@ -1694,22 +1694,22 @@ var PRODUCTS = [
     "badge": null,
     "cardMode": "view",
     "hideMessageCard": true,
-    "hoverImage": "images/products/product-17/product-17-3.png",
+    "hoverImage": "images/products/product-17/product-17-2.png",
     "collectionMedia": {
       "women": {
-        "image": "images/products/product-17/product-17-2.png",
-        "hoverImage": "images/products/product-17/product-17-3.png"
+        "image": "images/products/product-17/product-17-4.png",
+        "hoverImage": "images/products/product-17/product-17-2.png"
       },
       "men": {
-        "image": "images/products/product-17/product-17-2.png",
-        "hoverImage": "images/products/product-17/product-17-3.png"
+        "image": "images/products/product-17/product-17-4.png",
+        "hoverImage": "images/products/product-17/product-17-2.png"
       }
     },
     "sourceUrl": "https://he.aliexpress.com/item/1005009350329550.html",
     "images": [
+      "images/products/product-17/product-17-4.png",
       "images/products/product-17/product-17-2.png",
-      "images/products/product-17/product-17-3.png",
-      "images/products/product-17/product-17-1.png"
+      "images/products/product-17/product-17-3.png"
     ],
     "price": 339.9,
     "title": {
@@ -1887,10 +1887,10 @@ var PRODUCTS = [
       },
       {
         "id": "18in",
-        "addPrice": 10,
+        "addPrice": 20,
         "priceLabel": {
-          "he": "279.90 ₪",
-          "en": "₪279.90"
+          "he": "289.90 ₪",
+          "en": "₪289.90"
         },
         "label": {
           "he": "45 ס״מ",
@@ -1899,10 +1899,10 @@ var PRODUCTS = [
       },
       {
         "id": "20in",
-        "addPrice": 20,
+        "addPrice": 40,
         "priceLabel": {
-          "he": "289.90 ₪",
-          "en": "₪289.90"
+          "he": "309.90 ₪",
+          "en": "₪309.90"
         },
         "label": {
           "he": "50 ס״מ",
@@ -1911,10 +1911,10 @@ var PRODUCTS = [
       },
       {
         "id": "22in",
-        "addPrice": 30,
+        "addPrice": 60,
         "priceLabel": {
-          "he": "299.90 ₪",
-          "en": "₪299.90"
+          "he": "329.90 ₪",
+          "en": "₪329.90"
         },
         "label": {
           "he": "55 ס״מ",
@@ -1923,10 +1923,10 @@ var PRODUCTS = [
       },
       {
         "id": "24in",
-        "addPrice": 40,
+        "addPrice": 80,
         "priceLabel": {
-          "he": "309.90 ₪",
-          "en": "₪309.90"
+          "he": "349.90 ₪",
+          "en": "₪349.90"
         },
         "label": {
           "he": "60 ס״מ",
@@ -2013,8 +2013,8 @@ var PRODUCTS = [
       ]
     },
     "afterText": {
-      "he": "בחרו אורך ורוחב והמחיר יתעדכן אוטומטית. לדוגמה, 55 ס״מ ברוחב 5 מ״מ עולה 309.90 ₪. השרשרת בצבע זהב ומצופה ב-5 שכבות זהב 18 קראט.",
-      "en": "Choose a length and width and the price updates automatically. For example, 55 cm at 5mm width costs ₪309.90. The chain has a gold-tone finish with 5 layers of 18K gold plating."
+      "he": "בחרו אורך ורוחב והמחיר יתעדכן אוטומטית. לדוגמה, 55 ס״מ ברוחב 5 מ״מ עולה 339.90 ₪. השרשרת בצבע זהב ומצופה ב-5 שכבות זהב 18 קראט.",
+      "en": "Choose a length and width and the price updates automatically. For example, 55 cm at 5mm width costs ₪339.90. The chain has a gold-tone finish with 5 layers of 18K gold plating."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -7116,6 +7116,75 @@ var PRODUCTS = [
       }
     ],
     "colorDisplay": "image-choice"
+  },
+  {
+    "id": "watch-tachymeter-pro-black-01",
+    "slug": "product-89",
+    "urlSlug": "tachymeter-pro-black-watch",
+    "sku": "VS-WATCH-14",
+    "category": "watches",
+    "categories": [
+      "watches",
+      "watches-men"
+    ],
+    "badge": null,
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "cardImage": "images/products/product-89/product-89-1.png",
+    "hoverImage": "images/products/product-89/product-89-2.png",
+    "images": [
+      "images/products/product-89/product-89-1.png",
+      "images/products/product-89/product-89-2.png"
+    ],
+    "price": 419.9,
+    "title": {
+      "he": "שעון טכימטר פרו - צבע שחור",
+      "en": "Tachymeter Pro Watch - Black"
+    },
+    "subtitle": {
+      "he": "שעון גברים MARK FAIRWHALE מדגם FW-5016 בעיצוב ספורטיבי שחור, עם מנגנון Quartz, סקלת טכימטר ותצוגה זוהרת.",
+      "en": "MARK FAIRWHALE FW-5016 men's black sport watch with quartz movement, tachymeter scale and luminous display."
+    },
+    "cardTitle": {
+      "he": "",
+      "en": ""
+    },
+    "cardMessage": {
+      "he": "",
+      "en": ""
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "דגם MARK FAIRWHALE FW-5016",
+        "מנגנון Quartz לשימוש יום-יומי",
+        "רצועת Premium Stainless Steel בגימור שחור בדגם המצולם",
+        "סקלת טכימטר על מסגרת השעון למראה ספורטיבי",
+        "מחוגים וסימונים זוהרים לקריאות טובה יותר בתאורה חלשה",
+        "חלון תאריך מובנה בחלק התחתון של לוח השעון",
+        "עיצוב גברים עם לוח רב-שכבתי ושלושה לוחות משנה"
+      ],
+      "en": [
+        "MARK FAIRWHALE model FW-5016",
+        "Quartz movement for everyday use",
+        "Black-finish Premium Stainless Steel bracelet on the pictured variant",
+        "Tachymeter scale around the bezel for a sporty look",
+        "Luminous hands and markers for improved low-light readability",
+        "Built-in date window at the lower part of the dial",
+        "Men's multi-layer dial design with three sub-dials"
+      ]
+    },
+    "afterText": {
+      "he": "שעון טכימטר פרו משלב גימור שחור, לוח ספורטיבי וסקלת טכימטר למראה מודרני ובולט.",
+      "en": "Tachymeter Pro combines a black finish, sporty dial and tachymeter scale for a modern statement look."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    }
   },
   {
     "id": "watch-ice-supra-90",
@@ -23242,8 +23311,8 @@ var PRODUCTS = [
       "en": "Miami Double Row Iced Bracelet - 18K White Gold Plated - Silver"
     },
     "subtitle": {
-      "he": "צמיד Cuban Miami Double Row משובץ Cubic Zirconia · מצופה 18 קראט זהב לבן · לבחירה באורך ובצבע",
-      "en": "Miami double-row Cuban bracelet with Cubic Zirconia · 18K White Gold Plated · choose length and color"
+      "he": "צמיד Cuban Miami Double Row משובץ Cubic Zirconia · רוחב 12 מ״מ · מצופה 18 קראט זהב לבן · לבחירה באורך ובצבע",
+      "en": "Miami double-row Cuban bracelet with Cubic Zirconia · 12 mm wide · 18K White Gold Plated · choose length and color"
     },
     "sizeHeading": {
       "he": "בחרו אורך",
@@ -23295,6 +23364,7 @@ var PRODUCTS = [
       "he": [
         "צמיד Cuban Miami Double Row בעיצוב יוניסקס",
         "לבחירה באורכים: 17, 20 או 22 ס״מ",
+        "רוחב הצמיד: 12 מ״מ",
         "משובץ אבני Cubic Zirconia לאורך החוליות",
         "מבנה מתכתי עם ציפוי 18 קראט זהב לבן",
         "סוגר Box משובץ לאחיזה חזקה ולמראה אחיד",
@@ -23305,6 +23375,7 @@ var PRODUCTS = [
       "en": [
         "Unisex Miami Double Row Cuban bracelet",
         "Available lengths: 17, 20 or 22 cm",
+        "Bracelet width: 12 mm",
         "Cubic Zirconia set across the links",
         "Metal construction with 18k white gold plated",
         "Stone-set box clasp for a secure closure and cohesive finish",
@@ -23387,8 +23458,8 @@ var PRODUCTS = [
       "en": "Miami Double Row Iced Bracelet - 18K Gold Plated - Gold"
     },
     "subtitle": {
-      "he": "צמיד Cuban Miami Double Row משובץ Cubic Zirconia · מצופה 18 קראט זהב · לבחירה באורך ובצבע",
-      "en": "Miami double-row Cuban bracelet with Cubic Zirconia · 18K Gold Plated · choose length and color"
+      "he": "צמיד Cuban Miami Double Row משובץ Cubic Zirconia · רוחב 12 מ״מ · מצופה 18 קראט זהב · לבחירה באורך ובצבע",
+      "en": "Miami double-row Cuban bracelet with Cubic Zirconia · 12 mm wide · 18K Gold Plated · choose length and color"
     },
     "sizeHeading": {
       "he": "בחרו אורך",
@@ -23440,6 +23511,7 @@ var PRODUCTS = [
       "he": [
         "צמיד Cuban Miami Double Row בעיצוב יוניסקס",
         "לבחירה באורכים: 17, 20 או 22 ס״מ",
+        "רוחב הצמיד: 12 מ״מ",
         "משובץ אבני Cubic Zirconia לאורך החוליות",
         "מבנה מתכתי עם ציפוי 18 קראט זהב",
         "סוגר Box משובץ לאחיזה חזקה ולמראה אחיד",
@@ -23450,6 +23522,7 @@ var PRODUCTS = [
       "en": [
         "Unisex Miami Double Row Cuban bracelet",
         "Available lengths: 17, 20 or 22 cm",
+        "Bracelet width: 12 mm",
         "Cubic Zirconia set across the links",
         "Metal construction with 18k gold plated",
         "Stone-set box clasp for a secure closure and cohesive finish",
