@@ -15,6 +15,8 @@
     'greeting-sister': '/gifts-for-sister',
     necklaces: '/necklaces',
     bracelets: '/bracelets',
+    'bracelets-men': '/bracelets-men',
+    'bracelets-women': '/bracelets-women',
     rings: '/rings',
     'photo-bracelets': '/photo-bracelets',
     watches: '/watches',

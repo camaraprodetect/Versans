@@ -40,7 +40,7 @@
       if (!requestedCategory) requestedCategory = new URLSearchParams(logicalSearch()).get('cat');
       var validCategories = [
         'all', 'greeting', 'greeting-mom', 'greeting-partner', 'greeting-daughter', 'greeting-sister',
-        'necklaces', 'bracelets', 'rings', 'photo-bracelets', 'watches', 'watches-men', 'watches-women',
+        'necklaces', 'bracelets', 'bracelets-men', 'bracelets-women', 'rings', 'photo-bracelets', 'watches', 'watches-men', 'watches-women',
         'glasses', 'glasses-men', 'glasses-women', 'glasses-unisex',
         'hats'
       ];
@@ -448,11 +448,11 @@
     { slug: 'product-255', badge: 'פופולרי', family: 'cuban-tennis-6mm-chain' },
     { slug: 'product-237', badge: 'הכי נמכר', family: 'classic-tennis-bracelet' },
     { slug: 'product-96',  badge: 'פופולרי', family: 'clover-black' },
+    { slug: 'product-248', badge: 'הכי נמכר', family: 'soline-vvs-womens' },
     { slug: 'product-98',  badge: 'מומלץ', family: 'clover-black' },
     { slug: 'product-241', badge: 'הכי נמכר', family: 'titan-bracelet' },
     { slug: 'product-242', badge: 'פופולרי', family: 'titan-bracelet' },
     { slug: 'product-243', badge: 'הכי נמכר', family: 'vvs1-moissanite-cuban' },
-    { slug: 'product-248', badge: 'הכי נמכר', family: 'soline-vvs-womens' },
     { slug: 'product-257', badge: 'הכי נמכר', family: 'iced-cuban-24mm' },
     { slug: 'product-11',  badge: 'מבוקש', family: 'royal-tennis-bracelet' },
     { slug: 'product-13',  badge: 'מומלץ', family: 'emerald-tennis-bracelet' },
@@ -718,7 +718,7 @@
 
     var braceletsCollectionBanner = $('#braceletsCollectionBanner');
     if (braceletsCollectionBanner) {
-      braceletsCollectionBanner.hidden = state.filter !== 'bracelets';
+      braceletsCollectionBanner.hidden = !(state.filter === 'bracelets' || state.filter.indexOf('bracelets-') === 0);
     }
 
     var necklacesCollectionBanner = $('#necklacesCollectionBanner');
@@ -752,6 +752,7 @@
   function renderCollectionNav() {
     var activeKey = state.filter;
     if (activeKey.indexOf('greeting-') === 0) activeKey = 'greeting';
+    else if (activeKey.indexOf('bracelets-') === 0) activeKey = 'bracelets';
     else if (activeKey.indexOf('watches-') === 0) activeKey = 'watches';
     else if (activeKey.indexOf('glasses-') === 0) activeKey = 'glasses';
 

@@ -754,7 +754,9 @@ var PRODUCTS = [
     "sku": "VS-BR-237",
     "category": "bracelets",
     "categories": [
-      "bracelets"
+      "bracelets",
+      "bracelets-men",
+      "bracelets-women"
     ],
     "badge": null,
     "cardMode": "view",
@@ -919,7 +921,9 @@ var PRODUCTS = [
     "sku": "KW-BR-011",
     "category": "bracelets",
     "categories": [
-      "bracelets"
+      "bracelets",
+      "bracelets-men",
+      "bracelets-women"
     ],
     "badge": null,
     "hoverImage": "images/products/product-11/product-11-3.png",
@@ -1035,7 +1039,9 @@ var PRODUCTS = [
     "sku": "KW-BR-012",
     "category": "bracelets",
     "categories": [
-      "bracelets"
+      "bracelets",
+      "bracelets-men",
+      "bracelets-women"
     ],
     "badge": null,
     "hoverImage": "images/products/product-12/product-12-2.png",
@@ -1151,7 +1157,9 @@ var PRODUCTS = [
     "sku": "KW-BR-013",
     "category": "bracelets",
     "categories": [
-      "bracelets"
+      "bracelets",
+      "bracelets-men",
+      "bracelets-women"
     ],
     "badge": null,
     "hoverImage": "images/products/product-13/product-13-2.png",
@@ -1265,7 +1273,9 @@ var PRODUCTS = [
     "sku": "KW-BR-014",
     "category": "bracelets",
     "categories": [
-      "bracelets"
+      "bracelets",
+      "bracelets-men",
+      "bracelets-women"
     ],
     "badge": null,
     "hoverImage": "images/products/product-14/product-14-2.png",
@@ -7465,7 +7475,9 @@ var PRODUCTS = [
     "sku": "KW-BR-094",
     "category": "bracelets",
     "categories": [
-      "bracelets"
+      "bracelets",
+      "bracelets-men",
+      "bracelets-women"
     ],
     "badge": null,
     "hoverImage": "images/products/product-94/product-94-hover.png",
@@ -7661,7 +7673,9 @@ var PRODUCTS = [
     "sku": "KW-BR-095",
     "category": "bracelets",
     "categories": [
-      "bracelets"
+      "bracelets",
+      "bracelets-men",
+      "bracelets-women"
     ],
     "badge": null,
     "hoverImage": "images/products/product-95/product-95-hover.png",
@@ -7857,7 +7871,9 @@ var PRODUCTS = [
     "sku": "KW-BR-096",
     "category": "bracelets",
     "categories": [
-      "bracelets"
+      "bracelets",
+      "bracelets-men",
+      "bracelets-women"
     ],
     "badge": null,
     "hoverImage": "images/products/product-96/product-96-hover.png",
@@ -8053,7 +8069,9 @@ var PRODUCTS = [
     "sku": "KW-BR-097",
     "category": "bracelets",
     "categories": [
-      "bracelets"
+      "bracelets",
+      "bracelets-men",
+      "bracelets-women"
     ],
     "badge": null,
     "hoverImage": "images/products/product-97/product-97-hover.png",
@@ -8249,7 +8267,9 @@ var PRODUCTS = [
     "sku": "KW-BR-098",
     "category": "bracelets",
     "categories": [
-      "bracelets"
+      "bracelets",
+      "bracelets-men",
+      "bracelets-women"
     ],
     "badge": null,
     "hoverImage": "images/products/product-98/product-98-hover.png",
@@ -8445,7 +8465,9 @@ var PRODUCTS = [
     "sku": "KW-BR-099",
     "category": "bracelets",
     "categories": [
-      "bracelets"
+      "bracelets",
+      "bracelets-men",
+      "bracelets-women"
     ],
     "badge": null,
     "hoverImage": "images/products/product-99/product-99-hover.png",
@@ -19237,7 +19259,8 @@ var PRODUCTS = [
     "sku": "VS-BR-217",
     "category": "bracelets",
     "categories": [
-      "bracelets"
+      "bracelets",
+      "bracelets-women"
     ],
     "badge": null,
     "cardMode": "view",
@@ -19344,7 +19367,8 @@ var PRODUCTS = [
     "sku": "VS-BR-218",
     "category": "bracelets",
     "categories": [
-      "bracelets"
+      "bracelets",
+      "bracelets-women"
     ],
     "badge": null,
     "cardMode": "view",
@@ -19451,7 +19475,8 @@ var PRODUCTS = [
     "sku": "VS-BR-219",
     "category": "bracelets",
     "categories": [
-      "bracelets"
+      "bracelets",
+      "bracelets-women"
     ],
     "badge": null,
     "cardMode": "view",
@@ -19554,7 +19579,8 @@ var PRODUCTS = [
     "sku": "VS-BR-220",
     "category": "bracelets",
     "categories": [
-      "bracelets"
+      "bracelets",
+      "bracelets-women"
     ],
     "badge": null,
     "cardMode": "view",
@@ -19657,7 +19683,8 @@ var PRODUCTS = [
     "sku": "VS-BR-221",
     "category": "bracelets",
     "categories": [
-      "bracelets"
+      "bracelets",
+      "bracelets-women"
     ],
     "badge": null,
     "cardMode": "view",
@@ -19760,7 +19787,8 @@ var PRODUCTS = [
     "sku": "VS-BR-222",
     "category": "bracelets",
     "categories": [
-      "bracelets"
+      "bracelets",
+      "bracelets-women"
     ],
     "badge": null,
     "cardMode": "view",
@@ -21842,992 +21870,995 @@ var PRODUCTS = [
         "swatch": "linear-gradient(135deg,#fbfbfb 0%,#bfc5cc 48%,#f7f8fa 72%,#9da4ac 100%)",
         "image": "images/products/product-235/product-235-1.png"
       },
-     {
-    "id": "gold",
-    "label": {
-     "he": "זהב",
-     "en": "Gold"
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "swatch": "linear-gradient(135deg,#fff0a8 0%,#d5a233 48%,#ffe28a 72%,#b67d18 100%)",
+        "image": "images/products/product-236/product-236-1.png"
+      }
+    ],
+    "defaultColorId": "gold",
+    "cardTitle": {
+      "he": "טבעת תלתן זירקון - צבע זהב",
+      "en": "Zircon Clover Ring - Gold"
     },
-    "swatch": "linear-gradient(135deg,#fff0a8 0%,#d5a233 48%,#ffe28a 72%,#b67d18 100%)",
-    "image": "images/products/product-236/product-236-1.png"
-   }
-  ],
-  "defaultColorId": "gold",
-  "cardTitle": {
-   "he": "טבעת תלתן זירקון - צבע זהב",
-   "en": "Zircon Clover Ring - Gold"
-  },
-  "cardMessage": {
-   "he": "טבעת תלתן עדינה מכסף סטרלינג 925, משובצת אבני זירקון. לבחירה בכסף או זהב ובמידות 5–8.",
-   "en": "A delicate 925 sterling silver clover ring set with zircon stones. Available in silver or gold, sizes 5–8."
-  },
-  "signature": {
-   "he": "",
-   "en": ""
-  },
-  "details": {
-   "he": [
-    "חומר: Sterling Silver 925",
-    "אבנים: זירקון",
-    "עיצוב: תלתן ארבעה עלים עם חישוק כדורי עדין",
-    "צבעים לבחירה: כסף או זהב",
-    "מידות לבחירה: 5, 6, 7, 8",
-    "מחיר התחלתי: 169.90 ₪",
-    "כל עלייה במידה מוסיפה 2.90 ₪ למחיר",
-    "הגלריה כוללת את כל 6 התמונות של גרסאות הכסף והזהב"
-   ],
-   "en": [
-    "Material: 925 Sterling Silver",
-    "Stones: Zircon",
-    "Design: Four-leaf clover with a delicate beaded band",
-    "Available colors: Silver or Gold",
-    "Available sizes: 5, 6, 7, 8",
-    "Starting price: ₪169.90",
-    "Each size step adds ₪2.90 to the price",
-    "Gallery includes all 6 images of the silver and gold versions"
-   ]
-  },
-  "afterText": {
-   "he": "בחרו צבע ומידה. בעמוד המוצר מוצגות כל 6 התמונות של גרסאות הכסף והזהב.",
-   "en": "Choose a color and size. The product page displays all 6 images of the silver and gold versions."
-  },
-  "deliveryBusinessDays": {
-   "min": 9,
-   "max": 14
-  }
- }
- ,{
-  "id": "titan-heavy-chain-silver-239",
-  "slug": "product-239",
-  "urlSlug": "titan-heavy-chain-silver",
-  "sku": "VS-NK-239",
-  "category": "necklaces",
-  "categories": [
-   "necklaces"
-  ],
-  "badge": null,
-  "cardMode": "view",
-  "hideMessageCard": true,
-  "showAllGalleryThumbs": true,
-  "defaultNecklaceId": "silver",
-  "defaultColorId": "8mm",
-  "hoverImage": "images/products/product-239/product-239-1.png",
-  "collectionMedia": {
-   "women": {
-    "image": "images/products/product-239/product-239-3.png",
-    "hoverImage": "images/products/product-239/product-239-1.png"
-   },
-   "men": {
-    "image": "images/products/product-239/product-239-3.png",
-    "hoverImage": "images/products/product-239/product-239-1.png"
-   }
-  },
-  "sourceUrl": "https://he.aliexpress.com/item/1005006169687156.html",
-  "images": [
-   "images/products/product-239/product-239-3.png",
-   "images/products/product-239/product-239-1.png",
-   "images/products/product-239/product-239-2.png",
-   "images/products/product-239/product-239-6.png",
-   "images/products/product-239/product-239-4.png",
-   "images/products/product-239/product-239-5.png"
-  ],
-  "price": 259.9,
-  "title": {
-   "he": "שרשרת טיטאן כבדה - צבע כסף",
-   "en": "Titan Heavy Chain - Silver"
-  },
-  "subtitle": {
-   "he": "שרשרת קיובנית כבדה יוניסקס · Premium Stainless Steel · לבחירה באורך, רוחב וצבע",
-   "en": "Heavy unisex Cuban chain · premium stainless steel · choose length, width and metal color"
-  },
-  "necklaceHeading": {
-   "he": "בחרו צבע",
-   "en": "Choose color"
-  },
-  "necklaces": [
-   {
-    "id": "silver",
-    "label": {
-     "he": "כסף",
-     "en": "Silver"
+    "cardMessage": {
+      "he": "טבעת תלתן עדינה מכסף סטרלינג 925, משובצת אבני זירקון. לבחירה בכסף או זהב ובמידות 5–8.",
+      "en": "A delicate 925 sterling silver clover ring set with zircon stones. Available in silver or gold, sizes 5–8."
     },
-    "image": "images/products/product-239/product-239-3.png"
-   },
-   {
-    "id": "gold",
-    "label": {
-     "he": "זהב",
-     "en": "Gold"
+    "signature": {
+      "he": "",
+      "en": ""
     },
-    "image": "images/products/product-239/product-239-6.png"
-   }
-  ],
-  "sizeHeading": {
-   "he": "בחרו אורך",
-   "en": "Choose length"
-  },
-  "sizes": [
-   {
-    "id": "16in",
-    "addPrice": 0,
-    "priceLabel": {
-     "he": "259.90 ₪",
-     "en": "₪259.90"
+    "details": {
+      "he": [
+        "חומר: Sterling Silver 925",
+        "אבנים: זירקון",
+        "עיצוב: תלתן ארבעה עלים עם חישוק כדורי עדין",
+        "צבעים לבחירה: כסף או זהב",
+        "מידות לבחירה: 5, 6, 7, 8",
+        "מחיר התחלתי: 169.90 ₪",
+        "כל עלייה במידה מוסיפה 2.90 ₪ למחיר",
+        "הגלריה כוללת את כל 6 התמונות של גרסאות הכסף והזהב"
+      ],
+      "en": [
+        "Material: 925 Sterling Silver",
+        "Stones: Zircon",
+        "Design: Four-leaf clover with a delicate beaded band",
+        "Available colors: Silver or Gold",
+        "Available sizes: 5, 6, 7, 8",
+        "Starting price: ₪169.90",
+        "Each size step adds ₪2.90 to the price",
+        "Gallery includes all 6 images of the silver and gold versions"
+      ]
     },
-    "label": {
-     "he": "40 ס״מ",
-     "en": "40 cm"
+    "afterText": {
+      "he": "בחרו צבע ומידה. בעמוד המוצר מוצגות כל 6 התמונות של גרסאות הכסף והזהב.",
+      "en": "Choose a color and size. The product page displays all 6 images of the silver and gold versions."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
     }
-   },
-   {
-    "id": "18in",
-    "addPrice": 10,
-    "priceLabel": {
-     "he": "269.90 ₪",
-     "en": "₪269.90"
-    },
-    "label": {
-     "he": "45 ס״מ",
-     "en": "45 cm"
-    }
-   },
-   {
-    "id": "20in",
-    "addPrice": 20,
-    "priceLabel": {
-     "he": "279.90 ₪",
-     "en": "₪279.90"
-    },
-    "label": {
-     "he": "50 ס״מ",
-     "en": "50 cm"
-    }
-   },
-   {
-    "id": "22in",
-    "addPrice": 30,
-    "priceLabel": {
-     "he": "289.90 ₪",
-     "en": "₪289.90"
-    },
-    "label": {
-     "he": "55 ס״מ",
-     "en": "55 cm"
-    }
-   },
-   {
-    "id": "24in",
-    "addPrice": 40,
-    "priceLabel": {
-     "he": "299.90 ₪",
-     "en": "₪299.90"
-    },
-    "label": {
-     "he": "60 ס״מ",
-     "en": "60 cm"
-    }
-   }
-  ],
-  "colorHeading": {
-   "he": "בחרו רוחב",
-   "en": "Choose width"
   },
-  "colors": [
-   {
-    "id": "8mm",
-    "addPrice": 0,
-    "priceLabel": {
-     "he": "ללא תוספת",
-     "en": "Included"
-    },
-    "label": {
-     "he": "8 מ״מ",
-     "en": "8 mm"
-    }
-   },
-   {
-    "id": "10mm",
-    "addPrice": 10,
-    "priceLabel": {
-     "he": "+10 ₪",
-     "en": "+₪10"
-    },
-    "label": {
-     "he": "10 מ״מ",
-     "en": "10 mm"
-    }
-   },
-   {
-    "id": "12mm",
-    "addPrice": 20,
-    "priceLabel": {
-     "he": "+20 ₪",
-     "en": "+₪20"
-    },
-    "label": {
-     "he": "12 מ״מ",
-     "en": "12 mm"
-    }
-   },
   {
-  "id": "14mm",
-  "addPrice": 30,
-  "priceLabel": {
-   "he": "+30 ₪",
-   "en": "+₪30"
+    "id": "titan-heavy-chain-silver-239",
+    "slug": "product-239",
+    "urlSlug": "titan-heavy-chain-silver",
+    "sku": "VS-NK-239",
+    "category": "necklaces",
+    "categories": [
+      "necklaces"
+    ],
+    "badge": null,
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "showAllGalleryThumbs": true,
+    "defaultNecklaceId": "silver",
+    "defaultColorId": "8mm",
+    "hoverImage": "images/products/product-239/product-239-1.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-239/product-239-3.png",
+        "hoverImage": "images/products/product-239/product-239-1.png"
+      },
+      "men": {
+        "image": "images/products/product-239/product-239-3.png",
+        "hoverImage": "images/products/product-239/product-239-1.png"
+      }
+    },
+    "sourceUrl": "https://he.aliexpress.com/item/1005006169687156.html",
+    "images": [
+      "images/products/product-239/product-239-3.png",
+      "images/products/product-239/product-239-1.png",
+      "images/products/product-239/product-239-2.png",
+      "images/products/product-239/product-239-6.png",
+      "images/products/product-239/product-239-4.png",
+      "images/products/product-239/product-239-5.png"
+    ],
+    "price": 259.9,
+    "title": {
+      "he": "שרשרת טיטאן כבדה - צבע כסף",
+      "en": "Titan Heavy Chain - Silver"
+    },
+    "subtitle": {
+      "he": "שרשרת קיובנית כבדה יוניסקס · Premium Stainless Steel · לבחירה באורך, רוחב וצבע",
+      "en": "Heavy unisex Cuban chain · premium stainless steel · choose length, width and metal color"
+    },
+    "necklaceHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "necklaces": [
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "image": "images/products/product-239/product-239-3.png"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "image": "images/products/product-239/product-239-6.png"
+      }
+    ],
+    "sizeHeading": {
+      "he": "בחרו אורך",
+      "en": "Choose length"
+    },
+    "sizes": [
+      {
+        "id": "16in",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "259.90 ₪",
+          "en": "₪259.90"
+        },
+        "label": {
+          "he": "40 ס״מ",
+          "en": "40 cm"
+        }
+      },
+      {
+        "id": "18in",
+        "addPrice": 10,
+        "priceLabel": {
+          "he": "269.90 ₪",
+          "en": "₪269.90"
+        },
+        "label": {
+          "he": "45 ס״מ",
+          "en": "45 cm"
+        }
+      },
+      {
+        "id": "20in",
+        "addPrice": 20,
+        "priceLabel": {
+          "he": "279.90 ₪",
+          "en": "₪279.90"
+        },
+        "label": {
+          "he": "50 ס״מ",
+          "en": "50 cm"
+        }
+      },
+      {
+        "id": "22in",
+        "addPrice": 30,
+        "priceLabel": {
+          "he": "289.90 ₪",
+          "en": "₪289.90"
+        },
+        "label": {
+          "he": "55 ס״מ",
+          "en": "55 cm"
+        }
+      },
+      {
+        "id": "24in",
+        "addPrice": 40,
+        "priceLabel": {
+          "he": "299.90 ₪",
+          "en": "₪299.90"
+        },
+        "label": {
+          "he": "60 ס״מ",
+          "en": "60 cm"
+        }
+      }
+    ],
+    "colorHeading": {
+      "he": "בחרו רוחב",
+      "en": "Choose width"
+    },
+    "colors": [
+      {
+        "id": "8mm",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "ללא תוספת",
+          "en": "Included"
+        },
+        "label": {
+          "he": "8 מ״מ",
+          "en": "8 mm"
+        }
+      },
+      {
+        "id": "10mm",
+        "addPrice": 10,
+        "priceLabel": {
+          "he": "+10 ₪",
+          "en": "+₪10"
+        },
+        "label": {
+          "he": "10 מ״מ",
+          "en": "10 mm"
+        }
+      },
+      {
+        "id": "12mm",
+        "addPrice": 20,
+        "priceLabel": {
+          "he": "+20 ₪",
+          "en": "+₪20"
+        },
+        "label": {
+          "he": "12 מ״מ",
+          "en": "12 mm"
+        }
+      },
+      {
+        "id": "14mm",
+        "addPrice": 30,
+        "priceLabel": {
+          "he": "+30 ₪",
+          "en": "+₪30"
+        },
+        "label": {
+          "he": "14 מ״מ",
+          "en": "14 mm"
+        }
+      }
+    ],
+    "cardTitle": {
+      "he": "שרשרת טיטאן כבדה - צבע כסף",
+      "en": "Titan Heavy Chain - Silver"
+    },
+    "cardMessage": {
+      "he": "שרשרת קיובנית כבדה במראה נקי ובולט עם חיתוך 4 צדדים, סוגר Versans מותאם אישית . בחרו צבע, אורך ורוחב.",
+      "en": "A bold heavy Cuban chain with a 4-sided cut, custom Versans clasp . Choose the color, length and width that suit you."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "שרשרת קיובנית כבדה יוניסקס - מתאימה לנשים ולגברים",
+        "עשויה Premium Stainless Steel למראה עמיד ויוקרתי",
+        "זמינה בצבע כסף או זהב ",
+        "חיתוך 4 צדדים (4-Sided Cut) למראה חד, בולט ומבריק יותר",
+        "רוחב לבחירה: 8, 10, 12 או 14 מ״מ",
+        "לבחירה באורכים: 40, 45, 50, 55 או 60 ס״מ",
+        "מגיעה עם סוגר מותאם אישית של Versans",
+        "סגירה חזקה ונוחה לשימוש יומיומי"
+      ],
+      "en": [
+        "Heavy unisex Cuban chain suitable for women and men",
+        "Made from Premium Stainless Steel for a durable premium finish",
+        "Available in silver or gold ",
+        "4-sided cut links for a sharper, bolder reflective look",
+        "Available widths: 8, 10, 12 or 14 mm",
+        "Available lengths: 40, 45, 50, 55 or 60 cm",
+        "Finished with a custom Versans clasp",
+        "Secure closure for comfortable everyday wear"
+      ]
+    },
+    "afterText": {
+      "he": "בחרו צבע, אורך ורוחב והמחיר יתעדכן אוטומטית. לדוגמה, 60 ס״מ ברוחב 14 מ״מ עולה 329.90 ₪.",
+      "en": "Choose the metal color, length and width and the price will update automatically. For example, 60 cm at 14 mm costs ₪329.90."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    }
   },
-  "label": {
-   "he": "14 מ״מ",
-   "en": "14 mm"
-  }
-  }
- ],
- "cardTitle": {
-  "he": "שרשרת טיטאן כבדה - צבע כסף",
-  "en": "Titan Heavy Chain - Silver"
- },
- "cardMessage": {
-  "he": "שרשרת קיובנית כבדה במראה נקי ובולט עם חיתוך 4 צדדים, סוגר Versans מותאם אישית . בחרו צבע, אורך ורוחב.",
-  "en": "A bold heavy Cuban chain with a 4-sided cut, custom Versans clasp . Choose the color, length and width that suit you."
- },
- "signature": {
-  "he": "",
-  "en": ""
- },
- "details": {
-  "he": [
-  "שרשרת קיובנית כבדה יוניסקס - מתאימה לנשים ולגברים",
-  "עשויה Premium Stainless Steel למראה עמיד ויוקרתי",
-  "זמינה בצבע כסף או זהב ",
-  "חיתוך 4 צדדים (4-Sided Cut) למראה חד, בולט ומבריק יותר",
-  "רוחב לבחירה: 8, 10, 12 או 14 מ״מ",
-  "לבחירה באורכים: 40, 45, 50, 55 או 60 ס״מ",
-  "מגיעה עם סוגר מותאם אישית של Versans",
-  "סגירה חזקה ונוחה לשימוש יומיומי"
-  ],
-  "en": [
-  "Heavy unisex Cuban chain suitable for women and men",
-  "Made from Premium Stainless Steel for a durable premium finish",
-  "Available in silver or gold ",
-  "4-sided cut links for a sharper, bolder reflective look",
-  "Available widths: 8, 10, 12 or 14 mm",
-  "Available lengths: 40, 45, 50, 55 or 60 cm",
-  "Finished with a custom Versans clasp",
-  "Secure closure for comfortable everyday wear"
-  ]
- },
- "afterText": {
-  "he": "בחרו צבע, אורך ורוחב והמחיר יתעדכן אוטומטית. לדוגמה, 60 ס״מ ברוחב 14 מ״מ עולה 329.90 ₪.",
-  "en": "Choose the metal color, length and width and the price will update automatically. For example, 60 cm at 14 mm costs ₪329.90."
- },
- "deliveryBusinessDays": {
-  "min": 9,
-  "max": 14
- }
- }
- ,{
-  "id": "titan-heavy-chain-gold-240",
-  "slug": "product-240",
-  "urlSlug": "titan-heavy-chain-gold",
-  "sku": "VS-NK-240",
-  "category": "necklaces",
-  "categories": [
-   "necklaces"
-  ],
-  "badge": null,
-  "cardMode": "view",
-  "hideMessageCard": true,
-  "showAllGalleryThumbs": true,
-  "defaultNecklaceId": "gold",
-  "defaultColorId": "8mm",
-  "hoverImage": "images/products/product-240/product-240-4.png",
-  "collectionMedia": {
-   "women": {
-    "image": "images/products/product-240/product-240-6.png",
-    "hoverImage": "images/products/product-240/product-240-4.png"
-   },
-   "men": {
-    "image": "images/products/product-240/product-240-6.png",
-    "hoverImage": "images/products/product-240/product-240-4.png"
-   }
-  },
-  "sourceUrl": "https://he.aliexpress.com/item/1005006169687156.html",
-  "images": [
-   "images/products/product-240/product-240-6.png",
-   "images/products/product-240/product-240-4.png",
-   "images/products/product-240/product-240-5.png",
-   "images/products/product-240/product-240-3.png",
-   "images/products/product-240/product-240-1.png",
-   "images/products/product-240/product-240-2.png"
-  ],
-  "price": 259.9,
-  "title": {
-   "he": "שרשרת טיטאן כבדה - צבע זהב",
-   "en": "Titan Heavy Chain - Gold"
-  },
-  "subtitle": {
-   "he": "שרשרת קיובנית כבדה יוניסקס · Premium Stainless Steel · לבחירה באורך, רוחב וצבע",
-   "en": "Heavy unisex Cuban chain · premium stainless steel · choose length, width and metal color"
-  },
-  "necklaceHeading": {
-   "he": "בחרו צבע",
-   "en": "Choose color"
-  },
-  "necklaces": [
-   {
-    "id": "silver",
-    "label": {
-     "he": "כסף",
-     "en": "Silver"
-    },
-    "image": "images/products/product-240/product-240-3.png"
-   },
-   {
-    "id": "gold",
-    "label": {
-     "he": "זהב",
-     "en": "Gold"
-    },
-    "image": "images/products/product-240/product-240-6.png"
-   }
-  ],
-  "sizeHeading": {
-   "he": "בחרו אורך",
-   "en": "Choose length"
-  },
-  "sizes": [
-   {
-    "id": "16in",
-    "addPrice": 0,
-    "priceLabel": {
-     "he": "259.90 ₪",
-     "en": "₪259.90"
-    },
-    "label": {
-     "he": "40 ס״מ",
-     "en": "40 cm"
-    }
-   },
-   {
-    "id": "18in",
-    "addPrice": 10,
-    "priceLabel": {
-     "he": "269.90 ₪",
-     "en": "₪269.90"
-    },
-    "label": {
-     "he": "45 ס״מ",
-     "en": "45 cm"
-    }
-   },
-   {
-    "id": "20in",
-    "addPrice": 20,
-    "priceLabel": {
-     "he": "279.90 ₪",
-     "en": "₪279.90"
-    },
-    "label": {
-     "he": "50 ס״מ",
-     "en": "50 cm"
-    }
-   },
-   {
-    "id": "22in",
-    "addPrice": 30,
-    "priceLabel": {
-     "he": "289.90 ₪",
-     "en": "₪289.90"
-    },
-    "label": {
-     "he": "55 ס״מ",
-     "en": "55 cm"
-    }
-   },
-   {
-    "id": "24in",
-    "addPrice": 40,
-    "priceLabel": {
-     "he": "299.90 ₪",
-     "en": "₪299.90"
-    },
-    "label": {
-     "he": "60 ס״מ",
-     "en": "60 cm"
-    }
-   }
-  ],
-  "colorHeading": {
-   "he": "בחרו רוחב",
-   "en": "Choose width"
-  },
-  "colors": [
-   {
-    "id": "8mm",
-    "addPrice": 0,
-    "priceLabel": {
-     "he": "ללא תוספת",
-     "en": "Included"
-    },
-    "label": {
-     "he": "8 מ״מ",
-     "en": "8 mm"
-    }
-   },
-   {
-    "id": "10mm",
-    "addPrice": 10,
-    "priceLabel": {
-     "he": "+10 ₪",
-     "en": "+₪10"
-    },
-    "label": {
-     "he": "10 מ״מ",
-     "en": "10 mm"
-    }
-   },
-   {
-    "id": "12mm",
-    "addPrice": 20,
-    "priceLabel": {
-     "he": "+20 ₪",
-     "en": "+₪20"
-    },
-    "label": {
-     "he": "12 מ״מ",
-     "en": "12 mm"
-    }
-   },
   {
-  "id": "14mm",
-  "addPrice": 30,
-  "priceLabel": {
-   "he": "+30 ₪",
-   "en": "+₪30"
-  },
-  "label": {
-   "he": "14 מ״מ",
-   "en": "14 mm"
-  }
-  }
- ],
- "cardTitle": {
-  "he": "שרשרת טיטאן כבדה - צבע זהב",
-  "en": "Titan Heavy Chain - Gold"
- },
- "cardMessage": {
-  "he": "שרשרת קיובנית כבדה במראה נקי ובולט עם חיתוך 4 צדדים, סוגר Versans מותאם אישית . בחרו צבע, אורך ורוחב.",
-  "en": "A bold heavy Cuban chain with a 4-sided cut, custom Versans clasp . Choose the color, length and width that suit you."
- },
- "signature": {
-  "he": "",
-  "en": ""
- },
- "details": {
-  "he": [
-  "שרשרת קיובנית כבדה יוניסקס - מתאימה לנשים ולגברים",
-  "עשויה Premium Stainless Steel למראה עמיד ויוקרתי",
-  "זמינה בצבע כסף או זהב ",
-  "חיתוך 4 צדדים (4-Sided Cut) למראה חד, בולט ומבריק יותר",
-  "רוחב לבחירה: 8, 10, 12 או 14 מ״מ",
-  "לבחירה באורכים: 40, 45, 50, 55 או 60 ס״מ",
-  "מגיעה עם סוגר מותאם אישית של Versans",
-  "סגירה חזקה ונוחה לשימוש יומיומי"
-  ],
-  "en": [
-  "Heavy unisex Cuban chain suitable for women and men",
-  "Made from Premium Stainless Steel for a durable premium finish",
-  "Available in silver or gold ",
-  "4-sided cut links for a sharper, bolder reflective look",
-  "Available widths: 8, 10, 12 or 14 mm",
-  "Available lengths: 40, 45, 50, 55 or 60 cm",
-  "Finished with a custom Versans clasp",
-  "Secure closure for comfortable everyday wear"
-  ]
- },
- "afterText": {
-  "he": "בחרו צבע, אורך ורוחב והמחיר יתעדכן אוטומטית. לדוגמה, 60 ס״מ ברוחב 14 מ״מ עולה 329.90 ₪.",
-  "en": "Choose the metal color, length and width and the price will update automatically. For example, 60 cm at 14 mm costs ₪329.90."
- },
- "deliveryBusinessDays": {
-  "min": 9,
-  "max": 14
- }
- }
- ,{
-  "id": "titan-heavy-bracelet-silver-241",
-  "slug": "product-241",
-  "urlSlug": "titan-heavy-bracelet-silver",
-  "sku": "VS-BR-241",
-  "category": "bracelets",
-  "categories": [
-   "bracelets"
-  ],
-  "badge": null,
-  "cardMode": "view",
-  "hideMessageCard": true,
-  "showAllGalleryThumbs": true,
-  "defaultNecklaceId": "silver",
-  "defaultColorId": "8mm",
-  "hoverImage": "images/products/product-241/product-241-2.png",
-  "collectionMedia": {
-   "women": {
-    "image": "images/products/product-241/product-241-1.png",
-    "hoverImage": "images/products/product-241/product-241-2.png"
-   },
-   "men": {
-    "image": "images/products/product-241/product-241-1.png",
-    "hoverImage": "images/products/product-241/product-241-2.png"
-   }
-  },
-  "sourceUrl": "https://he.aliexpress.com/item/1005006169687156.html?pdp_npi=4%40pre%21ILS%21%E2%82%AA+52.03%21%21%E2%82%AA+32.78%21%21111.11%21%21%400b8ded7b17907155884805210e0d1d%2112000036116806481%21sh%21IL%212751809487%21X&spm=a2g0o.store_pc_home.promotePruductList_2017557793395.1005006169687156&gatewayAdapt=glo2isr",
-  "images": [
-   "images/products/product-241/product-241-1.png",
-   "images/products/product-241/product-241-2.png",
-   "images/products/product-241/product-241-3.png",
-   "images/products/product-241/product-241-4.png",
-   "images/products/product-241/product-241-5.png",
-   "images/products/product-241/product-241-6.png"
-  ],
-  "price": 219.9,
-  "title": {
-   "he": "צמיד טיטאן כבד - צבע כסף",
-   "en": "Titan Heavy Bracelet - Silver"
-  },
-  "subtitle": {
-   "he": "צמיד קיובני כבד · Premium Stainless Steel · לבחירה באורך, רוחב וצבע",
-   "en": "Heavy Cuban bracelet · premium stainless steel · choose length, width and metal color"
-  },
-  "necklaceHeading": {
-   "he": "בחרו צבע",
-   "en": "Choose color"
-  },
-  "necklaceSummaryLabel": {
-   "he": "צמיד",
-   "en": "Bracelet"
-  },
-  "necklaces": [
-   {
-    "id": "silver",
-    "label": {
-     "he": "כסף",
-     "en": "Silver"
+    "id": "titan-heavy-chain-gold-240",
+    "slug": "product-240",
+    "urlSlug": "titan-heavy-chain-gold",
+    "sku": "VS-NK-240",
+    "category": "necklaces",
+    "categories": [
+      "necklaces"
+    ],
+    "badge": null,
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "showAllGalleryThumbs": true,
+    "defaultNecklaceId": "gold",
+    "defaultColorId": "8mm",
+    "hoverImage": "images/products/product-240/product-240-4.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-240/product-240-6.png",
+        "hoverImage": "images/products/product-240/product-240-4.png"
+      },
+      "men": {
+        "image": "images/products/product-240/product-240-6.png",
+        "hoverImage": "images/products/product-240/product-240-4.png"
+      }
     },
-    "image": "images/products/product-241/product-241-1.png"
-   },
-   {
-    "id": "gold",
-    "label": {
-     "he": "זהב",
-     "en": "Gold"
+    "sourceUrl": "https://he.aliexpress.com/item/1005006169687156.html",
+    "images": [
+      "images/products/product-240/product-240-6.png",
+      "images/products/product-240/product-240-4.png",
+      "images/products/product-240/product-240-5.png",
+      "images/products/product-240/product-240-3.png",
+      "images/products/product-240/product-240-1.png",
+      "images/products/product-240/product-240-2.png"
+    ],
+    "price": 259.9,
+    "title": {
+      "he": "שרשרת טיטאן כבדה - צבע זהב",
+      "en": "Titan Heavy Chain - Gold"
     },
-    "image": "images/products/product-241/product-241-4.png"
-   }
-  ],
-  "sizeHeading": {
-   "he": "בחרו אורך",
-   "en": "Choose length"
-  },
-  "sizes": [
-   {
-    "id": "7in",
-    "addPrice": 0,
-    "priceLabel": {
-     "he": "219.90 ₪",
-     "en": "₪219.90"
+    "subtitle": {
+      "he": "שרשרת קיובנית כבדה יוניסקס · Premium Stainless Steel · לבחירה באורך, רוחב וצבע",
+      "en": "Heavy unisex Cuban chain · premium stainless steel · choose length, width and metal color"
     },
-    "label": {
-     "he": "17 ס״מ",
-     "en": "17 cm"
+    "necklaceHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "necklaces": [
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "image": "images/products/product-240/product-240-3.png"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "image": "images/products/product-240/product-240-6.png"
+      }
+    ],
+    "sizeHeading": {
+      "he": "בחרו אורך",
+      "en": "Choose length"
+    },
+    "sizes": [
+      {
+        "id": "16in",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "259.90 ₪",
+          "en": "₪259.90"
+        },
+        "label": {
+          "he": "40 ס״מ",
+          "en": "40 cm"
+        }
+      },
+      {
+        "id": "18in",
+        "addPrice": 10,
+        "priceLabel": {
+          "he": "269.90 ₪",
+          "en": "₪269.90"
+        },
+        "label": {
+          "he": "45 ס״מ",
+          "en": "45 cm"
+        }
+      },
+      {
+        "id": "20in",
+        "addPrice": 20,
+        "priceLabel": {
+          "he": "279.90 ₪",
+          "en": "₪279.90"
+        },
+        "label": {
+          "he": "50 ס״מ",
+          "en": "50 cm"
+        }
+      },
+      {
+        "id": "22in",
+        "addPrice": 30,
+        "priceLabel": {
+          "he": "289.90 ₪",
+          "en": "₪289.90"
+        },
+        "label": {
+          "he": "55 ס״מ",
+          "en": "55 cm"
+        }
+      },
+      {
+        "id": "24in",
+        "addPrice": 40,
+        "priceLabel": {
+          "he": "299.90 ₪",
+          "en": "₪299.90"
+        },
+        "label": {
+          "he": "60 ס״מ",
+          "en": "60 cm"
+        }
+      }
+    ],
+    "colorHeading": {
+      "he": "בחרו רוחב",
+      "en": "Choose width"
+    },
+    "colors": [
+      {
+        "id": "8mm",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "ללא תוספת",
+          "en": "Included"
+        },
+        "label": {
+          "he": "8 מ״מ",
+          "en": "8 mm"
+        }
+      },
+      {
+        "id": "10mm",
+        "addPrice": 10,
+        "priceLabel": {
+          "he": "+10 ₪",
+          "en": "+₪10"
+        },
+        "label": {
+          "he": "10 מ״מ",
+          "en": "10 mm"
+        }
+      },
+      {
+        "id": "12mm",
+        "addPrice": 20,
+        "priceLabel": {
+          "he": "+20 ₪",
+          "en": "+₪20"
+        },
+        "label": {
+          "he": "12 מ״מ",
+          "en": "12 mm"
+        }
+      },
+      {
+        "id": "14mm",
+        "addPrice": 30,
+        "priceLabel": {
+          "he": "+30 ₪",
+          "en": "+₪30"
+        },
+        "label": {
+          "he": "14 מ״מ",
+          "en": "14 mm"
+        }
+      }
+    ],
+    "cardTitle": {
+      "he": "שרשרת טיטאן כבדה - צבע זהב",
+      "en": "Titan Heavy Chain - Gold"
+    },
+    "cardMessage": {
+      "he": "שרשרת קיובנית כבדה במראה נקי ובולט עם חיתוך 4 צדדים, סוגר Versans מותאם אישית . בחרו צבע, אורך ורוחב.",
+      "en": "A bold heavy Cuban chain with a 4-sided cut, custom Versans clasp . Choose the color, length and width that suit you."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "שרשרת קיובנית כבדה יוניסקס - מתאימה לנשים ולגברים",
+        "עשויה Premium Stainless Steel למראה עמיד ויוקרתי",
+        "זמינה בצבע כסף או זהב ",
+        "חיתוך 4 צדדים (4-Sided Cut) למראה חד, בולט ומבריק יותר",
+        "רוחב לבחירה: 8, 10, 12 או 14 מ״מ",
+        "לבחירה באורכים: 40, 45, 50, 55 או 60 ס״מ",
+        "מגיעה עם סוגר מותאם אישית של Versans",
+        "סגירה חזקה ונוחה לשימוש יומיומי"
+      ],
+      "en": [
+        "Heavy unisex Cuban chain suitable for women and men",
+        "Made from Premium Stainless Steel for a durable premium finish",
+        "Available in silver or gold ",
+        "4-sided cut links for a sharper, bolder reflective look",
+        "Available widths: 8, 10, 12 or 14 mm",
+        "Available lengths: 40, 45, 50, 55 or 60 cm",
+        "Finished with a custom Versans clasp",
+        "Secure closure for comfortable everyday wear"
+      ]
+    },
+    "afterText": {
+      "he": "בחרו צבע, אורך ורוחב והמחיר יתעדכן אוטומטית. לדוגמה, 60 ס״מ ברוחב 14 מ״מ עולה 329.90 ₪.",
+      "en": "Choose the metal color, length and width and the price will update automatically. For example, 60 cm at 14 mm costs ₪329.90."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
     }
-   },
-   {
-    "id": "7.5in",
-    "addPrice": 5,
-    "priceLabel": {
-     "he": "224.90 ₪",
-     "en": "₪224.90"
-    },
-    "label": {
-     "he": "19 ס״מ",
-     "en": "19 cm"
-    }
-   },
-   {
-    "id": "8in",
-    "addPrice": 10,
-    "priceLabel": {
-     "he": "229.90 ₪",
-     "en": "₪229.90"
-    },
-    "label": {
-     "he": "20 ס״מ",
-     "en": "20 cm"
-    }
-   },
-   {
-    "id": "8.5in",
-    "addPrice": 15,
-    "priceLabel": {
-     "he": "234.90 ₪",
-     "en": "₪234.90"
-    },
-    "label": {
-     "he": "21 ס״מ",
-     "en": "21 cm"
-    }
-   },
-   {
-    "id": "9in",
-    "addPrice": 20,
-    "priceLabel": {
-     "he": "239.90 ₪",
-     "en": "₪239.90"
-    },
-    "label": {
-     "he": "22 ס״מ",
-     "en": "22 cm"
-    }
-   }
-  ],
-  "colorHeading": {
-   "he": "בחרו רוחב",
-   "en": "Choose width"
   },
-  "colors": [
-   {
-    "id": "8mm",
-    "addPrice": 0,
-    "priceLabel": {
-     "he": "ללא תוספת",
-     "en": "Included"
-    },
-    "label": {
-     "he": "8 מ״מ",
-     "en": "8 mm"
-    }
-   },
-   {
-    "id": "10mm",
-    "addPrice": 10,
-    "priceLabel": {
-     "he": "+10 ₪",
-     "en": "+₪10"
-    },
-    "label": {
-     "he": "10 מ״מ",
-     "en": "10 mm"
-    }
-   },
-   {
-    "id": "12mm",
-    "addPrice": 20,
-    "priceLabel": {
-     "he": "+20 ₪",
-     "en": "+₪20"
-    },
-    "label": {
-     "he": "12 מ״מ",
-     "en": "12 mm"
-    }
-   },
   {
-  "id": "14mm",
-  "addPrice": 30,
-  "priceLabel": {
-   "he": "+30 ₪",
-   "en": "+₪30"
-  },
-  "label": {
-   "he": "14 מ״מ",
-   "en": "14 mm"
-  }
-  }
- ],
- "cardTitle": {
-  "he": "צמיד טיטאן כבד - צבע כסף",
-  "en": "Titan Heavy Bracelet - Silver"
- },
- "cardMessage": {
-  "he": "צמיד קיובני כבד עם חיתוך 4 צדדים, סוגר Versans מותאם אישית . בחרו צבע, אורך ורוחב.",
-  "en": "A bold heavy Cuban bracelet with a 4-sided cut, custom Versans clasp . Choose the color, length and width that suit you."
- },
- "signature": {
-  "he": "",
-  "en": ""
- },
- "details": {
-  "he": [
-  "צמיד קיובני כבד יוניסקס - מתאים לנשים ולגברים",
-  "עשוי Premium Stainless Steel למראה עמיד ויוקרתי",
-  "זמין בצבע כסף או זהב ",
-  "חיתוך 4 צדדים (4-Sided Cut) למראה חד, בולט ומבריק יותר",
-  "רוחב לבחירה: 8, 10, 12 או 14 מ״מ",
-  "לבחירה באורכים: 17, 19, 20, 21 או 22 ס״מ",
-  "מגיע עם סוגר מותאם אישית של Versans",
-  "סגירה חזקה ונוחה לשימוש יומיומי"
-  ],
-  "en": [
-  "Heavy unisex Cuban bracelet suitable for women and men",
-  "Made from Premium Stainless Steel for a durable premium finish",
-  "Available in silver or gold ",
-  "4-sided cut links for a sharper, bolder reflective look",
-  "Available widths: 8, 10, 12 or 14 mm",
-  "Available lengths: 17, 19, 20, 21 or 22 cm",
-  "Finished with a custom Versans clasp",
-  "Secure closure for comfortable everyday wear"
-  ]
- },
- "afterText": {
-  "he": "מחיר התחלתי של הצמיד הוא 219.90 ₪ לאורך 17 ס״מ וברוחב 8 מ״מ. כל חצי אינץ׳ מוסיף 5 ₪ וכל 2 מ״מ מוסיפים 10 ₪.",
-  "en": "The bracelet starts at ₪219.90 for 17 cm in 8 mm. Each extra half inch adds ₪5 and each extra 2 mm adds ₪10."
- },
- "deliveryBusinessDays": {
-  "min": 9,
-  "max": 14
- }
- }
- ,{
-  "id": "titan-heavy-bracelet-gold-242",
-  "slug": "product-242",
-  "urlSlug": "titan-heavy-bracelet-gold",
-  "sku": "VS-BR-242",
-  "category": "bracelets",
-  "categories": [
-   "bracelets"
-  ],
-  "badge": null,
-  "cardMode": "view",
-  "hideMessageCard": true,
-  "showAllGalleryThumbs": true,
-  "defaultNecklaceId": "gold",
-  "defaultColorId": "8mm",
-  "hoverImage": "images/products/product-242/product-242-5.png",
-  "collectionMedia": {
-   "women": {
-    "image": "images/products/product-242/product-242-4.png",
-    "hoverImage": "images/products/product-242/product-242-5.png"
-   },
-   "men": {
-    "image": "images/products/product-242/product-242-4.png",
-    "hoverImage": "images/products/product-242/product-242-5.png"
-   }
-  },
-  "sourceUrl": "https://he.aliexpress.com/item/1005006169687156.html?pdp_npi=4%40pre%21ILS%21%E2%82%AA+52.03%21%21%E2%82%AA+32.78%21%21111.11%21%21%400b8ded7b17907155884805210e0d1d%2112000036116806481%21sh%21IL%212751809487%21X&spm=a2g0o.store_pc_home.promotePruductList_2017557793395.1005006169687156&gatewayAdapt=glo2isr",
-  "images": [
-   "images/products/product-242/product-242-4.png",
-   "images/products/product-242/product-242-5.png",
-   "images/products/product-242/product-242-6.png",
-   "images/products/product-242/product-242-1.png",
-   "images/products/product-242/product-242-2.png",
-   "images/products/product-242/product-242-3.png"
-  ],
-  "price": 219.9,
-  "title": {
-   "he": "צמיד טיטאן כבד - צבע זהב",
-   "en": "Titan Heavy Bracelet - Gold"
-  },
-  "subtitle": {
-   "he": "צמיד קיובני כבד · Premium Stainless Steel · לבחירה באורך, רוחב וצבע",
-   "en": "Heavy Cuban bracelet · premium stainless steel · choose length, width and metal color"
-  },
-  "necklaceHeading": {
-   "he": "בחרו צבע",
-   "en": "Choose color"
-  },
-  "necklaceSummaryLabel": {
-   "he": "צמיד",
-   "en": "Bracelet"
-  },
-  "necklaces": [
-   {
-    "id": "silver",
-    "label": {
-     "he": "כסף",
-     "en": "Silver"
+    "id": "titan-heavy-bracelet-silver-241",
+    "slug": "product-241",
+    "urlSlug": "titan-heavy-bracelet-silver",
+    "sku": "VS-BR-241",
+    "category": "bracelets",
+    "categories": [
+      "bracelets",
+      "bracelets-men"
+    ],
+    "badge": null,
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "showAllGalleryThumbs": true,
+    "defaultNecklaceId": "silver",
+    "defaultColorId": "8mm",
+    "hoverImage": "images/products/product-241/product-241-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-241/product-241-1.png",
+        "hoverImage": "images/products/product-241/product-241-2.png"
+      },
+      "men": {
+        "image": "images/products/product-241/product-241-1.png",
+        "hoverImage": "images/products/product-241/product-241-2.png"
+      }
     },
-    "image": "images/products/product-242/product-242-1.png"
-   },
-   {
-    "id": "gold",
-    "label": {
-     "he": "זהב",
-     "en": "Gold"
+    "sourceUrl": "https://he.aliexpress.com/item/1005006169687156.html?pdp_npi=4%40pre%21ILS%21%E2%82%AA+52.03%21%21%E2%82%AA+32.78%21%21111.11%21%21%400b8ded7b17907155884805210e0d1d%2112000036116806481%21sh%21IL%212751809487%21X&spm=a2g0o.store_pc_home.promotePruductList_2017557793395.1005006169687156&gatewayAdapt=glo2isr",
+    "images": [
+      "images/products/product-241/product-241-1.png",
+      "images/products/product-241/product-241-2.png",
+      "images/products/product-241/product-241-3.png",
+      "images/products/product-241/product-241-4.png",
+      "images/products/product-241/product-241-5.png",
+      "images/products/product-241/product-241-6.png"
+    ],
+    "price": 219.9,
+    "title": {
+      "he": "צמיד טיטאן כבד - צבע כסף",
+      "en": "Titan Heavy Bracelet - Silver"
     },
-    "image": "images/products/product-242/product-242-4.png"
-   }
-  ],
-  "sizeHeading": {
-   "he": "בחרו אורך",
-   "en": "Choose length"
-  },
-  "sizes": [
-   {
-    "id": "7in",
-    "addPrice": 0,
-    "priceLabel": {
-     "he": "219.90 ₪",
-     "en": "₪219.90"
+    "subtitle": {
+      "he": "צמיד קיובני כבד · Premium Stainless Steel · לבחירה באורך, רוחב וצבע",
+      "en": "Heavy Cuban bracelet · premium stainless steel · choose length, width and metal color"
     },
-    "label": {
-     "he": "17 ס״מ",
-     "en": "17 cm"
+    "necklaceHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "necklaceSummaryLabel": {
+      "he": "צמיד",
+      "en": "Bracelet"
+    },
+    "necklaces": [
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "image": "images/products/product-241/product-241-1.png"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "image": "images/products/product-241/product-241-4.png"
+      }
+    ],
+    "sizeHeading": {
+      "he": "בחרו אורך",
+      "en": "Choose length"
+    },
+    "sizes": [
+      {
+        "id": "7in",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "219.90 ₪",
+          "en": "₪219.90"
+        },
+        "label": {
+          "he": "17 ס״מ",
+          "en": "17 cm"
+        }
+      },
+      {
+        "id": "7.5in",
+        "addPrice": 5,
+        "priceLabel": {
+          "he": "224.90 ₪",
+          "en": "₪224.90"
+        },
+        "label": {
+          "he": "19 ס״מ",
+          "en": "19 cm"
+        }
+      },
+      {
+        "id": "8in",
+        "addPrice": 10,
+        "priceLabel": {
+          "he": "229.90 ₪",
+          "en": "₪229.90"
+        },
+        "label": {
+          "he": "20 ס״מ",
+          "en": "20 cm"
+        }
+      },
+      {
+        "id": "8.5in",
+        "addPrice": 15,
+        "priceLabel": {
+          "he": "234.90 ₪",
+          "en": "₪234.90"
+        },
+        "label": {
+          "he": "21 ס״מ",
+          "en": "21 cm"
+        }
+      },
+      {
+        "id": "9in",
+        "addPrice": 20,
+        "priceLabel": {
+          "he": "239.90 ₪",
+          "en": "₪239.90"
+        },
+        "label": {
+          "he": "22 ס״מ",
+          "en": "22 cm"
+        }
+      }
+    ],
+    "colorHeading": {
+      "he": "בחרו רוחב",
+      "en": "Choose width"
+    },
+    "colors": [
+      {
+        "id": "8mm",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "ללא תוספת",
+          "en": "Included"
+        },
+        "label": {
+          "he": "8 מ״מ",
+          "en": "8 mm"
+        }
+      },
+      {
+        "id": "10mm",
+        "addPrice": 10,
+        "priceLabel": {
+          "he": "+10 ₪",
+          "en": "+₪10"
+        },
+        "label": {
+          "he": "10 מ״מ",
+          "en": "10 mm"
+        }
+      },
+      {
+        "id": "12mm",
+        "addPrice": 20,
+        "priceLabel": {
+          "he": "+20 ₪",
+          "en": "+₪20"
+        },
+        "label": {
+          "he": "12 מ״מ",
+          "en": "12 mm"
+        }
+      },
+      {
+        "id": "14mm",
+        "addPrice": 30,
+        "priceLabel": {
+          "he": "+30 ₪",
+          "en": "+₪30"
+        },
+        "label": {
+          "he": "14 מ״מ",
+          "en": "14 mm"
+        }
+      }
+    ],
+    "cardTitle": {
+      "he": "צמיד טיטאן כבד - צבע כסף",
+      "en": "Titan Heavy Bracelet - Silver"
+    },
+    "cardMessage": {
+      "he": "צמיד קיובני כבד עם חיתוך 4 צדדים, סוגר Versans מותאם אישית . בחרו צבע, אורך ורוחב.",
+      "en": "A bold heavy Cuban bracelet with a 4-sided cut, custom Versans clasp . Choose the color, length and width that suit you."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צמיד קיובני כבד יוניסקס - מתאים לנשים ולגברים",
+        "עשוי Premium Stainless Steel למראה עמיד ויוקרתי",
+        "זמין בצבע כסף או זהב ",
+        "חיתוך 4 צדדים (4-Sided Cut) למראה חד, בולט ומבריק יותר",
+        "רוחב לבחירה: 8, 10, 12 או 14 מ״מ",
+        "לבחירה באורכים: 17, 19, 20, 21 או 22 ס״מ",
+        "מגיע עם סוגר מותאם אישית של Versans",
+        "סגירה חזקה ונוחה לשימוש יומיומי"
+      ],
+      "en": [
+        "Heavy unisex Cuban bracelet suitable for women and men",
+        "Made from Premium Stainless Steel for a durable premium finish",
+        "Available in silver or gold ",
+        "4-sided cut links for a sharper, bolder reflective look",
+        "Available widths: 8, 10, 12 or 14 mm",
+        "Available lengths: 17, 19, 20, 21 or 22 cm",
+        "Finished with a custom Versans clasp",
+        "Secure closure for comfortable everyday wear"
+      ]
+    },
+    "afterText": {
+      "he": "מחיר התחלתי של הצמיד הוא 219.90 ₪ לאורך 17 ס״מ וברוחב 8 מ״מ. כל חצי אינץ׳ מוסיף 5 ₪ וכל 2 מ״מ מוסיפים 10 ₪.",
+      "en": "The bracelet starts at ₪219.90 for 17 cm in 8 mm. Each extra half inch adds ₪5 and each extra 2 mm adds ₪10."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
     }
-   },
-   {
-    "id": "7.5in",
-    "addPrice": 5,
-    "priceLabel": {
-     "he": "224.90 ₪",
-     "en": "₪224.90"
-    },
-    "label": {
-     "he": "19 ס״מ",
-     "en": "19 cm"
-    }
-   },
-   {
-    "id": "8in",
-    "addPrice": 10,
-    "priceLabel": {
-     "he": "229.90 ₪",
-     "en": "₪229.90"
-    },
-    "label": {
-     "he": "20 ס״מ",
-     "en": "20 cm"
-    }
-   },
-   {
-    "id": "8.5in",
-    "addPrice": 15,
-    "priceLabel": {
-     "he": "234.90 ₪",
-     "en": "₪234.90"
-    },
-    "label": {
-     "he": "21 ס״מ",
-     "en": "21 cm"
-    }
-   },
-   {
-    "id": "9in",
-    "addPrice": 20,
-    "priceLabel": {
-     "he": "239.90 ₪",
-     "en": "₪239.90"
-    },
-    "label": {
-     "he": "22 ס״מ",
-     "en": "22 cm"
-    }
-   }
-  ],
-  "colorHeading": {
-   "he": "בחרו רוחב",
-   "en": "Choose width"
   },
-  "colors": [
-   {
-    "id": "8mm",
-    "addPrice": 0,
-    "priceLabel": {
-     "he": "ללא תוספת",
-     "en": "Included"
+  {
+    "id": "titan-heavy-bracelet-gold-242",
+    "slug": "product-242",
+    "urlSlug": "titan-heavy-bracelet-gold",
+    "sku": "VS-BR-242",
+    "category": "bracelets",
+    "categories": [
+      "bracelets",
+      "bracelets-men"
+    ],
+    "badge": null,
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "showAllGalleryThumbs": true,
+    "defaultNecklaceId": "gold",
+    "defaultColorId": "8mm",
+    "hoverImage": "images/products/product-242/product-242-5.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-242/product-242-4.png",
+        "hoverImage": "images/products/product-242/product-242-5.png"
+      },
+      "men": {
+        "image": "images/products/product-242/product-242-4.png",
+        "hoverImage": "images/products/product-242/product-242-5.png"
+      }
     },
-    "label": {
-     "he": "8 מ״מ",
-     "en": "8 mm"
-    }
-   },
-   {
-    "id": "10mm",
-    "addPrice": 10,
-    "priceLabel": {
-     "he": "+10 ₪",
-     "en": "+₪10"
+    "sourceUrl": "https://he.aliexpress.com/item/1005006169687156.html?pdp_npi=4%40pre%21ILS%21%E2%82%AA+52.03%21%21%E2%82%AA+32.78%21%21111.11%21%21%400b8ded7b17907155884805210e0d1d%2112000036116806481%21sh%21IL%212751809487%21X&spm=a2g0o.store_pc_home.promotePruductList_2017557793395.1005006169687156&gatewayAdapt=glo2isr",
+    "images": [
+      "images/products/product-242/product-242-4.png",
+      "images/products/product-242/product-242-5.png",
+      "images/products/product-242/product-242-6.png",
+      "images/products/product-242/product-242-1.png",
+      "images/products/product-242/product-242-2.png",
+      "images/products/product-242/product-242-3.png"
+    ],
+    "price": 219.9,
+    "title": {
+      "he": "צמיד טיטאן כבד - צבע זהב",
+      "en": "Titan Heavy Bracelet - Gold"
     },
-    "label": {
-     "he": "10 מ״מ",
-     "en": "10 mm"
-    }
-   },
-   {
-    "id": "12mm",
-    "addPrice": 20,
-    "priceLabel": {
-     "he": "+20 ₪",
-     "en": "+₪20"
+    "subtitle": {
+      "he": "צמיד קיובני כבד · Premium Stainless Steel · לבחירה באורך, רוחב וצבע",
+      "en": "Heavy Cuban bracelet · premium stainless steel · choose length, width and metal color"
     },
-    "label": {
-     "he": "12 מ״מ",
-     "en": "12 mm"
-    }
-   },
-   {
-    "id": "14mm",
-    "addPrice": 30,
-    "priceLabel": {
-     "he": "+30 ₪",
-     "en": "+₪30"
+    "necklaceHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
     },
-    "label": {
-     "he": "14 מ״מ",
-     "en": "14 mm"
+    "necklaceSummaryLabel": {
+      "he": "צמיד",
+      "en": "Bracelet"
+    },
+    "necklaces": [
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "image": "images/products/product-242/product-242-1.png"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "image": "images/products/product-242/product-242-4.png"
+      }
+    ],
+    "sizeHeading": {
+      "he": "בחרו אורך",
+      "en": "Choose length"
+    },
+    "sizes": [
+      {
+        "id": "7in",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "219.90 ₪",
+          "en": "₪219.90"
+        },
+        "label": {
+          "he": "17 ס״מ",
+          "en": "17 cm"
+        }
+      },
+      {
+        "id": "7.5in",
+        "addPrice": 5,
+        "priceLabel": {
+          "he": "224.90 ₪",
+          "en": "₪224.90"
+        },
+        "label": {
+          "he": "19 ס״מ",
+          "en": "19 cm"
+        }
+      },
+      {
+        "id": "8in",
+        "addPrice": 10,
+        "priceLabel": {
+          "he": "229.90 ₪",
+          "en": "₪229.90"
+        },
+        "label": {
+          "he": "20 ס״מ",
+          "en": "20 cm"
+        }
+      },
+      {
+        "id": "8.5in",
+        "addPrice": 15,
+        "priceLabel": {
+          "he": "234.90 ₪",
+          "en": "₪234.90"
+        },
+        "label": {
+          "he": "21 ס״מ",
+          "en": "21 cm"
+        }
+      },
+      {
+        "id": "9in",
+        "addPrice": 20,
+        "priceLabel": {
+          "he": "239.90 ₪",
+          "en": "₪239.90"
+        },
+        "label": {
+          "he": "22 ס״מ",
+          "en": "22 cm"
+        }
+      }
+    ],
+    "colorHeading": {
+      "he": "בחרו רוחב",
+      "en": "Choose width"
+    },
+    "colors": [
+      {
+        "id": "8mm",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "ללא תוספת",
+          "en": "Included"
+        },
+        "label": {
+          "he": "8 מ״מ",
+          "en": "8 mm"
+        }
+      },
+      {
+        "id": "10mm",
+        "addPrice": 10,
+        "priceLabel": {
+          "he": "+10 ₪",
+          "en": "+₪10"
+        },
+        "label": {
+          "he": "10 מ״מ",
+          "en": "10 mm"
+        }
+      },
+      {
+        "id": "12mm",
+        "addPrice": 20,
+        "priceLabel": {
+          "he": "+20 ₪",
+          "en": "+₪20"
+        },
+        "label": {
+          "he": "12 מ״מ",
+          "en": "12 mm"
+        }
+      },
+      {
+        "id": "14mm",
+        "addPrice": 30,
+        "priceLabel": {
+          "he": "+30 ₪",
+          "en": "+₪30"
+        },
+        "label": {
+          "he": "14 מ״מ",
+          "en": "14 mm"
+        }
+      }
+    ],
+    "cardTitle": {
+      "he": "צמיד טיטאן כבד - צבע זהב",
+      "en": "Titan Heavy Bracelet - Gold"
+    },
+    "cardMessage": {
+      "he": "צמיד קיובני כבד עם חיתוך 4 צדדים, סוגר Versans מותאם אישית . בחרו צבע, אורך ורוחב.",
+      "en": "A bold heavy Cuban bracelet with a 4-sided cut, custom Versans clasp . Choose the color, length and width that suit you."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צמיד קיובני כבד יוניסקס - מתאים לנשים ולגברים",
+        "עשוי Premium Stainless Steel למראה עמיד ויוקרתי",
+        "זמין בצבע כסף או זהב ",
+        "חיתוך 4 צדדים (4-Sided Cut) למראה חד, בולט ומבריק יותר",
+        "רוחב לבחירה: 8, 10, 12 או 14 מ״מ",
+        "לבחירה באורכים: 17, 19, 20, 21 או 22 ס״מ",
+        "מגיע עם סוגר מותאם אישית של Versans",
+        "סגירה חזקה ונוחה לשימוש יומיומי"
+      ],
+      "en": [
+        "Heavy unisex Cuban bracelet suitable for women and men",
+        "Made from Premium Stainless Steel for a durable premium finish",
+        "Available in silver or gold ",
+        "4-sided cut links for a sharper, bolder reflective look",
+        "Available widths: 8, 10, 12 or 14 mm",
+        "Available lengths: 17, 19, 20, 21 or 22 cm",
+        "Finished with a custom Versans clasp",
+        "Secure closure for comfortable everyday wear"
+      ]
+    },
+    "afterText": {
+      "he": "מחיר התחלתי: 419.90 ₪ לאורך 16 ס״מ. 17 ס״מ מוסיף 5 ₪ ו-20 ס״מ מוסיף 10 ₪.",
+      "en": "Starting price: ₪419.90 for 16 cm. 17 cm adds ₪5 and 20 cm adds ₪10."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
     }
-   }
-  ],
-  "cardTitle": {
-   "he": "צמיד טיטאן כבד - צבע זהב",
-   "en": "Titan Heavy Bracelet - Gold"
   },
-  "cardMessage": {
-   "he": "צמיד קיובני כבד עם חיתוך 4 צדדים, סוגר Versans מותאם אישית . בחרו צבע, אורך ורוחב.",
-   "en": "A bold heavy Cuban bracelet with a 4-sided cut, custom Versans clasp . Choose the color, length and width that suit you."
-  },
-  "signature": {
-   "he": "",
-   "en": ""
-  },
-  "details": {
-   "he": [
-    "צמיד קיובני כבד יוניסקס - מתאים לנשים ולגברים",
-    "עשוי Premium Stainless Steel למראה עמיד ויוקרתי",
-    "זמין בצבע כסף או זהב ",
-    "חיתוך 4 צדדים (4-Sided Cut) למראה חד, בולט ומבריק יותר",
-    "רוחב לבחירה: 8, 10, 12 או 14 מ״מ",
-    "לבחירה באורכים: 17, 19, 20, 21 או 22 ס״מ",
-    "מגיע עם סוגר מותאם אישית של Versans",
-    "סגירה חזקה ונוחה לשימוש יומיומי"
-   ],
-   "en": [
-    "Heavy unisex Cuban bracelet suitable for women and men",
-    "Made from Premium Stainless Steel for a durable premium finish",
-    "Available in silver or gold ",
-    "4-sided cut links for a sharper, bolder reflective look",
-    "Available widths: 8, 10, 12 or 14 mm",
-    "Available lengths: 17, 19, 20, 21 or 22 cm",
-    "Finished with a custom Versans clasp",
-    "Secure closure for comfortable everyday wear"
-   ]
-  },
-  "afterText": {
-   "he": "מחיר התחלתי: 419.90 ₪ לאורך 16 ס״מ. 17 ס״מ מוסיף 5 ₪ ו-20 ס״מ מוסיף 10 ₪.",
-   "en": "Starting price: ₪419.90 for 16 cm. 17 cm adds ₪5 and 20 cm adds ₪10."
-  },
-  "deliveryBusinessDays": {
-   "min": 9,
-   "max": 14
-  }
- }
-  ,{
+  {
     "id": "ice-cuban-vvs1-moissanite-silver-243",
     "slug": "product-243",
     "urlSlug": "ice-cuban-vvs1-moissanite-silver",
     "sku": "VS-BR-243",
     "category": "bracelets",
     "categories": [
-      "bracelets"
+      "bracelets",
+      "bracelets-men"
     ],
     "badge": null,
     "cardMode": "view",
@@ -22933,15 +22964,17 @@ var PRODUCTS = [
       "min": 9,
       "max": 14
     }
-  }
-  ,{
+  },
+  {
     "id": "aurora-tennis-bracelet-silver-244",
     "slug": "product-244",
     "urlSlug": "aurora-tennis-bracelet-silver",
     "sku": "VS-BR-244",
     "category": "bracelets",
     "categories": [
-      "bracelets"
+      "bracelets",
+      "bracelets-men",
+      "bracelets-women"
     ],
     "badge": null,
     "cardMode": "view",
@@ -23089,15 +23122,17 @@ var PRODUCTS = [
       "min": 9,
       "max": 14
     }
-  }
-  ,{
+  },
+  {
     "id": "aurora-tennis-bracelet-gold-245",
     "slug": "product-245",
     "urlSlug": "aurora-tennis-bracelet-gold",
     "sku": "VS-BR-245",
     "category": "bracelets",
     "categories": [
-      "bracelets"
+      "bracelets",
+      "bracelets-men",
+      "bracelets-women"
     ],
     "badge": null,
     "cardMode": "view",
@@ -23245,15 +23280,16 @@ var PRODUCTS = [
       "min": 9,
       "max": 14
     }
-  }
-  ,{
+  },
+  {
     "id": "miami-double-row-iced-silver-246",
     "slug": "product-246",
     "urlSlug": "miami-double-row-iced-silver",
     "sku": "VS-BR-246",
     "category": "bracelets",
     "categories": [
-      "bracelets"
+      "bracelets",
+      "bracelets-men"
     ],
     "badge": null,
     "cardMode": "view",
@@ -23392,15 +23428,16 @@ var PRODUCTS = [
       "min": 9,
       "max": 14
     }
-  }
-  ,{
+  },
+  {
     "id": "miami-double-row-iced-gold-247",
     "slug": "product-247",
     "urlSlug": "miami-double-row-iced-gold",
     "sku": "VS-BR-247",
     "category": "bracelets",
     "categories": [
-      "bracelets"
+      "bracelets",
+      "bracelets-men"
     ],
     "badge": null,
     "cardMode": "view",
@@ -23539,8 +23576,8 @@ var PRODUCTS = [
       "min": 9,
       "max": 14
     }
-  }
-  ,{
+  },
+  {
     "id": "soline-womens-vvs-moissanite-silver-248",
     "slug": "product-248",
     "urlSlug": "soline-womens-vvs-moissanite-silver",
@@ -23548,7 +23585,8 @@ var PRODUCTS = [
     "category": "bracelets",
     "categories": [
       "bracelets",
-      "women"
+      "women",
+      "bracelets-women"
     ],
     "badge": null,
     "cardMode": "view",
@@ -23704,8 +23742,8 @@ var PRODUCTS = [
       "min": 9,
       "max": 14
     }
-  }
-  ,{
+  },
+  {
     "id": "soline-womens-vvs-moissanite-gold-249",
     "slug": "product-249",
     "urlSlug": "soline-womens-vvs-moissanite-gold",
@@ -23713,7 +23751,8 @@ var PRODUCTS = [
     "category": "bracelets",
     "categories": [
       "bracelets",
-      "women"
+      "women",
+      "bracelets-women"
     ],
     "badge": null,
     "cardMode": "view",
@@ -23869,15 +23908,16 @@ var PRODUCTS = [
       "min": 9,
       "max": 14
     }
-  }
-  ,{
+  },
+  {
     "id": "emerald-royal-bracelet-silver-250",
     "slug": "product-250",
     "urlSlug": "emerald-royal-bracelet-silver",
     "sku": "VS-BR-250",
     "category": "bracelets",
     "categories": [
-      "bracelets"
+      "bracelets",
+      "bracelets-men"
     ],
     "badge": null,
     "cardMode": "view",
@@ -23979,8 +24019,8 @@ var PRODUCTS = [
       "min": 9,
       "max": 14
     }
-  }
-  ,{
+  },
+  {
     "id": "emerald-royal-necklace-silver-251",
     "slug": "product-251",
     "urlSlug": "emerald-royal-necklace-silver",
@@ -24086,8 +24126,8 @@ var PRODUCTS = [
       "min": 9,
       "max": 14
     }
-  }
-  ,{
+  },
+  {
     "id": "nuoya-teardrop-tennis-bracelet-silver-252",
     "slug": "product-252",
     "urlSlug": "nuoya-teardrop-tennis-bracelet-silver",
@@ -24095,7 +24135,8 @@ var PRODUCTS = [
     "category": "bracelets",
     "categories": [
       "bracelets",
-      "women"
+      "women",
+      "bracelets-women"
     ],
     "badge": null,
     "cardMode": "view",
@@ -24219,8 +24260,8 @@ var PRODUCTS = [
       "min": 9,
       "max": 14
     }
-  }
-  ,{
+  },
+  {
     "id": "nuoya-teardrop-tennis-bracelet-gold-253",
     "slug": "product-253",
     "urlSlug": "nuoya-teardrop-tennis-bracelet-gold",
@@ -24228,7 +24269,8 @@ var PRODUCTS = [
     "category": "bracelets",
     "categories": [
       "bracelets",
-      "women"
+      "women",
+      "bracelets-women"
     ],
     "badge": null,
     "cardMode": "view",
@@ -24353,332 +24395,333 @@ var PRODUCTS = [
       "max": 14
     }
   },
-{
-  "id": "cuban-zircon-tennis-necklace-silver-254",
-  "slug": "product-254",
-  "urlSlug": "cuban-zircon-tennis-necklace-silver",
-  "sku": "VS-NE-254",
-  "category": "necklaces",
-  "categories": [
-    "necklaces"
-  ],
-  "badge": null,
-  "cardMode": "view",
-  "hideMessageCard": true,
-  "showAllGalleryThumbs": true,
-  "defaultNecklaceId": "silver",
-  "hoverImage": "images/products/product-254/product-254-2.png",
-  "collectionMedia": {
-    "women": {
-      "image": "images/products/product-254/product-254-1.png",
-      "hoverImage": "images/products/product-254/product-254-2.png"
-    },
-    "men": {
-      "image": "images/products/product-254/product-254-1.png",
-      "hoverImage": "images/products/product-254/product-254-2.png"
-    }
-  },
-  "sourceUrl": "https://he.aliexpress.com/item/1005012056671904.html?spm=a2g0o.store_pc_home.promoteRecommendProducts_2001826959723.1005012056671904&gatewayAdapt=glo2isr",
-  "images": [
-    "images/products/product-254/product-254-1.png",
-    "images/products/product-254/product-254-2.png",
-    "images/products/product-254/product-254-3.png",
-    "images/products/product-254/product-254-4.png",
-    "images/products/product-254/product-254-5.png",
-    "images/products/product-254/product-254-6.png",
-    "images/products/product-254/product-254-7.png"
-  ],
-  "price": 359.9,
-  "necklaceHeading": {
-    "he": "בחרו צבע",
-    "en": "Choose color"
-  },
-  "necklaceSummaryLabel": {
-    "he": "שרשרת",
-    "en": "Necklace"
-  },
-  "necklaces": [
-    {
-      "id": "silver",
-      "label": {
-        "he": "כסף",
-        "en": "Silver"
-      },
-      "image": "images/products/product-254/product-254-1.png"
-    },
-    {
-      "id": "gold",
-      "label": {
-        "he": "זהב",
-        "en": "Gold"
-      },
-      "image": "images/products/product-254/product-254-4.png"
-    }
-  ],
-  "title": {
-    "he": "שרשרת טניס קובנית משובצת 6 מ״מ - צבע כסף",
-    "en": "Iced Cuban Tennis Necklace 6 mm - Silver"
-  },
-  "subtitle": {
-    "he": "שרשרת טניס קובנית משובצת ברוחב 6 מ״מ · אבני זירקון 5A · לבחירה בצבע ובאורך",
-    "en": "6 mm iced Cuban-style tennis necklace · 5A zircon stones · choose color and length"
-  },
-  "sizeHeading": {
-    "he": "בחרו אורך",
-    "en": "Choose length"
-  },
-  "sizes": [
-    {
-      "id": "16in",
-      "addPrice": 0,
-      "label": {
-        "he": "40 ס״מ",
-        "en": "40 cm"
-      }
-    },
-    {
-      "id": "18in",
-      "addPrice": 15,
-      "label": {
-        "he": "45 ס״מ",
-        "en": "45 cm"
-      }
-    },
-    {
-      "id": "20in",
-      "addPrice": 30,
-      "label": {
-        "he": "50 ס״מ",
-        "en": "50 cm"
-      }
-    },
-    {
-      "id": "22in",
-      "addPrice": 45,
-      "label": {
-        "he": "55 ס״מ",
-        "en": "55 cm"
-      }
-    }
-  ],
-  "cardTitle": {
-    "he": "שרשרת טניס קובנית משובצת 6 מ״מ - צבע כסף",
-    "en": "Iced Cuban Tennis Necklace 6 mm - Silver"
-  },
-  "cardMessage": {
-    "he": "שרשרת טניס קובנית משובצת ברוחב 6 מ״מ עם אבני זירקון נוצצות.",
-    "en": "A 6 mm iced Cuban-style tennis necklace with sparkling zircon stones."
-  },
-  "description": {
-    "he": "שרשרת טניס קובנית ברוחב 6 מ״מ, עשויה פליז ומשובצת אבני זירקון 5A.",
-    "en": "A 6 mm Cuban-style tennis necklace made from brass and set with 5A zircon stones."
-  },
-  "signature": {
-    "he": "",
-    "en": ""
-  },
-  "details": {
-    "he": [
-      "שרשרת טניס קובנית ברוחב 6 מ״מ",
-      "חומר בסיס: פליז (Brass)",
-      "אבנים: זירקון 5A",
-      "לבחירה בצבע כסף או זהב",
-      "לבחירה באורכים: 40, 45, 50 או 55 ס״מ",
-      "העיצוב מתאים לנשים ולגברים",
-      "סגנון השרשרת: Cuban Link",
-      "משקל: כ־100 גרם",
-      "מידות האריזה: 10 × 10 × 5 ס״מ",
-      "תואם לתקני REACH ו-GDTC"
+  {
+    "id": "cuban-zircon-tennis-necklace-silver-254",
+    "slug": "product-254",
+    "urlSlug": "cuban-zircon-tennis-necklace-silver",
+    "sku": "VS-NE-254",
+    "category": "necklaces",
+    "categories": [
+      "necklaces"
     ],
-    "en": [
-      "6 mm Cuban-style tennis necklace",
-      "Base material: Brass",
-      "Stones: 5A zircon",
-      "Available in Silver or Gold",
-      "Available lengths: 40, 45, 50 or 55 cm",
-      "Design suitable for women and men",
-      "Chain style: Cuban Link",
-      "Weight: approx. 100 g",
-      "Packaging dimensions: 10 × 10 × 5 cm",
-      "Complies with REACH and GDTC standards"
-    ]
-  },
-  "afterText": {
-    "he": "מחיר התחלתי: 359.90 ₪ לאורך 40 ס״מ. כל 5 ס״מ נוספים מוסיפים 15 ₪.",
-    "en": "Starting price: ₪359.90 for 40 cm. Each additional 5 cm adds ₪15."
-  },
-  "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
-},
-{
-  "id": "cuban-zircon-tennis-necklace-gold-255",
-  "slug": "product-255",
-  "urlSlug": "cuban-zircon-tennis-necklace-gold",
-  "sku": "VS-NE-255",
-  "category": "necklaces",
-  "categories": [
-    "necklaces"
-  ],
-  "badge": null,
-  "cardMode": "view",
-  "hideMessageCard": true,
-  "showAllGalleryThumbs": true,
-  "defaultNecklaceId": "gold",
-  "hoverImage": "images/products/product-255/product-255-2.png",
-  "collectionMedia": {
-    "women": {
-      "image": "images/products/product-255/product-255-1.png",
-      "hoverImage": "images/products/product-255/product-255-2.png"
-    },
-    "men": {
-      "image": "images/products/product-255/product-255-1.png",
-      "hoverImage": "images/products/product-255/product-255-2.png"
-    }
-  },
-  "sourceUrl": "https://he.aliexpress.com/item/1005012056671904.html?spm=a2g0o.store_pc_home.promoteRecommendProducts_2001826959723.1005012056671904&gatewayAdapt=glo2isr",
-  "images": [
-    "images/products/product-255/product-255-1.png",
-    "images/products/product-255/product-255-2.png",
-    "images/products/product-255/product-255-3.png",
-    "images/products/product-255/product-255-4.png",
-    "images/products/product-255/product-255-5.png",
-    "images/products/product-255/product-255-6.png",
-    "images/products/product-255/product-255-7.png"
-  ],
-  "price": 359.9,
-  "necklaceHeading": {
-    "he": "בחרו צבע",
-    "en": "Choose color"
-  },
-  "necklaceSummaryLabel": {
-    "he": "שרשרת",
-    "en": "Necklace"
-  },
-  "necklaces": [
-    {
-      "id": "silver",
-      "label": {
-        "he": "כסף",
-        "en": "Silver"
+    "badge": null,
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "showAllGalleryThumbs": true,
+    "defaultNecklaceId": "silver",
+    "hoverImage": "images/products/product-254/product-254-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-254/product-254-1.png",
+        "hoverImage": "images/products/product-254/product-254-2.png"
       },
-      "image": "images/products/product-255/product-255-4.png"
-    },
-    {
-      "id": "gold",
-      "label": {
-        "he": "זהב",
-        "en": "Gold"
-      },
-      "image": "images/products/product-255/product-255-1.png"
-    }
-  ],
-  "title": {
-    "he": "שרשרת טניס קובנית משובצת 6 מ״מ - צבע זהב",
-    "en": "Iced Cuban Tennis Necklace 6 mm - Gold"
-  },
-  "subtitle": {
-    "he": "שרשרת טניס קובנית משובצת ברוחב 6 מ״מ · אבני זירקון 5A · לבחירה בצבע ובאורך",
-    "en": "6 mm iced Cuban-style tennis necklace · 5A zircon stones · choose color and length"
-  },
-  "sizeHeading": {
-    "he": "בחרו אורך",
-    "en": "Choose length"
-  },
-  "sizes": [
-    {
-      "id": "16in",
-      "addPrice": 0,
-      "label": {
-        "he": "40 ס״מ",
-        "en": "40 cm"
+      "men": {
+        "image": "images/products/product-254/product-254-1.png",
+        "hoverImage": "images/products/product-254/product-254-2.png"
       }
     },
-    {
-      "id": "18in",
-      "addPrice": 15,
-      "label": {
-        "he": "45 ס״מ",
-        "en": "45 cm"
-      }
-    },
-    {
-      "id": "20in",
-      "addPrice": 30,
-      "label": {
-        "he": "50 ס״מ",
-        "en": "50 cm"
-      }
-    },
-    {
-      "id": "22in",
-      "addPrice": 45,
-      "label": {
-        "he": "55 ס״מ",
-        "en": "55 cm"
-      }
-    }
-  ],
-  "cardTitle": {
-    "he": "שרשרת טניס קובנית משובצת 6 מ״מ - צבע זהב",
-    "en": "Iced Cuban Tennis Necklace 6 mm - Gold"
-  },
-  "cardMessage": {
-    "he": "שרשרת טניס קובנית משובצת ברוחב 6 מ״מ עם אבני זירקון נוצצות.",
-    "en": "A 6 mm iced Cuban-style tennis necklace with sparkling zircon stones."
-  },
-  "description": {
-    "he": "שרשרת טניס קובנית ברוחב 6 מ״מ, עשויה פליז ומשובצת אבני זירקון 5A.",
-    "en": "A 6 mm Cuban-style tennis necklace made from brass and set with 5A zircon stones."
-  },
-  "signature": {
-    "he": "",
-    "en": ""
-  },
-  "details": {
-    "he": [
-      "שרשרת טניס קובנית ברוחב 6 מ״מ",
-      "חומר בסיס: פליז (Brass)",
-      "אבנים: זירקון 5A",
-      "לבחירה בצבע כסף או זהב",
-      "לבחירה באורכים: 40, 45, 50 או 55 ס״מ",
-      "העיצוב מתאים לנשים ולגברים",
-      "סגנון השרשרת: Cuban Link",
-      "משקל: כ־100 גרם",
-      "מידות האריזה: 10 × 10 × 5 ס״מ",
-      "תואם לתקני REACH ו-GDTC"
+    "sourceUrl": "https://he.aliexpress.com/item/1005012056671904.html?spm=a2g0o.store_pc_home.promoteRecommendProducts_2001826959723.1005012056671904&gatewayAdapt=glo2isr",
+    "images": [
+      "images/products/product-254/product-254-1.png",
+      "images/products/product-254/product-254-2.png",
+      "images/products/product-254/product-254-3.png",
+      "images/products/product-254/product-254-4.png",
+      "images/products/product-254/product-254-5.png",
+      "images/products/product-254/product-254-6.png",
+      "images/products/product-254/product-254-7.png"
     ],
-    "en": [
-      "6 mm Cuban-style tennis necklace",
-      "Base material: Brass",
-      "Stones: 5A zircon",
-      "Available in Silver or Gold",
-      "Available lengths: 40, 45, 50 or 55 cm",
-      "Design suitable for women and men",
-      "Chain style: Cuban Link",
-      "Weight: approx. 100 g",
-      "Packaging dimensions: 10 × 10 × 5 cm",
-      "Complies with REACH and GDTC standards"
-    ]
+    "price": 359.9,
+    "necklaceHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "necklaceSummaryLabel": {
+      "he": "שרשרת",
+      "en": "Necklace"
+    },
+    "necklaces": [
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "image": "images/products/product-254/product-254-1.png"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "image": "images/products/product-254/product-254-4.png"
+      }
+    ],
+    "title": {
+      "he": "שרשרת טניס קובנית משובצת 6 מ״מ - צבע כסף",
+      "en": "Iced Cuban Tennis Necklace 6 mm - Silver"
+    },
+    "subtitle": {
+      "he": "שרשרת טניס קובנית משובצת ברוחב 6 מ״מ · אבני זירקון 5A · לבחירה בצבע ובאורך",
+      "en": "6 mm iced Cuban-style tennis necklace · 5A zircon stones · choose color and length"
+    },
+    "sizeHeading": {
+      "he": "בחרו אורך",
+      "en": "Choose length"
+    },
+    "sizes": [
+      {
+        "id": "16in",
+        "addPrice": 0,
+        "label": {
+          "he": "40 ס״מ",
+          "en": "40 cm"
+        }
+      },
+      {
+        "id": "18in",
+        "addPrice": 15,
+        "label": {
+          "he": "45 ס״מ",
+          "en": "45 cm"
+        }
+      },
+      {
+        "id": "20in",
+        "addPrice": 30,
+        "label": {
+          "he": "50 ס״מ",
+          "en": "50 cm"
+        }
+      },
+      {
+        "id": "22in",
+        "addPrice": 45,
+        "label": {
+          "he": "55 ס״מ",
+          "en": "55 cm"
+        }
+      }
+    ],
+    "cardTitle": {
+      "he": "שרשרת טניס קובנית משובצת 6 מ״מ - צבע כסף",
+      "en": "Iced Cuban Tennis Necklace 6 mm - Silver"
+    },
+    "cardMessage": {
+      "he": "שרשרת טניס קובנית משובצת ברוחב 6 מ״מ עם אבני זירקון נוצצות.",
+      "en": "A 6 mm iced Cuban-style tennis necklace with sparkling zircon stones."
+    },
+    "description": {
+      "he": "שרשרת טניס קובנית ברוחב 6 מ״מ, עשויה פליז ומשובצת אבני זירקון 5A.",
+      "en": "A 6 mm Cuban-style tennis necklace made from brass and set with 5A zircon stones."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "שרשרת טניס קובנית ברוחב 6 מ״מ",
+        "חומר בסיס: פליז (Brass)",
+        "אבנים: זירקון 5A",
+        "לבחירה בצבע כסף או זהב",
+        "לבחירה באורכים: 40, 45, 50 או 55 ס״מ",
+        "העיצוב מתאים לנשים ולגברים",
+        "סגנון השרשרת: Cuban Link",
+        "משקל: כ־100 גרם",
+        "מידות האריזה: 10 × 10 × 5 ס״מ",
+        "תואם לתקני REACH ו-GDTC"
+      ],
+      "en": [
+        "6 mm Cuban-style tennis necklace",
+        "Base material: Brass",
+        "Stones: 5A zircon",
+        "Available in Silver or Gold",
+        "Available lengths: 40, 45, 50 or 55 cm",
+        "Design suitable for women and men",
+        "Chain style: Cuban Link",
+        "Weight: approx. 100 g",
+        "Packaging dimensions: 10 × 10 × 5 cm",
+        "Complies with REACH and GDTC standards"
+      ]
+    },
+    "afterText": {
+      "he": "מחיר התחלתי: 359.90 ₪ לאורך 40 ס״מ. כל 5 ס״מ נוספים מוסיפים 15 ₪.",
+      "en": "Starting price: ₪359.90 for 40 cm. Each additional 5 cm adds ₪15."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    }
   },
-  "afterText": {
-    "he": "מחיר התחלתי: 359.90 ₪ לאורך 40 ס״מ. כל 5 ס״מ נוספים מוסיפים 15 ₪.",
-    "en": "Starting price: ₪359.90 for 40 cm. Each additional 5 cm adds ₪15."
+  {
+    "id": "cuban-zircon-tennis-necklace-gold-255",
+    "slug": "product-255",
+    "urlSlug": "cuban-zircon-tennis-necklace-gold",
+    "sku": "VS-NE-255",
+    "category": "necklaces",
+    "categories": [
+      "necklaces"
+    ],
+    "badge": null,
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "showAllGalleryThumbs": true,
+    "defaultNecklaceId": "gold",
+    "hoverImage": "images/products/product-255/product-255-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-255/product-255-1.png",
+        "hoverImage": "images/products/product-255/product-255-2.png"
+      },
+      "men": {
+        "image": "images/products/product-255/product-255-1.png",
+        "hoverImage": "images/products/product-255/product-255-2.png"
+      }
+    },
+    "sourceUrl": "https://he.aliexpress.com/item/1005012056671904.html?spm=a2g0o.store_pc_home.promoteRecommendProducts_2001826959723.1005012056671904&gatewayAdapt=glo2isr",
+    "images": [
+      "images/products/product-255/product-255-1.png",
+      "images/products/product-255/product-255-2.png",
+      "images/products/product-255/product-255-3.png",
+      "images/products/product-255/product-255-4.png",
+      "images/products/product-255/product-255-5.png",
+      "images/products/product-255/product-255-6.png",
+      "images/products/product-255/product-255-7.png"
+    ],
+    "price": 359.9,
+    "necklaceHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "necklaceSummaryLabel": {
+      "he": "שרשרת",
+      "en": "Necklace"
+    },
+    "necklaces": [
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "image": "images/products/product-255/product-255-4.png"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "image": "images/products/product-255/product-255-1.png"
+      }
+    ],
+    "title": {
+      "he": "שרשרת טניס קובנית משובצת 6 מ״מ - צבע זהב",
+      "en": "Iced Cuban Tennis Necklace 6 mm - Gold"
+    },
+    "subtitle": {
+      "he": "שרשרת טניס קובנית משובצת ברוחב 6 מ״מ · אבני זירקון 5A · לבחירה בצבע ובאורך",
+      "en": "6 mm iced Cuban-style tennis necklace · 5A zircon stones · choose color and length"
+    },
+    "sizeHeading": {
+      "he": "בחרו אורך",
+      "en": "Choose length"
+    },
+    "sizes": [
+      {
+        "id": "16in",
+        "addPrice": 0,
+        "label": {
+          "he": "40 ס״מ",
+          "en": "40 cm"
+        }
+      },
+      {
+        "id": "18in",
+        "addPrice": 15,
+        "label": {
+          "he": "45 ס״מ",
+          "en": "45 cm"
+        }
+      },
+      {
+        "id": "20in",
+        "addPrice": 30,
+        "label": {
+          "he": "50 ס״מ",
+          "en": "50 cm"
+        }
+      },
+      {
+        "id": "22in",
+        "addPrice": 45,
+        "label": {
+          "he": "55 ס״מ",
+          "en": "55 cm"
+        }
+      }
+    ],
+    "cardTitle": {
+      "he": "שרשרת טניס קובנית משובצת 6 מ״מ - צבע זהב",
+      "en": "Iced Cuban Tennis Necklace 6 mm - Gold"
+    },
+    "cardMessage": {
+      "he": "שרשרת טניס קובנית משובצת ברוחב 6 מ״מ עם אבני זירקון נוצצות.",
+      "en": "A 6 mm iced Cuban-style tennis necklace with sparkling zircon stones."
+    },
+    "description": {
+      "he": "שרשרת טניס קובנית ברוחב 6 מ״מ, עשויה פליז ומשובצת אבני זירקון 5A.",
+      "en": "A 6 mm Cuban-style tennis necklace made from brass and set with 5A zircon stones."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "שרשרת טניס קובנית ברוחב 6 מ״מ",
+        "חומר בסיס: פליז (Brass)",
+        "אבנים: זירקון 5A",
+        "לבחירה בצבע כסף או זהב",
+        "לבחירה באורכים: 40, 45, 50 או 55 ס״מ",
+        "העיצוב מתאים לנשים ולגברים",
+        "סגנון השרשרת: Cuban Link",
+        "משקל: כ־100 גרם",
+        "מידות האריזה: 10 × 10 × 5 ס״מ",
+        "תואם לתקני REACH ו-GDTC"
+      ],
+      "en": [
+        "6 mm Cuban-style tennis necklace",
+        "Base material: Brass",
+        "Stones: 5A zircon",
+        "Available in Silver or Gold",
+        "Available lengths: 40, 45, 50 or 55 cm",
+        "Design suitable for women and men",
+        "Chain style: Cuban Link",
+        "Weight: approx. 100 g",
+        "Packaging dimensions: 10 × 10 × 5 cm",
+        "Complies with REACH and GDTC standards"
+      ]
+    },
+    "afterText": {
+      "he": "מחיר התחלתי: 359.90 ₪ לאורך 40 ס״מ. כל 5 ס״מ נוספים מוסיפים 15 ₪.",
+      "en": "Starting price: ₪359.90 for 40 cm. Each additional 5 cm adds ₪15."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    }
   },
-  "deliveryBusinessDays": {
-    "min": 9,
-    "max": 14
-  }
-}
-  ,{
+  {
     "id": "iced-cuban-bracelet-silver-256",
     "slug": "product-256",
     "urlSlug": "iced-cuban-bracelet-silver",
     "sku": "VS-BR-256",
     "category": "bracelets",
     "categories": [
-      "bracelets"
+      "bracelets",
+      "bracelets-men"
     ],
     "badge": null,
     "cardMode": "view",
@@ -24834,7 +24877,8 @@ var PRODUCTS = [
     "sku": "VS-BR-257",
     "category": "bracelets",
     "categories": [
-      "bracelets"
+      "bracelets",
+      "bracelets-men"
     ],
     "badge": null,
     "cardMode": "view",
@@ -24983,7 +25027,6 @@ var PRODUCTS = [
       "max": 14
     }
   }
-
 ];
 
 var CATEGORIES = [
@@ -25013,7 +25056,23 @@ var CATEGORIES = [
     "label": {
       "he": "צמידים",
       "en": "Bracelets"
-    }
+    },
+    "children": [
+      {
+        "key": "bracelets-men",
+        "label": {
+          "he": "גברים",
+          "en": "Men"
+        }
+      },
+      {
+        "key": "bracelets-women",
+        "label": {
+          "he": "נשים",
+          "en": "Women"
+        }
+      }
+    ]
   },
   {
     "key": "rings",

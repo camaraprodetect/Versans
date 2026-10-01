@@ -822,7 +822,14 @@ html, body {
       <a href="/#shopTitle" data-cat="all" data-nav-cat="all">עמוד בית</a>
       <a href="/message-jewelry#shop" data-cat="greeting" data-nav-cat="greeting">תכשיט עם ברכה</a>
       <a href="/necklaces#shop" data-cat="necklaces" data-nav-cat="necklaces">שרשראות</a>
-      <a href="/bracelets#shop" data-cat="bracelets" data-nav-cat="bracelets">צמידים</a>
+      <div class="nav__item nav__item--has-submenu" data-nav-group="bracelets">
+        <a href="/bracelets#shop" data-cat="bracelets" data-nav-cat="bracelets" data-nav-parent-toggle="bracelets" aria-haspopup="true" aria-expanded="false">צמידים</a>
+        <div class="nav__submenu" aria-label="תתי קטגוריות צמידים">
+          <a href="/bracelets#shop" data-cat="bracelets" class="nav__submenu-all">כל הצמידים</a>
+          <a href="/bracelets-men#shop" data-cat="bracelets-men" data-nav-subcat="bracelets-men">גברים</a>
+          <a href="/bracelets-women#shop" data-cat="bracelets-women" data-nav-subcat="bracelets-women">נשים</a>
+        </div>
+      </div>
       <a href="/rings#shop" data-cat="rings" data-nav-cat="rings">טבעות</a>
       <a href="/photo-bracelets#shop" data-cat="photo-bracelets" data-nav-cat="photo-bracelets">תכשיטי תמונה</a>
       <div class="nav__item nav__item--has-submenu" data-nav-group="watches">
