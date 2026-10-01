@@ -435,3 +435,11 @@ html.vs-a11y-root.vs-a11y-page-larger .vs-a11y-screen-mask{ display:block; }
     max-width:none!important;
   }
 }
+
+/* VerSans: enlarge only the fixed bottom controls on very large screens. */
+@media (min-width:1537px){
+  .vs-a11y-trigger{
+    width:76px;
+    height:76px;
+  }
+}

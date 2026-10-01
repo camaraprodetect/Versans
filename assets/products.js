@@ -2206,7 +2206,6 @@ var PRODUCTS = [
     "sku": "VS-BRACE-PHOTO-021",
     "category": "photo-bracelets",
     "categories": [
-      "bracelets",
       "photo-bracelets",
       "custom"
     ],
@@ -24349,7 +24348,638 @@ var PRODUCTS = [
       "min": 9,
       "max": 14
     }
+  },
+{
+  "id": "cuban-zircon-tennis-necklace-silver-254",
+  "slug": "product-254",
+  "urlSlug": "cuban-zircon-tennis-necklace-silver",
+  "sku": "VS-NE-254",
+  "category": "necklaces",
+  "categories": [
+    "necklaces"
+  ],
+  "badge": null,
+  "cardMode": "view",
+  "hideMessageCard": true,
+  "showAllGalleryThumbs": true,
+  "defaultNecklaceId": "silver",
+  "hoverImage": "images/products/product-254/product-254-2.png",
+  "collectionMedia": {
+    "women": {
+      "image": "images/products/product-254/product-254-1.png",
+      "hoverImage": "images/products/product-254/product-254-2.png"
+    },
+    "men": {
+      "image": "images/products/product-254/product-254-1.png",
+      "hoverImage": "images/products/product-254/product-254-2.png"
+    }
+  },
+  "sourceUrl": "https://he.aliexpress.com/item/1005012056671904.html?spm=a2g0o.store_pc_home.promoteRecommendProducts_2001826959723.1005012056671904&gatewayAdapt=glo2isr",
+  "images": [
+    "images/products/product-254/product-254-1.png",
+    "images/products/product-254/product-254-2.png",
+    "images/products/product-254/product-254-3.png",
+    "images/products/product-254/product-254-4.png",
+    "images/products/product-254/product-254-5.png",
+    "images/products/product-254/product-254-6.png",
+    "images/products/product-254/product-254-7.png"
+  ],
+  "price": 359.9,
+  "necklaceHeading": {
+    "he": "בחרו צבע",
+    "en": "Choose color"
+  },
+  "necklaceSummaryLabel": {
+    "he": "שרשרת",
+    "en": "Necklace"
+  },
+  "necklaces": [
+    {
+      "id": "silver",
+      "label": {
+        "he": "כסף",
+        "en": "Silver"
+      },
+      "image": "images/products/product-254/product-254-1.png"
+    },
+    {
+      "id": "gold",
+      "label": {
+        "he": "זהב",
+        "en": "Gold"
+      },
+      "image": "images/products/product-254/product-254-4.png"
+    }
+  ],
+  "title": {
+    "he": "שרשרת טניס קובנית משובצת 6 מ״מ - צבע כסף",
+    "en": "Iced Cuban Tennis Necklace 6 mm - Silver"
+  },
+  "subtitle": {
+    "he": "שרשרת טניס קובנית משובצת ברוחב 6 מ״מ · אבני זירקון 5A · לבחירה בצבע ובאורך",
+    "en": "6 mm iced Cuban-style tennis necklace · 5A zircon stones · choose color and length"
+  },
+  "sizeHeading": {
+    "he": "בחרו אורך",
+    "en": "Choose length"
+  },
+  "sizes": [
+    {
+      "id": "16in",
+      "addPrice": 0,
+      "label": {
+        "he": "40 ס״מ",
+        "en": "40 cm"
+      }
+    },
+    {
+      "id": "18in",
+      "addPrice": 15,
+      "label": {
+        "he": "45 ס״מ",
+        "en": "45 cm"
+      }
+    },
+    {
+      "id": "20in",
+      "addPrice": 30,
+      "label": {
+        "he": "50 ס״מ",
+        "en": "50 cm"
+      }
+    },
+    {
+      "id": "22in",
+      "addPrice": 45,
+      "label": {
+        "he": "55 ס״מ",
+        "en": "55 cm"
+      }
+    }
+  ],
+  "cardTitle": {
+    "he": "שרשרת טניס קובנית משובצת 6 מ״מ - צבע כסף",
+    "en": "Iced Cuban Tennis Necklace 6 mm - Silver"
+  },
+  "cardMessage": {
+    "he": "שרשרת טניס קובנית משובצת ברוחב 6 מ״מ עם אבני זירקון נוצצות.",
+    "en": "A 6 mm iced Cuban-style tennis necklace with sparkling zircon stones."
+  },
+  "description": {
+    "he": "שרשרת טניס קובנית ברוחב 6 מ״מ, עשויה פליז ומשובצת אבני זירקון 5A.",
+    "en": "A 6 mm Cuban-style tennis necklace made from brass and set with 5A zircon stones."
+  },
+  "signature": {
+    "he": "",
+    "en": ""
+  },
+  "details": {
+    "he": [
+      "שרשרת טניס קובנית ברוחב 6 מ״מ",
+      "חומר בסיס: פליז (Brass)",
+      "אבנים: זירקון 5A",
+      "לבחירה בצבע כסף או זהב",
+      "לבחירה באורכים: 40, 45, 50 או 55 ס״מ",
+      "העיצוב מתאים לנשים ולגברים",
+      "סגנון השרשרת: Cuban Link",
+      "משקל: כ־100 גרם",
+      "מידות האריזה: 10 × 10 × 5 ס״מ",
+      "תואם לתקני REACH ו-GDTC"
+    ],
+    "en": [
+      "6 mm Cuban-style tennis necklace",
+      "Base material: Brass",
+      "Stones: 5A zircon",
+      "Available in Silver or Gold",
+      "Available lengths: 40, 45, 50 or 55 cm",
+      "Design suitable for women and men",
+      "Chain style: Cuban Link",
+      "Weight: approx. 100 g",
+      "Packaging dimensions: 10 × 10 × 5 cm",
+      "Complies with REACH and GDTC standards"
+    ]
+  },
+  "afterText": {
+    "he": "מחיר התחלתי: 359.90 ₪ לאורך 40 ס״מ. כל 5 ס״מ נוספים מוסיפים 15 ₪.",
+    "en": "Starting price: ₪359.90 for 40 cm. Each additional 5 cm adds ₪15."
+  },
+  "deliveryBusinessDays": {
+    "min": 9,
+    "max": 14
   }
+},
+{
+  "id": "cuban-zircon-tennis-necklace-gold-255",
+  "slug": "product-255",
+  "urlSlug": "cuban-zircon-tennis-necklace-gold",
+  "sku": "VS-NE-255",
+  "category": "necklaces",
+  "categories": [
+    "necklaces"
+  ],
+  "badge": null,
+  "cardMode": "view",
+  "hideMessageCard": true,
+  "showAllGalleryThumbs": true,
+  "defaultNecklaceId": "gold",
+  "hoverImage": "images/products/product-255/product-255-2.png",
+  "collectionMedia": {
+    "women": {
+      "image": "images/products/product-255/product-255-1.png",
+      "hoverImage": "images/products/product-255/product-255-2.png"
+    },
+    "men": {
+      "image": "images/products/product-255/product-255-1.png",
+      "hoverImage": "images/products/product-255/product-255-2.png"
+    }
+  },
+  "sourceUrl": "https://he.aliexpress.com/item/1005012056671904.html?spm=a2g0o.store_pc_home.promoteRecommendProducts_2001826959723.1005012056671904&gatewayAdapt=glo2isr",
+  "images": [
+    "images/products/product-255/product-255-1.png",
+    "images/products/product-255/product-255-2.png",
+    "images/products/product-255/product-255-3.png",
+    "images/products/product-255/product-255-4.png",
+    "images/products/product-255/product-255-5.png",
+    "images/products/product-255/product-255-6.png",
+    "images/products/product-255/product-255-7.png"
+  ],
+  "price": 359.9,
+  "necklaceHeading": {
+    "he": "בחרו צבע",
+    "en": "Choose color"
+  },
+  "necklaceSummaryLabel": {
+    "he": "שרשרת",
+    "en": "Necklace"
+  },
+  "necklaces": [
+    {
+      "id": "silver",
+      "label": {
+        "he": "כסף",
+        "en": "Silver"
+      },
+      "image": "images/products/product-255/product-255-4.png"
+    },
+    {
+      "id": "gold",
+      "label": {
+        "he": "זהב",
+        "en": "Gold"
+      },
+      "image": "images/products/product-255/product-255-1.png"
+    }
+  ],
+  "title": {
+    "he": "שרשרת טניס קובנית משובצת 6 מ״מ - צבע זהב",
+    "en": "Iced Cuban Tennis Necklace 6 mm - Gold"
+  },
+  "subtitle": {
+    "he": "שרשרת טניס קובנית משובצת ברוחב 6 מ״מ · אבני זירקון 5A · לבחירה בצבע ובאורך",
+    "en": "6 mm iced Cuban-style tennis necklace · 5A zircon stones · choose color and length"
+  },
+  "sizeHeading": {
+    "he": "בחרו אורך",
+    "en": "Choose length"
+  },
+  "sizes": [
+    {
+      "id": "16in",
+      "addPrice": 0,
+      "label": {
+        "he": "40 ס״מ",
+        "en": "40 cm"
+      }
+    },
+    {
+      "id": "18in",
+      "addPrice": 15,
+      "label": {
+        "he": "45 ס״מ",
+        "en": "45 cm"
+      }
+    },
+    {
+      "id": "20in",
+      "addPrice": 30,
+      "label": {
+        "he": "50 ס״מ",
+        "en": "50 cm"
+      }
+    },
+    {
+      "id": "22in",
+      "addPrice": 45,
+      "label": {
+        "he": "55 ס״מ",
+        "en": "55 cm"
+      }
+    }
+  ],
+  "cardTitle": {
+    "he": "שרשרת טניס קובנית משובצת 6 מ״מ - צבע זהב",
+    "en": "Iced Cuban Tennis Necklace 6 mm - Gold"
+  },
+  "cardMessage": {
+    "he": "שרשרת טניס קובנית משובצת ברוחב 6 מ״מ עם אבני זירקון נוצצות.",
+    "en": "A 6 mm iced Cuban-style tennis necklace with sparkling zircon stones."
+  },
+  "description": {
+    "he": "שרשרת טניס קובנית ברוחב 6 מ״מ, עשויה פליז ומשובצת אבני זירקון 5A.",
+    "en": "A 6 mm Cuban-style tennis necklace made from brass and set with 5A zircon stones."
+  },
+  "signature": {
+    "he": "",
+    "en": ""
+  },
+  "details": {
+    "he": [
+      "שרשרת טניס קובנית ברוחב 6 מ״מ",
+      "חומר בסיס: פליז (Brass)",
+      "אבנים: זירקון 5A",
+      "לבחירה בצבע כסף או זהב",
+      "לבחירה באורכים: 40, 45, 50 או 55 ס״מ",
+      "העיצוב מתאים לנשים ולגברים",
+      "סגנון השרשרת: Cuban Link",
+      "משקל: כ־100 גרם",
+      "מידות האריזה: 10 × 10 × 5 ס״מ",
+      "תואם לתקני REACH ו-GDTC"
+    ],
+    "en": [
+      "6 mm Cuban-style tennis necklace",
+      "Base material: Brass",
+      "Stones: 5A zircon",
+      "Available in Silver or Gold",
+      "Available lengths: 40, 45, 50 or 55 cm",
+      "Design suitable for women and men",
+      "Chain style: Cuban Link",
+      "Weight: approx. 100 g",
+      "Packaging dimensions: 10 × 10 × 5 cm",
+      "Complies with REACH and GDTC standards"
+    ]
+  },
+  "afterText": {
+    "he": "מחיר התחלתי: 359.90 ₪ לאורך 40 ס״מ. כל 5 ס״מ נוספים מוסיפים 15 ₪.",
+    "en": "Starting price: ₪359.90 for 40 cm. Each additional 5 cm adds ₪15."
+  },
+  "deliveryBusinessDays": {
+    "min": 9,
+    "max": 14
+  }
+}
+  ,{
+    "id": "iced-cuban-bracelet-silver-256",
+    "slug": "product-256",
+    "urlSlug": "iced-cuban-bracelet-silver",
+    "sku": "VS-BR-256",
+    "category": "bracelets",
+    "categories": [
+      "bracelets"
+    ],
+    "badge": null,
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "showAllGalleryThumbs": true,
+    "defaultNecklaceId": "silver",
+    "hoverImage": "images/products/product-256/product-256-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-256/product-256-1.png",
+        "hoverImage": "images/products/product-256/product-256-2.png"
+      },
+      "men": {
+        "image": "images/products/product-256/product-256-1.png",
+        "hoverImage": "images/products/product-256/product-256-2.png"
+      }
+    },
+    "sourceUrl": "https://he.aliexpress.com/item/1005007096007572.html?spm=a2g0o.store_pc_home.promoteRecommendProducts_2001826959723.1005007096007572&gatewayAdapt=glo2isr",
+    "images": [
+      "images/products/product-256/product-256-1.png",
+      "images/products/product-256/product-256-2.png",
+      "images/products/product-256/product-256-3.png",
+      "images/products/product-256/product-256-4.png"
+    ],
+    "price": 359.9,
+    "necklaceHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "necklaceSummaryLabel": {
+      "he": "צמיד",
+      "en": "Bracelet"
+    },
+    "necklaces": [
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "image": "images/products/product-256/product-256-1.png"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "image": "images/products/product-256/product-256-3.png"
+      }
+    ],
+    "title": {
+      "he": "צמיד קובני אייס 24 מ״מ - צבע כסף",
+      "en": "24 mm Iced Cuban Bracelet - Silver"
+    },
+    "subtitle": {
+      "he": "צמיד קובני יוקרתי ברוחב 24 מ״מ · 6 שורות · אבני זירקון 5A · לבחירה בצבע ובאורך",
+      "en": "Luxury 24 mm iced Cuban bracelet · 6 rows · 5A zircon stones · choose color and length"
+    },
+    "sizeHeading": {
+      "he": "בחרו אורך",
+      "en": "Choose length"
+    },
+    "sizes": [
+      {
+        "id": "7in",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "359.90 ₪",
+          "en": "₪359.90"
+        },
+        "label": {
+          "he": "17 ס״מ",
+          "en": "17 cm"
+        }
+      },
+      {
+        "id": "8in",
+        "addPrice": 30,
+        "priceLabel": {
+          "he": "389.90 ₪",
+          "en": "₪389.90"
+        },
+        "label": {
+          "he": "20 ס״מ",
+          "en": "20 cm"
+        }
+      },
+      {
+        "id": "9in",
+        "addPrice": 60,
+        "priceLabel": {
+          "he": "419.90 ₪",
+          "en": "₪419.90"
+        },
+        "label": {
+          "he": "22 ס״מ",
+          "en": "22 cm"
+        }
+      }
+    ],
+    "cardTitle": {
+      "he": "צמיד קובני אייס 24 מ״מ - צבע כסף",
+      "en": "24 mm Iced Cuban Bracelet - Silver"
+    },
+    "cardMessage": {
+      "he": "צמיד קובני אייס רחב במיוחד עם 6 שורות ואבני זירקון 5A נוצצות.",
+      "en": "A bold 24 mm iced Cuban bracelet with 6 rows and sparkling 5A zircon stones."
+    },
+    "description": {
+      "he": "צמיד קובני ברוחב 24 מ״מ, עשוי פליז ומשובץ באבני זירקון 5A. גרסת הזהב מצופה 18K זהב.",
+      "en": "A 24 mm Cuban bracelet made from brass and set with 5A zircon stones. The gold version is plated with 18K gold."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צמיד קובני אייס ברוחב 24 מ״מ",
+        "עיצוב 6 שורות בסגנון Cuban Link",
+        "חומר בסיס: פליז (Brass)",
+        "משובץ אבני Cubic Zirconia בדרגת 5A",
+        "לבחירה בצבע כסף או זהב",
+        "גרסת הזהב מצופה 18K זהב",
+        "לבחירה באורכים: 17, 20 או 22 ס״מ",
+        "עיצוב יוניסקס לנשים ולגברים"
+      ],
+      "en": [
+        "24 mm iced Cuban bracelet",
+        "6-row Cuban Link design",
+        "Base material: Brass",
+        "Set with 5A Cubic Zirconia stones",
+        "Available in Silver or Gold",
+        "The gold version is plated with 18K gold",
+        "Available lengths: 17, 20 or 22 cm",
+        "Unisex design for women and men"
+      ]
+    },
+    "afterText": {
+      "he": "מחיר התחלתי: 359.90 ₪ לאורך 17 ס״מ. כל אינץ׳ נוסף מוסיף 30 ₪.",
+      "en": "Starting price: ₪359.90 for 17 cm. Each additional inch adds ₪30."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    }
+  },
+  {
+    "id": "iced-cuban-bracelet-gold-257",
+    "slug": "product-257",
+    "urlSlug": "iced-cuban-bracelet-gold",
+    "sku": "VS-BR-257",
+    "category": "bracelets",
+    "categories": [
+      "bracelets"
+    ],
+    "badge": null,
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "showAllGalleryThumbs": true,
+    "defaultNecklaceId": "gold",
+    "hoverImage": "images/products/product-257/product-257-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-257/product-257-1.png",
+        "hoverImage": "images/products/product-257/product-257-2.png"
+      },
+      "men": {
+        "image": "images/products/product-257/product-257-1.png",
+        "hoverImage": "images/products/product-257/product-257-2.png"
+      }
+    },
+    "sourceUrl": "https://he.aliexpress.com/item/1005007096007572.html?spm=a2g0o.store_pc_home.promoteRecommendProducts_2001826959723.1005007096007572&gatewayAdapt=glo2isr",
+    "images": [
+      "images/products/product-257/product-257-1.png",
+      "images/products/product-257/product-257-2.png",
+      "images/products/product-257/product-257-3.png",
+      "images/products/product-257/product-257-4.png"
+    ],
+    "price": 359.9,
+    "necklaceHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "necklaceSummaryLabel": {
+      "he": "צמיד",
+      "en": "Bracelet"
+    },
+    "necklaces": [
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "image": "images/products/product-257/product-257-3.png"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "image": "images/products/product-257/product-257-1.png"
+      }
+    ],
+    "title": {
+      "he": "צמיד קובני אייס 24 מ״מ - מצופה 18K זהב",
+      "en": "24 mm Iced Cuban Bracelet - 18K Gold Plated"
+    },
+    "subtitle": {
+      "he": "צמיד קובני יוקרתי ברוחב 24 מ״מ · 6 שורות · אבני זירקון 5A · מצופה 18K זהב · לבחירה בצבע ובאורך",
+      "en": "Luxury 24 mm iced Cuban bracelet · 6 rows · 5A zircon stones · 18K gold plated · choose color and length"
+    },
+    "sizeHeading": {
+      "he": "בחרו אורך",
+      "en": "Choose length"
+    },
+    "sizes": [
+      {
+        "id": "7in",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "359.90 ₪",
+          "en": "₪359.90"
+        },
+        "label": {
+          "he": "17 ס״מ",
+          "en": "17 cm"
+        }
+      },
+      {
+        "id": "8in",
+        "addPrice": 30,
+        "priceLabel": {
+          "he": "389.90 ₪",
+          "en": "₪389.90"
+        },
+        "label": {
+          "he": "20 ס״מ",
+          "en": "20 cm"
+        }
+      },
+      {
+        "id": "9in",
+        "addPrice": 60,
+        "priceLabel": {
+          "he": "419.90 ₪",
+          "en": "₪419.90"
+        },
+        "label": {
+          "he": "22 ס״מ",
+          "en": "22 cm"
+        }
+      }
+    ],
+    "cardTitle": {
+      "he": "צמיד קובני אייס 24 מ״מ - מצופה 18K זהב",
+      "en": "24 mm Iced Cuban Bracelet - 18K Gold Plated"
+    },
+    "cardMessage": {
+      "he": "צמיד קובני אייס רחב במיוחד עם 6 שורות ואבני זירקון 5A נוצצות.",
+      "en": "A bold 24 mm iced Cuban bracelet with 6 rows and sparkling 5A zircon stones."
+    },
+    "description": {
+      "he": "צמיד קובני ברוחב 24 מ״מ, עשוי פליז ומשובץ באבני זירקון 5A. גרסת הזהב מצופה 18K זהב.",
+      "en": "A 24 mm Cuban bracelet made from brass and set with 5A zircon stones. The gold version is plated with 18K gold."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "צמיד קובני אייס ברוחב 24 מ״מ",
+        "עיצוב 6 שורות בסגנון Cuban Link",
+        "חומר בסיס: פליז (Brass)",
+        "משובץ אבני Cubic Zirconia בדרגת 5A",
+        "לבחירה בצבע כסף או זהב",
+        "גרסת הזהב מצופה 18K זהב",
+        "לבחירה באורכים: 17, 20 או 22 ס״מ",
+        "עיצוב יוניסקס לנשים ולגברים"
+      ],
+      "en": [
+        "24 mm iced Cuban bracelet",
+        "6-row Cuban Link design",
+        "Base material: Brass",
+        "Set with 5A Cubic Zirconia stones",
+        "Available in Silver or Gold",
+        "The gold version is plated with 18K gold",
+        "Available lengths: 17, 20 or 22 cm",
+        "Unisex design for women and men"
+      ]
+    },
+    "afterText": {
+      "he": "מחיר התחלתי: 359.90 ₪ לאורך 17 ס״מ. כל אינץ׳ נוסף מוסיף 30 ₪.",
+      "en": "Starting price: ₪359.90 for 17 cm. Each additional inch adds ₪30."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    }
+  }
+
 ];
 
 var CATEGORIES = [

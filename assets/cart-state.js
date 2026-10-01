@@ -234,10 +234,10 @@
 /* VerSans smart cart incentive meter - uses only existing VerSans promotions. */
 (function () {
   'use strict';
-  if (window.__VERSANS_CART_INCENTIVE_V4) return;
-  window.__VERSANS_CART_INCENTIVE_V4 = true;
+  if (window.__VERSANS_CART_INCENTIVE_V5) return;
+  window.__VERSANS_CART_INCENTIVE_V5 = true;
 
-  var styleId = 'versans-cart-incentive-styles-v4';
+  var styleId = 'versans-cart-incentive-styles-v5';
   if (!document.getElementById(styleId)) {
     var style = document.createElement('style');
     style.id = styleId;
@@ -262,7 +262,9 @@
       '.vs-cart-incentive__tag{width:16px;height:16px;display:block}',
       '.vs-cart-incentive__tag path,.vs-cart-incentive__tag circle{stroke:currentColor}',
       '#cartBody>.vs-cart-incentive,#versansGlobalCartBody>.vs-cart-incentive{position:relative}',
-      '@media(max-width:700px){.vs-cart-incentive{margin:0 0 9px;padding:9px 10px 8px;border-radius:12px}.vs-cart-incentive__title{font-size:.84rem}.vs-cart-incentive__sub{font-size:.67rem}.vs-cart-incentive__meter{margin-top:9px}.vs-cart-incentive__track{min-height:64px;padding:0 13px}.vs-cart-incentive__rail{right:13px;left:13px;top:15px;height:5px}.vs-cart-incentive__dot{width:32px;height:32px;border-width:2px;font-size:.7rem}.vs-cart-incentive__step{font-size:.57rem;line-height:1.15}.vs-cart-incentive__step-label{max-width:82px;margin-top:4px;min-height:23px}.vs-cart-incentive__tag{width:14px;height:14px}.vs-cart-incentive__step.is-current .vs-cart-incentive__dot{box-shadow:0 0 0 3px rgba(20,35,51,.08)}}'
+      '@media(max-width:700px){.vs-cart-incentive{margin:0 0 9px;padding:9px 10px 8px;border-radius:12px}.vs-cart-incentive__title{font-size:.84rem}.vs-cart-incentive__sub{font-size:.67rem}.vs-cart-incentive__meter{margin-top:9px}.vs-cart-incentive__track{min-height:64px;padding:0 13px}.vs-cart-incentive__rail{right:13px;left:13px;top:15px;height:5px}.vs-cart-incentive__dot{width:32px;height:32px;border-width:2px;font-size:.7rem}.vs-cart-incentive__step{font-size:.57rem;line-height:1.15}.vs-cart-incentive__step-label{max-width:82px;margin-top:4px;min-height:23px}.vs-cart-incentive__tag{width:14px;height:14px}.vs-cart-incentive__step.is-current .vs-cart-incentive__dot{box-shadow:0 0 0 3px rgba(20,35,51,.08)}}',
+      '#cartOverlay [data-cart-savings-resizer],#versansGlobalCartOverlay [data-cart-savings-resizer]{touch-action:none!important;cursor:ns-resize!important;user-select:none!important;-webkit-user-select:none!important}',
+      '@media(max-width:700px){#cartOverlay .drawer__foot,#versansGlobalCartOverlay .drawer__foot{display:flex!important;flex-direction:column!important;justify-content:flex-end!important;flex:0 0 auto!important;overflow:visible!important;max-height:none!important;height:auto!important;transition:none!important}#cartOverlay .drawer__foot .cart-pricing-card--compact,#versansGlobalCartOverlay .drawer__foot .cart-pricing-card--compact{flex:0 0 auto!important;position:relative!important;z-index:2!important}#cartOverlay .cart-savings-resizable__content,#versansGlobalCartOverlay .cart-savings-resizable__content{flex:0 0 auto!important;min-height:0!important;max-height:none!important;overflow-y:auto!important}#cartOverlay .drawer__body,#versansGlobalCartOverlay .drawer__body{min-height:105px!important;flex:1 1 auto!important;overflow-y:auto!important;overscroll-behavior:contain!important}}'
     ].join('');
     document.head.appendChild(style);
   }
@@ -557,10 +559,11 @@
   }
 
   function initCartFootResizer() {
-    if (window.__versansCartFootResizerReady) return;
-    window.__versansCartFootResizerReady = true;
+    if (window.__versansCartFootResizerReadyV3) return;
+    window.__versansCartFootResizerReadyV3 = true;
 
     var drag = null;
+    var touchDrag = null;
 
     function visibleViewportHeight() {
       var vv = window.visualViewport;
@@ -570,79 +573,116 @@
     }
 
     function syncCartViewportHeight() {
+      if (!isMobile()) {
+        document.documentElement.style.removeProperty('--vs-cart-mobile-vh');
+        return;
+      }
       document.documentElement.style.setProperty('--vs-cart-mobile-vh', visibleViewportHeight() + 'px');
     }
 
-    function savingsBounds(handle, content, panel) {
-      var contentRect = content.getBoundingClientRect();
-      var panelRect = panel.getBoundingClientRect();
-      var foot = handle.closest('.drawer__foot');
-      var head = panel.querySelector('.drawer__head');
-      var checkout = foot && foot.querySelector('.cart-checkout-cta');
+    function isMobile() {
+      return window.matchMedia('(max-width:700px)').matches;
+    }
 
+    function getSavingsContent(handle, foot) {
+      if (!foot) return null;
+      var content = foot.querySelector('.cart-savings-resizable__content');
+      if (content) return content;
+      var wrapper = handle && handle.closest('.cart-savings-resizable');
+      return wrapper ? wrapper.querySelector('.cart-savings-resizable__content') : null;
+    }
+
+    function getBounds(handle, content, foot, panel) {
+      var panelRect = panel.getBoundingClientRect();
+      var contentRect = content.getBoundingClientRect();
+      var head = panel.querySelector('.drawer__head');
+      var body = panel.querySelector('.drawer__body');
+      var headHeight = head ? head.getBoundingClientRect().height : 64;
       var viewportHeight = visibleViewportHeight();
       var panelHeight = Math.min(panelRect.height || viewportHeight, viewportHeight);
-      var headHeight = head ? head.getBoundingClientRect().height : 68;
-      var checkoutHeight = checkout ? checkout.getBoundingClientRect().height : 50;
+      var bodyMin = 105;
+      if (body) {
+        var bodyMinFromStyle = parseFloat(window.getComputedStyle(body).minHeight);
+        if (Number.isFinite(bodyMinFromStyle)) bodyMin = Math.max(bodyMin, bodyMinFromStyle);
+      }
 
-      /* Always preserve a visible product/body area plus the fixed payment rows. */
-      var minBodyHeight = Math.max(110, Math.min(165, panelHeight * 0.24));
-      var fixedFootHeight = foot ? Math.max(145, foot.scrollHeight - contentRect.height) : (checkoutHeight + 150);
-      var minHeight = Math.min(82, Math.max(58, content.scrollHeight > 0 ? Math.min(content.scrollHeight, 82) : 58));
-      var mobile = window.matchMedia('(max-width: 700px)').matches;
-      var hardCap = mobile ? Math.min(190, panelHeight * 0.27) : 360;
-      var available = panelHeight - headHeight - minBodyHeight - fixedFootHeight;
-      var maxHeight = Math.max(minHeight, Math.min(hardCap, available));
+      var naturalHeight = Math.max(content.scrollHeight || 0, contentRect.height || 0);
+      var minHeight = 10; // Allow the savings area to collapse much further so the handle can be dragged lower.
+      var footRect = foot.getBoundingClientRect();
+      var pricing = foot.querySelector('.cart-pricing-card--compact');
+      var pricingHeight = pricing ? pricing.getBoundingClientRect().height : 0;
+      var fixedHeight = Math.max(0, footRect.height - contentRect.height);
+      if (pricingHeight > 0) fixedHeight = Math.max(fixedHeight, pricingHeight);
+
+      var maxHeight = Math.min(
+        Math.max(minHeight, Math.round(viewportHeight * 0.62)),
+        Math.max(minHeight, panelHeight - headHeight - bodyMin - fixedHeight)
+      );
+      maxHeight = Math.max(minHeight, Math.min(naturalHeight, maxHeight));
+
+      var current = contentRect.height;
+      if (!(current > 0)) current = naturalHeight;
 
       return {
-        contentRect: contentRect,
+        startHeight: Math.max(minHeight, Math.min(maxHeight, current)),
         minHeight: minHeight,
         maxHeight: maxHeight
       };
     }
 
-    function clampResizedSavings() {
-      syncCartViewportHeight();
-      if (!window.matchMedia('(max-width: 700px)').matches) return;
-      document.querySelectorAll('[data-cart-savings-resizable-content]').forEach(function(content) {
-        if (!content.style.height) return;
-        var box = content.closest('[data-cart-savings-resizable]');
-        var handle = box && box.querySelector('[data-cart-savings-resizer]');
-        var panel = content.closest('.ov__panel');
-        if (!box || !handle || !panel) return;
-        var bounds = savingsBounds(handle, content, panel);
-        var current = parseFloat(content.style.height) || content.getBoundingClientRect().height;
-        current = Math.max(bounds.minHeight, Math.min(bounds.maxHeight, current));
-        content.style.height = Math.round(current) + 'px';
-      });
+    function prepareContent(content) {
+      content.style.flex = '0 0 auto';
+      content.style.overflow = 'hidden';
+      content.style.maxHeight = 'none';
+      content.style.minHeight = '0';
+      content.style.transition = 'none';
     }
 
-    function queueCartViewportClamp() {
+    function beginDrag(handle, clientY, pointerId, kind) {
+      var foot = handle.closest('.drawer__foot');
+      var panel = handle.closest('.ov__panel');
+      var content = getSavingsContent(handle, foot);
+      if (!foot || !panel || !content) return;
+
       syncCartViewportHeight();
-      if (window.requestAnimationFrame) {
-        window.requestAnimationFrame(clampResizedSavings);
-      } else {
-        setTimeout(clampResizedSavings, 0);
+      prepareContent(content);
+      var bounds = getBounds(handle, content, foot, panel);
+      content.style.height = Math.round(bounds.startHeight) + 'px';
+      content.style.maxHeight = 'none';
+      content.setAttribute('data-cart-savings-resized', 'true');
+      handle.classList.add('is-dragging');
+      document.documentElement.classList.add('is-resizing-cart-foot');
+
+      var state = {
+        handle: handle,
+        content: content,
+        foot: foot,
+        panel: panel,
+        startY: clientY,
+        startHeight: bounds.startHeight,
+        minHeight: bounds.minHeight,
+        maxHeight: bounds.maxHeight,
+        kind: kind,
+        pointerId: pointerId
+      };
+
+      if (kind === 'pointer') drag = state;
+      else touchDrag = state;
+
+      if (kind === 'pointer' && handle.setPointerCapture) {
+        try { handle.setPointerCapture(pointerId); } catch (_) {}
       }
-      setTimeout(clampResizedSavings, 120);
     }
 
-    syncCartViewportHeight();
-    window.addEventListener('resize', queueCartViewportClamp, { passive:true });
-    window.addEventListener('pageshow', queueCartViewportClamp);
-    document.addEventListener('visibilitychange', function(){
-      if (!document.hidden) queueCartViewportClamp();
-    });
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', queueCartViewportClamp, { passive:true });
-      window.visualViewport.addEventListener('scroll', queueCartViewportClamp, { passive:true });
+    function moveDrag(state, clientY, event) {
+      if (!state) return;
+      if (event && event.cancelable) event.preventDefault();
+      var nextHeight = state.startHeight + (state.startY - clientY);
+      nextHeight = Math.max(state.minHeight, Math.min(state.maxHeight, nextHeight));
+      state.content.style.height = Math.round(nextHeight) + 'px';
     }
-    document.addEventListener('click', function(event){
-      var target = event.target && event.target.closest && event.target.closest('[data-cart-open],#cartBtn,.vs-floating-cart,[data-global-cart-close]');
-      if (target) queueCartViewportClamp();
-    }, true);
 
-    function endDrag(event) {
+    function finishPointer(event) {
       if (!drag) return;
       if (event && drag.handle.releasePointerCapture) {
         try { drag.handle.releasePointerCapture(event.pointerId); } catch (_) {}
@@ -652,103 +692,69 @@
       drag = null;
     }
 
-    document.addEventListener('pointerdown', function (event) {
-      var handle = event.target.closest && event.target.closest('[data-cart-savings-resizer]');
-      if (!handle) return;
-      var box = handle.closest('[data-cart-savings-resizable]');
-      var content = box && box.querySelector('[data-cart-savings-resizable-content]');
-      var panel = handle.closest('.ov__panel');
-      if (!box || !content || !panel) return;
-
-      event.preventDefault();
-      syncCartViewportHeight();
-      var bounds = savingsBounds(handle, content, panel);
-
-      drag = {
-        handle: handle,
-        box: box,
-        content: content,
-        startY: event.clientY,
-        startHeight: bounds.contentRect.height,
-        minHeight: bounds.minHeight,
-        maxHeight: bounds.maxHeight
-      };
-
-      content.style.height = Math.round(bounds.contentRect.height) + 'px';
-      content.style.maxHeight = 'none';
-      box.setAttribute('data-cart-savings-resized', 'true');
-      handle.classList.add('is-dragging');
-      document.documentElement.classList.add('is-resizing-cart-foot');
-      if (handle.setPointerCapture) {
-        try { handle.setPointerCapture(event.pointerId); } catch (_) {}
-      }
-    });
-
-    document.addEventListener('pointermove', function (event) {
-      if (!drag) return;
-      event.preventDefault();
-      var nextHeight = drag.startHeight + (drag.startY - event.clientY);
-      nextHeight = Math.max(drag.minHeight, Math.min(drag.maxHeight, nextHeight));
-      drag.content.style.height = Math.round(nextHeight) + 'px';
-    }, { passive:false });
-
-    document.addEventListener('pointerup', endDrag);
-    document.addEventListener('pointercancel', endDrag);
-
-    // Touch fallback for iOS/in-app browsers where pointer capture can be unreliable.
-    var touchDrag = null;
-    document.addEventListener('touchstart', function (event) {
-      if (!event.touches || event.touches.length !== 1) return;
-      var handle = event.target.closest && event.target.closest('[data-cart-savings-resizer]');
-      if (!handle) return;
-      var box = handle.closest('[data-cart-savings-resizable]');
-      var content = box && box.querySelector('[data-cart-savings-resizable-content]');
-      var panel = handle.closest('.ov__panel');
-      if (!box || !content || !panel) return;
-
-      var touch = event.touches[0];
-      syncCartViewportHeight();
-      var bounds = savingsBounds(handle, content, panel);
-
-      touchDrag = {
-        handle:handle, box:box, content:content,
-        startY:touch.clientY, startHeight:bounds.contentRect.height,
-        minHeight:bounds.minHeight, maxHeight:bounds.maxHeight
-      };
-      content.style.height = Math.round(bounds.contentRect.height) + 'px';
-      content.style.maxHeight = 'none';
-      box.setAttribute('data-cart-savings-resized', 'true');
-      handle.classList.add('is-dragging');
-      document.documentElement.classList.add('is-resizing-cart-foot');
-      event.preventDefault();
-    }, { passive:false });
-
-    document.addEventListener('touchmove', function (event) {
-      if (!touchDrag || !event.touches || !event.touches.length) return;
-      var nextHeight = touchDrag.startHeight + (touchDrag.startY - event.touches[0].clientY);
-      nextHeight = Math.max(touchDrag.minHeight, Math.min(touchDrag.maxHeight, nextHeight));
-      touchDrag.content.style.height = Math.round(nextHeight) + 'px';
-      event.preventDefault();
-    }, { passive:false });
-
-    function endTouchDrag() {
+    function finishTouch() {
       if (!touchDrag) return;
       touchDrag.handle.classList.remove('is-dragging');
       document.documentElement.classList.remove('is-resizing-cart-foot');
       touchDrag = null;
     }
-    document.addEventListener('touchend', endTouchDrag, { passive:true });
-    document.addEventListener('touchcancel', endTouchDrag, { passive:true });
+
+    function resetContent(handle) {
+      var foot = handle.closest('.drawer__foot');
+      var content = getSavingsContent(handle, foot);
+      if (!content) return;
+      content.style.height = '';
+      content.style.maxHeight = '';
+      content.style.flex = '';
+      content.style.minHeight = '';
+      content.style.overflow = '';
+      content.style.transition = '';
+      content.removeAttribute('data-cart-savings-resized');
+    }
+
+    syncCartViewportHeight();
+    window.addEventListener('resize', syncCartViewportHeight, { passive:true });
+    window.addEventListener('pageshow', syncCartViewportHeight);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', syncCartViewportHeight, { passive:true });
+    }
+
+    document.addEventListener('pointerdown', function (event) {
+      var handle = event.target.closest && event.target.closest('[data-cart-savings-resizer]');
+      if (!handle) return;
+      beginDrag(handle, event.clientY, event.pointerId, 'pointer');
+      if (drag) event.preventDefault();
+    }, { passive:false });
+
+    document.addEventListener('pointermove', function (event) {
+      if (!drag) return;
+      moveDrag(drag, event.clientY, event);
+    }, { passive:false });
+
+    document.addEventListener('pointerup', finishPointer, { passive:true });
+    document.addEventListener('pointercancel', finishPointer, { passive:true });
+
+    document.addEventListener('touchstart', function (event) {
+      if (!event.touches || event.touches.length !== 1) return;
+      var handle = event.target.closest && event.target.closest('[data-cart-savings-resizer]');
+      if (!handle) return;
+      var touch = event.touches[0];
+      beginDrag(handle, touch.clientY, null, 'touch');
+      if (touchDrag && event.cancelable) event.preventDefault();
+    }, { passive:false });
+
+    document.addEventListener('touchmove', function (event) {
+      if (!touchDrag || !event.touches || !event.touches.length) return;
+      moveDrag(touchDrag, event.touches[0].clientY, event);
+    }, { passive:false });
+
+    document.addEventListener('touchend', finishTouch, { passive:true });
+    document.addEventListener('touchcancel', finishTouch, { passive:true });
 
     document.addEventListener('dblclick', function (event) {
       var handle = event.target.closest && event.target.closest('[data-cart-savings-resizer]');
       if (!handle) return;
-      var box = handle.closest('[data-cart-savings-resizable]');
-      var content = box && box.querySelector('[data-cart-savings-resizable-content]');
-      if (!box || !content) return;
-      content.style.height = '';
-      content.style.maxHeight = '';
-      box.removeAttribute('data-cart-savings-resized');
+      resetContent(handle);
     });
   }
 

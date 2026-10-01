@@ -438,6 +438,193 @@
     });
   }
 
+  /* Priority catalog products: badge labels + family grouping.  A badge is
+     applied only to the exact color/variant listed in the configuration,
+     while all variants in the same family stay adjacent. */
+  var PRIORITY_PRODUCT_RULES = [
+    { slug: 'product-10',  badge: 'הכי נמכר', family: 'classic-tennis-chain' },
+    { slug: 'product-18',  badge: 'פופולרי', family: 'classic-tennis-chain' },
+    { slug: 'product-239', badge: 'פופולרי', family: 'titan-chain' },
+    { slug: 'product-254', badge: 'הכי נמכר', family: 'cuban-tennis-6mm-chain' },
+    { slug: 'product-255', badge: 'פופולרי', family: 'cuban-tennis-6mm-chain' },
+    { slug: 'product-237', badge: 'הכי נמכר', family: 'classic-tennis-bracelet' },
+    { slug: 'product-96',  badge: 'פופולרי', family: 'clover-black' },
+    { slug: 'product-98',  badge: 'מומלץ', family: 'clover-black' },
+    { slug: 'product-241', badge: 'הכי נמכר', family: 'titan-bracelet' },
+    { slug: 'product-242', badge: 'פופולרי', family: 'titan-bracelet' },
+    { slug: 'product-243', badge: 'הכי נמכר', family: 'vvs1-moissanite-cuban' },
+    { slug: 'product-248', badge: 'הכי נמכר', family: 'soline-vvs-womens' },
+    { slug: 'product-257', badge: 'הכי נמכר', family: 'iced-cuban-24mm' },
+    { slug: 'product-11',  badge: 'מבוקש', family: 'royal-tennis-bracelet' },
+    { slug: 'product-13',  badge: 'מומלץ', family: 'emerald-tennis-bracelet' },
+    { slug: 'product-250', badge: 'מומלץ', family: 'emerald-royal-bracelet' },
+    { slug: 'product-251', badge: 'פופולרי', family: 'emerald-royal-necklace' }
+  ];
+
+  var PRIORITY_PRODUCT_MAP = {};
+  PRIORITY_PRODUCT_RULES.forEach(function (rule, index) {
+    PRIORITY_PRODUCT_MAP[rule.slug] = {
+      rank: index,
+      family: rule.family,
+      badge: rule.badge
+    };
+  });
+
+  var PRIORITY_FAMILY_SLUGS = {
+    'classic-tennis-chain': ['product-10', 'product-18'],
+    'titan-chain': ['product-239', 'product-240'],
+    'cuban-tennis-6mm-chain': ['product-254', 'product-255'],
+    'classic-tennis-bracelet': ['product-237'],
+    'clover-black': ['product-94', 'product-95', 'product-96', 'product-97', 'product-98', 'product-99'],
+    'titan-bracelet': ['product-241', 'product-242'],
+    'vvs1-moissanite-cuban': ['product-243'],
+    'soline-vvs-womens': ['product-248', 'product-249'],
+    'iced-cuban-24mm': ['product-256', 'product-257'],
+    'royal-tennis-bracelet': ['product-11'],
+    'emerald-tennis-bracelet': ['product-13'],
+    'emerald-royal-bracelet': ['product-250'],
+    'emerald-royal-necklace': ['product-251']
+  };
+
+  var PRIORITY_FAMILY_BY_SLUG = {};
+  Object.keys(PRIORITY_FAMILY_SLUGS).forEach(function (family) {
+    PRIORITY_FAMILY_SLUGS[family].forEach(function (slug) {
+      PRIORITY_FAMILY_BY_SLUG[slug] = family;
+    });
+  });
+
+  function priorityInfo(p) {
+    return PRIORITY_PRODUCT_MAP[p && p.slug] || null;
+  }
+
+  function priorityFamilyForProduct(p) {
+    return PRIORITY_FAMILY_BY_SLUG[p && p.slug] || null;
+  }
+
+  function priorityFamilyRank(family) {
+    var best = Infinity;
+    PRIORITY_PRODUCT_RULES.forEach(function (rule, index) {
+      if (rule.family === family) best = Math.min(best, index);
+    });
+    return best;
+  }
+
+  function priorityFamilyKey(p) {
+    var info = priorityInfo(p);
+    return info ? info.family : null;
+  }
+
+  function orderPriorityCatalogProducts(list) {
+    var source = list.slice();
+    var familyMembers = {};
+    var familyMeta = {};
+
+    source.forEach(function (p, index) {
+      var family = priorityFamilyForProduct(p);
+      if (!family) return;
+      var info = priorityInfo(p);
+      if (!familyMembers[family]) familyMembers[family] = [];
+      familyMembers[family].push({
+        product: p,
+        index: index,
+        rank: info ? info.rank : 1000000
+      });
+      var familyRank = priorityFamilyRank(family);
+      if (!familyMeta[family] || familyRank < familyMeta[family].rank) {
+        familyMeta[family] = { rank: familyRank, index: index };
+      }
+    });
+
+    var priorityFamilies = Object.keys(familyMembers).sort(function (a, b) {
+      var ar = familyMeta[a].rank, br = familyMeta[b].rank;
+      if (ar !== br) return ar - br;
+      return familyMeta[a].index - familyMeta[b].index;
+    });
+
+    var used = {};
+    var ordered = [];
+    priorityFamilies.forEach(function (family) {
+      familyMembers[family].sort(function (a, b) {
+        if (a.rank !== b.rank) return a.rank - b.rank;
+        return a.index - b.index;
+      }).forEach(function (entry) {
+        used[entry.index] = true;
+        ordered.push(entry.product);
+      });
+    });
+
+    source.forEach(function (p, index) {
+      if (!used[index]) ordered.push(p);
+    });
+    return ordered;
+  }
+
+  /* Homepage groups show only a small number of cards. Keep prioritized
+     families together and, when there are more priority families than fit,
+     use a stable pseudo-random order so the chosen families can vary without
+     jumping on every render. */
+  var PRIORITY_HOME_SEED = 20261001;
+  function priorityHomeKey(family) {
+    var text = String(PRIORITY_HOME_SEED) + ':' + family;
+    var h = 2166136261;
+    for (var i = 0; i < text.length; i++) {
+      h ^= text.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return h >>> 0;
+  }
+
+  function orderHomeCollectionProducts(list, limit) {
+    var nonPriority = [];
+    var families = {};
+    var familyOrder = [];
+
+    list.forEach(function (p, index) {
+      var family = priorityFamilyForProduct(p);
+      if (!family) {
+        nonPriority.push({ product: p, index: index });
+        return;
+      }
+      var info = priorityInfo(p);
+      if (!families[family]) {
+        families[family] = [];
+        familyOrder.push(family);
+      }
+      families[family].push({
+        product: p,
+        index: index,
+        rank: info ? info.rank : 1000000
+      });
+    });
+
+    familyOrder.sort(function (a, b) {
+      var ka = priorityHomeKey(a), kb = priorityHomeKey(b);
+      if (ka !== kb) return ka - kb;
+      return priorityFamilyRank(a) - priorityFamilyRank(b);
+    });
+
+    var selected = [];
+    var usedFamilies = {};
+    familyOrder.forEach(function (family) {
+      var members = families[family].slice().sort(function (a, b) {
+        if (a.rank !== b.rank) return a.rank - b.rank;
+        return a.index - b.index;
+      });
+      if (selected.length + members.length <= limit) {
+        usedFamilies[family] = true;
+        selected = selected.concat(members.map(function (entry) { return entry.product; }));
+      }
+    });
+
+    if (selected.length >= limit) return selected.slice(0, limit);
+
+    /* Never split a prioritized color family on the homepage. If a family no
+       longer fits in the remaining slots, fill those slots with ordinary
+       catalog products instead of showing only one color of that family. */
+    var fallback = shuffleAllProductsStable(nonPriority.map(function (entry) { return entry.product; }));
+    return selected.concat(fallback.slice(0, limit - selected.length));
+  }
+
   function orderGreetingCatalogProducts(list) {
     var priority = {
       'product-1': 0,
@@ -958,9 +1145,9 @@
       if (!groupProducts.length) return '';
 
       groupProducts = (group.key === 'greeting'
-        ? orderGreetingCatalogProducts(groupProducts)
-        : shuffleAllProductsStable(groupProducts)
-      ).slice(0, limit);
+        ? orderGreetingCatalogProducts(groupProducts).slice(0, limit)
+        : orderHomeCollectionProducts(groupProducts, limit)
+      );
       return '' +
         '<section class="all-collection-group" data-all-collection-group="' + esc(group.key) + '">' +
           '<div class="all-collection-group__head">' +
@@ -1244,6 +1431,7 @@
     grid.classList.remove('grid--collection-groups');
     grid.classList.remove('grid--hat-groups');
     grid.classList.remove('grid--hats-all');
+    list = orderPriorityCatalogProducts(list);
     list = shuffleGlassesWithinList(list);
 
     var pagingKey = catalogPagingContextKey(grid);
