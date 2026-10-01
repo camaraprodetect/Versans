@@ -11,7 +11,7 @@ const css = fs.readFileSync(path.join(root, 'assets', 'admin.css'), 'utf8');
 const js = fs.readFileSync(path.join(root, 'assets', 'admin.js'), 'utf8');
 
 test('admin shell contains navigation and application mount points', () => {
-  for (const page of ['dashboard','visitors','sales','orders','products','customers','traffic','reviews']) {
+  for (const page of ['dashboard','visitors','sales','orders','products','customers','reviews']) {
     assert.match(html, new RegExp(`href="/admin/${page}"`));
     assert.match(html, new RegExp(`data-admin-page="${page}"`));
   }
@@ -32,10 +32,10 @@ test('admin stylesheet defines modern responsive dashboard primitives', () => {
 });
 
 test('admin script contains every page renderer and protected endpoint', () => {
-  for (const renderer of ['renderDashboardPage','renderVisitorsPage','renderSalesPage','renderOrdersPage','renderProductsPage','renderCustomersPage','renderTrafficPage','renderReviewsPage']) {
+  for (const renderer of ['renderDashboardPage','renderVisitorsPage','renderSalesPage','renderOrdersPage','renderProductsPage','renderCustomersPage','renderReviewsPage']) {
     assert.match(js, new RegExp(`function\\s+${renderer}\\b`));
   }
-  for (const endpoint of ['/api/admin/overview','/api/admin/visitors','/api/admin/sales','/api/admin/orders','/api/admin/products','/api/admin/customers','/api/admin/traffic','/api/admin/reviews']) {
+  for (const endpoint of ['/api/admin/overview','/api/admin/visitors','/api/admin/sales','/api/admin/orders','/api/admin/products','/api/admin/customers','/api/admin/reviews']) {
     assert.ok(js.includes(endpoint), endpoint);
   }
   for (const utility of ['moneyAgorot','renderKpis','renderTable','renderRangeFilter','renderPagination','renderSalesChart']) {
@@ -46,9 +46,19 @@ test('admin script contains every page renderer and protected endpoint', () => {
 
 test('admin assets use a fresh deployment version and are never cached by the server', () => {
   const server = fs.readFileSync(path.join(root, 'server.js'), 'utf8');
-  assert.match(html, /admin\.css\?v=20260916-admin-v3/);
-  assert.match(html, /admin\.js\?v=20260916-admin-v3/);
+  assert.match(html, /admin\.css\?v=20261001-admin-usability-v1/);
+  assert.match(html, /admin\.js\?v=20261001-admin-usability-v1/);
   assert.match(server, /pathname === ['"]\/assets\/admin\.js['"]/);
   assert.match(server, /pathname === ['"]\/assets\/admin\.css['"]/);
   assert.match(server, /Cache-Control['"], ['"]no-store['"]/);
+});
+
+
+test('admin usability keeps traffic removed and exposes interactive sales/product analytics', () => {
+  assert.doesNotMatch(html, /href="\/admin\/traffic"/);
+  assert.doesNotMatch(js, /function\s+renderTrafficPage\b/);
+  assert.match(js, /admin-sales-chart__tooltip/);
+  assert.match(js, /התמקד ביום/);
+  assert.match(js, /פעמים שנקנה/);
+  assert.match(js, /pageViews = \(data\.pageViews \|\| \[\]\)\.slice\(0, 20\)/);
 });

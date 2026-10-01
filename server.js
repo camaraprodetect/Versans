@@ -55,7 +55,7 @@ const ADMIN_PUSH_VAPID_PRIVATE_META_KEY = 'admin_push_vapid_private_jwk_v1';
 const ADMIN_PUSH_TIMEOUT_MS = 10 * 1000;
 const USER_PURGE_META_KEY = 'purge_users_except_camaraprodetect_20260922_v1';
 const REVIEWS_PURGE_META_KEY = 'purge_all_reviews_20260924_v1';
-const ADMIN_PAGES = new Set(['', 'dashboard', 'visitors', 'sales', 'orders', 'products', 'customers', 'traffic', 'reviews']);
+const ADMIN_PAGES = new Set(['', 'dashboard', 'visitors', 'sales', 'orders', 'products', 'customers', 'reviews']);
 const BODY_LIMIT = 48 * 1024 * 1024;
 const REVIEW_IMAGE_LIMIT = 2 * 1024 * 1024;
 const REVIEW_VIDEO_LIMIT = 20 * 1024 * 1024;
@@ -4374,7 +4374,7 @@ async function adminApi(req, res, pathname, parsed) {
     const sales = await adminSalesData(range);
     if (!sales) { json(res, 400, { ok: false, error: 'invalid_range' }); return true; }
     const { limit, offset } = adminPagination(parsed, 50);
-    const products = sales.products.slice(offset, offset + limit);
+    const products = sales.products.slice(offset, offset + limit).map((product) => ({ ...product, purchaseCount: Number(product.paidOrderCount || 0) }));
     json(res, 200, { ok: true, range, count: sales.products.length, limit, offset, hasMore: offset + products.length < sales.products.length, products });
     return true;
   }

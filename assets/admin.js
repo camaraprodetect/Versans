@@ -23,7 +23,6 @@
     orders: ['הזמנות', 'הזמנות, חבילות ומספרי מעקב של VerSans'],
     products: ['מוצרים', 'ביצועי המוצרים לפי מכירות ששולמו'],
     customers: ['לקוחות', 'משתמשים רשומים, רכישות והוצאות מצטברות'],
-    traffic: ['תנועה לאתר', 'עמודים, מקורות הגעה, מכשירים ודפדפנים'],
     reviews: ['ביקורות', 'דירוגים, מוצרים מובילים וביקורות אחרונות']
   };
 
@@ -45,7 +44,7 @@
 
   var state = {
     page: currentPage(),
-    ranges: { dashboard: '30d', sales: '30d', orders: '30d', products: '30d', traffic: '30d', reviews: '30d', visitors: 'online' },
+    ranges: { dashboard: '30d', sales: '30d', orders: '30d', products: '30d', reviews: '30d', visitors: 'online' },
     ordersStatus: 'paid',
     offsets: { visitors: 0, orders: 0, products: 0, customers: 0 },
     selectedVisitorId: null,
@@ -55,7 +54,7 @@
   function currentPage() {
     var path = window.location.pathname.replace(/\/+$/, '');
     if (path === '/admin' || path === '/admin.html' || path === '/admin/dashboard') return 'dashboard';
-    var match = /^\/admin\/(visitors|sales|orders|products|customers|traffic|reviews)$/.exec(path);
+    var match = /^\/admin\/(visitors|sales|orders|products|customers|reviews)$/.exec(path);
     return match ? match[1] : 'dashboard';
   }
 
@@ -640,29 +639,304 @@
     return pagination;
   }
 
-  function renderSalesChart(dailySales) {
-    var wrap = make('div');
-    var rows = Array.isArray(dailySales) ? dailySales : [];
+  function israelTodayKey() {
+    try {
+      var parts = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'Asia/Jerusalem', year: 'numeric', month: '2-digit', day: '2-digit'
+      }).formatToParts(new Date());
+      var values = {};
+      parts.forEach(function (part) { if (part.type !== 'literal') values[part.type] = part.value; });
+      return values.year + '-' + values.month + '-' + values.day;
+    } catch (_) {
+      var now = new Date();
+      return now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+    }
+  }
+
+  function salesDateUtcMs(dateKey) {
+    var match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(dateKey || ''));
+    if (!match) return NaN;
+    return Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+  }
+
+  function salesDateKeyFromUtc(ms) {
+    var date = new Date(ms);
+    return date.getUTCFullYear() + '-' + String(date.getUTCMonth() + 1).padStart(2, '0') + '-' + String(date.getUTCDate()).padStart(2, '0');
+  }
+
+  function formatSalesDate(dateKey) {
+    var ms = salesDateUtcMs(dateKey);
+    if (!Number.isFinite(ms)) return text(dateKey);
+    try {
+      return new Intl.DateTimeFormat('he-IL', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(ms + 12 * 60 * 60 * 1000));
+    } catch (_) {
+      return text(dateKey);
+    }
+  }
+
+  function fillDailySales(dailySales, range) {
+    var original = Array.isArray(dailySales) ? dailySales.slice() : [];
+    if (!original.length) return [];
+    original.sort(function (a, b) { return String(a.date || '').localeCompare(String(b.date || '')); });
+    var byDate = {};
+    original.forEach(function (row) { byDate[String(row.date)] = row; });
+
+    var firstMs = salesDateUtcMs(original[0].date);
+    var lastMs = salesDateUtcMs(original[original.length - 1].date);
+    var todayMs = salesDateUtcMs(israelTodayKey());
+    if (!Number.isFinite(firstMs) || !Number.isFinite(lastMs)) return original;
+
+    var startMs = firstMs;
+    var endMs = Math.max(lastMs, Number.isFinite(todayMs) ? todayMs : lastMs);
+    if (range === 'today' && Number.isFinite(todayMs)) startMs = endMs = todayMs;
+    else if (range === '7d' && Number.isFinite(todayMs)) startMs = todayMs - 7 * 24 * 60 * 60 * 1000;
+    else if (range === '30d' && Number.isFinite(todayMs)) startMs = todayMs - 30 * 24 * 60 * 60 * 1000;
+
+    var rows = [];
+    for (var cursor = startMs; cursor <= endMs; cursor += 24 * 60 * 60 * 1000) {
+      var key = salesDateKeyFromUtc(cursor);
+      rows.push(byDate[key] || { date: key, revenueAgorot: 0, orders: 0, unitsSold: 0 });
+    }
+    return rows;
+  }
+
+  function renderSalesChart(dailySales, range) {
+    var wrap = make('div', 'admin-sales-chart');
+    var rows = fillDailySales(dailySales, range);
     if (!rows.length) {
       wrap.appendChild(make('div', 'admin-chart-empty', 'אין מכירות ששולמו בטווח שנבחר.'));
       return wrap;
     }
-    var max = Math.max.apply(null, rows.map(function (row) { return Number(row.revenueAgorot || 0); }).concat([1]));
-    var chart = make('div', 'admin-chart');
-    rows.forEach(function (row) {
-      var bar = make('div', 'admin-chart__bar');
-      var ratio = Number(row.revenueAgorot || 0) / max;
-      bar.style.height = Math.max(3, Math.round(ratio * 100)) + '%';
-      bar.title = row.date + ' · ' + moneyAgorot(row.revenueAgorot) + ' · ' + numberFmt(row.orders) + ' הזמנות';
-      bar.appendChild(make('span', '', moneyAgorot(row.revenueAgorot)));
-      chart.appendChild(bar);
-    });
-    wrap.appendChild(chart);
-    var axis = make('div', 'admin-chart-axis');
-    axis.appendChild(make('span', '', rows[0].date));
-    if (rows.length > 2) axis.appendChild(make('span', '', rows[Math.floor(rows.length / 2)].date));
-    axis.appendChild(make('span', '', rows[rows.length - 1].date));
+
+    var startIndex = 0;
+    var endIndex = rows.length - 1;
+    var selectedIndex = null;
+    var geometry = [];
+    var selectedLine = null;
+    var selectedDot = null;
+
+    var toolbar = make('div', 'admin-sales-chart__toolbar');
+    var help = make('span', 'admin-sales-chart__help', 'נוגעים/לוחצים על התרשים כדי לראות הכנסה של יום. בוחרים יום ואז עושים זום.');
+    var controls = make('div', 'admin-sales-chart__controls');
+    var zoomOut = make('button', 'admin-sales-chart__button', '−');
+    var zoomIn = make('button', 'admin-sales-chart__button', '+');
+    var focusDay = make('button', 'admin-sales-chart__button admin-sales-chart__button--wide', 'התמקד ביום');
+    var reset = make('button', 'admin-sales-chart__button admin-sales-chart__button--wide', 'איפוס');
+    [zoomOut, zoomIn, focusDay, reset].forEach(function (button) { button.type = 'button'; });
+    zoomOut.setAttribute('aria-label', 'התרחק מהתרשים');
+    zoomIn.setAttribute('aria-label', 'התקרב לתרשים');
+    focusDay.setAttribute('aria-label', 'הצג רק את היום שנבחר');
+    reset.setAttribute('aria-label', 'איפוס הזום');
+    focusDay.disabled = true;
+    controls.append(zoomOut, zoomIn, focusDay, reset);
+    toolbar.append(help, controls);
+    wrap.appendChild(toolbar);
+
+    var shell = make('div', 'admin-sales-chart__shell');
+    shell.tabIndex = 0;
+    shell.setAttribute('role', 'application');
+    shell.setAttribute('aria-label', 'תרשים הכנסות יומי אינטראקטיבי');
+
+    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('class', 'admin-sales-chart__svg');
+    svg.setAttribute('viewBox', '0 0 1000 300');
+    svg.setAttribute('preserveAspectRatio', 'none');
+    svg.setAttribute('aria-hidden', 'true');
+    shell.appendChild(svg);
+
+    var tooltip = make('div', 'admin-sales-chart__tooltip');
+    tooltip.hidden = true;
+    shell.appendChild(tooltip);
+    wrap.appendChild(shell);
+
+    var axis = make('div', 'admin-sales-chart__axis');
+    var axisStart = make('span');
+    var axisMiddle = make('span');
+    var axisEnd = make('span');
+    axis.append(axisStart, axisMiddle, axisEnd);
     wrap.appendChild(axis);
+
+    var windowText = make('div', 'admin-sales-chart__window');
+    wrap.appendChild(windowText);
+
+    function svgNode(name, attrs) {
+      var node = document.createElementNS('http://www.w3.org/2000/svg', name);
+      Object.keys(attrs || {}).forEach(function (key) { node.setAttribute(key, attrs[key]); });
+      return node;
+    }
+
+    function visibleCount() {
+      return Math.max(1, endIndex - startIndex + 1);
+    }
+
+    function pointAt(index) {
+      return geometry[index - startIndex] || null;
+    }
+
+    function renderSelection() {
+      if (!selectedLine || !selectedDot || selectedIndex === null || selectedIndex < startIndex || selectedIndex > endIndex) {
+        if (selectedLine) selectedLine.setAttribute('visibility', 'hidden');
+        if (selectedDot) selectedDot.setAttribute('visibility', 'hidden');
+        return;
+      }
+      var point = pointAt(selectedIndex);
+      if (!point) return;
+      selectedLine.setAttribute('x1', point.x);
+      selectedLine.setAttribute('x2', point.x);
+      selectedLine.setAttribute('visibility', 'visible');
+      selectedDot.setAttribute('cx', point.x);
+      selectedDot.setAttribute('cy', point.y);
+      selectedDot.setAttribute('visibility', 'visible');
+    }
+
+    function updateTooltip() {
+      if (selectedIndex === null || selectedIndex < startIndex || selectedIndex > endIndex) {
+        tooltip.hidden = true;
+        return;
+      }
+      var row = rows[selectedIndex];
+      var point = pointAt(selectedIndex);
+      if (!row || !point) return;
+      tooltip.replaceChildren();
+      tooltip.appendChild(make('strong', '', formatSalesDate(row.date)));
+      tooltip.appendChild(make('span', 'admin-sales-chart__tooltip-value', moneyAgorot(row.revenueAgorot)));
+      tooltip.appendChild(make('small', '', numberFmt(row.orders) + ' הזמנות · ' + numberFmt(row.unitsSold) + ' יחידות'));
+      tooltip.style.left = Math.max(10, Math.min(90, point.x / 10)) + '%';
+      tooltip.hidden = false;
+    }
+
+    function render() {
+      svg.replaceChildren();
+      geometry = [];
+      var visibleRows = rows.slice(startIndex, endIndex + 1);
+      var maxRevenue = Math.max.apply(null, visibleRows.map(function (row) { return Number(row.revenueAgorot || 0); }).concat([1]));
+      var yMax = Math.max(1, Math.ceil(maxRevenue * 1.12));
+
+      [0, 0.25, 0.5, 0.75, 1].forEach(function (ratio) {
+        var y = 270 - ratio * 240;
+        svg.appendChild(svgNode('line', { x1: 0, y1: y, x2: 1000, y2: y, 'class': 'admin-sales-chart__grid' }));
+      });
+
+      visibleRows.forEach(function (row, localIndex) {
+        var x = visibleRows.length === 1 ? 500 : (localIndex / (visibleRows.length - 1)) * 1000;
+        var y = 270 - (Number(row.revenueAgorot || 0) / yMax) * 240;
+        geometry.push({ x: x, y: y });
+      });
+
+      var path = geometry.map(function (point, index) {
+        return (index === 0 ? 'M' : 'L') + point.x.toFixed(2) + ',' + point.y.toFixed(2);
+      }).join(' ');
+      if (geometry.length === 1) path = 'M' + geometry[0].x + ',' + geometry[0].y + ' L' + geometry[0].x + ',' + geometry[0].y;
+      var areaPath = path;
+      if (geometry.length) {
+        areaPath += ' L' + geometry[geometry.length - 1].x.toFixed(2) + ',270 L' + geometry[0].x.toFixed(2) + ',270 Z';
+      }
+      svg.appendChild(svgNode('path', { d: areaPath, 'class': 'admin-sales-chart__area' }));
+      svg.appendChild(svgNode('path', { d: path, 'class': 'admin-sales-chart__line' }));
+
+      geometry.forEach(function (point) {
+        svg.appendChild(svgNode('circle', { cx: point.x, cy: point.y, r: 4.5, 'class': 'admin-sales-chart__point' }));
+      });
+
+      selectedLine = svgNode('line', { x1: 0, y1: 20, x2: 0, y2: 270, 'class': 'admin-sales-chart__focus-line', visibility: 'hidden' });
+      selectedDot = svgNode('circle', { cx: 0, cy: 0, r: 8, 'class': 'admin-sales-chart__focus-point', visibility: 'hidden' });
+      svg.append(selectedLine, selectedDot);
+
+      var middleIndex = Math.floor((startIndex + endIndex) / 2);
+      axisStart.textContent = formatSalesDate(rows[startIndex].date);
+      axisMiddle.textContent = formatSalesDate(rows[middleIndex].date);
+      axisEnd.textContent = formatSalesDate(rows[endIndex].date);
+      windowText.textContent = 'תצוגה: ' + formatSalesDate(rows[startIndex].date) + ' — ' + formatSalesDate(rows[endIndex].date) + ' · שיא בטווח: ' + moneyAgorot(maxRevenue);
+
+      zoomIn.disabled = visibleCount() <= 1;
+      zoomOut.disabled = visibleCount() >= rows.length;
+      reset.disabled = startIndex === 0 && endIndex === rows.length - 1;
+      focusDay.disabled = selectedIndex === null;
+      renderSelection();
+      updateTooltip();
+    }
+
+    function setWindow(centerIndex, count) {
+      var size = Math.max(1, Math.min(rows.length, count));
+      var start = Math.round(centerIndex - (size - 1) / 2);
+      start = Math.max(0, Math.min(rows.length - size, start));
+      startIndex = start;
+      endIndex = start + size - 1;
+      render();
+    }
+
+    function zoom(factor) {
+      var count = visibleCount();
+      var nextCount = factor < 1 ? Math.max(1, Math.ceil(count * factor)) : Math.min(rows.length, Math.ceil(count * factor));
+      if (nextCount === count && factor < 1 && count > 1) nextCount = count - 1;
+      var center = selectedIndex !== null ? selectedIndex : Math.round((startIndex + endIndex) / 2);
+      setWindow(center, nextCount);
+    }
+
+    function selectFromClientX(clientX) {
+      var rect = shell.getBoundingClientRect();
+      if (!rect.width) return;
+      var ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+      var local = visibleCount() === 1 ? 0 : Math.round(ratio * (visibleCount() - 1));
+      selectedIndex = Math.max(startIndex, Math.min(endIndex, startIndex + local));
+      focusDay.disabled = false;
+      renderSelection();
+      updateTooltip();
+    }
+
+    zoomIn.addEventListener('click', function () { zoom(0.5); });
+    zoomOut.addEventListener('click', function () { zoom(2); });
+    focusDay.addEventListener('click', function () {
+      if (selectedIndex !== null) setWindow(selectedIndex, 1);
+    });
+    reset.addEventListener('click', function () {
+      startIndex = 0;
+      endIndex = rows.length - 1;
+      render();
+    });
+
+    shell.addEventListener('pointerdown', function (event) {
+      selectFromClientX(event.clientX);
+      try { shell.setPointerCapture(event.pointerId); } catch (_) {}
+    });
+    shell.addEventListener('pointermove', function (event) {
+      if (event.pointerType === 'mouse' || shell.hasPointerCapture && shell.hasPointerCapture(event.pointerId)) selectFromClientX(event.clientX);
+    });
+    shell.addEventListener('pointerleave', function (event) {
+      if (event.pointerType === 'mouse') tooltip.hidden = true;
+    });
+    shell.addEventListener('pointerenter', function () {
+      if (selectedIndex !== null) updateTooltip();
+    });
+    shell.addEventListener('dblclick', function (event) {
+      selectFromClientX(event.clientX);
+      if (selectedIndex !== null) setWindow(selectedIndex, 1);
+    });
+    shell.addEventListener('wheel', function (event) {
+      if (!event.ctrlKey && !event.metaKey) return;
+      event.preventDefault();
+      selectFromClientX(event.clientX);
+      zoom(event.deltaY < 0 ? 0.5 : 2);
+    }, { passive: false });
+    shell.addEventListener('keydown', function (event) {
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+        event.preventDefault();
+        var direction = event.key === 'ArrowLeft' ? -1 : 1;
+        if (selectedIndex === null) selectedIndex = Math.round((startIndex + endIndex) / 2);
+        else selectedIndex = Math.max(startIndex, Math.min(endIndex, selectedIndex + direction));
+        renderSelection();
+        updateTooltip();
+        focusDay.disabled = false;
+      } else if (event.key === '+' || event.key === '=') {
+        event.preventDefault(); zoom(0.5);
+      } else if (event.key === '-') {
+        event.preventDefault(); zoom(2);
+      } else if (event.key === 'Escape') {
+        tooltip.hidden = true;
+      }
+    });
+
+    render();
     return wrap;
   }
 
@@ -1217,7 +1491,7 @@
         { label: '#', render: function (row) { return make('span', 'admin-rank', row.rank); } },
         { label: 'מוצר', render: productCell },
         { label: 'יחידות', render: function (row) { return numberFmt(row.unitsSold); } },
-        { label: 'הזמנות Paid', render: function (row) { return numberFmt(row.paidOrderCount); } },
+        { label: 'פעמים שנקנה', render: function (row) { return numberFmt(row.purchaseCount != null ? row.purchaseCount : row.paidOrderCount); } },
         { label: 'מכירות ברוטו', render: function (row) { return make('strong', 'admin-table__strong', moneyAgorot(row.grossSalesAgorot)); } },
         { label: 'נתוני מחיר', render: function (row) { return row.reconstructedRows ? badge(numberFmt(row.reconstructedRows) + ' משוחזר', 'pending') : badge('Snapshot', 'verified'); } }
       ]
@@ -1232,7 +1506,6 @@
       ['/admin/orders', 'הזמנות', 'כל הסטטוסים'],
       ['/admin/products', 'מוצרים', 'דירוג מכירות'],
       ['/admin/customers', 'לקוחות', 'הוצאות והזמנות'],
-      ['/admin/traffic', 'תנועה', 'מקורות ועמודים'],
       ['/admin/reviews', 'ביקורות', 'דירוגים']
     ].forEach(function (item) {
       var link = make('a', 'admin-quick-link');
@@ -1285,7 +1558,7 @@
     ]));
 
     var grid = make('div', 'admin-grid-2');
-    grid.appendChild(card('מגמת מכירות', 'הכנסה יומית מהזמנות Paid', renderSalesChart(data.dailySales)));
+    grid.appendChild(card('מגמת מכירות', 'הכנסה יומית מהזמנות Paid', renderSalesChart(data.dailySales, range)));
     grid.appendChild(card('קיצורי דרך', 'גישה מהירה לכל נתוני החנות', quickLinks()));
     frag.appendChild(grid);
     frag.appendChild(topProductsTable((data.topProducts || []).slice(0, 5), 'Top Products', 'המוצרים המובילים בטווח שנבחר'));
@@ -1361,33 +1634,39 @@
       });
       head.append(heading, close);
       panel.replaceChildren(head);
-      panel.appendChild(detailSection('זהות', [
-        ['Visitor ID', v.visitorId], ['User ID', v.userId], ['שם', v.name], ['אימייל', v.email], ['טלפון', v.phone], ['מחובר לחשבון', v.isLoggedIn ? 'כן' : 'לא']
+      panel.appendChild(detailSection('פרטים חשובים', [
+        ['שם', v.name], ['אימייל', v.email], ['טלפון', v.phone], ['סטטוס', v.isLoggedIn ? 'משתמש מחובר' : 'אורח']
       ]));
-      panel.appendChild(detailSection('פעילות', [
-        ['Online', v.online ? 'כן' : 'לא'], ['נראה לאחרונה', dateTime(v.lastSeen)], ['כניסה ראשונה', dateTime(v.firstSeen)], ['עמוד נוכחי', v.currentPath], ['עמוד כניסה', v.entryPath], ['סה״כ צפיות', numberFmt(v.pageViewCount)]
+      panel.appendChild(detailSection('פעילות באתר', [
+        ['Online', v.online ? 'כן' : 'לא'], ['נראה לאחרונה', dateTime(v.lastSeen)], ['עמוד נוכחי', v.currentPath], ['עמוד כניסה', v.entryPath], ['כניסה ראשונה', dateTime(v.firstSeen)], ['סה״כ צפיות', numberFmt(v.pageViewCount)]
       ]));
       panel.appendChild(detailSection('מכשיר', [
-        ['סוג מכשיר', v.deviceType], ['דפדפן', v.browser], ['מערכת הפעלה', v.os], ['שפה', v.language], ['מסך', v.screen && v.screen.width ? v.screen.width + '×' + v.screen.height : null], ['Viewport', v.viewport && v.viewport.width ? v.viewport.width + '×' + v.viewport.height : null]
+        ['סוג מכשיר', v.deviceType], ['דפדפן', v.browser], ['מערכת הפעלה', v.os]
       ]));
-      panel.appendChild(detailSection('מקור הגעה', [
-        ['Referrer', v.referrer], ['UTM Source', v.utm && v.utm.source], ['UTM Medium', v.utm && v.utm.medium], ['UTM Campaign', v.utm && v.utm.campaign], ['UTM Term', v.utm && v.utm.term], ['UTM Content', v.utm && v.utm.content]
-      ]));
+      if (v.referrer || (v.utm && (v.utm.source || v.utm.medium || v.utm.campaign))) {
+        panel.appendChild(detailSection('איך הגיע לאתר', [
+          ['Referrer', v.referrer], ['UTM Source', v.utm && v.utm.source], ['UTM Medium', v.utm && v.utm.medium], ['UTM Campaign', v.utm && v.utm.campaign]
+        ]));
+      }
       if (v.account) {
-        panel.appendChild(detailSection('חשבון VerSans', [
-          ['Account ID', v.account.id], ['נוצר', dateTime(v.account.createdAt)], ['לקוח מאומת', v.account.verifiedCustomer ? 'כן' : 'לא'], ['הזמנות', numberFmt(v.account.orderCount)], ['Paid', numberFmt(v.account.paidOrderCount)], ['ביקורות', numberFmt(v.account.reviewCount)], ['הזמנה אחרונה', dateTime(v.account.lastOrderAt)], ['Session בתוקף עד', dateTime(v.account.sessionExpiresAt)]
+        panel.appendChild(detailSection('רכישות', [
+          ['הזמנות', numberFmt(v.account.orderCount)], ['הזמנות ששולמו', numberFmt(v.account.paidOrderCount)], ['הזמנה אחרונה', dateTime(v.account.lastOrderAt)], ['לקוח מאומת', v.account.verifiedCustomer ? 'כן' : 'לא']
         ]));
       }
       var historySection = make('section', 'detail-section');
-      historySection.appendChild(make('h3', '', 'היסטוריית עמודים'));
+      historySection.appendChild(make('h3', '', 'עמודים אחרונים'));
       var history = make('div', 'history');
-      if (!data.pageViews || !data.pageViews.length) history.appendChild(make('p', 'detail-note', 'אין צפיות שמורות.'));
-      (data.pageViews || []).forEach(function (view) {
+      var pageViews = (data.pageViews || []).slice(0, 20);
+      if (!pageViews.length) history.appendChild(make('p', 'detail-note', 'אין צפיות שמורות.'));
+      pageViews.forEach(function (view) {
         var item = make('div', 'history-item');
         item.appendChild(make('strong', '', view.path));
         item.appendChild(make('span', '', (view.title ? view.title + ' · ' : '') + dateTime(view.viewedAt)));
         history.appendChild(item);
       });
+      if ((data.pageViews || []).length > pageViews.length) {
+        history.appendChild(make('p', 'detail-note', 'מוצגות 20 הצפיות האחרונות מתוך ' + numberFmt((data.pageViews || []).length) + '.'));
+      }
       historySection.appendChild(history);
       panel.appendChild(historySection);
     } catch (error) {
@@ -1460,7 +1739,7 @@
       { label: 'ממוצע להזמנה', value: moneyAgorot(data.averageOrderAgorot), hint: 'Average Order Value' },
       { label: 'יחידות שנמכרו', value: numberFmt(data.unitsSold), hint: 'סה״כ פריטים' }
     ]));
-    frag.appendChild(card('גרף מכירות', 'הכנסות יומיות מהזמנות Paid בלבד', renderSalesChart(data.dailySales)));
+    frag.appendChild(card('תרשים מכירות', 'הכנסה יומית. גע/לחץ על יום כדי לראות סכום מדויק ולהתמקד בו.', renderSalesChart(data.dailySales, range)));
     frag.appendChild(topProductsTable(data.topProducts || [], 'המוצרים הנמכרים ביותר', 'מדורג לפי מספר יחידות שנמכרו'));
     frag.appendChild(ordersTable(data.recentOrders || [], 'הזמנות אחרונות', 'Paid בטווח שנבחר'));
     content.replaceChildren(frag);
@@ -1610,7 +1889,7 @@
       { label: 'מוצרים שנמכרו', value: numberFmt(data.count), hint: 'מוצרים ייחודיים עם Paid', primary: true },
       { label: 'עמוד', value: numberFmt(Math.floor(data.offset / data.limit) + 1), hint: 'דירוג לפי יחידות' }
     ]));
-    var table = topProductsTable(data.products || [], 'ביצועי מוצרים', 'כמות, מספר הזמנות והכנסה ברוטו לכל מוצר');
+    var table = topProductsTable(data.products || [], 'ביצועי מוצרים', 'יחידות שנמכרו, כמה פעמים קנו כל מוצר והכנסה ברוטו');
     table.appendChild(renderPagination({ count: data.count, limit: data.limit, offset: data.offset, onChange: function (next) { state.offsets.products = next; renderCurrentPage(); } }));
     frag.appendChild(table);
     content.replaceChildren(frag);
@@ -1649,64 +1928,6 @@
     content.replaceChildren(frag);
   }
 
-  function statList(rows) {
-    var list = make('div', 'admin-stat-list');
-    var values = Array.isArray(rows) ? rows : [];
-    if (!values.length) {
-      list.appendChild(make('div', 'admin-empty', 'אין נתונים בטווח שנבחר.'));
-      return list;
-    }
-    var max = Math.max.apply(null, values.map(function (row) { return Number(row.count || 0); }).concat([1]));
-    values.forEach(function (row) {
-      var item = make('div', 'admin-stat-row');
-      var label = make('div', 'admin-stat-row__label');
-      label.appendChild(make('strong', '', text(row.label, '(לא ידוע)')));
-      var progress = make('div', 'admin-progress');
-      var fill = make('i');
-      fill.style.width = Math.max(2, Math.round(Number(row.count || 0) / max * 100)) + '%';
-      progress.appendChild(fill);
-      label.appendChild(progress);
-      item.append(label, make('div', 'admin-stat-row__value', numberFmt(row.count)));
-      list.appendChild(item);
-    });
-    return list;
-  }
-
-  async function renderTrafficPage() {
-    var range = state.ranges.traffic;
-    var data = await api('/api/admin/traffic?range=' + encodeURIComponent(range));
-    var frag = document.createDocumentFragment();
-    var toolbar = make('div', 'admin-toolbar');
-    toolbar.appendChild(renderRangeFilter(range, rangeOptions, function (next) { state.ranges.traffic = next; renderCurrentPage(); }));
-    toolbar.appendChild(make('span', 'admin-toolbar-note', 'ללא כתובות IP'));
-    frag.appendChild(toolbar);
-    frag.appendChild(renderKpis([
-      { label: 'צפיות בעמודים', value: numberFmt(data.pageViews), hint: 'Page views בטווח', primary: true },
-      { label: 'עמודים מובילים', value: numberFmt((data.topPages || []).length), hint: 'עד 12 תוצאות' },
-      { label: 'מקורות Referrer', value: numberFmt((data.referrers || []).length), hint: 'מקורות מזוהים' },
-      { label: 'מקורות UTM', value: numberFmt((data.utmSources || []).length), hint: 'utm_source מזוהה' }
-    ]));
-    var grids = [
-      ['עמודים נצפים', 'Top Pages', data.topPages],
-      ['עמודי כניסה', 'Entry Pages', data.entryPages],
-      ['Referrers', 'מקורות הפניה', data.referrers],
-      ['UTM Source', 'קמפיינים ומקורות', data.utmSources],
-      ['מכשירים', 'Device Type', data.devices],
-      ['דפדפנים', 'Browsers', data.browsers],
-      ['מערכות הפעלה', 'Operating Systems', data.operatingSystems]
-    ];
-    for (var i = 0; i < grids.length; i += 2) {
-      var row = make('div', 'admin-grid-even');
-      var first = grids[i];
-      row.appendChild(card(first[0], first[1], statList(first[2])));
-      if (grids[i + 1]) {
-        var second = grids[i + 1];
-        row.appendChild(card(second[0], second[1], statList(second[2])));
-      }
-      frag.appendChild(row);
-    }
-    content.replaceChildren(frag);
-  }
 
   function stars(rating) {
     var node = make('span', 'admin-stars');
@@ -1801,7 +2022,6 @@
       else if (state.page === 'orders') await renderOrdersPage();
       else if (state.page === 'products') await renderProductsPage();
       else if (state.page === 'customers') await renderCustomersPage();
-      else if (state.page === 'traffic') await renderTrafficPage();
       else if (state.page === 'reviews') await renderReviewsPage();
       if (version !== state.requestVersion) return;
     } catch (error) {

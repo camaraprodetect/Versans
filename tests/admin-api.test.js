@@ -83,12 +83,14 @@ test('protected admin shell is served for approved admin routes', async () => {
   let running;
   try {
     running = await runServer(fixture);
-    for (const route of ['/admin', '/admin/sales', '/admin/traffic', '/admin/reviews']) {
+    for (const route of ['/admin', '/admin/sales', '/admin/products', '/admin/reviews']) {
       const response = await fetch(running.baseUrl + route, { headers: adminHeaders(fixture.token), redirect: 'manual' });
       assert.equal(response.status, 200, route);
       assert.equal(response.headers.get('cache-control'), 'no-store');
       assert.match(await response.text(), /id="adminContent"/);
     }
+    const removedTraffic = await fetch(running.baseUrl + '/admin/traffic', { headers: adminHeaders(fixture.token), redirect: 'manual' });
+    assert.equal(removedTraffic.status, 404);
     const unknown = await fetch(running.baseUrl + '/admin/not-a-page', { headers: adminHeaders(fixture.token), redirect: 'manual' });
     assert.equal(unknown.status, 404);
   } finally {
