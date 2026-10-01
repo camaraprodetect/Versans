@@ -8,7 +8,7 @@
   <meta name="description" content="מדריך VerSans לבחירת מידת צמיד ולמדידת היקף היד בצורה פשוטה בבית.">
   <link rel="icon" href="/favicon.ico">
   <link rel="stylesheet" href="/assets/fonts.css?v=20260909-fonts-only">
-  <link rel="stylesheet" href="/assets/brand.css?v=20260905-versans-v1">
+  <link rel="stylesheet" href="/assets/brand.css?v=20261001-logo-v4">
   <link rel="stylesheet" href="/assets/accessibility.css?v=20260928-a11y-v1">
   <style>
     :root{--ink:#111417;--navy:#142333;--muted:#68717a;--line:#e2e5e7;--soft:#f5f6f7;--white:#fff;--gold:#d7b14a}
@@ -18,7 +18,7 @@
     a{color:inherit}
     .size-topbar{position:sticky;top:0;z-index:20;background:#090a0b;color:#fff;border-bottom:1px solid rgba(255,255,255,.08)}
     .size-topbar__inner{max-width:1120px;margin:auto;min-height:70px;padding:0 22px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:14px}
-    .size-topbar__brand{font-size:1.25rem;letter-spacing:.18em;font-weight:800;text-decoration:none;justify-self:center}
+    .size-topbar__brand{display:flex;align-items:center;justify-content:center;text-decoration:none;justify-self:center;line-height:0}.size-topbar__brand img{display:block;width:148px;max-width:28vw;height:auto;filter:none!important}
     .size-topbar__back,.size-topbar__warranty{font-size:.9rem;text-decoration:none;color:#f5f5f5;opacity:.94}
     .size-topbar__back{justify-self:start}.size-topbar__warranty{justify-self:end}
     .size-topbar__back:hover,.size-topbar__warranty:hover{text-decoration:underline;text-underline-offset:4px}
@@ -42,7 +42,7 @@
     .size-footer{max-width:900px;margin:0 auto;padding:0 18px 44px;text-align:center;color:#737b82;font-size:.88rem}
     .size-footer a{text-underline-offset:3px}
     @media (max-width:620px){
-      .size-topbar__inner{min-height:60px;padding:0 12px;gap:7px}.size-topbar__brand{font-size:.95rem;letter-spacing:.12em}.size-topbar__back,.size-topbar__warranty{font-size:.72rem}
+      .size-topbar__inner{min-height:60px;padding:0 12px;gap:7px}.size-topbar__brand img{width:118px;max-width:32vw}.size-topbar__back,.size-topbar__warranty{font-size:.72rem}
       .size-shell{width:min(100% - 24px,900px);padding:28px 0 52px}.size-hero{margin-bottom:20px}.size-hero h1{font-size:2.7rem}
       .size-video-card{border-radius:20px;margin-bottom:14px}.size-card{border-radius:22px;padding:24px 18px;margin-top:12px}.size-card h2{font-size:1.85rem}
       .bracelet-sizes{font-size:1rem;line-height:1.75}.measure-step p{font-size:.96rem;line-height:1.9}.measure-final{font-size:clamp(.6rem,2.6vw,.72rem);line-height:1.5;white-space:nowrap}
@@ -54,7 +54,7 @@
   <header class="size-topbar">
     <div class="size-topbar__inner">
       <a class="size-topbar__back" href="/">חזרה לחנות</a>
-      <a class="size-topbar__brand" href="/" aria-label="VerSans">VERSANS</a>
+      <a class="size-topbar__brand" href="/" aria-label="VerSans"><img src="/images/VersansLogoWordmarkWhite.png" alt="VerSans" width="719" height="171" decoding="async"></a>
       <a class="size-topbar__warranty" href="/warranty">אחריות לחצי שנה</a>
     </div>
   </header>
