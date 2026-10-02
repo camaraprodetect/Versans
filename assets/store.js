@@ -1431,14 +1431,25 @@
     var src = img.getAttribute(attr);
     if (!src) return;
     img.removeAttribute(attr);
-    img.setAttribute('src', src);
+
+    /* Once an image enters the preload radius, fetch it immediately instead
+       of waiting for the browser's own lazy-loading threshold. */
+    img.setAttribute('loading', 'eager');
     img.setAttribute('decoding', 'async');
+    img.setAttribute('src', src);
   }
 
   function initHomeDeferredImages(grid) {
     if (!grid) return;
     var mains = Array.prototype.slice.call(grid.querySelectorAll('img[data-home-src]'));
     var hovers = Array.prototype.slice.call(grid.querySelectorAll('img[data-home-hover-src]'));
+
+    /* Preload a useful radius around the screen so the next section/cards are
+       already ready when the customer reaches them, without downloading the
+       entire store at once. */
+    var compact = window.matchMedia('(max-width: 700px)').matches;
+    var mainMargin = compact ? '850px 500px' : '1200px 900px';
+    var hoverMargin = compact ? '500px 320px' : '750px 650px';
 
     if ('IntersectionObserver' in window) {
       var observer = new IntersectionObserver(function (entries) {
@@ -1447,12 +1458,26 @@
           loadHomeDeferredImage(entry.target, 'data-home-src');
           observer.unobserve(entry.target);
         });
-      }, { root: null, rootMargin: '350px 220px', threshold: 0.01 });
+      }, { root: null, rootMargin: mainMargin, threshold: 0.01 });
       mains.forEach(function (img) { observer.observe(img); });
+
+      /* Desktop hover photos are also warmed up shortly before their cards
+         become reachable, so hovering does not reveal a blank/late image. */
+      var hoverObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          loadHomeDeferredImage(entry.target, 'data-home-hover-src');
+          hoverObserver.unobserve(entry.target);
+        });
+      }, { root: null, rootMargin: hoverMargin, threshold: 0.01 });
+      hovers.forEach(function (img) { hoverObserver.observe(img); });
     } else {
       mains.forEach(function (img) { loadHomeDeferredImage(img, 'data-home-src'); });
+      hovers.forEach(function (img) { loadHomeDeferredImage(img, 'data-home-hover-src'); });
     }
 
+    /* Keep instant hover/focus loading as a fallback if the user reaches a
+       card faster than the observer fires. */
     hovers.forEach(function (img) {
       var media = img.closest('.prod__media');
       if (!media) return;

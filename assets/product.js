@@ -584,8 +584,9 @@
     var src = img.getAttribute('data-product-src');
     if (!src) return;
     img.removeAttribute('data-product-src');
-    img.setAttribute('src', src);
+    img.setAttribute('loading', 'eager');
     img.setAttribute('decoding', 'async');
+    img.setAttribute('src', src);
   }
 
   function observeDeferredProductImages(scope) {
@@ -603,7 +604,11 @@
           loadDeferredProductImage(entry.target);
           productImageObserver.unobserve(entry.target);
         });
-      }, { root: null, rootMargin: '300px 180px', threshold: 0.01 });
+      }, {
+        root: null,
+        rootMargin: window.matchMedia('(max-width: 700px)').matches ? '750px 420px' : '950px 600px',
+        threshold: 0.01
+      });
     }
     images.forEach(function (img) { productImageObserver.observe(img); });
   }
