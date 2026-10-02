@@ -579,7 +579,7 @@
     return h >>> 0;
   }
 
-  function orderHomeCollectionProducts(list, limit) {
+  function orderHomeCollectionProducts(list) {
     var highlighted = [];
     var ordinary = [];
 
@@ -588,9 +588,10 @@
       else ordinary.push(p);
     });
 
-    /* The home row always prefers highlighted products. When more highlighted
-       products exist than fit in the single visible row, choose a random
-       subset for this page load, as requested. */
+    /* Keep highlighted products at the front of each home carousel so the
+       first visible cards still feel curated. The remaining products follow
+       in a stable shuffled order, allowing the carousel to expose the whole
+       collection instead of cutting it after the first row. */
     highlighted.sort(function (a, b) {
       var ka = priorityHomeKey(String(a && a.slug || ''));
       var kb = priorityHomeKey(String(b && b.slug || ''));
@@ -598,10 +599,7 @@
       return String(a && a.slug || '').localeCompare(String(b && b.slug || ''));
     });
 
-    if (highlighted.length >= limit) return highlighted.slice(0, limit);
-
-    var fallback = shuffleAllProductsStable(ordinary);
-    return highlighted.concat(fallback.slice(0, limit - highlighted.length));
+    return highlighted.concat(shuffleAllProductsStable(ordinary));
   }
 
 
@@ -1118,8 +1116,220 @@
     return collections.indexOf(key) !== -1;
   }
 
+  function homeCarouselLoopProducts(products, bufferSize) {
+    var list = Array.isArray(products) ? products.slice() : [];
+    if (list.length <= 1) return { items: list, buffer: 0 };
+    /* Four clones on each side are enough for the 3/4-card desktop layout and
+       the 2-card mobile layout. The real collection stays in the middle. */
+    var buffer = Math.min(Math.max(4, Number(bufferSize) || 4), list.length);
+    return {
+      items: list.slice(list.length - buffer).concat(list, list.slice(0, buffer)),
+      buffer: buffer
+    };
+  }
+
+  function homeCarouselCardStride(track) {
+    if (!track || !track.children || !track.children.length) return 0;
+    var first = track.children[0];
+    var styles = window.getComputedStyle(track);
+    var gap = parseFloat(styles.columnGap || styles.gap || '0') || 0;
+    return (first.getBoundingClientRect().width || first.offsetWidth || 0) + gap;
+  }
+
+  function homeCarouselSetScrollLeft(track, value) {
+    if (!track) return;
+    var previousBehavior = track.style.scrollBehavior;
+    var previousSnap = track.style.scrollSnapType;
+    track.style.scrollBehavior = 'auto';
+    track.style.scrollSnapType = 'none';
+    track.scrollLeft = value;
+    /* Restore snapping only after the browser has accepted the invisible
+       re-position. This avoids Safari/Chrome trying to animate the reset. */
+    window.requestAnimationFrame(function () {
+      track.style.scrollBehavior = previousBehavior;
+      track.style.scrollSnapType = previousSnap;
+    });
+  }
+
+  function homeCarouselLogicalOffset(root, track) {
+    if (!root || !track) return 0;
+    var count = Math.max(1, Number(root.getAttribute('data-original-count')) || 1);
+    var buffer = Math.max(0, Number(root.getAttribute('data-loop-buffer')) || 0);
+    var stride = homeCarouselCardStride(track);
+    if (!stride || count <= 1) return 0;
+    var cycle = count * stride;
+    return ((track.scrollLeft - (buffer * stride)) % cycle + cycle) % cycle;
+  }
+
+  function updateHomeCarouselIndicator(root, track) {
+    if (!root || !track) return;
+    var thumb = root.querySelector('[data-home-carousel-thumb]');
+    if (!thumb) return;
+    var count = Math.max(1, Number(root.getAttribute('data-original-count')) || 1);
+    var stride = homeCarouselCardStride(track);
+    var rail = thumb.parentElement;
+    if (!stride || count <= 1 || !rail) {
+      thumb.style.transform = 'translateX(0px)';
+      return;
+    }
+
+    var logical = homeCarouselLogicalOffset(root, track);
+    var visibleCards = Math.max(1, Math.min(count, track.clientWidth / stride));
+    var visibleRatio = Math.max(.12, Math.min(1, visibleCards / count));
+    var thumbWidth = Math.max(34, Math.round(rail.clientWidth * visibleRatio));
+    thumbWidth = Math.min(rail.clientWidth, thumbWidth);
+    thumb.style.width = thumbWidth + 'px';
+
+    var maxLogical = Math.max(stride, (count - 1) * stride);
+    var progress = Math.max(0, Math.min(1, logical / maxLogical));
+    var travel = Math.max(0, rail.clientWidth - thumbWidth);
+    thumb.style.transform = 'translateX(' + Math.round(progress * travel) + 'px)';
+  }
+
+  function normalizeHomeCarouselLoop(root, track) {
+    if (!root || !track || root._homeCarouselDragging) return;
+    var count = Math.max(1, Number(root.getAttribute('data-original-count')) || 1);
+    var buffer = Math.max(0, Number(root.getAttribute('data-loop-buffer')) || 0);
+    if (count <= 1 || !buffer) return;
+    var stride = homeCarouselCardStride(track);
+    if (!stride) return;
+
+    var originalWidth = count * stride;
+    var originalStart = buffer * stride;
+    var originalEnd = originalStart + originalWidth;
+    var x = track.scrollLeft;
+    var target = null;
+
+    /* Only reset after the shopper has actually entered one of the duplicate
+       buffer zones. Because each target is exactly one collection-width away,
+       the pixels before/after the reset are identical and the loop feels like
+       the first product simply follows the last one. */
+    if (x < originalStart - (stride * .55)) {
+      target = x + originalWidth;
+    } else if (x > originalEnd - (stride * .45)) {
+      target = x - originalWidth;
+    }
+
+    if (target != null && Math.abs(target - x) > 1) {
+      root._homeCarouselNormalizing = true;
+      homeCarouselSetScrollLeft(track, target);
+      window.requestAnimationFrame(function () {
+        root._homeCarouselNormalizing = false;
+        updateHomeCarouselIndicator(root, track);
+      });
+    } else {
+      updateHomeCarouselIndicator(root, track);
+    }
+  }
+
+  function syncHomeCarouselArrowCenter(root) {
+    if (!root) return;
+    var media = root.querySelector('.prod__media');
+    var viewport = root.querySelector('.all-collection-carousel__viewport');
+    if (!media || !viewport) return;
+    var rootRect = root.getBoundingClientRect();
+    var mediaRect = media.getBoundingClientRect();
+    var top = (mediaRect.top - rootRect.top) + (mediaRect.height / 2);
+    if (Number.isFinite(top) && top > 0) {
+      root.style.setProperty('--home-carousel-arrow-top', top + 'px');
+    }
+  }
+
+  function initHomeCollectionCarousels(grid) {
+    if (!grid) return;
+    var carousels = Array.prototype.slice.call(grid.querySelectorAll('[data-home-carousel]'));
+    carousels.forEach(function (root) {
+      var track = root.querySelector('[data-home-carousel-track]');
+      if (!track) return;
+      var count = Math.max(1, Number(root.getAttribute('data-original-count')) || 1);
+      var buffer = Math.max(0, Number(root.getAttribute('data-loop-buffer')) || 0);
+      var scrollTimer = null;
+      var ready = false;
+
+      function placeAtStart() {
+        var stride = homeCarouselCardStride(track);
+        if (!stride) return;
+        homeCarouselSetScrollLeft(track, buffer * stride);
+        updateHomeCarouselIndicator(root, track);
+        syncHomeCarouselArrowCenter(root);
+      }
+
+      /* Position once, without smooth scrolling. The previous implementation
+         repeatedly re-positioned the track while scroll-snap was active, which
+         was most noticeable in the greeting-jewelry row. */
+      window.requestAnimationFrame(function () {
+        placeAtStart();
+        window.requestAnimationFrame(function () {
+          ready = true;
+          updateHomeCarouselIndicator(root, track);
+          syncHomeCarouselArrowCenter(root);
+        });
+      });
+
+      function queueNormalize(delay) {
+        window.clearTimeout(scrollTimer);
+        scrollTimer = window.setTimeout(function () {
+          if (!ready || root._homeCarouselDragging || root._homeCarouselNormalizing) return;
+          normalizeHomeCarouselLoop(root, track);
+        }, delay == null ? 260 : delay);
+      }
+
+      track.addEventListener('scroll', function () {
+        if (!ready || root._homeCarouselNormalizing) return;
+        updateHomeCarouselIndicator(root, track);
+        /* A longer idle delay lets iOS/Android momentum scrolling finish instead
+           of fighting the finger with a programmatic loop reset. */
+        queueNormalize(300);
+      }, { passive: true });
+
+      track.addEventListener('pointerdown', function () {
+        root._homeCarouselDragging = true;
+        window.clearTimeout(scrollTimer);
+      }, { passive: true });
+      function finishDrag() {
+        root._homeCarouselDragging = false;
+        queueNormalize(220);
+      }
+      track.addEventListener('pointerup', finishDrag, { passive: true });
+      track.addEventListener('pointercancel', finishDrag, { passive: true });
+      track.addEventListener('touchend', finishDrag, { passive: true });
+
+      if ('onscrollend' in track) {
+        track.addEventListener('scrollend', function () {
+          if (!root._homeCarouselDragging) queueNormalize(40);
+        }, { passive: true });
+      }
+
+      var leftArrow = root.querySelector('[data-home-carousel-forward]');
+      var rightArrow = root.querySelector('[data-home-carousel-back]');
+      function step(direction) {
+        var stride = homeCarouselCardStride(track);
+        if (!stride) return;
+        var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        track.scrollBy({ left: direction * stride, behavior: reduced ? 'auto' : 'smooth' });
+        queueNormalize(reduced ? 80 : 520);
+      }
+      /* Desktop arrow movement follows the physical button side:
+         left button moves the carousel left; right button moves it right. */
+      if (leftArrow) leftArrow.addEventListener('click', function () { step(-1); });
+      if (rightArrow) rightArrow.addEventListener('click', function () { step(1); });
+
+      function syncLayout() {
+        syncHomeCarouselArrowCenter(root);
+        updateHomeCarouselIndicator(root, track);
+      }
+      window.addEventListener('resize', syncLayout, { passive: true });
+      if (window.ResizeObserver) {
+        var observer = new ResizeObserver(syncLayout);
+        observer.observe(root);
+        observer.observe(track);
+      }
+
+      if (count <= 1) root.classList.add('is-static');
+    });
+  }
+
   function renderAllCollectionGroups(grid, filteredList) {
-    var limit = allCollectionGroupLimit();
     var sections = ALL_COLLECTION_GROUPS.map(function (group) {
       var groupProducts = filteredList.filter(function (p) {
         return productBelongsToCollection(p, group.key);
@@ -1127,15 +1337,27 @@
       if (!groupProducts.length) return '';
 
       groupProducts = (group.key === 'greeting'
-        ? orderGreetingCatalogProducts(groupProducts).slice(0, limit)
-        : orderHomeCollectionProducts(groupProducts, limit)
+        ? orderGreetingCatalogProducts(groupProducts)
+        : orderHomeCollectionProducts(groupProducts)
       );
+
+      var loop = homeCarouselLoopProducts(groupProducts, 4);
       return '' +
         '<section class="all-collection-group" data-all-collection-group="' + esc(group.key) + '">' +
           '<div class="all-collection-group__head">' +
             '<h3 class="all-collection-group__title">' + esc(group.title) + '</h3>' +
           '</div>' +
-          '<div class="all-collection-group__products">' + groupProducts.map(renderProductCardHTML).join('') + '</div>' +
+          '<div class="all-collection-carousel" data-home-carousel data-original-count="' + groupProducts.length + '" data-loop-buffer="' + loop.buffer + '">' +
+            '<button type="button" class="all-collection-carousel__arrow all-collection-carousel__arrow--left" data-home-carousel-forward aria-label="למוצרים הבאים">›</button>' +
+            '<div class="all-collection-carousel__viewport">' +
+              '<div class="all-collection-group__products" data-home-carousel-track>' + loop.items.map(renderProductCardHTML).join('') + '</div>' +
+            '</div>' +
+            '<button type="button" class="all-collection-carousel__arrow all-collection-carousel__arrow--right" data-home-carousel-back aria-label="למוצרים הקודמים">‹</button>' +
+            '<div class="all-collection-carousel__scrollbar" aria-hidden="true">' +
+              '<span class="all-collection-carousel__scroll-hint">החליקו לעוד מוצרים <b aria-hidden="true">↔</b></span>' +
+              '<span class="all-collection-carousel__scroll-rail"><i data-home-carousel-thumb></i></span>' +
+            '</div>' +
+          '</div>' +
           '<div class="all-collection-group__footer">' +
             '<a class="all-collection-group__link" href="' + collectionPath(group.key) + '#shop" data-cat="' + esc(group.key) + '">' + esc(group.allLabel) +
               '<span class="all-collection-group__arrow" aria-hidden="true">←</span>' +
@@ -1146,6 +1368,7 @@
 
     grid.classList.add('grid--collection-groups');
     grid.innerHTML = sections.join('');
+    initHomeCollectionCarousels(grid);
     renderCatalogLoadMore(grid, 0, 0);
   }
 
