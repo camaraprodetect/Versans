@@ -412,3 +412,18 @@
   .home-page .all-collection-carousel__arrow{transition:none}
   .home-page .all-collection-carousel__scroll-rail i{transition:none}
 }
+
+/* V6 — allow native horizontal collection scrolling even when the gesture starts on a product image. */
+@media(max-width:700px){
+  .home-page .all-collection-group__products[data-home-carousel-track] .prod__media{
+    touch-action:pan-x pan-y!important;
+    -webkit-user-select:none;
+    user-select:none;
+  }
+  .home-page .all-collection-group__products[data-home-carousel-track] .prod__img{
+    touch-action:pan-x pan-y!important;
+    -webkit-user-drag:none;
+    -webkit-user-select:none;
+    user-select:none;
+  }
+}
