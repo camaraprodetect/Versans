@@ -330,24 +330,38 @@
     width:100%;
     overflow:hidden;
   }
+  /* Mobile: plain finite horizontal scrolling. No carousel loop, no snap and
+     no grid wrapping — just one continuous row controlled by the finger. */
   .home-page .all-collection-group__products[data-home-carousel-track]{
+    display:flex!important;
+    flex-flow:row nowrap!important;
+    grid-template-columns:none!important;
+    grid-auto-flow:unset!important;
     gap:.72rem;
     width:100%;
     max-width:100%;
-    overflow-x:auto;
-    overflow-y:hidden;
-    scroll-snap-type:none;
-    scroll-behavior:auto;
-    overscroll-behavior-x:auto;
+    min-width:0;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    scroll-snap-type:none!important;
+    scroll-behavior:auto!important;
+    overscroll-behavior-x:contain;
     -webkit-overflow-scrolling:touch;
-    touch-action:auto;
-    padding:0 2px 2px;
+    touch-action:pan-x pan-y;
+    padding:0 2px 6px;
     direction:ltr;
+    scrollbar-width:none;
+  }
+  .home-page .all-collection-group__products[data-home-carousel-track]::-webkit-scrollbar{
+    display:none;
   }
   .home-page .all-collection-group__products[data-home-carousel-track] .prod{
-    flex:0 0 calc((100% - .72rem) / 2);
-    scroll-snap-align:none;
-    scroll-snap-stop:normal;
+    flex:0 0 calc((100% - .72rem) / 2)!important;
+    width:calc((100% - .72rem) / 2)!important;
+    min-width:calc((100% - .72rem) / 2)!important;
+    max-width:calc((100% - .72rem) / 2)!important;
+    scroll-snap-align:none!important;
+    scroll-snap-stop:normal!important;
     direction:rtl;
   }
   .home-page .all-collection-carousel__arrow{
@@ -370,10 +384,10 @@
   .home-page .all-collection-carousel__scroll-rail{
     position:relative;
     display:block;
-    width:min(46vw,170px);
-    height:6px;
+    width:min(52vw,190px);
+    height:5px;
     border-radius:999px;
-    background:#d9dee4;
+    background:#d6dbe0;
     overflow:hidden;
     box-shadow:inset 0 0 0 1px rgba(20,35,51,.06);
   }
