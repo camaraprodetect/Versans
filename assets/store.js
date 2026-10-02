@@ -1116,6 +1116,10 @@
     return collections.indexOf(key) !== -1;
   }
 
+  function isMobileHomeScroller() {
+    return window.matchMedia('(max-width: 700px)').matches;
+  }
+
   function homeCarouselLoopProducts(products, bufferSize) {
     var list = Array.isArray(products) ? products.slice() : [];
     if (list.length <= 1) return { items: list, buffer: 0 };
@@ -1165,25 +1169,47 @@
     if (!root || !track) return;
     var thumb = root.querySelector('[data-home-carousel-thumb]');
     if (!thumb) return;
-    var count = Math.max(1, Number(root.getAttribute('data-original-count')) || 1);
-    var stride = homeCarouselCardStride(track);
     var rail = thumb.parentElement;
-    if (!stride || count <= 1 || !rail) {
+    if (!rail) return;
+
+    var maxScroll = Math.max(0, track.scrollWidth - track.clientWidth);
+    if (maxScroll <= 1) {
+      thumb.style.width = rail.clientWidth + 'px';
       thumb.style.transform = 'translateX(0px)';
+      root.classList.add('is-static');
+      return;
+    }
+    root.classList.remove('is-static');
+
+    /* Mobile is a normal finite horizontal scroller, so the indicator mirrors
+       the browser's real scroll position instead of any carousel-loop math. */
+    if (isMobileHomeScroller() || Number(root.getAttribute('data-loop-buffer')) === 0) {
+      var ratio = Math.max(.18, Math.min(1, track.clientWidth / track.scrollWidth));
+      var thumbWidth = Math.max(42, Math.round(rail.clientWidth * ratio));
+      thumbWidth = Math.min(rail.clientWidth, thumbWidth);
+      var progress = Math.max(0, Math.min(1, track.scrollLeft / maxScroll));
+      var travel = Math.max(0, rail.clientWidth - thumbWidth);
+      thumb.style.width = thumbWidth + 'px';
+      thumb.style.transform = 'translateX(' + Math.round(progress * travel) + 'px)';
       return;
     }
 
+    var count = Math.max(1, Number(root.getAttribute('data-original-count')) || 1);
+    var stride = homeCarouselCardStride(track);
+    if (!stride || count <= 1) {
+      thumb.style.transform = 'translateX(0px)';
+      return;
+    }
     var logical = homeCarouselLogicalOffset(root, track);
     var visibleCards = Math.max(1, Math.min(count, track.clientWidth / stride));
     var visibleRatio = Math.max(.12, Math.min(1, visibleCards / count));
-    var thumbWidth = Math.max(34, Math.round(rail.clientWidth * visibleRatio));
-    thumbWidth = Math.min(rail.clientWidth, thumbWidth);
-    thumb.style.width = thumbWidth + 'px';
-
+    var loopThumbWidth = Math.max(34, Math.round(rail.clientWidth * visibleRatio));
+    loopThumbWidth = Math.min(rail.clientWidth, loopThumbWidth);
+    thumb.style.width = loopThumbWidth + 'px';
     var maxLogical = Math.max(stride, (count - 1) * stride);
-    var progress = Math.max(0, Math.min(1, logical / maxLogical));
-    var travel = Math.max(0, rail.clientWidth - thumbWidth);
-    thumb.style.transform = 'translateX(' + Math.round(progress * travel) + 'px)';
+    var loopProgress = Math.max(0, Math.min(1, logical / maxLogical));
+    var loopTravel = Math.max(0, rail.clientWidth - loopThumbWidth);
+    thumb.style.transform = 'translateX(' + Math.round(loopProgress * loopTravel) + 'px)';
   }
 
   function normalizeHomeCarouselLoop(root, track) {
@@ -1243,20 +1269,20 @@
       if (!track) return;
       var count = Math.max(1, Number(root.getAttribute('data-original-count')) || 1);
       var buffer = Math.max(0, Number(root.getAttribute('data-loop-buffer')) || 0);
+      var mobile = isMobileHomeScroller();
       var scrollTimer = null;
       var ready = false;
 
       function placeAtStart() {
         var stride = homeCarouselCardStride(track);
         if (!stride) return;
-        homeCarouselSetScrollLeft(track, buffer * stride);
+        /* Mobile has real beginning/end points: always start at the first item.
+           Desktop keeps the invisible duplicate buffer for its arrow loop. */
+        homeCarouselSetScrollLeft(track, mobile ? 0 : buffer * stride);
         updateHomeCarouselIndicator(root, track);
         syncHomeCarouselArrowCenter(root);
       }
 
-      /* Position once, without smooth scrolling. The previous implementation
-         repeatedly re-positioned the track while scroll-snap was active, which
-         was most noticeable in the greeting-jewelry row. */
       window.requestAnimationFrame(function () {
         placeAtStart();
         window.requestAnimationFrame(function () {
@@ -1267,6 +1293,7 @@
       });
 
       function queueNormalize(delay) {
+        if (mobile || !buffer) return;
         window.clearTimeout(scrollTimer);
         scrollTimer = window.setTimeout(function () {
           if (!ready || root._homeCarouselDragging || root._homeCarouselNormalizing) return;
@@ -1277,40 +1304,39 @@
       track.addEventListener('scroll', function () {
         if (!ready || root._homeCarouselNormalizing) return;
         updateHomeCarouselIndicator(root, track);
-        /* A longer idle delay lets iOS/Android momentum scrolling finish instead
-           of fighting the finger with a programmatic loop reset. */
-        queueNormalize(300);
+        if (!mobile) queueNormalize(300);
       }, { passive: true });
 
-      track.addEventListener('pointerdown', function () {
-        root._homeCarouselDragging = true;
-        window.clearTimeout(scrollTimer);
-      }, { passive: true });
-      function finishDrag() {
-        root._homeCarouselDragging = false;
-        queueNormalize(220);
-      }
-      track.addEventListener('pointerup', finishDrag, { passive: true });
-      track.addEventListener('pointercancel', finishDrag, { passive: true });
-      track.addEventListener('touchend', finishDrag, { passive: true });
-
-      if ('onscrollend' in track) {
-        track.addEventListener('scrollend', function () {
-          if (!root._homeCarouselDragging) queueNormalize(40);
+      /* No pointer/touch interception on phones. The browser owns the gesture,
+         which makes left/right dragging feel like a regular native X-scroll. */
+      if (!mobile) {
+        track.addEventListener('pointerdown', function () {
+          root._homeCarouselDragging = true;
+          window.clearTimeout(scrollTimer);
         }, { passive: true });
+        function finishDrag() {
+          root._homeCarouselDragging = false;
+          queueNormalize(220);
+        }
+        track.addEventListener('pointerup', finishDrag, { passive: true });
+        track.addEventListener('pointercancel', finishDrag, { passive: true });
+        if ('onscrollend' in track) {
+          track.addEventListener('scrollend', function () {
+            if (!root._homeCarouselDragging) queueNormalize(40);
+          }, { passive: true });
+        }
       }
 
       var leftArrow = root.querySelector('[data-home-carousel-forward]');
       var rightArrow = root.querySelector('[data-home-carousel-back]');
       function step(direction) {
+        if (mobile) return;
         var stride = homeCarouselCardStride(track);
         if (!stride) return;
         var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         track.scrollBy({ left: direction * stride, behavior: reduced ? 'auto' : 'smooth' });
         queueNormalize(reduced ? 80 : 520);
       }
-      /* Desktop arrow movement follows the physical button side:
-         left button moves the carousel left; right button moves it right. */
       if (leftArrow) leftArrow.addEventListener('click', function () { step(-1); });
       if (rightArrow) rightArrow.addEventListener('click', function () { step(1); });
 
@@ -1324,7 +1350,6 @@
         observer.observe(root);
         observer.observe(track);
       }
-
       if (count <= 1) root.classList.add('is-static');
     });
   }
@@ -1341,7 +1366,7 @@
         : orderHomeCollectionProducts(groupProducts)
       );
 
-      var loop = homeCarouselLoopProducts(groupProducts, 4);
+      var loop = isMobileHomeScroller() ? { items: groupProducts.slice(), buffer: 0 } : homeCarouselLoopProducts(groupProducts, 4);
       return '' +
         '<section class="all-collection-group" data-all-collection-group="' + esc(group.key) + '">' +
           '<div class="all-collection-group__head">' +
@@ -1354,7 +1379,6 @@
             '</div>' +
             '<button type="button" class="all-collection-carousel__arrow all-collection-carousel__arrow--right" data-home-carousel-back aria-label="למוצרים הקודמים">‹</button>' +
             '<div class="all-collection-carousel__scrollbar" aria-hidden="true">' +
-              '<span class="all-collection-carousel__scroll-hint">החליקו לעוד מוצרים <b aria-hidden="true">↔</b></span>' +
               '<span class="all-collection-carousel__scroll-rail"><i data-home-carousel-thumb></i></span>' +
             '</div>' +
           '</div>' +
