@@ -668,6 +668,20 @@
   }
 
   /* ---------- קטלוג ------------------------------------------------------ */
+  function hydrateCollectionBannerMedia(banner) {
+    if (!banner || banner.hidden) return;
+    Array.prototype.slice.call(banner.querySelectorAll('source[data-srcset]')).forEach(function (source) {
+      source.setAttribute('srcset', source.getAttribute('data-srcset'));
+      source.removeAttribute('data-srcset');
+    });
+    Array.prototype.slice.call(banner.querySelectorAll('img[data-src]')).forEach(function (img) {
+      img.setAttribute('src', img.getAttribute('data-src'));
+      img.removeAttribute('data-src');
+      img.setAttribute('loading', 'lazy');
+      img.setAttribute('decoding', 'async');
+    });
+  }
+
   function renderGlassesCollectionBanner() {
     var glassesBanner = $('#glassesCollectionBanner');
     if (glassesBanner) {
@@ -691,9 +705,9 @@
         hatsBanner.setAttribute('aria-label', 'מבצע קולקציית הכובעים');
         hatsBanner.innerHTML = '' +
           '<picture class="hats-collection-banner__picture">' +
-            '<source media="(min-width: 1440px)" srcset="/images/hats-collection-banner-wide.png">' +
-            '<source media="(min-width: 768px)" srcset="/images/hats-collection-banner-medium.png">' +
-            '<img src="/images/hats-collection-banner.png" alt="מבצע כובעים של VerSans - 2 ב־239.90 ₪, 3 ב־299.90 ₪">' +
+            '<source media="(min-width: 1440px)" data-srcset="/images/hats-collection-banner-wide.png">' +
+            '<source media="(min-width: 768px)" data-srcset="/images/hats-collection-banner-medium.png">' +
+            '<img data-src="/images/hats-collection-banner.png" loading="lazy" decoding="async" alt="מבצע כובעים של VerSans - 2 ב־239.90 ₪, 3 ב־299.90 ₪">' +
           '</picture>';
         var bannerAnchor = $('#otherCollectionsBanner') || $('.shop__filter-row');
         if (bannerAnchor && bannerAnchor.parentNode === shopContainer) shopContainer.insertBefore(hatsBanner, bannerAnchor);
@@ -745,6 +759,8 @@
     /* Hats now open directly on the full collection. Category selection lives inside the filter panel. */
     var hatsAllButtonWrap = document.querySelector('[data-hats-all-button-wrap]');
     if (hatsAllButtonWrap) hatsAllButtonWrap.remove();
+
+    [glassesBanner, watchesBanner, hatsBanner, photoJewelryCollectionBanner, ringsCollectionBanner, braceletsCollectionBanner, necklacesCollectionBanner, homeCollectionBanner, greetingCustomCollectionBanner].forEach(hydrateCollectionBannerMedia);
   }
 
   function renderCollectionNav() {
@@ -965,7 +981,7 @@
          secondary product images stay as URL strings in data-mobile-images and
          are not requested until the shopper presses an image arrow. */
       if (!isMobileCatalogViewport && hoverImg && hoverImg !== img) {
-        html += '<img class="prod__img prod__img--hover" src="' + esc(hoverImg) + '" alt="" loading="lazy" aria-hidden="true">';
+        html += '<img class="prod__img prod__img--hover" src="' + esc(hoverImg) + '" alt="" loading="lazy" decoding="async" aria-hidden="true">';
       }
       if (!big && mobileImages.length > 1) {
         var prevLabel = state.lang === 'he' ? 'לתמונה הקודמת' : 'Previous image';
@@ -1333,9 +1349,52 @@
         if (mobile) return;
         var stride = homeCarouselCardStride(track);
         if (!stride) return;
+
+        /* Desktop infinite-loop edge fix:
+           when the viewport has already reached the duplicate buffer at either
+           end, reset to the identical position in the real collection BEFORE
+           applying this click. Without this, a click made at the physical
+           scroll boundary can appear to do nothing until the delayed loop
+           normalization runs, so the shopper has to click twice. */
+        window.clearTimeout(scrollTimer);
+        var originalCount = Math.max(1, Number(root.getAttribute('data-original-count')) || 1);
+        var loopBuffer = Math.max(0, Number(root.getAttribute('data-loop-buffer')) || 0);
+        var resetBeforeStep = false;
+
+        if (originalCount > 1 && loopBuffer) {
+          var originalWidth = originalCount * stride;
+          var originalStart = loopBuffer * stride;
+          var originalEnd = originalStart + originalWidth;
+          var x = track.scrollLeft;
+          var target = null;
+
+          if (direction > 0 && x >= originalEnd - (stride * .5)) {
+            target = x - originalWidth;
+          } else if (direction < 0 && x <= originalStart - (stride * .5)) {
+            target = x + originalWidth;
+          }
+
+          if (target != null && Math.abs(target - x) > 1) {
+            root._homeCarouselNormalizing = true;
+            homeCarouselSetScrollLeft(track, target);
+            resetBeforeStep = true;
+          }
+        }
+
         var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        track.scrollBy({ left: direction * stride, behavior: reduced ? 'auto' : 'smooth' });
-        queueNormalize(reduced ? 80 : 520);
+        function moveOneCard() {
+          root._homeCarouselNormalizing = false;
+          track.scrollBy({ left: direction * stride, behavior: reduced ? 'auto' : 'smooth' });
+          queueNormalize(reduced ? 80 : 520);
+        }
+
+        /* homeCarouselSetScrollLeft restores scroll snapping on the next frame.
+           Move only after that invisible reset has been committed. */
+        if (resetBeforeStep) {
+          window.requestAnimationFrame(moveOneCard);
+        } else {
+          moveOneCard();
+        }
       }
       if (leftArrow) leftArrow.addEventListener('click', function () { step(-1); });
       if (rightArrow) rightArrow.addEventListener('click', function () { step(1); });
@@ -1351,6 +1410,55 @@
         observer.observe(track);
       }
       if (count <= 1) root.classList.add('is-static');
+    });
+  }
+
+  var HOME_LAZY_PIXEL = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+
+  function renderHomeProductCardHTML(product) {
+    var html = renderProductCardHTML(product);
+    html = html.replace(/<img class="prod__img prod__img--main" src="([^"]+)"/g, function (_, src) {
+      return '<img class="prod__img prod__img--main" src="' + HOME_LAZY_PIXEL + '" data-home-src="' + src + '"';
+    });
+    html = html.replace(/<img class="prod__img prod__img--hover" src="([^"]+)"/g, function (_, src) {
+      return '<img class="prod__img prod__img--hover" src="' + HOME_LAZY_PIXEL + '" data-home-hover-src="' + src + '"';
+    });
+    return html;
+  }
+
+  function loadHomeDeferredImage(img, attr) {
+    if (!img) return;
+    var src = img.getAttribute(attr);
+    if (!src) return;
+    img.removeAttribute(attr);
+    img.setAttribute('src', src);
+    img.setAttribute('decoding', 'async');
+  }
+
+  function initHomeDeferredImages(grid) {
+    if (!grid) return;
+    var mains = Array.prototype.slice.call(grid.querySelectorAll('img[data-home-src]'));
+    var hovers = Array.prototype.slice.call(grid.querySelectorAll('img[data-home-hover-src]'));
+
+    if ('IntersectionObserver' in window) {
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          loadHomeDeferredImage(entry.target, 'data-home-src');
+          observer.unobserve(entry.target);
+        });
+      }, { root: null, rootMargin: '350px 220px', threshold: 0.01 });
+      mains.forEach(function (img) { observer.observe(img); });
+    } else {
+      mains.forEach(function (img) { loadHomeDeferredImage(img, 'data-home-src'); });
+    }
+
+    hovers.forEach(function (img) {
+      var media = img.closest('.prod__media');
+      if (!media) return;
+      var hydrate = function () { loadHomeDeferredImage(img, 'data-home-hover-src'); };
+      media.addEventListener('mouseenter', hydrate, { once: true, passive: true });
+      media.addEventListener('focusin', hydrate, { once: true, passive: true });
     });
   }
 
@@ -1375,7 +1483,7 @@
           '<div class="all-collection-carousel" data-home-carousel data-original-count="' + groupProducts.length + '" data-loop-buffer="' + loop.buffer + '">' +
             '<button type="button" class="all-collection-carousel__arrow all-collection-carousel__arrow--left" data-home-carousel-forward aria-label="למוצרים הבאים">›</button>' +
             '<div class="all-collection-carousel__viewport">' +
-              '<div class="all-collection-group__products" data-home-carousel-track>' + loop.items.map(renderProductCardHTML).join('') + '</div>' +
+              '<div class="all-collection-group__products" data-home-carousel-track>' + loop.items.map(renderHomeProductCardHTML).join('') + '</div>' +
             '</div>' +
             '<button type="button" class="all-collection-carousel__arrow all-collection-carousel__arrow--right" data-home-carousel-back aria-label="למוצרים הקודמים">‹</button>' +
             '<div class="all-collection-carousel__scrollbar" aria-hidden="true">' +
@@ -1392,6 +1500,7 @@
 
     grid.classList.add('grid--collection-groups');
     grid.innerHTML = sections.join('');
+    initHomeDeferredImages(grid);
     initHomeCollectionCarousels(grid);
     renderCatalogLoadMore(grid, 0, 0);
   }

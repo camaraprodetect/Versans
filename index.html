@@ -45,7 +45,7 @@
 <link rel="icon" type="image/png" sizes="96x96" href="/images/favicon-96.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
 <link rel="stylesheet" href="assets/brand.css?v=20261001-logo-v4">
-<link rel="stylesheet" href="assets/home.css?v=20261002-home-mobile-native-scroll-v4">
+<link rel="stylesheet" href="assets/home.css?v=20261002-laptop-arrow-40-v15">
 <link rel="stylesheet" href="assets/reviews.css?v=20260924-review-display-name-v3">
 <link rel="stylesheet" href="assets/fonts.css?v=20260909-fonts-only">
 <link rel="stylesheet" href="assets/typography-only.css?v=20260909-fonts-only">
@@ -879,8 +879,8 @@ html, body {
 <!-- הירו -->
 <section class="hero hero--full" id="top" aria-label="באנר VerSans">
   <div class="hero__visual" data-hero-slider aria-live="off">
-    <video class="hero__image hero__video hero__slide is-active" width="1986" height="780" autoplay muted loop playsinline webkit-playsinline preload="auto" poster="images/hero-desktop-poster.jpg" aria-hidden="true" data-hero-slide data-versans-hero-video controlslist="nodownload noplaybackrate nofullscreen" disablepictureinpicture disableremoteplayback x-webkit-airplay="deny" tabindex="-1">
-      <source src="images/hero-desktop.mp4" type="video/mp4">
+    <video class="hero__image hero__video hero__slide is-active" width="1986" height="780" autoplay muted loop playsinline webkit-playsinline preload="none" data-poster="images/hero-desktop-poster.jpg" aria-hidden="true" data-hero-slide data-versans-hero-video controlslist="nodownload noplaybackrate nofullscreen" disablepictureinpicture disableremoteplayback x-webkit-airplay="deny" tabindex="-1">
+      <source data-src="images/hero-desktop.mp4" type="video/mp4">
     </video>
     <div class="desktop-hero-actions" aria-label="קישורים מהירים">
       <a class="desktop-hero-cta desktop-hero-cta--primary" href="#shopTitle">לגלות את הקולקציה</a>
@@ -893,14 +893,48 @@ html, body {
 <section class="section shop" id="shop" aria-labelledby="shopTitle">
   <div class="container">
     <div class="mobile-entry-banner" id="mobileEntryBanner" aria-label="מבצע VerSans עד 40% הנחה">
-      <video class="mobile-entry-banner__video" width="1440" height="2560" autoplay muted loop playsinline webkit-playsinline preload="auto" poster="images/hero-mobile-poster.jpg" aria-hidden="true" data-versans-hero-video controlslist="nodownload noplaybackrate nofullscreen" disablepictureinpicture disableremoteplayback x-webkit-airplay="deny" tabindex="-1">
-        <source src="images/hero-mobile.mp4" type="video/mp4">
+      <video class="mobile-entry-banner__video" width="1440" height="2560" autoplay muted loop playsinline webkit-playsinline preload="none" data-poster="images/hero-mobile-poster.jpg" aria-hidden="true" data-versans-hero-video controlslist="nodownload noplaybackrate nofullscreen" disablepictureinpicture disableremoteplayback x-webkit-airplay="deny" tabindex="-1">
+        <source data-src="images/hero-mobile.mp4" type="video/mp4">
       </video>
       <div class="mobile-entry-banner__actions" aria-label="קישורים מהירים">
         <a class="mobile-entry-banner__cta mobile-entry-banner__cta--primary" href="#shopTitle">לגלות את הקולקציה</a>
         <a class="mobile-entry-banner__cta mobile-entry-banner__cta--secondary" href="#reviews">לביקורות הלקוחות</a>
       </div>
     </div>
+    <script>
+    (function(){
+      var mq=window.matchMedia('(max-width: 700px)');
+      function activateHeroMedia(){
+        var mobile=!!mq.matches;
+        document.querySelectorAll('[data-versans-hero-video]').forEach(function(video){
+          var isMobile=video.classList.contains('mobile-entry-banner__video');
+          var active=isMobile===mobile;
+          var source=video.querySelector('source[data-src],source[src]');
+          if(active){
+            var poster=video.getAttribute('data-poster');
+            if(poster && video.getAttribute('poster')!==poster) video.setAttribute('poster',poster);
+            if(source && !source.getAttribute('src') && source.getAttribute('data-src')){
+              source.setAttribute('src',source.getAttribute('data-src'));
+              video.preload='metadata';
+              video.load();
+            }
+            var play=video.play();
+            if(play && play.catch) play.catch(function(){});
+          }else{
+            try{video.pause();}catch(e){}
+            video.removeAttribute('poster');
+            if(source && source.getAttribute('src')){
+              source.removeAttribute('src');
+              video.load();
+            }
+          }
+        });
+      }
+      activateHeroMedia();
+      if(mq.addEventListener) mq.addEventListener('change',activateHeroMedia);
+      else if(mq.addListener) mq.addListener(activateHeroMedia);
+    })();
+    </script>
 
     <nav class="mobile-collection-picker" aria-label="בחירת קולקציה">
       <div class="mobile-collection-picker__track">
@@ -948,58 +982,58 @@ html, body {
     </div>
     <div class="glasses-collection-banner" id="glassesCollectionBanner" hidden aria-label="מבצע קולקציית משקפי שמש">
       <picture class="glasses-collection-banner__picture">
-        <source media="(min-width: 1440px)" srcset="images/glasses-collection-banner-wide.png">
-        <source media="(min-width: 768px)" srcset="images/glasses-collection-banner-medium.png">
-        <img src="images/glasses-collection-banner.png" width="1235" height="338" alt="קולקציית משקפי שמש VerSans - שני זוגות ב־249.90 ₪">
+        <source media="(min-width: 1440px)" data-srcset="images/glasses-collection-banner-wide.png">
+        <source media="(min-width: 768px)" data-srcset="images/glasses-collection-banner-medium.png">
+        <img data-src="images/glasses-collection-banner.png" loading="lazy" decoding="async" width="1235" height="338" alt="קולקציית משקפי שמש VerSans - שני זוגות ב־249.90 ₪">
       </picture>
     </div>
     <div class="watches-collection-banner" id="watchesCollectionBanner" hidden aria-label="מבצע קולקציית שעונים">
       <picture class="watches-collection-banner__picture">
-        <source media="(min-width: 768px)" srcset="/images/watch-collection-banner-desktop.png">
-        <img src="/images/watch-collection-banner-mobile.png" width="1600" height="594" alt="קולקציית השעונים של VerSans - קנה 2 קבל 1 בחינם על כל השעונים">
+        <source media="(min-width: 768px)" data-srcset="/images/watch-collection-banner-desktop.png">
+        <img data-src="/images/watch-collection-banner-mobile.png" loading="lazy" decoding="async" width="1600" height="594" alt="קולקציית השעונים של VerSans - קנה 2 קבל 1 בחינם על כל השעונים">
       </picture>
     </div>
     <div class="greeting-custom-collection-banner" id="greetingCustomCollectionBanner" hidden aria-label="מבצע קולקציית תכשיט עם ברכה ועיצוב אישי">
       <picture class="greeting-custom-collection-banner__picture">
-        <source media="(min-width: 768px)" srcset="/images/greeting-custom-collection-banner-desktop.png">
-        <img src="/images/greeting-custom-collection-banner-mobile.png" width="1471" height="559" alt="תכשיט עם ברכה אישית של VerSans - קנה 2 קבל 1 בחינם על מתנה מרגשת למישהו שחשוב לכם">
+        <source media="(min-width: 768px)" data-srcset="/images/greeting-custom-collection-banner-desktop.png">
+        <img data-src="/images/greeting-custom-collection-banner-mobile.png" loading="lazy" decoding="async" width="1471" height="559" alt="תכשיט עם ברכה אישית של VerSans - קנה 2 קבל 1 בחינם על מתנה מרגשת למישהו שחשוב לכם">
       </picture>
     </div>
     <div class="hats-collection-banner" id="hatsCollectionBanner" hidden aria-label="מבצע קולקציית הכובעים">
       <picture class="hats-collection-banner__picture">
-        <source media="(min-width: 1440px)" srcset="/images/hats-collection-banner-wide.png">
-        <source media="(min-width: 768px)" srcset="/images/hats-collection-banner-medium.png">
-        <img src="/images/hats-collection-banner.png" width="1600" height="600" alt="מבצע כובעים של VerSans - 1 ב־139.90 ₪, 2 ב־239.90 ₪, 3 ב־299.90 ₪">
+        <source media="(min-width: 1440px)" data-srcset="/images/hats-collection-banner-wide.png">
+        <source media="(min-width: 768px)" data-srcset="/images/hats-collection-banner-medium.png">
+        <img data-src="/images/hats-collection-banner.png" loading="lazy" decoding="async" width="1600" height="600" alt="מבצע כובעים של VerSans - 1 ב־139.90 ₪, 2 ב־239.90 ₪, 3 ב־299.90 ₪">
       </picture>
     </div>
     <div class="photo-jewelry-collection-banner" id="photoJewelryCollectionBanner" hidden aria-label="מבצע קולקציית תכשיטי תמונה">
       <picture class="photo-jewelry-collection-banner__picture">
-        <source media="(min-width: 768px)" srcset="/images/photo-jewelry-collection-banner-desktop.png">
-        <img src="/images/photo-jewelry-collection-banner.png" width="960" height="320" alt="תכשיטי תמונה VerSans - עד 40% הנחה על כל הקולקציה">
+        <source media="(min-width: 768px)" data-srcset="/images/photo-jewelry-collection-banner-desktop.png">
+        <img data-src="/images/photo-jewelry-collection-banner.png" loading="lazy" decoding="async" width="960" height="320" alt="תכשיטי תמונה VerSans - עד 40% הנחה על כל הקולקציה">
       </picture>
     </div>
     <div class="rings-collection-banner" id="ringsCollectionBanner" hidden aria-label="מבצע קולקציית הטבעות">
       <picture class="rings-collection-banner__picture">
-        <source media="(min-width: 768px)" srcset="/images/rings-collection-banner-desktop.png">
-        <img src="/images/rings-collection-banner-mobile.png" alt="קולקציית הטבעות VerSans - עד 40% הנחה על כל קולקציית הטבעות">
+        <source media="(min-width: 768px)" data-srcset="/images/rings-collection-banner-desktop.png">
+        <img data-src="/images/rings-collection-banner-mobile.png" loading="lazy" decoding="async" alt="קולקציית הטבעות VerSans - עד 40% הנחה על כל קולקציית הטבעות">
       </picture>
     </div>
     <div class="bracelets-collection-banner" id="braceletsCollectionBanner" hidden aria-label="מבצע קולקציית הצמידים">
       <picture class="bracelets-collection-banner__picture">
-        <source media="(min-width: 768px)" srcset="/images/bracelets-collection-banner-desktop.png">
-        <img src="/images/bracelets-collection-banner-mobile.png" alt="קולקציית הצמידים VerSans - עד 40% הנחה על כל קולקציית הצמידים">
+        <source media="(min-width: 768px)" data-srcset="/images/bracelets-collection-banner-desktop.png">
+        <img data-src="/images/bracelets-collection-banner-mobile.png" loading="lazy" decoding="async" alt="קולקציית הצמידים VerSans - עד 40% הנחה על כל קולקציית הצמידים">
       </picture>
     </div>
     <div class="necklaces-collection-banner" id="necklacesCollectionBanner" hidden aria-label="מבצע קולקציית השרשראות">
       <picture class="necklaces-collection-banner__picture">
-        <source media="(min-width: 768px)" srcset="/images/necklaces-collection-banner-desktop.png">
-        <img src="/images/necklaces-collection-banner-mobile.png" alt="קולקציית השרשראות VerSans - עד 40% הנחה על כל קולקציית השרשראות">
+        <source media="(min-width: 768px)" data-srcset="/images/necklaces-collection-banner-desktop.png">
+        <img data-src="/images/necklaces-collection-banner-mobile.png" loading="lazy" decoding="async" alt="קולקציית השרשראות VerSans - עד 40% הנחה על כל קולקציית השרשראות">
       </picture>
     </div>
     <div class="home-collection-banner" id="homeCollectionBanner" hidden aria-label="מבצע הקולקציה בעמוד הבית">
       <picture class="home-collection-banner__picture">
-        <source media="(min-width: 768px)" srcset="/images/home-collection-banner-desktop.png">
-        <img src="/images/home-collection-banner-mobile.png" alt="קולקציית VerSans - קנה 2 קבל 1 בחינם על כל הקולקציה">
+        <source media="(min-width: 768px)" data-srcset="/images/home-collection-banner-desktop.png">
+        <img data-src="/images/home-collection-banner-mobile.png" loading="lazy" decoding="async" alt="קולקציית VerSans - קנה 2 קבל 1 בחינם על כל הקולקציה">
       </picture>
     </div>
     <div class="shop__filter-row">
@@ -1353,7 +1387,7 @@ html, body {
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="assets/config.js?v=20260922-support-email-v2"></script>
-<script src="assets/products.js?v=20260929-custom-greeting-product-v1"></script>
+<script src="assets/products.js?v=20261002-tennis-price-corrected-v19"></script>
 <script src="/assets/cart-state.js?v=20260928-buy2get1-meter-v1"></script>
 <script src="assets/routes.js?v=20260921-watch-subcats-v1"></script>
 <script src="assets/site-header.js?v=20260922-hide-zero-favorites-v1"></script>
@@ -1362,7 +1396,7 @@ html, body {
 <script src="assets/i18n.js?v=20260922-full-address-v1"></script>
 <script src="assets/reviews.js?v=20260924-review-display-name-v3"></script>
 <script src="assets/home.js?v=20260921-watch-subcats-v1"></script>
-<script src="assets/store.js?v=20261002-home-mobile-native-scroll-v4"></script>
+<script src="assets/store.js?v=20261002-desktop-carousel-edge-fix-v16"></script>
 <script src="assets/auth-nav.js?v=20260914-pretty-urls-v1"></script>
   <script src="/assets/presence.js?v=20260915-presence-v1"></script>
   <script src="/assets/customer-service.js?v=20260926-support-label-v3"></script>

@@ -577,14 +577,14 @@ var PRODUCTS = [
       "images/products/product-10/product-10-2.png",
       "images/products/product-10/product-10-3.png"
     ],
-    "price": 269.9,
+    "price": 309.9,
     "title": {
-      "he": "שרשרת טניס קלאסית",
-      "en": "Classic Tennis Chain"
+      "he": "שרשרת טניס קלאסית - מצופה 18 קראט זהב לבן",
+      "en": "Classic Tennis Chain - 18K White Gold Plated"
     },
     "subtitle": {
-      "he": "יוניסקס לנשים ולגברים · לבחירה ברוחב 3, 4 או 5 מ״מ ובאורכים 40–60 ס״מ",
-      "en": "Unisex for women and men · choose 3mm, 4mm or 5mm width and 40–60 cm length"
+      "he": "יוניסקס לנשים ולגברים · לבחירה ברוחב 3, 4 או 5 מ״מ ובאורכים 40–60 ס״מ · מצופה 18 קראט זהב לבן",
+      "en": "Unisex for women and men · choose 3mm, 4mm or 5mm width and 40–60 cm length · 18K white gold plated"
     },
     "sizeHeading": {
       "he": "בחרו אורך",
@@ -603,8 +603,8 @@ var PRODUCTS = [
         "id": "16in",
         "addPrice": 0,
         "priceLabel": {
-          "he": "269.90 ₪",
-          "en": "₪269.90"
+          "he": "309.90 ₪",
+          "en": "₪309.90"
         },
         "label": {
           "he": "40 ס״מ",
@@ -615,8 +615,8 @@ var PRODUCTS = [
         "id": "18in",
         "addPrice": 20,
         "priceLabel": {
-          "he": "289.90 ₪",
-          "en": "₪289.90"
+          "he": "329.90 ₪",
+          "en": "₪329.90"
         },
         "label": {
           "he": "45 ס״מ",
@@ -627,8 +627,8 @@ var PRODUCTS = [
         "id": "20in",
         "addPrice": 40,
         "priceLabel": {
-          "he": "309.90 ₪",
-          "en": "₪309.90"
+          "he": "349.90 ₪",
+          "en": "₪349.90"
         },
         "label": {
           "he": "50 ס״מ",
@@ -639,8 +639,8 @@ var PRODUCTS = [
         "id": "22in",
         "addPrice": 60,
         "priceLabel": {
-          "he": "329.90 ₪",
-          "en": "₪329.90"
+          "he": "369.90 ₪",
+          "en": "₪369.90"
         },
         "label": {
           "he": "55 ס״מ",
@@ -651,8 +651,8 @@ var PRODUCTS = [
         "id": "24in",
         "addPrice": 80,
         "priceLabel": {
-          "he": "349.90 ₪",
-          "en": "₪349.90"
+          "he": "389.90 ₪",
+          "en": "₪389.90"
         },
         "label": {
           "he": "60 ס״מ",
@@ -709,8 +709,8 @@ var PRODUCTS = [
       }
     ],
     "cardTitle": {
-      "he": "שרשרת טניס קלאסית",
-      "en": "Classic Tennis Chain"
+      "he": "שרשרת טניס קלאסית - מצופה 18 קראט זהב לבן",
+      "en": "Classic Tennis Chain - 18K White Gold Plated"
     },
     "cardMessage": {
       "he": "שרשרת טניס משובצת אבני זירקוניה במראה יוקרתי ונקי. בחרו את האורך והרוחב שמתאימים לכם.",
@@ -722,25 +722,25 @@ var PRODUCTS = [
     },
     "details": {
       "he": [
+        "מצופה 5 שכבות זהב לבן 18 קראט",
         "שרשרת טניס יוניסקס - מתאימה לנשים ולגברים",
         "משובצת אבני Cubic Zirconia",
         "רוחב לבחירה: 3 מ״מ, 4 מ״מ או 5 מ״מ",
         "לבחירה באורכים: 40, 45, 50, 55 או 60 ס״מ",
-        "גוון התכשיט: צבע כסף",
-        "קיימים גם דגמים בציפוי 5 שכבות זהב 18 קראט"
+        "גוון התכשיט: צבע כסף"
       ],
       "en": [
+        "18K white gold plated with 5 layers",
         "Unisex tennis chain suitable for women and men",
         "Set with cubic zirconia stones",
         "Choose 3mm, 4mm or 5mm width",
         "Choose 40, 45, 50, 55 or 60 cm length",
-        "Silver-tone finish",
-        "Gold versions use 5 layers of 18K gold plating"
+        "Silver-tone finish"
       ]
     },
     "afterText": {
-      "he": "בחרו אורך ורוחב והמחיר יתעדכן אוטומטית. לדוגמה, 55 ס״מ ברוחב 5 מ״מ עולה 339.90 ₪. גרסאות הזהב, אם מוצגות, הן בציפוי 5 שכבות זהב 18 קראט.",
-      "en": "Choose a length and width and the price updates automatically. For example, 55 cm at 5mm width costs ₪339.90. Gold versions, where offered, use 5 layers of 18K gold plating."
+      "he": "בחרו אורך ורוחב והמחיר יתעדכן אוטומטית. כל תוספת של 5 ס״מ מוסיפה 20 ₪. לדוגמה, 55 ס״מ ברוחב 5 מ״מ עולה 379.90 ₪. השרשרת מצופה 5 שכבות זהב לבן 18 קראט.",
+      "en": "Choose a length and width and the price updates automatically. Each additional 5 cm adds ₪20. For example, 55 cm at 5mm width costs ₪379.90. The chain is 18K white gold plated with 5 layers."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -776,7 +776,7 @@ var PRODUCTS = [
       "images/products/product-237/product-237-1.png",
       "images/products/product-237/product-237-2.png"
     ],
-    "price": 249.9,
+    "price": 279.9,
     "title": {
       "he": "צמיד טניס קלאסי - מצופה 18 קראט זהב לבן",
       "en": "Classic Tennis Bracelet - 18K White Gold Plated"
@@ -802,8 +802,8 @@ var PRODUCTS = [
         "id": "17cm",
         "addPrice": 0,
         "priceLabel": {
-          "he": "249.90 ₪",
-          "en": "₪249.90"
+          "he": "279.90 ₪",
+          "en": "₪279.90"
         },
         "label": {
           "he": "17 ס״מ",
@@ -812,10 +812,10 @@ var PRODUCTS = [
       },
       {
         "id": "20cm",
-        "addPrice": 5,
+        "addPrice": 10,
         "priceLabel": {
-          "he": "254.90 ₪",
-          "en": "₪254.90"
+          "he": "289.90 ₪",
+          "en": "₪289.90"
         },
         "label": {
           "he": "20 ס״מ",
@@ -824,10 +824,10 @@ var PRODUCTS = [
       },
       {
         "id": "22cm",
-        "addPrice": 10,
+        "addPrice": 20,
         "priceLabel": {
-          "he": "259.90 ₪",
-          "en": "₪259.90"
+          "he": "299.90 ₪",
+          "en": "₪299.90"
         },
         "label": {
           "he": "22 ס״מ",
@@ -891,8 +891,8 @@ var PRODUCTS = [
         "משובץ זירקוניה",
         "אורכים לבחירה: 17, 20 או 22 ס״מ",
         "עובי לבחירה: 3, 4 או 5 מ״מ",
-        "מחיר התחלתי: 249.90 ₪",
-        "כל עלייה באורך מוסיפה 5 ₪",
+        "מחיר התחלתי: 279.90 ₪",
+        "כל עלייה באורך מוסיפה 10 ₪",
         "כל עלייה בעובי מוסיפה 5 ₪"
       ],
       "en": [
@@ -900,8 +900,8 @@ var PRODUCTS = [
         "Set with zirconia stones",
         "Available lengths: 17, 20 or 22 cm",
         "Available widths: 3, 4 or 5 mm",
-        "Starting price: ₪249.90",
-        "Each length step adds ₪5",
+        "Starting price: ₪279.90",
+        "Each length step adds ₪10",
         "Each width step adds ₪5"
       ]
     },
@@ -1861,14 +1861,14 @@ var PRODUCTS = [
       "images/products/product-18/product-18-2.png",
       "images/products/product-18/product-18-3.png"
     ],
-    "price": 269.9,
+    "price": 309.9,
     "title": {
-      "he": "שרשרת טניס קלאסית - צבע זהב",
-      "en": "Classic Tennis Chain - Gold Color"
+      "he": "שרשרת טניס קלאסית - מצופה 18 קראט זהב",
+      "en": "Classic Tennis Chain - 18K Gold Plated"
     },
     "subtitle": {
-      "he": "יוניסקס לנשים ולגברים · לבחירה ברוחב 3, 4 או 5 מ״מ ובאורכים 40–60 ס״מ · צבע זהב",
-      "en": "Unisex for women and men · choose 3mm, 4mm or 5mm width and 40–60 cm length · gold color"
+      "he": "יוניסקס לנשים ולגברים · לבחירה ברוחב 3, 4 או 5 מ״מ ובאורכים 40–60 ס״מ · מצופה 18 קראט זהב",
+      "en": "Unisex for women and men · choose 3mm, 4mm or 5mm width and 40–60 cm length · 18K gold plated"
     },
     "sizeHeading": {
       "he": "בחרו אורך",
@@ -1887,8 +1887,8 @@ var PRODUCTS = [
         "id": "16in",
         "addPrice": 0,
         "priceLabel": {
-          "he": "269.90 ₪",
-          "en": "₪269.90"
+          "he": "309.90 ₪",
+          "en": "₪309.90"
         },
         "label": {
           "he": "40 ס״מ",
@@ -1899,8 +1899,8 @@ var PRODUCTS = [
         "id": "18in",
         "addPrice": 20,
         "priceLabel": {
-          "he": "289.90 ₪",
-          "en": "₪289.90"
+          "he": "329.90 ₪",
+          "en": "₪329.90"
         },
         "label": {
           "he": "45 ס״מ",
@@ -1911,8 +1911,8 @@ var PRODUCTS = [
         "id": "20in",
         "addPrice": 40,
         "priceLabel": {
-          "he": "309.90 ₪",
-          "en": "₪309.90"
+          "he": "349.90 ₪",
+          "en": "₪349.90"
         },
         "label": {
           "he": "50 ס״מ",
@@ -1923,8 +1923,8 @@ var PRODUCTS = [
         "id": "22in",
         "addPrice": 60,
         "priceLabel": {
-          "he": "329.90 ₪",
-          "en": "₪329.90"
+          "he": "369.90 ₪",
+          "en": "₪369.90"
         },
         "label": {
           "he": "55 ס״מ",
@@ -1935,8 +1935,8 @@ var PRODUCTS = [
         "id": "24in",
         "addPrice": 80,
         "priceLabel": {
-          "he": "349.90 ₪",
-          "en": "₪349.90"
+          "he": "389.90 ₪",
+          "en": "₪389.90"
         },
         "label": {
           "he": "60 ס״מ",
@@ -1993,8 +1993,8 @@ var PRODUCTS = [
       }
     ],
     "cardTitle": {
-      "he": "שרשרת טניס קלאסית - צבע זהב",
-      "en": "Classic Tennis Chain - Gold Color"
+      "he": "שרשרת טניס קלאסית - מצופה 18 קראט זהב",
+      "en": "Classic Tennis Chain - 18K Gold Plated"
     },
     "cardMessage": {
       "he": "שרשרת טניס משובצת אבני זירקוניה במראה יוקרתי ונקי בצבע זהב. בחרו את האורך והרוחב שמתאימים לכם.",
@@ -2006,25 +2006,25 @@ var PRODUCTS = [
     },
     "details": {
       "he": [
+        "מצופה 5 שכבות זהב 18 קראט",
         "שרשרת טניס יוניסקס - מתאימה לנשים ולגברים",
         "משובצת אבני Cubic Zirconia",
         "רוחב לבחירה: 3 מ״מ, 4 מ״מ או 5 מ״מ",
         "לבחירה באורכים: 40, 45, 50, 55 או 60 ס״מ",
-        "גוון התכשיט: צבע זהב",
-        "מצופה ב-5 שכבות זהב 18 קראט"
+        "גוון התכשיט: צבע זהב"
       ],
       "en": [
+        "18K gold plated with 5 layers",
         "Unisex tennis chain suitable for women and men",
         "Set with cubic zirconia stones",
         "Choose 3mm, 4mm or 5mm width",
         "Choose 40, 45, 50, 55 or 60 cm length",
-        "Gold-tone finish",
-        "Plated with 5 layers of 18K gold"
+        "Gold-tone finish"
       ]
     },
     "afterText": {
-      "he": "בחרו אורך ורוחב והמחיר יתעדכן אוטומטית. לדוגמה, 55 ס״מ ברוחב 5 מ״מ עולה 339.90 ₪. השרשרת בצבע זהב ומצופה ב-5 שכבות זהב 18 קראט.",
-      "en": "Choose a length and width and the price updates automatically. For example, 55 cm at 5mm width costs ₪339.90. The chain has a gold-tone finish with 5 layers of 18K gold plating."
+      "he": "בחרו אורך ורוחב והמחיר יתעדכן אוטומטית. כל תוספת של 5 ס״מ מוסיפה 20 ₪. לדוגמה, 55 ס״מ ברוחב 5 מ״מ עולה 379.90 ₪. השרשרת מצופה 5 שכבות זהב 18 קראט.",
+      "en": "Choose a length and width and the price updates automatically. Each additional 5 cm adds ₪20. For example, 55 cm at 5mm width costs ₪379.90. The chain is 18K gold plated with 5 layers."
     },
     "deliveryBusinessDays": {
       "min": 9,
@@ -25043,7 +25043,8 @@ var PRODUCTS = [
       "he": "צמידי אופנה",
       "en": "Fashion Bracelets"
     },
-    "price": 129.9,
+    "price": 139.9,
+    "compareAt": 179.9,
     "images": [
       "/images/products/fashion-bracelets/fashion-bracelet-white.png",
       "/images/products/fashion-bracelets/fashion-bracelet-black.png",
@@ -25267,8 +25268,14 @@ var PRODUCTS = [
       "min": 9,
       "max": 14
     },
-    "hideMessageCard": true,
-    "cardMode": "view"
+    "cardTitle": {
+      "he": "צמיד אופנה HERMES - צבע לבן",
+      "en": "HERMES Fashion Bracelet - White"
+    },
+    "cardMessage": {
+      "he": "צמיד חבל אופנתי מתכוונן עם אלמנט H, נירוסטה פרימיום וחבל עמיד במים. כל הצבעים זמינים לבחירה.",
+      "en": "Adjustable fashion rope bracelet with H charm, Premium Stainless Steel and waterproof rope. All colors are selectable."
+    }
   },
   {
     "id": "fashion-h-bracelet-black-259",
@@ -25286,7 +25293,8 @@ var PRODUCTS = [
       "he": "צמידי אופנה",
       "en": "Fashion Bracelets"
     },
-    "price": 129.9,
+    "price": 139.9,
+    "compareAt": 179.9,
     "images": [
       "/images/products/fashion-bracelets/fashion-bracelet-black.png",
       "/images/products/fashion-bracelets/fashion-bracelet-white.png",
@@ -25510,8 +25518,14 @@ var PRODUCTS = [
       "min": 9,
       "max": 14
     },
-    "hideMessageCard": true,
-    "cardMode": "view"
+    "cardTitle": {
+      "he": "צמיד אופנה HERMES - צבע שחור",
+      "en": "HERMES Fashion Bracelet - Black"
+    },
+    "cardMessage": {
+      "he": "צמיד חבל אופנתי מתכוונן עם אלמנט H, נירוסטה פרימיום וחבל עמיד במים. כל הצבעים זמינים לבחירה.",
+      "en": "Adjustable fashion rope bracelet with H charm, Premium Stainless Steel and waterproof rope. All colors are selectable."
+    }
   },
   {
     "id": "fashion-h-bracelet-brown-260",
@@ -25529,7 +25543,8 @@ var PRODUCTS = [
       "he": "צמידי אופנה",
       "en": "Fashion Bracelets"
     },
-    "price": 129.9,
+    "price": 139.9,
+    "compareAt": 179.9,
     "images": [
       "/images/products/fashion-bracelets/fashion-bracelet-brown.png",
       "/images/products/fashion-bracelets/fashion-bracelet-white.png",
@@ -25753,8 +25768,14 @@ var PRODUCTS = [
       "min": 9,
       "max": 14
     },
-    "hideMessageCard": true,
-    "cardMode": "view"
+    "cardTitle": {
+      "he": "צמיד אופנה HERMES - צבע חום",
+      "en": "HERMES Fashion Bracelet - Brown"
+    },
+    "cardMessage": {
+      "he": "צמיד חבל אופנתי מתכוונן עם אלמנט H, נירוסטה פרימיום וחבל עמיד במים. כל הצבעים זמינים לבחירה.",
+      "en": "Adjustable fashion rope bracelet with H charm, Premium Stainless Steel and waterproof rope. All colors are selectable."
+    }
   },
   {
     "id": "fashion-h-bracelet-black-gold-261",
@@ -25772,7 +25793,8 @@ var PRODUCTS = [
       "he": "צמידי אופנה",
       "en": "Fashion Bracelets"
     },
-    "price": 129.9,
+    "price": 139.9,
+    "compareAt": 179.9,
     "images": [
       "/images/products/fashion-bracelets/fashion-bracelet-black-gold.png",
       "/images/products/fashion-bracelets/fashion-bracelet-white.png",
@@ -25996,8 +26018,14 @@ var PRODUCTS = [
       "min": 9,
       "max": 14
     },
-    "hideMessageCard": true,
-    "cardMode": "view"
+    "cardTitle": {
+      "he": "צמיד אופנה HERMES - צבע שחור זהב",
+      "en": "HERMES Fashion Bracelet - Black Gold"
+    },
+    "cardMessage": {
+      "he": "צמיד חבל אופנתי מתכוונן עם אלמנט H, נירוסטה פרימיום וחבל עמיד במים. כל הצבעים זמינים לבחירה.",
+      "en": "Adjustable fashion rope bracelet with H charm, Premium Stainless Steel and waterproof rope. All colors are selectable."
+    }
   },
   {
     "id": "fashion-h-bracelet-pastel-pink-262",
@@ -26015,7 +26043,8 @@ var PRODUCTS = [
       "he": "צמידי אופנה",
       "en": "Fashion Bracelets"
     },
-    "price": 129.9,
+    "price": 139.9,
+    "compareAt": 179.9,
     "images": [
       "/images/products/fashion-bracelets/fashion-bracelet-pastel-pink.png",
       "/images/products/fashion-bracelets/fashion-bracelet-white.png",
@@ -26239,8 +26268,14 @@ var PRODUCTS = [
       "min": 9,
       "max": 14
     },
-    "hideMessageCard": true,
-    "cardMode": "view"
+    "cardTitle": {
+      "he": "צמיד אופנה HERMES - צבע ורוד פסטל",
+      "en": "HERMES Fashion Bracelet - Pastel Pink"
+    },
+    "cardMessage": {
+      "he": "צמיד חבל אופנתי מתכוונן עם אלמנט H, נירוסטה פרימיום וחבל עמיד במים. כל הצבעים זמינים לבחירה.",
+      "en": "Adjustable fashion rope bracelet with H charm, Premium Stainless Steel and waterproof rope. All colors are selectable."
+    }
   },
   {
     "id": "fashion-h-bracelet-turquoise-263",
@@ -26258,7 +26293,8 @@ var PRODUCTS = [
       "he": "צמידי אופנה",
       "en": "Fashion Bracelets"
     },
-    "price": 129.9,
+    "price": 139.9,
+    "compareAt": 179.9,
     "images": [
       "/images/products/fashion-bracelets/fashion-bracelet-turquoise.png",
       "/images/products/fashion-bracelets/fashion-bracelet-white.png",
@@ -26482,8 +26518,14 @@ var PRODUCTS = [
       "min": 9,
       "max": 14
     },
-    "hideMessageCard": true,
-    "cardMode": "view"
+    "cardTitle": {
+      "he": "צמיד אופנה HERMES - צבע טורקיז",
+      "en": "HERMES Fashion Bracelet - Turquoise"
+    },
+    "cardMessage": {
+      "he": "צמיד חבל אופנתי מתכוונן עם אלמנט H, נירוסטה פרימיום וחבל עמיד במים. כל הצבעים זמינים לבחירה.",
+      "en": "Adjustable fashion rope bracelet with H charm, Premium Stainless Steel and waterproof rope. All colors are selectable."
+    }
   },
   {
     "id": "fashion-h-bracelet-red-264",
@@ -26501,7 +26543,8 @@ var PRODUCTS = [
       "he": "צמידי אופנה",
       "en": "Fashion Bracelets"
     },
-    "price": 129.9,
+    "price": 139.9,
+    "compareAt": 179.9,
     "images": [
       "/images/products/fashion-bracelets/fashion-bracelet-red.png",
       "/images/products/fashion-bracelets/fashion-bracelet-white.png",
@@ -26725,8 +26768,14 @@ var PRODUCTS = [
       "min": 9,
       "max": 14
     },
-    "hideMessageCard": true,
-    "cardMode": "view"
+    "cardTitle": {
+      "he": "צמיד אופנה HERMES - צבע אדום",
+      "en": "HERMES Fashion Bracelet - Red"
+    },
+    "cardMessage": {
+      "he": "צמיד חבל אופנתי מתכוונן עם אלמנט H, נירוסטה פרימיום וחבל עמיד במים. כל הצבעים זמינים לבחירה.",
+      "en": "Adjustable fashion rope bracelet with H charm, Premium Stainless Steel and waterproof rope. All colors are selectable."
+    }
   },
   {
     "id": "fashion-h-bracelet-gold-265",
@@ -26744,7 +26793,8 @@ var PRODUCTS = [
       "he": "צמידי אופנה",
       "en": "Fashion Bracelets"
     },
-    "price": 129.9,
+    "price": 139.9,
+    "compareAt": 179.9,
     "images": [
       "/images/products/fashion-bracelets/fashion-bracelet-gold.png",
       "/images/products/fashion-bracelets/fashion-bracelet-white.png",
@@ -26968,8 +27018,14 @@ var PRODUCTS = [
       "min": 9,
       "max": 14
     },
-    "hideMessageCard": true,
-    "cardMode": "view"
+    "cardTitle": {
+      "he": "צמיד אופנה HERMES - צבע זהב",
+      "en": "HERMES Fashion Bracelet - Gold"
+    },
+    "cardMessage": {
+      "he": "צמיד חבל אופנתי מתכוונן עם אלמנט H, נירוסטה פרימיום וחבל עמיד במים. כל הצבעים זמינים לבחירה.",
+      "en": "Adjustable fashion rope bracelet with H charm, Premium Stainless Steel and waterproof rope. All colors are selectable."
+    }
   },
   {
     "id": "fashion-h-bracelet-coral-266",
@@ -26987,7 +27043,8 @@ var PRODUCTS = [
       "he": "צמידי אופנה",
       "en": "Fashion Bracelets"
     },
-    "price": 129.9,
+    "price": 139.9,
+    "compareAt": 179.9,
     "images": [
       "/images/products/fashion-bracelets/fashion-bracelet-coral.png",
       "/images/products/fashion-bracelets/fashion-bracelet-white.png",
@@ -27211,8 +27268,14 @@ var PRODUCTS = [
       "min": 9,
       "max": 14
     },
-    "hideMessageCard": true,
-    "cardMode": "view"
+    "cardTitle": {
+      "he": "צמיד אופנה HERMES - צבע קורל",
+      "en": "HERMES Fashion Bracelet - Coral"
+    },
+    "cardMessage": {
+      "he": "צמיד חבל אופנתי מתכוונן עם אלמנט H, נירוסטה פרימיום וחבל עמיד במים. כל הצבעים זמינים לבחירה.",
+      "en": "Adjustable fashion rope bracelet with H charm, Premium Stainless Steel and waterproof rope. All colors are selectable."
+    }
   },
   {
     "id": "fashion-h-bracelet-light-gray-267",
@@ -27230,7 +27293,8 @@ var PRODUCTS = [
       "he": "צמידי אופנה",
       "en": "Fashion Bracelets"
     },
-    "price": 129.9,
+    "price": 139.9,
+    "compareAt": 179.9,
     "images": [
       "/images/products/fashion-bracelets/fashion-bracelet-light-gray.png",
       "/images/products/fashion-bracelets/fashion-bracelet-white.png",
@@ -27454,8 +27518,14 @@ var PRODUCTS = [
       "min": 9,
       "max": 14
     },
-    "hideMessageCard": true,
-    "cardMode": "view"
+    "cardTitle": {
+      "he": "צמיד אופנה HERMES - צבע אפור בהיר",
+      "en": "HERMES Fashion Bracelet - Light Gray"
+    },
+    "cardMessage": {
+      "he": "צמיד חבל אופנתי מתכוונן עם אלמנט H, נירוסטה פרימיום וחבל עמיד במים. כל הצבעים זמינים לבחירה.",
+      "en": "Adjustable fashion rope bracelet with H charm, Premium Stainless Steel and waterproof rope. All colors are selectable."
+    }
   },
   {
     "id": "fashion-h-bracelet-dusty-pink-268",
@@ -27473,7 +27543,8 @@ var PRODUCTS = [
       "he": "צמידי אופנה",
       "en": "Fashion Bracelets"
     },
-    "price": 129.9,
+    "price": 139.9,
+    "compareAt": 179.9,
     "images": [
       "/images/products/fashion-bracelets/fashion-bracelet-dusty-pink.png",
       "/images/products/fashion-bracelets/fashion-bracelet-white.png",
@@ -27697,8 +27768,14 @@ var PRODUCTS = [
       "min": 9,
       "max": 14
     },
-    "hideMessageCard": true,
-    "cardMode": "view"
+    "cardTitle": {
+      "he": "צמיד אופנה HERMES - צבע ורוד מעושן",
+      "en": "HERMES Fashion Bracelet - Dusty Pink"
+    },
+    "cardMessage": {
+      "he": "צמיד חבל אופנתי מתכוונן עם אלמנט H, נירוסטה פרימיום וחבל עמיד במים. כל הצבעים זמינים לבחירה.",
+      "en": "Adjustable fashion rope bracelet with H charm, Premium Stainless Steel and waterproof rope. All colors are selectable."
+    }
   },
   {
     "id": "fashion-h-bracelet-hot-pink-269",
@@ -27716,7 +27793,8 @@ var PRODUCTS = [
       "he": "צמידי אופנה",
       "en": "Fashion Bracelets"
     },
-    "price": 129.9,
+    "price": 139.9,
+    "compareAt": 179.9,
     "images": [
       "/images/products/fashion-bracelets/fashion-bracelet-fuchsia.png",
       "/images/products/fashion-bracelets/fashion-bracelet-white.png",
@@ -27940,8 +28018,14 @@ var PRODUCTS = [
       "min": 9,
       "max": 14
     },
-    "hideMessageCard": true,
-    "cardMode": "view"
+    "cardTitle": {
+      "he": "צמיד אופנה HERMES - צבע פוקסיה",
+      "en": "HERMES Fashion Bracelet - Fuchsia"
+    },
+    "cardMessage": {
+      "he": "צמיד חבל אופנתי מתכוונן עם אלמנט H, נירוסטה פרימיום וחבל עמיד במים. כל הצבעים זמינים לבחירה.",
+      "en": "Adjustable fashion rope bracelet with H charm, Premium Stainless Steel and waterproof rope. All colors are selectable."
+    }
   },
   {
     "id": "fashion-h-bracelet-neon-pink-270",
@@ -27959,7 +28043,8 @@ var PRODUCTS = [
       "he": "צמידי אופנה",
       "en": "Fashion Bracelets"
     },
-    "price": 129.9,
+    "price": 139.9,
+    "compareAt": 179.9,
     "images": [
       "/images/products/fashion-bracelets/fashion-bracelet-neon-pink.png",
       "/images/products/fashion-bracelets/fashion-bracelet-white.png",
@@ -28183,8 +28268,14 @@ var PRODUCTS = [
       "min": 9,
       "max": 14
     },
-    "hideMessageCard": true,
-    "cardMode": "view"
+    "cardTitle": {
+      "he": "צמיד אופנה HERMES - צבע ורוד ניאון",
+      "en": "HERMES Fashion Bracelet - Neon Pink"
+    },
+    "cardMessage": {
+      "he": "צמיד חבל אופנתי מתכוונן עם אלמנט H, נירוסטה פרימיום וחבל עמיד במים. כל הצבעים זמינים לבחירה.",
+      "en": "Adjustable fashion rope bracelet with H charm, Premium Stainless Steel and waterproof rope. All colors are selectable."
+    }
   },
   {
     "id": "fashion-h-bracelet-green-271",
@@ -28202,7 +28293,8 @@ var PRODUCTS = [
       "he": "צמידי אופנה",
       "en": "Fashion Bracelets"
     },
-    "price": 129.9,
+    "price": 139.9,
+    "compareAt": 179.9,
     "images": [
       "/images/products/fashion-bracelets/fashion-bracelet-green.png",
       "/images/products/fashion-bracelets/fashion-bracelet-white.png",
@@ -28426,8 +28518,14 @@ var PRODUCTS = [
       "min": 9,
       "max": 14
     },
-    "hideMessageCard": true,
-    "cardMode": "view"
+    "cardTitle": {
+      "he": "צמיד אופנה HERMES - צבע ירוק",
+      "en": "HERMES Fashion Bracelet - Green"
+    },
+    "cardMessage": {
+      "he": "צמיד חבל אופנתי מתכוונן עם אלמנט H, נירוסטה פרימיום וחבל עמיד במים. כל הצבעים זמינים לבחירה.",
+      "en": "Adjustable fashion rope bracelet with H charm, Premium Stainless Steel and waterproof rope. All colors are selectable."
+    }
   },
   {
     "id": "fashion-h-bracelet-silver-272",
@@ -28445,7 +28543,8 @@ var PRODUCTS = [
       "he": "צמידי אופנה",
       "en": "Fashion Bracelets"
     },
-    "price": 129.9,
+    "price": 139.9,
+    "compareAt": 179.9,
     "images": [
       "/images/products/fashion-bracelets/fashion-bracelet-silver.png",
       "/images/products/fashion-bracelets/fashion-bracelet-white.png",
@@ -28669,8 +28768,14 @@ var PRODUCTS = [
       "min": 9,
       "max": 14
     },
-    "hideMessageCard": true,
-    "cardMode": "view"
+    "cardTitle": {
+      "he": "צמיד אופנה HERMES - צבע כסף",
+      "en": "HERMES Fashion Bracelet - Silver"
+    },
+    "cardMessage": {
+      "he": "צמיד חבל אופנתי מתכוונן עם אלמנט H, נירוסטה פרימיום וחבל עמיד במים. כל הצבעים זמינים לבחירה.",
+      "en": "Adjustable fashion rope bracelet with H charm, Premium Stainless Steel and waterproof rope. All colors are selectable."
+    }
   },
   {
     "id": "fashion-h-bracelet-royal-blue-273",
@@ -28688,7 +28793,8 @@ var PRODUCTS = [
       "he": "צמידי אופנה",
       "en": "Fashion Bracelets"
     },
-    "price": 129.9,
+    "price": 139.9,
+    "compareAt": 179.9,
     "images": [
       "/images/products/fashion-bracelets/fashion-bracelet-royal-blue.png",
       "/images/products/fashion-bracelets/fashion-bracelet-white.png",
@@ -28912,8 +29018,14 @@ var PRODUCTS = [
       "min": 9,
       "max": 14
     },
-    "hideMessageCard": true,
-    "cardMode": "view"
+    "cardTitle": {
+      "he": "צמיד אופנה HERMES - צבע כחול רויאל",
+      "en": "HERMES Fashion Bracelet - Royal Blue"
+    },
+    "cardMessage": {
+      "he": "צמיד חבל אופנתי מתכוונן עם אלמנט H, נירוסטה פרימיום וחבל עמיד במים. כל הצבעים זמינים לבחירה.",
+      "en": "Adjustable fashion rope bracelet with H charm, Premium Stainless Steel and waterproof rope. All colors are selectable."
+    }
   },
   {
     "id": "fashion-h-bracelet-mint-274",
@@ -28931,7 +29043,8 @@ var PRODUCTS = [
       "he": "צמידי אופנה",
       "en": "Fashion Bracelets"
     },
-    "price": 129.9,
+    "price": 139.9,
+    "compareAt": 179.9,
     "images": [
       "/images/products/fashion-bracelets/fashion-bracelet-mint.png",
       "/images/products/fashion-bracelets/fashion-bracelet-white.png",
@@ -29155,8 +29268,14 @@ var PRODUCTS = [
       "min": 9,
       "max": 14
     },
-    "hideMessageCard": true,
-    "cardMode": "view"
+    "cardTitle": {
+      "he": "צמיד אופנה HERMES - צבע ירוק מנטה",
+      "en": "HERMES Fashion Bracelet - Mint Green"
+    },
+    "cardMessage": {
+      "he": "צמיד חבל אופנתי מתכוונן עם אלמנט H, נירוסטה פרימיום וחבל עמיד במים. כל הצבעים זמינים לבחירה.",
+      "en": "Adjustable fashion rope bracelet with H charm, Premium Stainless Steel and waterproof rope. All colors are selectable."
+    }
   },
   {
     "id": "fashion-h-bracelet-orange-275",
@@ -29174,7 +29293,8 @@ var PRODUCTS = [
       "he": "צמידי אופנה",
       "en": "Fashion Bracelets"
     },
-    "price": 129.9,
+    "price": 139.9,
+    "compareAt": 179.9,
     "images": [
       "/images/products/fashion-bracelets/fashion-bracelet-orange.png",
       "/images/products/fashion-bracelets/fashion-bracelet-white.png",
@@ -29398,8 +29518,14 @@ var PRODUCTS = [
       "min": 9,
       "max": 14
     },
-    "hideMessageCard": true,
-    "cardMode": "view"
+    "cardTitle": {
+      "he": "צמיד אופנה HERMES - צבע כתום",
+      "en": "HERMES Fashion Bracelet - Orange"
+    },
+    "cardMessage": {
+      "he": "צמיד חבל אופנתי מתכוונן עם אלמנט H, נירוסטה פרימיום וחבל עמיד במים. כל הצבעים זמינים לבחירה.",
+      "en": "Adjustable fashion rope bracelet with H charm, Premium Stainless Steel and waterproof rope. All colors are selectable."
+    }
   }
 ];
 

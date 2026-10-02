@@ -576,6 +576,38 @@
     }
   }
 
+  var PRODUCT_LAZY_PIXEL = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+  var productImageObserver = null;
+
+  function loadDeferredProductImage(img) {
+    if (!img) return;
+    var src = img.getAttribute('data-product-src');
+    if (!src) return;
+    img.removeAttribute('data-product-src');
+    img.setAttribute('src', src);
+    img.setAttribute('decoding', 'async');
+  }
+
+  function observeDeferredProductImages(scope) {
+    if (!scope) return;
+    var images = Array.prototype.slice.call(scope.querySelectorAll('img[data-product-src]'));
+    if (!images.length) return;
+    if (!('IntersectionObserver' in window)) {
+      images.forEach(loadDeferredProductImage);
+      return;
+    }
+    if (!productImageObserver) {
+      productImageObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          loadDeferredProductImage(entry.target);
+          productImageObserver.unobserve(entry.target);
+        });
+      }, { root: null, rootMargin: '300px 180px', threshold: 0.01 });
+    }
+    images.forEach(function (img) { productImageObserver.observe(img); });
+  }
+
   function renderStaticGallery() {
     var wrap = $('#productThumbs');
     var hint = $('#galleryHint');
@@ -586,13 +618,13 @@
       wrap.hidden = false;
       var imageButtons = imgs.map(function (src, i) {
         return '<button type="button" class="product-thumb' + (i === activeImageIndex ? ' is-active' : '') + '" data-gallery-index="' + i + '" aria-label="' + (lang === 'he' ? 'תמונה ' : 'Image ') + (i + 1) + '">' +
-          '<img src="' + esc(src) + '" alt="">' +
+          '<img src="' + PRODUCT_LAZY_PIXEL + '" data-product-src="' + esc(src) + '" alt="" loading="lazy" decoding="async">' +
         '</button>';
       }).join('');
       var videoButtons = videos.map(function (entry, i) {
         var label = entry.label ? L(entry.label) : (lang === 'he' ? 'וידאו מוצר' : 'Product video');
         var preview = entry.poster
-          ? '<img class="product-thumb__video-preview" src="' + esc(entry.poster) + '" alt="">'
+          ? '<img class="product-thumb__video-preview" src="' + PRODUCT_LAZY_PIXEL + '" data-product-src="' + esc(entry.poster) + '" alt="" loading="lazy" decoding="async">'
           : '';
         return '<button type="button" class="product-thumb product-thumb--video" data-gallery-video-index="' + i + '" aria-label="' + esc(label) + '">' +
           preview +
@@ -600,6 +632,7 @@
         '</button>';
       }).join('');
       wrap.innerHTML = imageButtons + videoButtons;
+      observeDeferredProductImages(wrap);
     } else {
       wrap.hidden = true;
       wrap.innerHTML = '';
@@ -654,7 +687,7 @@
       return '' +
         '<button type="button" class="product-choice product-choice--necklace' + (selected ? ' is-selected' : '') + '" ' +
           'data-necklace="' + esc(option.id) + '" aria-pressed="' + selected + '">' +
-          '<span class="product-choice__image"><img src="' + esc(option.image) + '" alt="' + esc(L(option.label)) + '" loading="lazy"></span>' +
+          '<span class="product-choice__image"><img src="' + esc(option.image) + '" alt="' + esc(L(option.label)) + '" loading="lazy" decoding="async"></span>' +
           '<span class="product-choice__footer">' +
             '<strong>' + esc(L(option.label) || ((lang === 'he' ? 'דגם ' : 'Style ') + (index + 1))) + '</strong>' +
             '<span class="product-choice__check" aria-hidden="true">✓</span>' +
@@ -681,7 +714,7 @@
       return '' +
         '<button type="button" class="product-choice product-choice--box' + (selected ? ' is-selected' : '') + '" ' +
           'data-box="' + esc(option.id) + '" aria-pressed="' + selected + '">' +
-          '<span class="product-choice__image"><img src="' + esc(option.image) + '" alt="' + esc(L(option.label)) + '" loading="lazy"></span>' +
+          '<span class="product-choice__image"><img src="' + esc(option.image) + '" alt="' + esc(L(option.label)) + '" loading="lazy" decoding="async"></span>' +
           '<span class="product-choice__footer">' +
             '<span><strong>' + esc(L(option.label)) + '</strong><small>' + esc(priceText) + '</small></span>' +
             '<span class="product-choice__check" aria-hidden="true">✓</span>' +
@@ -772,7 +805,7 @@
       if (colorImageChoices) {
         var optionImage = option.image || ((product.images && product.images[0]) || '');
         return '<button type="button" class="product-choice product-choice--color' + (selected ? ' is-selected' : '') + '" data-color="' + esc(option.id) + '" aria-pressed="' + selected + '">' +
-          '<span class="product-choice__image product-choice__image--color"><img src="' + esc(optionImage) + '" alt="' + esc(label) + '" loading="lazy"></span>' +
+          '<span class="product-choice__image product-choice__image--color"><img src="' + PRODUCT_LAZY_PIXEL + '" data-product-src="' + esc(optionImage) + '" alt="' + esc(label) + '" loading="lazy" decoding="async"></span>' +
           '<span class="product-choice__footer">' +
             '<span><strong>' + esc(label) + '</strong></span>' +
             '<span class="product-choice__check" aria-hidden="true">✓</span>' +
@@ -797,6 +830,7 @@
         '<span class="product-size-choice__check" aria-hidden="true">✓</span>' +
       '</button>';
     }).join('');
+    observeDeferredProductImages(wrap);
 
     if (status) {
       status.textContent = selectedColor() ? (lang === 'he' ? 'נבחר ✓' : 'Selected ✓') : (lang === 'he' ? 'נא לבחור' : 'Choose one');

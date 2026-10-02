@@ -427,3 +427,295 @@
     user-select:none;
   }
 }
+
+
+/* V8 — restore the desktop home collection carousel.
+   Mobile remains the simple native X-scroll from V6/V7. */
+@media (min-width:701px){
+  .home-page .all-collection-carousel{
+    --home-carousel-arrow-top:42%;
+    position:relative;
+    width:100%;
+    padding-inline:62px;
+    box-sizing:border-box;
+  }
+
+  .home-page .all-collection-carousel__viewport{
+    width:100%;
+    min-width:0;
+    overflow:hidden;
+  }
+
+  .home-page .all-collection-group__products[data-home-carousel-track]{
+    display:flex!important;
+    flex-flow:row nowrap!important;
+    grid-template-columns:none!important;
+    grid-auto-flow:unset!important;
+    align-items:stretch;
+    gap:1.5rem;
+    width:100%;
+    max-width:100%;
+    min-width:0;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    scroll-snap-type:x proximity;
+    scroll-behavior:smooth;
+    overscroll-behavior-x:contain;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    direction:ltr;
+    padding:0;
+  }
+
+  .home-page .all-collection-group__products[data-home-carousel-track]::-webkit-scrollbar{
+    display:none;
+  }
+
+  .home-page .all-collection-group__products[data-home-carousel-track] .prod{
+    flex:0 0 calc((100% - 3rem) / 3)!important;
+    width:auto!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:100%;
+    scroll-snap-align:start;
+    direction:rtl;
+  }
+
+  .home-page .all-collection-carousel__arrow{
+    position:absolute;
+    top:var(--home-carousel-arrow-top);
+    z-index:7;
+    display:flex!important;
+    align-items:center;
+    justify-content:center;
+    width:50px;
+    height:50px;
+    padding:0 0 3px;
+    border:1px solid rgba(20,35,51,.14);
+    border-radius:999px;
+    background:#fff;
+    color:#142333;
+    box-shadow:0 8px 24px rgba(20,35,51,.14);
+    font:400 2rem/1 Arial,sans-serif;
+    cursor:pointer;
+    transform:translateY(-50%);
+    transition:transform .18s ease,box-shadow .18s ease,opacity .18s ease;
+  }
+
+  .home-page .all-collection-carousel__arrow:hover{
+    transform:translateY(-50%) scale(1.05);
+    box-shadow:0 11px 28px rgba(20,35,51,.2);
+  }
+
+  .home-page .all-collection-carousel__arrow:active{
+    transform:translateY(-50%) scale(.97);
+  }
+
+  .home-page .all-collection-carousel__arrow--left{left:2px}
+  .home-page .all-collection-carousel__arrow--right{right:2px}
+
+  .home-page .all-collection-carousel.is-static .all-collection-carousel__arrow{
+    display:none!important;
+  }
+
+  .home-page .all-collection-carousel__scrollbar{
+    display:none!important;
+  }
+}
+
+@media (min-width:1600px){
+  .home-page .all-collection-group__products[data-home-carousel-track] .prod{
+    flex-basis:calc((100% - 4.5rem) / 4)!important;
+  }
+}
+
+@media (min-width:701px) and (max-width:1100px){
+  .home-page .all-collection-carousel{
+    padding-inline:54px;
+  }
+
+  .home-page .all-collection-group__products[data-home-carousel-track]{
+    gap:1rem;
+  }
+
+  .home-page .all-collection-group__products[data-home-carousel-track] .prod{
+    flex-basis:calc((100% - 2rem) / 3)!important;
+  }
+
+  .home-page .all-collection-carousel__arrow{
+    width:44px;
+    height:44px;
+    font-size:1.8rem;
+  }
+}
+
+
+/* V9 — desktop: align the first/last product media with the collection banner edges.
+   Arrows stay outside the product row instead of consuming horizontal space. */
+@media (min-width:701px){
+  .home-page .all-collection-carousel{
+    padding-inline:0!important;
+  }
+
+  .home-page .all-collection-carousel__arrow--left{
+    left:-58px!important;
+  }
+
+  .home-page .all-collection-carousel__arrow--right{
+    right:-58px!important;
+  }
+}
+
+@media (min-width:701px) and (max-width:1100px){
+  .home-page .all-collection-carousel{
+    padding-inline:0!important;
+  }
+
+  .home-page .all-collection-carousel__arrow--left{
+    left:-50px!important;
+  }
+
+  .home-page .all-collection-carousel__arrow--right{
+    right:-50px!important;
+  }
+}
+
+
+/* V10 — narrower desktop/laptop: slightly smaller outside carousel arrows. */
+@media (min-width:701px) and (max-width:1200px){
+  .home-page .all-collection-carousel__arrow{
+    width:38px!important;
+    height:38px!important;
+    font-size:1.55rem!important;
+    box-shadow:0 6px 18px rgba(20,35,51,.13)!important;
+  }
+
+  .home-page .all-collection-carousel__arrow--left{
+    left:-43px!important;
+  }
+
+  .home-page .all-collection-carousel__arrow--right{
+    right:-43px!important;
+  }
+}
+
+
+/* V11 — laptop only: make the outside carousel arrows a little smaller again. */
+@media (min-width:701px) and (max-width:1200px){
+  .home-page .all-collection-carousel__arrow{
+    width:34px!important;
+    height:34px!important;
+    font-size:1.35rem!important;
+    box-shadow:0 5px 14px rgba(20,35,51,.12)!important;
+  }
+
+  .home-page .all-collection-carousel__arrow--left{
+    left:-39px!important;
+  }
+
+  .home-page .all-collection-carousel__arrow--right{
+    right:-39px!important;
+  }
+}
+
+
+/* V12 — actual laptop breakpoint.
+   Previous rule stopped at 1200px, so common 1366/1440px laptops never received it. */
+@media (min-width:701px) and (max-width:1500px){
+  .home-page .all-collection-carousel__arrow{
+    width:30px!important;
+    min-width:30px!important;
+    height:30px!important;
+    min-height:30px!important;
+    padding:0 0 2px!important;
+    font-size:1.15rem!important;
+    border-width:1px!important;
+    box-shadow:0 4px 11px rgba(20,35,51,.11)!important;
+  }
+
+  .home-page .all-collection-carousel__arrow--left{
+    left:-34px!important;
+  }
+
+  .home-page .all-collection-carousel__arrow--right{
+    right:-34px!important;
+  }
+}
+
+
+/* V13 — laptop/compact desktop arrows.
+   Covers 15" laptops even when browser zoom makes the CSS viewport wider than 1500px. */
+@media (min-width:701px) and (max-width:1800px){
+  .home-page .all-collection-carousel__arrow{
+    width:26px!important;
+    min-width:26px!important;
+    max-width:26px!important;
+    height:26px!important;
+    min-height:26px!important;
+    max-height:26px!important;
+    padding:0 0 1px!important;
+    font-size:1rem!important;
+    line-height:1!important;
+    border-width:1px!important;
+    box-shadow:0 3px 9px rgba(20,35,51,.10)!important;
+  }
+
+  .home-page .all-collection-carousel__arrow--left{
+    left:-30px!important;
+  }
+
+  .home-page .all-collection-carousel__arrow--right{
+    right:-30px!important;
+  }
+}
+
+
+/* V14 — laptop/compact desktop: restore arrows to a normal, balanced size. */
+@media (min-width:701px) and (max-width:1800px){
+  .home-page .all-collection-carousel__arrow{
+    width:36px!important;
+    min-width:36px!important;
+    max-width:36px!important;
+    height:36px!important;
+    min-height:36px!important;
+    max-height:36px!important;
+    padding:0 0 2px!important;
+    font-size:1.45rem!important;
+    line-height:1!important;
+    border-width:1px!important;
+    box-shadow:0 6px 18px rgba(20,35,51,.13)!important;
+  }
+
+  .home-page .all-collection-carousel__arrow--left{
+    left:-41px!important;
+  }
+
+  .home-page .all-collection-carousel__arrow--right{
+    right:-41px!important;
+  }
+}
+
+
+/* V15 — laptop/compact desktop carousel arrows: 40x40px. */
+@media (min-width:701px) and (max-width:1800px){
+  .home-page .all-collection-carousel__arrow{
+    width:40px!important;
+    min-width:40px!important;
+    max-width:40px!important;
+    height:40px!important;
+    min-height:40px!important;
+    max-height:40px!important;
+    padding:0 0 2px!important;
+    font-size:1.55rem!important;
+    line-height:1!important;
+    box-shadow:0 6px 18px rgba(20,35,51,.13)!important;
+  }
+
+  .home-page .all-collection-carousel__arrow--left{
+    left:-45px!important;
+  }
+
+  .home-page .all-collection-carousel__arrow--right{
+    right:-45px!important;
+  }
+}
