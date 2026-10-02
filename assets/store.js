@@ -1449,7 +1449,10 @@
        entire store at once. */
     var compact = window.matchMedia('(max-width: 700px)').matches;
     var mainMargin = compact ? '850px 500px' : '1200px 900px';
-    var hoverMargin = compact ? '500px 320px' : '750px 650px';
+
+    /* Preload hover images in exactly the same radius as the main product
+       images, so the alternate image is already ready before the user hovers. */
+    var hoverMargin = mainMargin;
 
     if ('IntersectionObserver' in window) {
       var observer = new IntersectionObserver(function (entries) {

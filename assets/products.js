@@ -25036,14 +25036,14 @@ var PRODUCTS = [
       "en": "HERMES Fashion Bracelet - White"
     },
     "subtitle": {
-      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי נירוסטה פרימיום · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
+      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי Premium Stainless Steel · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
       "en": "Adjustable braided rope bracelet with H charm · Premium Stainless Steel components · waterproof rope · fade-resistant color · unisex for women and men"
     },
     "badge": {
       "he": "צמידי אופנה",
       "en": "Fashion Bracelets"
     },
-    "price": 139.9,
+    "price": 129.9,
     "compareAt": 179.9,
     "images": [
       "/images/products/fashion-bracelets/fashion-bracelet-white.png",
@@ -25071,12 +25071,12 @@ var PRODUCTS = [
       "bracelets-fashion"
     ],
     "description": {
-      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי נירוסטה פרימיום בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
+      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי Premium Stainless Steel בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
       "en": "HERMES fashion bracelet with a colorful braided-rope design and central H charm. Adjustable and unisex, combining waterproof rope with Premium Stainless Steel gold-tone components. Every product page includes the full color selection."
     },
     "details": {
       "he": [
-        "חומרי מתכת: נירוסטה פרימיום",
+        "חומרי מתכת: Premium Stainless Steel",
         "רצועה: חבל קלוע עמיד במים",
         "מבנה: צמיד מתכוונן להתאמה נוחה לפרק היד",
         "צבע: גימור עמיד לדהייה בשימוש רגיל",
@@ -25264,17 +25264,10 @@ var PRODUCTS = [
       }
     ],
     "defaultColorId": "white",
+    "hideMessageCard": true,
     "deliveryBusinessDays": {
       "min": 9,
       "max": 14
-    },
-    "cardTitle": {
-      "he": "צמיד אופנה HERMES - צבע לבן",
-      "en": "HERMES Fashion Bracelet - White"
-    },
-    "cardMessage": {
-      "he": "צמיד חבל אופנתי מתכוונן עם אלמנט H, נירוסטה פרימיום וחבל עמיד במים. כל הצבעים זמינים לבחירה.",
-      "en": "Adjustable fashion rope bracelet with H charm, Premium Stainless Steel and waterproof rope. All colors are selectable."
     }
   },
   {
@@ -25286,14 +25279,14 @@ var PRODUCTS = [
       "en": "HERMES Fashion Bracelet - Black"
     },
     "subtitle": {
-      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי נירוסטה פרימיום · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
+      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי Premium Stainless Steel · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
       "en": "Adjustable braided rope bracelet with H charm · Premium Stainless Steel components · waterproof rope · fade-resistant color · unisex for women and men"
     },
     "badge": {
       "he": "צמידי אופנה",
       "en": "Fashion Bracelets"
     },
-    "price": 139.9,
+    "price": 129.9,
     "compareAt": 179.9,
     "images": [
       "/images/products/fashion-bracelets/fashion-bracelet-black.png",
@@ -25321,12 +25314,12 @@ var PRODUCTS = [
       "bracelets-fashion"
     ],
     "description": {
-      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי נירוסטה פרימיום בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
+      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי Premium Stainless Steel בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
       "en": "HERMES fashion bracelet with a colorful braided-rope design and central H charm. Adjustable and unisex, combining waterproof rope with Premium Stainless Steel gold-tone components. Every product page includes the full color selection."
     },
     "details": {
       "he": [
-        "חומרי מתכת: נירוסטה פרימיום",
+        "חומרי מתכת: Premium Stainless Steel",
         "רצועה: חבל קלוע עמיד במים",
         "מבנה: צמיד מתכוונן להתאמה נוחה לפרק היד",
         "צבע: גימור עמיד לדהייה בשימוש רגיל",
@@ -25514,17 +25507,10 @@ var PRODUCTS = [
       }
     ],
     "defaultColorId": "black",
+    "hideMessageCard": true,
     "deliveryBusinessDays": {
       "min": 9,
       "max": 14
-    },
-    "cardTitle": {
-      "he": "צמיד אופנה HERMES - צבע שחור",
-      "en": "HERMES Fashion Bracelet - Black"
-    },
-    "cardMessage": {
-      "he": "צמיד חבל אופנתי מתכוונן עם אלמנט H, נירוסטה פרימיום וחבל עמיד במים. כל הצבעים זמינים לבחירה.",
-      "en": "Adjustable fashion rope bracelet with H charm, Premium Stainless Steel and waterproof rope. All colors are selectable."
     }
   },
   {
@@ -25536,14 +25522,14 @@ var PRODUCTS = [
       "en": "HERMES Fashion Bracelet - Brown"
     },
     "subtitle": {
-      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי נירוסטה פרימיום · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
+      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי Premium Stainless Steel · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
       "en": "Adjustable braided rope bracelet with H charm · Premium Stainless Steel components · waterproof rope · fade-resistant color · unisex for women and men"
     },
     "badge": {
       "he": "צמידי אופנה",
       "en": "Fashion Bracelets"
     },
-    "price": 139.9,
+    "price": 129.9,
     "compareAt": 179.9,
     "images": [
       "/images/products/fashion-bracelets/fashion-bracelet-brown.png",
@@ -25571,12 +25557,12 @@ var PRODUCTS = [
       "bracelets-fashion"
     ],
     "description": {
-      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי נירוסטה פרימיום בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
+      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי Premium Stainless Steel בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
       "en": "HERMES fashion bracelet with a colorful braided-rope design and central H charm. Adjustable and unisex, combining waterproof rope with Premium Stainless Steel gold-tone components. Every product page includes the full color selection."
     },
     "details": {
       "he": [
-        "חומרי מתכת: נירוסטה פרימיום",
+        "חומרי מתכת: Premium Stainless Steel",
         "רצועה: חבל קלוע עמיד במים",
         "מבנה: צמיד מתכוונן להתאמה נוחה לפרק היד",
         "צבע: גימור עמיד לדהייה בשימוש רגיל",
@@ -25764,17 +25750,10 @@ var PRODUCTS = [
       }
     ],
     "defaultColorId": "brown",
+    "hideMessageCard": true,
     "deliveryBusinessDays": {
       "min": 9,
       "max": 14
-    },
-    "cardTitle": {
-      "he": "צמיד אופנה HERMES - צבע חום",
-      "en": "HERMES Fashion Bracelet - Brown"
-    },
-    "cardMessage": {
-      "he": "צמיד חבל אופנתי מתכוונן עם אלמנט H, נירוסטה פרימיום וחבל עמיד במים. כל הצבעים זמינים לבחירה.",
-      "en": "Adjustable fashion rope bracelet with H charm, Premium Stainless Steel and waterproof rope. All colors are selectable."
     }
   },
   {
@@ -25786,14 +25765,14 @@ var PRODUCTS = [
       "en": "HERMES Fashion Bracelet - Black Gold"
     },
     "subtitle": {
-      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי נירוסטה פרימיום · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
+      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי Premium Stainless Steel · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
       "en": "Adjustable braided rope bracelet with H charm · Premium Stainless Steel components · waterproof rope · fade-resistant color · unisex for women and men"
     },
     "badge": {
       "he": "צמידי אופנה",
       "en": "Fashion Bracelets"
     },
-    "price": 139.9,
+    "price": 129.9,
     "compareAt": 179.9,
     "images": [
       "/images/products/fashion-bracelets/fashion-bracelet-black-gold.png",
@@ -25821,12 +25800,12 @@ var PRODUCTS = [
       "bracelets-fashion"
     ],
     "description": {
-      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי נירוסטה פרימיום בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
+      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי Premium Stainless Steel בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
       "en": "HERMES fashion bracelet with a colorful braided-rope design and central H charm. Adjustable and unisex, combining waterproof rope with Premium Stainless Steel gold-tone components. Every product page includes the full color selection."
     },
     "details": {
       "he": [
-        "חומרי מתכת: נירוסטה פרימיום",
+        "חומרי מתכת: Premium Stainless Steel",
         "רצועה: חבל קלוע עמיד במים",
         "מבנה: צמיד מתכוונן להתאמה נוחה לפרק היד",
         "צבע: גימור עמיד לדהייה בשימוש רגיל",
@@ -26014,17 +25993,10 @@ var PRODUCTS = [
       }
     ],
     "defaultColorId": "black-gold",
+    "hideMessageCard": true,
     "deliveryBusinessDays": {
       "min": 9,
       "max": 14
-    },
-    "cardTitle": {
-      "he": "צמיד אופנה HERMES - צבע שחור זהב",
-      "en": "HERMES Fashion Bracelet - Black Gold"
-    },
-    "cardMessage": {
-      "he": "צמיד חבל אופנתי מתכוונן עם אלמנט H, נירוסטה פרימיום וחבל עמיד במים. כל הצבעים זמינים לבחירה.",
-      "en": "Adjustable fashion rope bracelet with H charm, Premium Stainless Steel and waterproof rope. All colors are selectable."
     }
   },
   {
@@ -26036,14 +26008,14 @@ var PRODUCTS = [
       "en": "HERMES Fashion Bracelet - Pastel Pink"
     },
     "subtitle": {
-      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי נירוסטה פרימיום · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
+      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי Premium Stainless Steel · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
       "en": "Adjustable braided rope bracelet with H charm · Premium Stainless Steel components · waterproof rope · fade-resistant color · unisex for women and men"
     },
     "badge": {
       "he": "צמידי אופנה",
       "en": "Fashion Bracelets"
     },
-    "price": 139.9,
+    "price": 129.9,
     "compareAt": 179.9,
     "images": [
       "/images/products/fashion-bracelets/fashion-bracelet-pastel-pink.png",
@@ -26071,12 +26043,12 @@ var PRODUCTS = [
       "bracelets-fashion"
     ],
     "description": {
-      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי נירוסטה פרימיום בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
+      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי Premium Stainless Steel בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
       "en": "HERMES fashion bracelet with a colorful braided-rope design and central H charm. Adjustable and unisex, combining waterproof rope with Premium Stainless Steel gold-tone components. Every product page includes the full color selection."
     },
     "details": {
       "he": [
-        "חומרי מתכת: נירוסטה פרימיום",
+        "חומרי מתכת: Premium Stainless Steel",
         "רצועה: חבל קלוע עמיד במים",
         "מבנה: צמיד מתכוונן להתאמה נוחה לפרק היד",
         "צבע: גימור עמיד לדהייה בשימוש רגיל",
@@ -26264,17 +26236,10 @@ var PRODUCTS = [
       }
     ],
     "defaultColorId": "pastel-pink",
+    "hideMessageCard": true,
     "deliveryBusinessDays": {
       "min": 9,
       "max": 14
-    },
-    "cardTitle": {
-      "he": "צמיד אופנה HERMES - צבע ורוד פסטל",
-      "en": "HERMES Fashion Bracelet - Pastel Pink"
-    },
-    "cardMessage": {
-      "he": "צמיד חבל אופנתי מתכוונן עם אלמנט H, נירוסטה פרימיום וחבל עמיד במים. כל הצבעים זמינים לבחירה.",
-      "en": "Adjustable fashion rope bracelet with H charm, Premium Stainless Steel and waterproof rope. All colors are selectable."
     }
   },
   {
@@ -26286,14 +26251,14 @@ var PRODUCTS = [
       "en": "HERMES Fashion Bracelet - Turquoise"
     },
     "subtitle": {
-      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי נירוסטה פרימיום · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
+      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי Premium Stainless Steel · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
       "en": "Adjustable braided rope bracelet with H charm · Premium Stainless Steel components · waterproof rope · fade-resistant color · unisex for women and men"
     },
     "badge": {
       "he": "צמידי אופנה",
       "en": "Fashion Bracelets"
     },
-    "price": 139.9,
+    "price": 129.9,
     "compareAt": 179.9,
     "images": [
       "/images/products/fashion-bracelets/fashion-bracelet-turquoise.png",
@@ -26321,12 +26286,12 @@ var PRODUCTS = [
       "bracelets-fashion"
     ],
     "description": {
-      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי נירוסטה פרימיום בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
+      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי Premium Stainless Steel בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
       "en": "HERMES fashion bracelet with a colorful braided-rope design and central H charm. Adjustable and unisex, combining waterproof rope with Premium Stainless Steel gold-tone components. Every product page includes the full color selection."
     },
     "details": {
       "he": [
-        "חומרי מתכת: נירוסטה פרימיום",
+        "חומרי מתכת: Premium Stainless Steel",
         "רצועה: חבל קלוע עמיד במים",
         "מבנה: צמיד מתכוונן להתאמה נוחה לפרק היד",
         "צבע: גימור עמיד לדהייה בשימוש רגיל",
@@ -26514,17 +26479,10 @@ var PRODUCTS = [
       }
     ],
     "defaultColorId": "turquoise",
+    "hideMessageCard": true,
     "deliveryBusinessDays": {
       "min": 9,
       "max": 14
-    },
-    "cardTitle": {
-      "he": "צמיד אופנה HERMES - צבע טורקיז",
-      "en": "HERMES Fashion Bracelet - Turquoise"
-    },
-    "cardMessage": {
-      "he": "צמיד חבל אופנתי מתכוונן עם אלמנט H, נירוסטה פרימיום וחבל עמיד במים. כל הצבעים זמינים לבחירה.",
-      "en": "Adjustable fashion rope bracelet with H charm, Premium Stainless Steel and waterproof rope. All colors are selectable."
     }
   },
   {
@@ -26536,14 +26494,14 @@ var PRODUCTS = [
       "en": "HERMES Fashion Bracelet - Red"
     },
     "subtitle": {
-      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי נירוסטה פרימיום · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
+      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי Premium Stainless Steel · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
       "en": "Adjustable braided rope bracelet with H charm · Premium Stainless Steel components · waterproof rope · fade-resistant color · unisex for women and men"
     },
     "badge": {
       "he": "צמידי אופנה",
       "en": "Fashion Bracelets"
     },
-    "price": 139.9,
+    "price": 129.9,
     "compareAt": 179.9,
     "images": [
       "/images/products/fashion-bracelets/fashion-bracelet-red.png",
@@ -26571,12 +26529,12 @@ var PRODUCTS = [
       "bracelets-fashion"
     ],
     "description": {
-      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי נירוסטה פרימיום בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
+      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי Premium Stainless Steel בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
       "en": "HERMES fashion bracelet with a colorful braided-rope design and central H charm. Adjustable and unisex, combining waterproof rope with Premium Stainless Steel gold-tone components. Every product page includes the full color selection."
     },
     "details": {
       "he": [
-        "חומרי מתכת: נירוסטה פרימיום",
+        "חומרי מתכת: Premium Stainless Steel",
         "רצועה: חבל קלוע עמיד במים",
         "מבנה: צמיד מתכוונן להתאמה נוחה לפרק היד",
         "צבע: גימור עמיד לדהייה בשימוש רגיל",
@@ -26764,17 +26722,10 @@ var PRODUCTS = [
       }
     ],
     "defaultColorId": "red",
+    "hideMessageCard": true,
     "deliveryBusinessDays": {
       "min": 9,
       "max": 14
-    },
-    "cardTitle": {
-      "he": "צמיד אופנה HERMES - צבע אדום",
-      "en": "HERMES Fashion Bracelet - Red"
-    },
-    "cardMessage": {
-      "he": "צמיד חבל אופנתי מתכוונן עם אלמנט H, נירוסטה פרימיום וחבל עמיד במים. כל הצבעים זמינים לבחירה.",
-      "en": "Adjustable fashion rope bracelet with H charm, Premium Stainless Steel and waterproof rope. All colors are selectable."
     }
   },
   {
@@ -26786,14 +26737,14 @@ var PRODUCTS = [
       "en": "HERMES Fashion Bracelet - Gold"
     },
     "subtitle": {
-      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי נירוסטה פרימיום · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
+      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי Premium Stainless Steel · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
       "en": "Adjustable braided rope bracelet with H charm · Premium Stainless Steel components · waterproof rope · fade-resistant color · unisex for women and men"
     },
     "badge": {
       "he": "צמידי אופנה",
       "en": "Fashion Bracelets"
     },
-    "price": 139.9,
+    "price": 129.9,
     "compareAt": 179.9,
     "images": [
       "/images/products/fashion-bracelets/fashion-bracelet-gold.png",
@@ -26821,12 +26772,12 @@ var PRODUCTS = [
       "bracelets-fashion"
     ],
     "description": {
-      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי נירוסטה פרימיום בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
+      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי Premium Stainless Steel בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
       "en": "HERMES fashion bracelet with a colorful braided-rope design and central H charm. Adjustable and unisex, combining waterproof rope with Premium Stainless Steel gold-tone components. Every product page includes the full color selection."
     },
     "details": {
       "he": [
-        "חומרי מתכת: נירוסטה פרימיום",
+        "חומרי מתכת: Premium Stainless Steel",
         "רצועה: חבל קלוע עמיד במים",
         "מבנה: צמיד מתכוונן להתאמה נוחה לפרק היד",
         "צבע: גימור עמיד לדהייה בשימוש רגיל",
@@ -27014,17 +26965,10 @@ var PRODUCTS = [
       }
     ],
     "defaultColorId": "gold",
+    "hideMessageCard": true,
     "deliveryBusinessDays": {
       "min": 9,
       "max": 14
-    },
-    "cardTitle": {
-      "he": "צמיד אופנה HERMES - צבע זהב",
-      "en": "HERMES Fashion Bracelet - Gold"
-    },
-    "cardMessage": {
-      "he": "צמיד חבל אופנתי מתכוונן עם אלמנט H, נירוסטה פרימיום וחבל עמיד במים. כל הצבעים זמינים לבחירה.",
-      "en": "Adjustable fashion rope bracelet with H charm, Premium Stainless Steel and waterproof rope. All colors are selectable."
     }
   },
   {
@@ -27036,14 +26980,14 @@ var PRODUCTS = [
       "en": "HERMES Fashion Bracelet - Coral"
     },
     "subtitle": {
-      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי נירוסטה פרימיום · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
+      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי Premium Stainless Steel · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
       "en": "Adjustable braided rope bracelet with H charm · Premium Stainless Steel components · waterproof rope · fade-resistant color · unisex for women and men"
     },
     "badge": {
       "he": "צמידי אופנה",
       "en": "Fashion Bracelets"
     },
-    "price": 139.9,
+    "price": 129.9,
     "compareAt": 179.9,
     "images": [
       "/images/products/fashion-bracelets/fashion-bracelet-coral.png",
@@ -27071,12 +27015,12 @@ var PRODUCTS = [
       "bracelets-fashion"
     ],
     "description": {
-      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי נירוסטה פרימיום בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
+      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי Premium Stainless Steel בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
       "en": "HERMES fashion bracelet with a colorful braided-rope design and central H charm. Adjustable and unisex, combining waterproof rope with Premium Stainless Steel gold-tone components. Every product page includes the full color selection."
     },
     "details": {
       "he": [
-        "חומרי מתכת: נירוסטה פרימיום",
+        "חומרי מתכת: Premium Stainless Steel",
         "רצועה: חבל קלוע עמיד במים",
         "מבנה: צמיד מתכוונן להתאמה נוחה לפרק היד",
         "צבע: גימור עמיד לדהייה בשימוש רגיל",
@@ -27264,17 +27208,10 @@ var PRODUCTS = [
       }
     ],
     "defaultColorId": "coral",
+    "hideMessageCard": true,
     "deliveryBusinessDays": {
       "min": 9,
       "max": 14
-    },
-    "cardTitle": {
-      "he": "צמיד אופנה HERMES - צבע קורל",
-      "en": "HERMES Fashion Bracelet - Coral"
-    },
-    "cardMessage": {
-      "he": "צמיד חבל אופנתי מתכוונן עם אלמנט H, נירוסטה פרימיום וחבל עמיד במים. כל הצבעים זמינים לבחירה.",
-      "en": "Adjustable fashion rope bracelet with H charm, Premium Stainless Steel and waterproof rope. All colors are selectable."
     }
   },
   {
@@ -27286,14 +27223,14 @@ var PRODUCTS = [
       "en": "HERMES Fashion Bracelet - Light Gray"
     },
     "subtitle": {
-      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי נירוסטה פרימיום · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
+      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי Premium Stainless Steel · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
       "en": "Adjustable braided rope bracelet with H charm · Premium Stainless Steel components · waterproof rope · fade-resistant color · unisex for women and men"
     },
     "badge": {
       "he": "צמידי אופנה",
       "en": "Fashion Bracelets"
     },
-    "price": 139.9,
+    "price": 129.9,
     "compareAt": 179.9,
     "images": [
       "/images/products/fashion-bracelets/fashion-bracelet-light-gray.png",
@@ -27321,12 +27258,12 @@ var PRODUCTS = [
       "bracelets-fashion"
     ],
     "description": {
-      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי נירוסטה פרימיום בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
+      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי Premium Stainless Steel בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
       "en": "HERMES fashion bracelet with a colorful braided-rope design and central H charm. Adjustable and unisex, combining waterproof rope with Premium Stainless Steel gold-tone components. Every product page includes the full color selection."
     },
     "details": {
       "he": [
-        "חומרי מתכת: נירוסטה פרימיום",
+        "חומרי מתכת: Premium Stainless Steel",
         "רצועה: חבל קלוע עמיד במים",
         "מבנה: צמיד מתכוונן להתאמה נוחה לפרק היד",
         "צבע: גימור עמיד לדהייה בשימוש רגיל",
@@ -27514,17 +27451,10 @@ var PRODUCTS = [
       }
     ],
     "defaultColorId": "light-gray",
+    "hideMessageCard": true,
     "deliveryBusinessDays": {
       "min": 9,
       "max": 14
-    },
-    "cardTitle": {
-      "he": "צמיד אופנה HERMES - צבע אפור בהיר",
-      "en": "HERMES Fashion Bracelet - Light Gray"
-    },
-    "cardMessage": {
-      "he": "צמיד חבל אופנתי מתכוונן עם אלמנט H, נירוסטה פרימיום וחבל עמיד במים. כל הצבעים זמינים לבחירה.",
-      "en": "Adjustable fashion rope bracelet with H charm, Premium Stainless Steel and waterproof rope. All colors are selectable."
     }
   },
   {
@@ -27536,14 +27466,14 @@ var PRODUCTS = [
       "en": "HERMES Fashion Bracelet - Dusty Pink"
     },
     "subtitle": {
-      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי נירוסטה פרימיום · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
+      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי Premium Stainless Steel · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
       "en": "Adjustable braided rope bracelet with H charm · Premium Stainless Steel components · waterproof rope · fade-resistant color · unisex for women and men"
     },
     "badge": {
       "he": "צמידי אופנה",
       "en": "Fashion Bracelets"
     },
-    "price": 139.9,
+    "price": 129.9,
     "compareAt": 179.9,
     "images": [
       "/images/products/fashion-bracelets/fashion-bracelet-dusty-pink.png",
@@ -27571,12 +27501,12 @@ var PRODUCTS = [
       "bracelets-fashion"
     ],
     "description": {
-      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי נירוסטה פרימיום בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
+      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי Premium Stainless Steel בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
       "en": "HERMES fashion bracelet with a colorful braided-rope design and central H charm. Adjustable and unisex, combining waterproof rope with Premium Stainless Steel gold-tone components. Every product page includes the full color selection."
     },
     "details": {
       "he": [
-        "חומרי מתכת: נירוסטה פרימיום",
+        "חומרי מתכת: Premium Stainless Steel",
         "רצועה: חבל קלוע עמיד במים",
         "מבנה: צמיד מתכוונן להתאמה נוחה לפרק היד",
         "צבע: גימור עמיד לדהייה בשימוש רגיל",
@@ -27764,17 +27694,10 @@ var PRODUCTS = [
       }
     ],
     "defaultColorId": "dusty-pink",
+    "hideMessageCard": true,
     "deliveryBusinessDays": {
       "min": 9,
       "max": 14
-    },
-    "cardTitle": {
-      "he": "צמיד אופנה HERMES - צבע ורוד מעושן",
-      "en": "HERMES Fashion Bracelet - Dusty Pink"
-    },
-    "cardMessage": {
-      "he": "צמיד חבל אופנתי מתכוונן עם אלמנט H, נירוסטה פרימיום וחבל עמיד במים. כל הצבעים זמינים לבחירה.",
-      "en": "Adjustable fashion rope bracelet with H charm, Premium Stainless Steel and waterproof rope. All colors are selectable."
     }
   },
   {
@@ -27786,14 +27709,14 @@ var PRODUCTS = [
       "en": "HERMES Fashion Bracelet - Fuchsia"
     },
     "subtitle": {
-      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי נירוסטה פרימיום · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
+      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי Premium Stainless Steel · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
       "en": "Adjustable braided rope bracelet with H charm · Premium Stainless Steel components · waterproof rope · fade-resistant color · unisex for women and men"
     },
     "badge": {
       "he": "צמידי אופנה",
       "en": "Fashion Bracelets"
     },
-    "price": 139.9,
+    "price": 129.9,
     "compareAt": 179.9,
     "images": [
       "/images/products/fashion-bracelets/fashion-bracelet-fuchsia.png",
@@ -27821,12 +27744,12 @@ var PRODUCTS = [
       "bracelets-fashion"
     ],
     "description": {
-      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי נירוסטה פרימיום בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
+      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי Premium Stainless Steel בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
       "en": "HERMES fashion bracelet with a colorful braided-rope design and central H charm. Adjustable and unisex, combining waterproof rope with Premium Stainless Steel gold-tone components. Every product page includes the full color selection."
     },
     "details": {
       "he": [
-        "חומרי מתכת: נירוסטה פרימיום",
+        "חומרי מתכת: Premium Stainless Steel",
         "רצועה: חבל קלוע עמיד במים",
         "מבנה: צמיד מתכוונן להתאמה נוחה לפרק היד",
         "צבע: גימור עמיד לדהייה בשימוש רגיל",
@@ -28014,17 +27937,10 @@ var PRODUCTS = [
       }
     ],
     "defaultColorId": "hot-pink",
+    "hideMessageCard": true,
     "deliveryBusinessDays": {
       "min": 9,
       "max": 14
-    },
-    "cardTitle": {
-      "he": "צמיד אופנה HERMES - צבע פוקסיה",
-      "en": "HERMES Fashion Bracelet - Fuchsia"
-    },
-    "cardMessage": {
-      "he": "צמיד חבל אופנתי מתכוונן עם אלמנט H, נירוסטה פרימיום וחבל עמיד במים. כל הצבעים זמינים לבחירה.",
-      "en": "Adjustable fashion rope bracelet with H charm, Premium Stainless Steel and waterproof rope. All colors are selectable."
     }
   },
   {
@@ -28036,14 +27952,14 @@ var PRODUCTS = [
       "en": "HERMES Fashion Bracelet - Neon Pink"
     },
     "subtitle": {
-      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי נירוסטה פרימיום · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
+      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי Premium Stainless Steel · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
       "en": "Adjustable braided rope bracelet with H charm · Premium Stainless Steel components · waterproof rope · fade-resistant color · unisex for women and men"
     },
     "badge": {
       "he": "צמידי אופנה",
       "en": "Fashion Bracelets"
     },
-    "price": 139.9,
+    "price": 129.9,
     "compareAt": 179.9,
     "images": [
       "/images/products/fashion-bracelets/fashion-bracelet-neon-pink.png",
@@ -28071,12 +27987,12 @@ var PRODUCTS = [
       "bracelets-fashion"
     ],
     "description": {
-      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי נירוסטה פרימיום בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
+      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי Premium Stainless Steel בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
       "en": "HERMES fashion bracelet with a colorful braided-rope design and central H charm. Adjustable and unisex, combining waterproof rope with Premium Stainless Steel gold-tone components. Every product page includes the full color selection."
     },
     "details": {
       "he": [
-        "חומרי מתכת: נירוסטה פרימיום",
+        "חומרי מתכת: Premium Stainless Steel",
         "רצועה: חבל קלוע עמיד במים",
         "מבנה: צמיד מתכוונן להתאמה נוחה לפרק היד",
         "צבע: גימור עמיד לדהייה בשימוש רגיל",
@@ -28264,17 +28180,10 @@ var PRODUCTS = [
       }
     ],
     "defaultColorId": "neon-pink",
+    "hideMessageCard": true,
     "deliveryBusinessDays": {
       "min": 9,
       "max": 14
-    },
-    "cardTitle": {
-      "he": "צמיד אופנה HERMES - צבע ורוד ניאון",
-      "en": "HERMES Fashion Bracelet - Neon Pink"
-    },
-    "cardMessage": {
-      "he": "צמיד חבל אופנתי מתכוונן עם אלמנט H, נירוסטה פרימיום וחבל עמיד במים. כל הצבעים זמינים לבחירה.",
-      "en": "Adjustable fashion rope bracelet with H charm, Premium Stainless Steel and waterproof rope. All colors are selectable."
     }
   },
   {
@@ -28286,14 +28195,14 @@ var PRODUCTS = [
       "en": "HERMES Fashion Bracelet - Green"
     },
     "subtitle": {
-      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי נירוסטה פרימיום · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
+      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי Premium Stainless Steel · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
       "en": "Adjustable braided rope bracelet with H charm · Premium Stainless Steel components · waterproof rope · fade-resistant color · unisex for women and men"
     },
     "badge": {
       "he": "צמידי אופנה",
       "en": "Fashion Bracelets"
     },
-    "price": 139.9,
+    "price": 129.9,
     "compareAt": 179.9,
     "images": [
       "/images/products/fashion-bracelets/fashion-bracelet-green.png",
@@ -28321,12 +28230,12 @@ var PRODUCTS = [
       "bracelets-fashion"
     ],
     "description": {
-      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי נירוסטה פרימיום בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
+      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי Premium Stainless Steel בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
       "en": "HERMES fashion bracelet with a colorful braided-rope design and central H charm. Adjustable and unisex, combining waterproof rope with Premium Stainless Steel gold-tone components. Every product page includes the full color selection."
     },
     "details": {
       "he": [
-        "חומרי מתכת: נירוסטה פרימיום",
+        "חומרי מתכת: Premium Stainless Steel",
         "רצועה: חבל קלוע עמיד במים",
         "מבנה: צמיד מתכוונן להתאמה נוחה לפרק היד",
         "צבע: גימור עמיד לדהייה בשימוש רגיל",
@@ -28514,17 +28423,10 @@ var PRODUCTS = [
       }
     ],
     "defaultColorId": "green",
+    "hideMessageCard": true,
     "deliveryBusinessDays": {
       "min": 9,
       "max": 14
-    },
-    "cardTitle": {
-      "he": "צמיד אופנה HERMES - צבע ירוק",
-      "en": "HERMES Fashion Bracelet - Green"
-    },
-    "cardMessage": {
-      "he": "צמיד חבל אופנתי מתכוונן עם אלמנט H, נירוסטה פרימיום וחבל עמיד במים. כל הצבעים זמינים לבחירה.",
-      "en": "Adjustable fashion rope bracelet with H charm, Premium Stainless Steel and waterproof rope. All colors are selectable."
     }
   },
   {
@@ -28536,14 +28438,14 @@ var PRODUCTS = [
       "en": "HERMES Fashion Bracelet - Silver"
     },
     "subtitle": {
-      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי נירוסטה פרימיום · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
+      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי Premium Stainless Steel · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
       "en": "Adjustable braided rope bracelet with H charm · Premium Stainless Steel components · waterproof rope · fade-resistant color · unisex for women and men"
     },
     "badge": {
       "he": "צמידי אופנה",
       "en": "Fashion Bracelets"
     },
-    "price": 139.9,
+    "price": 129.9,
     "compareAt": 179.9,
     "images": [
       "/images/products/fashion-bracelets/fashion-bracelet-silver.png",
@@ -28571,12 +28473,12 @@ var PRODUCTS = [
       "bracelets-fashion"
     ],
     "description": {
-      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי נירוסטה פרימיום בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
+      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי Premium Stainless Steel בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
       "en": "HERMES fashion bracelet with a colorful braided-rope design and central H charm. Adjustable and unisex, combining waterproof rope with Premium Stainless Steel gold-tone components. Every product page includes the full color selection."
     },
     "details": {
       "he": [
-        "חומרי מתכת: נירוסטה פרימיום",
+        "חומרי מתכת: Premium Stainless Steel",
         "רצועה: חבל קלוע עמיד במים",
         "מבנה: צמיד מתכוונן להתאמה נוחה לפרק היד",
         "צבע: גימור עמיד לדהייה בשימוש רגיל",
@@ -28764,17 +28666,10 @@ var PRODUCTS = [
       }
     ],
     "defaultColorId": "silver",
+    "hideMessageCard": true,
     "deliveryBusinessDays": {
       "min": 9,
       "max": 14
-    },
-    "cardTitle": {
-      "he": "צמיד אופנה HERMES - צבע כסף",
-      "en": "HERMES Fashion Bracelet - Silver"
-    },
-    "cardMessage": {
-      "he": "צמיד חבל אופנתי מתכוונן עם אלמנט H, נירוסטה פרימיום וחבל עמיד במים. כל הצבעים זמינים לבחירה.",
-      "en": "Adjustable fashion rope bracelet with H charm, Premium Stainless Steel and waterproof rope. All colors are selectable."
     }
   },
   {
@@ -28786,14 +28681,14 @@ var PRODUCTS = [
       "en": "HERMES Fashion Bracelet - Royal Blue"
     },
     "subtitle": {
-      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי נירוסטה פרימיום · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
+      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי Premium Stainless Steel · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
       "en": "Adjustable braided rope bracelet with H charm · Premium Stainless Steel components · waterproof rope · fade-resistant color · unisex for women and men"
     },
     "badge": {
       "he": "צמידי אופנה",
       "en": "Fashion Bracelets"
     },
-    "price": 139.9,
+    "price": 129.9,
     "compareAt": 179.9,
     "images": [
       "/images/products/fashion-bracelets/fashion-bracelet-royal-blue.png",
@@ -28821,12 +28716,12 @@ var PRODUCTS = [
       "bracelets-fashion"
     ],
     "description": {
-      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי נירוסטה פרימיום בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
+      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי Premium Stainless Steel בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
       "en": "HERMES fashion bracelet with a colorful braided-rope design and central H charm. Adjustable and unisex, combining waterproof rope with Premium Stainless Steel gold-tone components. Every product page includes the full color selection."
     },
     "details": {
       "he": [
-        "חומרי מתכת: נירוסטה פרימיום",
+        "חומרי מתכת: Premium Stainless Steel",
         "רצועה: חבל קלוע עמיד במים",
         "מבנה: צמיד מתכוונן להתאמה נוחה לפרק היד",
         "צבע: גימור עמיד לדהייה בשימוש רגיל",
@@ -29014,17 +28909,10 @@ var PRODUCTS = [
       }
     ],
     "defaultColorId": "royal-blue",
+    "hideMessageCard": true,
     "deliveryBusinessDays": {
       "min": 9,
       "max": 14
-    },
-    "cardTitle": {
-      "he": "צמיד אופנה HERMES - צבע כחול רויאל",
-      "en": "HERMES Fashion Bracelet - Royal Blue"
-    },
-    "cardMessage": {
-      "he": "צמיד חבל אופנתי מתכוונן עם אלמנט H, נירוסטה פרימיום וחבל עמיד במים. כל הצבעים זמינים לבחירה.",
-      "en": "Adjustable fashion rope bracelet with H charm, Premium Stainless Steel and waterproof rope. All colors are selectable."
     }
   },
   {
@@ -29036,14 +28924,14 @@ var PRODUCTS = [
       "en": "HERMES Fashion Bracelet - Mint Green"
     },
     "subtitle": {
-      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי נירוסטה פרימיום · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
+      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי Premium Stainless Steel · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
       "en": "Adjustable braided rope bracelet with H charm · Premium Stainless Steel components · waterproof rope · fade-resistant color · unisex for women and men"
     },
     "badge": {
       "he": "צמידי אופנה",
       "en": "Fashion Bracelets"
     },
-    "price": 139.9,
+    "price": 129.9,
     "compareAt": 179.9,
     "images": [
       "/images/products/fashion-bracelets/fashion-bracelet-mint.png",
@@ -29071,12 +28959,12 @@ var PRODUCTS = [
       "bracelets-fashion"
     ],
     "description": {
-      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי נירוסטה פרימיום בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
+      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי Premium Stainless Steel בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
       "en": "HERMES fashion bracelet with a colorful braided-rope design and central H charm. Adjustable and unisex, combining waterproof rope with Premium Stainless Steel gold-tone components. Every product page includes the full color selection."
     },
     "details": {
       "he": [
-        "חומרי מתכת: נירוסטה פרימיום",
+        "חומרי מתכת: Premium Stainless Steel",
         "רצועה: חבל קלוע עמיד במים",
         "מבנה: צמיד מתכוונן להתאמה נוחה לפרק היד",
         "צבע: גימור עמיד לדהייה בשימוש רגיל",
@@ -29264,17 +29152,10 @@ var PRODUCTS = [
       }
     ],
     "defaultColorId": "mint",
+    "hideMessageCard": true,
     "deliveryBusinessDays": {
       "min": 9,
       "max": 14
-    },
-    "cardTitle": {
-      "he": "צמיד אופנה HERMES - צבע ירוק מנטה",
-      "en": "HERMES Fashion Bracelet - Mint Green"
-    },
-    "cardMessage": {
-      "he": "צמיד חבל אופנתי מתכוונן עם אלמנט H, נירוסטה פרימיום וחבל עמיד במים. כל הצבעים זמינים לבחירה.",
-      "en": "Adjustable fashion rope bracelet with H charm, Premium Stainless Steel and waterproof rope. All colors are selectable."
     }
   },
   {
@@ -29286,14 +29167,14 @@ var PRODUCTS = [
       "en": "HERMES Fashion Bracelet - Orange"
     },
     "subtitle": {
-      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי נירוסטה פרימיום · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
+      "he": "צמיד חבל קלוע מתכוונן עם אלמנט H · רכיבי Premium Stainless Steel · חבל עמיד במים · צבע עמיד לדהייה · יוניסקס לנשים ולגברים",
       "en": "Adjustable braided rope bracelet with H charm · Premium Stainless Steel components · waterproof rope · fade-resistant color · unisex for women and men"
     },
     "badge": {
       "he": "צמידי אופנה",
       "en": "Fashion Bracelets"
     },
-    "price": 139.9,
+    "price": 129.9,
     "compareAt": 179.9,
     "images": [
       "/images/products/fashion-bracelets/fashion-bracelet-orange.png",
@@ -29321,12 +29202,12 @@ var PRODUCTS = [
       "bracelets-fashion"
     ],
     "description": {
-      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי נירוסטה פרימיום בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
+      "he": "צמיד אופנה HERMES בעיצוב חבל קלוע צבעוני עם אלמנט H מרכזי. הצמיד מתכוונן, מיועד לנשים ולגברים, ומשלב חבל עמיד במים עם רכיבי Premium Stainless Steel בגימור זהב. בכל עמוד מוצר ניתן לבחור את כל צבעי הקולקציה.",
       "en": "HERMES fashion bracelet with a colorful braided-rope design and central H charm. Adjustable and unisex, combining waterproof rope with Premium Stainless Steel gold-tone components. Every product page includes the full color selection."
     },
     "details": {
       "he": [
-        "חומרי מתכת: נירוסטה פרימיום",
+        "חומרי מתכת: Premium Stainless Steel",
         "רצועה: חבל קלוע עמיד במים",
         "מבנה: צמיד מתכוונן להתאמה נוחה לפרק היד",
         "צבע: גימור עמיד לדהייה בשימוש רגיל",
@@ -29514,17 +29395,10 @@ var PRODUCTS = [
       }
     ],
     "defaultColorId": "orange",
+    "hideMessageCard": true,
     "deliveryBusinessDays": {
       "min": 9,
       "max": 14
-    },
-    "cardTitle": {
-      "he": "צמיד אופנה HERMES - צבע כתום",
-      "en": "HERMES Fashion Bracelet - Orange"
-    },
-    "cardMessage": {
-      "he": "צמיד חבל אופנתי מתכוונן עם אלמנט H, נירוסטה פרימיום וחבל עמיד במים. כל הצבעים זמינים לבחירה.",
-      "en": "Adjustable fashion rope bracelet with H charm, Premium Stainless Steel and waterproof rope. All colors are selectable."
     }
   }
 ];
