@@ -606,7 +606,7 @@
         });
       }, {
         root: null,
-        rootMargin: window.matchMedia('(max-width: 700px)').matches ? '750px 420px' : '950px 600px',
+        rootMargin: window.matchMedia('(max-width: 700px)').matches ? '2250px 1260px' : '2850px 1800px',
         threshold: 0.01
       });
     }

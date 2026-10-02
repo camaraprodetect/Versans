@@ -1448,10 +1448,11 @@
        already ready when the customer reaches them, without downloading the
        entire store at once. */
     var compact = window.matchMedia('(max-width: 700px)').matches;
-    var mainMargin = compact ? '850px 500px' : '1200px 900px';
+    /* V24: wider preload radius so nearby content is already ready well before
+       the customer reaches it. Roughly 3x the previous radius. */
+    var mainMargin = compact ? '2550px 1500px' : '3600px 2700px';
 
-    /* Preload hover images in exactly the same radius as the main product
-       images, so the alternate image is already ready before the user hovers. */
+    /* Hover images preload in the exact same radius as main product images. */
     var hoverMargin = mainMargin;
 
     if ('IntersectionObserver' in window) {
