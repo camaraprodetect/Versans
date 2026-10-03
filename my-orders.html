@@ -15,71 +15,214 @@
 <link rel="stylesheet" href="assets/typography-only.css?v=20260909-fonts-only">
 <link rel="stylesheet" href="assets/accessibility.css?v=20260928-a11y-v1">
 <link rel="icon" href="/favicon.ico" sizes="any">
-<style>
-  .orders-card{width:min(760px,100%)}
-  .orders-toolbar{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin:0 0 1rem}
-  .orders-toolbar__name{color:#63717c;font-size:.86rem}
-  .orders-page-list{display:grid;gap:.9rem}
-  .orders-page-list .account-order{border-radius:14px}
-  .orders-page-list .account-order__top strong{font-size:.92rem}
-  .orders-status{
-    display:inline-flex;align-items:center;justify-content:center;
-    min-height:27px;padding:.3rem .6rem;border:1px solid #dce3e8;
-    border-radius:999px;background:#f7f9fa;color:#142333;
-    font-size:.72rem;font-weight:700
+<style id="versans-dedicated-orders-page-v43">
+  :root{--orders-ink:#142333;--orders-line:#e1e6ea;--orders-bg:#f6f7f8;--orders-card:#fff}
+  *{box-sizing:border-box}
+  body.orders-page{
+    margin:0;
+    min-height:100vh;
+    background:var(--orders-bg);
+    color:var(--orders-ink);
+    font-family:Heebo,Arial,sans-serif;
   }
-  .orders-empty{padding:1.25rem;border:1px solid #e1e6ea;border-radius:14px;background:#fafbfc;text-align:center}
-  .orders-actions{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin-top:.75rem}
-  .orders-actions .btn{min-height:38px;padding:.55rem .85rem;font-size:.78rem}
-  @media(max-width:620px){
-    .orders-card{width:100%}
-    .orders-toolbar{align-items:flex-start;flex-direction:column;gap:.35rem}
-    .orders-page-list .account-order{padding:.85rem}
-    .orders-page-list .account-order__top,
-    .orders-page-list .account-order__meta{gap:.3rem}
+  .orders-header{
+    position:sticky;
+    top:0;
+    z-index:30;
+    height:74px;
+    background:#0b0d0f;
+    border-bottom:1px solid rgba(255,255,255,.08);
+  }
+  .orders-header__inner{
+    width:min(1180px,calc(100% - 32px));
+    height:100%;
+    margin:auto;
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    align-items:center;
+    gap:1rem;
+  }
+  .orders-header__logo{
+    grid-column:2;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .orders-header__logo img{
+    width:150px;
+    max-width:30vw;
+    height:auto;
+    display:block;
+  }
+  .orders-header__back{
+    justify-self:start;
+    color:#fff;
+    text-decoration:none;
+    font-weight:600;
+    font-size:.9rem;
+  }
+  .orders-header__shop{
+    justify-self:end;
+    color:#fff;
+    text-decoration:none;
+    font-weight:600;
+    font-size:.9rem;
+  }
+  .orders-main{
+    width:min(1120px,calc(100% - 32px));
+    margin:0 auto;
+    padding:46px 0 70px;
+  }
+  .orders-hero{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:2rem;
+    margin-bottom:28px;
+  }
+  .orders-hero h1{
+    margin:0 0 .35rem;
+    font-size:clamp(2rem,4vw,3.2rem);
+    line-height:1.05;
+    letter-spacing:-.03em;
+  }
+  .orders-hero p{
+    margin:0;
+    color:#697681;
+    font-size:1rem;
+  }
+  .orders-summary{
+    flex:0 0 auto;
+    min-width:210px;
+    padding:16px 18px;
+    background:#fff;
+    border:1px solid var(--orders-line);
+    border-radius:16px;
+    box-shadow:0 8px 26px rgba(20,35,51,.045);
+  }
+  .orders-summary strong{
+    display:block;
+    font-size:1rem;
+  }
+  .orders-toolbar__name{
+    display:block;
+    margin-top:.25rem;
+    color:#76828c;
+    font-size:.82rem;
+  }
+  .orders-page-list{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:18px;
+  }
+  .orders-page-list .account-order{
+    margin:0!important;
+    min-width:0;
+    padding:20px!important;
+    background:#fff;
+    border:1px solid var(--orders-line)!important;
+    border-radius:18px!important;
+    box-shadow:0 7px 24px rgba(20,35,51,.045);
+  }
+  .orders-page-list .account-order__top{
+    padding-bottom:12px;
+    border-bottom:1px solid #edf0f2;
+  }
+  .orders-page-list .account-order__top strong{
+    font-size:1rem;
+  }
+  .orders-page-list .account-order__meta{
+    margin-top:12px;
+  }
+  .orders-page-list ul{
+    margin:14px 0 0;
+    padding:0 1.15rem 0 0;
+    color:#45525c;
+  }
+  .orders-status{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-height:28px;
+    padding:.3rem .65rem;
+    border:1px solid #dce3e8;
+    border-radius:999px;
+    background:#f7f9fa;
+    color:#142333;
+    font-size:.72rem;
+    font-weight:700;
+  }
+  .orders-actions{
+    display:flex;
+    gap:.7rem;
+    flex-wrap:wrap;
+    margin-top:16px;
+  }
+  .orders-empty{
+    grid-column:1/-1;
+    padding:34px 24px;
+    border:1px solid var(--orders-line);
+    border-radius:18px;
+    background:#fff;
+    text-align:center;
+  }
+  .orders-bottom{
+    display:flex;
+    justify-content:center;
+    gap:.8rem;
+    margin-top:28px;
+  }
+  .orders-bottom .btn{
+    min-width:170px;
+  }
+  @media(max-width:760px){
+    .orders-header{height:64px}
+    .orders-header__inner{width:min(100% - 22px,1180px)}
+    .orders-header__logo img{width:120px}
+    .orders-header__back,.orders-header__shop{font-size:.76rem}
+    .orders-main{width:min(100% - 22px,1120px);padding:28px 0 48px}
+    .orders-hero{align-items:stretch;flex-direction:column;gap:16px;margin-bottom:20px}
+    .orders-summary{min-width:0;width:100%}
+    .orders-page-list{grid-template-columns:1fr;gap:12px}
+    .orders-page-list .account-order{padding:16px!important}
+    .orders-bottom{display:grid;grid-template-columns:1fr}
+    .orders-bottom .btn{width:100%;min-width:0}
   }
 </style>
 </head>
-<body class="auth-page" data-auth-page="my-orders">
-<main class="auth-shell auth-shell--account">
-  <section class="auth-visual" aria-hidden="true">
-    <div class="auth-visual__media"><img src="images/auth-showcase.png" alt="" loading="eager" decoding="async"></div>
-    <div class="auth-visual__content">
-      <p class="auth-visual__eyebrow">VERSANS ACCOUNT</p>
-      <h1>כל ההזמנות שלכם במקום אחד.</h1>
-      <p>כאן אפשר לראות את היסטוריית ההזמנות שמקושרת לחשבון VerSans שלכם.</p>
+<body class="auth-page orders-page" data-auth-page="my-orders">
+<header class="orders-header">
+  <div class="orders-header__inner">
+    <a class="orders-header__back" href="/account">החשבון שלי</a>
+    <a class="orders-header__logo" href="/shop#top" aria-label="VerSans">
+      <img src="/images/VersansLogoWordmarkWhite.png" alt="VerSans">
+    </a>
+    <a class="orders-header__shop" href="/shop#shop">חזרה לחנות</a>
+  </div>
+</header>
+
+<main class="orders-main">
+  <section class="orders-hero">
+    <div>
+      <h1>ההזמנות שלי</h1>
+      <p>כל ההזמנות שלך ב־VerSans, במקום אחד.</p>
+    </div>
+    <div class="orders-summary">
+      <strong id="ordersCount">טוען הזמנות…</strong>
+      <span class="orders-toolbar__name" id="ordersCustomerName"></span>
     </div>
   </section>
 
-  <section class="auth-panel">
-    <div class="auth-card auth-card--account orders-card">
-      <div class="auth-card__top">
-        <a class="auth-card__brand" href="/shop#top" aria-label="VerSans">
-          <span class="brand__logo"><img src="images/VerSansLogoBlackJewlery.png" alt="VerSans" width="800" height="800"></span>
-        </a>
-        <div><a class="auth-back" href="/account">חזרה לחשבון</a></div>
-      </div>
-
-      <p class="auth-card__eyebrow">VERSANS</p>
-      <h2>ההזמנות שלי</h2>
-      <p class="auth-card__lead">כל ההזמנות ששייכות לך בחשבון או ב־Guest של המכשיר הזה.</p>
-
-      <div class="orders-toolbar">
-        <strong id="ordersCount">טוען הזמנות…</strong>
-        <span class="orders-toolbar__name" id="ordersCustomerName"></span>
-      </div>
-
-      <div id="myOrdersList" class="account-orders orders-page-list" aria-live="polite">
-        <p class="account-muted">טוען את ההזמנות שלכם…</p>
-      </div>
-
-      <div class="account-actions" style="margin-top:1.3rem">
-        <a class="btn btn--ghost" href="/shop#shop">חזרה לחנות</a>
-        <a class="btn btn--primary" href="/account">החשבון שלי</a>
-      </div>
-    </div>
+  <section id="myOrdersList" class="account-orders orders-page-list" aria-live="polite">
+    <p class="account-muted">טוען את ההזמנות שלכם…</p>
   </section>
+
+  <div class="orders-bottom">
+    <a class="btn btn--ghost" href="/shop#shop">חזרה לחנות</a>
+    <a class="btn btn--primary" href="/account">החשבון שלי</a>
+  </div>
 </main>
+
 <script src="assets/my-orders.js?v=20261003-guest-orders-v37"></script>
 <script src="/assets/presence.js?v=20260915-presence-v1"></script>
 <script src="assets/accessibility.js?v=20260928-a11y-v1"></script>

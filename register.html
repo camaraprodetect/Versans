@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/styles.css?v=20260908-promo-v3">
-<link rel="stylesheet" href="assets/brand.css?v=20261001-logo-v4">
+<link rel="stylesheet" href="assets/brand.css?v=20260905-versans-v1">
 <link rel="stylesheet" href="assets/auth.css?v=20260922-email-consent-v1">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="96x96" href="/images/favicon-96.png">
@@ -25,7 +25,7 @@
   <section class="auth-visual" aria-hidden="true"><div class="auth-visual__media"><img src="images/auth-showcase.png" alt="" loading="eager" decoding="async"></div><div class="auth-visual__content"><p class="auth-visual__eyebrow">VERSANS ACCOUNT</p><h1 id="authVisualTitle">המתנה שלכם. החשבון שלכם.</h1><p id="authVisualText">חשבון VerSans מאפשר לנו לזהות אתכם בצורה מאובטחת ולהוסיף בהמשך היסטוריית הזמנות, ביקורות והטבות.</p></div></section>
   <section class="auth-panel">
     <div class="auth-card">
-      <div class="auth-card__top"><a class="auth-card__brand" href="/shop#top" aria-label="VerSans"><span class="brand__logo"><img src="/images/VersansLogoWordmarkWhite.png" alt="VerSans" width="719" height="171"></span></a><div><a class="auth-back" id="authBack" href="/shop#shop">חזרה לחנות</a></div></div>
+      <div class="auth-card__top"><a class="auth-card__brand" href="/shop#top" aria-label="VerSans"><span class="brand__logo"><img src="images/VerSansLogoBlackJewlery.png" alt="VerSans" width="800" height="800"></span></a><div><a class="auth-back" id="authBack" href="/shop#shop">חזרה לחנות</a></div></div>
       <p class="auth-card__eyebrow">VERSANS</p><h2 id="authTitle">יצירת חשבון</h2><p class="auth-card__lead" id="authLead">כמה שניות ואתם בפנים. הפרטים נשמרים באופן מאובטח.</p>
       <form class="auth-form" id="authForm" novalidate>
         <div class="auth-field"><label for="name">שם מלא</label><input class="auth-input" id="name" name="name" type="text" autocomplete="name" required minlength="2" maxlength="70"></div>
@@ -39,13 +39,14 @@
             <span class="auth-check__box" aria-hidden="true"></span>
             <span id="termsAcceptedText">אני מאשר/ת את <a href="/policies" target="_blank" rel="noopener">תנאי השימוש ומדיניות הפרטיות</a>.</span>
           </label>
-          <fieldset class="auth-marketing" aria-describedby="marketingHelp">
-            <legend>עדכונים שיווקיים - רשות בלבד</legend>
-            <p id="marketingHelp" class="auth-password-hint">אפשר לבחור כל ערוץ בנפרד. אף אפשרות אינה מסומנת מראש וניתן לבטל בכל עת.</p>
-            <label class="auth-check" for="marketingEmailOptIn"><input id="marketingEmailOptIn" name="marketingEmailOptIn" type="checkbox"><span class="auth-check__box" aria-hidden="true"></span><span>אימייל - מבצעים, מוצרים חדשים והטבות</span></label>
-            <label class="auth-check" for="marketingSmsOptIn"><input id="marketingSmsOptIn" name="marketingSmsOptIn" type="checkbox"><span class="auth-check__box" aria-hidden="true"></span><span>SMS - הודעות שיווקיות</span></label>
-            <label class="auth-check" for="marketingWhatsappOptIn"><input id="marketingWhatsappOptIn" name="marketingWhatsappOptIn" type="checkbox"><span class="auth-check__box" aria-hidden="true"></span><span>WhatsApp - הודעות שיווקיות. הודעות שירות חיוניות להזמנה נפרדות מהסכמה זו.</span></label>
-          </fieldset>
+          <label class="auth-check" for="marketingAllOptIn">
+            <input id="marketingAllOptIn" name="marketingAllOptIn" type="checkbox">
+            <span class="auth-check__box" aria-hidden="true"></span>
+            <span>אני מאשר/ת לקבל עדכונים שיווקיים</span>
+          </label>
+          <input id="marketingEmailOptIn" name="marketingEmailOptIn" type="checkbox" hidden tabindex="-1" aria-hidden="true">
+          <input id="marketingSmsOptIn" name="marketingSmsOptIn" type="checkbox" hidden tabindex="-1" aria-hidden="true">
+          <input id="marketingWhatsappOptIn" name="marketingWhatsappOptIn" type="checkbox" hidden tabindex="-1" aria-hidden="true">
         </div>
         <div class="auth-message" id="authMessage" role="status" aria-live="polite"></div>
         <button class="btn btn--primary auth-submit" id="authSubmit" type="submit"><span id="authSubmitText">יצירת חשבון</span></button>
@@ -54,7 +55,30 @@
     </div>
   </section>
 </main>
-<script src="assets/auth.js?v=20260922-email-consent-v1"></script>
+<script id="versans-simple-marketing-consent-v44">
+(function () {
+  var all = document.getElementById('marketingAllOptIn');
+  var email = document.getElementById('marketingEmailOptIn');
+  var sms = document.getElementById('marketingSmsOptIn');
+  var whatsapp = document.getElementById('marketingWhatsappOptIn');
+  var form = document.getElementById('authForm');
+
+  if (!all || !email || !sms || !whatsapp) return;
+
+  function sync() {
+    var checked = !!all.checked;
+    email.checked = checked;
+    sms.checked = checked;
+    whatsapp.checked = checked;
+  }
+
+  all.addEventListener('change', sync);
+  if (form) form.addEventListener('submit', sync, true);
+  sync();
+})();
+</script>
+
+<script src="assets/auth.js?v=20261003-auth-account-fix-v42"></script>
   <script src="/assets/presence.js?v=20260915-presence-v1"></script>
   <script src="/assets/config.js?v=20260924-whatsapp-restore-v1"></script>
   <script src="/assets/customer-service.js?v=20260923-tracking-v1"></script>

@@ -88,6 +88,58 @@
 }
 </style>
 
+
+<style id="versans-account-form-layout-v43">
+/* V43: account fields are one clean vertical column on every screen. */
+body[data-auth-page="account"] .account-form{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:1rem!important;
+  width:100%!important;
+}
+body[data-auth-page="account"] .account-form .auth-field,
+body[data-auth-page="account"] .account-form .auth-field:nth-child(2){
+  grid-column:1!important;
+  width:100%!important;
+  min-width:0!important;
+}
+body[data-auth-page="account"] .account-form .auth-input{
+  width:100%!important;
+  min-width:0!important;
+  box-sizing:border-box!important;
+}
+body[data-auth-page="account"] .account-form .btn{
+  grid-column:1!important;
+  width:100%!important;
+  min-height:50px!important;
+}
+body[data-auth-page="account"] .account-main-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:.75rem;
+  margin-top:1.25rem;
+  padding-top:1.25rem;
+  border-top:1px solid var(--line,#e0e4e8);
+}
+body[data-auth-page="account"] .account-main-actions .btn{
+  width:100%;
+  min-height:48px;
+}
+body[data-auth-page="account"] .btn--logout{
+  border:1px solid #b95454;
+  color:#9e3131;
+  background:#fff;
+}
+body[data-auth-page="account"] .btn--logout:hover{
+  background:#fff6f6;
+}
+@media(max-width:620px){
+  body[data-auth-page="account"] .account-main-actions{
+    grid-template-columns:1fr;
+  }
+}
+</style>
+
 </head>
 <body class="auth-page" data-auth-page="account">
 <main class="auth-shell auth-shell--account">
@@ -111,8 +163,13 @@
         <section class="account-section" aria-labelledby="ordersHeading">
           <div class="account-section__head"><h3 id="ordersHeading">ההזמנות שלי</h3><a class="account-inline-link" href="/cancel-order">בקשת ביטול / החזרה</a></div>
           <p class="account-muted">צפו בכל ההזמנות שמקושרות לחשבון שלכם במקום אחד.</p>
-          <a class="btn btn--primary" href="/my-orders" style="margin-top:.7rem;display:inline-flex;align-items:center;justify-content:center;min-width:180px">ההזמנות שלי</a>
+          <a class="btn btn--primary" href="/my-orders" style="margin-top:.7rem;display:flex;align-items:center;justify-content:center;width:100%">ההזמנות שלי</a>
         </section>
+
+        <div class="account-main-actions">
+          <a class="btn btn--ghost" href="/shop#shop">חזרה לחנות</a>
+          <button class="btn btn--logout" id="logoutBtn" type="button">התנתקות</button>
+        </div>
 
         <div class="auth-message" id="authMessage" role="status" aria-live="polite"></div>
       </div>

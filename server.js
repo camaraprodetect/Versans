@@ -5305,6 +5305,7 @@ function prettyRouteFile(pathname) {
     '/register': 'register.html',
     '/account': 'account.html',
     '/my-orders': 'my-orders.html',
+    '/my-orders/': 'my-orders.html',
     '/track': 'track.html',
     '/forgot-password': 'forgot-password.html',
     '/reset-password': 'reset-password.html',
@@ -5403,6 +5404,16 @@ function wantsHtmlDocument(req) {
 
 function serveStatic(req, res, pathname) {
   if (req.method !== 'GET' && req.method !== 'HEAD') return false;
+
+  /*
+   * V46: /my-orders is a real account document, never a storefront SPA route.
+   * Serve it explicitly before any generic extensionless-path fallback so it
+   * can never become index.html (which would visually send the user to /).
+   */
+  if (pathname === '/my-orders' || pathname === '/my-orders/') {
+    const ordersPath = path.resolve(ROOT, 'my-orders.html');
+    return serveStorefrontHtml(req, res, ordersPath, '/my-orders');
+  }
 
   // Hard fallback for the hats collection on localhost/Render refresh.
   // /hats#shop is received by Node as /hats.
