@@ -4627,6 +4627,7 @@ async function authApi(req, res, pathname, parsed) {
       : null;
     const guest = {
       name: (row && row.guest_username) || identity.username,
+      hasOrders: !!row,
       isVerifiedCustomer: typeof database.hasPaidGuestOrder === 'function'
         ? await database.hasPaidGuestOrder(identity.visitorId)
         : false
@@ -4884,9 +4885,49 @@ async function authApi(req, res, pathname, parsed) {
     await database.deleteUserPreservingReviews(sessionUser.id); json(res,200,{ok:true},{'Set-Cookie':clearSessionCookie(req)}); return true;
   }
   if (pathname === '/api/account/orders' && req.method === 'GET') {
-    const user=await getCurrentUser(req); if(!user){json(res,401,{ok:false,error:'login_required'});return true;}
-    const rows=await database.listAccountOrders(user.id,100); const orders=rows.map((row)=>({orderRef:row.order_ref,status:row.status,amount:Number(row.amount_agorot||0)/100,currency:row.currency||'ILS',createdAt:Number(row.created_at||0),paidAt:row.paid_at==null?null:Number(row.paid_at),items:normalizeStoredOrderItems(row.items_json,PRODUCTS).map((item)=>({id:item.id||null,name:item.name||'מוצר',qty:Number(item.qty||1)})),cancellation:row.cancellation_request_ref?{requestRef:row.cancellation_request_ref,status:row.cancellation_status}:null}));
-    json(res,200,{ok:true,orders}); return true;
+    const user=await getCurrentUser(req);
+    let rows=[];
+    let ownerType='account';
+    let ownerName=user ? user.name : null;
+
+    if(user){
+      rows=await database.listAccountOrders(user.id,500);
+    }else{
+      const visitorId=getVisitorId(req);
+      if(!visitorId || typeof database.listGuestOrders!=='function'){
+        json(res,401,{ok:false,error:'login_required'});
+        return true;
+      }
+
+      rows=await database.listGuestOrders(visitorId,500);
+      if(!rows.length){
+        json(res,401,{ok:false,error:'login_required'});
+        return true;
+      }
+
+      ownerType='guest';
+      ownerName=rows[0].guest_username || guestUsernameForVisitor(visitorId);
+    }
+
+    const orders=rows.map((row)=>({
+      orderRef:row.order_ref,
+      status:row.status,
+      amount:Number(row.amount_agorot||0)/100,
+      currency:row.currency||'ILS',
+      createdAt:Number(row.created_at||0),
+      paidAt:row.paid_at==null?null:Number(row.paid_at),
+      items:normalizeStoredOrderItems(row.items_json,PRODUCTS).map((item)=>({
+        id:item.id||null,
+        name:item.name||'מוצר',
+        qty:Number(item.qty||1)
+      })),
+      cancellation:row.cancellation_request_ref
+        ? {requestRef:row.cancellation_request_ref,status:row.cancellation_status}
+        : null
+    }));
+
+    json(res,200,{ok:true,orders,ownerType,ownerName});
+    return true;
   }
 
   if (pathname === '/api/auth/logout' && req.method === 'POST') {
@@ -5263,6 +5304,7 @@ function prettyRouteFile(pathname) {
     '/login': 'login.html',
     '/register': 'register.html',
     '/account': 'account.html',
+    '/my-orders': 'my-orders.html',
     '/track': 'track.html',
     '/forgot-password': 'forgot-password.html',
     '/reset-password': 'reset-password.html',
@@ -5328,8 +5370,7 @@ function injectStorefrontRouting(html, bootRoute) {
     .replace(/(\/?assets\/product\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261001-product-help-v1')
     .replace(/(\/?assets\/cart-drawer\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261001-product-help-v1')
     .replace(/(\/?assets\/site-header\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20260922-favorites-sync-v1')
-    .replace(/(\/?assets\/auth-nav\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261003-guest-header-v28')
-    .replace(/(\/?assets\/accessibility\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261003-floating-cart-index-only-v32')
+    .replace(/(\/?assets\/auth-nav\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261003-guest-orders-v37')
     .replace(/(\/?assets\/presence\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20260922-urlmask-v2');
   if (out.includes('</head>')) out = out.replace('</head>', `${early}\n</head>`);
   else out = early + out;

@@ -9,8 +9,9 @@
     /* A guest is still sent to login/account creation when this control is
        clicked, but visually their stable Guest_#### identity is shown exactly
        like the account name would be shown. */
-    link.href = user ? '/account' : '/login';
-    link.setAttribute('aria-label', user ? 'החשבון שלי' : (guestName ? label : 'התחברות'));
+    var guestHasOrders = !!(guest && guest.hasOrders);
+    link.href = user ? '/account' : (guestHasOrders ? '/my-orders' : '/login');
+    link.setAttribute('aria-label', user ? 'החשבון שלי' : (guestHasOrders ? 'ההזמנות שלי' : (guestName ? label : 'התחברות')));
     if (text) text.textContent = label;
 
     link.classList.toggle('is-authenticated', !!user);

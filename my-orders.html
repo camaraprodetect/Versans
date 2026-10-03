@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, follow">
+<title>ההזמנות שלי | VerSans</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css?v=20260908-promo-v3">
+<link rel="stylesheet" href="assets/brand.css?v=20260905-versans-v1">
+<link rel="stylesheet" href="assets/auth.css?v=20260926-account-v2">
+<link rel="stylesheet" href="assets/fonts.css?v=20260909-fonts-only">
+<link rel="stylesheet" href="assets/typography-only.css?v=20260909-fonts-only">
+<link rel="stylesheet" href="assets/accessibility.css?v=20260928-a11y-v1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<style>
+  .orders-card{width:min(760px,100%)}
+  .orders-toolbar{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin:0 0 1rem}
+  .orders-toolbar__name{color:#63717c;font-size:.86rem}
+  .orders-page-list{display:grid;gap:.9rem}
+  .orders-page-list .account-order{border-radius:14px}
+  .orders-page-list .account-order__top strong{font-size:.92rem}
+  .orders-status{
+    display:inline-flex;align-items:center;justify-content:center;
+    min-height:27px;padding:.3rem .6rem;border:1px solid #dce3e8;
+    border-radius:999px;background:#f7f9fa;color:#142333;
+    font-size:.72rem;font-weight:700
+  }
+  .orders-empty{padding:1.25rem;border:1px solid #e1e6ea;border-radius:14px;background:#fafbfc;text-align:center}
+  .orders-actions{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin-top:.75rem}
+  .orders-actions .btn{min-height:38px;padding:.55rem .85rem;font-size:.78rem}
+  @media(max-width:620px){
+    .orders-card{width:100%}
+    .orders-toolbar{align-items:flex-start;flex-direction:column;gap:.35rem}
+    .orders-page-list .account-order{padding:.85rem}
+    .orders-page-list .account-order__top,
+    .orders-page-list .account-order__meta{gap:.3rem}
+  }
+</style>
+</head>
+<body class="auth-page" data-auth-page="my-orders">
+<main class="auth-shell auth-shell--account">
+  <section class="auth-visual" aria-hidden="true">
+    <div class="auth-visual__media"><img src="images/auth-showcase.png" alt="" loading="eager" decoding="async"></div>
+    <div class="auth-visual__content">
+      <p class="auth-visual__eyebrow">VERSANS ACCOUNT</p>
+      <h1>כל ההזמנות שלכם במקום אחד.</h1>
+      <p>כאן אפשר לראות את היסטוריית ההזמנות שמקושרת לחשבון VerSans שלכם.</p>
+    </div>
+  </section>
+
+  <section class="auth-panel">
+    <div class="auth-card auth-card--account orders-card">
+      <div class="auth-card__top">
+        <a class="auth-card__brand" href="/shop#top" aria-label="VerSans">
+          <span class="brand__logo"><img src="images/VerSansLogoBlackJewlery.png" alt="VerSans" width="800" height="800"></span>
+        </a>
+        <div><a class="auth-back" href="/account">חזרה לחשבון</a></div>
+      </div>
+
+      <p class="auth-card__eyebrow">VERSANS</p>
+      <h2>ההזמנות שלי</h2>
+      <p class="auth-card__lead">כל ההזמנות ששייכות לך בחשבון או ב־Guest של המכשיר הזה.</p>
+
+      <div class="orders-toolbar">
+        <strong id="ordersCount">טוען הזמנות…</strong>
+        <span class="orders-toolbar__name" id="ordersCustomerName"></span>
+      </div>
+
+      <div id="myOrdersList" class="account-orders orders-page-list" aria-live="polite">
+        <p class="account-muted">טוען את ההזמנות שלכם…</p>
+      </div>
+
+      <div class="account-actions" style="margin-top:1.3rem">
+        <a class="btn btn--ghost" href="/shop#shop">חזרה לחנות</a>
+        <a class="btn btn--primary" href="/account">החשבון שלי</a>
+      </div>
+    </div>
+  </section>
+</main>
+<script src="assets/my-orders.js?v=20261003-guest-orders-v37"></script>
+<script src="/assets/presence.js?v=20260915-presence-v1"></script>
+<script src="assets/accessibility.js?v=20260928-a11y-v1"></script>
+</body>
+</html>
