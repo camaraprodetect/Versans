@@ -3034,6 +3034,45 @@ async function postManualPickupWebhook({ shipment, order, message, forceResend =
   return { ok: true, status: Number(response.status), shortUrl };
 }
 
+/* V47: persistent Google Sheet de-duplication.
+   Payment verification can legitimately hit the server more than once (return URL,
+   thank-you verification, refresh/retry, Demo verification). Previously each path
+   called the Sheets webhook again, which created two order blocks. The database
+   claim below is atomic, so signed-in and Guest orders are both exported once. */
+async function sendPaidOrderToGoogleSheetOnce(order) {
+  if (!order || String(order.status || '') !== 'paid') {
+    return { ok: false, skipped: true, reason: 'order_not_paid' };
+  }
+
+  const orderRef = String(order.order_ref || '').trim();
+  if (!orderRef) return { ok: false, skipped: true, reason: 'missing_order_ref' };
+
+  /* If the order was not persisted for some exceptional reason, preserve the
+     old best-effort behaviour instead of silently losing the Sheet export. */
+  const stored = await database.getOrderByRef(orderRef).catch(() => null);
+  if (!stored) return sendPaidOrderToGoogleSheet(order);
+
+  const now = Date.now();
+  const staleBefore = now - (5 * 60 * 1000);
+  const claimed = await database.claimOrderGoogleSheetSync(orderRef, now, staleBefore);
+  if (!claimed) {
+    return { ok: true, skipped: true, duplicate: true, orderRef };
+  }
+
+  try {
+    const result = await sendPaidOrderToGoogleSheet(order);
+    await database.markOrderGoogleSheetSynced(orderRef, Date.now());
+    return result;
+  } catch (error) {
+    /* A definite failure is retryable later. The atomic claim still prevents
+       simultaneous duplicate submissions during the current payment flow. */
+    try { await database.releaseOrderGoogleSheetSync(orderRef); } catch (releaseErr) {
+      console.error(`Google Sheet sync claim release failed for ${orderRef}:`, releaseErr && releaseErr.message ? releaseErr.message : releaseErr);
+    }
+    throw error;
+  }
+}
+
 async function queueNewOrderNotificationAfterSheet(order) {
   if (!order || String(order.status || '') !== 'paid') return { ok: false, skipped: true, reason: 'order_not_paid' };
   const orderRef = String(order.order_ref || '').trim();
@@ -5668,7 +5707,7 @@ const server = http.createServer(async (req, res) => {
         }
 
         postPaymentTasks.push(
-          sendPaidOrderToGoogleSheet(paidDemoOrder)
+          sendPaidOrderToGoogleSheetOnce(paidDemoOrder)
             .catch((sheetErr) => {
               console.error(`Google demo order sync failed for ${demoOrder.order_ref}:`, sheetErr);
               return null;
@@ -5778,7 +5817,7 @@ const server = http.createServer(async (req, res) => {
                     console.error(`Demo verify notification retry failed for ${orderRef}:`, notifyErr && notifyErr.message ? notifyErr.message : notifyErr);
                     return null;
                   }),
-                sendPaidOrderToGoogleSheet(storedDemoOrder)
+                sendPaidOrderToGoogleSheetOnce(storedDemoOrder)
                   .catch((sheetErr) => {
                     console.error(`Demo verify Google Sheet retry failed for ${orderRef}:`, sheetErr);
                     return null;
@@ -5840,7 +5879,7 @@ const server = http.createServer(async (req, res) => {
             try { await queueNewOrderNotificationAfterSheet(paidOrder); }
             catch (notifyErr) { console.error(`New-order notification queue failed for ${order.order_ref}:`, notifyErr && notifyErr.message ? notifyErr.message : notifyErr); }
             try {
-              await sendPaidOrderToGoogleSheet(paidOrder);
+              await sendPaidOrderToGoogleSheetOnce(paidOrder);
             } catch (sheetErr) {
               console.error(`Google order sync failed for ${order.order_ref}:`, sheetErr);
             }
