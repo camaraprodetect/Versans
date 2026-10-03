@@ -5603,52 +5603,86 @@ const server = http.createServer(async (req, res) => {
           updated_at: now
         };
 
-        json(res, 200, { ...result, guest: guestIdentity ? { name: guestIdentity.username, isVerifiedCustomer: true } : null }, guestIdentity && guestIdentity.setCookie ? { 'Set-Cookie': guestIdentity.setCookie } : {});
-        setImmediate(async () => {
-          // Demo orders must be visible in Admin too. Persist them after the response so
-          // a slow/locked database can never block the checkout button again.
-          let persistedDemoOrder = null;
-          try {
-            await database.upsertPaidOrder({
-              orderRef: demoOrder.order_ref,
-              userId: currentUser ? Number(currentUser.id) : null,
-              customerEmail: demoOrder.customer_email,
-              customerPhone: demoOrder.customer_phone,
-              customerJson: demoOrder.customer_json,
-              guestVisitorId: guestIdentity ? guestIdentity.visitorId : null,
-              guestUsername: guestIdentity ? guestIdentity.username : null,
-              amountAgorot: demoOrder.amount_agorot,
-              currency: demoOrder.currency,
-              itemsJson: demoOrder.items_json,
-              couponId: null,
-              couponCode: requestedCouponCode || null,
-              couponDiscountAgorot: amountToAgorot(result.couponDiscount || 0) || 0,
-              createdAt: demoOrder.created_at,
-              paidAt: demoOrder.paid_at,
-              updatedAt: demoOrder.updated_at
-            });
-            persistedDemoOrder = await database.getOrderByRef(demoOrder.order_ref);
-          } catch (dbErr) {
-            console.error(`Demo order database save failed for ${demoOrder.order_ref}:`, dbErr);
-          }
-          // Trigger Grok as soon as the paid DEMO order exists in the DB. Do this
-          // before Google Sheets so a slow/outageing Sheet can never delay or suppress
-          // the customer WhatsApp notification.
-          if (persistedDemoOrder) {
-            try { await queueNewOrderNotificationAfterSheet(persistedDemoOrder); }
-            catch (notifyErr) { console.error(`Demo new-order notification queue failed for ${demoOrder.order_ref}:`, notifyErr && notifyErr.message ? notifyErr.message : notifyErr); }
-          }
-          try {
-            await sendPaidOrderToGoogleSheet(demoOrder);
-          } catch (sheetErr) {
-            console.error(`Google demo order sync failed for ${demoOrder.order_ref}:`, sheetErr);
-          }
-          try {
-            await sendOrderConfirmationForOrder(demoOrder);
-          } catch (emailErr) {
-            console.error(`Demo order confirmation email failed for ${demoOrder.order_ref}:`, emailErr && emailErr.message ? emailErr.message : emailErr);
-          }
-        });
+        /*
+         * V40: a Guest paid order must run through the exact same post-payment
+         * pipeline as a signed-in order. Do not send the checkout success response
+         * before the order exists in the DB and the Google Sheet / notification
+         * hooks have at least been attempted. The old fire-and-forget setImmediate
+         * could be interrupted after the HTTP response, which made Guest demo
+         * orders look successful in the browser while never reaching Sheets/Grok.
+         */
+        let persistedDemoOrder = null;
+        try {
+          await database.upsertPaidOrder({
+            orderRef: demoOrder.order_ref,
+            userId: currentUser ? Number(currentUser.id) : null,
+            customerEmail: demoOrder.customer_email,
+            customerPhone: demoOrder.customer_phone,
+            customerJson: demoOrder.customer_json,
+            guestVisitorId: guestIdentity ? guestIdentity.visitorId : null,
+            guestUsername: guestIdentity ? guestIdentity.username : null,
+            amountAgorot: demoOrder.amount_agorot,
+            currency: demoOrder.currency,
+            itemsJson: demoOrder.items_json,
+            couponId: null,
+            couponCode: requestedCouponCode || null,
+            couponDiscountAgorot: amountToAgorot(result.couponDiscount || 0) || 0,
+            createdAt: demoOrder.created_at,
+            paidAt: demoOrder.paid_at,
+            updatedAt: demoOrder.updated_at
+          });
+          persistedDemoOrder = await database.getOrderByRef(demoOrder.order_ref);
+        } catch (dbErr) {
+          console.error(`Demo order database save failed for ${demoOrder.order_ref}:`, dbErr);
+        }
+
+        /*
+         * Notification + Google Sheet are independent. Attempt both in parallel so
+         * a slow Sheet does not prevent Grok/WhatsApp from receiving the order and
+         * vice versa. Both flows already de-duplicate by order/orderRef.
+         */
+        const paidDemoOrder = persistedDemoOrder || demoOrder;
+        const postPaymentTasks = [];
+
+        if (persistedDemoOrder) {
+          postPaymentTasks.push(
+            queueNewOrderNotificationAfterSheet(persistedDemoOrder)
+              .catch((notifyErr) => {
+                console.error(`Demo new-order notification queue failed for ${demoOrder.order_ref}:`, notifyErr && notifyErr.message ? notifyErr.message : notifyErr);
+                return null;
+              })
+          );
+        } else {
+          console.error(`Demo new-order notification skipped because order ${demoOrder.order_ref} was not persisted`);
+        }
+
+        postPaymentTasks.push(
+          sendPaidOrderToGoogleSheet(paidDemoOrder)
+            .catch((sheetErr) => {
+              console.error(`Google demo order sync failed for ${demoOrder.order_ref}:`, sheetErr);
+              return null;
+            })
+        );
+
+        postPaymentTasks.push(
+          sendOrderConfirmationForOrder(paidDemoOrder)
+            .catch((emailErr) => {
+              console.error(`Demo order confirmation email failed for ${demoOrder.order_ref}:`, emailErr && emailErr.message ? emailErr.message : emailErr);
+              return null;
+            })
+        );
+
+        await Promise.all(postPaymentTasks);
+
+        json(
+          res,
+          200,
+          {
+            ...result,
+            guest: guestIdentity ? { name: guestIdentity.username, isVerifiedCustomer: true } : null
+          },
+          guestIdentity && guestIdentity.setCookie ? { 'Set-Cookie': guestIdentity.setCookie } : {}
+        );
         return;
       }
 
@@ -5717,6 +5751,34 @@ const server = http.createServer(async (req, res) => {
           raw: 'demo',
           demo: true
         };
+
+        /*
+         * Safety retry: the thank-you verification is another opportunity to
+         * repair a missed Guest Sheet/Grok delivery. These two operations are
+         * idempotent/de-duplicated, so refreshing the thank-you page is safe.
+         */
+        if (validDemoReturn && orderRef) {
+          try {
+            const storedDemoOrder = await database.getOrderByRef(orderRef);
+            if (storedDemoOrder && String(storedDemoOrder.status || '') === 'paid') {
+              await Promise.all([
+                queueNewOrderNotificationAfterSheet(storedDemoOrder)
+                  .catch((notifyErr) => {
+                    console.error(`Demo verify notification retry failed for ${orderRef}:`, notifyErr && notifyErr.message ? notifyErr.message : notifyErr);
+                    return null;
+                  }),
+                sendPaidOrderToGoogleSheet(storedDemoOrder)
+                  .catch((sheetErr) => {
+                    console.error(`Demo verify Google Sheet retry failed for ${orderRef}:`, sheetErr);
+                    return null;
+                  })
+              ]);
+            }
+          } catch (retryErr) {
+            console.error(`Demo verify post-payment retry failed for ${orderRef}:`, retryErr && retryErr.message ? retryErr.message : retryErr);
+          }
+        }
+
         json(res, 200, { ...result, verifiedCustomer: false });
         return;
       } else {

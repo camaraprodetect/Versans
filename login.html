@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/styles.css?v=20260908-promo-v3">
-<link rel="stylesheet" href="assets/brand.css?v=20261001-logo-v4">
+<link rel="stylesheet" href="assets/brand.css?v=20260905-versans-v1">
 <link rel="stylesheet" href="assets/auth.css?v=20260922-password-reset-v2">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="96x96" href="/images/favicon-96.png">
@@ -18,14 +18,45 @@
 <link rel="stylesheet" href="assets/fonts.css?v=20260909-fonts-only">
 <link rel="stylesheet" href="assets/typography-only.css?v=20260909-fonts-only">
 <link rel="stylesheet" href="assets/accessibility.css?v=20260928-a11y-v1">
+
+<style id="versans-guest-orders-login-v39">
+  .guest-orders-entry{
+    display:none;
+    margin:0 0 1rem;
+  }
+  .guest-orders-entry.is-visible{
+    display:block;
+  }
+  .guest-orders-entry__btn{
+    width:100%;
+    min-height:48px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:.45rem;
+    text-decoration:none;
+  }
+  .guest-orders-entry__name{
+    display:block;
+    margin-top:.38rem;
+    text-align:center;
+    color:#66727b;
+    font-size:.76rem;
+  }
+</style>
+
 </head>
 <body class="auth-page" data-auth-page="login">
 <main class="auth-shell">
   <section class="auth-visual" aria-hidden="true"><div class="auth-visual__media"><img src="images/auth-showcase.png" alt="" loading="eager" decoding="async"></div><div class="auth-visual__content"><p class="auth-visual__eyebrow">חשבון VERSANS</p><h1 id="authVisualTitle">המתנה שלכם. החשבון שלכם.</h1><p id="authVisualText">חשבון VerSans מאפשר לנו לזהות אתכם בצורה מאובטחת ולהוסיף בהמשך היסטוריית הזמנות, ביקורות והטבות.</p></div></section>
   <section class="auth-panel">
     <div class="auth-card">
-      <div class="auth-card__top"><a class="auth-card__brand" href="/shop#top" aria-label="VerSans"><span class="brand__logo"><img src="/images/VersansLogoWordmarkWhite.png" alt="VerSans" width="719" height="171"></span></a><div><a class="auth-back" id="authBack" href="/shop#shop">חזרה לחנות</a></div></div>
+      <div class="auth-card__top"><a class="auth-card__brand" href="/shop#top" aria-label="VerSans"><span class="brand__logo"><img src="images/VerSansLogoBlackJewlery.png" alt="VerSans" width="800" height="800"></span></a><div><a class="auth-back" id="authBack" href="/shop#shop">חזרה לחנות</a></div></div>
       <p class="auth-card__eyebrow">VERSANS</p><h2 id="authTitle">כניסה לחשבון</h2><p class="auth-card__lead" id="authLead">התחברו כדי לנהל את החשבון שלכם ב־VerSans.</p>
+      <div class="guest-orders-entry" id="guestOrdersEntry">
+        <a class="btn btn--ghost guest-orders-entry__btn" href="/my-orders">ההזמנות שלי</a>
+        <span class="guest-orders-entry__name" id="guestOrdersName"></span>
+      </div>
       <form class="auth-form" id="authForm" novalidate>
         <div class="auth-field"><label for="email">אימייל</label><input class="auth-input" id="email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254"></div>
         <div class="auth-field"><label for="password">סיסמה</label><div class="auth-password-wrap"><input class="auth-input" id="password" name="password" type="password" autocomplete="current-password" required minlength="8" maxlength="128"><button class="auth-password-toggle" type="button" data-password-toggle="password">הצג</button></div><div class="auth-field__actions"><a class="auth-forgot-link" id="forgotPasswordLink" href="/forgot-password">שכחתי סיסמה</a></div></div>
@@ -39,5 +70,71 @@
 <script src="assets/auth.js?v=20260922-password-reset-v2"></script>
   <script src="/assets/presence.js?v=20260915-presence-v1"></script>
 <script src="assets/accessibility.js?v=20260928-a11y-v1"></script>
+
+<script id="versans-guest-orders-login-script-v39">
+(function () {
+  var entry = document.getElementById('guestOrdersEntry');
+  var nameEl = document.getElementById('guestOrdersName');
+  if (!entry) return;
+
+  var attempts = 0;
+  var maxAttempts = 4;
+
+  function show(name) {
+    entry.classList.add('is-visible');
+    if (nameEl) nameEl.textContent = name ? String(name) : '';
+  }
+
+  function check() {
+    attempts += 1;
+
+    Promise.all([
+      fetch('/api/auth/me', {
+        credentials: 'same-origin',
+        headers: { Accept: 'application/json' }
+      }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }),
+
+      fetch('/api/account/orders', {
+        credentials: 'same-origin',
+        headers: { Accept: 'application/json' }
+      }).then(function (r) {
+        return r.json().catch(function () { return {}; }).then(function (data) {
+          return { ok: r.ok, data: data };
+        });
+      }).catch(function () { return { ok: false, data: {} }; })
+    ]).then(function (results) {
+      var me = results[0];
+      var ordersResult = results[1];
+
+      /* Logged-in users are handled by the normal auth redirect. This button
+         is specifically for a Guest identity that already owns orders. */
+      if (me && me.user) return;
+
+      var guest = me && me.guest ? me.guest : null;
+      var orders = ordersResult && ordersResult.data && Array.isArray(ordersResult.data.orders)
+        ? ordersResult.data.orders
+        : [];
+
+      if (ordersResult.ok && orders.length > 0) {
+        show(
+          (ordersResult.data && ordersResult.data.ownerName) ||
+          (guest && guest.name) ||
+          ''
+        );
+        return;
+      }
+
+      /* Demo checkout saves the paid order asynchronously. Retry briefly so
+         the button appears without the customer having to refresh the page. */
+      if (attempts < maxAttempts) {
+        window.setTimeout(check, attempts === 1 ? 450 : 900);
+      }
+    });
+  }
+
+  check();
+})();
+</script>
+
 </body>
 </html>
