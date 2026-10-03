@@ -122,13 +122,23 @@
     if (page !== 'login' && page !== 'register') return;
 
     /*
-     * V41: never auto-redirect the login/register page based on a background
-     * auth check. If auth/session state changes while the page is opening, the
-     * old redirect could bounce between /login and /account and look like an
-     * endless refresh loop. Login now stays stable until the visitor submits
-     * the form or explicitly navigates away.
+     * V42: if a real signed-in account reaches /login, take it back to the
+     * requested page. The redirect loop was not caused by this check itself;
+     * account.html was throwing after we removed optional account sections.
      */
-    return;
+    fetch('/api/auth/me', {
+      credentials: 'same-origin',
+      cache: 'no-store',
+      headers: { Accept: 'application/json' }
+    })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (data) {
+        if (!data || !data.user) return;
+        var next = safeNext();
+        if (/^\/(?:login|register)(?:[/?#]|$)/.test(next)) next = '/account';
+        location.replace(next);
+      })
+      .catch(function () {});
   }
 
   function prepareResetPage() {
@@ -263,22 +273,54 @@
 
     function populate(user) {
       currentUser = user;
-      qs('#accountLoading').hidden = true; qs('#accountDetails').hidden = false;
-      qs('#accountNameInput').value = user.name || '';
-      qs('#accountEmailInput').value = user.email || '';
-      qs('#accountPhoneInput').value = formatPhone(user.phone || '');
-      var d = new Date(user.createdAt); qs('#accountSince').textContent = new Intl.DateTimeFormat('he-IL', { dateStyle: 'medium' }).format(d);
+
+      var loading = qs('#accountLoading');
+      var details = qs('#accountDetails');
+      var nameInput = qs('#accountNameInput');
+      var emailInput = qs('#accountEmailInput');
+      var phoneInput = qs('#accountPhoneInput');
+      var since = qs('#accountSince');
+
+      if (loading) loading.hidden = true;
+      if (details) details.hidden = false;
+      if (nameInput) nameInput.value = user.name || '';
+      if (emailInput) emailInput.value = user.email || '';
+      if (phoneInput) phoneInput.value = formatPhone(user.phone || '');
+
+      if (since) {
+        var d = new Date(user.createdAt);
+        since.textContent = new Intl.DateTimeFormat('he-IL', { dateStyle: 'medium' }).format(d);
+      }
+
+      /*
+       * These sections are optional. V38 intentionally removed marketing,
+       * terms-review and account-deletion UI, so auth.js must not assume those
+       * elements still exist.
+       */
       var marketing = user.marketing || {};
-      qs('#accountMarketingEmail').checked = !!marketing.email;
-      qs('#accountMarketingSms').checked = !!marketing.sms;
-      qs('#accountMarketingWhatsapp').checked = !!marketing.whatsapp;
-      qs('#termsUpdateSection').hidden = !user.termsNeedsReview;
+      var marketingEmail = qs('#accountMarketingEmail');
+      var marketingSms = qs('#accountMarketingSms');
+      var marketingWhatsapp = qs('#accountMarketingWhatsapp');
+      var termsSection = qs('#termsUpdateSection');
+
+      if (marketingEmail) marketingEmail.checked = !!marketing.email;
+      if (marketingSms) marketingSms.checked = !!marketing.sms;
+      if (marketingWhatsapp) marketingWhatsapp.checked = !!marketing.whatsapp;
+      if (termsSection) termsSection.hidden = !user.termsNeedsReview;
     }
 
     api('/api/auth/me', 'GET').then(function (result) {
-      if (!result.response.ok || !result.data.user) { location.replace('/login?next=%2Faccount'); return; }
-      populate(result.data.user); loadOrders();
-    }).catch(function () { location.replace('/login?next=%2Faccount'); });
+      if (!result.response.ok || !result.data || !result.data.user) {
+        location.replace('/login?next=%2Faccount');
+        return;
+      }
+      populate(result.data.user);
+      loadOrders();
+    }).catch(function () {
+      var loading = qs('#accountLoading');
+      if (loading) loading.textContent = 'לא הצלחנו לטעון את החשבון כרגע. נסו לרענן את העמוד.';
+      showAccountMessage('לא הצלחנו לטעון את החשבון כרגע. נסו שוב.', false);
+    });
 
     var profile = qs('#accountProfileForm'); if (profile) profile.addEventListener('submit', function (event) {
       event.preventDefault(); showAccountMessage('');
@@ -303,7 +345,7 @@
       acceptTerms.disabled = true;
       api('/api/auth/accept-terms', 'POST', {}).then(function (result) {
         if (!result.response.ok || !result.data.ok) throw result.data;
-        qs('#termsUpdateSection').hidden = true; showAccountMessage('אישור התנאים נשמר.', true);
+        var termsSection = qs('#termsUpdateSection'); if (termsSection) termsSection.hidden = true; showAccountMessage('אישור התנאים נשמר.', true);
       }).catch(function (err) { showAccountMessage(errorText(err && err.error)); acceptTerms.disabled = false; });
     });
 
