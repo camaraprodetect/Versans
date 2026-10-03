@@ -2161,20 +2161,59 @@
     product = product || {};
     return product.category === 'hats' || (Array.isArray(product.categories) && product.categories.indexOf('hats') !== -1);
   }
-  function isFashionBraceletProduct(product) {
+  function isRealColorSelection(product, color) {
     product = product || {};
-    return product.category === 'bracelets-fashion' || (Array.isArray(product.categories) && product.categories.indexOf('bracelets-fashion') !== -1);
+    if (!color) return false;
+    if (color.image) return true;
+    var heading = [
+      product.colorHeading && (product.colorHeading.he || product.colorHeading.en) || '',
+      product.colorRequiredText && (product.colorRequiredText.he || product.colorRequiredText.en) || ''
+    ].join(' ');
+    if (/צבע|color/i.test(heading)) return true;
+    return product.colorDisplay === 'image-choice' || product.colorDisplay === 'swatch';
   }
-  function fashionBraceletDisplayName(product, color, item) {
-    if (item && item.selectedName) return String(item.selectedName);
-    if (!isFashionBraceletProduct(product) || !color) return L(product && product.title);
-    return state.lang === 'he'
-      ? 'צמיד אופנה HERMES - צבע ' + L(color.label)
-      : 'HERMES Fashion Bracelet - ' + ((color.label && (color.label.en || color.label.he)) || color.id || '');
+  function normalizedColorTokens(value) {
+    return String(value || '').toLowerCase()
+      .replace(/\bcolor\b/gi, ' ').replace(/צבע/g, ' ')
+      .replace(/[\/|,+()_\-–—]+/g, ' ')
+      .split(/\s+/).map(function (token) { return token.trim(); }).filter(Boolean)
+      .map(function (token) { return /^ו[\u0590-\u05FF]{2,}$/.test(token) ? token.slice(1) : token; })
+      .sort().join('|');
   }
-  function fashionBraceletDisplayImage(product, color, item) {
+  function selectedColorDisplayName(product, color, item) {
+    var original = L(product && product.title);
+    if (!color || !isRealColorSelection(product, color)) return item && item.selectedName ? String(item.selectedName) : original;
+    var label = L(color.label) || color.id || '';
+    var base = String(original || '').trim();
+    if (state.lang === 'he') base = base.replace(/\s*-\s*צבע\s+.+$/u, '').trim();
+    else base = base.replace(/\s*-\s*color\s+.+$/i, '').trim();
+    if (base === String(original || '').trim()) {
+      var match = base.match(/^(.*)\s+-\s+([^-\n]+)$/u);
+      if (match) {
+        var target = normalizedColorTokens(match[2]);
+        var matches = (product.colors || []).some(function (entry) {
+          return normalizedColorTokens(L(entry.label)) === target;
+        });
+        if (matches) base = match[1].trim();
+      }
+    }
+    return state.lang === 'he' ? base + ' - צבע ' + label : base + ' - ' + label;
+  }
+  function selectedColorDisplayImage(product, color, item) {
+    if (color && isRealColorSelection(product, color) && color.image) return String(color.image);
+    if (product && product.variantImages && typeof product.variantImages === 'object') {
+      var keys = [
+        [item && item.size, item && item.necklace, item && item.color].filter(Boolean).join('|'),
+        [item && item.size, item && item.necklace].filter(Boolean).join('|'),
+        [item && item.necklace, item && item.color].filter(Boolean).join('|'),
+        [item && item.size, item && item.color].filter(Boolean).join('|'),
+        String(item && item.color || '')
+      ].filter(Boolean);
+      for (var i = 0; i < keys.length; i += 1) {
+        if (product.variantImages[keys[i]]) return String(product.variantImages[keys[i]]);
+      }
+    }
     if (item && item.selectedImage) return String(item.selectedImage);
-    if (isFashionBraceletProduct(product) && color && color.image) return color.image;
     return '';
   }
   function deliveryHtml(line) {
@@ -2239,8 +2278,9 @@
         customPhoto: customPhoto,
         greeting: it.greeting && typeof it.greeting === 'object' ? it.greeting : null,
         pendingRequirements: pendingRequirements,
-        displayName: fashionBraceletDisplayName(p, color, it),
-        displayImage: fashionBraceletDisplayImage(p, color, it),
+        displayName: selectedColorDisplayName(p, color, it),
+        displayImage: selectedColorDisplayImage(p, color, it),
+        title: selectedColorDisplayName(p, color, it),
         unitPrice: Number(p.price) + necklaceExtra + boxExtra + sizeExtra + colorExtra + packagingExtra + greetingExtra
       };
     }).filter(Boolean);

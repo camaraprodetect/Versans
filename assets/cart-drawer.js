@@ -35,26 +35,9 @@
     return 20 + (hasUpgrade ? 15 : 0);
   }
 
-  function isFashionBraceletProduct(product) {
-    product = product || {};
-    return product.category === 'bracelets-fashion' || (Array.isArray(product.categories) && product.categories.indexOf('bracelets-fashion') !== -1);
-  }
-
-  function productDisplayName(line) {
-    var p = line.p || {};
-    if (line.item && line.item.selectedName) return String(line.item.selectedName);
-    if (isFashionBraceletProduct(p) && line.color) {
-      return lang === 'he'
-        ? 'צמיד אופנה HERMES - צבע ' + L(line.color.label)
-        : 'HERMES Fashion Bracelet - ' + ((line.color.label && (line.color.label.en || line.color.label.he)) || line.color.id || '');
-    }
-    return L(p.title);
-  }
-
   function productImage(line) {
+    if (line && line.displayImage) return String(line.displayImage);
     var p = line.p || {};
-    if (line.item && line.item.selectedImage) return String(line.item.selectedImage);
-    if (isFashionBraceletProduct(p) && line.color && line.color.image) return line.color.image;
     var variantImg = p.variantImages && line.size && line.necklace ? p.variantImages[line.size.id + '|' + line.necklace.id] : '';
     return variantImg || (line.necklace ? line.necklace.image : ((p.images && p.images.length) ? p.images[0] : (p.cardImage || '')));
   }
@@ -185,7 +168,7 @@
       if (line.necklace) meta.push(L(line.necklace.label));
       if (line.box) meta.push(L(line.box.label));
       if (line.size) meta.push(L(line.size.label));
-      if (line.color && !isFashionBraceletProduct(line.p)) meta.push(L(line.color.label));
+      if (line.color) meta.push(L(line.color.label));
       if (line.packaging) meta.push((lang === 'he' ? 'אריזה: ' : 'Packaging: ') + L(line.packaging.label));
       if (line.customName) meta.push((lang === 'he' ? 'שם: ' : 'Name: ') + line.customName);
       if (line.customPhoto) meta.push(lang === 'he' ? 'תמונה אישית ✓' : 'Custom photo ✓');
@@ -195,7 +178,7 @@
       return '<div class="line">' +
         '<div class="line__thumb">' + (image ? '<img src="' + esc(image) + '" alt="">' : '<span>V</span>') + '</div>' +
         '<div class="line__main">' +
-          '<p class="line__name">' + esc(productDisplayName(line) + (line.packaging ? (lang === 'he' ? ' + מארז LOVE FOREVER' : ' + LOVE FOREVER packaging') : '')) + '</p>' +
+          '<p class="line__name">' + esc((line.displayName || L(line.p.title)) + (line.packaging ? (lang === 'he' ? ' + מארז LOVE FOREVER' : ' + LOVE FOREVER packaging') : '')) + '</p>' +
           (meta.length ? '<p class="line__meta">' + esc(meta.join(' · ')) + '</p>' : '') +
           '<p class="line__meta">' + money(line.unitPrice) + '</p>' +
           deliveryHtml(line) +

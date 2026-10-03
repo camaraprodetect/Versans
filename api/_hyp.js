@@ -14,6 +14,7 @@
 
 const { STORE_CONFIG } = require('../assets/config.js');
 const { PRODUCTS } = require('../assets/products.js');
+const { isRealColorSelector, selectedColorProductName } = require('../lib/product-variant-identity.js');
 const PRICING = require('../assets/pricing.js');
 
 const HYP_ENDPOINT = 'https://icom.yaad.net/p/';
@@ -54,12 +55,6 @@ function newOrderId() {
 function optionById(list, id) {
   if (!Array.isArray(list)) return null;
   return list.find((option) => option.id === id) || null;
-}
-
-function isFashionBraceletProduct(product) {
-  if (!product) return false;
-  const categories = Array.isArray(product.categories) ? product.categories : [];
-  return product.category === 'bracelets-fashion' || categories.includes('bracelets-fashion');
 }
 
 function localText(value, lang) {
@@ -144,17 +139,10 @@ function priceOrder(items, lang, coupon = null) {
         throw err;
       }
       unitPrice += Number(color.addPrice || 0);
-      const colorLabel = localText(color.label, lang) || color.id;
-      if (isFashionBraceletProduct(product)) {
-        if (lang === 'he') {
-          const baseName = String(nameParts[0] || '').replace(/\s*-\s*צבע\s+.+$/u, '').trim() || 'צמיד אופנה HERMES';
-          nameParts[0] = baseName + ' - צבע ' + colorLabel;
-        } else {
-          const baseName = String(nameParts[0] || '').replace(/\s*-\s*[^-]+$/, '').trim() || 'HERMES Fashion Bracelet';
-          nameParts[0] = baseName + ' - ' + colorLabel;
-        }
+      if (isRealColorSelector(product, color)) {
+        nameParts[0] = selectedColorProductName(product, item, lang);
       } else {
-        nameParts.push(colorLabel);
+        nameParts.push(localText(color.label, lang) || color.id);
       }
     }
 

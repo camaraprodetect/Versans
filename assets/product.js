@@ -220,23 +220,76 @@
   function hasBoxOptions() { return Array.isArray(product.boxes) && product.boxes.length; }
   function selectedSize() { return findOption(product.sizes, selectedSizeId); }
   function selectedColor() { return findOption(product.colors, selectedColorId); }
-  function isFashionBraceletProduct(productValue) {
+  function isRealColorSelection(productValue, colorValue) {
     var p = productValue || product || {};
-    var categories = Array.isArray(p.categories) ? p.categories : [];
-    return p.category === 'bracelets-fashion' || categories.indexOf('bracelets-fashion') !== -1;
+    var color = colorValue || selectedColor();
+    if (!color) return false;
+    if (color.image) return true;
+    var heading = [
+      p.colorHeading && (p.colorHeading.he || p.colorHeading.en) || '',
+      p.colorRequiredText && (p.colorRequiredText.he || p.colorRequiredText.en) || ''
+    ].join(' ');
+    if (/צבע|color/i.test(heading)) return true;
+    return p.colorDisplay === 'image-choice' || p.colorDisplay === 'swatch';
+  }
+  function normalizedColorTokens(value) {
+    return String(value || '')
+      .toLowerCase()
+      .replace(/\bcolor\b/gi, ' ')
+      .replace(/צבע/g, ' ')
+      .replace(/[\/|,+()_\-–—]+/g, ' ')
+      .split(/\s+/)
+      .map(function (token) { return token.trim(); })
+      .filter(Boolean)
+      .map(function (token) { return /^ו[\u0590-\u05FF]{2,}$/.test(token) ? token.slice(1) : token; })
+      .sort()
+      .join('|');
+  }
+  function titleSuffixMatchesColor(suffix) {
+    var target = normalizedColorTokens(suffix);
+    if (!target) return false;
+    return (product.colors || []).some(function (entry) {
+      return normalizedColorTokens(L(entry.label)) === target;
+    });
   }
   function selectedDisplayTitle() {
     var color = selectedColor();
-    if (isFashionBraceletProduct(product) && color) {
-      return lang === 'he'
-        ? 'צמיד אופנה HERMES - צבע ' + L(color.label)
-        : 'HERMES Fashion Bracelet - ' + (color.label && (color.label.en || color.label.he) || color.id || '');
+    var original = L(product.title);
+    if (!color || !isRealColorSelection(product, color)) return original;
+
+    var label = L(color.label) || color.id || '';
+    if (!label) return original;
+
+    var base = String(original || '').trim();
+    if (lang === 'he') base = base.replace(/\s*-\s*צבע\s+.+$/u, '').trim();
+    else base = base.replace(/\s*-\s*color\s+.+$/i, '').trim();
+
+    if (base === String(original || '').trim()) {
+      var match = base.match(/^(.*)\s+-\s+([^-\n]+)$/u);
+      if (match && titleSuffixMatchesColor(match[2])) base = match[1].trim();
     }
-    return L(product.title);
+
+    return lang === 'he' ? base + ' - צבע ' + label : base + ' - ' + label;
+  }
+  function selectedVariantImageFromSelections() {
+    if (!product.variantImages || typeof product.variantImages !== 'object') return '';
+    var keys = [
+      [selectedSizeId, selectedNecklaceId, selectedColorId].filter(Boolean).join('|'),
+      [selectedSizeId, selectedNecklaceId].filter(Boolean).join('|'),
+      [selectedNecklaceId, selectedColorId].filter(Boolean).join('|'),
+      [selectedSizeId, selectedColorId].filter(Boolean).join('|'),
+      selectedColorId || ''
+    ].filter(Boolean);
+    for (var i = 0; i < keys.length; i += 1) {
+      if (product.variantImages[keys[i]]) return product.variantImages[keys[i]];
+    }
+    return '';
   }
   function selectedDisplayImage() {
     var color = selectedColor();
-    if (isFashionBraceletProduct(product) && color && color.image) return color.image;
+    if (color && isRealColorSelection(product, color) && color.image) return color.image;
+    var variantImage = selectedVariantImageFromSelections();
+    if (variantImage) return variantImage;
     return product.cardImage || (Array.isArray(product.images) && product.images[0]) || product.hoverImage || '';
   }
   function updateSelectedProductIdentity() {
@@ -245,6 +298,7 @@
     if (titleEl) titleEl.textContent = title;
     var crumb = $('#crumbCurrent');
     if (crumb) crumb.textContent = title;
+    if (title) document.title = title + ' | VerSans';
   }
   function hasSizeOptions() { return Array.isArray(product.sizes) && product.sizes.length; }
   function hasColorOptions() { return Array.isArray(product.colors) && product.colors.length; }
@@ -1940,7 +1994,9 @@ async function uploadProductPhoto(blob, meta) {
         packaging: packageColor,
         customName: hasCustomName() ? customNameValue : null,
         customPhoto: hasCustomPhoto() ? customPhotoValue : null,
-        greeting: savedGreeting()
+        greeting: savedGreeting(),
+        selectedName: selectedDisplayTitle(),
+        selectedImage: selectedDisplayImage()
       };
       pendingItem.key = cartItemKey(pendingItem);
       savePendingBundle(pendingItem, returnTo, packageColor);
@@ -1969,10 +2025,8 @@ async function uploadProductPhoto(blob, meta) {
       if (existingKey === key) {
         item.qty = (parseInt(item.qty, 10) || 0) + qty;
         item.key = key;
-        if (isFashionBraceletProduct(product)) {
-          item.selectedName = selectedDisplayTitle();
-          item.selectedImage = selectedDisplayImage();
-        }
+        item.selectedName = selectedDisplayTitle();
+        item.selectedImage = selectedDisplayImage();
         found = true;
       }
     });
@@ -1989,8 +2043,8 @@ async function uploadProductPhoto(blob, meta) {
         customName: hasCustomName() ? customNameValue : null,
         customPhoto: hasCustomPhoto() ? customPhotoValue : null,
         greeting: savedGreeting(),
-        selectedName: isFashionBraceletProduct(product) ? selectedDisplayTitle() : null,
-        selectedImage: isFashionBraceletProduct(product) ? selectedDisplayImage() : null,
+        selectedName: selectedDisplayTitle(),
+        selectedImage: selectedDisplayImage(),
         key: key
       });
     }

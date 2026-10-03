@@ -34,6 +34,74 @@
     return null;
   }
 
+  function localText(value) {
+    var lang = document.documentElement.lang === 'en' ? 'en' : 'he';
+    if (!value) return '';
+    if (typeof value === 'string') return value;
+    return String((lang === 'en' ? (value.en || value.he) : (value.he || value.en)) || value.id || '');
+  }
+
+  function isRealColorSelection(product, color) {
+    if (!product || !color) return false;
+    if (color.image) return true;
+    var heading = [
+      product.colorHeading && (product.colorHeading.he || product.colorHeading.en) || '',
+      product.colorRequiredText && (product.colorRequiredText.he || product.colorRequiredText.en) || ''
+    ].join(' ');
+    if (/צבע|color/i.test(heading)) return true;
+    return product.colorDisplay === 'image-choice' || product.colorDisplay === 'swatch';
+  }
+
+  function normalizedColorTokens(value) {
+    return String(value || '').toLowerCase()
+      .replace(/\bcolor\b/gi, ' ').replace(/צבע/g, ' ')
+      .replace(/[\/|,+()_\-–—]+/g, ' ')
+      .split(/\s+/).map(function (token) { return token.trim(); }).filter(Boolean)
+      .map(function (token) { return /^ו[\u0590-\u05FF]{2,}$/.test(token) ? token.slice(1) : token; })
+      .sort().join('|');
+  }
+
+  function displayNameFor(product, color, item) {
+    var lang = document.documentElement.lang === 'en' ? 'en' : 'he';
+    var original = localText(product && product.title);
+    if (!color || !isRealColorSelection(product, color)) return item && item.selectedName ? String(item.selectedName) : original;
+    var label = localText(color.label) || color.id || '';
+    var base = String(original || '').trim();
+    if (lang === 'he') base = base.replace(/\s*-\s*צבע\s+.+$/u, '').trim();
+    else base = base.replace(/\s*-\s*color\s+.+$/i, '').trim();
+    if (base === String(original || '').trim()) {
+      var match = base.match(/^(.*)\s+-\s+([^-\n]+)$/u);
+      if (match) {
+        var target = normalizedColorTokens(match[2]);
+        var matches = (product.colors || []).some(function (entry) {
+          return normalizedColorTokens(localText(entry.label)) === target;
+        });
+        if (matches) base = match[1].trim();
+      }
+    }
+    return lang === 'he' ? base + ' - צבע ' + label : base + ' - ' + label;
+  }
+
+  function displayImageFor(product, color, item) {
+    if (color && isRealColorSelection(product, color) && color.image) return String(color.image);
+    if (product && product.variantImages && typeof product.variantImages === 'object') {
+      var keys = [
+        [item && item.size, item && item.necklace, item && item.color].filter(Boolean).join('|'),
+        [item && item.size, item && item.necklace].filter(Boolean).join('|'),
+        [item && item.necklace, item && item.color].filter(Boolean).join('|'),
+        [item && item.size, item && item.color].filter(Boolean).join('|'),
+        String(item && item.color || '')
+      ].filter(Boolean);
+      for (var i = 0; i < keys.length; i += 1) {
+        if (product.variantImages[keys[i]]) return String(product.variantImages[keys[i]]);
+      }
+    }
+    if (item && item.selectedImage) return String(item.selectedImage);
+    if (product && product.cardImage) return String(product.cardImage);
+    if (product && Array.isArray(product.images) && product.images.length) return String(product.images[0]);
+    return '';
+  }
+
   function itemKey(item) {
     item = item || {};
     var pending = Array.isArray(item.quickAddPending) ? item.quickAddPending.slice().sort().join(',') : '';
@@ -98,6 +166,9 @@
       customPhoto: customPhoto,
       greeting: item.greeting && typeof item.greeting === 'object' ? item.greeting : null,
       pendingRequirements: pendingRequirements,
+      displayName: displayNameFor(product, color, item),
+      displayImage: displayImageFor(product, color, item),
+      title: displayNameFor(product, color, item),
       unitPrice: Number(product.price || 0) + necklaceExtra + boxExtra + sizeExtra + colorExtra + packagingExtra + greetingExtra
     };
   }
