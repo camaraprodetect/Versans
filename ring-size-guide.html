@@ -56,7 +56,40 @@
       .shell{width:min(100% - 24px,900px);padding:28px 0 52px}.hero{margin-bottom:20px}.hero h1{font-size:2.65rem}.hero p{font-size:.96rem}
       .video-card{border-radius:20px;margin-bottom:14px}.card{border-radius:22px;padding:24px 18px;margin-top:12px}.card h2{font-size:1.85rem}
       .step{grid-template-columns:36px 1fr;gap:11px}.step__n{width:36px;height:36px}.step p{font-size:.95rem;line-height:1.85}
-      th,td{padding:14px 10px;font-size:.95rem}table{min-width:520px}
+
+      /* Mobile ring-size table: fit all 3 columns on screen with no horizontal scroll. */
+      .card--soft{padding:20px 10px}
+      .table-wrap{
+        width:100%;
+        max-width:100%;
+        overflow-x:hidden;
+        border-radius:14px;
+      }
+      .table-wrap table{
+        width:100%;
+        min-width:0;
+        max-width:100%;
+        table-layout:fixed;
+      }
+      .table-wrap th,
+      .table-wrap td{
+        padding:9px 4px;
+        font-size:.76rem;
+        line-height:1.28;
+        white-space:normal;
+        overflow-wrap:anywhere;
+        word-break:normal;
+      }
+      .table-wrap thead th{
+        font-size:.72rem;
+      }
+      .table-wrap th:nth-child(1),
+      .table-wrap td:nth-child(1){width:31%}
+      .table-wrap th:nth-child(2),
+      .table-wrap td:nth-child(2){width:20%}
+      .table-wrap th:nth-child(3),
+      .table-wrap td:nth-child(3){width:49%}
+      .table-note{font-size:.86rem;line-height:1.65}
     }
     @media(max-width:380px){.topbar__inner{padding:0 9px}.topbar__back,.topbar__warranty{font-size:.68rem}.hero h1{font-size:2.35rem}}
   </style>
@@ -65,7 +98,7 @@
   <header class="topbar">
     <div class="topbar__inner">
       <a class="topbar__back" href="/rings" data-smart-back>חזרה לטבעות</a>
-      <a class="topbar__brand" href="/" aria-label="VerSans"><img src="/images/VerSansHeaderLogoWhiteOnBlack.png" alt="VerSans" width="731" height="223" decoding="async"></a>
+      <a class="topbar__brand" href="/" aria-label="VerSans"><img src="/images/VersansLogoWordmarkWhite.png" alt="VerSans" width="719" height="171" decoding="async"></a>
       <a class="topbar__warranty" href="/warranty">אחריות לחצי שנה</a>
     </div>
   </header>
@@ -78,7 +111,7 @@
     </section>
 
     <div class="video-card" aria-label="סרטון הסבר למדידת מידת טבעת">
-      <video autoplay muted loop playsinline preload="metadata" aria-label="סרטון המדגים כיצד למדוד את היקף האצבע לטבעת">
+      <video data-size-guide-autoplay autoplay muted loop playsinline webkit-playsinline preload="auto" aria-label="סרטון המדגים כיצד למדוד את היקף האצבע לטבעת">
         <source src="/images/ring-size-guide.mp4" type="video/mp4">
       </video>
     </div>
@@ -150,5 +183,72 @@
   });
 })();
 </script>
+
+<script id="versans-size-guide-autoplay-v33">
+(function () {
+  var videos = Array.prototype.slice.call(document.querySelectorAll('video[data-size-guide-autoplay]'));
+  if (!videos.length) return;
+
+  function prepare(video) {
+    /* iPhone/iPad browsers are stricter about autoplay unless these are set
+       as DOM properties as well as HTML attributes before play() is attempted. */
+    video.muted = true;
+    video.defaultMuted = true;
+    video.autoplay = true;
+    video.loop = true;
+    video.playsInline = true;
+    video.preload = 'auto';
+    video.setAttribute('muted', '');
+    video.setAttribute('autoplay', '');
+    video.setAttribute('loop', '');
+    video.setAttribute('playsinline', '');
+    video.setAttribute('webkit-playsinline', '');
+
+    var retryTimer = 0;
+
+    function tryPlay() {
+      clearTimeout(retryTimer);
+      if (!video.paused && !video.ended) return;
+      var attempt;
+      try { attempt = video.play(); } catch (e) { attempt = null; }
+
+      if (attempt && typeof attempt.catch === 'function') {
+        attempt.catch(function () {
+          /* Some mobile browsers need the media to become playable first.
+             Retry quietly; a first interaction remains a fallback only. */
+          retryTimer = setTimeout(function () {
+            try {
+              video.muted = true;
+              video.play().catch(function () {});
+            } catch (e) {}
+          }, 450);
+        });
+      }
+    }
+
+    video.addEventListener('loadedmetadata', tryPlay, { passive: true });
+    video.addEventListener('loadeddata', tryPlay, { passive: true });
+    video.addEventListener('canplay', tryPlay, { passive: true });
+    window.addEventListener('pageshow', tryPlay, { passive: true });
+
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden) tryPlay();
+    }, { passive: true });
+
+    /* Fallback for mobile browsers/settings that refuse autoplay entirely.
+       The customer does not need to press the video's play button. */
+    var unlock = function () { tryPlay(); };
+    document.addEventListener('touchstart', unlock, { once: true, passive: true });
+    document.addEventListener('pointerdown', unlock, { once: true, passive: true });
+
+    tryPlay();
+    setTimeout(tryPlay, 80);
+    setTimeout(tryPlay, 350);
+  }
+
+  videos.forEach(prepare);
+})();
+</script>
+
 </body>
 </html>

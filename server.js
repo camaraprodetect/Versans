@@ -44,7 +44,7 @@ const SESSION_COOKIE = 'versans_session';
 const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 const ADMIN_SESSION_TTL_MS = 8 * 60 * 60 * 1000;
 const VISITOR_COOKIE = 'versans_visitor';
-const VISITOR_TTL_MS = 90 * 24 * 60 * 60 * 1000;
+const VISITOR_TTL_MS = 365 * 24 * 60 * 60 * 1000;
 const PRESENCE_RETENTION_MS = 90 * 24 * 60 * 60 * 1000;
 const ONLINE_WINDOW_MS = 75 * 1000;
 const ADMIN_EMAIL = 'camaraprodetect@gmail.com';
@@ -862,6 +862,40 @@ function visitorCookie(visitorId, req) {
   return `${VISITOR_COOKIE}=${encodeURIComponent(visitorId)}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${Math.floor(VISITOR_TTL_MS / 1000)}${secure ? '; Secure' : ''}`;
 }
 
+function guestUsernameForVisitor(visitorId) {
+  const id = String(visitorId || '').trim();
+  if (!id) return null;
+  const digest = crypto.createHash('sha256').update(id).digest();
+  const digits = String(digest.readUInt32BE(0) % 10000).padStart(4, '0');
+  return `Guest_${digits}`;
+}
+
+function guestIdentityForRequest(req) {
+  const existingVisitorId = getVisitorId(req);
+  const visitorId = existingVisitorId || crypto.randomUUID();
+  return {
+    visitorId,
+    username: guestUsernameForVisitor(visitorId),
+    setCookie: existingVisitorId ? null : visitorCookie(visitorId, req)
+  };
+}
+
+async function guestAccountPayload(req) {
+  const visitorId = getVisitorId(req);
+  if (!visitorId) return null;
+  const row = typeof database.latestGuestIdentity === 'function' ? await database.latestGuestIdentity(visitorId) : null;
+  return {
+    name: (row && row.guest_username) || guestUsernameForVisitor(visitorId),
+    isVerifiedCustomer: typeof database.hasPaidGuestOrder === 'function' ? await database.hasPaidGuestOrder(visitorId) : false
+  };
+}
+
+async function inheritVerifiedGuestForUser(req, userId) {
+  const visitorId = getVisitorId(req);
+  if (!visitorId || !userId || typeof database.claimPaidGuestOrdersForUser !== 'function') return false;
+  return database.claimPaidGuestOrdersForUser(visitorId, Number(userId), Date.now());
+}
+
 function timeZoneParts(date, timeZone) {
   const parts = new Intl.DateTimeFormat('en-CA', {
     timeZone, year: 'numeric', month: '2-digit', day: '2-digit',
@@ -924,7 +958,9 @@ function presencePayload(body, visitorId, userId, now) {
 
 function visitorSummary(row, now) {
   const visitorId = String(row.visitor_id || '');
-  const guestName = `Guest #${visitorId.replace(/-/g, '').slice(-6).toUpperCase() || 'UNKNOWN'}`;
+  const guestName = row.guest_username || guestUsernameForVisitor(visitorId) || 'Guest_0000';
+  const accountVerified = Number(row.is_verified_customer || 0) === 1;
+  const guestVerified = Number(row.guest_verified_customer || 0) === 1;
   return {
     visitorId,
     userId: row.user_id == null ? null : Number(row.user_id),
@@ -932,7 +968,7 @@ function visitorSummary(row, now) {
     email: row.email || null,
     phone: row.known_phone || null,
     isLoggedIn: Number(row.is_authenticated || 0) === 1,
-    isVerifiedCustomer: Number(row.is_verified_customer || 0) === 1,
+    isVerifiedCustomer: accountVerified || guestVerified,
     firstSeen: Number(row.first_seen || 0),
     lastSeen: Number(row.last_seen || 0),
     online: Number(row.last_seen || 0) >= now - ONLINE_WINDOW_MS,
@@ -4573,7 +4609,35 @@ async function authApi(req, res, pathname, parsed) {
 
   if (pathname === '/api/auth/me' && req.method === 'GET') {
     const user = await ensureVerifiedCustomer(await getCurrentUser(req));
-    json(res, 200, { ok: true, user: safeUser(user) });
+
+    if (user) {
+      json(res, 200, { ok: true, user: safeUser(user), guest: null });
+      return true;
+    }
+
+    /*
+     * Anonymous visitors also have a stable identity on this device/browser.
+     * Creating it here means the header can immediately show Guest_#### even
+     * before the visitor reaches checkout. The same visitor id is later used
+     * by paid guest orders, so verified-customer status is preserved.
+     */
+    const identity = guestIdentityForRequest(req);
+    const row = typeof database.latestGuestIdentity === 'function'
+      ? await database.latestGuestIdentity(identity.visitorId)
+      : null;
+    const guest = {
+      name: (row && row.guest_username) || identity.username,
+      isVerifiedCustomer: typeof database.hasPaidGuestOrder === 'function'
+        ? await database.hasPaidGuestOrder(identity.visitorId)
+        : false
+    };
+
+    json(
+      res,
+      200,
+      { ok: true, user: null, guest },
+      identity.setCookie ? { 'Set-Cookie': identity.setCookie } : {}
+    );
     return true;
   }
 
@@ -4750,6 +4814,7 @@ async function authApi(req, res, pathname, parsed) {
     }
 
     const cookie = await createSession(userId, req);
+    await inheritVerifiedGuestForUser(req, userId);
     const user = await ensureVerifiedCustomer(await database.findUserByEmail(email));
     json(res, 201, { ok: true, user: safeUser(user) }, { 'Set-Cookie': cookie });
     setImmediate(() => {
@@ -4780,7 +4845,9 @@ async function authApi(req, res, pathname, parsed) {
     const oldToken = getSessionToken(req);
     if (oldToken) await database.deleteSession(tokenHash(oldToken));
     const cookie = await createSession(user.id, req);
-    const verifiedUser = await ensureVerifiedCustomer(user);
+    await inheritVerifiedGuestForUser(req, user.id);
+    const refreshedUser = await database.findUserByEmail(email);
+    const verifiedUser = await ensureVerifiedCustomer(refreshedUser || user);
     json(res, 200, { ok: true, user: safeUser(verifiedUser) }, { 'Set-Cookie': cookie });
     if (String(verifiedUser.terms_version || '') !== TERMS_VERSION) {
       setImmediate(() => sendTermsUpdateNoticeForUser(verifiedUser).catch((err) => console.error(`Terms update email failed for user ${verifiedUser.id}:`, err && err.message ? err.message : err)));
@@ -5256,11 +5323,13 @@ function injectStorefrontRouting(html, bootRoute) {
   out = out
     .replace(/(\/?assets\/config\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261001-product-help-v1')
     .replace(/(\/?assets\/styles\.css)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261001-product-help-v1')
-    .replace(/(\/?assets\/store\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261001-product-help-v1')
+    .replace(/(\/?assets\/store\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261003-guest-checkout-v26')
     .replace(/(\/?assets\/products\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261001-product-help-v1')
     .replace(/(\/?assets\/product\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261001-product-help-v1')
     .replace(/(\/?assets\/cart-drawer\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261001-product-help-v1')
     .replace(/(\/?assets\/site-header\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20260922-favorites-sync-v1')
+    .replace(/(\/?assets\/auth-nav\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261003-guest-header-v28')
+    .replace(/(\/?assets\/accessibility\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261003-floating-cart-index-only-v32')
     .replace(/(\/?assets\/presence\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20260922-urlmask-v2');
   if (out.includes('</head>')) out = out.replace('</head>', `${early}\n</head>`);
   else out = early + out;
@@ -5449,13 +5518,22 @@ const server = http.createServer(async (req, res) => {
     if (pathname === '/api/create-payment' && req.method === 'POST') {
       const body = await readJsonBody(req);
       const currentUser = await getCurrentUser(req);
-      if (!currentUser) {
+      const guestIdentity = currentUser ? null : guestIdentityForRequest(req);
+      const mode = checkoutMode();
+      const requestedCouponCode = normalizeCouponCode(body && body.couponCode);
+
+      // Buying does not require an account. Personal welcome coupons still belong
+      // to a specific account, so only coupon redemption requires authentication.
+      if (requestedCouponCode && !currentUser) {
         json(res, 401, { ok: false, error: 'login_required' });
         return;
       }
-      const mode = checkoutMode();
-      const requestedCouponCode = normalizeCouponCode(body && body.couponCode);
+
       const customer = normalizeShippingCustomer(body && body.customer);
+      if (guestIdentity) {
+        customer.guestVisitorId = guestIdentity.visitorId;
+        customer.guestUsername = guestIdentity.username;
+      }
       const paymentBody = { ...body, customer };
 
       // Demo checkout must never wait for HYP or the orders database. Its purpose is
@@ -5484,7 +5562,7 @@ const server = http.createServer(async (req, res) => {
           updated_at: now
         };
 
-        json(res, 200, result);
+        json(res, 200, { ...result, guest: guestIdentity ? { name: guestIdentity.username, isVerifiedCustomer: true } : null }, guestIdentity && guestIdentity.setCookie ? { 'Set-Cookie': guestIdentity.setCookie } : {});
         setImmediate(async () => {
           // Demo orders must be visible in Admin too. Persist them after the response so
           // a slow/locked database can never block the checkout button again.
@@ -5492,10 +5570,12 @@ const server = http.createServer(async (req, res) => {
           try {
             await database.upsertPaidOrder({
               orderRef: demoOrder.order_ref,
-              userId: Number(currentUser.id),
+              userId: currentUser ? Number(currentUser.id) : null,
               customerEmail: demoOrder.customer_email,
               customerPhone: demoOrder.customer_phone,
               customerJson: demoOrder.customer_json,
+              guestVisitorId: guestIdentity ? guestIdentity.visitorId : null,
+              guestUsername: guestIdentity ? guestIdentity.username : null,
               amountAgorot: demoOrder.amount_agorot,
               currency: demoOrder.currency,
               itemsJson: demoOrder.items_json,
@@ -5549,7 +5629,7 @@ const server = http.createServer(async (req, res) => {
       const amountAgorot = amountToAgorot(result.total);
       if (amountAgorot === null) throw new Error('invalid_order_total');
 
-      const linkedUserId = Number(currentUser.id);
+      const linkedUserId = currentUser ? Number(currentUser.id) : null;
 
       const now = Date.now();
       await database.insertPendingOrder({
@@ -5558,6 +5638,8 @@ const server = http.createServer(async (req, res) => {
         customerEmail: validEmail(customerEmail) ? customerEmail : null,
         customerPhone,
         customerJson: JSON.stringify(customer),
+        guestVisitorId: guestIdentity ? guestIdentity.visitorId : null,
+        guestUsername: guestIdentity ? guestIdentity.username : null,
         amountAgorot,
         currency: String(result.currency || 'ILS'),
         itemsJson: JSON.stringify(Array.isArray(body.items) ? body.items : []),
@@ -5567,7 +5649,7 @@ const server = http.createServer(async (req, res) => {
         createdAt: now,
         updatedAt: now
       });
-      json(res, 200, result);
+      json(res, 200, { ...result, guest: guestIdentity ? { name: guestIdentity.username, isVerifiedCustomer: false } : null }, guestIdentity && guestIdentity.setCookie ? { 'Set-Cookie': guestIdentity.setCookie } : {});
       return;
     }
 
@@ -5603,6 +5685,7 @@ const server = http.createServer(async (req, res) => {
       }
 
       let verifiedCustomer = false;
+      let verifiedGuest = null;
 
       if (order) {
         if (result.ok) {
@@ -5621,6 +5704,12 @@ const server = http.createServer(async (req, res) => {
                 verifiedCustomer = true;
               }
             });
+            if (!order.user_id && order.guest_visitor_id) {
+              verifiedGuest = {
+                name: order.guest_username || guestUsernameForVisitor(order.guest_visitor_id),
+                isVerifiedCustomer: true
+              };
+            }
 
             // Google Sheet sync is deliberately best-effort: a Sheets outage must never
             // turn a successful customer payment into a failed checkout response.
@@ -5652,7 +5741,7 @@ const server = http.createServer(async (req, res) => {
         }
       }
 
-      json(res, 200, { ...result, verifiedCustomer });
+      json(res, 200, { ...result, verifiedCustomer, guest: verifiedGuest });
       return;
     }
 

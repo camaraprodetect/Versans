@@ -915,6 +915,290 @@
     return out;
   }
 
+
+  /* ---------- Smooth background image warming V34 -----------------------
+     Goal:
+     - Never download the whole store at once.
+     - Warm the first rows of every category in the background.
+     - Then continue through the remaining catalog with limited concurrency.
+     - Main + hover images are both warmed.
+     - Hidden category banners are warmed too.
+     This means category changes and normal scrolling usually hit browser cache
+     instead of visibly beginning a download when the customer arrives.
+  ------------------------------------------------------------------------ */
+  var VERSANS_IMAGE_WARM_STATE = Object.create(null);
+  var VERSANS_IMAGE_WARM_QUEUE = [];
+  var VERSANS_IMAGE_WARM_ACTIVE = 0;
+  var VERSANS_IMAGE_WARM_STARTED = false;
+  var VERSANS_IMAGE_WARM_INTENT_TIMER = 0;
+
+  function versansWarmKey(src) {
+    if (!src || typeof src !== 'string' || src.indexOf('data:') === 0) return '';
+    try { return new URL(src, document.baseURI).href; }
+    catch (e) { return String(src); }
+  }
+
+  function versansWarmConcurrency() {
+    var compact = window.matchMedia('(max-width: 700px)').matches;
+    var connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection || null;
+    var type = connection && String(connection.effectiveType || '').toLowerCase();
+
+    /* Even on weak internet we keep two quiet background workers.
+       This avoids the old "load only when I reach it" feeling without opening
+       dozens of simultaneous image requests. */
+    if (type === 'slow-2g' || type === '2g') return 2;
+    if (type === '3g') return compact ? 2 : 3;
+    return compact ? 3 : 4;
+  }
+
+  function versansFinishWarmImage(key) {
+    VERSANS_IMAGE_WARM_STATE[key] = 'done';
+    VERSANS_IMAGE_WARM_ACTIVE = Math.max(0, VERSANS_IMAGE_WARM_ACTIVE - 1);
+    window.setTimeout(versansPumpWarmQueue, 18);
+  }
+
+  function versansStartWarmImage(src, key, priority) {
+    if (!key || VERSANS_IMAGE_WARM_STATE[key] === 'done' || VERSANS_IMAGE_WARM_STATE[key] === 'loading') return false;
+
+    VERSANS_IMAGE_WARM_STATE[key] = 'loading';
+    VERSANS_IMAGE_WARM_ACTIVE += 1;
+
+    var preload = new Image();
+    var settled = false;
+    var timeout = 0;
+
+    try {
+      preload.decoding = 'async';
+      if ('fetchPriority' in preload) preload.fetchPriority = priority === 'high' ? 'high' : 'low';
+    } catch (e) {}
+
+    function done() {
+      if (settled) return;
+      settled = true;
+      window.clearTimeout(timeout);
+
+      /* Decode off-screen when possible so scrolling/category switching does
+         not wait for both network AND decode at the moment the image appears. */
+      if (preload.decode && preload.complete && preload.naturalWidth) {
+        try {
+          var decoded = preload.decode();
+          if (decoded && typeof decoded.then === 'function') {
+            decoded.catch(function () {}).then(function () {
+              versansFinishWarmImage(key);
+            });
+            return;
+          }
+        } catch (e) {}
+      }
+      versansFinishWarmImage(key);
+    }
+
+    preload.onload = done;
+    preload.onerror = done;
+    timeout = window.setTimeout(done, 18000);
+    preload.src = src;
+
+    if (preload.complete && preload.naturalWidth) {
+      window.setTimeout(done, 0);
+    }
+    return true;
+  }
+
+  function versansQueueWarmImage(src, front) {
+    var key = versansWarmKey(src);
+    if (!key) return;
+
+    var status = VERSANS_IMAGE_WARM_STATE[key];
+    if (status === 'done' || status === 'loading' || status === 'queued') return;
+
+    VERSANS_IMAGE_WARM_STATE[key] = 'queued';
+    var item = { src: src, key: key };
+    if (front) VERSANS_IMAGE_WARM_QUEUE.unshift(item);
+    else VERSANS_IMAGE_WARM_QUEUE.push(item);
+    versansPumpWarmQueue();
+  }
+
+  function versansPumpWarmQueue() {
+    var limit = versansWarmConcurrency();
+
+    while (VERSANS_IMAGE_WARM_ACTIVE < limit && VERSANS_IMAGE_WARM_QUEUE.length) {
+      var item = VERSANS_IMAGE_WARM_QUEUE.shift();
+      if (!item || VERSANS_IMAGE_WARM_STATE[item.key] !== 'queued') continue;
+      versansStartWarmImage(item.src, item.key, 'low');
+    }
+  }
+
+  function versansWarmImageNow(src) {
+    var key = versansWarmKey(src);
+    if (!key) return;
+
+    var status = VERSANS_IMAGE_WARM_STATE[key];
+    if (status === 'done' || status === 'loading') return;
+
+    /* Promotion: if this URL was waiting in the low-priority queue because the
+       customer is now approaching/selecting that category, start it now.
+       The stale queued entry will simply be skipped later. */
+    versansStartWarmImage(src, key, 'high');
+  }
+
+  function versansProductCardWarmUrls(p) {
+    var urls = [];
+    var seen = Object.create(null);
+
+    function add(src) {
+      var key = versansWarmKey(src);
+      if (!key || seen[key]) return;
+      seen[key] = true;
+      urls.push(src);
+    }
+
+    add(p && p.cardImage);
+    if (p && Array.isArray(p.images) && p.images.length) {
+      add(p.images[0]);
+      /* On mobile, the second product image is commonly the first swipe. */
+      if (window.matchMedia('(max-width: 700px)').matches && p.images.length > 1) add(p.images[1]);
+    }
+    add(p && p.hoverImage);
+
+    /* Some collections intentionally use different card photos for women/men.
+       Warm those too so switching category does not reveal a fresh download. */
+    if (p && p.collectionMedia && typeof p.collectionMedia === 'object') {
+      Object.keys(p.collectionMedia).forEach(function (key) {
+        var media = p.collectionMedia[key];
+        if (!media) return;
+        add(media.image);
+        add(media.hoverImage);
+      });
+    }
+
+    return urls;
+  }
+
+  function versansWarmProductCard(p, immediate, front) {
+    versansProductCardWarmUrls(p).forEach(function (src) {
+      if (immediate) versansWarmImageNow(src);
+      else versansQueueWarmImage(src, !!front);
+    });
+  }
+
+  function versansProductsForWarmCategory(category) {
+    if (!category || category === 'all') return PRODUCTS.slice();
+    return PRODUCTS.filter(function (p) {
+      var collections = Array.isArray(p.categories) && p.categories.length ? p.categories : [p.category];
+      return collections.indexOf(category) !== -1;
+    });
+  }
+
+  function versansWarmCategoryAhead(category) {
+    if (!category || category === 'all') return;
+    var list = versansProductsForWarmCategory(category);
+
+    /* First visible row: start immediately. The rest of the first screen goes
+       to the front of the quiet background queue. */
+    list.slice(0, 4).forEach(function (p) { versansWarmProductCard(p, true, true); });
+    list.slice(4, 16).forEach(function (p) { versansWarmProductCard(p, false, true); });
+  }
+
+  function versansWarmCurrentCatalogAhead(list) {
+    if (!Array.isArray(list) || !list.length || state.filter === 'all') return;
+
+    list.slice(0, 4).forEach(function (p) { versansWarmProductCard(p, true, true); });
+    list.slice(4, 20).forEach(function (p) { versansWarmProductCard(p, false, true); });
+  }
+
+  function versansFirstSrcFromSrcset(value) {
+    if (!value) return '';
+    var first = String(value).split(',')[0].trim();
+    return first.split(/\s+/)[0] || '';
+  }
+
+  function versansWarmAllCollectionBanners() {
+    Array.prototype.slice.call(document.querySelectorAll('[id$="CollectionBanner"] picture')).forEach(function (picture) {
+      var matched = false;
+      Array.prototype.slice.call(picture.querySelectorAll('source')).forEach(function (source) {
+        var media = source.getAttribute('media');
+        if (media && !window.matchMedia(media).matches) return;
+        var srcset = source.getAttribute('data-srcset') || source.getAttribute('srcset') || '';
+        var src = versansFirstSrcFromSrcset(srcset);
+        if (src) {
+          matched = true;
+          versansQueueWarmImage(src, true);
+        }
+      });
+
+      if (!matched) {
+        var img = picture.querySelector('img');
+        if (img) versansQueueWarmImage(img.getAttribute('data-src') || img.getAttribute('src'), true);
+      }
+    });
+  }
+
+  function versansStartCatalogBackgroundWarmup() {
+    if (VERSANS_IMAGE_WARM_STARTED) return;
+    VERSANS_IMAGE_WARM_STARTED = true;
+
+    /* Start with promo banners because a category switch makes them visible
+       immediately. */
+    window.setTimeout(versansWarmAllCollectionBanners, 120);
+
+    /*
+     * First pass: round-robin the first four products of every major category.
+     * This is intentionally NOT "load everything at once": the queue has only
+     * 2–4 workers, but every category gets early representation instead of one
+     * giant category blocking the next one.
+     */
+    window.setTimeout(function () {
+      var groups = Array.isArray(ALL_COLLECTION_GROUPS) ? ALL_COLLECTION_GROUPS.slice() : [];
+      var buckets = groups.map(function (group) {
+        return {
+          key: group.key,
+          products: versansProductsForWarmCategory(group.key)
+        };
+      });
+
+      for (var row = 0; row < 4; row += 1) {
+        buckets.forEach(function (bucket) {
+          if (bucket.products[row]) versansWarmProductCard(bucket.products[row], false, false);
+        });
+      }
+    }, 180);
+
+    /*
+     * Second pass: continue warming the remaining catalog card images and
+     * their hover images in the background. The queue remains throttled, so
+     * current-page requests still get priority on weak connections.
+     */
+    window.setTimeout(function () {
+      PRODUCTS.forEach(function (p) { versansWarmProductCard(p, false, false); });
+    }, 900);
+  }
+
+  function versansCategoryFromWarmIntentElement(el) {
+    if (!el) return '';
+    return el.getAttribute('data-cat') ||
+      el.getAttribute('data-nav-cat') ||
+      el.getAttribute('data-nav-subcat') ||
+      '';
+  }
+
+  function versansHandleCategoryWarmIntent(event) {
+    var target = event.target && event.target.closest
+      ? event.target.closest('[data-cat],[data-nav-cat],[data-nav-subcat]')
+      : null;
+    if (!target) return;
+
+    var category = versansCategoryFromWarmIntentElement(target);
+    if (!category || category === 'all') return;
+
+    window.clearTimeout(VERSANS_IMAGE_WARM_INTENT_TIMER);
+    VERSANS_IMAGE_WARM_INTENT_TIMER = window.setTimeout(function () {
+      versansWarmCategoryAhead(category);
+    }, event.type === 'pointerover' ? 35 : 0);
+  }
+
+  document.addEventListener('pointerover', versansHandleCategoryWarmIntent, { passive: true });
+  document.addEventListener('touchstart', versansHandleCategoryWarmIntent, { passive: true });
+
   function productColorMetaHTML(p) {
     if (!p) return '';
 
@@ -1769,6 +2053,10 @@
       return matchesCatalogFilters(p);
     });
 
+    /* Category cards should already be in cache before the customer scrolls.
+       This is especially important after switching from another category. */
+    versansWarmCurrentCatalogAhead(list);
+
     if (state.filter === 'all') {
       grid.classList.remove('grid--hat-groups');
       if (!list.length) {
@@ -1873,6 +2161,22 @@
     product = product || {};
     return product.category === 'hats' || (Array.isArray(product.categories) && product.categories.indexOf('hats') !== -1);
   }
+  function isFashionBraceletProduct(product) {
+    product = product || {};
+    return product.category === 'bracelets-fashion' || (Array.isArray(product.categories) && product.categories.indexOf('bracelets-fashion') !== -1);
+  }
+  function fashionBraceletDisplayName(product, color, item) {
+    if (item && item.selectedName) return String(item.selectedName);
+    if (!isFashionBraceletProduct(product) || !color) return L(product && product.title);
+    return state.lang === 'he'
+      ? 'צמיד אופנה HERMES - צבע ' + L(color.label)
+      : 'HERMES Fashion Bracelet - ' + ((color.label && (color.label.en || color.label.he)) || color.id || '');
+  }
+  function fashionBraceletDisplayImage(product, color, item) {
+    if (item && item.selectedImage) return String(item.selectedImage);
+    if (isFashionBraceletProduct(product) && color && color.image) return color.image;
+    return '';
+  }
   function deliveryHtml(line) {
     var hat = isHatProduct(line && line.p);
     var label = state.lang === 'he' ? 'זמן אספקה: ' : 'Delivery: ';
@@ -1935,6 +2239,8 @@
         customPhoto: customPhoto,
         greeting: it.greeting && typeof it.greeting === 'object' ? it.greeting : null,
         pendingRequirements: pendingRequirements,
+        displayName: fashionBraceletDisplayName(p, color, it),
+        displayImage: fashionBraceletDisplayImage(p, color, it),
         unitPrice: Number(p.price) + necklaceExtra + boxExtra + sizeExtra + colorExtra + packagingExtra + greetingExtra
       };
     }).filter(Boolean);
@@ -1986,7 +2292,7 @@
   }
   function checkoutItemsPayload() {
     return state.cart.map(function (i) {
-      return { id: i.id, qty: i.qty, necklace: i.necklace || null, box: i.box || null, size: i.size || null, color: i.color || null, packaging: i.packaging || null, customName: i.customName || null, customPhoto: i.customPhoto || null, customPhotoRightsConfirmed: i.customPhotoRightsConfirmed === true, greeting: i.greeting || null };
+      return { id: i.id, qty: i.qty, necklace: i.necklace || null, box: i.box || null, size: i.size || null, color: i.color || null, packaging: i.packaging || null, customName: i.customName || null, customPhoto: i.customPhoto || null, customPhotoRightsConfirmed: i.customPhotoRightsConfirmed === true, greeting: i.greeting || null, selectedName: i.selectedName || null, selectedImage: i.selectedImage || null, name: i.selectedName || null, image: i.selectedImage || null };
     });
   }
 
@@ -2386,12 +2692,12 @@ function orderTotal() {
 
     body.innerHTML = lines.map(function (l) {
       var variantImg = l.p.variantImages && l.size && l.necklace ? l.p.variantImages[l.size.id + '|' + l.necklace.id] : '';
-      var img = variantImg || (l.necklace ? l.necklace.image : ((l.p.images && l.p.images.length) ? l.p.images[0] : ''));
+      var img = l.displayImage || variantImg || (l.necklace ? l.necklace.image : ((l.p.images && l.p.images.length) ? l.p.images[0] : ''));
       var meta = [];
       if (l.necklace) meta.push(L(l.necklace.label));
       if (l.box) meta.push(L(l.box.label));
       if (l.size) meta.push(L(l.size.label));
-      if (l.color) meta.push(L(l.color.label));
+      if (l.color && !isFashionBraceletProduct(l.p)) meta.push(L(l.color.label));
       if (l.packaging) meta.push((state.lang === 'he' ? 'אריזה: ' : 'Packaging: ') + L(l.packaging.label));
       if (l.customName) { var customLabel = l.p.customName && L(l.p.customName.cartLabel); meta.push((customLabel || (state.lang === 'he' ? 'שם' : 'Name')) + ': ' + l.customName); }
       if (l.customPhoto) { var photoLabel = l.p.customPhoto && L(l.p.customPhoto.cartLabel); meta.push((photoLabel || (state.lang === 'he' ? 'תמונה אישית' : 'Custom photo')) + ' ✓'); }
@@ -2400,7 +2706,7 @@ function orderTotal() {
       return '<div class="line">' +
         '<div class="line__thumb">' + (img ? '<img src="' + esc(img) + '" alt="">' : '<span>' + esc(L(l.p.cardTitle)) + '</span>') + '</div>' +
         '<div class="line__main">' +
-          '<p class="line__name">' + esc(L(l.p.title) + (l.packaging ? (state.lang === 'he' ? ' + מארז LOVE FOREVER' : ' + LOVE FOREVER packaging') : '')) + '</p>' +
+          '<p class="line__name">' + esc((l.displayName || L(l.p.title)) + (l.packaging ? (state.lang === 'he' ? ' + מארז LOVE FOREVER' : ' + LOVE FOREVER packaging') : '')) + '</p>' +
           (meta.length ? '<p class="line__meta">' + esc(meta.join(' · ')) + '</p>' : '') +
           '<p class="line__meta">' + money(l.unitPrice) + '</p>' +
           deliveryHtml(l) +
@@ -2539,20 +2845,13 @@ function orderTotal() {
       window.setTimeout(function () { window.location.href = productPath(pendingLine.p) + '?completeCart=1'; }, 220);
       return;
     }
-    fetch('/api/auth/me', { credentials: 'same-origin', headers: { Accept: 'application/json' } })
-      .then(function (response) { return response.ok ? response.json() : null; })
-      .then(function (data) {
-        if (!data || !data.user) {
-          var next = encodeURIComponent(location.pathname + location.search + '#cart');
-          location.href = '/login?next=' + next;
-          return;
-        }
-        renderSummary();
-        renderCouponUi();
-        closeOv('#cartOverlay');
-        openOv('#coOverlay');
-      })
-      .catch(function () { toast(state.lang === 'he' ? 'לא הצלחנו לאמת את החשבון. נסו שוב.' : 'We could not verify your account. Please try again.'); });
+
+    /* Guest checkout: an account is optional. The checkout form already collects
+       the customer name, email, phone and delivery details needed for the order. */
+    renderSummary();
+    renderCouponUi();
+    closeOv('#cartOverlay');
+    openOv('#coOverlay');
   }
 
   function fieldError(input, msg) {
@@ -2609,7 +2908,7 @@ function orderTotal() {
           order: data.order, total: data.total, currency: CFG.currency.code,
           items: state.cart,
           itemOrders: pendingLines.map(function (line) {
-            var title = line && line.p && line.p.title;
+            var title = line && line.displayName ? line.displayName : (line && line.p && line.p.title);
             var name = title && typeof title === 'object' ? (title.he || title.en) : title;
             return { name: String(name || (line && line.p && line.p.id) || 'מוצר'), qty: Number(line && line.qty || 1) };
           }),
@@ -3124,6 +3423,9 @@ function orderTotal() {
   var y = $('#year'); if (y) y.textContent = new Date().getFullYear();
   applyLang();
   persist();
+
+  /* Warm other categories progressively after the initial UI is painted. */
+  versansStartCatalogBackgroundWarmup();
   try {
     if (sessionStorage.getItem('versans_open_checkout_v1') === '1') {
       sessionStorage.removeItem('versans_open_checkout_v1');

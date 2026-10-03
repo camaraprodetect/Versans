@@ -66,7 +66,7 @@
     </section>
 
     <div class="size-video-card" aria-label="סרטון הסבר למדידת צמיד">
-      <video autoplay muted loop playsinline preload="metadata" aria-label="סרטון המדגים כיצד למדוד את היקף היד לצמיד">
+      <video data-size-guide-autoplay autoplay muted loop playsinline webkit-playsinline preload="auto" aria-label="סרטון המדגים כיצד למדוד את היקף היד לצמיד">
         <source src="/images/bracelet-size-guide.mp4" type="video/mp4">
       </video>
     </div>
@@ -105,5 +105,72 @@
   });
 })();
 </script>
+
+<script id="versans-size-guide-autoplay-v33">
+(function () {
+  var videos = Array.prototype.slice.call(document.querySelectorAll('video[data-size-guide-autoplay]'));
+  if (!videos.length) return;
+
+  function prepare(video) {
+    /* iPhone/iPad browsers are stricter about autoplay unless these are set
+       as DOM properties as well as HTML attributes before play() is attempted. */
+    video.muted = true;
+    video.defaultMuted = true;
+    video.autoplay = true;
+    video.loop = true;
+    video.playsInline = true;
+    video.preload = 'auto';
+    video.setAttribute('muted', '');
+    video.setAttribute('autoplay', '');
+    video.setAttribute('loop', '');
+    video.setAttribute('playsinline', '');
+    video.setAttribute('webkit-playsinline', '');
+
+    var retryTimer = 0;
+
+    function tryPlay() {
+      clearTimeout(retryTimer);
+      if (!video.paused && !video.ended) return;
+      var attempt;
+      try { attempt = video.play(); } catch (e) { attempt = null; }
+
+      if (attempt && typeof attempt.catch === 'function') {
+        attempt.catch(function () {
+          /* Some mobile browsers need the media to become playable first.
+             Retry quietly; a first interaction remains a fallback only. */
+          retryTimer = setTimeout(function () {
+            try {
+              video.muted = true;
+              video.play().catch(function () {});
+            } catch (e) {}
+          }, 450);
+        });
+      }
+    }
+
+    video.addEventListener('loadedmetadata', tryPlay, { passive: true });
+    video.addEventListener('loadeddata', tryPlay, { passive: true });
+    video.addEventListener('canplay', tryPlay, { passive: true });
+    window.addEventListener('pageshow', tryPlay, { passive: true });
+
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden) tryPlay();
+    }, { passive: true });
+
+    /* Fallback for mobile browsers/settings that refuse autoplay entirely.
+       The customer does not need to press the video's play button. */
+    var unlock = function () { tryPlay(); };
+    document.addEventListener('touchstart', unlock, { once: true, passive: true });
+    document.addEventListener('pointerdown', unlock, { once: true, passive: true });
+
+    tryPlay();
+    setTimeout(tryPlay, 80);
+    setTimeout(tryPlay, 350);
+  }
+
+  videos.forEach(prepare);
+})();
+</script>
+
 </body>
 </html>

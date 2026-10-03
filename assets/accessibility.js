@@ -93,6 +93,7 @@
     '.vs-a11y-trigger{padding:0!important;overflow:hidden!important;background:transparent!important;border:0!important;box-shadow:none!important}',
     '.vs-a11y-trigger__image{display:block;width:100%;height:100%;object-fit:contain;border-radius:50%;pointer-events:none}',
     '.vs-floating-cart{position:fixed;right:max(14px,env(safe-area-inset-right));bottom:max(14px,env(safe-area-inset-bottom));z-index:2147482000;display:grid;place-items:center;padding:0;cursor:pointer;box-sizing:border-box;-webkit-tap-highlight-color:transparent;transition:transform .18s ease,box-shadow .18s ease}',
+    'body:not(.home-page) .vs-floating-cart{display:none!important}',
     '.vs-floating-cart:hover{transform:translateY(-1px)}',
     '.vs-floating-cart:active{transform:scale(.96)}',
     '.vs-floating-cart svg{width:53%;height:53%;display:block;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}',

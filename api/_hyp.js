@@ -56,6 +56,12 @@ function optionById(list, id) {
   return list.find((option) => option.id === id) || null;
 }
 
+function isFashionBraceletProduct(product) {
+  if (!product) return false;
+  const categories = Array.isArray(product.categories) ? product.categories : [];
+  return product.category === 'bracelets-fashion' || categories.includes('bracelets-fashion');
+}
+
 function localText(value, lang) {
   if (!value) return '';
   return value[lang] || value.he || value.en || '';
@@ -138,7 +144,18 @@ function priceOrder(items, lang, coupon = null) {
         throw err;
       }
       unitPrice += Number(color.addPrice || 0);
-      nameParts.push(localText(color.label, lang) || color.id);
+      const colorLabel = localText(color.label, lang) || color.id;
+      if (isFashionBraceletProduct(product)) {
+        if (lang === 'he') {
+          const baseName = String(nameParts[0] || '').replace(/\s*-\s*צבע\s+.+$/u, '').trim() || 'צמיד אופנה HERMES';
+          nameParts[0] = baseName + ' - צבע ' + colorLabel;
+        } else {
+          const baseName = String(nameParts[0] || '').replace(/\s*-\s*[^-]+$/, '').trim() || 'HERMES Fashion Bracelet';
+          nameParts[0] = baseName + ' - ' + colorLabel;
+        }
+      } else {
+        nameParts.push(colorLabel);
+      }
     }
 
     if (item.packaging) {

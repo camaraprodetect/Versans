@@ -220,6 +220,32 @@
   function hasBoxOptions() { return Array.isArray(product.boxes) && product.boxes.length; }
   function selectedSize() { return findOption(product.sizes, selectedSizeId); }
   function selectedColor() { return findOption(product.colors, selectedColorId); }
+  function isFashionBraceletProduct(productValue) {
+    var p = productValue || product || {};
+    var categories = Array.isArray(p.categories) ? p.categories : [];
+    return p.category === 'bracelets-fashion' || categories.indexOf('bracelets-fashion') !== -1;
+  }
+  function selectedDisplayTitle() {
+    var color = selectedColor();
+    if (isFashionBraceletProduct(product) && color) {
+      return lang === 'he'
+        ? 'צמיד אופנה HERMES - צבע ' + L(color.label)
+        : 'HERMES Fashion Bracelet - ' + (color.label && (color.label.en || color.label.he) || color.id || '');
+    }
+    return L(product.title);
+  }
+  function selectedDisplayImage() {
+    var color = selectedColor();
+    if (isFashionBraceletProduct(product) && color && color.image) return color.image;
+    return product.cardImage || (Array.isArray(product.images) && product.images[0]) || product.hoverImage || '';
+  }
+  function updateSelectedProductIdentity() {
+    var title = selectedDisplayTitle();
+    var titleEl = $('#productTitle');
+    if (titleEl) titleEl.textContent = title;
+    var crumb = $('#crumbCurrent');
+    if (crumb) crumb.textContent = title;
+  }
   function hasSizeOptions() { return Array.isArray(product.sizes) && product.sizes.length; }
   function hasColorOptions() { return Array.isArray(product.colors) && product.colors.length; }
   function greetingSelectionStateKey() { return GREETING_SELECTION_STATE_PREFIX + product.id; }
@@ -613,6 +639,109 @@
     images.forEach(function (img) { productImageObserver.observe(img); });
   }
 
+
+  /* Product-page gallery warmer V34.
+     Gallery thumbnails can stay visually lazy, but their image files are
+     fetched/decoded quietly after the main product has loaded so the shopper
+     does not see each photo begin loading only after reaching/tapping it. */
+  var PRODUCT_BACKGROUND_WARMED = Object.create(null);
+  var PRODUCT_BACKGROUND_QUEUE = [];
+  var PRODUCT_BACKGROUND_ACTIVE = 0;
+
+  function productWarmKey(src) {
+    if (!src || typeof src !== 'string' || src.indexOf('data:') === 0) return '';
+    try { return new URL(src, document.baseURI).href; }
+    catch (e) { return String(src); }
+  }
+
+  function productWarmLimit() {
+    var connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection || null;
+    var type = connection && String(connection.effectiveType || '').toLowerCase();
+    if (type === 'slow-2g' || type === '2g') return 2;
+    return window.matchMedia('(max-width: 700px)').matches ? 2 : 3;
+  }
+
+  function productPumpBackgroundWarmup() {
+    while (PRODUCT_BACKGROUND_ACTIVE < productWarmLimit() && PRODUCT_BACKGROUND_QUEUE.length) {
+      var src = PRODUCT_BACKGROUND_QUEUE.shift();
+      var key = productWarmKey(src);
+      if (!key || PRODUCT_BACKGROUND_WARMED[key]) continue;
+
+      PRODUCT_BACKGROUND_WARMED[key] = 'loading';
+      PRODUCT_BACKGROUND_ACTIVE += 1;
+
+      (function (url, cacheKey) {
+        var img = new Image();
+        var settled = false;
+        var timer = 0;
+
+        try {
+          img.decoding = 'async';
+          if ('fetchPriority' in img) img.fetchPriority = 'low';
+        } catch (e) {}
+
+        function finish() {
+          if (settled) return;
+          settled = true;
+          window.clearTimeout(timer);
+
+          function complete() {
+            PRODUCT_BACKGROUND_WARMED[cacheKey] = 'done';
+            PRODUCT_BACKGROUND_ACTIVE = Math.max(0, PRODUCT_BACKGROUND_ACTIVE - 1);
+            window.setTimeout(productPumpBackgroundWarmup, 18);
+          }
+
+          if (img.decode && img.complete && img.naturalWidth) {
+            try {
+              var decoded = img.decode();
+              if (decoded && typeof decoded.then === 'function') {
+                decoded.catch(function () {}).then(complete);
+                return;
+              }
+            } catch (e) {}
+          }
+          complete();
+        }
+
+        img.onload = finish;
+        img.onerror = finish;
+        timer = window.setTimeout(finish, 18000);
+        img.src = url;
+        if (img.complete && img.naturalWidth) window.setTimeout(finish, 0);
+      })(src, key);
+    }
+  }
+
+  function queueProductBackgroundImage(src) {
+    var key = productWarmKey(src);
+    if (!key || PRODUCT_BACKGROUND_WARMED[key]) return;
+    PRODUCT_BACKGROUND_WARMED[key] = 'queued';
+    PRODUCT_BACKGROUND_QUEUE.push(src);
+    productPumpBackgroundWarmup();
+  }
+
+  function warmCurrentProductGallery() {
+    var urls = galleryImages();
+    urls.forEach(queueProductBackgroundImage);
+
+    galleryVideos().forEach(function (entry) {
+      if (entry && entry.poster) queueProductBackgroundImage(entry.poster);
+    });
+
+    /* Color/variant images are useful to have ready before the selection is
+       changed, but only queue actual image URLs; concurrency remains low. */
+    if (product && Array.isArray(product.colors)) {
+      product.colors.forEach(function (option) {
+        if (option && option.image) queueProductBackgroundImage(option.image);
+      });
+    }
+    if (product && product.variantImages && typeof product.variantImages === 'object') {
+      Object.keys(product.variantImages).forEach(function (key) {
+        queueProductBackgroundImage(product.variantImages[key]);
+      });
+    }
+  }
+
   function renderStaticGallery() {
     var wrap = $('#productThumbs');
     var hint = $('#galleryHint');
@@ -638,9 +767,11 @@
       }).join('');
       wrap.innerHTML = imageButtons + videoButtons;
       observeDeferredProductImages(wrap);
+      warmCurrentProductGallery();
     } else {
       wrap.hidden = true;
       wrap.innerHTML = '';
+      warmCurrentProductGallery();
     }
     if (hint) {
       hint.textContent = videos.length
@@ -1709,6 +1840,7 @@ async function uploadProductPhoto(blob, meta) {
       else setMainImage(option.image, L(option.label));
     }
     renderColorOptions();
+    updateSelectedProductIdentity();
     renderRequiredCompanion();
     updatePriceAndPurchase();
   }
@@ -1837,6 +1969,10 @@ async function uploadProductPhoto(blob, meta) {
       if (existingKey === key) {
         item.qty = (parseInt(item.qty, 10) || 0) + qty;
         item.key = key;
+        if (isFashionBraceletProduct(product)) {
+          item.selectedName = selectedDisplayTitle();
+          item.selectedImage = selectedDisplayImage();
+        }
         found = true;
       }
     });
@@ -1853,6 +1989,8 @@ async function uploadProductPhoto(blob, meta) {
         customName: hasCustomName() ? customNameValue : null,
         customPhoto: hasCustomPhoto() ? customPhotoValue : null,
         greeting: savedGreeting(),
+        selectedName: isFashionBraceletProduct(product) ? selectedDisplayTitle() : null,
+        selectedImage: isFashionBraceletProduct(product) ? selectedDisplayImage() : null,
         key: key
       });
     }
@@ -1892,8 +2030,8 @@ async function uploadProductPhoto(blob, meta) {
     if (navContact) navContact.textContent = lang === 'he' ? 'צרו קשר' : 'Contact';
 
     var crumbCurrent = $('#crumbCurrent');
-    if (crumbCurrent) crumbCurrent.textContent = L(product.title);
-    $('#productTitle').textContent = L(product.title);
+    if (crumbCurrent) crumbCurrent.textContent = selectedDisplayTitle();
+    $('#productTitle').textContent = selectedDisplayTitle();
     $('#productSubtitle').textContent = L(product.subtitle);
 
     var standalone = !(isConfigurable() || hasSizeOptions() || hasColorOptions() || hasCustomName() || hasCustomPhoto() || hasGiftPackaging() || requiresCompanion());
