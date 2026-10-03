@@ -120,7 +120,15 @@
   function checkAlreadyLoggedIn() {
     var page = document.body.getAttribute('data-auth-page');
     if (page !== 'login' && page !== 'register') return;
-    fetch('/api/auth/me', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (data) { if (data && data.user) location.replace('/account'); }).catch(function () {});
+
+    /*
+     * V41: never auto-redirect the login/register page based on a background
+     * auth check. If auth/session state changes while the page is opening, the
+     * old redirect could bounce between /login and /account and look like an
+     * endless refresh loop. Login now stays stable until the visitor submits
+     * the form or explicitly navigates away.
+     */
+    return;
   }
 
   function prepareResetPage() {

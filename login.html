@@ -67,72 +67,34 @@
     </div>
   </section>
 </main>
-<script src="assets/auth.js?v=20260922-password-reset-v2"></script>
+<script src="assets/auth.js?v=20261003-login-stable-v41"></script>
   <script src="/assets/presence.js?v=20260915-presence-v1"></script>
 <script src="assets/accessibility.js?v=20260928-a11y-v1"></script>
 
-<script id="versans-guest-orders-login-script-v39">
+<script id="versans-guest-orders-login-script-v41">
 (function () {
   var entry = document.getElementById('guestOrdersEntry');
   var nameEl = document.getElementById('guestOrdersName');
   if (!entry) return;
 
-  var attempts = 0;
-  var maxAttempts = 4;
+  /* One check only. No timers, no polling, no reloads. */
+  fetch('/api/auth/me', {
+    credentials: 'same-origin',
+    cache: 'no-store',
+    headers: { Accept: 'application/json' }
+  })
+    .then(function (response) {
+      return response.ok ? response.json() : null;
+    })
+    .then(function (data) {
+      if (!data || data.user) return;
+      var guest = data.guest || null;
+      if (!guest || !guest.hasOrders) return;
 
-  function show(name) {
-    entry.classList.add('is-visible');
-    if (nameEl) nameEl.textContent = name ? String(name) : '';
-  }
-
-  function check() {
-    attempts += 1;
-
-    Promise.all([
-      fetch('/api/auth/me', {
-        credentials: 'same-origin',
-        headers: { Accept: 'application/json' }
-      }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }),
-
-      fetch('/api/account/orders', {
-        credentials: 'same-origin',
-        headers: { Accept: 'application/json' }
-      }).then(function (r) {
-        return r.json().catch(function () { return {}; }).then(function (data) {
-          return { ok: r.ok, data: data };
-        });
-      }).catch(function () { return { ok: false, data: {} }; })
-    ]).then(function (results) {
-      var me = results[0];
-      var ordersResult = results[1];
-
-      /* Logged-in users are handled by the normal auth redirect. This button
-         is specifically for a Guest identity that already owns orders. */
-      if (me && me.user) return;
-
-      var guest = me && me.guest ? me.guest : null;
-      var orders = ordersResult && ordersResult.data && Array.isArray(ordersResult.data.orders)
-        ? ordersResult.data.orders
-        : [];
-
-      if (ordersResult.ok && orders.length > 0) {
-        show(
-          (ordersResult.data && ordersResult.data.ownerName) ||
-          (guest && guest.name) ||
-          ''
-        );
-        return;
-      }
-
-      /* Demo checkout saves the paid order asynchronously. Retry briefly so
-         the button appears without the customer having to refresh the page. */
-      if (attempts < maxAttempts) {
-        window.setTimeout(check, attempts === 1 ? 450 : 900);
-      }
-    });
-  }
-
-  check();
+      entry.classList.add('is-visible');
+      if (nameEl) nameEl.textContent = guest.name || '';
+    })
+    .catch(function () {});
 })();
 </script>
 
