@@ -62,6 +62,7 @@ const ADMIN_PUSH_VAPID_PRIVATE_META_KEY = 'admin_push_vapid_private_jwk_v1';
 const ADMIN_PUSH_TIMEOUT_MS = 10 * 1000;
 const USER_PURGE_META_KEY = 'purge_users_except_camaraprodetect_20260922_v1';
 const REVIEWS_PURGE_META_KEY = 'purge_all_reviews_20260924_v1';
+const ORDERS_PURGE_META_KEY = 'purge_all_orders_20261004_v1';
 const ADMIN_PAGES = new Set(['', 'dashboard', 'visitors', 'sales', 'orders', 'order-work', 'products', 'customers', 'reviews']);
 const BODY_LIMIT = 48 * 1024 * 1024;
 const REVIEW_IMAGE_LIMIT = 2 * 1024 * 1024;
@@ -6502,6 +6503,22 @@ setInterval(async () => {
   try { await retryPendingNewOrderWebhooks(); } catch (err) { console.error('New-order webhook retry failed:', err); }
 }, ORDER_NOTIFICATION_WEBHOOK_RETRY_MS).unref();
 
+async function purgeAllOrdersOnce() {
+  const alreadyDone = await database.getSchemaMeta(ORDERS_PURGE_META_KEY);
+  if (alreadyDone) return;
+
+  const result = typeof database.deleteAllOrders === 'function'
+    ? await database.deleteAllOrders()
+    : { deletedOrders: 0 };
+
+  await database.setSchemaMeta(ORDERS_PURGE_META_KEY, JSON.stringify({
+    completedAt: Date.now(),
+    deletedOrders: Number(result && result.deletedOrders ? result.deletedOrders : 0)
+  }));
+
+  console.log(`One-time order purge complete: deleted ${Number(result && result.deletedOrders ? result.deletedOrders : 0)} orders.`);
+}
+
 async function purgeAllReviewsOnce() {
   const alreadyDone = await database.getSchemaMeta(REVIEWS_PURGE_META_KEY);
   if (alreadyDone) return;
@@ -6537,6 +6554,7 @@ async function purgeNonAdminUsersOnce() {
 
 async function start() {
   await database.init();
+  await purgeAllOrdersOnce();
   await purgeAllReviewsOnce();
   await purgeNonAdminUsersOnce();
   await database.cleanupPresencePageViews(Date.now() - PRESENCE_RETENTION_MS);
