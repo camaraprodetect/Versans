@@ -11,7 +11,14 @@ const { PRODUCTS } = require('./assets/products.js');
 const ROUTES = require('./assets/routes.js');
 const { normalizeAdminRange, normalizeStoredOrderItems, aggregatePaidOrders } = require('./lib/admin-analytics.js');
 const { absoluteUrl, isEmailConfigured, orderConfirmationEmail, passwordResetEmail, productAnnouncementEmail, sendEmail, termsUpdateEmail, welcomeEmail } = require('./lib/email.js');
-const { buildPaidOrderPayload, sendPaidOrderToGoogleSheet, sendGoogleOrderItemStatusToSheet, sendGoogleOrderStatusToSheet } = require('./lib/google-orders.js');
+const {
+  buildPaidOrderPayload,
+  sendPaidOrderToGoogleSheet,
+  sendGoogleOrderItemStatusToSheet,
+  sendGoogleOrderStatusToSheet,
+  fetchGoogleOrderSnapshots,
+  pingGoogleOrdersSheet
+} = require('./lib/google-orders.js');
 const { orderItemRef, parseOrderItemRef } = require('./lib/order-item-refs.js');
 const {
   normalizeTrackingNumber,
@@ -1508,6 +1515,51 @@ async function adminOrderDetailPayload(row) {
   };
 }
 
+function googleSheetSyncError(error) {
+  const details = error && error.details && typeof error.details === 'object' ? error.details : {};
+  const raw = String(details.error || (error && error.message) || 'sheet_sync_failed');
+  const version = String(details.version || '').trim() || null;
+  let code = raw;
+
+  if (raw === 'invalid_payload' && !version) code = 'apps_script_outdated';
+  if (raw === 'unauthorized') code = 'google_sheet_secret_mismatch';
+
+  return { code, version, message: raw };
+}
+
+async function syncGoogleSheetItemStatus(order, itemIndex, completed) {
+  try {
+    return await sendGoogleOrderItemStatusToSheet(order.order_ref, itemIndex, completed);
+  } catch (error) {
+    const info = googleSheetSyncError(error);
+
+    /*
+     * V5 can tell us explicitly that the row is missing. In that case,
+     * recreate/ensure the paid-order block using the same payload, then retry.
+     * Never do this against an old Apps Script deployment because V3's
+     * duplicate finder was not reliable enough for a safe repair write.
+     */
+    if (info.version === 'V5' && info.code === 'order_not_found') {
+      await sendPaidOrderToGoogleSheet(order);
+      return sendGoogleOrderItemStatusToSheet(order.order_ref, itemIndex, completed);
+    }
+    throw error;
+  }
+}
+
+async function syncGoogleSheetOrderStatus(order, completed) {
+  try {
+    return await sendGoogleOrderStatusToSheet(order.order_ref, completed);
+  } catch (error) {
+    const info = googleSheetSyncError(error);
+    if (info.version === 'V5' && info.code === 'order_not_found') {
+      await sendPaidOrderToGoogleSheet(order);
+      return sendGoogleOrderStatusToSheet(order.order_ref, completed);
+    }
+    throw error;
+  }
+}
+
 async function adminOrderWorkPayload(row) {
   const sheetPayload = buildPaidOrderPayload(row);
   const states = typeof database.listOrderWorkItems === 'function'
@@ -1543,7 +1595,8 @@ async function adminOrderWorkPayload(row) {
     items,
     completedCount,
     itemCount: items.length,
-    completed: items.length > 0 && completedCount === items.length
+    completed: items.length > 0 && completedCount === items.length,
+    sheetSnapshot: null
   };
 }
 
@@ -4447,11 +4500,12 @@ async function adminApi(req, res, pathname, parsed) {
     let sheetSynced = false;
     let sheetError = null;
     try {
-      const result = await sendGoogleOrderItemStatusToSheet(order.order_ref, itemIndex, body.completed);
+      const result = await syncGoogleSheetItemStatus(order, itemIndex, body.completed);
       sheetSynced = Boolean(result && result.ok);
       if (result && result.skipped) sheetError = result.reason || 'google_orders_not_configured';
     } catch (error) {
-      sheetError = String(error && error.message || 'sheet_sync_failed');
+      const info = googleSheetSyncError(error);
+      sheetError = info.code;
       console.error(`Google Sheet item status sync failed for ${order.order_ref} item ${itemIndex}:`, error && error.message ? error.message : error);
     }
     json(res, 200, { ok: true, orderRef: order.order_ref, itemIndex, completed: body.completed, sheetSynced, sheetError });
@@ -4474,11 +4528,12 @@ async function adminApi(req, res, pathname, parsed) {
     let sheetSynced = false;
     let sheetError = null;
     try {
-      const result = await sendGoogleOrderStatusToSheet(order.order_ref, body.completed);
+      const result = await syncGoogleSheetOrderStatus(order, body.completed);
       sheetSynced = Boolean(result && result.ok);
       if (result && result.skipped) sheetError = result.reason || 'google_orders_not_configured';
     } catch (error) {
-      sheetError = String(error && error.message || 'sheet_sync_failed');
+      const info = googleSheetSyncError(error);
+      sheetError = info.code;
       console.error(`Google Sheet order status sync failed for ${order.order_ref}:`, error && error.message ? error.message : error);
     }
     json(res, 200, { ok: true, orderRef: order.order_ref, completed: body.completed, itemCount, sheetSynced, sheetError });
@@ -4566,13 +4621,61 @@ async function adminApi(req, res, pathname, parsed) {
     return true;
   }
 
+  if (pathname === '/api/admin/order-work-sheet-status' && req.method === 'GET') {
+    try {
+      const result = await pingGoogleOrdersSheet();
+      if (result && result.skipped) {
+        json(res, 200, { ok: true, sheet: { ok: false, error: result.reason || 'google_orders_not_configured', version: null } });
+        return true;
+      }
+      const data = result && result.data || {};
+      json(res, 200, { ok: true, sheet: { ok: true, version: data.version || null, error: null } });
+    } catch (error) {
+      const info = googleSheetSyncError(error);
+      json(res, 200, { ok: true, sheet: { ok: false, version: info.version, error: info.code } });
+    }
+    return true;
+  }
+
   if (pathname === '/api/admin/order-work') {
     const { limit, offset } = adminPagination(parsed, 20);
     const [count, rows] = await Promise.all([
       database.countAdminOrders({ status: 'paid', since: null }),
       database.listAdminOrders({ status: 'paid', since: null, limit, offset })
     ]);
+
     const orders = await Promise.all(rows.map(adminOrderWorkPayload));
+    let sheetSync = { ok: false, version: null, error: null };
+    let sheetSnapshots = {};
+
+    try {
+      const refs = orders.map((order) => order.orderRef).filter(Boolean);
+      const result = await fetchGoogleOrderSnapshots(refs);
+      if (result && result.skipped) {
+        sheetSync = { ok: false, version: null, error: result.reason || 'google_orders_not_configured' };
+      } else {
+        const data = result && result.data || {};
+        sheetSnapshots = data.snapshots && typeof data.snapshots === 'object' ? data.snapshots : {};
+        sheetSync = { ok: true, version: data.version || null, error: null };
+      }
+    } catch (error) {
+      const info = googleSheetSyncError(error);
+      sheetSync = { ok: false, version: info.version, error: info.code };
+    }
+
+    orders.forEach((order) => {
+      const snapshot = sheetSnapshots[order.orderRef] || null;
+      order.sheetSnapshot = snapshot;
+
+      if (snapshot && Array.isArray(snapshot.items)) {
+        const byIndex = new Map(snapshot.items.map((item) => [Number(item.itemIndex), item]));
+        order.items = order.items.map((item) => ({
+          ...item,
+          sheet: byIndex.get(Number(item.itemIndex)) || null
+        }));
+      }
+    });
+
     json(res, 200, {
       ok: true,
       count,
@@ -4581,7 +4684,8 @@ async function adminApi(req, res, pathname, parsed) {
       hasMore: offset + rows.length < count,
       orders,
       completedOrders: orders.filter((order) => order.completed).length,
-      openOrders: orders.filter((order) => !order.completed).length
+      openOrders: orders.filter((order) => !order.completed).length,
+      sheetSync
     });
     return true;
   }
@@ -4714,8 +4818,20 @@ async function adminPage(req, res, pathname) {
   if (req.method !== 'GET' && req.method !== 'HEAD') return false;
   const currentUser = await getCurrentUser(req);
   if (!currentUser) {
-    const next = String(req.url || '/admin');
-    redirect(res, '/login?next=' + encodeURIComponent(next.startsWith('/') ? next : '/admin'), 302);
+    const requestedNext = String(req.url || '/admin');
+    const next = requestedNext.startsWith('/') ? requestedNext : '/admin';
+    const secure = process.env.NODE_ENV === 'production'
+      || String(req.headers['x-forwarded-proto'] || '').split(',')[0].trim() === 'https';
+
+    /*
+     * Keep the destination without exposing ?next=%2Fadmin in the address bar.
+     * auth.js reads this short-lived cookie after login and then deletes it.
+     */
+    res.setHeader(
+      'Set-Cookie',
+      `versans_login_next=${encodeURIComponent(next)}; Path=/; SameSite=Lax; Max-Age=600${secure ? '; Secure' : ''}`
+    );
+    redirect(res, '/login', 302);
     return true;
   }
   if (normalizeEmail(currentUser.email) !== ADMIN_EMAIL) {

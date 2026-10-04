@@ -79,8 +79,20 @@
     })[code] || t('generic');
   }
 
+  function loginNextCookie() {
+    var match = document.cookie.match(/(?:^|;\s*)versans_login_next=([^;]+)/);
+    if (!match) return '';
+    try { return decodeURIComponent(match[1]); }
+    catch (_) { return ''; }
+  }
+
+  function clearLoginNextCookie() {
+    document.cookie = 'versans_login_next=; Path=/; SameSite=Lax; Max-Age=0';
+  }
+
   function safeNext() {
-    var next = new URLSearchParams(location.search).get('next') || '/account';
+    var params = new URLSearchParams(location.search);
+    var next = params.get('next') || loginNextCookie() || '/account';
     if (!/^[A-Za-z0-9_./#?=&%-]+$/.test(next) || next.indexOf('//') !== -1) return '/account';
     if (next.charAt(0) !== '/') next = '/' + next.replace(/^\.?\//, '');
     return next;
@@ -136,6 +148,7 @@
         if (!data || !data.user) return;
         var next = safeNext();
         if (/^\/(?:login|register)(?:[/?#]|$)/.test(next)) next = '/account';
+        clearLoginNextCookie();
         location.replace(next);
       })
       .catch(function () {});
@@ -227,7 +240,9 @@
       setSubmitLoading(submit, submitText, true, labelKey);
       post(page === 'register' ? '/api/auth/register' : '/api/auth/login', body).then(function (result) {
         if (!result.response.ok || !result.data.ok) throw result.data;
-        location.replace(safeNext());
+        var next = safeNext();
+        clearLoginNextCookie();
+        location.replace(next);
       }).catch(function (err) {
         setMessage(errorText(err && err.error));
         setSubmitLoading(submit, submitText, false, labelKey);
