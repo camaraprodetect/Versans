@@ -4649,8 +4649,16 @@ async function adminApi(req, res, pathname, parsed) {
     let sheetSnapshots = {};
 
     try {
-      const refs = orders.map((order) => order.orderRef).filter(Boolean);
-      const result = await fetchGoogleOrderSnapshots(refs);
+      const descriptors = orders.map((order) => ({
+        orderRef: order.orderRef,
+        items: (order.items || []).map((item) => ({
+          itemIndex: item.itemIndex,
+          productId: item.productId,
+          productSlug: item.productSlug,
+          productName: item.productName
+        }))
+      }));
+      const result = await fetchGoogleOrderSnapshots(descriptors);
       if (result && result.skipped) {
         sheetSync = { ok: false, version: null, error: result.reason || 'google_orders_not_configured' };
       } else {
