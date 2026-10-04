@@ -1990,7 +1990,8 @@
   }
 
   function sheetSyncLabel(sync) {
-    if (sync && sync.ok) return 'Google Sheets ' + String(sync.version || '') + ' מחובר';
+    if (sync && sync.pending) return 'Google Sheets נטען ברקע';
+    if (sync && sync.ok && sync.version) return 'Google Sheets ' + String(sync.version) + ' מחובר';
     if (sync && sync.ok) return 'Google Sheets מחובר';
     var error = sync && sync.error || '';
     if (error === 'apps_script_outdated' || error === 'invalid_payload') return 'צריך לפרוס את Apps Script V9';
@@ -2002,6 +2003,7 @@
   function renderOrderWorkCard(order) {
     var cardEl = make('article', 'admin-order-work-card admin-order-work-card--organized');
     cardEl.dataset.workState = order.workState || (order.completed ? 'green' : 'red');
+    cardEl.setAttribute('data-order-work-ref', String(order.orderRef || ''));
 
     var items = Array.isArray(order.items) ? order.items : [];
     var snapshot = order.sheetSnapshot || null;
@@ -2199,6 +2201,92 @@
     return cardEl;
   }
 
+  function mergeOrderWorkSheetSnapshot(order, snapshot) {
+    if (!order || !snapshot) return order;
+    order.sheetSnapshot = snapshot;
+
+    if (Array.isArray(snapshot.items)) {
+      var byIndex = {};
+      snapshot.items.forEach(function (item) {
+        byIndex[Number(item.itemIndex)] = item;
+      });
+
+      order.items = (order.items || []).map(function (item) {
+        var copy = Object.assign({}, item);
+        copy.sheet = byIndex[Number(item.itemIndex)] || null;
+        return copy;
+      });
+    }
+
+    return order;
+  }
+
+  function loadOrderWorkSheetSnapshotsInBackground(orders, viewKey, syncNode) {
+    if (!Array.isArray(orders) || !orders.length) {
+      if (syncNode) {
+        syncNode.className = 'admin-order-work-sync-state is-ok';
+        syncNode.textContent = 'אין הזמנות לטעינה';
+      }
+      return;
+    }
+
+    var descriptors = orders.map(function (order) {
+      return {
+        orderRef: order.orderRef,
+        items: (order.items || []).map(function (item) {
+          return {
+            itemIndex: item.itemIndex,
+            productId: item.productId,
+            productSlug: item.productSlug,
+            productName: item.productName,
+            needsGreeting: item.needsGreeting === true,
+            needsCustomPhoto: item.needsCustomPhoto === true,
+            needsPersonalization: item.needsPersonalization === true
+          };
+        })
+      };
+    });
+
+    apiAction('/api/admin/order-work-sheet-snapshots', 'POST', { orders: descriptors })
+      .then(function (result) {
+        var currentKey = [
+          state.ranges.orderWork || '30d',
+          state.orderWorkStatus || 'all',
+          state.offsets.orderWork || 0
+        ].join('|');
+        if (currentKey !== viewKey) return;
+
+        var snapshots = result && result.snapshots || {};
+
+        orders.forEach(function (order) {
+          var snapshot = snapshots[order.orderRef];
+          if (!snapshot) return;
+
+          mergeOrderWorkSheetSnapshot(order, snapshot);
+
+          var cards = document.querySelectorAll('[data-order-work-ref]');
+          for (var i = 0; i < cards.length; i += 1) {
+            if (cards[i].getAttribute('data-order-work-ref') === String(order.orderRef || '')) {
+              cards[i].replaceWith(renderOrderWorkCard(order));
+              break;
+            }
+          }
+        });
+
+        if (syncNode) {
+          var sync = result && result.sheetSync || {};
+          syncNode.className = 'admin-order-work-sync-state' + (sync.ok ? ' is-ok' : ' is-error');
+          syncNode.textContent = sheetSyncLabel(sync);
+        }
+      })
+      .catch(function () {
+        if (syncNode) {
+          syncNode.className = 'admin-order-work-sync-state is-error';
+          syncNode.textContent = 'Google Sheets לא נטען';
+        }
+      });
+  }
+
   async function renderOrderWorkPage() {
     var offset = state.offsets.orderWork || 0;
     var range = state.ranges.orderWork || '30d';
@@ -2229,8 +2317,9 @@
 
     var toolbar = make('div', 'admin-toolbar admin-order-work-syncbar');
     var sync = data.sheetSync || {};
-    toolbar.appendChild(make('span', 'admin-order-work-sync-state' + (sync.ok ? ' is-ok' : ' is-error'), sheetSyncLabel(sync)));
-    toolbar.appendChild(make('span', 'admin-toolbar-note', 'אדום = אף מוצר לא בוצע · חלקי = חלק מהמוצרים בוצעו · ירוק = כל המוצרים בוצעו. Grok ממשיך לעבוד בנפרד.'));
+    var syncNode = make('span', 'admin-order-work-sync-state' + (sync.pending ? '' : (sync.ok ? ' is-ok' : ' is-error')), sheetSyncLabel(sync));
+    toolbar.appendChild(syncNode);
+    toolbar.appendChild(make('span', 'admin-toolbar-note', 'אדום = אף מוצר לא בוצע · חלקי = חלק מהמוצרים בוצעו · ירוק = כל המוצרים בוצעו. נתוני Google Sheets נטענים ברקע כדי שהעמוד והפילטרים יגיבו מהר.'));
     frag.appendChild(toolbar);
 
     var counts = data.statusCounts || {};
@@ -2252,6 +2341,9 @@
     frag.appendChild(ordersWrap);
     frag.appendChild(renderPagination({ count: data.count, limit: data.limit, offset: data.offset, onChange: function (next) { state.offsets.orderWork = next; renderCurrentPage(); } }));
     content.replaceChildren(frag);
+
+    var viewKey = [range, workStatus, offset].join('|');
+    loadOrderWorkSheetSnapshotsInBackground(data.orders || [], viewKey, syncNode);
   }
 
   async function renderProductsPage() {

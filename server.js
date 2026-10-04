@@ -1515,6 +1515,41 @@ async function adminOrderDetailPayload(row) {
   };
 }
 
+const ADMIN_ORDER_SHEET_SNAPSHOT_TTL_MS = 2 * 60 * 1000;
+const adminOrderSheetSnapshotCache = new Map();
+
+function invalidateAdminOrderSheetSnapshot(orderRef) {
+  const key = String(orderRef || '').trim();
+  if (key) adminOrderSheetSnapshotCache.delete(key);
+}
+
+function cachedAdminOrderSheetSnapshot(orderRef, now = Date.now()) {
+  const key = String(orderRef || '').trim();
+  if (!key) return null;
+  const entry = adminOrderSheetSnapshotCache.get(key);
+  if (!entry || Number(entry.expiresAt || 0) <= now) {
+    if (entry) adminOrderSheetSnapshotCache.delete(key);
+    return null;
+  }
+  return entry.snapshot || null;
+}
+
+function storeAdminOrderSheetSnapshot(orderRef, snapshot, now = Date.now()) {
+  const key = String(orderRef || '').trim();
+  if (!key || !snapshot) return;
+  adminOrderSheetSnapshotCache.set(key, {
+    snapshot,
+    expiresAt: now + ADMIN_ORDER_SHEET_SNAPSHOT_TTL_MS
+  });
+
+  if (adminOrderSheetSnapshotCache.size > 250) {
+    for (const [cacheKey, entry] of adminOrderSheetSnapshotCache) {
+      if (Number(entry && entry.expiresAt || 0) <= now) adminOrderSheetSnapshotCache.delete(cacheKey);
+      if (adminOrderSheetSnapshotCache.size <= 200) break;
+    }
+  }
+}
+
 function googleSheetSyncError(error) {
   const details = error && error.details && typeof error.details === 'object' ? error.details : {};
   const raw = String(details.error || (error && error.message) || 'sheet_sync_failed');
@@ -1560,11 +1595,13 @@ async function syncGoogleSheetOrderStatus(order, completed) {
   }
 }
 
-async function adminOrderWorkPayload(row) {
+async function adminOrderWorkPayload(row, prefetchedStates = null) {
   const sheetPayload = buildPaidOrderPayload(row);
-  const states = typeof database.listOrderWorkItems === 'function'
-    ? await database.listOrderWorkItems(Number(row.id))
-    : [];
+  const states = Array.isArray(prefetchedStates)
+    ? prefetchedStates
+    : (typeof database.listOrderWorkItems === 'function'
+      ? await database.listOrderWorkItems(Number(row.id))
+      : []);
   const stateByIndex = new Map((states || []).map((entry) => [Number(entry.item_index), entry]));
   const items = (sheetPayload.items || []).map((item, itemIndex) => {
     const state = stateByIndex.get(itemIndex) || null;
@@ -1597,6 +1634,27 @@ async function adminOrderWorkPayload(row) {
     itemCount: items.length,
     completed: items.length > 0 && completedCount === items.length,
     sheetSnapshot: null
+  };
+}
+
+function adminOrderWorkSummary(row, prefetchedStates) {
+  const items = normalizeStoredOrderItems(row && row.items_json, PRODUCTS);
+  const itemCount = Array.isArray(items) ? items.length : 0;
+  const completedIndexes = new Set((Array.isArray(prefetchedStates) ? prefetchedStates : [])
+    .filter((entry) => Number(entry && entry.completed || 0) === 1)
+    .map((entry) => Number(entry.item_index)));
+
+  let completedCount = 0;
+  for (let index = 0; index < itemCount; index += 1) {
+    if (completedIndexes.has(index)) completedCount += 1;
+  }
+
+  return {
+    itemCount,
+    completedCount,
+    workState: !itemCount || completedCount <= 0
+      ? 'red'
+      : (completedCount >= itemCount ? 'green' : 'partial')
   };
 }
 
@@ -3495,11 +3553,13 @@ async function googleOrderStatusWebhookApi(req, res, pathname) {
       return true;
     }
     await database.setOrderWorkItemStatus(Number(order.id), itemIndex, completed, 'google_sheet', now);
+    invalidateAdminOrderSheetSnapshot(orderRef);
     json(res, 200, { ok: true, orderRef, itemIndex, completed });
     return true;
   }
 
   await database.setOrderWorkItemsStatus(Number(order.id), itemCount, completed, 'google_sheet', now);
+  invalidateAdminOrderSheetSnapshot(orderRef);
   json(res, 200, { ok: true, orderRef, completed, itemCount });
   return true;
 }
@@ -4518,6 +4578,7 @@ async function adminApi(req, res, pathname, parsed) {
       sheetError = info.code;
       console.error(`Google Sheet item status sync failed for ${order.order_ref} item ${itemIndex}:`, error && error.message ? error.message : error);
     }
+    invalidateAdminOrderSheetSnapshot(order.order_ref);
     json(res, 200, {
       ok: true,
       orderRef: order.order_ref,
@@ -4554,6 +4615,7 @@ async function adminApi(req, res, pathname, parsed) {
       sheetError = info.code;
       console.error(`Google Sheet order status sync failed for ${order.order_ref}:`, error && error.message ? error.message : error);
     }
+    invalidateAdminOrderSheetSnapshot(order.order_ref);
     json(res, 200, { ok: true, orderRef: order.order_ref, completed: body.completed, itemCount, sheetSynced, sheetError });
     return true;
   }
@@ -4655,6 +4717,50 @@ async function adminApi(req, res, pathname, parsed) {
     return true;
   }
 
+  if (pathname === '/api/admin/order-work-sheet-snapshots' && req.method === 'POST') {
+    if (!sameOriginAllowed(req)) { json(res, 403, { ok: false, error: 'origin_not_allowed' }); return true; }
+
+    const body = await readJsonBody(req, 512 * 1024);
+    const descriptors = Array.isArray(body && body.orders) ? body.orders.slice(0, 30) : [];
+    const now = Date.now();
+    const snapshots = {};
+    const stale = [];
+
+    for (const descriptor of descriptors) {
+      const orderRef = String(descriptor && descriptor.orderRef || '').trim();
+      if (!orderRef) continue;
+      const cached = cachedAdminOrderSheetSnapshot(orderRef, now);
+      if (cached) snapshots[orderRef] = cached;
+      else stale.push(descriptor);
+    }
+
+    let sheetSync = { ok: true, pending: false, version: null, error: null, cached: stale.length === 0 };
+
+    if (stale.length) {
+      try {
+        const result = await fetchGoogleOrderSnapshots(stale);
+        if (result && result.skipped) {
+          sheetSync = { ok: false, pending: false, version: null, error: result.reason || 'google_orders_not_configured', cached: false };
+        } else {
+          const data = result && result.data || {};
+          const fresh = data.snapshots && typeof data.snapshots === 'object' ? data.snapshots : {};
+          for (const [orderRef, snapshot] of Object.entries(fresh)) {
+            if (!snapshot) continue;
+            snapshots[orderRef] = snapshot;
+            storeAdminOrderSheetSnapshot(orderRef, snapshot, now);
+          }
+          sheetSync = { ok: true, pending: false, version: data.version || null, error: null, cached: false };
+        }
+      } catch (error) {
+        const info = googleSheetSyncError(error);
+        sheetSync = { ok: false, pending: false, version: info.version, error: info.code, cached: false };
+      }
+    }
+
+    json(res, 200, { ok: true, snapshots, sheetSync });
+    return true;
+  }
+
   if (pathname === '/api/admin/order-work') {
     const { limit, offset } = adminPagination(parsed, 20);
     const range = String(parsed.searchParams.get('range') || '30d');
@@ -4670,78 +4776,64 @@ async function adminApi(req, res, pathname, parsed) {
       return true;
     }
 
+    /*
+     * V55 fast path:
+     * - one query for paid orders
+     * - one bulk query for completion states
+     * - classify all rows cheaply
+     * - build the full payload only for the visible page
+     * Google Sheets is fetched separately after the page has rendered.
+     */
     const rows = await database.listAdminOrders({
       status: 'paid',
       since: normalizedRange.since,
       limit: 5000,
       offset: 0
     });
-    const classifiedOrders = await Promise.all(rows.map(adminOrderWorkPayload));
 
-    function workState(order) {
-      if (!order || !order.itemCount || order.completedCount <= 0) return 'red';
-      if (order.completedCount >= order.itemCount) return 'green';
-      return 'partial';
+    const orderIds = rows
+      .map((row) => Number(row.id))
+      .filter((id) => Number.isInteger(id) && id > 0);
+
+    const allStates = typeof database.listOrderWorkItemsForOrders === 'function'
+      ? await database.listOrderWorkItemsForOrders(orderIds)
+      : [];
+
+    const statesByOrder = new Map();
+    for (const stateRow of allStates || []) {
+      const orderId = Number(stateRow.order_id);
+      if (!statesByOrder.has(orderId)) statesByOrder.set(orderId, []);
+      statesByOrder.get(orderId).push(stateRow);
     }
 
-    classifiedOrders.forEach((order) => { order.workState = workState(order); });
+    const classified = rows.map((row) => ({
+      row,
+      summary: adminOrderWorkSummary(row, statesByOrder.get(Number(row.id)) || [])
+    }));
 
     const statusCounts = {
-      all: classifiedOrders.length,
-      red: classifiedOrders.filter((order) => order.workState === 'red').length,
-      partial: classifiedOrders.filter((order) => order.workState === 'partial').length,
-      green: classifiedOrders.filter((order) => order.workState === 'green').length
+      all: classified.length,
+      red: classified.filter((entry) => entry.summary.workState === 'red').length,
+      partial: classified.filter((entry) => entry.summary.workState === 'partial').length,
+      green: classified.filter((entry) => entry.summary.workState === 'green').length
     };
 
     const filtered = workStatus === 'all'
-      ? classifiedOrders
-      : classifiedOrders.filter((order) => order.workState === workStatus);
+      ? classified
+      : classified.filter((entry) => entry.summary.workState === workStatus);
 
     const count = filtered.length;
-    const orders = filtered.slice(offset, offset + limit);
+    const pageEntries = filtered.slice(offset, offset + limit);
 
-    let sheetSync = { ok: false, version: null, error: null };
-    let sheetSnapshots = {};
-
-    try {
-      const descriptors = orders.map((order) => ({
-        orderRef: order.orderRef,
-        items: (order.items || []).map((item) => ({
-          itemIndex: item.itemIndex,
-          productId: item.productId,
-          productSlug: item.productSlug,
-          productName: item.productName,
-          needsGreeting: item.needsGreeting === true,
-          needsCustomPhoto: item.needsCustomPhoto === true,
-          needsPersonalization: item.needsPersonalization === true
-        }))
-      }));
-      const result = await fetchGoogleOrderSnapshots(descriptors);
-
-      if (result && result.skipped) {
-        sheetSync = { ok: false, version: null, error: result.reason || 'google_orders_not_configured' };
-      } else {
-        const data = result && result.data || {};
-        sheetSnapshots = data.snapshots && typeof data.snapshots === 'object' ? data.snapshots : {};
-        sheetSync = { ok: true, version: data.version || null, error: null };
-      }
-    } catch (error) {
-      const info = googleSheetSyncError(error);
-      sheetSync = { ok: false, version: info.version, error: info.code };
-    }
-
-    orders.forEach((order) => {
-      const snapshot = sheetSnapshots[order.orderRef] || null;
-      order.sheetSnapshot = snapshot;
-
-      if (snapshot && Array.isArray(snapshot.items)) {
-        const byIndex = new Map(snapshot.items.map((item) => [Number(item.itemIndex), item]));
-        order.items = order.items.map((item) => ({
-          ...item,
-          sheet: byIndex.get(Number(item.itemIndex)) || null
-        }));
-      }
-    });
+    const orders = await Promise.all(pageEntries.map(async (entry) => {
+      const row = entry.row;
+      const payload = await adminOrderWorkPayload(row, statesByOrder.get(Number(row.id)) || []);
+      payload.workState = entry.summary.workState;
+      payload.completedCount = entry.summary.completedCount;
+      payload.itemCount = entry.summary.itemCount;
+      payload.completed = entry.summary.workState === 'green';
+      return payload;
+    }));
 
     json(res, 200, {
       ok: true,
@@ -4753,10 +4845,10 @@ async function adminApi(req, res, pathname, parsed) {
       offset,
       hasMore: offset + orders.length < count,
       orders,
-      completedOrders: filtered.filter((order) => order.workState === 'green').length,
-      partialOrders: filtered.filter((order) => order.workState === 'partial').length,
-      openOrders: filtered.filter((order) => order.workState === 'red').length,
-      sheetSync
+      completedOrders: statusCounts.green,
+      partialOrders: statusCounts.partial,
+      openOrders: statusCounts.red,
+      sheetSync: { ok: true, pending: true, version: null, error: null }
     });
     return true;
   }
