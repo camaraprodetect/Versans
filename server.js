@@ -11,7 +11,7 @@ const { PRODUCTS } = require('./assets/products.js');
 const ROUTES = require('./assets/routes.js');
 const { normalizeAdminRange, normalizeStoredOrderItems, aggregatePaidOrders } = require('./lib/admin-analytics.js');
 const { absoluteUrl, isEmailConfigured, orderConfirmationEmail, passwordResetEmail, productAnnouncementEmail, sendEmail, termsUpdateEmail, welcomeEmail } = require('./lib/email.js');
-const { buildPaidOrderPayload, sendPaidOrderToGoogleSheet } = require('./lib/google-orders.js');
+const { buildPaidOrderPayload, sendPaidOrderToGoogleSheet, sendGoogleOrderItemStatusToSheet, sendGoogleOrderStatusToSheet } = require('./lib/google-orders.js');
 const { orderItemRef, parseOrderItemRef } = require('./lib/order-item-refs.js');
 const {
   normalizeTrackingNumber,
@@ -55,7 +55,7 @@ const ADMIN_PUSH_VAPID_PRIVATE_META_KEY = 'admin_push_vapid_private_jwk_v1';
 const ADMIN_PUSH_TIMEOUT_MS = 10 * 1000;
 const USER_PURGE_META_KEY = 'purge_users_except_camaraprodetect_20260922_v1';
 const REVIEWS_PURGE_META_KEY = 'purge_all_reviews_20260924_v1';
-const ADMIN_PAGES = new Set(['', 'dashboard', 'visitors', 'sales', 'orders', 'products', 'customers', 'reviews']);
+const ADMIN_PAGES = new Set(['', 'dashboard', 'visitors', 'sales', 'orders', 'order-work', 'products', 'customers', 'reviews']);
 const BODY_LIMIT = 48 * 1024 * 1024;
 const REVIEW_IMAGE_LIMIT = 2 * 1024 * 1024;
 const REVIEW_VIDEO_LIMIT = 20 * 1024 * 1024;
@@ -1005,7 +1005,7 @@ function adminCanAccess(user, pathname, method) {
   if (normalizeEmail(user.email) === ADMIN_EMAIL || String(user.role || '') === 'admin') return true;
   if (String(user.role || '') !== 'staff') return false;
   if (method !== 'GET') return false;
-  return pathname === '/api/admin/orders' || /^\/api\/admin\/orders\/[^/]+$/.test(pathname) || /^\/api\/admin\/orders\/[^/]+\/shipments$/.test(pathname);
+  return pathname === '/api/admin/orders' || pathname === '/api/admin/order-work' || /^\/api\/admin\/order-work\/[^/]+(?:\/items\/\d+)?$/.test(pathname) || /^\/api\/admin\/orders\/[^/]+$/.test(pathname) || /^\/api\/admin\/orders\/[^/]+\/shipments$/.test(pathname);
 }
 
 function adminPushDeviceCookie(deviceToken, req) {
@@ -1505,6 +1505,45 @@ async function adminOrderDetailPayload(row) {
       zip: customer.zip || null,
       notes: customer.notes || null
     }
+  };
+}
+
+async function adminOrderWorkPayload(row) {
+  const sheetPayload = buildPaidOrderPayload(row);
+  const states = typeof database.listOrderWorkItems === 'function'
+    ? await database.listOrderWorkItems(Number(row.id))
+    : [];
+  const stateByIndex = new Map((states || []).map((entry) => [Number(entry.item_index), entry]));
+  const items = (sheetPayload.items || []).map((item, itemIndex) => {
+    const state = stateByIndex.get(itemIndex) || null;
+    return {
+      ...item,
+      itemIndex,
+      completed: Boolean(state && Number(state.completed || 0) === 1),
+      completionSource: state && state.source || null,
+      completionUpdatedAt: state ? Number(state.updated_at || 0) : null
+    };
+  });
+  const completedCount = items.filter((item) => item.completed).length;
+  return {
+    id: Number(row.id),
+    orderRef: sheetPayload.orderRef,
+    status: row.status,
+    createdAt: row.created_at ? Number(row.created_at) : null,
+    paidAt: row.paid_at ? Number(row.paid_at) : null,
+    currency: sheetPayload.currency,
+    orderTotal: sheetPayload.orderTotal,
+    customer: sheetPayload.customer,
+    customerName: sheetPayload.customer && sheetPayload.customer.fullName
+      ? sheetPayload.customer.fullName
+      : (row.user_name || row.guest_username || row.customer_email || 'אורח'),
+    customerEmail: sheetPayload.customerEmail || row.customer_email || null,
+    customerPhone: sheetPayload.customerPhone || row.customer_phone || null,
+    guestUsername: row.guest_username || null,
+    items,
+    completedCount,
+    itemCount: items.length,
+    completed: items.length > 0 && completedCount === items.length
   };
 }
 
@@ -3370,6 +3409,48 @@ async function trackingWebhookApi(req, res, pathname) {
   return true;
 }
 
+async function googleOrderStatusWebhookApi(req, res, pathname) {
+  if (pathname !== '/api/google-orders/status') return false;
+  if (req.method !== 'POST') { json(res, 405, { ok: false, error: 'method_not_allowed' }); return true; }
+
+  const body = await readJsonBody(req, 128 * 1024);
+  const expected = String(process.env.GOOGLE_ORDERS_WEBHOOK_SECRET || '').trim();
+  const supplied = String(body && body.secret || '').trim();
+  if (!expected || !supplied || !secureTextEqual(supplied, expected)) {
+    json(res, 401, { ok: false, error: 'unauthorized' });
+    return true;
+  }
+
+  const orderRef = cleanCheckoutText(body && body.orderRef, 120);
+  const event = String(body && body.event || '').trim();
+  if (!orderRef || !['item_status_update', 'order_status_update'].includes(event)) {
+    json(res, 400, { ok: false, error: 'invalid_payload' });
+    return true;
+  }
+
+  const order = await database.getOrderByRef(orderRef);
+  if (!order) { json(res, 404, { ok: false, error: 'order_not_found' }); return true; }
+  const paidPayload = buildPaidOrderPayload(order);
+  const itemCount = Array.isArray(paidPayload.items) ? paidPayload.items.length : 0;
+  const completed = body.completed === true;
+  const now = Date.now();
+
+  if (event === 'item_status_update') {
+    const itemIndex = Number(body.itemIndex);
+    if (!Number.isInteger(itemIndex) || itemIndex < 0 || itemIndex >= itemCount) {
+      json(res, 400, { ok: false, error: 'invalid_item_index' });
+      return true;
+    }
+    await database.setOrderWorkItemStatus(Number(order.id), itemIndex, completed, 'google_sheet', now);
+    json(res, 200, { ok: true, orderRef, itemIndex, completed });
+    return true;
+  }
+
+  await database.setOrderWorkItemsStatus(Number(order.id), itemCount, completed, 'google_sheet', now);
+  json(res, 200, { ok: true, orderRef, completed, itemCount });
+  return true;
+}
+
 async function adminApi(req, res, pathname, parsed) {
   if (!pathname.startsWith('/api/admin/')) return false;
   const shippingBotEndpoint = pathname === '/api/admin/bot/shipping/ready-pickups'
@@ -4347,6 +4428,63 @@ async function adminApi(req, res, pathname, parsed) {
     return true;
   }
 
+  const orderWorkItemMatch = /^\/api\/admin\/order-work\/([^/]+)\/items\/(\d+)$/.exec(pathname);
+  if (orderWorkItemMatch && req.method === 'POST') {
+    if (!sameOriginAllowed(req)) { json(res, 403, { ok: false, error: 'origin_not_allowed' }); return true; }
+    let orderRef;
+    try { orderRef = decodeURIComponent(orderWorkItemMatch[1]); } catch (_) { orderRef = orderWorkItemMatch[1]; }
+    const itemIndex = Number(orderWorkItemMatch[2]);
+    const body = await readJsonBody(req, 64 * 1024);
+    if (typeof body.completed !== 'boolean') { json(res, 400, { ok: false, error: 'completed_required' }); return true; }
+    const order = await database.getOrderByRef(orderRef);
+    if (!order) { json(res, 404, { ok: false, error: 'order_not_found' }); return true; }
+    const payload = buildPaidOrderPayload(order);
+    const itemCount = Array.isArray(payload.items) ? payload.items.length : 0;
+    if (!Number.isInteger(itemIndex) || itemIndex < 0 || itemIndex >= itemCount) { json(res, 400, { ok: false, error: 'invalid_item_index' }); return true; }
+
+    const now = Date.now();
+    await database.setOrderWorkItemStatus(Number(order.id), itemIndex, body.completed, 'admin', now);
+    let sheetSynced = false;
+    let sheetError = null;
+    try {
+      const result = await sendGoogleOrderItemStatusToSheet(order.order_ref, itemIndex, body.completed);
+      sheetSynced = Boolean(result && result.ok);
+      if (result && result.skipped) sheetError = result.reason || 'google_orders_not_configured';
+    } catch (error) {
+      sheetError = String(error && error.message || 'sheet_sync_failed');
+      console.error(`Google Sheet item status sync failed for ${order.order_ref} item ${itemIndex}:`, error && error.message ? error.message : error);
+    }
+    json(res, 200, { ok: true, orderRef: order.order_ref, itemIndex, completed: body.completed, sheetSynced, sheetError });
+    return true;
+  }
+
+  const orderWorkMatch = /^\/api\/admin\/order-work\/([^/]+)$/.exec(pathname);
+  if (orderWorkMatch && req.method === 'POST') {
+    if (!sameOriginAllowed(req)) { json(res, 403, { ok: false, error: 'origin_not_allowed' }); return true; }
+    let orderRef;
+    try { orderRef = decodeURIComponent(orderWorkMatch[1]); } catch (_) { orderRef = orderWorkMatch[1]; }
+    const body = await readJsonBody(req, 64 * 1024);
+    if (typeof body.completed !== 'boolean') { json(res, 400, { ok: false, error: 'completed_required' }); return true; }
+    const order = await database.getOrderByRef(orderRef);
+    if (!order) { json(res, 404, { ok: false, error: 'order_not_found' }); return true; }
+    const payload = buildPaidOrderPayload(order);
+    const itemCount = Array.isArray(payload.items) ? payload.items.length : 0;
+    const now = Date.now();
+    await database.setOrderWorkItemsStatus(Number(order.id), itemCount, body.completed, 'admin', now);
+    let sheetSynced = false;
+    let sheetError = null;
+    try {
+      const result = await sendGoogleOrderStatusToSheet(order.order_ref, body.completed);
+      sheetSynced = Boolean(result && result.ok);
+      if (result && result.skipped) sheetError = result.reason || 'google_orders_not_configured';
+    } catch (error) {
+      sheetError = String(error && error.message || 'sheet_sync_failed');
+      console.error(`Google Sheet order status sync failed for ${order.order_ref}:`, error && error.message ? error.message : error);
+    }
+    json(res, 200, { ok: true, orderRef: order.order_ref, completed: body.completed, itemCount, sheetSynced, sheetError });
+    return true;
+  }
+
   const accessMatch = /^\/api\/admin\/customers\/(\d+)\/access$/.exec(pathname);
   if (accessMatch && req.method === 'POST') {
     if (!admin || !(normalizeEmail(admin.email) === ADMIN_EMAIL || String(admin.role || '') === 'admin')) { json(res,403,{ok:false,error:'permission_denied'}); return true; }
@@ -4425,6 +4563,26 @@ async function adminApi(req, res, pathname, parsed) {
     const normalized = normalizeAdminRange(range);
     const recentRows = await database.listAdminOrders({ status: 'paid', since: normalized.since, limit: 12, offset: 0 });
     json(res, 200, { ok: true, ...sales, topProducts: sales.products.slice(0, 50), recentOrders: recentRows.map(adminOrderPayload) });
+    return true;
+  }
+
+  if (pathname === '/api/admin/order-work') {
+    const { limit, offset } = adminPagination(parsed, 20);
+    const [count, rows] = await Promise.all([
+      database.countAdminOrders({ status: 'paid', since: null }),
+      database.listAdminOrders({ status: 'paid', since: null, limit, offset })
+    ]);
+    const orders = await Promise.all(rows.map(adminOrderWorkPayload));
+    json(res, 200, {
+      ok: true,
+      count,
+      limit,
+      offset,
+      hasMore: offset + rows.length < count,
+      orders,
+      completedOrders: orders.filter((order) => order.completed).length,
+      openOrders: orders.filter((order) => !order.completed).length
+    });
     return true;
   }
 
@@ -5564,6 +5722,7 @@ const server = http.createServer(async (req, res) => {
     if (await publicTrackingApi(req, res, pathname, parsed)) return;
     if (await presenceApi(req, res, pathname)) return;
     if (await adminPushDeviceApi(req, res, pathname)) return;
+    if (await googleOrderStatusWebhookApi(req, res, pathname)) return;
     if (await adminApi(req, res, pathname, parsed)) return;
     if (await authApi(req, res, pathname, parsed)) return;
     if (await reviewsApi(req, res, pathname)) return;
