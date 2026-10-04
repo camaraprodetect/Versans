@@ -2877,8 +2877,21 @@ function orderTotal() {
   }
 
   function openCheckout() {
+    /*
+     * Always refresh the cart from the shared cart state before checkout.
+     * The global/floating cart can change quantity without going through
+     * store.js directly.
+     */
+    if (window.VERSANS_CART_STATE) {
+      state.cart = window.VERSANS_CART_STATE.read();
+    }
+
     var lines = cartLines();
-    if (!lines.length) return;
+    if (!lines.length) {
+      toast(state.lang === 'he' ? 'הסל ריק' : 'Your cart is empty');
+      return;
+    }
+
     var pendingLine = lines.find(function (line) { return line.pendingRequirements && line.pendingRequirements.length; });
     if (pendingLine) {
       toast(state.lang === 'he' ? 'יש להשלים את פרטי המוצר לפני התשלום' : 'Complete the product details before checkout');
@@ -2886,13 +2899,30 @@ function orderTotal() {
       return;
     }
 
-    /* Guest checkout: an account is optional. The checkout form already collects
-       the customer name, email, phone and delivery details needed for the order. */
+    /* Guest checkout: an account is optional. */
     renderSummary();
     renderCouponUi();
     closeOv('#cartOverlay');
+
+    var checkoutOverlay = $('#coOverlay');
+    if (!checkoutOverlay) {
+      /*
+       * This can only happen on pages that do not contain the checkout form.
+       * Force a real page load to /shop, then store.js will open checkout there.
+       */
+      try { sessionStorage.setItem('versans_open_checkout_v1', '1'); } catch (_) {}
+      window.location.assign('/shop?checkout=1');
+      return;
+    }
+
     openOv('#coOverlay');
   }
+
+  /*
+   * The global cart drawer uses the exact same checkout function as the
+   * homepage cart. No fake /shop#shop navigation and no duplicate payment flow.
+   */
+  window.VERSANS_OPEN_CHECKOUT = openCheckout;
 
   function fieldError(input, msg) {
     var f = input && input.closest ? input.closest('.field') : null;
@@ -3467,9 +3497,23 @@ function orderTotal() {
   /* Warm other categories progressively after the initial UI is painted. */
   versansStartCatalogBackgroundWarmup();
   try {
-    if (sessionStorage.getItem('versans_open_checkout_v1') === '1') {
+    var checkoutRequested =
+      sessionStorage.getItem('versans_open_checkout_v1') === '1' ||
+      new URLSearchParams(window.location.search).get('checkout') === '1';
+
+    if (checkoutRequested) {
       sessionStorage.removeItem('versans_open_checkout_v1');
-      window.setTimeout(function () { openCheckout(); }, 60);
+
+      if (new URLSearchParams(window.location.search).get('checkout') === '1') {
+        var cleanUrl = window.location.pathname;
+        var cleanParams = new URLSearchParams(window.location.search);
+        cleanParams.delete('checkout');
+        if (cleanParams.toString()) cleanUrl += '?' + cleanParams.toString();
+        cleanUrl += window.location.hash || '';
+        window.history.replaceState(null, '', cleanUrl);
+      }
+
+      window.setTimeout(function () { openCheckout(); }, 80);
     }
   } catch (e) {}
 })();

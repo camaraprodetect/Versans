@@ -255,10 +255,24 @@
 
     var checkout = event.target.closest && event.target.closest('[data-global-cart-checkout]');
     if (checkout) {
-      try { sessionStorage.setItem('versans_open_checkout_v1', '1'); } catch (_) {}
-      var target = '/shop#shop';
-      if (window.VERSANS_URL_STATE && window.VERSANS_URL_STATE.navigate) window.VERSANS_URL_STATE.navigate(target);
-      else window.location.href = target;
+      event.preventDefault();
+      event.stopPropagation();
+      if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+
+      close();
+
+      /*
+       * On index/shop, call the real checkout flow directly.
+       * On product/other pages, hand off through a real reload instead of the
+       * URL-mask navigation that previously sent the user back to the homepage.
+       */
+      if (typeof window.VERSANS_OPEN_CHECKOUT === 'function') {
+        window.VERSANS_OPEN_CHECKOUT();
+      } else {
+        try { sessionStorage.setItem('versans_open_checkout_v1', '1'); } catch (_) {}
+        window.location.assign('/shop?checkout=1');
+      }
+      return;
     }
   }, true);
 
