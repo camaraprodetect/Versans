@@ -20,8 +20,8 @@
     dashboard: ['Dashboard', 'תמונה מהירה של המכירות, המבקרים והלקוחות של VerSans'],
     visitors: ['מבקרים', 'מי נמצא באתר, מי ביקר בעבר ואיך הוא השתמש באתר'],
     sales: ['מכירות', 'נתוני הכנסות ומוצרים על בסיס הזמנות ששולמו בלבד'],
-    orders: ['הזמנות', 'הזמנות, חבילות ומספרי מעקב של VerSans'],
-    'order-work': ['טיפול בהזמנות', 'אזור עבודה להזמנות Paid שמסונכרן עם Google Sheets'],
+    orders: ['טיפול בהזמנות', 'טיפול, Tracking, Google Sheets ופרטי הזמנה במקום אחד'],
+    'order-work': ['טיפול בהזמנות', 'טיפול, Tracking, Google Sheets ופרטי הזמנה במקום אחד'],
     products: ['מוצרים', 'ביצועי המוצרים לפי מכירות ששולמו'],
     customers: ['לקוחות', 'משתמשים רשומים, רכישות והוצאות מצטברות'],
     reviews: ['ביקורות', 'דירוגים, מוצרים מובילים וביקורות אחרונות']
@@ -71,7 +71,15 @@
   function currentPage() {
     var path = window.location.pathname.replace(/\/+$/, '');
     if (path === '/admin' || path === '/admin.html' || path === '/admin/dashboard') return 'dashboard';
-    var match = /^\/admin\/(visitors|sales|orders|order-work|products|customers|reviews)$/.exec(path);
+
+    /* /admin/orders is now permanently merged into the order workbench. */
+    if (path === '/admin/orders') {
+      var target = '/admin/order-work' + (window.location.search || '') + (window.location.hash || '');
+      window.history.replaceState(null, '', target);
+      return 'order-work';
+    }
+
+    var match = /^\/admin\/(visitors|sales|order-work|products|customers|reviews)$/.exec(path);
     return match ? match[1] : 'dashboard';
   }
 
@@ -1140,6 +1148,35 @@
       row.classList.remove('admin-order-row--connected', 'admin-order-row--partial', 'admin-order-row--unconnected');
       row.classList.add(fulfillmentState === 'complete' ? 'admin-order-row--connected' : (fulfillmentState === 'partial' ? 'admin-order-row--partial' : 'admin-order-row--unconnected'));
     });
+
+    document.querySelectorAll('[data-order-work-ref]').forEach(function (card) {
+      if (card.getAttribute('data-order-work-ref') !== String(order.orderRef || '')) return;
+      card.setAttribute('data-fulfillment-state', fulfillmentState);
+
+      var track = card.querySelector('[data-order-track-action]');
+      if (track) {
+        track.classList.remove(
+          'admin-order-work-action--track-red',
+          'admin-order-work-action--track-yellow',
+          'admin-order-work-action--track-green'
+        );
+        track.classList.add(
+          fulfillmentState === 'complete'
+            ? 'admin-order-work-action--track-green'
+            : (fulfillmentState === 'partial'
+              ? 'admin-order-work-action--track-yellow'
+              : 'admin-order-work-action--track-red')
+        );
+        track.textContent = orderWorkTrackLabel(order);
+      }
+
+      var trackStatus = card.querySelector('[data-order-track-status]');
+      if (trackStatus) {
+        trackStatus.className = 'admin-order-work-track-status admin-order-work-track-status--' +
+          (fulfillmentState === 'complete' ? 'green' : (fulfillmentState === 'partial' ? 'yellow' : 'red'));
+        trackStatus.textContent = orderWorkTrackStatusText(order);
+      }
+    });
   }
 
   function orderShippingAddress(shipping) {
@@ -1232,7 +1269,7 @@
   }
 
   async function maybeOpenRequestedOrder() {
-    if (state.page !== 'orders' || requestedOrderOpened || !requestedOrderRef) return;
+    if (state.page !== 'order-work' || requestedOrderOpened || !requestedOrderRef) return;
     requestedOrderOpened = true;
     var orderRef = requestedOrderRef;
     var cleanUrl = new URL(window.location.href);
@@ -1536,7 +1573,7 @@
     [
       ['/admin/visitors', 'מבקרים', 'Online + Lifetime'],
       ['/admin/sales', 'מכירות', 'Paid בלבד'],
-      ['/admin/orders', 'הזמנות', 'כל הסטטוסים'],
+      ['/admin/order-work', 'טיפול בהזמנות', 'Tracking + Google Sheets'],
       ['/admin/products', 'מוצרים', 'דירוג מכירות'],
       ['/admin/customers', 'לקוחות', 'הוצאות והזמנות'],
       ['/admin/reviews', 'ביקורות', 'דירוגים']
@@ -2000,39 +2037,156 @@
     return 'Google Sheets לא מסונכרן';
   }
 
+  function orderWorkActionButton(label, className, onClick) {
+    var button = make('button', 'admin-order-work-action' + (className ? ' ' + className : ''), label);
+    button.type = 'button';
+    button.addEventListener('click', function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      onClick();
+    });
+    return button;
+  }
+
+  function orderWorkFulfillmentState(order) {
+    var stateValue = order && order.fulfillment && order.fulfillment.state;
+    return stateValue === 'complete' || stateValue === 'partial' ? stateValue : 'none';
+  }
+
+  function orderWorkTrackLabel(order) {
+    var fulfillment = order && order.fulfillment || {};
+    var linked = Math.max(0, Number(fulfillment.linkedUnits != null ? fulfillment.linkedUnits : fulfillment.linkedItems || 0));
+    var total = Math.max(0, Number(fulfillment.totalUnits != null ? fulfillment.totalUnits : fulfillment.totalItems || 0));
+    if (!total || !linked) return 'Track · לא חובר';
+    return 'Track · ' + linked + '/' + total;
+  }
+
+  function orderWorkTrackStatusText(order) {
+    var stateValue = orderWorkFulfillmentState(order);
+    if (stateValue === 'complete') return 'כל המוצרים מחוברים למעקב';
+    if (stateValue === 'partial') return 'חלק מהמוצרים מחוברים למעקב';
+    return 'עדיין לא חובר Tracking';
+  }
+
+  function orderWorkTrackLink(order) {
+    var stateValue = orderWorkFulfillmentState(order);
+    var tone = stateValue === 'complete' ? 'green' : (stateValue === 'partial' ? 'yellow' : 'red');
+    var link = document.createElement('a');
+    link.className = 'admin-order-work-action admin-order-work-action--track admin-order-work-action--track-' + tone;
+    link.setAttribute('data-order-track-action', '1');
+    link.href = '/track?order=' + encodeURIComponent(String(order && order.orderRef || ''));
+    link.target = '_blank';
+    link.rel = 'noopener';
+    link.textContent = orderWorkTrackLabel(order);
+    return link;
+  }
+
+  function openPickupMessageTool() {
+    var details = document.getElementById('adminPickupMessageTool');
+    if (!details) return;
+    details.open = true;
+    try { details.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (_) {}
+    window.setTimeout(function () {
+      var textarea = details.querySelector('textarea');
+      if (textarea) textarea.focus();
+    }, 250);
+  }
+
+  function compactPickupTool() {
+    var details = make('details', 'admin-order-work-pickup-tool');
+    details.id = 'adminPickupMessageTool';
+
+    var summary = document.createElement('summary');
+    summary.textContent = '💬 שליחת הודעת איסוף ללקוח';
+    details.appendChild(summary);
+
+    var body = make('div', 'admin-order-work-pickup-tool__body');
+    body.appendChild(manualPickupMessageCard());
+    details.appendChild(body);
+    return details;
+  }
+
   function renderOrderWorkCard(order) {
-    var cardEl = make('article', 'admin-order-work-card admin-order-work-card--organized');
+    var cardEl = make('article', 'admin-order-work-card admin-order-work-card--organized admin-order-work-card--compact');
     cardEl.dataset.workState = order.workState || (order.completed ? 'green' : 'red');
     cardEl.setAttribute('data-order-work-ref', String(order.orderRef || ''));
+    cardEl.setAttribute('data-fulfillment-state', orderWorkFulfillmentState(order));
 
     var items = Array.isArray(order.items) ? order.items : [];
     var snapshot = order.sheetSnapshot || null;
 
-    var head = make('div', 'admin-order-work-card__head admin-order-work-card__head--organized');
+    var head = make('div', 'admin-order-work-card__head admin-order-work-card__head--organized admin-order-work-card__head--compact');
+
     var orderCheckWrap = make('label', 'admin-order-work-order-check');
     var orderCheck = document.createElement('input');
     orderCheck.type = 'checkbox';
     orderCheck.checked = !!order.completed;
     orderCheckWrap.appendChild(orderCheck);
-    orderCheckWrap.appendChild(make('span', '', 'כל ההזמנה בוצעה'));
+    orderCheckWrap.appendChild(make('span', '', 'בוצעה'));
 
-    var title = make('div', 'admin-order-work-card__title');
+    var title = make('button', 'admin-order-work-card__title admin-order-work-card__title--button');
+    title.type = 'button';
     title.appendChild(make('strong', '', order.orderRef || 'הזמנה'));
     title.appendChild(make('small', '', (order.paidAt ? dateTime(order.paidAt) : dateTime(order.createdAt)) + ' · ' + moneyValue(order.orderTotal, order.currency)));
+    title.addEventListener('click', function () { openOrderDetailsByRef(order.orderRef); });
 
     var statusLabel = order.workState === 'green' ? 'הושלמה' : (order.workState === 'partial' ? 'חלקית' : 'ממתינה');
     var statusChip = make('span', 'admin-order-work-status-chip admin-order-work-status-chip--' + (order.workState || 'red'), statusLabel);
-    var progress = make('div', 'admin-order-work-progress');
+
+    var progress = make('div', 'admin-order-work-progress admin-order-work-progress--compact');
     var progressText = make('strong', '', '');
     var progressSub = make('span', '', '');
     progress.append(progressText, progressSub);
-    head.append(orderCheckWrap, title, statusChip, progress);
+
+    var fulfillmentState = orderWorkFulfillmentState(order);
+    var trackTone = fulfillmentState === 'complete' ? 'green' : (fulfillmentState === 'partial' ? 'yellow' : 'red');
+    var trackStatus = make(
+      'span',
+      'admin-order-work-track-status admin-order-work-track-status--' + trackTone,
+      orderWorkTrackStatusText(order)
+    );
+    trackStatus.setAttribute('data-order-track-status', '1');
+
+    head.append(orderCheckWrap, title, statusChip, trackStatus, progress);
     cardEl.appendChild(head);
 
+    var actions = make('div', 'admin-order-work-card__actions');
+    actions.appendChild(orderWorkActionButton('ניהול Tracking', 'admin-order-work-action--primary', function () {
+      openShipmentManager(order);
+    }));
+    actions.appendChild(orderWorkTrackLink(order));
+    actions.appendChild(orderWorkActionButton('שליחת הודעה', 'admin-order-work-action--message', function () {
+      openPickupMessageTool();
+    }));
+    actions.appendChild(orderWorkActionButton('פרטי הזמנה', '', function () {
+      openOrderDetailsByRef(order.orderRef);
+    }));
+    actions.appendChild(orderWorkActionButton('העתק מס׳ הזמנה', '', function () {
+      var value = String(order.orderRef || '');
+      if (!value) return;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(value).then(function () { showToast('מספר ההזמנה הועתק'); }).catch(function () {});
+      }
+    }));
+    cardEl.appendChild(actions);
+
     var customer = order.customer || {};
-    var customerSection = make('section', 'admin-order-work-section');
-    customerSection.appendChild(make('h3', 'admin-order-work-section__title', 'פרטי לקוח ומשלוח'));
-    var customerGrid = make('div', 'admin-order-work-customer admin-order-work-customer--organized');
+    var customerSummary = make('div', 'admin-order-work-customer-summary');
+    [
+      order.customerName || customer.fullName || 'אורח',
+      order.customerPhone || customer.phone || '',
+      orderShippingAddress(customer) || ''
+    ].filter(Boolean).forEach(function (value) {
+      customerSummary.appendChild(make('span', '', value));
+    });
+    cardEl.appendChild(customerSummary);
+
+    var customerDetails = make('details', 'admin-order-work-collapsible');
+    var customerSummaryTitle = document.createElement('summary');
+    customerSummaryTitle.textContent = 'כל פרטי הלקוח והמשלוח';
+    customerDetails.appendChild(customerSummaryTitle);
+
+    var customerGrid = make('div', 'admin-order-work-customer admin-order-work-customer--organized admin-order-work-customer--compact');
     [
       ['שם מלא', order.customerName || customer.fullName || 'אורח'],
       ['טלפון', order.customerPhone || customer.phone || '—'],
@@ -2042,40 +2196,79 @@
       ['כניסה', customer.entrance || '—'],
       ['קומה', customer.floor || '—'],
       ['הערות', customer.notes || '—']
-    ].forEach(function (entry) { customerGrid.appendChild(orderWorkField(entry[0], entry[1])); });
-    customerSection.appendChild(customerGrid);
-    cardEl.appendChild(customerSection);
+    ].forEach(function (entry) {
+      customerGrid.appendChild(orderWorkField(entry[0], entry[1]));
+    });
+    customerDetails.appendChild(customerGrid);
+    cardEl.appendChild(customerDetails);
 
-    var listSection = make('section', 'admin-order-work-section admin-order-work-section--items');
-    listSection.appendChild(make('h3', 'admin-order-work-section__title', 'מוצרים בהזמנה'));
-    var list = make('div', 'admin-order-work-items admin-order-work-items--organized');
+    var listSection = make('section', 'admin-order-work-section admin-order-work-section--items admin-order-work-section--items-compact');
+    var list = make('div', 'admin-order-work-items admin-order-work-items--organized admin-order-work-items--compact');
     var itemChecks = [];
 
     items.forEach(function (item) {
       var sheetItem = item.sheet || {};
-      var row = make('article', 'admin-order-work-item admin-order-work-item--organized');
-      var top = make('div', 'admin-order-work-item__top admin-order-work-item__top--organized');
+      var row = make('article', 'admin-order-work-item admin-order-work-item--organized admin-order-work-item--compact');
+
+      var top = make('div', 'admin-order-work-item__top admin-order-work-item__top--organized admin-order-work-item__top--compact');
+
       var checkWrap = make('label', 'admin-order-work-item__check');
       var input = document.createElement('input');
       input.type = 'checkbox';
       input.checked = !!item.completed;
       checkWrap.appendChild(input);
-      checkWrap.appendChild(make('span', '', 'בוצע'));
 
       var productImageUrl = sheetItem.productImageUrl || item.imageUrl || '';
       var thumb = orderWorkImage(productImageUrl, item.productName || 'מוצר', 'admin-order-work-item__main-image');
-      var itemTitle = make('div', 'admin-order-work-item__title');
+
+      var itemTitle = make('div', 'admin-order-work-item__title admin-order-work-item__title--compact');
       itemTitle.appendChild(make('strong', '', sheetItem.productName || item.productName || item.productId || 'מוצר'));
-      itemTitle.appendChild(make('small', '', [
-        sheetItem.selectionsText || item.selectionsText || '',
-        'כמות ' + (sheetItem.quantity || item.quantity || 1),
-        moneyValue(sheetItem.lineTotal != null ? sheetItem.lineTotal : item.lineTotal, order.currency)
-      ].filter(Boolean).join(' · ')));
-      var productLink = orderWorkLink(sheetItem.productLink || item.productLink || '', 'קישור מוצר ↗');
+
+      var selection = sheetItem.selectionsText || item.selectionsText || '';
+      if (selection) itemTitle.appendChild(make('small', '', selection));
+
+      var itemMeta = make('div', 'admin-order-work-item__meta admin-order-work-item__meta--compact');
+      itemMeta.appendChild(make('span', '', 'כמות ' + (sheetItem.quantity || item.quantity || 1)));
+      itemMeta.appendChild(make('span', '', moneyValue(sheetItem.lineTotal != null ? sheetItem.lineTotal : item.lineTotal, order.currency)));
+      itemTitle.appendChild(itemMeta);
+
+      var productLink = orderWorkLink(sheetItem.productLink || item.productLink || '', 'מוצר ↗');
       top.append(checkWrap, thumb, itemTitle, productLink);
       row.appendChild(top);
 
-      var details = make('div', 'admin-order-work-item__details');
+      var selectionImageUrl = sheetItem.selectionImageUrl || item.selectionImageUrl || '';
+      var personalization = sheetItem.personalizationText || orderWorkPersonalization(item) || '';
+      if (selectionImageUrl || personalization || item.needsGreeting || item.needsCustomPhoto) {
+        var relevant = make('div', 'admin-order-work-relevant admin-order-work-relevant--compact');
+        if (selectionImageUrl) relevant.appendChild(orderWorkAssetFull('תמונת בחירה', selectionImageUrl, selectionImageUrl, item.selectionImageUrl || ''));
+        if (personalization) relevant.appendChild(orderWorkField('התאמה אישית', personalization));
+
+        if (item.needsGreeting) {
+          var greetingFallback = item.greeting && item.greeting.dataUrl || '';
+          relevant.appendChild(orderWorkAssetFull('תמונת ברכה', sheetItem.greetingImageUrl || '', sheetItem.greetingDriveUrl || '', greetingFallback));
+          relevant.appendChild(orderWorkField('קישור ברכה', orderWorkLink(
+            sheetItem.greetingDriveUrl || greetingFallback,
+            sheetItem.greetingDriveUrl ? 'Drive ↗' : (greetingFallback ? 'תמונה ↗' : '—')
+          )));
+        }
+
+        if (item.needsCustomPhoto) {
+          var photoFallback = item.customPhoto && item.customPhoto.dataUrl || '';
+          relevant.appendChild(orderWorkAssetFull('תמונת לקוח', sheetItem.customPhotoImageUrl || '', sheetItem.customPhotoDriveUrl || '', photoFallback));
+          relevant.appendChild(orderWorkField('קישור תמונת לקוח', orderWorkLink(
+            sheetItem.customPhotoDriveUrl || photoFallback,
+            sheetItem.customPhotoDriveUrl ? 'Drive ↗' : (photoFallback ? 'תמונה ↗' : '—')
+          )));
+        }
+        row.appendChild(relevant);
+      }
+
+      var fullDetails = make('details', 'admin-order-work-item-more');
+      var fullSummary = document.createElement('summary');
+      fullSummary.textContent = 'פרטים מלאים';
+      fullDetails.appendChild(fullSummary);
+
+      var details = make('div', 'admin-order-work-item__details admin-order-work-item__details--compact');
       details.appendChild(orderWorkField('שם מוצר', sheetItem.productName || item.productName || item.productId || '—'));
       details.appendChild(orderWorkField('בחירה / דגם', sheetItem.selectionsText || item.selectionsText || '—'));
       details.appendChild(orderWorkField('כמות', sheetItem.quantity || item.quantity || 1));
@@ -2084,29 +2277,8 @@
       details.appendChild(orderWorkField('תאריך הזמנה', sheetItem.orderDate || (order.paidAt ? dateTime(order.paidAt) : dateTime(order.createdAt))));
       details.appendChild(orderWorkField('מספר הזמנה למוצר', sheetItem.itemOrderRef || item.itemOrderRef || '—'));
       details.appendChild(orderWorkField('קישור מוצר', orderWorkLink(sheetItem.productLink || item.productLink || '', 'פתיחת מוצר ↗')));
-      row.appendChild(details);
-
-      var selectionImageUrl = sheetItem.selectionImageUrl || item.selectionImageUrl || '';
-      var personalization = sheetItem.personalizationText || orderWorkPersonalization(item) || '';
-      if (selectionImageUrl || personalization || item.needsGreeting || item.needsCustomPhoto) {
-        var relevant = make('div', 'admin-order-work-relevant');
-        relevant.appendChild(make('h4', '', 'פרטים רלוונטיים למוצר'));
-        if (selectionImageUrl) relevant.appendChild(orderWorkAssetFull('תמונת בחירה', selectionImageUrl, selectionImageUrl, item.selectionImageUrl || ''));
-        if (personalization) relevant.appendChild(orderWorkField('פרטי התאמה אישית', personalization));
-
-        if (item.needsGreeting) {
-          var greetingFallback = item.greeting && item.greeting.dataUrl || '';
-          relevant.appendChild(orderWorkAssetFull('תמונת ברכה', sheetItem.greetingImageUrl || '', sheetItem.greetingDriveUrl || '', greetingFallback));
-          relevant.appendChild(orderWorkField('קישור ברכה', orderWorkLink(sheetItem.greetingDriveUrl || greetingFallback, sheetItem.greetingDriveUrl ? 'פתיחת קובץ Drive' : (greetingFallback ? 'פתיחת תמונה' : '—'))));
-        }
-
-        if (item.needsCustomPhoto) {
-          var photoFallback = item.customPhoto && item.customPhoto.dataUrl || '';
-          relevant.appendChild(orderWorkAssetFull('תמונת לקוח', sheetItem.customPhotoImageUrl || '', sheetItem.customPhotoDriveUrl || '', photoFallback));
-          relevant.appendChild(orderWorkField('קישור תמונת לקוח', orderWorkLink(sheetItem.customPhotoDriveUrl || photoFallback, sheetItem.customPhotoDriveUrl ? 'פתיחת קובץ Drive' : (photoFallback ? 'פתיחת תמונה' : '—'))));
-        }
-        row.appendChild(relevant);
-      }
+      fullDetails.appendChild(details);
+      row.appendChild(fullDetails);
 
       itemChecks.push({ input: input, item: item, row: row });
       list.appendChild(row);
@@ -2115,12 +2287,22 @@
         var next = input.checked;
         input.disabled = true;
         row.classList.toggle('is-completed', next);
+
         try {
-          var result = await apiAction('/api/admin/order-work/' + encodeURIComponent(order.orderRef) + '/items/' + encodeURIComponent(item.itemIndex), 'POST', { completed: next });
+          var result = await apiAction(
+            '/api/admin/order-work/' + encodeURIComponent(order.orderRef) + '/items/' + encodeURIComponent(item.itemIndex),
+            'POST',
+            { completed: next }
+          );
           item.completed = next;
           if (typeof result.orderCompleted === 'boolean') orderCheck.checked = result.orderCompleted;
+
           if (result.sheetSynced === false) {
-            showToast(result.sheetError === 'apps_script_outdated' ? 'נשמר באדמין. צריך לפרוס את Apps Script V9 כדי שהווי יעבור ל-Google Sheet' : 'נשמר באדמין, אבל הסנכרון ל-Google Sheet נכשל');
+            showToast(
+              result.sheetError === 'apps_script_outdated'
+                ? 'נשמר באדמין. צריך לפרוס את Apps Script V9 כדי שהווי יעבור ל-Google Sheet'
+                : 'נשמר באדמין, אבל הסנכרון ל-Google Sheet נכשל'
+            );
           } else {
             showToast('עודכן באדמין וב-Google Sheet');
           }
@@ -2140,10 +2322,11 @@
     cardEl.appendChild(listSection);
 
     if (snapshot) {
-      var raw = make('details', 'admin-order-work-sheet-raw admin-order-work-sheet-raw--organized');
+      var raw = make('details', 'admin-order-work-sheet-raw admin-order-work-sheet-raw--organized admin-order-work-sheet-raw--compact');
       var summary = document.createElement('summary');
-      summary.textContent = 'מידע גולמי מ-Google Sheet';
+      summary.textContent = 'מידע Google Sheet';
       raw.appendChild(summary);
+
       var rawGrid = make('div', 'admin-order-work-sheet-raw__grid');
       rawGrid.appendChild(orderWorkField('כותרת הזמנה', snapshot.titleText || '—'));
       rawGrid.appendChild(orderWorkField('פרטי קשר', snapshot.contactText || '—'));
@@ -2159,36 +2342,54 @@
       var allDone = total > 0 && done === total;
       var partial = done > 0 && done < total;
       var workState = allDone ? 'green' : (partial ? 'partial' : 'red');
+
       orderCheck.checked = allDone;
       orderCheck.indeterminate = partial;
-      progressText.textContent = done + ' / ' + total;
-      progressSub.textContent = allDone ? 'הושלמה' : (partial ? 'חלקית' : 'ממתינה');
+      progressText.textContent = done + '/' + total;
+      progressSub.textContent = allDone ? 'בוצע' : (partial ? 'חלקי' : 'ממתין');
       cardEl.dataset.workState = workState;
       cardEl.classList.toggle('is-completed', allDone);
       statusChip.className = 'admin-order-work-status-chip admin-order-work-status-chip--' + workState;
       statusChip.textContent = allDone ? 'הושלמה' : (partial ? 'חלקית' : 'ממתינה');
-      itemChecks.forEach(function (entry) { entry.row.classList.toggle('is-completed', entry.input.checked); });
+
+      itemChecks.forEach(function (entry) {
+        entry.row.classList.toggle('is-completed', entry.input.checked);
+      });
     }
 
     orderCheck.addEventListener('change', async function () {
       var next = orderCheck.checked;
       orderCheck.disabled = true;
+
       itemChecks.forEach(function (entry) {
         entry.input.disabled = true;
         entry.input.checked = next;
         entry.row.classList.toggle('is-completed', next);
       });
       updateProgress();
+
       try {
-        var result = await apiAction('/api/admin/order-work/' + encodeURIComponent(order.orderRef), 'POST', { completed: next });
+        var result = await apiAction(
+          '/api/admin/order-work/' + encodeURIComponent(order.orderRef),
+          'POST',
+          { completed: next }
+        );
         items.forEach(function (item) { item.completed = next; });
+
         if (result.sheetSynced === false) {
-          showToast(result.sheetError === 'apps_script_outdated' ? 'נשמר באדמין. צריך לפרוס את Apps Script V9 כדי שהווי יעבור ל-Google Sheet' : 'נשמר באדמין, אבל הסנכרון ל-Google Sheet נכשל');
+          showToast(
+            result.sheetError === 'apps_script_outdated'
+              ? 'נשמר באדמין. צריך לפרוס את Apps Script V9 כדי שהווי יעבור ל-Google Sheet'
+              : 'נשמר באדמין, אבל הסנכרון ל-Google Sheet נכשל'
+          );
         } else {
           showToast('כל ההזמנה עודכנה גם ב-Google Sheet');
         }
       } catch (error) {
-        itemChecks.forEach(function (entry) { entry.input.checked = !next; entry.item.completed = !next; });
+        itemChecks.forEach(function (entry) {
+          entry.input.checked = !next;
+          entry.item.completed = !next;
+        });
         showToast('לא הצלחנו לשמור את העדכון');
       } finally {
         orderCheck.disabled = false;
@@ -2294,43 +2495,39 @@
     var data = await api('/api/admin/order-work?range=' + encodeURIComponent(range) + '&workStatus=' + encodeURIComponent(workStatus) + '&limit=20&offset=' + offset);
     var frag = document.createDocumentFragment();
 
-    var filtersCard = make('section', 'admin-order-work-filters-card');
-    var filtersTop = make('div', 'admin-order-work-filters-card__head');
-    filtersTop.appendChild(make('strong', '', 'סינון הזמנות'));
-    filtersTop.appendChild(make('span', '', 'סטטוס טיפול וטווח זמן'));
-    filtersCard.appendChild(filtersTop);
+    var filtersCard = make('section', 'admin-order-work-filters-card admin-order-work-filters-card--compact');
 
-    var filters = make('div', 'admin-order-work-filters');
-    var statusGroup = make('div', 'admin-order-work-filter-block');
-    statusGroup.appendChild(make('span', 'admin-order-work-filter-block__label', 'מצב הזמנה'));
+    var filters = make('div', 'admin-order-work-filters admin-order-work-filters--compact');
+    var statusGroup = make('div', 'admin-order-work-filter-block admin-order-work-filter-block--compact');
     statusGroup.appendChild(renderOrderWorkStatusFilter(workStatus, data.statusCounts || {}, function (next) {
       state.orderWorkStatus = next; state.offsets.orderWork = 0; renderCurrentPage();
     }));
-    var rangeGroup = make('div', 'admin-order-work-filter-block');
-    rangeGroup.appendChild(make('span', 'admin-order-work-filter-block__label', 'טווח זמן'));
+
+    var rangeGroup = make('div', 'admin-order-work-filter-block admin-order-work-filter-block--compact');
     rangeGroup.appendChild(renderRangeFilter(range, orderWorkRangeOptions, function (next) {
       state.ranges.orderWork = next; state.offsets.orderWork = 0; renderCurrentPage();
     }));
+
     filters.append(statusGroup, rangeGroup);
     filtersCard.appendChild(filters);
     frag.appendChild(filtersCard);
 
-    var toolbar = make('div', 'admin-toolbar admin-order-work-syncbar');
+    var topTools = make('div', 'admin-order-work-top-tools');
+    topTools.appendChild(compactPickupTool());
+
+    var toolbar = make('div', 'admin-toolbar admin-order-work-syncbar admin-order-work-syncbar--compact');
     var sync = data.sheetSync || {};
     var syncNode = make('span', 'admin-order-work-sync-state' + (sync.pending ? '' : (sync.ok ? ' is-ok' : ' is-error')), sheetSyncLabel(sync));
     toolbar.appendChild(syncNode);
-    toolbar.appendChild(make('span', 'admin-toolbar-note', 'אדום = אף מוצר לא בוצע · חלקי = חלק מהמוצרים בוצעו · ירוק = כל המוצרים בוצעו. נתוני Google Sheets נטענים ברקע כדי שהעמוד והפילטרים יגיבו מהר.'));
-    frag.appendChild(toolbar);
+    toolbar.appendChild(make(
+      'span',
+      'admin-toolbar-note',
+      'טיפול: אדום = ממתינה · צהוב = חלקית · ירוק = הושלמה | Track: אדום = לא חובר · צהוב = חובר חלקית · ירוק = הכול מחובר'
+    ));
+    topTools.appendChild(toolbar);
+    frag.appendChild(topTools);
 
-    var counts = data.statusCounts || {};
-    frag.appendChild(renderKpis([
-      { label: 'אדומות', value: numberFmt(counts.red || 0), hint: 'לא סומן אף מוצר' },
-      { label: 'חלקיות', value: numberFmt(counts.partial || 0), hint: 'חלק מהמוצרים סומנו' },
-      { label: 'ירוקות', value: numberFmt(counts.green || 0), hint: 'כל המוצרים סומנו', primary: true, tone: 'green' },
-      { label: 'בתצוגה', value: numberFmt(data.count || 0), hint: 'אחרי הסינון' }
-    ]));
-
-    var ordersWrap = make('div', 'admin-order-work-list admin-order-work-list--organized');
+    var ordersWrap = make('div', 'admin-order-work-list admin-order-work-list--organized admin-order-work-list--compact');
     if (!(data.orders || []).length) {
       var empty = make('div', 'admin-empty');
       empty.appendChild(make('strong', '', 'אין הזמנות שתואמות לפילטרים שבחרת.'));
@@ -2344,6 +2541,7 @@
 
     var viewKey = [range, workStatus, offset].join('|');
     loadOrderWorkSheetSnapshotsInBackground(data.orders || [], viewKey, syncNode);
+    await maybeOpenRequestedOrder();
   }
 
   async function renderProductsPage() {
@@ -2489,7 +2687,6 @@
       if (state.page === 'dashboard') await renderDashboardPage();
       else if (state.page === 'visitors') await renderVisitorsPage();
       else if (state.page === 'sales') await renderSalesPage();
-      else if (state.page === 'orders') await renderOrdersPage();
       else if (state.page === 'order-work') await renderOrderWorkPage();
       else if (state.page === 'products') await renderProductsPage();
       else if (state.page === 'customers') await renderCustomersPage();

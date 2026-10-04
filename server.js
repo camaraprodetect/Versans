@@ -1658,6 +1658,38 @@ function adminOrderWorkSummary(row, prefetchedStates) {
   };
 }
 
+function adminOrderFulfillmentSummary(row, assignments) {
+  const items = normalizeStoredOrderItems(row && row.items_json, PRODUCTS);
+  const linkedByIndex = new Map();
+
+  for (const assignment of Array.isArray(assignments) ? assignments : []) {
+    const index = Number(assignment && assignment.item_index);
+    if (!Number.isInteger(index) || index < 0) continue;
+    linkedByIndex.set(index, Number(linkedByIndex.get(index) || 0) + Math.max(0, Number(assignment.qty || 0)));
+  }
+
+  let totalUnits = 0;
+  let linkedUnits = 0;
+
+  (Array.isArray(items) ? items : []).forEach((item, index) => {
+    const ordered = Math.max(0, Number(item && item.qty || 0));
+    totalUnits += ordered;
+    linkedUnits += Math.min(ordered, Math.max(0, Number(linkedByIndex.get(index) || 0)));
+  });
+
+  let state = 'none';
+  if (totalUnits > 0 && linkedUnits >= totalUnits) state = 'complete';
+  else if (linkedUnits > 0) state = 'partial';
+
+  return {
+    state,
+    linkedItems: linkedUnits,
+    totalItems: totalUnits,
+    linkedUnits,
+    totalUnits
+  };
+}
+
 function parseStoredCustomer(order) {
   try {
     const value = typeof order.customer_json === 'string' ? JSON.parse(order.customer_json || '{}') : (order.customer_json || {});
@@ -4795,9 +4827,14 @@ async function adminApi(req, res, pathname, parsed) {
       .map((row) => Number(row.id))
       .filter((id) => Number.isInteger(id) && id > 0);
 
-    const allStates = typeof database.listOrderWorkItemsForOrders === 'function'
-      ? await database.listOrderWorkItemsForOrders(orderIds)
-      : [];
+    const [allStates, allShipmentAssignments] = await Promise.all([
+      typeof database.listOrderWorkItemsForOrders === 'function'
+        ? database.listOrderWorkItemsForOrders(orderIds)
+        : Promise.resolve([]),
+      typeof database.listShipmentAssignmentsForOrders === 'function'
+        ? database.listShipmentAssignmentsForOrders(orderIds)
+        : Promise.resolve([])
+    ]);
 
     const statesByOrder = new Map();
     for (const stateRow of allStates || []) {
@@ -4806,9 +4843,17 @@ async function adminApi(req, res, pathname, parsed) {
       statesByOrder.get(orderId).push(stateRow);
     }
 
+    const shipmentAssignmentsByOrder = new Map();
+    for (const assignment of allShipmentAssignments || []) {
+      const orderId = Number(assignment.order_id);
+      if (!shipmentAssignmentsByOrder.has(orderId)) shipmentAssignmentsByOrder.set(orderId, []);
+      shipmentAssignmentsByOrder.get(orderId).push(assignment);
+    }
+
     const classified = rows.map((row) => ({
       row,
-      summary: adminOrderWorkSummary(row, statesByOrder.get(Number(row.id)) || [])
+      summary: adminOrderWorkSummary(row, statesByOrder.get(Number(row.id)) || []),
+      fulfillment: adminOrderFulfillmentSummary(row, shipmentAssignmentsByOrder.get(Number(row.id)) || [])
     }));
 
     const statusCounts = {
@@ -4832,6 +4877,7 @@ async function adminApi(req, res, pathname, parsed) {
       payload.completedCount = entry.summary.completedCount;
       payload.itemCount = entry.summary.itemCount;
       payload.completed = entry.summary.workState === 'green';
+      payload.fulfillment = entry.fulfillment;
       return payload;
     }));
 
