@@ -4497,6 +4497,16 @@ async function adminApi(req, res, pathname, parsed) {
 
     const now = Date.now();
     await database.setOrderWorkItemStatus(Number(order.id), itemIndex, body.completed, 'admin', now);
+
+    const latestStates = typeof database.listOrderWorkItems === 'function'
+      ? await database.listOrderWorkItems(Number(order.id))
+      : [];
+    const completedIndexes = new Set((latestStates || [])
+      .filter((entry) => Number(entry.completed || 0) === 1)
+      .map((entry) => Number(entry.item_index)));
+    const orderCompleted = itemCount > 0 && Array.from({ length: itemCount }, (_, index) => index)
+      .every((index) => completedIndexes.has(index));
+
     let sheetSynced = false;
     let sheetError = null;
     try {
@@ -4508,7 +4518,15 @@ async function adminApi(req, res, pathname, parsed) {
       sheetError = info.code;
       console.error(`Google Sheet item status sync failed for ${order.order_ref} item ${itemIndex}:`, error && error.message ? error.message : error);
     }
-    json(res, 200, { ok: true, orderRef: order.order_ref, itemIndex, completed: body.completed, sheetSynced, sheetError });
+    json(res, 200, {
+      ok: true,
+      orderRef: order.order_ref,
+      itemIndex,
+      completed: body.completed,
+      orderCompleted,
+      sheetSynced,
+      sheetError
+    });
     return true;
   }
 
@@ -4639,12 +4657,49 @@ async function adminApi(req, res, pathname, parsed) {
 
   if (pathname === '/api/admin/order-work') {
     const { limit, offset } = adminPagination(parsed, 20);
-    const [count, rows] = await Promise.all([
-      database.countAdminOrders({ status: 'paid', since: null }),
-      database.listAdminOrders({ status: 'paid', since: null, limit, offset })
-    ]);
+    const range = String(parsed.searchParams.get('range') || '30d');
+    const workStatus = String(parsed.searchParams.get('workStatus') || 'all');
+    const normalizedRange = normalizeAdminRange(range);
 
-    const orders = await Promise.all(rows.map(adminOrderWorkPayload));
+    if (!normalizedRange) {
+      json(res, 400, { ok: false, error: 'invalid_range' });
+      return true;
+    }
+    if (!['all', 'red', 'partial', 'green'].includes(workStatus)) {
+      json(res, 400, { ok: false, error: 'invalid_work_status' });
+      return true;
+    }
+
+    const rows = await database.listAdminOrders({
+      status: 'paid',
+      since: normalizedRange.since,
+      limit: 5000,
+      offset: 0
+    });
+    const classifiedOrders = await Promise.all(rows.map(adminOrderWorkPayload));
+
+    function workState(order) {
+      if (!order || !order.itemCount || order.completedCount <= 0) return 'red';
+      if (order.completedCount >= order.itemCount) return 'green';
+      return 'partial';
+    }
+
+    classifiedOrders.forEach((order) => { order.workState = workState(order); });
+
+    const statusCounts = {
+      all: classifiedOrders.length,
+      red: classifiedOrders.filter((order) => order.workState === 'red').length,
+      partial: classifiedOrders.filter((order) => order.workState === 'partial').length,
+      green: classifiedOrders.filter((order) => order.workState === 'green').length
+    };
+
+    const filtered = workStatus === 'all'
+      ? classifiedOrders
+      : classifiedOrders.filter((order) => order.workState === workStatus);
+
+    const count = filtered.length;
+    const orders = filtered.slice(offset, offset + limit);
+
     let sheetSync = { ok: false, version: null, error: null };
     let sheetSnapshots = {};
 
@@ -4655,10 +4710,14 @@ async function adminApi(req, res, pathname, parsed) {
           itemIndex: item.itemIndex,
           productId: item.productId,
           productSlug: item.productSlug,
-          productName: item.productName
+          productName: item.productName,
+          needsGreeting: item.needsGreeting === true,
+          needsCustomPhoto: item.needsCustomPhoto === true,
+          needsPersonalization: item.needsPersonalization === true
         }))
       }));
       const result = await fetchGoogleOrderSnapshots(descriptors);
+
       if (result && result.skipped) {
         sheetSync = { ok: false, version: null, error: result.reason || 'google_orders_not_configured' };
       } else {
@@ -4686,31 +4745,19 @@ async function adminApi(req, res, pathname, parsed) {
 
     json(res, 200, {
       ok: true,
+      range: normalizedRange.range,
+      workStatus,
+      statusCounts,
       count,
       limit,
       offset,
-      hasMore: offset + rows.length < count,
+      hasMore: offset + orders.length < count,
       orders,
-      completedOrders: orders.filter((order) => order.completed).length,
-      openOrders: orders.filter((order) => !order.completed).length,
+      completedOrders: filtered.filter((order) => order.workState === 'green').length,
+      partialOrders: filtered.filter((order) => order.workState === 'partial').length,
+      openOrders: filtered.filter((order) => order.workState === 'red').length,
       sheetSync
     });
-    return true;
-  }
-
-  if (pathname === '/api/admin/orders') {
-    const status = String(parsed.searchParams.get('status') || 'paid');
-    if (!['paid', 'pending', 'failed', 'all'].includes(status)) { json(res, 400, { ok: false, error: 'invalid_status' }); return true; }
-    const range = String(parsed.searchParams.get('range') || '30d');
-    const normalized = normalizeAdminRange(range);
-    if (!normalized) { json(res, 400, { ok: false, error: 'invalid_range' }); return true; }
-    const { limit, offset } = adminPagination(parsed, 50);
-    const [count, rows] = await Promise.all([
-      database.countAdminOrders({ status, since: normalized.since }),
-      database.listAdminOrders({ status, since: normalized.since, limit, offset })
-    ]);
-    const orders = await Promise.all(rows.map(adminOrderPayloadWithFulfillment));
-    json(res, 200, { ok: true, status, range, count, limit, offset, hasMore: offset + rows.length < count, orders });
     return true;
   }
 
