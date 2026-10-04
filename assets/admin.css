@@ -676,3 +676,291 @@ button,input,textarea,select,a{font:inherit}.admin-app{display:grid;grid-templat
     gap:4px;
   }
 }
+
+
+/* V58 — one always-open message sender + full connected order details */
+.admin-order-work-message-panel{
+  margin-bottom:10px;
+  border:1px solid #dce4e9;
+  border-radius:12px;
+  background:#fff;
+  overflow:hidden;
+  box-shadow:0 4px 14px rgba(20,35,51,.04);
+}
+.admin-order-work-message-panel__head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:8px 11px;
+  border-bottom:1px solid #e8edf0;
+  background:#f8fafb;
+}
+.admin-order-work-message-panel__head strong{
+  color:var(--admin-navy);
+  font-size:10px;
+}
+.admin-order-work-message-panel__head span{
+  color:#788690;
+  font-size:7.5px;
+}
+.admin-order-work-message-panel__body{
+  padding:8px 10px 10px;
+}
+.admin-order-work-message-panel .admin-pickup-message-card{
+  margin:0;
+  border:0;
+  box-shadow:none;
+  border-radius:0;
+}
+.admin-order-work-message-panel .admin-card__head{
+  display:none;
+}
+.admin-order-work-message-panel .admin-card__body{
+  padding:0;
+}
+.admin-order-work-message-panel .admin-pickup-message-form{
+  display:grid;
+  grid-template-columns:minmax(280px,1fr) auto;
+  align-items:end;
+  gap:8px;
+}
+.admin-order-work-message-panel .admin-pickup-message-form textarea{
+  min-height:74px;
+  max-height:120px;
+  padding:8px 9px;
+  font-size:9px;
+}
+.admin-order-work-message-panel .admin-pickup-message-form__actions{
+  margin:0;
+}
+.admin-order-work-message-panel .admin-pickup-message-form__actions .admin-shipment-submit{
+  min-width:150px;
+  min-height:34px;
+}
+
+.admin-order-work-card--full-connected{
+  border-radius:11px;
+  overflow:hidden;
+  box-shadow:0 4px 14px rgba(20,35,51,.045);
+}
+.admin-order-work-card__head--full{
+  grid-template-columns:auto minmax(0,1fr) auto auto auto;
+  gap:8px;
+  padding:8px 10px;
+}
+.admin-order-work-card__head--full .admin-order-work-order-check{
+  font-size:7.5px;
+}
+.admin-order-work-card__head--full .admin-order-work-order-check input{
+  width:16px;
+  height:16px;
+}
+.admin-order-work-card__head--full .admin-order-work-card__title strong{
+  font-size:10px;
+}
+.admin-order-work-card__head--full .admin-order-work-card__title small{
+  font-size:7px;
+}
+.admin-order-work-card__actions--full{
+  padding:6px 10px;
+  gap:5px;
+}
+
+.admin-order-work-section{
+  padding:8px 10px;
+}
+.admin-order-work-section+.admin-order-work-section{
+  border-top:1px solid #e8edf0;
+}
+.admin-order-work-section__head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-bottom:6px;
+}
+.admin-order-work-section__title{
+  margin:0 0 6px;
+  color:var(--admin-navy);
+  font-size:8.5px;
+  font-weight:950;
+}
+.admin-order-work-section__head .admin-order-work-section__title{
+  margin:0;
+}
+.admin-order-work-section__count{
+  font-size:7px;
+  color:#788690;
+}
+
+.admin-order-work-customer--dense{
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:5px;
+}
+.admin-order-work-customer--dense .admin-order-work-field{
+  min-height:48px;
+  padding:6px 7px;
+  border-radius:7px;
+}
+.admin-order-work-customer--dense .admin-order-work-field__label{
+  font-size:6px;
+}
+.admin-order-work-customer--dense .admin-order-work-field__value{
+  font-size:7.5px;
+  line-height:1.4;
+}
+
+.admin-order-work-items--full{
+  gap:7px;
+}
+.admin-order-work-item--sheetlike{
+  border:1px solid #e3e9ed;
+  border-radius:8px;
+  background:#fff;
+  overflow:hidden;
+}
+.admin-order-work-item__top--sheetlike{
+  grid-template-columns:auto 52px minmax(0,1fr) auto;
+  gap:8px;
+  padding:6px 8px;
+  background:#fafcfd;
+  border-bottom:1px solid #e8edf0;
+}
+.admin-order-work-item__top--sheetlike .admin-order-work-item__main-image{
+  width:50px;
+  height:50px;
+  border-radius:6px;
+}
+.admin-order-work-item__top--sheetlike .admin-order-work-item__check{
+  font-size:7px;
+}
+.admin-order-work-item__top--sheetlike .admin-order-work-item__check input{
+  width:16px;
+  height:16px;
+}
+.admin-order-work-item__top--sheetlike .admin-order-work-item__title strong{
+  font-size:9px;
+}
+.admin-order-work-item__top--sheetlike .admin-order-work-item__title small{
+  font-size:6.8px;
+}
+.admin-order-work-item__ref{
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  color:#7d8992!important;
+}
+
+.admin-order-work-item__details--sheetlike{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:5px;
+  padding:7px 8px;
+}
+.admin-order-work-item__details--sheetlike .admin-order-work-field{
+  padding:6px 7px;
+  border-radius:7px;
+  min-height:47px;
+}
+.admin-order-work-item__details--sheetlike .admin-order-work-field__label{
+  font-size:6px;
+}
+.admin-order-work-item__details--sheetlike .admin-order-work-field__value,
+.admin-order-work-item__details--sheetlike .admin-order-work-data-link{
+  font-size:7px;
+}
+
+.admin-order-work-relevant--sheetlike{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:5px;
+  padding:7px 8px;
+  border-top:1px dashed #dfe6ea;
+  background:#fcfdfd;
+}
+.admin-order-work-relevant--sheetlike .admin-order-work-field,
+.admin-order-work-relevant--sheetlike .admin-order-work-full-asset{
+  padding:6px;
+  border-radius:7px;
+  min-height:47px;
+}
+.admin-order-work-relevant--sheetlike .admin-order-work-full-asset__image{
+  width:58px;
+  height:58px;
+}
+.admin-order-work-relevant--sheetlike .admin-order-work-field__label{
+  font-size:6px;
+}
+.admin-order-work-relevant--sheetlike .admin-order-work-field__value,
+.admin-order-work-relevant--sheetlike .admin-order-work-data-link{
+  font-size:7px;
+}
+
+.admin-order-work-sheet-raw--visible{
+  margin:0;
+  padding:8px 10px;
+  border:0;
+  border-top:1px solid #e8edf0;
+  border-radius:0;
+  background:#fbfcfd;
+}
+.admin-order-work-sheet-raw__grid--visible{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:5px;
+  padding:0;
+}
+.admin-order-work-sheet-raw__grid--visible .admin-order-work-field{
+  padding:6px 7px;
+  border-radius:7px;
+}
+.admin-order-work-sheet-raw__grid--visible .admin-order-work-field__label{
+  font-size:6px;
+}
+.admin-order-work-sheet-raw__grid--visible .admin-order-work-field__value{
+  font-size:7px;
+}
+
+@media(max-width:1050px){
+  .admin-order-work-card__head--full{
+    grid-template-columns:auto minmax(0,1fr) auto auto;
+  }
+  .admin-order-work-card__head--full .admin-order-work-progress{
+    display:none;
+  }
+  .admin-order-work-customer--dense,
+  .admin-order-work-item__details--sheetlike,
+  .admin-order-work-relevant--sheetlike{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+}
+@media(max-width:760px){
+  .admin-order-work-message-panel .admin-pickup-message-form{
+    grid-template-columns:1fr;
+  }
+  .admin-order-work-card__head--full{
+    grid-template-columns:auto minmax(0,1fr);
+  }
+  .admin-order-work-card__head--full .admin-order-work-status-chip,
+  .admin-order-work-card__head--full .admin-order-work-track-status{
+    justify-self:start;
+  }
+  .admin-order-work-item__top--sheetlike{
+    grid-template-columns:auto 44px minmax(0,1fr);
+  }
+  .admin-order-work-item__top--sheetlike>.admin-order-work-data-link{
+    grid-column:2/-1;
+    justify-self:start;
+  }
+  .admin-order-work-item__top--sheetlike .admin-order-work-item__main-image{
+    width:42px;
+    height:42px;
+  }
+}
+@media(max-width:540px){
+  .admin-order-work-customer--dense,
+  .admin-order-work-item__details--sheetlike,
+  .admin-order-work-relevant--sheetlike,
+  .admin-order-work-sheet-raw__grid--visible{
+    grid-template-columns:1fr;
+  }
+}
