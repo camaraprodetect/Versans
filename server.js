@@ -62,7 +62,7 @@ const ADMIN_PUSH_VAPID_PRIVATE_META_KEY = 'admin_push_vapid_private_jwk_v1';
 const ADMIN_PUSH_TIMEOUT_MS = 10 * 1000;
 const USER_PURGE_META_KEY = 'purge_users_except_camaraprodetect_20260922_v1';
 const REVIEWS_PURGE_META_KEY = 'purge_all_reviews_20260924_v1';
-const ORDERS_PURGE_META_KEY = 'purge_all_orders_20261004_v2';
+const ORDERS_PURGE_META_KEY = 'purge_all_orders_20261004_v3';
 const ADMIN_PAGES = new Set(['', 'dashboard', 'visitors', 'sales', 'orders', 'order-work', 'products', 'customers', 'reviews']);
 const BODY_LIMIT = 48 * 1024 * 1024;
 const REVIEW_IMAGE_LIMIT = 2 * 1024 * 1024;
@@ -5868,7 +5868,8 @@ function safeInlineJson(value) {
 
 function injectStorefrontRouting(html, bootRoute) {
   const early = `<script>window.__VERSANS_BOOT_ROUTE__=${safeInlineJson(bootRoute)};</script><script src="/assets/route-state.js?v=20260924-home-no-refresh-v8"></script>`;
-  const late = '<script src="/assets/url-mask.js?v=20260924-home-reviews-anchor-v4"></script>';
+  const late = '<script src="/assets/url-mask.js?v=20260924-home-reviews-anchor-v4"></script>' +
+    '<script src="/assets/cart-drawer.js?v=20261004-cart-open-fix-v63"></script>';
   let out = String(html || '');
   out = out
     .replace(/(\/?assets\/config\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261001-product-help-v1')
@@ -5876,7 +5877,7 @@ function injectStorefrontRouting(html, bootRoute) {
     .replace(/(\/?assets\/store\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261003-all-color-identity-v48')
     .replace(/(\/?assets\/products\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261001-product-help-v1')
     .replace(/(\/?assets\/product\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261003-all-color-identity-v48')
-    .replace(/(\/?assets\/cart-drawer\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261003-all-color-identity-v48')
+    .replace(/(\/?assets\/cart-drawer\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261004-cart-open-fix-v63')
     .replace(/(\/?assets\/cart-state\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261003-all-color-identity-v48')
     .replace(/(\/?assets\/site-header\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20260922-favorites-sync-v1')
     .replace(/(\/?assets\/auth-nav\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261003-guest-orders-v37')

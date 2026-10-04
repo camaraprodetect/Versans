@@ -1,11 +1,12 @@
 (function () {
   'use strict';
 
+  /* V63: fail-safe cart drawer used on every storefront page. */
+  if (window.__VERSANS_GLOBAL_CART_DRAWER_V63) return;
+  window.__VERSANS_GLOBAL_CART_DRAWER_V63 = true;
+
   var Cart = window.VERSANS_CART_STATE;
   if (!Cart) return;
-
-  /* Home / hats already have the full cart + checkout handled by store.js. */
-  if (document.getElementById('cartOverlay')) return;
 
   var CFG = window.STORE_CONFIG || { currency: { code: 'ILS', symbol: '₪' }, shipping: { flat: 0, freeOver: 0 } };
   var lang = 'he';
@@ -126,6 +127,7 @@
     var overlay = document.createElement('div');
     overlay.className = 'ov ov--side';
     overlay.id = 'versansGlobalCartOverlay';
+    overlay.style.zIndex = '2147483000';
     overlay.setAttribute('role', 'dialog');
     overlay.setAttribute('aria-modal', 'true');
     overlay.setAttribute('aria-labelledby', 'versansGlobalCartTitle');
@@ -216,10 +218,17 @@
   }
 
   document.addEventListener('click', function (event) {
-    var cartButton = event.target.closest && event.target.closest('[data-cart-open], .product-cart-link');
+    var cartButton = event.target.closest && event.target.closest(
+      '#cartBtn, [data-cart-open], .product-cart-link, .vs-floating-cart'
+    );
     if (cartButton) {
+      /*
+       * Capture this before store.js/accessibility.js. The cart therefore
+       * opens even if the page-specific cart handler did not initialize.
+       */
       event.preventDefault();
       event.stopPropagation();
+      if (event.stopImmediatePropagation) event.stopImmediatePropagation();
       open();
       return;
     }
@@ -251,7 +260,7 @@
       if (window.VERSANS_URL_STATE && window.VERSANS_URL_STATE.navigate) window.VERSANS_URL_STATE.navigate(target);
       else window.location.href = target;
     }
-  }, false);
+  }, true);
 
   window.addEventListener('versans:cart-changed', function () {
     var overlay = document.getElementById('versansGlobalCartOverlay');
