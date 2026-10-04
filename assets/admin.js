@@ -2448,6 +2448,7 @@
             productId: item.productId,
             productSlug: item.productSlug,
             productName: item.productName,
+            productLink: item.productLink || '',
             needsGreeting: item.needsGreeting === true,
             needsCustomPhoto: item.needsCustomPhoto === true,
             needsPersonalization: item.needsPersonalization === true
