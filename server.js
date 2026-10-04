@@ -1539,7 +1539,7 @@ async function syncGoogleSheetItemStatus(order, itemIndex, completed) {
      * Never do this against an old Apps Script deployment because V3's
      * duplicate finder was not reliable enough for a safe repair write.
      */
-    if (info.version === 'V5' && info.code === 'order_not_found') {
+    if (/^V(?:[5-9]|[1-9][0-9]+)$/.test(String(info.version || '')) && info.code === 'order_not_found') {
       await sendPaidOrderToGoogleSheet(order);
       return sendGoogleOrderItemStatusToSheet(order.order_ref, itemIndex, completed);
     }
@@ -1552,7 +1552,7 @@ async function syncGoogleSheetOrderStatus(order, completed) {
     return await sendGoogleOrderStatusToSheet(order.order_ref, completed);
   } catch (error) {
     const info = googleSheetSyncError(error);
-    if (info.version === 'V5' && info.code === 'order_not_found') {
+    if (/^V(?:[5-9]|[1-9][0-9]+)$/.test(String(info.version || '')) && info.code === 'order_not_found') {
       await sendPaidOrderToGoogleSheet(order);
       return sendGoogleOrderStatusToSheet(order.order_ref, completed);
     }

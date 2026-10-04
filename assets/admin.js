@@ -1993,7 +1993,7 @@
     if (sync && sync.ok) return 'Google Sheets ' + String(sync.version || '') + ' מחובר';
     if (sync && sync.ok) return 'Google Sheets מחובר';
     var error = sync && sync.error || '';
-    if (error === 'apps_script_outdated' || error === 'invalid_payload') return 'צריך לפרוס את Apps Script V8';
+    if (error === 'apps_script_outdated' || error === 'invalid_payload') return 'צריך לפרוס את Apps Script V9';
     if (error === 'google_orders_not_configured') return 'Google Sheets לא מוגדר בשרת';
     if (error === 'google_sheet_secret_mismatch' || error === 'unauthorized') return 'Secret של Google Sheets לא תואם';
     return 'Google Sheets לא מסונכרן';
@@ -2118,7 +2118,7 @@
           item.completed = next;
           if (typeof result.orderCompleted === 'boolean') orderCheck.checked = result.orderCompleted;
           if (result.sheetSynced === false) {
-            showToast(result.sheetError === 'apps_script_outdated' ? 'נשמר באדמין. צריך לפרוס את Apps Script V8 כדי שהווי יעבור ל-Google Sheet' : 'נשמר באדמין, אבל הסנכרון ל-Google Sheet נכשל');
+            showToast(result.sheetError === 'apps_script_outdated' ? 'נשמר באדמין. צריך לפרוס את Apps Script V9 כדי שהווי יעבור ל-Google Sheet' : 'נשמר באדמין, אבל הסנכרון ל-Google Sheet נכשל');
           } else {
             showToast('עודכן באדמין וב-Google Sheet');
           }
@@ -2181,7 +2181,7 @@
         var result = await apiAction('/api/admin/order-work/' + encodeURIComponent(order.orderRef), 'POST', { completed: next });
         items.forEach(function (item) { item.completed = next; });
         if (result.sheetSynced === false) {
-          showToast(result.sheetError === 'apps_script_outdated' ? 'נשמר באדמין. צריך לפרוס את Apps Script V8 כדי שהווי יעבור ל-Google Sheet' : 'נשמר באדמין, אבל הסנכרון ל-Google Sheet נכשל');
+          showToast(result.sheetError === 'apps_script_outdated' ? 'נשמר באדמין. צריך לפרוס את Apps Script V9 כדי שהווי יעבור ל-Google Sheet' : 'נשמר באדמין, אבל הסנכרון ל-Google Sheet נכשל');
         } else {
           showToast('כל ההזמנה עודכנה גם ב-Google Sheet');
         }
