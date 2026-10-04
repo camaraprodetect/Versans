@@ -1157,7 +1157,7 @@ function adminPushOrderSummary(order) {
     currency: String(order.currency || 'ILS'),
     unitCount,
     createdAt: Number(order.paid_at || order.created_at || 0),
-    url: `/admin/orders?order=${encodeURIComponent(String(order.order_ref || ''))}`
+    url: `/admin/order-work?order=${encodeURIComponent(String(order.order_ref || ''))}`
   };
 }
 
@@ -3294,6 +3294,25 @@ async function backfillRecentPaidOrderNotifications() {
   }
 
   return { created };
+}
+
+async function retryRecentAdminOrderPushes() {
+  const since=Date.now()-(24*60*60*1000);
+  const orders=await database.listOrdersForAnalytics('paid',since);
+  let processed=0;
+  let delivered=0;
+  let failed=0;
+  for (const order of (orders || [])) {
+    try {
+      const result=await sendAdminOrderPush(order);
+      processed+=1;
+      if (result && Number(result.delivered || 0)>0) delivered+=Number(result.delivered || 0);
+    } catch (error) {
+      failed+=1;
+      console.error(`Admin push retry failed for ${order && order.order_ref || 'unknown'}:`, error && error.message ? error.message : error);
+    }
+  }
+  return { processed, delivered, failed };
 }
 
 async function retryPendingNewOrderWebhooks() {
@@ -6502,6 +6521,13 @@ setInterval(async () => {
 // missed notification creation and retries failed webhook deliveries.
 setInterval(async () => {
   try { await retryPendingNewOrderWebhooks(); } catch (err) { console.error('New-order webhook retry failed:', err); }
+}, ORDER_NOTIFICATION_WEBHOOK_RETRY_MS).unref();
+
+
+// Admin Web Push is independent from Grok. Retry only failed/skipped wakeups;
+// successful pushes remain de-duplicated by admin_order_pushes.status='sent'.
+setInterval(async () => {
+  try { await retryRecentAdminOrderPushes(); } catch (err) { console.error('Admin order push retry failed:', err); }
 }, ORDER_NOTIFICATION_WEBHOOK_RETRY_MS).unref();
 
 async function purgeAllOrdersOnce() {

@@ -280,14 +280,14 @@
       if (scriptUrl.indexOf('/admin-sw.js') === -1) continue;
 
       var version = await readAdminWorkerVersion(registration.active);
-      if (version === '20260930-bilingual-v9') return registration;
+      if (version === '20261004-push-v65') return registration;
 
       // An older VerSans Admin worker is still actually receiving pushes.
       // Remove its subscription and registration so iOS cannot keep using it.
       await removeOldAdminWorkerRegistration(registration);
     }
 
-    var fresh = await navigator.serviceWorker.register('/admin-sw.js?v=20260930-bilingual-v9', {
+    var fresh = await navigator.serviceWorker.register('/admin-sw.js?v=20261004-push-v65', {
       scope: '/',
       updateViaCache: 'none'
     });
@@ -323,6 +323,64 @@
     return latest || registration;
   }
 
+  function applicationServerKeyBase64Url(subscription) {
+    try {
+      var key = subscription && subscription.options && subscription.options.applicationServerKey;
+      if (!key) return '';
+      var bytes = new Uint8Array(key);
+      var binary = '';
+      for (var i = 0; i < bytes.length; i += 1) binary += String.fromCharCode(bytes[i]);
+      return window.btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+    } catch (_) { return ''; }
+  }
+
+  async function syncAdminPushSubscription(registration, config, allowCreate) {
+    if (!registration || !config || !config.publicKey) return null;
+    var subscription = await registration.pushManager.getSubscription();
+    var currentKey = subscription ? applicationServerKeyBase64Url(subscription) : '';
+    var expectedKey = String(config.publicKey || '').replace(/=+$/g, '');
+
+    if (subscription && currentKey && expectedKey && currentKey !== expectedKey) {
+      var oldEndpoint = String(subscription.endpoint || '');
+      if (oldEndpoint) {
+        try { await apiAction('/api/admin/push/unsubscribe', 'POST', { endpoint: oldEndpoint }); } catch (_) {}
+      }
+      try { await subscription.unsubscribe(); } catch (_) {}
+      subscription = null;
+    }
+
+    if (!subscription && allowCreate && Notification.permission === 'granted') {
+      subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(config.publicKey)
+      });
+    }
+
+    if (subscription) {
+      /* Always re-register on app load. The local PushSubscription can survive a
+         deploy even when the server-side subscription table/key state did not. */
+      await apiAction('/api/admin/push/subscribe', 'POST', {
+        subscription: subscription.toJSON ? subscription.toJSON() : JSON.parse(JSON.stringify(subscription))
+      });
+    }
+    return subscription;
+  }
+
+  var adminPushFallbackTimer = null;
+  async function checkAdminPushPending(registration) {
+    if (!registration) return;
+    var worker = registration.active || registration.waiting || registration.installing;
+    if (worker) worker.postMessage({ type: 'CHECK_PENDING' });
+  }
+
+  function startAdminPushFallback(registration) {
+    if (adminPushFallbackTimer) window.clearInterval(adminPushFallbackTimer);
+    checkAdminPushPending(registration).catch(function () {});
+    adminPushFallbackTimer = window.setInterval(function () {
+      if (document.visibilityState === 'visible') checkAdminPushPending(registration).catch(function () {});
+    }, 15000);
+  }
+
   async function refreshAdminPushButton() {
     if (!pushButton) return;
     if (!pushSupported()) {
@@ -350,13 +408,24 @@
         'service_worker_timeout'
       );
       pushRegistrationPromise = Promise.resolve(registration);
-      var subscription = await registration.pushManager.getSubscription();
+
+      var config = pushConfigPromise ? await promiseWithTimeout(pushConfigPromise, 10000, 'push_config_timeout') : null;
+      if (!config || !config.publicKey) {
+        config = await promiseWithTimeout(api('/api/admin/push/config'), 10000, 'push_config_timeout');
+        pushConfigPromise = Promise.resolve(config);
+      }
+
+      var subscription = Notification.permission === 'granted'
+        ? await syncAdminPushSubscription(registration, config, true)
+        : await registration.pushManager.getSubscription();
+
       var active = Notification.permission === 'granted' && !!subscription;
       pushButton.disabled = false;
       pushButton.dataset.active = active ? '1' : '0';
       pushButton.classList.toggle('is-active', active);
       pushButton.textContent = active ? '🔔 התראות פעילות' : '🔔 הפעל התראות';
-      pushButton.title = active ? 'התראות על הזמנות חדשות פעילות במכשיר הזה' : 'קבל התראה בכל פעם שנכנסת הזמנה חדשה';
+      pushButton.title = active ? 'התראות על הזמנות חדשות פעילות ומסונכרנות במכשיר הזה' : 'קבל התראה בכל פעם שנכנסת הזמנה חדשה';
+      if (active) startAdminPushFallback(registration);
     } catch (_) {
       pushButton.disabled = false;
       pushButton.dataset.active = '0';
@@ -408,25 +477,12 @@
       }
       if (!config || !config.publicKey) throw new Error('push_config_unavailable');
 
-      var subscription = await registration.pushManager.getSubscription();
-      if (!subscription) {
-        subscription = await promiseWithTimeout(
-          registration.pushManager.subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: urlBase64ToUint8Array(config.publicKey)
-          }),
-          15000,
-          'push_subscription_timeout'
-        );
-      }
-
-      await promiseWithTimeout(
-        apiAction('/api/admin/push/subscribe', 'POST', {
-          subscription: subscription.toJSON ? subscription.toJSON() : JSON.parse(JSON.stringify(subscription))
-        }),
-        10000,
-        'push_server_timeout'
+      var subscription = await promiseWithTimeout(
+        syncAdminPushSubscription(registration, config, true),
+        15000,
+        'push_subscription_timeout'
       );
+      if (!subscription) throw new Error('push_subscription_unavailable');
 
       await refreshAdminPushButton();
       showToast('התראות על הזמנות חדשות הופעלו ✓');
@@ -468,29 +524,13 @@
       });
     });
 
-    // If iOS permission was already granted, automatically recreate the
-    // subscription after replacing an old worker. No second permission prompt.
-    if (pushSupported() && Notification.permission === 'granted') {
-      try {
-        var registration = await pushRegistrationPromise;
-        var existing = await registration.pushManager.getSubscription();
-        if (!existing) {
-          var config = pushConfigPromise ? await pushConfigPromise : null;
-          if (!config || !config.publicKey) {
-            config = await api('/api/admin/push/config');
-          }
-          var subscription = await registration.pushManager.subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: urlBase64ToUint8Array(config.publicKey)
-          });
-          await apiAction('/api/admin/push/subscribe', 'POST', {
-            subscription: subscription.toJSON ? subscription.toJSON() : JSON.parse(JSON.stringify(subscription))
-          });
-        }
-      } catch (_) {}
-    }
-
     await refreshAdminPushButton();
+
+    window.addEventListener('focus', function () {
+      if (pushButton && pushButton.dataset.active === '1' && pushRegistrationPromise) {
+        pushRegistrationPromise.then(checkAdminPushPending).catch(function () {});
+      }
+    });
   }
 
   function setPageMeta(title, subtitle) {

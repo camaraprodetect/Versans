@@ -1,5 +1,5 @@
-const CACHE_VERSION = "versans-admin-20260930-bilingual-v9";
-const SW_VERSION = "20260930-bilingual-v9";
+const CACHE_VERSION = "versans-admin-20261004-push-v65";
+const SW_VERSION = "20261004-push-v65";
 const NOTIFICATION_ICON = "/images/apple-touch-icon.png";
 
 self.addEventListener("install", () => {
@@ -14,6 +14,10 @@ self.addEventListener("message", (event) => {
   }
   if (type === "GET_VERSION" && event.ports && event.ports[0]) {
     event.ports[0].postMessage({ version: SW_VERSION });
+    return;
+  }
+  if (type === "CHECK_PENDING") {
+    if (event.waitUntil) event.waitUntil(showPendingOrderNotifications());
   }
 });
 
@@ -113,7 +117,7 @@ async function showPendingOrderNotifications() {
       data: {
         orderId,
         orderRef,
-        url: String(order.url || `/admin/orders?order=${encodeURIComponent(orderRef)}`)
+        url: String(order.url || `/admin/order-work?order=${encodeURIComponent(orderRef)}`)
       }
     });
   }
@@ -140,7 +144,7 @@ self.addEventListener("push", (event) => {
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
   const data = event.notification.data || {};
-  const targetUrl = new URL(String(data.url || "/admin/orders"), self.location.origin).href;
+  const targetUrl = new URL(String(data.url || "/admin/order-work"), self.location.origin).href;
 
   event.waitUntil((async () => {
     const windows = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
