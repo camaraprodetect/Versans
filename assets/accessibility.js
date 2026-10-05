@@ -463,3 +463,30 @@
   applyState();
   if (!state.stopMotion) queueHeroResume();
 })();
+
+
+/* VerSans Bot loader - shared across customer pages. */
+(function(){
+  if (window.__versansBotLoaderAdded) return;
+  window.__versansBotLoaderAdded = true;
+
+  function loadVersansBot(){
+    if (!document.querySelector('link[data-versans-bot-style]')) {
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = '/assets/versans-bot.css?v=20261005-v1';
+      link.setAttribute('data-versans-bot-style', '1');
+      document.head.appendChild(link);
+    }
+    if (!document.querySelector('script[data-versans-bot-script]')) {
+      var script = document.createElement('script');
+      script.src = '/assets/versans-bot.js?v=20261005-v1';
+      script.async = true;
+      script.setAttribute('data-versans-bot-script', '1');
+      document.body.appendChild(script);
+    }
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', loadVersansBot, { once:true });
+  else loadVersansBot();
+})();

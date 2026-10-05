@@ -1,0 +1,208 @@
+.vs-bot{
+  position:fixed;
+  left:18px;
+  bottom:18px;
+  z-index:999998;
+  direction:rtl;
+  font-family:"Heebo","Assistant",Arial,sans-serif;
+  color:#142333;
+}
+.vs-bot *{box-sizing:border-box}
+.vs-bot-trigger{
+  min-width:58px;
+  height:58px;
+  border:1px solid rgba(255,255,255,.2);
+  border-radius:999px;
+  background:#0b0f14;
+  color:#fff;
+  box-shadow:0 14px 34px rgba(0,0,0,.24);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  padding:0 16px 0 10px;
+  cursor:pointer;
+  transition:transform .18s ease,box-shadow .18s ease,background .18s ease;
+}
+.vs-bot-trigger:hover{transform:translateY(-2px);box-shadow:0 17px 38px rgba(0,0,0,.28);background:#142333}
+.vs-bot-trigger:focus-visible,.vs-bot-close:focus-visible,.vs-bot-send:focus-visible,.vs-bot-quick__item:focus-visible,.vs-bot-link:focus-visible{outline:3px solid #d6af62;outline-offset:3px}
+.vs-bot-trigger__mark{
+  width:36px;
+  height:36px;
+  flex:0 0 36px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(145deg,#fff9eb,#d9b161 62%,#8f642b);
+  color:#090d12;
+  font-family:Georgia,"Times New Roman",serif;
+  font-weight:700;
+  font-size:23px;
+  line-height:1;
+}
+.vs-bot-trigger__text{font-size:13px;font-weight:800;letter-spacing:.01em;white-space:nowrap}
+.vs-bot-panel{
+  position:absolute;
+  left:0;
+  bottom:72px;
+  width:min(390px,calc(100vw - 28px));
+  height:min(610px,calc(100vh - 115px));
+  border-radius:24px;
+  overflow:hidden;
+  background:#fff;
+  border:1px solid rgba(20,35,51,.11);
+  box-shadow:0 24px 70px rgba(0,0,0,.28);
+  display:grid;
+  grid-template-rows:auto minmax(0,1fr) auto auto auto;
+}
+.vs-bot-panel[hidden]{display:none!important}
+.vs-bot-head{
+  background:linear-gradient(135deg,#0b0f14,#142333);
+  color:#fff;
+  min-height:76px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  padding:15px 17px;
+}
+.vs-bot-head__copy{display:grid;gap:2px;text-align:right}
+.vs-bot-head__copy strong{font:700 20px/1.25 Georgia,"Times New Roman",serif;letter-spacing:.01em}
+.vs-bot-head__copy span{font-size:12px;color:rgba(255,255,255,.72)}
+.vs-bot-close{
+  width:36px;
+  height:36px;
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:50%;
+  background:rgba(255,255,255,.08);
+  color:#fff;
+  font:300 27px/1 Arial,sans-serif;
+  cursor:pointer;
+}
+.vs-bot-messages{
+  overflow:auto;
+  overscroll-behavior:contain;
+  padding:16px 14px 10px;
+  background:linear-gradient(#fbfaf8,#fff 38%);
+  scrollbar-width:thin;
+}
+.vs-bot-message-row{display:flex;flex-direction:column;gap:7px;margin:0 0 12px;max-width:92%}
+.vs-bot-message-row--bot{align-items:flex-start;margin-left:auto}
+.vs-bot-message-row--user{align-items:flex-end;margin-right:auto}
+.vs-bot-message{
+  font-size:13px;
+  line-height:1.65;
+  white-space:pre-wrap;
+  border-radius:17px;
+  padding:10px 12px;
+  box-shadow:0 3px 12px rgba(20,35,51,.06);
+}
+.vs-bot-message-row--bot .vs-bot-message{background:#f3f1ed;border:1px solid #e7e0d6;color:#1b2732;border-bottom-right-radius:6px}
+.vs-bot-message-row--user .vs-bot-message{background:#142333;color:#fff;border:1px solid #142333;border-bottom-left-radius:6px}
+.vs-bot-links{display:flex;flex-wrap:wrap;gap:6px}
+.vs-bot-link{
+  display:inline-flex;
+  align-items:center;
+  min-height:31px;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid #c9aa70;
+  background:#fffdf8;
+  color:#61451c;
+  font-size:11.5px;
+  font-weight:800;
+  text-decoration:none;
+}
+.vs-bot-link:hover{background:#f6eddd;color:#4d3517;text-decoration:none}
+.vs-bot-message--typing{display:flex;align-items:center;gap:4px;min-width:52px;min-height:38px}
+.vs-bot-message--typing i{width:6px;height:6px;border-radius:50%;background:#8b7351;animation:vsBotDot 1.05s infinite ease-in-out}
+.vs-bot-message--typing i:nth-child(2){animation-delay:.13s}.vs-bot-message--typing i:nth-child(3){animation-delay:.26s}
+@keyframes vsBotDot{0%,60%,100%{transform:translateY(0);opacity:.42}30%{transform:translateY(-4px);opacity:1}}
+.vs-bot-quick{
+  display:flex;
+  gap:7px;
+  padding:9px 12px 4px;
+  overflow-x:auto;
+  background:#fff;
+  scrollbar-width:none;
+}
+.vs-bot-quick::-webkit-scrollbar{display:none}
+.vs-bot-quick.is-collapsed{display:none}
+.vs-bot-quick__item{
+  flex:0 0 auto;
+  min-height:32px;
+  border:1px solid #d9dde1;
+  border-radius:999px;
+  background:#fff;
+  color:#263745;
+  padding:6px 10px;
+  font:700 11px/1.25 inherit;
+  cursor:pointer;
+}
+.vs-bot-quick__item:hover{border-color:#b79762;background:#fffcf6}
+.vs-bot-form{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:8px;
+  padding:10px 12px;
+  border-top:1px solid #edf0f2;
+  background:#fff;
+}
+.vs-bot-form input{
+  width:100%;
+  min-width:0;
+  height:42px;
+  border:1px solid #d5dce1;
+  border-radius:13px;
+  background:#fbfcfd;
+  color:#172532;
+  padding:0 12px;
+  font:500 13px/1 inherit;
+  direction:rtl;
+  outline:none;
+}
+.vs-bot-form input:focus{border-color:#b8955c;box-shadow:0 0 0 3px rgba(184,149,92,.13)}
+.vs-bot-send{
+  height:42px;
+  border:0;
+  border-radius:13px;
+  background:#142333;
+  color:#fff;
+  padding:0 14px;
+  font:800 12px/1 inherit;
+  cursor:pointer;
+}
+.vs-bot-send:hover{background:#0b0f14}.vs-bot-send:disabled,.vs-bot-form input:disabled{opacity:.62;cursor:wait}
+.vs-bot-footer{
+  padding:0 12px 10px;
+  background:#fff;
+  color:#8a9299;
+  font-size:9.5px;
+  line-height:1.4;
+  text-align:center;
+}
+html.vs-a11y-root.vs-a11y-filter-active .vs-bot,
+html.vs-a11y-root.vs-a11y-high-contrast .vs-bot,
+html.vs-a11y-root.vs-a11y-black-yellow .vs-bot{filter:none!important}
+@media(max-width:760px){
+  .vs-bot{left:12px;bottom:76px}
+  .vs-bot-trigger{width:54px;min-width:54px;height:54px;padding:0;border-radius:50%}
+  .vs-bot-trigger__mark{width:36px;height:36px}
+  .vs-bot-trigger__text{display:none}
+  .vs-bot-panel{
+    position:fixed;
+    left:10px;
+    right:10px;
+    bottom:74px;
+    width:auto;
+    height:min(620px,calc(100dvh - 92px));
+    border-radius:22px;
+  }
+}
+@media(max-width:420px){
+  .vs-bot-panel{left:7px;right:7px;bottom:70px;height:calc(100dvh - 82px)}
+  .vs-bot-head{min-height:68px;padding:12px 14px}
+  .vs-bot-messages{padding:13px 10px 8px}
+  .vs-bot-form{padding:9px}
+}
+@media(prefers-reduced-motion:reduce){.vs-bot *{animation:none!important;transition:none!important}}
