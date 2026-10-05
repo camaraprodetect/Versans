@@ -1931,7 +1931,7 @@ function cleanProviderInlineField(value, max = 500) {
   const cleaned = String(value == null ? '' : value)
     .replace(/\s+/g, ' ')
     .replace(/\s*(?:[.。]\s*)?(?:לידיעתך|לאחר\s+קבלת|למידע\s+נוסף|לתשומת\s+לבך).*$/i, '')
-    .replace(/[\s,.;:–--]+$/g, '')
+    .replace(/[\s,.;:–-]+$/g, '')
     .trim();
   return cleaned ? cleaned.slice(0, max) : null;
 }
@@ -1945,7 +1945,7 @@ function parseProviderPickupMessage(value, fallbackTrackingNumber = null) {
   // Israel Post messages may place the collection reference on its own line,
   // for example: "ג 2136". Preserve the full reference because it is needed
   // by the customer when collecting the parcel.
-  const israelPostPickupRefMatch = text.match(/(?:^|\n)\s*([א-ת])\s*[-–-]?\s*(\d{3,8})\s*(?=\n|$)/m);
+  const israelPostPickupRefMatch = text.match(/(?:^|\n)\s*([א-ת])\s*[-–]?\s*(\d{3,8})\s*(?=\n|$)/m);
   const pickupReference = israelPostPickupRefMatch
     ? `${israelPostPickupRefMatch[1]} ${israelPostPickupRefMatch[2]}`
     : null;
@@ -1974,7 +1974,7 @@ function parseProviderPickupMessage(value, fallbackTrackingNumber = null) {
   const address = cleanProviderInlineField(rawAddress, 500);
   const openingHours = providerMessageField(text, /שעות\s*פתיחה\s*[:：\-]?\s*([^\n]+)/i, 900);
   const pickupPoint = providerMessageField(text, /החבילה\s+שלך\s+הגיעה\s+ל-?\s*([^,\n]+)/i, 180)
-    || providerMessageField(text, /יחידת\s+הדואר\s*[-–-:]?\s*([^\n]+?)(?=\s*[-–-]\s*כתובת|\s+כתובת(?:\s|[:：])|[.。]\s*(?:לידיעתך|לאחר\s+קבלת)|\n|$)/i, 180);
+    || providerMessageField(text, /יחידת\s+הדואר\s*[-–:]?\s*([^\n]+?)(?=\s*[-–]\s*כתובת|\s+כתובת(?:\s|[:：])|[.。]\s*(?:לידיעתך|לאחר\s+קבלת)|\n|$)/i, 180);
   const deadline = providerMessageField(text, /נא\s+לאסוף\s+את\s+החבילה\s+תוך\s+([^\n,]+)/i, 180);
   const arrivalDate = providerMessageField(text, /בתאריך\s+(\d{1,2}\/\d{1,2}\/\d{4})/i, 40);
   return {
@@ -3025,7 +3025,7 @@ function conciseOrderNotificationItem(item) {
   let productName = conciseGreetingNotificationName(product, item)
     || String(product ? productTitle(product) : fallbackName || 'מוצר').trim();
   if (compactSelections.some((entry) => entry.startsWith('צבע: '))) {
-    productName = productName.replace(/\s*-\s*צבע\s+[^|–--]+$/u, '').trim();
+    productName = productName.replace(/\s*-\s*צבע\s+[^|–-]+$/u, '').trim();
   }
 
   return {
