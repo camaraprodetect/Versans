@@ -476,7 +476,7 @@
     if (!document.querySelector('link[data-versans-bot-style]')) {
       var link = document.createElement('link');
       link.rel = 'stylesheet';
-      link.href = '/assets/versans-bot.css?v=20261005-a11y-textfacts-v9';
+      link.href = '/assets/versans-bot.css?v=20261006-mobile-touch-v10';
       link.setAttribute('data-versans-bot-style', '1');
       document.head.appendChild(link);
     }

@@ -219,3 +219,26 @@ html.vs-bot-open body .vs-a11y-widget .vs-a11y-panel{
 .vs-bot-message{min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:break-word;unicode-bidi:plaintext}
 .vs-bot-links{min-width:0;max-width:100%}
 .vs-bot-link{min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:break-word}
+
+/* Mobile touch UX: prevent browser double-tap zoom inside the bot without disabling pinch zoom. */
+@media (hover:none) and (pointer:coarse){
+  .vs-bot,
+  .vs-bot-trigger,
+  .vs-bot-panel,
+  .vs-bot button,
+  .vs-bot a,
+  .vs-bot input,
+  html body .vs-a11y-widget,
+  html body .vs-a11y-widget button,
+  html body .vs-a11y-widget a{
+    touch-action:manipulation;
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  /* Keep the intended scroll directions while still suppressing double-tap zoom. */
+  .vs-bot-messages{touch-action:pan-y pinch-zoom}
+  .vs-bot-quick,.vs-bot-images{touch-action:pan-x pinch-zoom}
+
+  /* iPhone/iOS browsers auto-zoom focused inputs below 16px. */
+  .vs-bot-form input{font-size:16px!important}
+}
