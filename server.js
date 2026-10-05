@@ -1904,7 +1904,7 @@ function customerSafePickupText(value, max = 1400) {
     // The provider's "משלוח" value is an internal tracking identifier used only
     // to locate the shipment in VerSans. Never expose that line to the customer,
     // regardless of the identifier format (DSVPH..., letters, random tokens, etc.).
-    .replace(/^\s*(?:משלוח(?:\s*מספר)?|מספר\s*משלוח)\s*[:：\-–-]?\s*[^\n]*$/gim, '')
+    .replace(/^\s*(?:משלוח(?:\s*מספר)?|מספר\s*משלוח)\s*[:：–-]?\s*[^\n]*$/gim, '')
     .replace(/\bDSVPH[A-Za-z0-9._-]+\b/gi, '')
     .replace(/[ \t]{2,}/g, ' ')
     .replace(/\n{3,}/g, '\n\n')
@@ -1938,7 +1938,7 @@ function cleanProviderInlineField(value, max = 500) {
 
 function parseProviderPickupMessage(value, fallbackTrackingNumber = null) {
   const text = normalizeProviderMessageText(value);
-  const trackingNumber = providerMessageField(text, /(?:משלוח(?:\s*מספר)?|מספר\s*משלוח)\s*[:：\-–-]?\s*([A-Za-z0-9][A-Za-z0-9._-]{5,})/i, 120)
+  const trackingNumber = providerMessageField(text, /(?:משלוח(?:\s*מספר)?|מספר\s*משלוח)\s*[:：–-]?\s*([A-Za-z0-9][A-Za-z0-9._-]{5,})/i, 120)
     || providerMessageField(text, /\b(DSVPH[A-Za-z0-9._-]+)\b/i, 120)
     || (fallbackTrackingNumber ? normalizeTrackingNumber(fallbackTrackingNumber) : null);
   const pickupCode = providerMessageField(text, /קוד\s*(?:איסוף|מסירה)\s*[:：\-]?\s*([^\n]+)/i, 160);
@@ -4674,6 +4674,7 @@ async function adminApi(req, res, pathname, parsed) {
 
   const accessMatch = /^\/api\/admin\/customers\/(\d+)\/access$/.exec(pathname);
   if (accessMatch && req.method === 'POST') {
+    if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'}); return true; }
     if (!admin || !(normalizeEmail(admin.email) === ADMIN_EMAIL || String(admin.role || '') === 'admin')) { json(res,403,{ok:false,error:'permission_denied'}); return true; }
     const body=await readJsonBody(req); const role=['customer','staff','admin'].includes(String(body.role||''))?String(body.role):'customer'; const blocked=body.blocked===true; const targetId=Number(accessMatch[1]);
     if(targetId===Number(admin.id) && blocked){json(res,400,{ok:false,error:'cannot_block_self'});return true;}
@@ -4952,6 +4953,25 @@ async function adminApi(req, res, pathname, parsed) {
     if (!normalized) { json(res, 400, { ok: false, error: 'invalid_range' }); return true; }
     const data = await database.adminTrafficSummary(normalized.since);
     json(res, 200, { ok: true, range, ...data });
+    return true;
+  }
+
+  const adminReviewDeleteMatch = /^\/api\/admin\/reviews\/(\d+)$/.exec(pathname);
+  if (adminReviewDeleteMatch && req.method === 'DELETE') {
+    if (!sameOriginAllowed(req)) { json(res, 403, { ok: false, error: 'origin_not_allowed' }); return true; }
+    const reviewId = Number(adminReviewDeleteMatch[1]);
+    if (!Number.isInteger(reviewId) || reviewId <= 0) {
+      json(res, 400, { ok: false, error: 'invalid_review_id' });
+      return true;
+    }
+    const deleted = typeof database.deleteReviewById === 'function'
+      ? await database.deleteReviewById(reviewId)
+      : false;
+    if (!deleted) {
+      json(res, 404, { ok: false, error: 'review_not_found' });
+      return true;
+    }
+    json(res, 200, { ok: true, deletedReviewId: reviewId });
     return true;
   }
 
