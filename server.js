@@ -84,7 +84,7 @@ const ORDER_NOTIFICATION_CLAIM_TTL_MS = 2 * 60 * 1000;
 const ORDER_NOTIFICATION_WEBHOOK_RETRY_MS = 60 * 1000;
 const ORDER_NOTIFICATION_WEBHOOK_TIMEOUT_MS = 10 * 1000;
 const PRODUCT_BY_URL_SLUG = new Map(PRODUCTS.map((product) => [String(product.urlSlug || ''), product]));
-const VERSANS_BOT_MODEL = String(process.env.VERSANS_BOT_MODEL || process.env.OPENAI_MODEL || 'gpt-5.5').trim();
+const VERSANS_BOT_MODEL = String(process.env.VERSANS_BOT_MODEL || process.env.OPENAI_MODEL || 'gpt-6-luna').trim();
 const VERSANS_BOT_TIMEOUT_MS = 25 * 1000;
 const VERSANS_BOT_MAX_BODY_CHARS = 32000;
 
@@ -915,9 +915,17 @@ function versansBotQuestionInScope(question, context) {
   const pagePath = String(context && context.page && context.page.path || '');
   if (pagePath && /(מה\s+כתוב\s+פה|מה\s+כתוב\s+כאן|מה\s+זה\s+פה|מה\s+זה\s+כאן|בעמוד\s+הזה|בדף\s+הזה|העמוד\s+הזה)/i.test(text)) return true;
 
-  // Permit a small set of natural follow-ups only when there is already a
-  // Versans conversation in this session. This does not allow arbitrary trivia.
+  // Natural follow-ups are allowed when there is already a VerSans/product
+  // conversation. Explicit arithmetic/trivia was rejected above, so short
+  // referential turns such as "אבל הוא שווה את זה?" can safely continue
+  // the previous product discussion instead of being misclassified off-topic.
   const hasHistory = Boolean(context && Array.isArray(context.history) && context.history.length);
+  const recentHistoryText = hasHistory
+    ? context.history.slice(-6).map((item) => versansBotText(item && item.text, 500)).join(' ')
+    : '';
+  const historyLooksStoreRelated = hasCurrentProduct || storeTopic.test(recentHistoryText);
+  const looksLikeFollowUp = text.length <= 220 && /(?:^|\s)(?:אבל|אז|ומה|ולמה|ואם|הוא|היא|זה|זאת|אותו|אותה|עליו|עליה|שלו|שלה|שווה|כדאי|יקר|זול|עדיף|מתאים|טוב|איכותי|באמת|כמה|איזה|איזו|תראה|שלח|כן|לא)(?=[\s?!.,;:]|$)/i.test(text);
+  if (hasHistory && historyLooksStoreRelated && looksLikeFollowUp) return true;
   if (hasHistory && /^(?:ומה(?:\s+לגבי|\s+עם)?(?:\s+זה)?|ומה\s+עוד|איזה\s+מהם|מה\s+ההבדל|כמה\s+זמן|יש\s+עוד|תראה\s+לי|שלח\s+(?:לי\s+)?קישור|כן|לא|ולמה|ואם)[?!.\s]*$/i.test(text)) return true;
 
   // Greetings and questions about the bot itself are fine; the response still
@@ -1030,6 +1038,97 @@ function versansBotNormalizedClaimText(value) {
     .toLowerCase();
 }
 
+const VERSANS_BOT_PRODUCT_SEARCH_STOP = new Set([
+  'אני','את','אתה','אתם','זה','זאת','של','שלי','שלך','שלו','שלה','עם','בלי','על','אל','אם','גם','מה','מי','איך','כמה','למה','יש','אין','האם','אפשר','יכול','יכולה','רוצה','רוצים','תביא','תן','לי','פה','כאן','הזה','הזאת','בבקשה','אבל','אז','כן','לא'
+]);
+
+function versansBotExpandedProductSearchText(value) {
+  const raw = versansBotNormalizedClaimText(value).replace(/[^\p{L}\p{N}+.%₪]+/gu, ' ').replace(/\s+/g, ' ').trim();
+  const additions = [];
+  const addIf = (re, text) => { if (re.test(raw)) additions.push(text); };
+  addIf(/(?:^|\s)(?:הרמס|הירמס|הרמז|ארמס)(?:\s|$)/i, 'hermes צמיד אופנה');
+  addIf(/(?:^|\s)אייס(?:\s|$)/i, 'ice');
+  addIf(/(?:^|\s)רויאל(?:\s|$)/i, 'royal');
+  addIf(/(?:^|\s)מיאמי(?:\s|$)/i, 'miami');
+  addIf(/(?:^|\s)(?:קיובן|קובני)(?:\s|$)/i, 'cuban');
+  addIf(/(?:^|\s)(?:ניו\s*ארה|ניו\s*אירה|ניוארה)(?:\s|$)/i, 'new era');
+  addIf(/(?:^|\s)יאנקיז(?:\s|$)/i, 'yankees');
+  addIf(/(?:^|\s)(?:דודגרס|דודג'רס|דודג׳רס)(?:\s|$)/i, 'dodgers');
+  addIf(/(?:^|\s)בולס(?:\s|$)/i, 'bulls');
+  addIf(/(?:^|\s)באקס(?:\s|$)/i, 'bucks');
+  return [raw, ...additions].filter(Boolean).join(' ').trim();
+}
+
+function versansBotProductSearchTokens(value) {
+  return versansBotExpandedProductSearchText(value)
+    .split(/\s+/)
+    .map((token) => token.trim())
+    .filter((token) => token.length > 1 && !VERSANS_BOT_PRODUCT_SEARCH_STOP.has(token));
+}
+
+function versansBotCatalogProductMatches(value, limit = 5) {
+  const expanded = versansBotExpandedProductSearchText(value);
+  const tokens = versansBotProductSearchTokens(value);
+  if (!tokens.length) return [];
+  return PRODUCTS.map((product) => {
+    const title = versansBotNormalizedClaimText(productTitle(product));
+    const evidence = versansBotNormalizedClaimText(versansBotCatalogEvidenceText(product));
+    let score = 0;
+    for (const token of tokens) {
+      if (title.includes(token)) score += 6;
+      else if (evidence.includes(token)) score += 2;
+      else if (token.length >= 4) {
+        const stem = token.slice(0, Math.max(3, token.length - 1));
+        if (title.includes(stem)) score += 2;
+        else if (evidence.includes(stem)) score += 1;
+      }
+    }
+    if (title && expanded.includes(title)) score += 24;
+    return { product, score };
+  }).filter((item) => item.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, Math.max(1, Math.min(8, Number(limit) || 5)));
+}
+
+function versansBotLikelyFollowUp(question, context) {
+  const text = versansBotNormalizedClaimText(question).replace(/\s+/g, ' ').trim();
+  if (!text || text.length > 220 || !context || !Array.isArray(context.history) || !context.history.length) return false;
+  if (/^[\s\d.,()+\-*/%=^]+$/.test(text)) return false;
+  return /(?:^|\s)(?:אבל|אז|ומה|ולמה|ואם|הוא|היא|זה|זאת|אותו|אותה|עליו|עליה|שלו|שלה|שווה|כדאי|יקר|זול|עדיף|מתאים|טוב|איכותי|באמת|כמה|איזה|איזו|תראה|שלח|כן|לא)(?=[\s?!.,;:]|$)/i.test(text);
+}
+
+function versansBotAugmentRelatedProducts(question, context) {
+  if (!context) return;
+  const historyText = Array.isArray(context.history)
+    ? context.history.slice(-6).map((item) => versansBotText(item && item.text, 650)).join(' ')
+    : '';
+  const searchText = versansBotLikelyFollowUp(question, context)
+    ? `${question} ${historyText}`
+    : question;
+  const matches = versansBotCatalogProductMatches(searchText, 5);
+  if (!matches.length) return;
+
+  const merged = [];
+  const seen = new Set();
+  const add = (product) => {
+    const item = product && product.url ? product : versansBotCatalogProduct(product);
+    if (!item || !item.url || seen.has(item.url)) return;
+    seen.add(item.url);
+    merged.push(item);
+  };
+  for (const match of matches) add(match.product);
+  for (const existing of context.relatedProducts || []) add(existing);
+  context.relatedProducts = merged.slice(0, 5);
+
+  if (!Array.isArray(context.links)) context.links = [];
+  for (const match of matches.slice(0, 5)) {
+    const url = versansBotUrl(productPublicPath(match.product));
+    if (!url || context.links.some((item) => item && item.url === url)) continue;
+    context.links.push({ label: versansBotText(productTitle(match.product), 100), url });
+  }
+  context.links = context.links.slice(0, 22);
+}
+
 function versansBotMentionsDiamond(value) {
   const text = versansBotNormalizedClaimText(value);
   // The Hebrew stem יהלומ covers יהלום / יהלומים / יהלומי after final-letter
@@ -1073,13 +1172,13 @@ function versansBotPromptProduct(product) {
 function versansBotContext(raw) {
   const context = raw && typeof raw === 'object' ? raw : {};
   const page = context.page && typeof context.page === 'object' ? context.page : {};
-  const relevantSiteInfo = Array.isArray(context.relevantSiteInfo) ? context.relevantSiteInfo.slice(0, 7).map((item) => ({
+  const relevantSiteInfo = Array.isArray(context.relevantSiteInfo) ? context.relevantSiteInfo.slice(0, 5).map((item) => ({
     title: versansBotText(item && item.title, 140),
     heading: versansBotText(item && item.heading, 180),
     text: versansBotText(item && item.text, 700),
     url: versansBotUrl(item && item.url)
   })).filter((item) => item.text) : [];
-  const relatedProducts = Array.isArray(context.relatedProducts) ? context.relatedProducts.slice(0, 5).map(versansBotProduct).filter(Boolean) : [];
+  const relatedProducts = Array.isArray(context.relatedProducts) ? context.relatedProducts.slice(0, 4).map(versansBotProduct).filter(Boolean) : [];
   const history = Array.isArray(context.history) ? context.history.slice(-8).map((item) => ({
     role: item && item.role === 'assistant' ? 'assistant' : 'user',
     text: versansBotText(item && item.text, 700)
@@ -1298,6 +1397,11 @@ async function versansBotApi(req, res, pathname) {
     return true;
   }
 
+  // Enrich the product context from the real catalog. This lets natural names
+  // such as "צמידי הרמס" resolve to HERMES products, and lets short follow-up
+  // questions keep the product discussed in the previous turns.
+  versansBotAugmentRelatedProducts(question, context);
+
   // The tracking page can contain verified pickup data. Never pass its visible
   // text to AI; order status is supplied below from a server-side safe snapshot.
   if (String(context.page.path || '') === '/track' || String(context.page.path || '') === '/track/') {
@@ -1405,6 +1509,8 @@ async function versansBotApi(req, res, pathname) {
     'ענה בעברית טבעית וקצרה, אלא אם הלקוח כותב במפורש בשפה אחרת.',
     'המידע היחיד שמותר לך להציג כעובדה על VerSans הוא המידע שסופק בבקשה: המוצר הנוכחי, טקסט העמוד, פרטי החנות, מידע מהתקנון/אחריות/מידות, מוצרים קשורים ו-customer_order כאשר הוא קיים.',
     'כאשר הלקוח אומר "המוצר הזה", "זה", "ממה הוא עשוי" וכדומה, השתמש קודם ב-current_product וב-current_page.',
+    'השתמש תמיד ב-recent_conversation כדי להבין הודעות המשך. אם בהודעה הקודמת דיברתם על מוצר מסוים והלקוח כותב למשל "אבל הוא שווה את זה?", "ומה לגבי המחיר?", "יש אותו בזהב?" או משתמש בכינויים כמו הוא/היא/זה/אותו - התייחס למוצר או לנושא האחרון מהשיחה, ואל תסווג את ההודעה כלא קשורה ל-VerSans.',
+    'שמות מוצרים אינם חייבים להיכתב בדיוק. related_products כבר יכול לכלול התאמות לשמות טבעיים, תעתיקים ושגיאות קטנות. לדוגמה, "צמידי הרמס" או "הרמס" יכולים להתייחס למוצרי "צמיד אופנה HERMES". השתמש בהתאמה שסופקה וענה לפי נתוני המוצר האמיתיים.',
     'אם customer_order קיים, מותר לענות על הסטטוס הכללי של ההזמנה, מספר ההזמנה והמוצרים/כמויות שבה. הנתונים כבר אומתו בצד השרת כשייכים למשתמש המחובר.',
     'אסור למסור בשום מצב פרטי איסוף מתוך הזמנה: כתובת או נקודת איסוף, קוד איסוף או אימות, לוקר, מדף, שעות פתיחה, מועד אחרון לאיסוף, הוראות איסוף, מספר מעקב או מידע דומה. מותר לומר רק שההזמנה/חבילה מוכנה לאיסוף אם זה מופיע בסטטוס.',
     'אם customer_order הוא null, אל תנחש סטטוס או מוצרים של הזמנה ואל תטען שמספר הזמנה קיים.',
@@ -1435,30 +1541,38 @@ async function versansBotApi(req, res, pathname) {
         'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        model: VERSANS_BOT_MODEL,
-        instructions,
-        input: [{ role: 'user', content: [{ type: 'input_text', text: JSON.stringify(promptContext) }] }],
-        max_output_tokens: 650,
-        store: false,
-        text: {
-          format: {
-            type: 'json_schema',
-            name: 'versans_bot_response',
-            strict: true,
-            schema: {
-              type: 'object',
-              additionalProperties: false,
-              properties: {
-                answer: { type: 'string' },
-                link_urls: { type: 'array', items: { type: 'string' } },
-                image_urls: { type: 'array', items: { type: 'string' } }
-              },
-              required: ['answer', 'link_urls', 'image_urls']
+      body: JSON.stringify((() => {
+        const payload = {
+          model: VERSANS_BOT_MODEL,
+          instructions,
+          input: [{ role: 'user', content: [{ type: 'input_text', text: JSON.stringify(promptContext) }] }],
+          max_output_tokens: 420,
+          store: false,
+          text: {
+            format: {
+              type: 'json_schema',
+              name: 'versans_bot_response',
+              strict: true,
+              schema: {
+                type: 'object',
+                additionalProperties: false,
+                properties: {
+                  answer: { type: 'string' },
+                  link_urls: { type: 'array', items: { type: 'string' } },
+                  image_urls: { type: 'array', items: { type: 'string' } }
+                },
+                required: ['answer', 'link_urls', 'image_urls']
+              }
             }
           }
+        };
+        // GPT-5/6 reasoning models default to doing more thinking than this
+        // storefront bot needs. none keeps latency and billed output low.
+        if (/^gpt-(?:5|6)(?:[.\-]|$)/i.test(VERSANS_BOT_MODEL)) {
+          payload.reasoning = { effort: 'none' };
         }
-      }),
+        return payload;
+      })()),
       signal: controller.signal
     });
   } catch (err) {

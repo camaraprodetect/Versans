@@ -4,7 +4,7 @@
   if (window.__versansBotLoaded) return;
   window.__versansBotLoaded = true;
 
-  var BOT_VERSION = '20261005-ai-v6';
+  var BOT_VERSION = '20261006-context-alias-v11';
   var CHAT_STORAGE_KEY = 'versansBotChatV2';
   var activeChatStorageKey = CHAT_STORAGE_KEY + ':guest';
   var chatScopeReady = false;
@@ -114,6 +114,64 @@
   var STOP_WORDS = new Set([
     'אני','את','אתה','אתם','אתן','זה','זאת','זו','של','שלי','שלך','שלו','שלה','עם','בלי','על','אל','אם','גם','מה','מי','איך','כמה','למה','יש','אין','האם','אפשר','יכול','יכולה','יכולים','רוצה','רוצים','תביא','תן','לי','פה','כאן','הזה','הזאת','הזו','בבקשה','או','ו','ה','ב','ל','מ','ש','כ'
   ]);
+
+
+  // Natural product-name aliases customers commonly type instead of the exact
+  // catalog spelling. These only improve catalog retrieval; the AI still gets
+  // the real product data and may not invent facts from the alias itself.
+  var PRODUCT_QUERY_ALIASES = [
+    { test: /(?:^|\s)(?:הרמס|הירמס|הרמז|ארמס)(?:\s|$)/i, add: 'HERMES צמיד אופנה' },
+    { test: /(?:^|\s)(?:אייס)(?:\s|$)/i, add: 'ICE' },
+    { test: /(?:^|\s)(?:רויאל)(?:\s|$)/i, add: 'ROYAL' },
+    { test: /(?:^|\s)(?:מיאמי)(?:\s|$)/i, add: 'MIAMI' },
+    { test: /(?:^|\s)(?:קיובן|קובני)(?:\s|$)/i, add: 'CUBAN' },
+    { test: /(?:^|\s)(?:ניו\s*ארה|ניו\s*אירה|ניוארה)(?:\s|$)/i, add: 'NEW ERA' },
+    { test: /(?:^|\s)(?:יאנקיז)(?:\s|$)/i, add: 'YANKEES' },
+    { test: /(?:^|\s)(?:דודג(?:רס|רס׳|רס')|דודג'רס)(?:\s|$)/i, add: 'DODGERS' },
+    { test: /(?:^|\s)(?:בולס)(?:\s|$)/i, add: 'BULLS' },
+    { test: /(?:^|\s)(?:באקס)(?:\s|$)/i, add: 'BUCKS' }
+  ];
+
+  function expandProductQueryAliases(value) {
+    var base = cleanText(value || '');
+    var n = normalize(base);
+    var additions = [];
+    PRODUCT_QUERY_ALIASES.forEach(function (rule) {
+      if (rule.test.test(n)) additions.push(rule.add);
+    });
+    return cleanText(base + (additions.length ? ' ' + additions.join(' ') : ''));
+  }
+
+  function oneEditApart(a, b) {
+    a = String(a || '');
+    b = String(b || '');
+    if (!a || !b || Math.abs(a.length - b.length) > 1) return false;
+    if (a === b) return true;
+    var i = 0, j = 0, edits = 0;
+    while (i < a.length && j < b.length) {
+      if (a[i] === b[j]) { i++; j++; continue; }
+      edits++;
+      if (edits > 1) return false;
+      if (a.length > b.length) i++;
+      else if (b.length > a.length) j++;
+      else { i++; j++; }
+    }
+    if (i < a.length || j < b.length) edits++;
+    return edits <= 1;
+  }
+
+  function isContextualFollowUp(value) {
+    var n = normalize(value);
+    if (!n || n.length > 180 || !conversationHistory.length) return false;
+    return /(?:^|\s)(?:אבל|אז|ומה|ולמה|ואם|הוא|היא|זה|זאת|אותו|אותה|עליו|עליה|שלו|שלה|שווה|כדאי|יקר|זול|עדיף|מתאים|טוב|איכותי|באמת|למה|כמה|איזה|איזו|תראה|שלח)(?:\s|$)/i.test(n);
+  }
+
+  function contextualProductQuery(value) {
+    var base = cleanText(value || '');
+    if (!isContextualFollowUp(base)) return base;
+    var recent = conversationHistory.slice(-4).map(function (item) { return cleanText(item && item.text || ''); }).filter(Boolean);
+    return cleanText(base + ' ' + recent.join(' '));
+  }
 
   function normalize(value) {
     return String(value == null ? '' : value)
@@ -306,28 +364,43 @@
   }
 
   function findProductMatches(query, products) {
-    var qTokens = tokenize(query);
+    var expandedQuery = expandProductQueryAliases(query);
+    var qTokens = tokenize(expandedQuery);
     if (!qTokens.length) return [];
     return products.map(function (product) {
       var title = productTitle(product);
+      var titleHe = cleanText(product && product.title && product.title.he || title);
+      var titleEn = cleanText(product && product.title && product.title.en || '');
+      var details = detailLines(product).join(' ');
       var hay = normalize([
-        title,
-        he(product.subtitle),
-        he(product.description),
-        he(product.cardTitle),
+        titleHe, titleEn,
+        he(product.subtitle), product && product.subtitle && product.subtitle.en,
+        he(product.description), product && product.description && product.description.en,
+        he(product.cardTitle), product && product.cardTitle && product.cardTitle.en,
+        details,
         product.slug,
         product.urlSlug,
         (product.categories || []).join(' ')
       ].join(' '));
+      var hayTokens = hay.split(' ').filter(Boolean);
+      var normalizedTitle = normalize(titleHe + ' ' + titleEn);
       var score = 0;
       qTokens.forEach(function (token) {
-        if (hay.indexOf(token) !== -1) score += title && normalize(title).indexOf(token) !== -1 ? 5 : 2;
-        else if (token.length >= 4) {
+        if (hay.indexOf(token) !== -1) {
+          score += normalizedTitle.indexOf(token) !== -1 ? 5 : 2;
+          return;
+        }
+        if (token.length >= 4) {
           var stem = token.slice(0, Math.max(3, token.length - 1));
-          if (hay.indexOf(stem) !== -1) score += 1;
+          if (hay.indexOf(stem) !== -1) { score += 1; return; }
+          if (hayTokens.some(function (candidate) {
+            return candidate.length >= 4 && Math.abs(candidate.length - token.length) <= 1 && oneEditApart(token, candidate);
+          })) score += 1;
         }
       });
-      if (normalize(query).indexOf(normalize(title)) !== -1 && title) score += 15;
+      var nq = normalize(expandedQuery);
+      if (titleHe && nq.indexOf(normalize(titleHe)) !== -1) score += 15;
+      if (titleEn && nq.indexOf(normalize(titleEn)) !== -1) score += 15;
       return { product: product, score: score };
     }).filter(function (item) { return item.score > 0; })
       .sort(function (a, b) { return b.score - a.score; })
@@ -582,7 +655,7 @@
       var root = document.querySelector('main') || document.querySelector('[data-product-root]') || document.body;
       var clone = root.cloneNode(true);
       clone.querySelectorAll('script,style,noscript,svg,video,form,.vs-bot,.vs-a11y-widget,.vs-floating-cart,header,footer,nav').forEach(function (node) { node.remove(); });
-      return cleanText(clone.textContent || '').slice(0, 6500);
+      return cleanText(clone.textContent || '').slice(0, 3500);
     } catch (e) {
       return '';
     }
@@ -637,11 +710,12 @@
   async function buildAIContext(query) {
     var products = await ensureProducts();
     var currentProduct = currentProductFrom(products);
-    var productMatches = findProductMatches(query, products).slice(0, 5);
+    var contextQuery = contextualProductQuery(query);
+    var productMatches = findProductMatches(contextQuery, products).slice(0, 5);
     var knowledge = [];
     try {
       var blocks = await loadKnowledge();
-      knowledge = searchKnowledge(query, blocks).slice(0, 7).map(function (item) {
+      knowledge = searchKnowledge(contextQuery, blocks).slice(0, 7).map(function (item) {
         return {
           title: item.block.title,
           heading: item.block.heading,

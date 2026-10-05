@@ -482,7 +482,7 @@
     }
     if (!document.querySelector('script[data-versans-bot-script]')) {
       var script = document.createElement('script');
-      script.src = '/assets/versans-bot.js?v=20261005-a11y-textfacts-v7';
+      script.src = '/assets/versans-bot.js?v=20261006-context-alias-v11';
       script.async = true;
       script.setAttribute('data-versans-bot-script', '1');
       document.body.appendChild(script);
