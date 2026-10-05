@@ -2174,10 +2174,22 @@
     var progressSub = make('span', '', '');
     progress.append(progressText, progressSub);
 
-    head.append(orderCheckWrap, title, statusChip, trackStatus, progress);
+    var detailsToggle = orderWorkActionButton('פרטים', 'admin-order-work-action--details-toggle', function () {
+      var willOpen = detailsBody.hidden;
+      detailsBody.hidden = !willOpen;
+      detailsToggle.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+      detailsToggle.textContent = willOpen ? 'סגור פרטים' : 'פרטים';
+      cardEl.classList.toggle('is-details-open', willOpen);
+    });
+    detailsToggle.setAttribute('aria-expanded', 'false');
+
+    head.append(orderCheckWrap, title, statusChip, trackStatus, progress, detailsToggle);
     cardEl.appendChild(head);
 
-    /* Tracking/order actions remain directly on every order. */
+    /* Everything inside the order stays exactly the same, but is collapsed by default. */
+    var detailsBody = make('div', 'admin-order-work-card__details-body');
+    detailsBody.hidden = true;
+
     var actions = make('div', 'admin-order-work-card__actions admin-order-work-card__actions--full');
     actions.appendChild(orderWorkActionButton('ניהול Tracking', 'admin-order-work-action--primary', function () {
       openShipmentManager(order);
@@ -2195,7 +2207,7 @@
           .catch(function () {});
       }
     }));
-    cardEl.appendChild(actions);
+    detailsBody.appendChild(actions);
 
     /* Full customer/shipping data — visible, same information as the Sheet block. */
     var customer = order.customer || {};
@@ -2216,7 +2228,7 @@
       customerGrid.appendChild(orderWorkField(entry[0], entry[1]));
     });
     customerSection.appendChild(customerGrid);
-    cardEl.appendChild(customerSection);
+    detailsBody.appendChild(customerSection);
 
     /* Product rows mirror the useful columns from Google Sheet. */
     var listSection = make('section', 'admin-order-work-section admin-order-work-section--items admin-order-work-section--items-full');
@@ -2366,7 +2378,7 @@
     });
 
     listSection.appendChild(list);
-    cardEl.appendChild(listSection);
+    detailsBody.appendChild(listSection);
 
     /* Exact raw Sheet lines stay connected/visible when Sheet data has loaded. */
     if (snapshot) {
@@ -2379,8 +2391,10 @@
       rawGrid.appendChild(orderWorkField('כתובת', snapshot.addressText || '—'));
       rawGrid.appendChild(orderWorkField('כניסה / קומה / הערות', snapshot.extraText || '—'));
       raw.appendChild(rawGrid);
-      cardEl.appendChild(raw);
+      detailsBody.appendChild(raw);
     }
+
+    cardEl.appendChild(detailsBody);
 
     function updateProgress() {
       var done = itemChecks.filter(function (entry) { return entry.input.checked; }).length;
