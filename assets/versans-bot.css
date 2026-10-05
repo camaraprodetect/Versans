@@ -156,3 +156,10 @@ html body .vs-a11y-widget .vs-a11y-panel{position:fixed!important;left:max(14px,
   .vs-bot-form{padding:9px}
 }
 @media(prefers-reduced-motion:reduce){.vs-bot *{animation:none!important;transition:none!important}}
+
+/* Product images returned by Versans Bot. Only local catalog images are rendered. */
+.vs-bot-images{display:flex;gap:8px;max-width:100%;overflow-x:auto;overflow-y:hidden;padding:1px 0 2px;scrollbar-width:thin;scrollbar-color:#c9aa70 transparent;-webkit-overflow-scrolling:touch}
+.vs-bot-image-card{display:block;flex:0 0 112px;width:112px;aspect-ratio:1/1;border:1px solid #e4dfd7;border-radius:14px;overflow:hidden;background:#fff;text-decoration:none;box-shadow:0 4px 14px rgba(20,35,51,.07)}
+.vs-bot-image-card img{display:block;width:100%;height:100%;object-fit:cover;background:#f7f7f5}
+.vs-bot-image-card:hover{border-color:#c9aa70}
+@media(max-width:420px){.vs-bot-image-card{flex-basis:102px;width:102px}}

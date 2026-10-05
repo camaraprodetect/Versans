@@ -4,8 +4,11 @@
   if (window.__versansBotLoaded) return;
   window.__versansBotLoaded = true;
 
-  var BOT_VERSION = '20261005-ai-v4';
-  var CHAT_STORAGE_KEY = 'versansBotChatV1';
+  var BOT_VERSION = '20261005-ai-v6';
+  var CHAT_STORAGE_KEY = 'versansBotChatV2';
+  var activeChatStorageKey = CHAT_STORAGE_KEY + ':guest';
+  var chatScopeReady = false;
+  var chatRestoreDone = false;
   var AI_ENDPOINT = '/api/versans-bot';
   var CATALOG_SRC = '/assets/products.js?v=20261003-delete-tachymeter-black-v35';
   var MAX_MESSAGE_LENGTH = 500;
@@ -25,15 +28,40 @@
     }).filter(Boolean) : [];
   }
 
+  function sanitizeStoredImages(images) {
+    return Array.isArray(images) ? images.slice(0, 3).map(function (item) {
+      if (!item || typeof item !== 'object') return null;
+      var url = String(item.url || '').trim();
+      var alt = cleanText(item.alt || 'מוצר VerSans').slice(0, 180);
+      var linkUrl = String(item.linkUrl || '').trim();
+      if (!/^\/images\/[A-Za-z0-9_./%()\-]+$/.test(url) || url.indexOf('..') !== -1) return null;
+      if (linkUrl && (!/^\/[^\s]*$/.test(linkUrl) || linkUrl.indexOf('//') === 0)) linkUrl = '';
+      return { url: url, alt: alt || 'מוצר VerSans', linkUrl: linkUrl };
+    }).filter(Boolean) : [];
+  }
+
+  function resolveChatScope() {
+    return fetch('/api/auth/me', { credentials: 'same-origin', headers: { 'Accept': 'application/json' } })
+      .then(function (response) { return response.ok ? response.json() : null; })
+      .then(function (data) {
+        if (data && data.user && data.user.id != null) activeChatStorageKey = CHAT_STORAGE_KEY + ':user:' + String(data.user.id);
+        else activeChatStorageKey = CHAT_STORAGE_KEY + ':guest';
+      })
+      .catch(function () { activeChatStorageKey = CHAT_STORAGE_KEY + ':guest'; })
+      .then(function () { chatScopeReady = true; });
+  }
+
+  var chatScopePromise = resolveChatScope();
+
   function loadStoredChat() {
     try {
-      var parsed = JSON.parse(sessionStorage.getItem(CHAT_STORAGE_KEY) || '[]');
+      var parsed = JSON.parse(sessionStorage.getItem(activeChatStorageKey) || '[]');
       if (!Array.isArray(parsed)) return [];
       return parsed.slice(-30).map(function (item) {
         if (!item || (item.role !== 'user' && item.role !== 'bot')) return null;
         var text = cleanText(item.text || '').slice(0, 2200);
         if (!text) return null;
-        return { role: item.role, text: text, links: sanitizeStoredLinks(item.links) };
+        return { role: item.role, text: text, links: sanitizeStoredLinks(item.links), images: sanitizeStoredImages(item.images) };
       }).filter(Boolean);
     } catch (e) {
       return [];
@@ -42,7 +70,7 @@
 
   function saveStoredChat() {
     try {
-      sessionStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(storedChat.slice(-30)));
+      sessionStorage.setItem(activeChatStorageKey, JSON.stringify(storedChat.slice(-30)));
     } catch (e) {}
   }
 
@@ -50,7 +78,7 @@
     payload = typeof payload === 'string' ? { text: payload } : (payload || {});
     var text = cleanText(payload.text || '').slice(0, 2200);
     if (!text || (role !== 'user' && role !== 'bot')) return;
-    storedChat.push({ role: role, text: text, links: sanitizeStoredLinks(payload.links) });
+    storedChat.push({ role: role, text: text, links: sanitizeStoredLinks(payload.links), images: sanitizeStoredImages(payload.images) });
     storedChat = storedChat.slice(-30);
     saveStoredChat();
   }
@@ -180,6 +208,21 @@
     }
     if (product.urlSlug) return '/' + encodeURIComponent(product.urlSlug);
     return '/product.html?id=' + encodeURIComponent(product.slug || product.id || '');
+  }
+
+  function productPrimaryImage(product) {
+    if (!product || !Array.isArray(product.images) || !product.images[0]) return '';
+    var value = String(product.images[0] || '').replace(/\\/g, '/').trim();
+    if (!value) return '';
+    if (value.charAt(0) !== '/') value = '/' + value.replace(/^\/+/, '');
+    if (value.indexOf('/images/') !== 0 || value.indexOf('..') !== -1) return '';
+    return value;
+  }
+
+  function productImagePayload(product) {
+    var url = productPrimaryImage(product);
+    if (!url) return null;
+    return { url: url, alt: productTitle(product) || 'מוצר VerSans', linkUrl: productPath(product) };
   }
 
   function currentProductFrom(products) {
@@ -534,6 +577,7 @@
   }
 
   function safePageText() {
+    if ((window.location.pathname || '').replace(/\/+$/, '') === '/track') return '';
     try {
       var root = document.querySelector('main') || document.querySelector('[data-product-root]') || document.body;
       var clone = root.cloneNode(true);
@@ -643,7 +687,8 @@
     }
     return {
       text: cleanText(data.answer),
-      links: Array.isArray(data.links) ? data.links.slice(0, 4) : []
+      links: Array.isArray(data.links) ? data.links.slice(0, 4) : [],
+      images: sanitizeStoredImages(data.images)
     };
   }
 
@@ -675,10 +720,11 @@
       var links = productMatches.slice(0, 3).map(function (item) {
         return { label: productTitle(item.product), url: productPath(item.product) };
       });
+      var images = productMatches.slice(0, 3).map(function (item) { return productImagePayload(item.product); }).filter(Boolean);
       if (productMatches[0].score >= 6) {
-        return { text: productSummary(best), links: links };
+        return { text: productSummary(best), links: links, images: images.slice(0, 1) };
       }
-      return { text: 'מצאתי כמה מוצרים שיכולים להתאים למה שחיפשתם.', links: links };
+      return { text: 'מצאתי כמה מוצרים שיכולים להתאים למה שחיפשתם.', links: links, images: images };
     }
 
 
@@ -814,7 +860,7 @@
   widget.appendChild(panel);
   document.body.appendChild(widget);
 
-  var restoredChat = restoreChat();
+  var restoredChat = false;
 
   function scrollMessages() {
     window.requestAnimationFrame(function () { messages.scrollTop = messages.scrollHeight; });
@@ -829,6 +875,24 @@
     bubble.className = 'vs-bot-message';
     bubble.textContent = cleanText(payload.text || '');
     row.appendChild(bubble);
+
+    if (Array.isArray(payload.images) && payload.images.length) {
+      var images = document.createElement('div');
+      images.className = 'vs-bot-images';
+      sanitizeStoredImages(payload.images).forEach(function (item) {
+        var wrapper = item.linkUrl ? document.createElement('a') : document.createElement('div');
+        wrapper.className = 'vs-bot-image-card';
+        if (item.linkUrl) wrapper.href = item.linkUrl;
+        var img = document.createElement('img');
+        img.src = item.url;
+        img.alt = item.alt || 'מוצר VerSans';
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        wrapper.appendChild(img);
+        images.appendChild(wrapper);
+      });
+      if (images.childElementCount) row.appendChild(images);
+    }
 
     if (Array.isArray(payload.links) && payload.links.length) {
       var links = document.createElement('div');
@@ -855,10 +919,12 @@
   }
 
   function restoreChat() {
+    if (chatRestoreDone) return storedChat.length > 0;
+    chatRestoreDone = true;
     storedChat = loadStoredChat();
     if (!storedChat.length) return false;
     storedChat.forEach(function (item) {
-      appendMessage(item.role, { text: item.text, links: item.links }, { skipPersist: true });
+      appendMessage(item.role, { text: item.text, links: item.links, images: item.images }, { skipPersist: true });
     });
     conversationHistory = storedChat.slice(-10).map(function (item) {
       return { role: item.role === 'user' ? 'user' : 'assistant', text: item.text };
@@ -893,6 +959,8 @@
   }
 
   async function submitQuestion(question) {
+    if (!chatScopeReady) await chatScopePromise;
+    if (!chatRestoreDone) restoredChat = restoreChat();
     var value = cleanText(question);
     if (!value) return;
     appendMessage('user', value);
@@ -919,6 +987,8 @@
     panel.hidden = false;
     widget.classList.add('is-open');
     trigger.setAttribute('aria-expanded', 'true');
+    if (!chatScopeReady) await chatScopePromise;
+    if (!chatRestoreDone) restoredChat = restoreChat();
     if (!messages.childElementCount) {
       var products = await ensureProducts();
       var product = currentProductFrom(products);
