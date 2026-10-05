@@ -4,7 +4,8 @@
   if (window.__versansBotLoaded) return;
   window.__versansBotLoaded = true;
 
-  var BOT_VERSION = '20261005-ai-v2';
+  var BOT_VERSION = '20261005-ai-v3';
+  var CHAT_STORAGE_KEY = 'versansBotChatV1';
   var AI_ENDPOINT = '/api/versans-bot';
   var CATALOG_SRC = '/assets/products.js?v=20261003-delete-tachymeter-black-v35';
   var MAX_MESSAGE_LENGTH = 500;
@@ -12,6 +13,47 @@
   var knowledgePromise = null;
   var messageCounter = 0;
   var conversationHistory = [];
+  var storedChat = [];
+
+  function sanitizeStoredLinks(links) {
+    return Array.isArray(links) ? links.slice(0, 4).map(function (item) {
+      if (!item || typeof item !== 'object') return null;
+      var label = cleanText(item.label || '').slice(0, 120);
+      var url = String(item.url || '').trim();
+      if (!label || !url || !/^\/?(?:[^\s]*$)/.test(url)) return null;
+      return { label: label, url: url, external: !!item.external };
+    }).filter(Boolean) : [];
+  }
+
+  function loadStoredChat() {
+    try {
+      var parsed = JSON.parse(sessionStorage.getItem(CHAT_STORAGE_KEY) || '[]');
+      if (!Array.isArray(parsed)) return [];
+      return parsed.slice(-30).map(function (item) {
+        if (!item || (item.role !== 'user' && item.role !== 'bot')) return null;
+        var text = cleanText(item.text || '').slice(0, 2200);
+        if (!text) return null;
+        return { role: item.role, text: text, links: sanitizeStoredLinks(item.links) };
+      }).filter(Boolean);
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveStoredChat() {
+    try {
+      sessionStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(storedChat.slice(-30)));
+    } catch (e) {}
+  }
+
+  function rememberChatMessage(role, payload) {
+    payload = typeof payload === 'string' ? { text: payload } : (payload || {});
+    var text = cleanText(payload.text || '').slice(0, 2200);
+    if (!text || (role !== 'user' && role !== 'bot')) return;
+    storedChat.push({ role: role, text: text, links: sanitizeStoredLinks(payload.links) });
+    storedChat = storedChat.slice(-30);
+    saveStoredChat();
+  }
 
   var DOCS = [
     { id: 'policies', title: 'תקנון ומדיניות', url: '/policies' },
@@ -721,10 +763,7 @@
   logo.alt = 'VerSans';
   logo.width = 719;
   logo.height = 171;
-  var subtitle = document.createElement('span');
-  subtitle.textContent = 'העוזר החכם של VerSans';
   headCopy.appendChild(logo);
-  headCopy.appendChild(subtitle);
   var close = document.createElement('button');
   close.type = 'button';
   close.className = 'vs-bot-close';
@@ -768,11 +807,14 @@
   widget.appendChild(panel);
   document.body.appendChild(widget);
 
+  var restoredChat = restoreChat();
+
   function scrollMessages() {
     window.requestAnimationFrame(function () { messages.scrollTop = messages.scrollHeight; });
   }
 
-  function appendMessage(role, payload) {
+  function appendMessage(role, payload, options) {
+    options = options || {};
     payload = typeof payload === 'string' ? { text: payload } : (payload || {});
     var row = document.createElement('div');
     row.className = 'vs-bot-message-row vs-bot-message-row--' + role;
@@ -800,8 +842,22 @@
     }
 
     messages.appendChild(row);
+    if (!options.skipPersist) rememberChatMessage(role, payload);
     scrollMessages();
     return row;
+  }
+
+  function restoreChat() {
+    storedChat = loadStoredChat();
+    if (!storedChat.length) return false;
+    storedChat.forEach(function (item) {
+      appendMessage(item.role, { text: item.text, links: item.links }, { skipPersist: true });
+    });
+    conversationHistory = storedChat.slice(-10).map(function (item) {
+      return { role: item.role === 'user' ? 'user' : 'assistant', text: item.text };
+    });
+    if (storedChat.some(function (item) { return item.role === 'user'; })) quick.classList.add('is-collapsed');
+    return true;
   }
 
   function appendTyping() {
@@ -861,6 +917,9 @@
       var product = currentProductFrom(products);
       appendMessage('bot', pageIntro(product));
       renderQuick(product);
+    } else if (restoredChat && !storedChat.some(function (item) { return item.role === 'user'; })) {
+      var restoredProducts = await ensureProducts();
+      renderQuick(currentProductFrom(restoredProducts));
     }
     setTimeout(function () { input.focus({ preventScroll: true }); }, 50);
   }
