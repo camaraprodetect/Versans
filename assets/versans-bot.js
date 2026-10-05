@@ -4,12 +4,14 @@
   if (window.__versansBotLoaded) return;
   window.__versansBotLoaded = true;
 
-  var BOT_VERSION = '20261005-v1';
+  var BOT_VERSION = '20261005-ai-v2';
+  var AI_ENDPOINT = '/api/versans-bot';
   var CATALOG_SRC = '/assets/products.js?v=20261003-delete-tachymeter-black-v35';
   var MAX_MESSAGE_LENGTH = 500;
   var productCatalogPromise = null;
   var knowledgePromise = null;
   var messageCounter = 0;
+  var conversationHistory = [];
 
   var DOCS = [
     { id: 'policies', title: 'תקנון ומדיניות', url: '/policies' },
@@ -489,7 +491,121 @@
     return { text: 'היי, אני Versans Bot. אפשר לשאול אותי על המוצר שאתם רואים עכשיו, חומרים, מידות, משלוחים, אחריות, החזרות, מבצעים או לבקש קישור לעמוד באתר.' };
   }
 
-  async function answerQuestion(query) {
+  function safePageText() {
+    try {
+      var root = document.querySelector('main') || document.querySelector('[data-product-root]') || document.body;
+      var clone = root.cloneNode(true);
+      clone.querySelectorAll('script,style,noscript,svg,video,form,.vs-bot,.vs-a11y-widget,.vs-floating-cart,header,footer,nav').forEach(function (node) { node.remove(); });
+      return cleanText(clone.textContent || '').slice(0, 6500);
+    } catch (e) {
+      return '';
+    }
+  }
+
+  function compactProductForAI(product) {
+    if (!product) return null;
+    return {
+      title: productTitle(product),
+      url: productPath(product),
+      price: Number(product.price) || null,
+      subtitle: cleanText(he(product.subtitle)).slice(0, 500),
+      description: productDescription(product).slice(0, 1100),
+      details: detailLines(product).slice(0, 12),
+      sizes: Array.isArray(product.sizes) ? product.sizes.slice(0, 20).map(function (item) {
+        return { label: cleanText(he(item.label) || item.id), addPrice: Number(item.addPrice) || 0 };
+      }) : [],
+      colors: Array.isArray(product.colors) ? product.colors.slice(0, 20).map(function (item) {
+        return { label: cleanText(he(item.label) || item.id), addPrice: Number(item.addPrice) || 0 };
+      }) : [],
+      categories: Array.isArray(product.categories) ? product.categories.slice(0, 12) : [],
+      category: String(product.category || '')
+    };
+  }
+
+  function aiLinkOptions(query, currentProduct, productMatches) {
+    var options = [
+      QUICK_LINKS.home, QUICK_LINKS.track, QUICK_LINKS.policies, QUICK_LINKS.warranty,
+      QUICK_LINKS.braceletSize, QUICK_LINKS.ringSize, QUICK_LINKS.necklaceSize,
+      QUICK_LINKS.necklaces, QUICK_LINKS.bracelets, QUICK_LINKS.rings,
+      QUICK_LINKS.watches, QUICK_LINKS.glasses, QUICK_LINKS.hats,
+      QUICK_LINKS.photo, QUICK_LINKS.greeting, QUICK_LINKS.login, QUICK_LINKS.register
+    ];
+    if (currentProduct) {
+      options.unshift({ label: productTitle(currentProduct), url: productPath(currentProduct) });
+      var guide = sizeGuideFor(currentProduct);
+      if (guide) options.unshift(guide);
+    }
+    var category = categoryLinkFromQuery(query);
+    if (category) options.unshift(category);
+    (productMatches || []).slice(0, 5).forEach(function (item) {
+      options.unshift({ label: productTitle(item.product), url: productPath(item.product) });
+    });
+    var seen = new Set();
+    return options.filter(function (item) {
+      if (!item || !item.url || !item.label || seen.has(item.url)) return false;
+      seen.add(item.url);
+      return true;
+    }).slice(0, 22);
+  }
+
+  async function buildAIContext(query) {
+    var products = await ensureProducts();
+    var currentProduct = currentProductFrom(products);
+    var productMatches = findProductMatches(query, products).slice(0, 5);
+    var knowledge = [];
+    try {
+      var blocks = await loadKnowledge();
+      knowledge = searchKnowledge(query, blocks).slice(0, 7).map(function (item) {
+        return {
+          title: item.block.title,
+          heading: item.block.heading,
+          text: truncate(item.block.text, 650),
+          url: item.block.url
+        };
+      });
+    } catch (e) {}
+    return {
+      page: Object.assign({}, getPageContext(), {
+        url: window.location.pathname + window.location.search,
+        visibleText: safePageText()
+      }),
+      currentProduct: compactProductForAI(currentProduct),
+      relatedProducts: productMatches.map(function (item) { return compactProductForAI(item.product); }),
+      relevantSiteInfo: knowledge,
+      links: aiLinkOptions(query, currentProduct, productMatches),
+      storeFacts: {
+        jewelryPromotion: 'בקולקציות התכשיטים המשתתפות: קנה 2 קבל 1 בחינם, הזול מבין שלושת הפריטים הוא החינם.',
+        hatsPromotion: 'כובעים: 1 ב-139.90 ₪, 2 ב-239.90 ₪, 3 ב-299.90 ₪.',
+        glassesPromotion: 'משקפיים: 1 ב-139.90 ₪, 2 ב-249.90 ₪.',
+        welcomeCoupon: 'בהרשמה נשלח למייל קופון 3% חד-פעמי, בתוקף ל-14 ימים.',
+        warranty: 'האחריות היא לחצי שנה, לפי תנאי האחריות והתקנון באתר.'
+      },
+      history: conversationHistory.slice(-8)
+    };
+  }
+
+  async function answerQuestionAI(query) {
+    var context = await buildAIContext(query);
+    var response = await fetch(AI_ENDPOINT, {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ question: cleanText(query).slice(0, 700), context: context })
+    });
+    var data = null;
+    try { data = await response.json(); } catch (e) {}
+    if (!response.ok || !data || !data.ok || !data.answer) {
+      var err = new Error((data && data.error) || 'ai_unavailable');
+      err.code = data && data.error;
+      throw err;
+    }
+    return {
+      text: cleanText(data.answer),
+      links: Array.isArray(data.links) ? data.links.slice(0, 4) : []
+    };
+  }
+
+  async function answerQuestionLocal(query) {
     var trimmed = cleanText(query).slice(0, 500);
     if (!trimmed) return { text: 'כתבו לי שאלה ואנסה לעזור.' };
 
@@ -548,6 +664,25 @@
     };
   }
 
+  async function answerQuestion(query) {
+    var trimmed = cleanText(query).slice(0, 700);
+    if (!trimmed) return { text: 'כתבו לי שאלה ואנסה לעזור.' };
+    try {
+      var aiAnswer = await answerQuestionAI(trimmed);
+      conversationHistory.push({ role: 'user', text: trimmed });
+      conversationHistory.push({ role: 'assistant', text: aiAnswer.text });
+      conversationHistory = conversationHistory.slice(-10);
+      return aiAnswer;
+    } catch (error) {
+      console.warn('Versans Bot AI fallback:', error && (error.code || error.message) || error);
+      var fallback = await answerQuestionLocal(trimmed);
+      conversationHistory.push({ role: 'user', text: trimmed });
+      conversationHistory.push({ role: 'assistant', text: fallback.text });
+      conversationHistory = conversationHistory.slice(-10);
+      return fallback;
+    }
+  }
+
   function createIcon() {
     var span = document.createElement('span');
     span.className = 'vs-bot-trigger__mark';
@@ -580,11 +715,15 @@
   head.className = 'vs-bot-head';
   var headCopy = document.createElement('div');
   headCopy.className = 'vs-bot-head__copy';
-  var title = document.createElement('strong');
-  title.textContent = 'Versans Bot';
+  var logo = document.createElement('img');
+  logo.className = 'vs-bot-head__logo';
+  logo.src = '/images/VersansLogoWordmarkWhite.png';
+  logo.alt = 'VerSans';
+  logo.width = 719;
+  logo.height = 171;
   var subtitle = document.createElement('span');
-  subtitle.textContent = 'עוזר לכם למצוא את מה שצריך';
-  headCopy.appendChild(title);
+  subtitle.textContent = 'העוזר החכם של VerSans';
+  headCopy.appendChild(logo);
   headCopy.appendChild(subtitle);
   var close = document.createElement('button');
   close.type = 'button';
@@ -618,7 +757,7 @@
 
   var footer = document.createElement('div');
   footer.className = 'vs-bot-footer';
-  footer.textContent = 'התשובות מבוססות על המידע שמופיע באתר VerSans.';
+  footer.textContent = 'Versans AI - התשובות מבוססות על המידע בחנות ועל ההקשר של העמוד הנוכחי.';
 
   panel.appendChild(head);
   panel.appendChild(messages);
