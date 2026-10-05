@@ -140,20 +140,37 @@ html body .vs-a11y-widget{left:max(166px,calc(env(safe-area-inset-left) + 166px)
 html body .vs-a11y-widget .vs-a11y-panel{position:fixed!important;left:max(14px,env(safe-area-inset-left))!important;right:auto!important;bottom:max(82px,calc(env(safe-area-inset-bottom) + 82px))!important;transform-origin:bottom left!important}
 
 @media(max-width:760px){
-  .vs-bot{left:max(11px,env(safe-area-inset-left));bottom:max(11px,env(safe-area-inset-bottom))}
-  .vs-bot-trigger{min-width:132px;height:56px;padding:0 13px 0 9px}
-  .vs-bot-trigger__mark{width:37px;height:37px;flex-basis:37px}
-  .vs-bot-trigger__text{font-size:12.5px}
-  .vs-bot-panel{position:fixed;left:8px;right:8px;bottom:78px;width:auto;height:min(635px,calc(100dvh - 90px));border-radius:24px}
-  html body .vs-a11y-widget{left:max(151px,calc(env(safe-area-inset-left) + 151px))!important;right:auto!important;bottom:max(11px,env(safe-area-inset-bottom))!important}
-  html body .vs-a11y-widget .vs-a11y-panel{left:max(8px,env(safe-area-inset-left))!important;bottom:max(74px,calc(env(safe-area-inset-bottom) + 74px))!important}
+  .vs-bot{left:max(10px,env(safe-area-inset-left));bottom:max(10px,env(safe-area-inset-bottom))}
+  .vs-bot-trigger{min-width:112px;height:46px;padding:0 9px 0 7px;gap:7px;box-shadow:0 8px 22px rgba(0,0,0,.23),0 0 0 2px rgba(255,255,255,.82)}
+  .vs-bot-trigger__mark{width:31px;height:31px;flex-basis:31px}
+  .vs-bot-trigger__text{font-size:11.5px}
+  .vs-bot-panel{position:fixed;left:max(10px,env(safe-area-inset-left));right:auto;bottom:max(64px,calc(env(safe-area-inset-bottom) + 64px));width:min(340px,calc(100vw - 24px));height:min(520px,calc(100dvh - 150px));max-height:68dvh;border-radius:20px}
+  .vs-bot-head{min-height:76px;padding:10px 50px}
+  .vs-bot-head__logo{width:138px}
+  .vs-bot-close{left:12px;width:34px;height:34px;font-size:23px}
+  .vs-bot-messages{padding:12px 10px 7px}
+  .vs-bot-message-row{margin-bottom:9px}
+  .vs-bot-message{font-size:12.5px;line-height:1.62;padding:9px 11px;border-radius:15px}
+  .vs-bot-quick{gap:6px;padding:7px 9px 6px}
+  .vs-bot-quick__item{min-height:32px;padding:6px 10px;font-size:11.5px!important}
+  .vs-bot-form{gap:6px;padding:8px 9px}
+  .vs-bot-form input{height:40px;border-radius:12px;padding:0 11px;font-size:12px}
+  .vs-bot-send{height:40px;border-radius:12px;padding:0 12px;font-size:11.5px}
+  .vs-bot-footer{padding:0 9px 7px;font-size:8.5px}
+  html body .vs-a11y-widget{left:max(130px,calc(env(safe-area-inset-left) + 130px))!important;right:auto!important;bottom:max(10px,env(safe-area-inset-bottom))!important}
+  html body .vs-a11y-widget .vs-a11y-panel{left:max(8px,env(safe-area-inset-left))!important;bottom:max(64px,calc(env(safe-area-inset-bottom) + 64px))!important}
 }
 @media(max-width:420px){
-  .vs-bot-panel{left:6px;right:6px;bottom:74px;height:calc(100dvh - 84px)}
-  .vs-bot-head{min-height:92px;padding:12px 58px}
-  .vs-bot-head__logo{width:164px}
-  .vs-bot-messages{padding:13px 10px 8px}
-  .vs-bot-form{padding:9px}
+  .vs-bot-trigger{min-width:108px;height:44px;padding:0 8px 0 6px;gap:6px}
+  .vs-bot-trigger__mark{width:30px;height:30px;flex-basis:30px}
+  .vs-bot-trigger__text{font-size:11px}
+  .vs-bot-panel{left:max(8px,env(safe-area-inset-left));bottom:max(60px,calc(env(safe-area-inset-bottom) + 60px));width:min(326px,calc(100vw - 20px));height:min(490px,calc(100dvh - 140px));max-height:66dvh;border-radius:18px}
+  .vs-bot-head{min-height:70px;padding:9px 46px}
+  .vs-bot-head__logo{width:128px}
+  .vs-bot-close{left:10px;width:32px;height:32px;font-size:22px}
+  .vs-bot-messages{padding:10px 9px 6px}
+  .vs-bot-form{padding:7px 8px}
+  html body .vs-a11y-widget{left:max(125px,calc(env(safe-area-inset-left) + 125px))!important}
 }
 @media(prefers-reduced-motion:reduce){.vs-bot *{animation:none!important;transition:none!important}}
 

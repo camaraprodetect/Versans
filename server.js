@@ -886,6 +886,39 @@ function versansBotPickupDetailsRequested(value) {
   return /(פרטי\s*(?:ה?איסוף)|קוד.{0,16}(?:ה?איסוף|אימות)|כתובת.{0,16}(?:ה?איסוף|לאסוף)|איפה.{0,20}(?:לאסוף|ה?איסוף)|לוקר|מספר\s*לוקר|מדף|שעות\s*פתיחה|עד\s*מתי\s*לאסוף|נקודת\s*(?:ה?איסוף))/i.test(text);
 }
 
+function versansBotQuestionInScope(question, context) {
+  const text = versansBotText(question, 700).toLowerCase();
+  if (!text) return false;
+  if (versansBotOrderRefFromText(text)) return true;
+
+  // Never spend an AI call on obvious general arithmetic / trivia-style math.
+  if (/^[\s\d.,()+\-*/%=^]+$/.test(text)) return false;
+  if (/^(?:כמה\s+זה|חשב|תחשב|what\s+is|calculate)\s*[\d.,()+\-*/%=^\s]+[?!.]*$/i.test(text)) return false;
+
+  // Direct VerSans/store topics. Keep this deliberately broad for natural Hebrew.
+  const storeTopic = /(versans|ורסנס|מוצר|פריט|קטלוג|קולקצי|תכשיט|שרשרת|צמיד|טבעת|שעון|כובע|משקפ|ברכה|תמונה\s*מוקרנת|חומר|עשוי|ציפוי|זהב|כסף|מויסנייט|moissanite|מידה|מידות|אורך|רוחב|צבע|מחיר|עולה|מלאי|זמין|מבצע|הנחה|קופון|סל|עגלה|תשלום|הזמנה|משלוח|מעקב|סטטוס|אחריות|החזר|החזרה|ביטול|תקנון|פרטיות|שירות\s*לקוחות|וואטסאפ|צור\s*קשר|חשבון|התחבר|התחברות|הרשמה|סיסמה|איסוף|המלצ|תמליץ|כדאי\s*לקנות|מתנה|לגבר|לנשים|לאישה|לאמא|לבת|לאחות|יוניסקס|מי\s*אתם|מה\s*אתם|איפה\s*אתם|recommend|product|bracelet|necklace|ring|watch|hat|glasses|jewelry|size|material|price|stock|discount|coupon|cart|order|shipping|tracking|warranty|return|refund|policy|login|account)/i;
+  if (storeTopic.test(text)) return true;
+
+  // Contextual questions are allowed when the customer is visibly referring to
+  // the current product/page rather than asking a general-knowledge question.
+  const hasCurrentProduct = Boolean(context && context.currentProduct && context.currentProduct.title);
+  if (hasCurrentProduct && /(המוצר\s*הזה|הפריט\s*הזה|הדגם\s*הזה|זה\?|זאת\?|אותו|אותה|עליו|עליה|שלו|שלה|ממה|איזה\s+צבע|איזה\s+מידה|כמה\s+עולה|יש\s+ב|יש\s+את|מתאים|תמליץ|תמליצ|קישור|תמונה)/i.test(text)) return true;
+
+  const pagePath = String(context && context.page && context.page.path || '');
+  if (pagePath && /(מה\s+כתוב\s+פה|מה\s+כתוב\s+כאן|מה\s+זה\s+פה|מה\s+זה\s+כאן|בעמוד\s+הזה|בדף\s+הזה|העמוד\s+הזה)/i.test(text)) return true;
+
+  // Permit a small set of natural follow-ups only when there is already a
+  // Versans conversation in this session. This does not allow arbitrary trivia.
+  const hasHistory = Boolean(context && Array.isArray(context.history) && context.history.length);
+  if (hasHistory && /^(?:ומה(?:\s+לגבי|\s+עם)?(?:\s+זה)?|ומה\s+עוד|איזה\s+מהם|מה\s+ההבדל|כמה\s+זמן|יש\s+עוד|תראה\s+לי|שלח\s+(?:לי\s+)?קישור|כן|לא|ולמה|ואם)[?!.\s]*$/i.test(text)) return true;
+
+  // Greetings and questions about the bot itself are fine; the response still
+  // remains limited to what the VerSans assistant can do.
+  if (/^(?:היי|הי|שלום|אהלן|בוקר\s+טוב|ערב\s+טוב|מה\s+אתה\s+יכול\s+לעשות|איך\s+אתה\s+יכול\s+לעזור|help|hello|hi)[?!.\s]*$/i.test(text)) return true;
+
+  return false;
+}
+
 function versansBotProduct(value) {
   if (!value || typeof value !== 'object') return null;
   const numberOrNull = (n) => Number.isFinite(Number(n)) ? Number(n) : null;
@@ -1117,6 +1150,17 @@ async function versansBotApi(req, res, pathname) {
   }
 
   const context = versansBotContext(body && body.context);
+
+  if (!versansBotQuestionInScope(question, context)) {
+    json(res, 200, {
+      ok: true,
+      answer: 'אני יכול לעזור רק בנושאים שקשורים ל-VerSans - מוצרים, מידות, חומרים, מבצעים, משלוחים, הזמנות, אחריות, החזרות ועמודי האתר.',
+      links: [],
+      images: []
+    });
+    return true;
+  }
+
   // The tracking page can contain verified pickup data. Never pass its visible
   // text to AI; order status is supplied below from a server-side safe snapshot.
   if (String(context.page.path || '') === '/track' || String(context.page.path || '') === '/track/') {
@@ -1194,6 +1238,9 @@ async function versansBotApi(req, res, pathname) {
 
   const instructions = [
     'אתה Versans AI, עוזר המכירות והשירות הרשמי של חנות VerSans.',
+    'ענה אך ורק על נושאים שקשורים ישירות ל-VerSans: מוצרים, התאמת מוצרים, חומרים, מידות, מחירים, מבצעים, הזמנות, משלוחים, מעקב, אחריות, החזרות, תקנון, חשבון משתמש, שירות לקוחות וניווט באתר.',
+    'אם המשתמש מבקש משהו שאינו קשור ישירות ל-VerSans - למשל חשבון כללי כמו 3+3, ידע כללי, חדשות, פוליטיקה, ספורט, מזג אוויר, כתיבת קוד, שיעורי בית או בידור - אל תענה על השאלה עצמה. אמור בקצרה שאתה יכול לעזור רק בנושאי VerSans.',
+    'גם אם שאלה מחוץ לתחום כוללת את המילה VerSans או מגיעה באמצע שיחה על החנות, אל תענה לחלק שאינו קשור לחנות.',
     'ענה בעברית טבעית וקצרה, אלא אם הלקוח כותב במפורש בשפה אחרת.',
     'המידע היחיד שמותר לך להציג כעובדה על VerSans הוא המידע שסופק בבקשה: המוצר הנוכחי, טקסט העמוד, פרטי החנות, מידע מהתקנון/אחריות/מידות, מוצרים קשורים ו-customer_order כאשר הוא קיים.',
     'כאשר הלקוח אומר "המוצר הזה", "זה", "ממה הוא עשוי" וכדומה, השתמש קודם ב-current_product וב-current_page.',
