@@ -135,9 +135,27 @@
 .vs-bot-footer{padding:0 12px 10px;background:#fff;color:#8a9299;font-size:9.5px;line-height:1.4;text-align:center}
 html.vs-a11y-root.vs-a11y-filter-active .vs-bot,html.vs-a11y-root.vs-a11y-high-contrast .vs-bot,html.vs-a11y-root.vs-a11y-black-yellow .vs-bot{filter:none!important}
 
-/* Keep accessibility immediately to the right of the VerSans Bot trigger. */
-html body .vs-a11y-widget{left:max(166px,calc(env(safe-area-inset-left) + 166px))!important;right:auto!important;bottom:max(14px,env(safe-area-inset-bottom))!important}
-html body .vs-a11y-widget .vs-a11y-panel{position:fixed!important;left:max(14px,env(safe-area-inset-left))!important;right:auto!important;bottom:max(82px,calc(env(safe-area-inset-bottom) + 82px))!important;transform-origin:bottom left!important}
+/* Accessibility placement: above the bot while closed, beside it while open. */
+html body .vs-a11y-widget{
+  left:max(14px,env(safe-area-inset-left))!important;
+  right:auto!important;
+  bottom:max(82px,calc(env(safe-area-inset-bottom) + 82px))!important;
+  transition:left .18s ease,bottom .18s ease!important;
+}
+html.vs-bot-open body .vs-a11y-widget{
+  left:max(166px,calc(env(safe-area-inset-left) + 166px))!important;
+  bottom:max(14px,env(safe-area-inset-bottom))!important;
+}
+html body .vs-a11y-widget .vs-a11y-panel{
+  position:fixed!important;
+  left:max(14px,env(safe-area-inset-left))!important;
+  right:auto!important;
+  bottom:max(150px,calc(env(safe-area-inset-bottom) + 150px))!important;
+  transform-origin:bottom left!important;
+}
+html.vs-bot-open body .vs-a11y-widget .vs-a11y-panel{
+  bottom:max(82px,calc(env(safe-area-inset-bottom) + 82px))!important;
+}
 
 @media(max-width:760px){
   .vs-bot{left:max(10px,env(safe-area-inset-left));bottom:max(10px,env(safe-area-inset-bottom))}
@@ -157,8 +175,21 @@ html body .vs-a11y-widget .vs-a11y-panel{position:fixed!important;left:max(14px,
   .vs-bot-form input{height:40px;border-radius:12px;padding:0 11px;font-size:12px}
   .vs-bot-send{height:40px;border-radius:12px;padding:0 12px;font-size:11.5px}
   .vs-bot-footer{padding:0 9px 7px;font-size:8.5px}
-  html body .vs-a11y-widget{left:max(130px,calc(env(safe-area-inset-left) + 130px))!important;right:auto!important;bottom:max(10px,env(safe-area-inset-bottom))!important}
-  html body .vs-a11y-widget .vs-a11y-panel{left:max(8px,env(safe-area-inset-left))!important;bottom:max(64px,calc(env(safe-area-inset-bottom) + 64px))!important}
+  html body .vs-a11y-widget{
+    left:max(10px,env(safe-area-inset-left))!important;
+    bottom:max(64px,calc(env(safe-area-inset-bottom) + 64px))!important;
+  }
+  html.vs-bot-open body .vs-a11y-widget{
+    left:max(130px,calc(env(safe-area-inset-left) + 130px))!important;
+    bottom:max(10px,env(safe-area-inset-bottom))!important;
+  }
+  html body .vs-a11y-widget .vs-a11y-panel{
+    left:max(8px,env(safe-area-inset-left))!important;
+    bottom:max(118px,calc(env(safe-area-inset-bottom) + 118px))!important;
+  }
+  html.vs-bot-open body .vs-a11y-widget .vs-a11y-panel{
+    bottom:max(64px,calc(env(safe-area-inset-bottom) + 64px))!important;
+  }
 }
 @media(max-width:420px){
   .vs-bot-trigger{min-width:108px;height:44px;padding:0 8px 0 6px;gap:6px}
@@ -170,7 +201,8 @@ html body .vs-a11y-widget .vs-a11y-panel{position:fixed!important;left:max(14px,
   .vs-bot-close{left:10px;width:32px;height:32px;font-size:22px}
   .vs-bot-messages{padding:10px 9px 6px}
   .vs-bot-form{padding:7px 8px}
-  html body .vs-a11y-widget{left:max(125px,calc(env(safe-area-inset-left) + 125px))!important}
+  html body .vs-a11y-widget{left:max(8px,env(safe-area-inset-left))!important;bottom:max(62px,calc(env(safe-area-inset-bottom) + 62px))!important}
+  html.vs-bot-open body .vs-a11y-widget{left:max(125px,calc(env(safe-area-inset-left) + 125px))!important;bottom:max(10px,env(safe-area-inset-bottom))!important}
 }
 @media(prefers-reduced-motion:reduce){.vs-bot *{animation:none!important;transition:none!important}}
 

@@ -88,8 +88,10 @@
   var floatingUiStyle = document.createElement('style');
   floatingUiStyle.id = 'vs-floating-ui-v1';
   floatingUiStyle.textContent = [
-    '.vs-a11y-widget{left:max(166px,calc(env(safe-area-inset-left) + 166px))!important;right:auto!important;bottom:max(14px,env(safe-area-inset-bottom))!important}',
-    '.vs-a11y-widget .vs-a11y-panel{position:fixed!important;left:max(14px,env(safe-area-inset-left))!important;right:auto!important;bottom:max(82px,calc(env(safe-area-inset-bottom) + 82px))!important;transform-origin:bottom left!important}',
+    '.vs-a11y-widget{left:max(14px,env(safe-area-inset-left))!important;right:auto!important;bottom:max(82px,calc(env(safe-area-inset-bottom) + 82px))!important;transition:left .18s ease,bottom .18s ease!important}',
+    'html.vs-bot-open .vs-a11y-widget{left:max(166px,calc(env(safe-area-inset-left) + 166px))!important;bottom:max(14px,env(safe-area-inset-bottom))!important}',
+    '.vs-a11y-widget .vs-a11y-panel{position:fixed!important;left:max(14px,env(safe-area-inset-left))!important;right:auto!important;bottom:max(150px,calc(env(safe-area-inset-bottom) + 150px))!important;transform-origin:bottom left!important}',
+    'html.vs-bot-open .vs-a11y-widget .vs-a11y-panel{bottom:max(82px,calc(env(safe-area-inset-bottom) + 82px))!important}',
     '.vs-a11y-trigger{padding:0!important;overflow:hidden!important;background:transparent!important;border:0!important;box-shadow:none!important}',
     '.vs-a11y-trigger__image{display:block;width:100%;height:100%;object-fit:contain;border-radius:50%;pointer-events:none}',
     '.vs-floating-cart{position:fixed;right:max(14px,env(safe-area-inset-right));bottom:max(14px,env(safe-area-inset-bottom));z-index:2147482000;display:grid;place-items:center;padding:0;cursor:pointer;box-sizing:border-box;-webkit-tap-highlight-color:transparent;transition:transform .18s ease,box-shadow .18s ease}',
@@ -99,7 +101,7 @@
     '.vs-floating-cart svg{width:53%;height:53%;display:block;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}',
     '.vs-floating-cart__count{position:absolute;top:-5px;right:-5px;min-width:18px;height:18px;padding:0 4px;border-radius:999px;display:flex;align-items:center;justify-content:center;background:#c91824;color:#fff;border:2px solid #fff;font:800 10px/1 Arial,sans-serif;box-sizing:border-box;box-shadow:0 2px 6px rgba(0,0,0,.18)}',
     '.vs-floating-cart__count[hidden]{display:none!important}',
-    '@media(max-width:700px){.vs-a11y-widget{left:max(130px,calc(env(safe-area-inset-left) + 130px))!important;right:auto!important;bottom:max(10px,env(safe-area-inset-bottom))!important}.vs-a11y-widget .vs-a11y-panel{left:max(8px,env(safe-area-inset-left))!important;bottom:max(64px,calc(env(safe-area-inset-bottom) + 64px))!important}.vs-floating-cart{right:max(11px,env(safe-area-inset-right));bottom:max(11px,env(safe-area-inset-bottom))}}'
+    '@media(max-width:700px){.vs-a11y-widget{left:max(10px,env(safe-area-inset-left))!important;right:auto!important;bottom:max(64px,calc(env(safe-area-inset-bottom) + 64px))!important}html.vs-bot-open .vs-a11y-widget{left:max(130px,calc(env(safe-area-inset-left) + 130px))!important;bottom:max(10px,env(safe-area-inset-bottom))!important}.vs-a11y-widget .vs-a11y-panel{left:max(8px,env(safe-area-inset-left))!important;bottom:max(118px,calc(env(safe-area-inset-bottom) + 118px))!important}html.vs-bot-open .vs-a11y-widget .vs-a11y-panel{bottom:max(64px,calc(env(safe-area-inset-bottom) + 64px))!important}.vs-floating-cart{right:max(11px,env(safe-area-inset-right));bottom:max(11px,env(safe-area-inset-bottom))}}'
   ].join('');
   document.head.appendChild(floatingUiStyle);
 
@@ -474,13 +476,13 @@
     if (!document.querySelector('link[data-versans-bot-style]')) {
       var link = document.createElement('link');
       link.rel = 'stylesheet';
-      link.href = '/assets/versans-bot.css?v=20261005-guardrails-v8';
+      link.href = '/assets/versans-bot.css?v=20261005-a11y-textfacts-v9';
       link.setAttribute('data-versans-bot-style', '1');
       document.head.appendChild(link);
     }
     if (!document.querySelector('script[data-versans-bot-script]')) {
       var script = document.createElement('script');
-      script.src = '/assets/versans-bot.js?v=20261005-ai-v6';
+      script.src = '/assets/versans-bot.js?v=20261005-a11y-textfacts-v7';
       script.async = true;
       script.setAttribute('data-versans-bot-script', '1');
       document.body.appendChild(script);

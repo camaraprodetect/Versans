@@ -986,6 +986,7 @@
   async function openBot() {
     panel.hidden = false;
     widget.classList.add('is-open');
+    document.documentElement.classList.add('vs-bot-open');
     trigger.setAttribute('aria-expanded', 'true');
     if (!chatScopeReady) await chatScopePromise;
     if (!chatRestoreDone) restoredChat = restoreChat();
@@ -1004,6 +1005,7 @@
   function closeBot() {
     panel.hidden = true;
     widget.classList.remove('is-open');
+    document.documentElement.classList.remove('vs-bot-open');
     trigger.setAttribute('aria-expanded', 'false');
     trigger.focus({ preventScroll: true });
   }
