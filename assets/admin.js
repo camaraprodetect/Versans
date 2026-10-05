@@ -100,7 +100,7 @@
   }
 
   function text(value, fallback) {
-    if (value === null || value === undefined || value === '') return fallback === undefined ? '—' : fallback;
+    if (value === null || value === undefined || value === '') return fallback === undefined ? '-' : fallback;
     return String(value);
   }
 
@@ -116,27 +116,27 @@
   }
 
   function dateTime(value) {
-    if (!value) return '—';
+    if (!value) return '-';
     try {
       return new Intl.DateTimeFormat('he-IL', {
         timeZone: 'Asia/Jerusalem', dateStyle: 'short', timeStyle: 'short'
       }).format(new Date(Number(value)));
     } catch (_) {
-      return '—';
+      return '-';
     }
   }
 
   function dateOnly(value) {
-    if (!value) return '—';
+    if (!value) return '-';
     try {
       return new Intl.DateTimeFormat('he-IL', { timeZone: 'Asia/Jerusalem', dateStyle: 'short' }).format(new Date(Number(value)));
     } catch (_) {
-      return '—';
+      return '-';
     }
   }
 
   function relative(value) {
-    if (!value) return '—';
+    if (!value) return '-';
     var delta = Math.max(0, Date.now() - Number(value));
     var seconds = Math.round(delta / 1000);
     if (seconds < 60) return 'לפני ' + Math.max(1, seconds) + ' שנ׳';
@@ -927,7 +927,7 @@
       axisStart.textContent = formatSalesDate(rows[startIndex].date);
       axisMiddle.textContent = formatSalesDate(rows[middleIndex].date);
       axisEnd.textContent = formatSalesDate(rows[endIndex].date);
-      windowText.textContent = 'תצוגה: ' + formatSalesDate(rows[startIndex].date) + ' — ' + formatSalesDate(rows[endIndex].date) + ' · שיא בטווח: ' + moneyAgorot(maxRevenue);
+      windowText.textContent = 'תצוגה: ' + formatSalesDate(rows[startIndex].date) + ' - ' + formatSalesDate(rows[endIndex].date) + ' · שיא בטווח: ' + moneyAgorot(maxRevenue);
 
       zoomIn.disabled = visibleCount() <= 1;
       zoomOut.disabled = visibleCount() >= rows.length;
@@ -1632,8 +1632,8 @@
   function systemHealthCard(system) {
     system = system || {};
     var body = make('div', 'detail-grid');
-    body.appendChild(detailItem('Checkout', String(system.checkoutMode || '—').toUpperCase()));
-    body.appendChild(detailItem('Database', system.databaseBackend || '—'));
+    body.appendChild(detailItem('Checkout', String(system.checkoutMode || '-').toUpperCase()));
+    body.appendChild(detailItem('Database', system.databaseBackend || '-'));
     body.appendChild(detailItem('הזמנות היום', numberFmt(system.todayAllOrders)));
     body.appendChild(detailItem('Paid היום', numberFmt(system.todayPaidOrders)));
     body.appendChild(detailItem('כל ההזמנות', numberFmt(system.lifetimeOrders)));
@@ -2033,7 +2033,7 @@
   }
 
   function orderWorkLink(url, label) {
-    if (!url) return make('span', 'admin-order-work-value admin-order-work-value--empty', '—');
+    if (!url) return make('span', 'admin-order-work-value admin-order-work-value--empty', '-');
     var link = document.createElement('a');
     link.className = 'admin-order-work-data-link';
     link.href = String(url);
@@ -2047,7 +2047,7 @@
     var field = make('div', 'admin-order-work-field' + (className ? ' ' + className : ''));
     field.appendChild(make('span', 'admin-order-work-field__label', label));
     if (value && value.nodeType) field.appendChild(value);
-    else field.appendChild(make('strong', 'admin-order-work-field__value', value == null || value === '' ? '—' : String(value)));
+    else field.appendChild(make('strong', 'admin-order-work-field__value', value == null || value === '' ? '-' : String(value)));
     return field;
   }
 
@@ -2061,7 +2061,7 @@
     var links = make('div', 'admin-order-work-full-asset__links');
     if (preview) links.appendChild(orderWorkLink(preview, 'פתיחת תמונה'));
     if (linkUrl && linkUrl !== preview) links.appendChild(orderWorkLink(linkUrl, 'קישור Drive'));
-    if (!preview && !linkUrl) links.appendChild(make('span', 'admin-order-work-value--empty', '—'));
+    if (!preview && !linkUrl) links.appendChild(make('span', 'admin-order-work-value--empty', '-'));
     wrap.appendChild(links);
     return wrap;
   }
@@ -2209,7 +2209,7 @@
     }));
     detailsBody.appendChild(actions);
 
-    /* Full customer/shipping data — visible, same information as the Sheet block. */
+    /* Full customer/shipping data - visible, same information as the Sheet block. */
     var customer = order.customer || {};
     var customerSection = make('section', 'admin-order-work-section admin-order-work-section--customer');
     customerSection.appendChild(make('h3', 'admin-order-work-section__title', 'פרטי לקוח ומשלוח'));
@@ -2217,13 +2217,13 @@
     var customerGrid = make('div', 'admin-order-work-customer admin-order-work-customer--organized admin-order-work-customer--dense');
     [
       ['שם מלא', order.customerName || customer.fullName || 'אורח'],
-      ['טלפון', order.customerPhone || customer.phone || '—'],
-      ['אימייל', order.customerEmail || customer.email || '—'],
-      ['כתובת מלאה', orderShippingAddress(customer) || '—'],
-      ['מיקוד', customer.zip || '—'],
-      ['כניסה', customer.entrance || '—'],
-      ['קומה', customer.floor || '—'],
-      ['הערות', customer.notes || '—']
+      ['טלפון', order.customerPhone || customer.phone || '-'],
+      ['אימייל', order.customerEmail || customer.email || '-'],
+      ['כתובת מלאה', orderShippingAddress(customer) || '-'],
+      ['מיקוד', customer.zip || '-'],
+      ['כניסה', customer.entrance || '-'],
+      ['קומה', customer.floor || '-'],
+      ['הערות', customer.notes || '-']
     ].forEach(function (entry) {
       customerGrid.appendChild(orderWorkField(entry[0], entry[1]));
     });
@@ -2271,13 +2271,13 @@
 
       /* Core sheet columns always shown. */
       var details = make('div', 'admin-order-work-item__details admin-order-work-item__details--sheetlike');
-      details.appendChild(orderWorkField('שם מוצר', sheetItem.productName || item.productName || item.productId || '—'));
-      details.appendChild(orderWorkField('בחירה / דגם', sheetItem.selectionsText || item.selectionsText || '—'));
+      details.appendChild(orderWorkField('שם מוצר', sheetItem.productName || item.productName || item.productId || '-'));
+      details.appendChild(orderWorkField('בחירה / דגם', sheetItem.selectionsText || item.selectionsText || '-'));
       details.appendChild(orderWorkField('כמות', sheetItem.quantity || item.quantity || 1));
       details.appendChild(orderWorkField('מחיר מוצר', moneyValue(sheetItem.unitPrice != null ? sheetItem.unitPrice : item.unitPrice, order.currency)));
       details.appendChild(orderWorkField('סה״כ שורה', moneyValue(sheetItem.lineTotal != null ? sheetItem.lineTotal : item.lineTotal, order.currency)));
       details.appendChild(orderWorkField('תאריך הזמנה', sheetItem.orderDate || (order.paidAt ? dateTime(order.paidAt) : dateTime(order.createdAt))));
-      details.appendChild(orderWorkField('מספר הזמנה למוצר', sheetItem.itemOrderRef || item.itemOrderRef || '—'));
+      details.appendChild(orderWorkField('מספר הזמנה למוצר', sheetItem.itemOrderRef || item.itemOrderRef || '-'));
       details.appendChild(orderWorkField('קישור מוצר', orderWorkLink(sheetItem.productLink || item.productLink || '', 'פתיחת מוצר ↗')));
       row.appendChild(details);
 
@@ -2313,7 +2313,7 @@
             'קישור ברכה',
             orderWorkLink(
               sheetItem.greetingDriveUrl || greetingFallback,
-              sheetItem.greetingDriveUrl ? 'פתיחת קובץ Drive ↗' : (greetingFallback ? 'פתיחת תמונה ↗' : '—')
+              sheetItem.greetingDriveUrl ? 'פתיחת קובץ Drive ↗' : (greetingFallback ? 'פתיחת תמונה ↗' : '-')
             )
           ));
         }
@@ -2330,7 +2330,7 @@
             'קישור תמונת לקוח',
             orderWorkLink(
               sheetItem.customPhotoDriveUrl || photoFallback,
-              sheetItem.customPhotoDriveUrl ? 'פתיחת קובץ Drive ↗' : (photoFallback ? 'פתיחת תמונה ↗' : '—')
+              sheetItem.customPhotoDriveUrl ? 'פתיחת קובץ Drive ↗' : (photoFallback ? 'פתיחת תמונה ↗' : '-')
             )
           ));
         }
@@ -2386,10 +2386,10 @@
       raw.appendChild(make('h3', 'admin-order-work-section__title', 'נתוני Google Sheet'));
 
       var rawGrid = make('div', 'admin-order-work-sheet-raw__grid admin-order-work-sheet-raw__grid--visible');
-      rawGrid.appendChild(orderWorkField('כותרת הזמנה', snapshot.titleText || '—'));
-      rawGrid.appendChild(orderWorkField('פרטי קשר', snapshot.contactText || '—'));
-      rawGrid.appendChild(orderWorkField('כתובת', snapshot.addressText || '—'));
-      rawGrid.appendChild(orderWorkField('כניסה / קומה / הערות', snapshot.extraText || '—'));
+      rawGrid.appendChild(orderWorkField('כותרת הזמנה', snapshot.titleText || '-'));
+      rawGrid.appendChild(orderWorkField('פרטי קשר', snapshot.contactText || '-'));
+      rawGrid.appendChild(orderWorkField('כתובת', snapshot.addressText || '-'));
+      rawGrid.appendChild(orderWorkField('כניסה / קומה / הערות', snapshot.extraText || '-'));
       raw.appendChild(rawGrid);
       detailsBody.appendChild(raw);
     }

@@ -237,7 +237,7 @@
       .toLowerCase()
       .replace(/\bcolor\b/gi, ' ')
       .replace(/צבע/g, ' ')
-      .replace(/[\/|,+()_\-–—]+/g, ' ')
+      .replace(/[\/|,+()_\-–-]+/g, ' ')
       .split(/\s+/)
       .map(function (token) { return token.trim(); })
       .filter(Boolean)

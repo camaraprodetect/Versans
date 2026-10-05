@@ -331,7 +331,7 @@
     overflow:hidden;
   }
   /* Mobile: plain finite horizontal scrolling. No carousel loop, no snap and
-     no grid wrapping — just one continuous row controlled by the finger. */
+     no grid wrapping - just one continuous row controlled by the finger. */
   .home-page .all-collection-group__products[data-home-carousel-track]{
     display:flex!important;
     flex-flow:row nowrap!important;
@@ -413,7 +413,7 @@
   .home-page .all-collection-carousel__scroll-rail i{transition:none}
 }
 
-/* V6 — allow native horizontal collection scrolling even when the gesture starts on a product image. */
+/* V6 - allow native horizontal collection scrolling even when the gesture starts on a product image. */
 @media(max-width:700px){
   .home-page .all-collection-group__products[data-home-carousel-track] .prod__media{
     touch-action:pan-x pan-y!important;
@@ -429,7 +429,7 @@
 }
 
 
-/* V8 — restore the desktop home collection carousel.
+/* V8 - restore the desktop home collection carousel.
    Mobile remains the simple native X-scroll from V6/V7. */
 @media (min-width:701px){
   .home-page .all-collection-carousel{
@@ -550,7 +550,7 @@
 }
 
 
-/* V9 — desktop: align the first/last product media with the collection banner edges.
+/* V9 - desktop: align the first/last product media with the collection banner edges.
    Arrows stay outside the product row instead of consuming horizontal space. */
 @media (min-width:701px){
   .home-page .all-collection-carousel{
@@ -581,7 +581,7 @@
 }
 
 
-/* V10 — narrower desktop/laptop: slightly smaller outside carousel arrows. */
+/* V10 - narrower desktop/laptop: slightly smaller outside carousel arrows. */
 @media (min-width:701px) and (max-width:1200px){
   .home-page .all-collection-carousel__arrow{
     width:38px!important;
@@ -600,7 +600,7 @@
 }
 
 
-/* V11 — laptop only: make the outside carousel arrows a little smaller again. */
+/* V11 - laptop only: make the outside carousel arrows a little smaller again. */
 @media (min-width:701px) and (max-width:1200px){
   .home-page .all-collection-carousel__arrow{
     width:34px!important;
@@ -619,7 +619,7 @@
 }
 
 
-/* V12 — actual laptop breakpoint.
+/* V12 - actual laptop breakpoint.
    Previous rule stopped at 1200px, so common 1366/1440px laptops never received it. */
 @media (min-width:701px) and (max-width:1500px){
   .home-page .all-collection-carousel__arrow{
@@ -643,7 +643,7 @@
 }
 
 
-/* V13 — laptop/compact desktop arrows.
+/* V13 - laptop/compact desktop arrows.
    Covers 15" laptops even when browser zoom makes the CSS viewport wider than 1500px. */
 @media (min-width:701px) and (max-width:1800px){
   .home-page .all-collection-carousel__arrow{
@@ -670,7 +670,7 @@
 }
 
 
-/* V14 — laptop/compact desktop: restore arrows to a normal, balanced size. */
+/* V14 - laptop/compact desktop: restore arrows to a normal, balanced size. */
 @media (min-width:701px) and (max-width:1800px){
   .home-page .all-collection-carousel__arrow{
     width:36px!important;
@@ -696,7 +696,7 @@
 }
 
 
-/* V15 — laptop/compact desktop carousel arrows: 40x40px. */
+/* V15 - laptop/compact desktop carousel arrows: 40x40px. */
 @media (min-width:701px) and (max-width:1800px){
   .home-page .all-collection-carousel__arrow{
     width:40px!important;

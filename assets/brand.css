@@ -1,4 +1,4 @@
-/* VerSans real wordmark — one canonical logo asset site-wide.
+/* VerSans real wordmark - one canonical logo asset site-wide.
    The source is white; light surfaces render it dark with CSS, dark surfaces keep it white. */
 .brand__logo{position:relative;display:block;width:188px;max-width:100%;overflow:visible;flex:none;direction:ltr;line-height:0}
 .brand__logo img{position:static;display:block;width:100%;max-width:100%;height:auto;aspect-ratio:auto;object-fit:contain;filter:none}

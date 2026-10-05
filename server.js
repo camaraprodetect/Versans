@@ -1904,7 +1904,7 @@ function customerSafePickupText(value, max = 1400) {
     // The provider's "משלוח" value is an internal tracking identifier used only
     // to locate the shipment in VerSans. Never expose that line to the customer,
     // regardless of the identifier format (DSVPH..., letters, random tokens, etc.).
-    .replace(/^\s*(?:משלוח(?:\s*מספר)?|מספר\s*משלוח)\s*[:：\-–—]?\s*[^\n]*$/gim, '')
+    .replace(/^\s*(?:משלוח(?:\s*מספר)?|מספר\s*משלוח)\s*[:：\-–-]?\s*[^\n]*$/gim, '')
     .replace(/\bDSVPH[A-Za-z0-9._-]+\b/gi, '')
     .replace(/[ \t]{2,}/g, ' ')
     .replace(/\n{3,}/g, '\n\n')
@@ -1931,21 +1931,21 @@ function cleanProviderInlineField(value, max = 500) {
   const cleaned = String(value == null ? '' : value)
     .replace(/\s+/g, ' ')
     .replace(/\s*(?:[.。]\s*)?(?:לידיעתך|לאחר\s+קבלת|למידע\s+נוסף|לתשומת\s+לבך).*$/i, '')
-    .replace(/[\s,.;:–—-]+$/g, '')
+    .replace(/[\s,.;:–--]+$/g, '')
     .trim();
   return cleaned ? cleaned.slice(0, max) : null;
 }
 
 function parseProviderPickupMessage(value, fallbackTrackingNumber = null) {
   const text = normalizeProviderMessageText(value);
-  const trackingNumber = providerMessageField(text, /(?:משלוח(?:\s*מספר)?|מספר\s*משלוח)\s*[:：\-–—]?\s*([A-Za-z0-9][A-Za-z0-9._-]{5,})/i, 120)
+  const trackingNumber = providerMessageField(text, /(?:משלוח(?:\s*מספר)?|מספר\s*משלוח)\s*[:：\-–-]?\s*([A-Za-z0-9][A-Za-z0-9._-]{5,})/i, 120)
     || providerMessageField(text, /\b(DSVPH[A-Za-z0-9._-]+)\b/i, 120)
     || (fallbackTrackingNumber ? normalizeTrackingNumber(fallbackTrackingNumber) : null);
   const pickupCode = providerMessageField(text, /קוד\s*(?:איסוף|מסירה)\s*[:：\-]?\s*([^\n]+)/i, 160);
   // Israel Post messages may place the collection reference on its own line,
   // for example: "ג 2136". Preserve the full reference because it is needed
   // by the customer when collecting the parcel.
-  const israelPostPickupRefMatch = text.match(/(?:^|\n)\s*([א-ת])\s*[-–—]?\s*(\d{3,8})\s*(?=\n|$)/m);
+  const israelPostPickupRefMatch = text.match(/(?:^|\n)\s*([א-ת])\s*[-–-]?\s*(\d{3,8})\s*(?=\n|$)/m);
   const pickupReference = israelPostPickupRefMatch
     ? `${israelPostPickupRefMatch[1]} ${israelPostPickupRefMatch[2]}`
     : null;
@@ -1974,7 +1974,7 @@ function parseProviderPickupMessage(value, fallbackTrackingNumber = null) {
   const address = cleanProviderInlineField(rawAddress, 500);
   const openingHours = providerMessageField(text, /שעות\s*פתיחה\s*[:：\-]?\s*([^\n]+)/i, 900);
   const pickupPoint = providerMessageField(text, /החבילה\s+שלך\s+הגיעה\s+ל-?\s*([^,\n]+)/i, 180)
-    || providerMessageField(text, /יחידת\s+הדואר\s*[-–—:]?\s*([^\n]+?)(?=\s*[-–—]\s*כתובת|\s+כתובת(?:\s|[:：])|[.。]\s*(?:לידיעתך|לאחר\s+קבלת)|\n|$)/i, 180);
+    || providerMessageField(text, /יחידת\s+הדואר\s*[-–-:]?\s*([^\n]+?)(?=\s*[-–-]\s*כתובת|\s+כתובת(?:\s|[:：])|[.。]\s*(?:לידיעתך|לאחר\s+קבלת)|\n|$)/i, 180);
   const deadline = providerMessageField(text, /נא\s+לאסוף\s+את\s+החבילה\s+תוך\s+([^\n,]+)/i, 180);
   const arrivalDate = providerMessageField(text, /בתאריך\s+(\d{1,2}\/\d{1,2}\/\d{4})/i, 40);
   return {
@@ -3025,7 +3025,7 @@ function conciseOrderNotificationItem(item) {
   let productName = conciseGreetingNotificationName(product, item)
     || String(product ? productTitle(product) : fallbackName || 'מוצר').trim();
   if (compactSelections.some((entry) => entry.startsWith('צבע: '))) {
-    productName = productName.replace(/\s*-\s*צבע\s+[^|–—-]+$/u, '').trim();
+    productName = productName.replace(/\s*-\s*צבע\s+[^|–--]+$/u, '').trim();
   }
 
   return {

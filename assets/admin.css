@@ -156,7 +156,7 @@ button,input,textarea,select,a{font:inherit}.admin-app{display:grid;grid-templat
 @media(max-width:900px){.admin-push-button{max-width:132px;overflow:hidden;text-overflow:ellipsis}.admin-live{display:none}}
 @media(max-width:720px){.admin-push-button{height:36px;padding:0 9px;font-size:10px}.admin-order-detail-hero{margin-inline:12px;flex-direction:column}.admin-order-detail-total{text-align:right}.admin-order-detail-grid{margin-inline:12px;grid-template-columns:1fr 1fr}.admin-order-detail-actions{padding:12px;grid-template-columns:1fr}.admin-order-detail-close-button{width:100%}}
 
-/* V49 — dedicated order workbench synchronized with Google Sheets. */
+/* V49 - dedicated order workbench synchronized with Google Sheets. */
 .admin-order-work-intro{margin-bottom:18px}
 .admin-order-work-list{display:grid;gap:18px}
 .admin-order-work-card{background:#fff;border:1px solid var(--admin-line);border-radius:18px;overflow:hidden;box-shadow:var(--admin-shadow);transition:border-color .18s ease,box-shadow .18s ease}
@@ -180,7 +180,7 @@ button,input,textarea,select,a{font:inherit}.admin-app{display:grid;grid-templat
 @media(max-width:720px){.admin-order-work-card__head{grid-template-columns:1fr auto;gap:10px;padding:12px}.admin-order-work-order-check{grid-column:1/-1;justify-self:start}.admin-order-work-progress{grid-column:2;grid-row:2}.admin-order-work-card__title{grid-column:1;grid-row:2}.admin-order-work-customer{grid-template-columns:1fr;padding:10px 12px}.admin-order-work-customer__notes{grid-column:auto!important}.admin-order-work-item{grid-template-columns:38px 70px minmax(0,1fr);gap:9px;padding:12px}.admin-order-work-item__check{display:grid;justify-items:center;gap:4px}.admin-order-work-item__check span{font-size:7px}.admin-order-work-item__image{width:64px;height:64px}.admin-order-work-item__extras{grid-column:2/-1}.admin-order-work-item__personalization{font-size:7.5px}.admin-order-work-asset__image{width:52px;height:52px}}
 
 
-/* V51 — complete Google Sheet order workspace */
+/* V51 - complete Google Sheet order workspace */
 .admin-order-work-syncbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .admin-order-work-sync-state{display:inline-flex;align-items:center;min-height:30px;padding:5px 10px;border-radius:999px;font-size:9px;font-weight:900;background:#fff1f1;color:#a43c3c;border:1px solid #efd0d0}
 .admin-order-work-sync-state.is-ok{background:#edf9f1;color:#176b3b;border-color:#cce8d7}
@@ -223,7 +223,7 @@ button,input,textarea,select,a{font:inherit}.admin-app{display:grid;grid-templat
 }
 
 
-/* V53 — organized order workspace */
+/* V53 - organized order workspace */
 .admin-order-work-filters-card{display:grid;gap:12px;margin-bottom:14px;padding:14px 16px;background:#fff;border:1px solid var(--admin-line);border-radius:16px;box-shadow:var(--admin-shadow)}
 .admin-order-work-filters-card__head{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
 .admin-order-work-filters-card__head strong{font-size:13px;color:var(--admin-navy)}
@@ -251,7 +251,7 @@ button,input,textarea,select,a{font:inherit}.admin-app{display:grid;grid-templat
 @media(max-width:520px){.admin-order-work-item__details{grid-template-columns:1fr}.admin-order-work-customer--organized{grid-template-columns:1fr}.admin-order-work-filters-card{padding:12px}}
 
 
-/* V56 — unified, compact order workbench */
+/* V56 - unified, compact order workbench */
 .admin-main{padding-top:18px}
 .admin-content{width:min(1450px,100%)}
 
@@ -564,7 +564,7 @@ button,input,textarea,select,a{font:inherit}.admin-app{display:grid;grid-templat
 }
 
 
-/* V57 — preserve all order features in one compact workspace */
+/* V57 - preserve all order features in one compact workspace */
 .admin-order-work-card__head--compact{
   grid-template-columns:auto minmax(0,1fr) auto auto auto;
 }
@@ -678,7 +678,7 @@ button,input,textarea,select,a{font:inherit}.admin-app{display:grid;grid-templat
 }
 
 
-/* V58 — one always-open message sender + full connected order details */
+/* V58 - one always-open message sender + full connected order details */
 .admin-order-work-message-panel{
   margin-bottom:10px;
   border:1px solid #dce4e9;
@@ -965,7 +965,7 @@ button,input,textarea,select,a{font:inherit}.admin-app{display:grid;grid-templat
   }
 }
 
-/* V59 — order treatment cards collapsed until "פרטים" is opened */
+/* V59 - order treatment cards collapsed until "פרטים" is opened */
 .admin-order-work-card__head--full{
   grid-template-columns:auto minmax(0,1fr) auto auto auto auto;
 }

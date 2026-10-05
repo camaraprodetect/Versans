@@ -55,7 +55,7 @@
   function normalizedColorTokens(value) {
     return String(value || '').toLowerCase()
       .replace(/\bcolor\b/gi, ' ').replace(/צבע/g, ' ')
-      .replace(/[\/|,+()_\-–—]+/g, ' ')
+      .replace(/[\/|,+()_\-–-]+/g, ' ')
       .split(/\s+/).map(function (token) { return token.trim(); }).filter(Boolean)
       .map(function (token) { return /^ו[\u0590-\u05FF]{2,}$/.test(token) ? token.slice(1) : token; })
       .sort().join('|');
