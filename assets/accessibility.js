@@ -474,13 +474,13 @@
     if (!document.querySelector('link[data-versans-bot-style]')) {
       var link = document.createElement('link');
       link.rel = 'stylesheet';
-      link.href = '/assets/versans-bot.css?v=20261005-ai-v4';
+      link.href = '/assets/versans-bot.css?v=20261005-ai-v5';
       link.setAttribute('data-versans-bot-style', '1');
       document.head.appendChild(link);
     }
     if (!document.querySelector('script[data-versans-bot-script]')) {
       var script = document.createElement('script');
-      script.src = '/assets/versans-bot.js?v=20261005-ai-v4';
+      script.src = '/assets/versans-bot.js?v=20261005-ai-v5';
       script.async = true;
       script.setAttribute('data-versans-bot-script', '1');
       document.body.appendChild(script);

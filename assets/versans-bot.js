@@ -729,7 +729,13 @@
     var span = document.createElement('span');
     span.className = 'vs-bot-trigger__mark';
     span.setAttribute('aria-hidden', 'true');
-    span.innerHTML = '<svg viewBox="0 0 24 24"><path d="M7 9.5h10a3 3 0 0 1 3 3v2a3 3 0 0 1-3 3h-4.2L9 20v-2.5H7a3 3 0 0 1-3-3v-2a3 3 0 0 1 3-3Z"></path><path d="M9 6.5 10.2 4 11.5 6.5 14 7.7 11.5 9 10.2 11.5 9 9 6.5 7.7 9 6.5Z"></path></svg>';
+    var avatar = document.createElement('img');
+    avatar.className = 'vs-bot-trigger__avatar';
+    avatar.src = '/images/versans-bot-avatar.png';
+    avatar.alt = '';
+    avatar.width = 96;
+    avatar.height = 96;
+    span.appendChild(avatar);
     return span;
   }
 
