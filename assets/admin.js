@@ -193,6 +193,74 @@
     showToast.timer = window.setTimeout(function () { toast.hidden = true; }, 2600);
   }
 
+  function adminConfirm(options) {
+    options = options || {};
+    return new Promise(function (resolve) {
+      var previousFocus = document.activeElement;
+      var overlay = make('div', 'admin-confirm-overlay');
+      overlay.setAttribute('role', 'presentation');
+
+      var modal = make('div', 'admin-confirm-modal');
+      modal.setAttribute('role', 'dialog');
+      modal.setAttribute('aria-modal', 'true');
+      modal.setAttribute('aria-labelledby', 'adminConfirmTitle');
+      modal.setAttribute('aria-describedby', 'adminConfirmMessage');
+
+      var icon = make('div', 'admin-confirm-modal__icon', options.icon || '!');
+      icon.setAttribute('aria-hidden', 'true');
+      var copy = make('div', 'admin-confirm-modal__copy');
+      var eyebrow = make('span', 'admin-confirm-modal__eyebrow', options.eyebrow || 'VERSANS ADMIN');
+      var title = make('h2', 'admin-confirm-modal__title', options.title || 'אישור פעולה');
+      title.id = 'adminConfirmTitle';
+      var message = make('p', 'admin-confirm-modal__message', options.message || 'האם להמשיך?');
+      message.id = 'adminConfirmMessage';
+      copy.append(eyebrow, title, message);
+
+      var actions = make('div', 'admin-confirm-modal__actions');
+      var cancelButton = make('button', 'admin-confirm-modal__button admin-confirm-modal__button--cancel', options.cancelText || 'ביטול');
+      cancelButton.type = 'button';
+      var confirmButton = make('button', 'admin-confirm-modal__button admin-confirm-modal__button--confirm', options.confirmText || 'אישור');
+      confirmButton.type = 'button';
+      if (options.danger) confirmButton.classList.add('admin-confirm-modal__button--danger');
+      actions.append(cancelButton, confirmButton);
+      modal.append(icon, copy, actions);
+      overlay.appendChild(modal);
+      document.body.appendChild(overlay);
+
+      var settled = false;
+      function finish(value) {
+        if (settled) return;
+        settled = true;
+        document.removeEventListener('keydown', onKeyDown, true);
+        overlay.classList.remove('is-open');
+        window.setTimeout(function () {
+          if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+          if (previousFocus && typeof previousFocus.focus === 'function') {
+            try { previousFocus.focus(); } catch (_) {}
+          }
+          resolve(value);
+        }, 160);
+      }
+      function onKeyDown(event) {
+        if (event.key === 'Escape') {
+          event.preventDefault();
+          finish(false);
+        }
+      }
+
+      cancelButton.addEventListener('click', function () { finish(false); });
+      confirmButton.addEventListener('click', function () { finish(true); });
+      overlay.addEventListener('click', function (event) {
+        if (event.target === overlay) finish(false);
+      });
+      document.addEventListener('keydown', onKeyDown, true);
+      window.requestAnimationFrame(function () {
+        overlay.classList.add('is-open');
+        confirmButton.focus();
+      });
+    });
+  }
+
   function urlBase64ToUint8Array(value) {
     var padding = '='.repeat((4 - String(value || '').length % 4) % 4);
     var base64 = (String(value || '') + padding).replace(/-/g, '+').replace(/_/g, '/');
@@ -2787,7 +2855,16 @@
     deleteSelectedButton.addEventListener('click', async function () {
       var ids = Array.from(selected);
       if (!ids.length) return;
-      if (!window.confirm('למחוק ' + numberFmt(ids.length) + ' ביקורות שסומנו? הפעולה לא ניתנת לביטול.')) return;
+      var approved = await adminConfirm({
+        title: ids.length === 1 ? 'מחיקת ביקורת' : 'מחיקת ביקורות',
+        message: ids.length === 1
+          ? 'הביקורת שסימנת תימחק לצמיתות ולא יהיה ניתן לשחזר אותה.'
+          : numberFmt(ids.length) + ' הביקורות שסימנת יימחקו לצמיתות ולא יהיה ניתן לשחזר אותן.',
+        confirmText: ids.length === 1 ? 'מחק ביקורת' : 'מחק ' + numberFmt(ids.length) + ' ביקורות',
+        cancelText: 'ביטול',
+        danger: true
+      });
+      if (!approved) return;
       deleteSelectedButton.disabled = true;
       selectAllButton.disabled = true;
       try {
@@ -2832,7 +2909,14 @@
           var button = make('button', 'admin-small-button admin-small-button--danger', 'מחק');
           button.type = 'button';
           button.addEventListener('click', async function () {
-            if (!window.confirm('למחוק את הביקורת של ' + (row.name || 'לקוח') + '? הפעולה לא ניתנת לביטול.')) return;
+            var approved = await adminConfirm({
+              title: 'מחיקת ביקורת',
+              message: 'למחוק את הביקורת של ' + (row.name || 'לקוח') + '? הביקורת תימחק לצמיתות.',
+              confirmText: 'מחק ביקורת',
+              cancelText: 'ביטול',
+              danger: true
+            });
+            if (!approved) return;
             button.disabled = true;
             try {
               await apiAction('/api/admin/reviews/' + encodeURIComponent(row.id), 'DELETE');

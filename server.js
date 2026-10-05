@@ -4696,6 +4696,25 @@ async function adminApi(req, res, pathname, parsed) {
     return true;
   }
 
+  const adminReviewDeleteMatch = /^\/api\/admin\/reviews\/(\d+)$/.exec(pathname);
+  if (adminReviewDeleteMatch && req.method === 'DELETE') {
+    if (!sameOriginAllowed(req)) { json(res, 403, { ok: false, error: 'origin_not_allowed' }); return true; }
+    const reviewId = Number(adminReviewDeleteMatch[1]);
+    if (!Number.isInteger(reviewId) || reviewId <= 0) {
+      json(res, 400, { ok: false, error: 'invalid_review_id' });
+      return true;
+    }
+    const deleted = typeof database.deleteReviewById === 'function'
+      ? await database.deleteReviewById(reviewId)
+      : false;
+    if (!deleted) {
+      json(res, 404, { ok: false, error: 'review_not_found' });
+      return true;
+    }
+    json(res, 200, { ok: true, deletedReviewId: reviewId });
+    return true;
+  }
+
   if (req.method !== 'GET') {
     json(res, 405, { ok: false, error: 'method_not_allowed' });
     return true;
@@ -4953,25 +4972,6 @@ async function adminApi(req, res, pathname, parsed) {
     if (!normalized) { json(res, 400, { ok: false, error: 'invalid_range' }); return true; }
     const data = await database.adminTrafficSummary(normalized.since);
     json(res, 200, { ok: true, range, ...data });
-    return true;
-  }
-
-  const adminReviewDeleteMatch = /^\/api\/admin\/reviews\/(\d+)$/.exec(pathname);
-  if (adminReviewDeleteMatch && req.method === 'DELETE') {
-    if (!sameOriginAllowed(req)) { json(res, 403, { ok: false, error: 'origin_not_allowed' }); return true; }
-    const reviewId = Number(adminReviewDeleteMatch[1]);
-    if (!Number.isInteger(reviewId) || reviewId <= 0) {
-      json(res, 400, { ok: false, error: 'invalid_review_id' });
-      return true;
-    }
-    const deleted = typeof database.deleteReviewById === 'function'
-      ? await database.deleteReviewById(reviewId)
-      : false;
-    if (!deleted) {
-      json(res, 404, { ok: false, error: 'review_not_found' });
-      return true;
-    }
-    json(res, 200, { ok: true, deletedReviewId: reviewId });
     return true;
   }
 
