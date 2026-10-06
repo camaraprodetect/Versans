@@ -904,7 +904,7 @@ function versansBotQuestionInScope(question, context) {
   // Questions about another jewelry store/brand are also in scope because the
   // store assistant should handle the comparison itself instead of asking for
   // screenshots or external links.
-  const storeTopic = /(versans|ver\s*[-_.]?\s*sans|v[ée]rsans|ורסאנס|ורסנס|וורסאנס|וורסנס|וארסאנס|וארסנס|ורסאן|וורסאן|מוצר|פריט|קטלוג|קולקצי|תכשיט|שרשרת|צמיד|טבעת|שעון|כובע|משקפ|ברכה|תמונה\s*מוקרנת|חומר|עשוי|ציפוי|זהב|כסף|מויסנייט|moissanite|יהלומ|diamond|מידה|מידות|אורך|רוחב|צבע|מחיר|עולה|מלאי|זמין|מבצע|הנחה|קופון|סל|עגלה|תשלום|הזמנה|משלוח|מעקב|סטטוס|אחריות|החזר|החזרה|ביטול|תקנון|פרטיות|שירות\s*לקוחות|וואטסאפ|צור\s*קשר|חשבון|התחבר|התחברות|הרשמה|סיסמה|איסוף|המלצ|תמליץ|כדאי\s*לקנות|מתנה|לגבר|לנשים|לאישה|לאמא|לבת|לאחות|יוניסקס|מי\s*אתם|מה\s*אתם|איפה\s*אתם|החנות\s*(?:שלכם|שלך)|האתר\s*(?:שלכם|שלך)|חברת\s*תכשיטים|חנות\s*תכשיטים|מותג\s*תכשיטים|מותג\s*אחר|חנות\s*אחרת|חברה\s*אחרת|מתחר(?:ה|ים)|השוואה|להשוות|מול|recommend|product|bracelet|necklace|ring|watch|hat|glasses|jewelry|jewellery|brand|store|compare|comparison|competitor|size|material|price|stock|discount|coupon|cart|order|shipping|tracking|warranty|return|refund|policy|login|account)/i;
+  const storeTopic = /(versans|ver\s*[-_.]?\s*sans|v[ée]rsans|ורסאנס|ורסנס|וורסאנס|וורסנס|וארסאנס|וארסנס|ורסאן|וורסאן|מוצר|פריט|קטלוג|קולקצי|תכשיט|שרשרת|צמיד|טבעת|שעון|כובע|משקפ|ברכה|תמונה\s*מוקרנת|חומר|עשוי|ציפוי|זהב|כסף|מויסנייט|moissanite|יהלומ|diamond|מידה|מידות|אורך|רוחב|צבע|מחיר|עולה|מלאי|זמין|מבצע|הנחה|קופון|סל|עגלה|תשלום|הזמנה|משלוח|מעקב|סטטוס|אחריות|החזר|החזרה|ביטול|תקנון|פרטיות|שירות\s*לקוחות|וואטסאפ|צור\s*קשר|חשבון|פרופיל|שם\s*(?:ה)?משתמש|השם\s*שלי|טלפון|מספר\s*טלפון|אימייל|מייל|הפרטים\s*שלי|כמה\s*הזמנות|הזמנות\s*שלי|כמה\s*קניתי|כמה\s*הוצאתי|הזמנה\s*אחרונה|ההזמנה\s*האחרונה|התחבר|התחברות|הרשמה|סיסמה|איסוף|המלצ|תמליץ|כדאי\s*לקנות|מתנה|לגבר|לנשים|לאישה|לאמא|לבת|לאחות|יוניסקס|מי\s*אתם|מה\s*אתם|איפה\s*אתם|החנות\s*(?:שלכם|שלך)|האתר\s*(?:שלכם|שלך)|חברת\s*תכשיטים|חנות\s*תכשיטים|מותג\s*תכשיטים|מותג\s*אחר|חנות\s*אחרת|חברה\s*אחרת|מתחר(?:ה|ים)|השוואה|להשוות|מול|recommend|product|bracelet|necklace|ring|watch|hat|glasses|jewelry|jewellery|brand|store|compare|comparison|competitor|size|material|price|stock|discount|coupon|cart|order|shipping|tracking|warranty|return|refund|policy|login|account|profile|phone|email|my\s+orders)/i;
   if (storeTopic.test(text)) return true;
 
   // Contextual questions are allowed when the customer is visibly referring to
@@ -1043,14 +1043,27 @@ const VERSANS_BOT_PRODUCT_SEARCH_STOP = new Set([
 ]);
 
 function versansBotExpandedProductSearchText(value) {
-  const raw = versansBotNormalizedClaimText(value).replace(/[^\p{L}\p{N}+.%₪]+/gu, ' ').replace(/\s+/g, ' ').trim();
+  const raw = versansBotNormalizedClaimText(value)
+    .replace(/(?:מ\s*["״׳']?\s*מ|mm\b)/gi, ' ממ mm ')
+    .replace(/[^\p{L}\p{N}+.%₪]+/gu, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
   const additions = [];
   const addIf = (re, text) => { if (re.test(raw)) additions.push(text); };
   addIf(/(?:^|\s)(?:הרמס|הירמס|הרמז|ארמס)(?:\s|$)/i, 'hermes צמיד אופנה');
   addIf(/(?:^|\s)אייס(?:\s|$)/i, 'ice');
   addIf(/(?:^|\s)רויאל(?:\s|$)/i, 'royal');
   addIf(/(?:^|\s)מיאמי(?:\s|$)/i, 'miami');
-  addIf(/(?:^|\s)(?:קיובן|קובני)(?:\s|$)/i, 'cuban');
+  addIf(/(?:^|\s)(?:קיובן|קיובנית|קובני|קובנית|קובן)(?:\s|$)/i, 'cuban קיובן קובני קובנית');
+  addIf(/(?:^|\s)(?:שרשרת|שרשראות)(?:\s|$)/i, 'necklace שרשרת שרשראות');
+  addIf(/(?:^|\s)(?:צמיד|צמידים)(?:\s|$)/i, 'bracelet צמיד צמידים');
+  addIf(/(?:^|\s)(?:טבעת|טבעות)(?:\s|$)/i, 'ring טבעת טבעות');
+  addIf(/(?:^|\s)(?:שעון|שעונים)(?:\s|$)/i, 'watch שעון שעונים');
+  addIf(/(?:^|\s)(?:משקף|משקפיים)(?:\s|$)/i, 'glasses משקפיים');
+  addIf(/(?:^|\s)(?:כובע|כובעים)(?:\s|$)/i, 'hat כובע כובעים');
+  addIf(/(?:^|\s)(?:טניס)(?:\s|$)/i, 'tennis טניס');
+  addIf(/(?:^|\s)(?:כסף|סילבר)(?:\s|$)/i, 'silver כסף');
+  addIf(/(?:^|\s)(?:זהב|גולד)(?:\s|$)/i, 'gold זהב');
   addIf(/(?:^|\s)(?:ניו\s*ארה|ניו\s*אירה|ניוארה)(?:\s|$)/i, 'new era');
   addIf(/(?:^|\s)יאנקיז(?:\s|$)/i, 'yankees');
   addIf(/(?:^|\s)(?:דודגרס|דודג'רס|דודג׳רס)(?:\s|$)/i, 'dodgers');
@@ -1063,27 +1076,58 @@ function versansBotProductSearchTokens(value) {
   return versansBotExpandedProductSearchText(value)
     .split(/\s+/)
     .map((token) => token.trim())
-    .filter((token) => token.length > 1 && !VERSANS_BOT_PRODUCT_SEARCH_STOP.has(token));
+    .filter((token) => (token.length > 1 || /^\d+(?:\.\d+)?$/.test(token)) && !VERSANS_BOT_PRODUCT_SEARCH_STOP.has(token));
+}
+
+function versansBotQueryDimensions(value) {
+  const expanded = versansBotExpandedProductSearchText(value);
+  const numbers = Array.from(new Set((expanded.match(/\b\d+(?:\.\d+)?\b/g) || []).map((item) => String(Number(item)))));
+  const wantsMm = /(?:^|\s)(?:ממ|mm)(?:\s|$)/i.test(expanded);
+  return { numbers, wantsMm };
+}
+
+function versansBotSplitProductSearch(value) {
+  const text = versansBotText(value, 1500);
+  if (!text) return [];
+  const parts = text
+    .split(/(?:\s+(?:וגם|אבל גם|בנוסף|יחד עם|ועם)\s+|[,;]|\s+ו(?=(?:ה)?(?:שרשרת|צמיד|טבעת|שעון|כובע|משקפ)))/i)
+    .map((item) => item.trim())
+    .filter((item) => item.length >= 3);
+  return Array.from(new Set([text, ...parts])).slice(0, 8);
 }
 
 function versansBotCatalogProductMatches(value, limit = 5) {
   const expanded = versansBotExpandedProductSearchText(value);
   const tokens = versansBotProductSearchTokens(value);
+  const dimensions = versansBotQueryDimensions(value);
   if (!tokens.length) return [];
   return PRODUCTS.map((product) => {
     const title = versansBotNormalizedClaimText(productTitle(product));
     const evidence = versansBotNormalizedClaimText(versansBotCatalogEvidenceText(product));
+    const searchable = versansBotExpandedProductSearchText(`${title} ${evidence}`);
     let score = 0;
+    let matched = 0;
     for (const token of tokens) {
-      if (title.includes(token)) score += 6;
-      else if (evidence.includes(token)) score += 2;
+      if (title.includes(token) || searchable.includes(token)) {
+        score += title.includes(token) ? 7 : 2;
+        matched += 1;
+      }
       else if (token.length >= 4) {
         const stem = token.slice(0, Math.max(3, token.length - 1));
-        if (title.includes(stem)) score += 2;
-        else if (evidence.includes(stem)) score += 1;
+        if (title.includes(stem)) { score += 3; matched += 0.5; }
+        else if (evidence.includes(stem)) { score += 1; matched += 0.25; }
       }
     }
     if (title && expanded.includes(title)) score += 24;
+    if (tokens.length && matched >= Math.max(2, tokens.length * 0.7)) score += 12;
+    if (dimensions.numbers.length) {
+      const productNumbers = new Set((searchable.match(/\b\d+(?:\.\d+)?\b/g) || []).map((item) => String(Number(item))));
+      for (const number of dimensions.numbers) {
+        if (productNumbers.has(number)) score += 11;
+        else score -= 5;
+      }
+    }
+    if (dimensions.wantsMm && /(?:^|\s)(?:ממ|mm)(?:\s|$)/i.test(searchable)) score += 4;
     return { product, score };
   }).filter((item) => item.score > 0)
     .sort((a, b) => b.score - a.score)
@@ -1105,7 +1149,16 @@ function versansBotAugmentRelatedProducts(question, context) {
   const searchText = versansBotLikelyFollowUp(question, context)
     ? `${question} ${historyText}`
     : question;
-  const matches = versansBotCatalogProductMatches(searchText, 5);
+  const matchMap = new Map();
+  const addMatches = (query, eachLimit = 5) => {
+    for (const match of versansBotCatalogProductMatches(query, eachLimit)) {
+      const key = String(match && match.product && match.product.id || productPublicPath(match.product));
+      const existing = matchMap.get(key);
+      if (!existing || Number(match.score || 0) > Number(existing.score || 0)) matchMap.set(key, match);
+    }
+  };
+  for (const segment of versansBotSplitProductSearch(searchText)) addMatches(segment, 5);
+  const matches = Array.from(matchMap.values()).sort((a, b) => Number(b.score || 0) - Number(a.score || 0)).slice(0, 10);
   if (!matches.length) return;
 
   const merged = [];
@@ -1118,10 +1171,10 @@ function versansBotAugmentRelatedProducts(question, context) {
   };
   for (const match of matches) add(match.product);
   for (const existing of context.relatedProducts || []) add(existing);
-  context.relatedProducts = merged.slice(0, 5);
+  context.relatedProducts = merged.slice(0, 10);
 
   if (!Array.isArray(context.links)) context.links = [];
-  for (const match of matches.slice(0, 5)) {
+  for (const match of matches.slice(0, 10)) {
     const url = versansBotUrl(productPublicPath(match.product));
     if (!url || context.links.some((item) => item && item.url === url)) continue;
     context.links.push({ label: versansBotText(productTitle(match.product), 100), url });
@@ -1178,8 +1231,8 @@ function versansBotContext(raw) {
     text: versansBotText(item && item.text, 700),
     url: versansBotUrl(item && item.url)
   })).filter((item) => item.text) : [];
-  const relatedProducts = Array.isArray(context.relatedProducts) ? context.relatedProducts.slice(0, 4).map(versansBotProduct).filter(Boolean) : [];
-  const history = Array.isArray(context.history) ? context.history.slice(-8).map((item) => ({
+  const relatedProducts = Array.isArray(context.relatedProducts) ? context.relatedProducts.slice(0, 10).map(versansBotProduct).filter(Boolean) : [];
+  const history = Array.isArray(context.history) ? context.history.slice(-12).map((item) => ({
     role: item && item.role === 'assistant' ? 'assistant' : 'user',
     text: versansBotText(item && item.text, 700)
   })).filter((item) => item.text) : [];
@@ -1219,6 +1272,69 @@ function versansBotContext(raw) {
   };
 }
 
+function versansBotPersonalAccountRequested(question, context) {
+  const history = context && Array.isArray(context.history)
+    ? context.history.slice(-6).map((item) => versansBotText(item && item.text, 500)).join(' ')
+    : '';
+  const text = versansBotNormalizedClaimText(`${question || ''} ${history}`);
+  return /(שם\s*(?:ה)?משתמש|השם\s*שלי|שם\s*בחשבון|החשבון\s*שלי|פרופיל|הפרטים\s*שלי|טלפון|מספר\s*טלפון|אימייל|מייל|כמה\s*הזמנות|הזמנות\s*שלי|כמה\s*קניתי|כמה\s*הוצאתי|סכום\s*הזמנות|מה\s*קניתי|מה\s*הזמנתי|איזה\s*מוצרים\s*הזמנתי|מה\s*יש\s*בהזמנות\s*שלי|הרכישות\s*שלי|היסטוריית\s*(?:הזמנות|רכישות)|הזמנה\s*אחרונה|ההזמנה\s*האחרונה|מתי\s*נרשמתי|מתי\s*פתחתי\s*חשבון|my\s+account|my\s+orders|my\s+phone|my\s+email|order\s+history|purchase\s+history)/i.test(text);
+}
+
+function versansBotWantsLatestOrder(question) {
+  const text = versansBotNormalizedClaimText(question);
+  return /(הזמנה\s*אחרונה|ההזמנה\s*האחרונה|הזמנה\s*האחרונה\s*שלי|latest\s+order|last\s+order)/i.test(text);
+}
+
+function versansBotCompactOrderFromAccountRow(row) {
+  if (!row || String(row.status || '') !== 'paid') return null;
+  const items = normalizeStoredOrderItems(row.items_json, PRODUCTS).slice(0, 20).map((item) => ({
+    productId: item && item.id || null,
+    name: versansBotText(item && item.name, 180) || 'מוצר',
+    qty: Math.max(1, Number(item && item.qty || 1))
+  }));
+  return {
+    orderRef: versansBotText(row.order_ref, 180),
+    amount: Math.max(0, Number(row.amount_agorot || 0)) / 100,
+    currency: versansBotText(row.currency || 'ILS', 12) || 'ILS',
+    createdAt: Number(row.created_at || 0) || null,
+    paidAt: row.paid_at == null ? null : Number(row.paid_at),
+    items
+  };
+}
+
+async function versansBotCustomerAccountContext(req) {
+  const user = await getCurrentUser(req);
+  if (!user) return { access: 'login_required', account: null };
+
+  let rows = [];
+  if (typeof database.listAccountOrders === 'function') {
+    rows = await database.listAccountOrders(user.id, 100);
+  }
+  const paidOrders = rows
+    .map(versansBotCompactOrderFromAccountRow)
+    .filter(Boolean);
+  const totalSpent = paidOrders.reduce((sum, order) => sum + Math.max(0, Number(order.amount || 0)), 0);
+
+  return {
+    access: 'ok',
+    account: {
+      profile: {
+        name: versansBotText(user.name, 120) || null,
+        email: versansBotText(user.email, 180) || null,
+        phone: normalizePhone(user.phone) || null,
+        createdAt: Number(user.created_at || 0) || null,
+        isVerifiedCustomer: Number(user.is_verified_customer || 0) === 1
+      },
+      paidOrderCount: paidOrders.length,
+      totalSpent: Number(totalSpent.toFixed(2)),
+      currency: 'ILS',
+      recentOrders: paidOrders.slice(0, 20),
+      latestOrderRef: paidOrders[0] ? paidOrders[0].orderRef : null,
+      privacyRule: 'מותר למסור רק את פרטי החשבון של המשתמש המחובר והזמנות ששייכות אליו. אסור למסור סיסמה, hash, session/token, מזהים פנימיים או מידע של משתמש אחר.'
+    }
+  };
+}
+
 
 async function versansBotCustomerOrderContext(req, requestedRef) {
   const user = await getCurrentUser(req);
@@ -1254,6 +1370,13 @@ async function versansBotCustomerOrderContext(req, requestedRef) {
   const shipments = await listOrderShipmentsPayload(order.id);
   const customerItems = customerOrderShipmentPayloads(shipments, orderItems, order.order_ref);
   const state = customerItemTrackingState(customerItems);
+  const storedCustomer = parseStoredCustomer(order);
+  const customerPhone = normalizePhone(order.customer_phone || storedCustomer.phone) || null;
+  const customerEmail = normalizeEmail(order.customer_email || storedCustomer.email) || null;
+  const customerName = versansBotText(
+    storedCustomer.name || [storedCustomer.firstName, storedCustomer.lastName].filter(Boolean).join(' '),
+    140
+  ) || null;
   const items = orderItems.slice(0, 30).map((item) => {
     const product = productById(item && item.id);
     const descriptor = versansBotImageDescriptorForProduct(product);
@@ -1275,6 +1398,13 @@ async function versansBotCustomerOrderContext(req, requestedRef) {
       description: versansBotText(state.description, 500),
       detail: versansBotText(state.detail, 180),
       updatedAt: state.updatedAt == null ? null : Number(state.updatedAt),
+      amount: Math.max(0, Number(order.amount_agorot || 0)) / 100,
+      currency: versansBotText(order.currency || 'ILS', 12) || 'ILS',
+      createdAt: Number(order.created_at || 0) || null,
+      paidAt: order.paid_at == null ? null : Number(order.paid_at),
+      customerName,
+      customerEmail,
+      customerPhone,
       items,
       trackUrl: `/track?order=${encodeURIComponent(String(order.order_ref || ''))}`,
       privacyRule: 'מותר למסור רק סטטוס כללי ומוצרים. אסור למסור כתובת/נקודת איסוף, קוד איסוף/אימות, לוקר, מדף, שעות פתיחה, תאריך אחרון לאיסוף, הוראות איסוף, מספר מעקב או כל פרט איסוף אחר.'
@@ -1408,6 +1538,28 @@ async function versansBotApi(req, res, pathname) {
     context.page.visibleText = '';
   }
 
+  let accountContext = null;
+  const personalAccountRequested = versansBotPersonalAccountRequested(question, context);
+  if (personalAccountRequested) {
+    const access = await versansBotCustomerAccountContext(req);
+    if (access.access === 'login_required') {
+      json(res, 200, {
+        ok: true,
+        answer: 'כדי שאוכל לענות על פרטים אישיים של החשבון או על היסטוריית ההזמנות צריך להתחבר לחשבון VerSans. אחרי ההתחברות אפשר לשאול אותי שוב.',
+        links: [{ label: 'התחברות', url: '/login' }],
+        images: []
+      });
+      return true;
+    }
+    accountContext = access;
+    for (const item of [
+      { label: 'החשבון שלי', url: '/account' },
+      { label: 'ההזמנות שלי', url: '/my-orders' }
+    ]) {
+      if (!context.links.some((existing) => existing && existing.url === item.url)) context.links.push(item);
+    }
+  }
+
 
   // Recommendation guardrail: visual appearance is never evidence. For an
   // explicit diamond request, only products whose written catalog data actually
@@ -1437,6 +1589,13 @@ async function versansBotApi(req, res, pathname) {
     for (const item of context.history.slice().reverse()) {
       orderRef = versansBotOrderRefFromText(item && item.text);
       if (orderRef) break;
+    }
+  }
+  if (!orderRef && accountContext && accountContext.account) {
+    if (versansBotWantsLatestOrder(question)) {
+      orderRef = accountContext.account.latestOrderRef || '';
+    } else if (Number(accountContext.account.paidOrderCount || 0) === 1 && /(?:הזמנה|order)/i.test(question)) {
+      orderRef = accountContext.account.latestOrderRef || '';
     }
   }
 
@@ -1496,6 +1655,7 @@ async function versansBotApi(req, res, pathname) {
     relevant_site_information: context.relevantSiteInfo,
     store_facts: context.storeFacts,
     recent_conversation: context.history,
+    customer_account: accountContext ? accountContext.account : null,
     customer_order: orderContext ? orderContext.order : null,
     allowed_links: context.links,
     allowed_images: allowedImages
@@ -1507,11 +1667,16 @@ async function versansBotApi(req, res, pathname) {
     'אם המשתמש מבקש משהו שאינו קשור ישירות ל-VerSans - למשל חשבון כללי כמו 3+3, ידע כללי, חדשות, פוליטיקה, ספורט, מזג אוויר, כתיבת קוד, שיעורי בית או בידור - אל תענה על השאלה עצמה. אמור בקצרה שאתה יכול לעזור רק בנושאי VerSans.',
     'גם אם שאלה מחוץ לתחום כוללת את המילה VerSans או מגיעה באמצע שיחה על החנות, אל תענה לחלק שאינו קשור לחנות.',
     'ענה בעברית טבעית וקצרה, אלא אם הלקוח כותב במפורש בשפה אחרת.',
-    'המידע היחיד שמותר לך להציג כעובדה על VerSans הוא המידע שסופק בבקשה: המוצר הנוכחי, טקסט העמוד, פרטי החנות, מידע מהתקנון/אחריות/מידות, מוצרים קשורים ו-customer_order כאשר הוא קיים.',
+    'המידע היחיד שמותר לך להציג כעובדה על VerSans הוא המידע שסופק בבקשה: המוצר הנוכחי, טקסט העמוד, פרטי החנות, מידע מהתקנון/אחריות/מידות, מוצרים קשורים, customer_account ו-customer_order כאשר הם קיימים.',
     'כאשר הלקוח אומר "המוצר הזה", "זה", "ממה הוא עשוי" וכדומה, השתמש קודם ב-current_product וב-current_page.',
+    'אם הלקוח מציין בשם מוצר אחר, סוג מוצר אחר או מידה/מאפיין שמצביעים בבירור על מוצר אחר, אל תיתקע על current_product רק בגלל העמוד שבו הוא נמצא. העדף את ההתאמה המתאימה מתוך related_products.',
     'השתמש תמיד ב-recent_conversation כדי להבין הודעות המשך. אם בהודעה הקודמת דיברתם על מוצר מסוים והלקוח כותב למשל "אבל הוא שווה את זה?", "ומה לגבי המחיר?", "יש אותו בזהב?" או משתמש בכינויים כמו הוא/היא/זה/אותו - התייחס למוצר או לנושא האחרון מהשיחה, ואל תסווג את ההודעה כלא קשורה ל-VerSans.',
-    'שמות מוצרים אינם חייבים להיכתב בדיוק. related_products כבר יכול לכלול התאמות לשמות טבעיים, תעתיקים ושגיאות קטנות. לדוגמה, "צמידי הרמס" או "הרמס" יכולים להתייחס למוצרי "צמיד אופנה HERMES". השתמש בהתאמה שסופקה וענה לפי נתוני המוצר האמיתיים.',
-    'אם customer_order קיים, מותר לענות על הסטטוס הכללי של ההזמנה, מספר ההזמנה והמוצרים/כמויות שבה. הנתונים כבר אומתו בצד השרת כשייכים למשתמש המחובר.',
+    'שמות מוצרים אינם חייבים להיכתב בדיוק. related_products נבחר בצד השרת מתוך כל קטלוג VerSans לפי שם חלקי, קטגוריה, תעתיקים, מספרים/מידות ושגיאות קטנות. לדוגמה "צמידי הרמס" או "הרמס" יכולים להתייחס ל"צמיד אופנה HERMES", ו"שרשרת קובנית 6 ממ" יכולה להתייחס ל"שרשרת טניס קובנית משובצת 6 מ״מ". השתמש בהתאמות שסופקו וענה רק לפי נתוני המוצרים האמיתיים.',
+    'אל תמציא שם של מוצר שלא קיים ב-current_product או related_products. אם יש כמה התאמות אפשריות, הצג עד 2-3 אפשרויות אמיתיות ושאל/הסבר את ההבדל ביניהן במקום לנחש.',
+    'אם customer_account קיים, הנתונים בו אומתו בצד השרת ושייכים למשתמש המחובר. מותר לענות על שם החשבון, אימייל, טלפון, מועד יצירת החשבון, מספר ההזמנות ששולמו, הסכום הכולל ששולם, היסטוריית ההזמנות שסופקה והמוצרים/כמויות שבהן.',
+    'אם customer_account הוא null, אל תנחש שום פרט אישי של המשתמש, מספר הזמנות, היסטוריית רכישות, טלפון או אימייל.',
+    'לעולם אל תמסור סיסמה, password hash, session/token, מזהה פנימי של משתמש או מידע של משתמש אחר, גם אם הלקוח מבקש.',
+    'אם customer_order קיים, מותר לענות על הסטטוס הכללי של ההזמנה, מספר ההזמנה, סכום ההזמנה, שם/אימייל/טלפון שהוזנו בהזמנה והמוצרים/כמויות שבה. הנתונים כבר אומתו בצד השרת כשייכים למשתמש המחובר.',
     'אסור למסור בשום מצב פרטי איסוף מתוך הזמנה: כתובת או נקודת איסוף, קוד איסוף או אימות, לוקר, מדף, שעות פתיחה, מועד אחרון לאיסוף, הוראות איסוף, מספר מעקב או מידע דומה. מותר לומר רק שההזמנה/חבילה מוכנה לאיסוף אם זה מופיע בסטטוס.',
     'אם customer_order הוא null, אל תנחש סטטוס או מוצרים של הזמנה ואל תטען שמספר הזמנה קיים.',
     'אל תמציא חומר, אבן, שיבוץ, מידה, מחיר, הנחה, מלאי, משלוח, אחריות או תנאי מדיניות. אם המידע לא נמצא, אמור בקצרה שאין לך מידע מספיק והפנה לעמוד מתאים או לשירות הלקוחות.',
@@ -6807,7 +6972,8 @@ function serveStatic(req, res, pathname) {
   } else if (
     pathname === '/admin-manifest.webmanifest' ||
     pathname === '/assets/admin.js' ||
-    pathname === '/assets/admin.css'
+    pathname === '/assets/admin.css' ||
+    pathname === '/assets/versans-bot.js'
   ) {
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
   } else {

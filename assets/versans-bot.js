@@ -124,7 +124,14 @@
     { test: /(?:^|\s)(?:אייס)(?:\s|$)/i, add: 'ICE' },
     { test: /(?:^|\s)(?:רויאל)(?:\s|$)/i, add: 'ROYAL' },
     { test: /(?:^|\s)(?:מיאמי)(?:\s|$)/i, add: 'MIAMI' },
-    { test: /(?:^|\s)(?:קיובן|קובני)(?:\s|$)/i, add: 'CUBAN' },
+    { test: /(?:^|\s)(?:קיובן|קיובנית|קובני|קובנית|קובן)(?:\s|$)/i, add: 'CUBAN קיובן קובני קובנית' },
+    { test: /(?:^|\s)(?:שרשרת|שרשראות)(?:\s|$)/i, add: 'NECKLACE שרשרת שרשראות' },
+    { test: /(?:^|\s)(?:צמיד|צמידים)(?:\s|$)/i, add: 'BRACELET צמיד צמידים' },
+    { test: /(?:^|\s)(?:טבעת|טבעות)(?:\s|$)/i, add: 'RING טבעת טבעות' },
+    { test: /(?:^|\s)(?:שעון|שעונים)(?:\s|$)/i, add: 'WATCH שעון שעונים' },
+    { test: /(?:^|\s)(?:טניס)(?:\s|$)/i, add: 'TENNIS טניס' },
+    { test: /(?:^|\s)(?:כסף|סילבר)(?:\s|$)/i, add: 'SILVER כסף' },
+    { test: /(?:^|\s)(?:זהב|גולד)(?:\s|$)/i, add: 'GOLD זהב' },
     { test: /(?:^|\s)(?:ניו\s*ארה|ניו\s*אירה|ניוארה)(?:\s|$)/i, add: 'NEW ERA' },
     { test: /(?:^|\s)(?:יאנקיז)(?:\s|$)/i, add: 'YANKEES' },
     { test: /(?:^|\s)(?:דודג(?:רס|רס׳|רס')|דודג'רס)(?:\s|$)/i, add: 'DODGERS' },
@@ -188,7 +195,7 @@
     return normalize(value)
       .split(' ')
       .map(function (token) { return token.trim(); })
-      .filter(function (token) { return token.length > 1 && !STOP_WORDS.has(token); });
+      .filter(function (token) { return (token.length > 1 || /^\d+(?:\.\d+)?$/.test(token)) && !STOP_WORDS.has(token); });
   }
 
   function containsAny(value, terms) {
@@ -366,6 +373,7 @@
   function findProductMatches(query, products) {
     var expandedQuery = expandProductQueryAliases(query);
     var qTokens = tokenize(expandedQuery);
+    var queryNumbers = (normalize(expandedQuery).match(/\b\d+(?:\.\d+)?\b/g) || []).map(function (n) { return String(Number(n)); });
     if (!qTokens.length) return [];
     return products.map(function (product) {
       var title = productTitle(product);
@@ -398,13 +406,19 @@
           })) score += 1;
         }
       });
+      if (queryNumbers.length) {
+        var productNumbers = new Set((hay.match(/\b\d+(?:\.\d+)?\b/g) || []).map(function (n) { return String(Number(n)); }));
+        queryNumbers.forEach(function (number) {
+          score += productNumbers.has(number) ? 10 : -4;
+        });
+      }
       var nq = normalize(expandedQuery);
       if (titleHe && nq.indexOf(normalize(titleHe)) !== -1) score += 15;
       if (titleEn && nq.indexOf(normalize(titleEn)) !== -1) score += 15;
       return { product: product, score: score };
     }).filter(function (item) { return item.score > 0; })
       .sort(function (a, b) { return b.score - a.score; })
-      .slice(0, 5);
+      .slice(0, 8);
   }
 
   function getPageContext() {
@@ -740,8 +754,18 @@
         welcomeCoupon: 'בהרשמה נשלח למייל קופון 3% חד-פעמי, בתוקף ל-14 ימים.',
         warranty: 'האחריות היא לחצי שנה, לפי תנאי האחריות והתקנון באתר.'
       },
-      history: conversationHistory.slice(-8)
+      history: conversationHistory.slice(-12)
     };
+  }
+
+  function historyTextForAnswer(payload) {
+    payload = payload || {};
+    var parts = [cleanText(payload.text || '')];
+    if (Array.isArray(payload.links) && payload.links.length) {
+      var labels = payload.links.slice(0, 4).map(function (item) { return cleanText(item && item.label || ''); }).filter(Boolean);
+      if (labels.length) parts.push('מוצרים/קישורים שנזכרו: ' + labels.join(', '));
+    }
+    return cleanText(parts.filter(Boolean).join(' '));
   }
 
   async function answerQuestionAI(query) {
@@ -832,15 +856,15 @@
     try {
       var aiAnswer = await answerQuestionAI(trimmed);
       conversationHistory.push({ role: 'user', text: trimmed });
-      conversationHistory.push({ role: 'assistant', text: aiAnswer.text });
-      conversationHistory = conversationHistory.slice(-10);
+      conversationHistory.push({ role: 'assistant', text: historyTextForAnswer(aiAnswer) });
+      conversationHistory = conversationHistory.slice(-14);
       return aiAnswer;
     } catch (error) {
       console.warn('Versans Bot AI fallback:', error && (error.code || error.message) || error);
       var fallback = await answerQuestionLocal(trimmed);
       conversationHistory.push({ role: 'user', text: trimmed });
-      conversationHistory.push({ role: 'assistant', text: fallback.text });
-      conversationHistory = conversationHistory.slice(-10);
+      conversationHistory.push({ role: 'assistant', text: historyTextForAnswer(fallback) });
+      conversationHistory = conversationHistory.slice(-14);
       return fallback;
     }
   }
@@ -1000,8 +1024,11 @@
     storedChat.forEach(function (item) {
       appendMessage(item.role, { text: item.text, links: item.links, images: item.images }, { skipPersist: true });
     });
-    conversationHistory = storedChat.slice(-10).map(function (item) {
-      return { role: item.role === 'user' ? 'user' : 'assistant', text: item.text };
+    conversationHistory = storedChat.slice(-14).map(function (item) {
+      return {
+        role: item.role === 'user' ? 'user' : 'assistant',
+        text: item.role === 'user' ? item.text : historyTextForAnswer(item)
+      };
     });
     if (storedChat.some(function (item) { return item.role === 'user'; })) quick.classList.add('is-collapsed');
     return true;
