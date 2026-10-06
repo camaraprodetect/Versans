@@ -1043,13 +1043,21 @@ const VERSANS_BOT_PRODUCT_SEARCH_STOP = new Set([
 ]);
 
 function versansBotExpandedProductSearchText(value) {
+  const original = versansBotText(value, 7000)
+    .normalize('NFKC')
+    .replace(/[\u0591-\u05C7]/g, '')
+    .toLowerCase()
+    .replace(/(?:מ\s*["״׳']?\s*מ|mm\b)/gi, ' ממ mm ')
+    .replace(/[^\p{L}\p{N}+.%₪]+/gu, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
   const raw = versansBotNormalizedClaimText(value)
     .replace(/(?:מ\s*["״׳']?\s*מ|mm\b)/gi, ' ממ mm ')
     .replace(/[^\p{L}\p{N}+.%₪]+/gu, ' ')
     .replace(/\s+/g, ' ')
     .trim();
   const additions = [];
-  const addIf = (re, text) => { if (re.test(raw)) additions.push(text); };
+  const addIf = (re, text) => { if (re.test(original) || re.test(raw)) additions.push(text); };
   addIf(/(?:^|\s)(?:הרמס|הירמס|הרמז|ארמס)(?:\s|$)/i, 'hermes צמיד אופנה');
   addIf(/(?:^|\s)אייס(?:\s|$)/i, 'ice');
   addIf(/(?:^|\s)רויאל(?:\s|$)/i, 'royal');
@@ -1089,11 +1097,70 @@ function versansBotQueryDimensions(value) {
 function versansBotSplitProductSearch(value) {
   const text = versansBotText(value, 1500);
   if (!text) return [];
+  const productWord = '(?:ה)?(?:שרשרת|שרשראות|צמיד|צמידים|טבעת|טבעות|שעון|שעונים|כובע|כובעים|משקפ(?:יים)?)';
   const parts = text
-    .split(/(?:\s+(?:וגם|אבל גם|בנוסף|יחד עם|ועם)\s+|[,;]|\s+ו(?=(?:ה)?(?:שרשרת|צמיד|טבעת|שעון|כובע|משקפ)))/i)
-    .map((item) => item.trim())
+    .split(new RegExp(`(?:\\s+(?:וגם|אבל גם|בנוסף|יחד עם|ועם|ואת|עם)\\s+(?=${productWord})|[,;]|\\s+ו(?=${productWord}))`, 'i'))
+    .map((item) => {
+      let part = String(item || '').trim();
+      const start = part.search(new RegExp(productWord, 'i'));
+      if (start >= 0) part = part.slice(start);
+      part = part.split(/\s+(?:מה\s+אתה\s+אומר|מה\s+את\s+אומרת|מה\s+דעתך|איך\s+השילוב|מה\s+עם\s+השילוב|האם\s+השילוב|שווה\s+את\s+זה)(?:\s|[?!.,]|$)/i)[0].trim();
+      return part;
+    })
     .filter((item) => item.length >= 3);
-  return Array.from(new Set([text, ...parts])).slice(0, 8);
+  return Array.from(new Set([...parts, text])).slice(0, 10);
+}
+
+function versansBotExplicitProductSegments(value) {
+  const productWord = /(?:ה)?(?:שרשרת|שרשראות|צמיד|צמידים|טבעת|טבעות|שעון|שעונים|כובע|כובעים|משקפ(?:יים)?)/i;
+  const full = versansBotText(value, 1500);
+  const candidates = versansBotSplitProductSearch(value).filter((segment) => productWord.test(segment));
+  if (candidates.length <= 1) return candidates.slice(0, 5);
+  const withoutFull = candidates.filter((segment) => segment !== full);
+  return (withoutFull.length ? withoutFull : candidates).slice(0, 5);
+}
+
+function versansBotProductMentionGroups(question) {
+  const segments = versansBotExplicitProductSegments(question);
+  const groups = [];
+  for (const segment of segments) {
+    const matches = versansBotCatalogProductMatches(segment, 4);
+    if (!matches.length) continue;
+    const best = Number(matches[0].score || 0);
+    if (best < 10) continue;
+    const closeMatches = matches
+      .filter((match, index) => index === 0 || Number(match.score || 0) >= best - 5)
+      .slice(0, 2)
+      .map((match) => versansBotCatalogProduct(match.product))
+      .filter(Boolean);
+    if (!closeMatches.length) continue;
+    groups.push({
+      query: versansBotText(segment, 220),
+      products: closeMatches
+    });
+  }
+  return groups.slice(0, 5);
+}
+
+
+function versansBotVariantPreferenceScore(queryValue, productTitleValue) {
+  const query = versansBotText(queryValue, 1200).toLowerCase();
+  const title = versansBotText(productTitleValue, 300).toLowerCase();
+  let score = 0;
+  const applyColor = (queryRe, titleRe, mixedRe) => {
+    if (!queryRe.test(query)) return;
+    if (mixedRe && mixedRe.test(title)) score += 5;
+    else if (titleRe.test(title)) score += 13;
+    else if (/(?:צבע|color)\s*(?:כסף|זהב|שחור|לבן|כחול|ירוק|אדום|ורוד|silver|gold|black|white|blue|green|red|pink)/i.test(title)) score -= 8;
+  };
+  applyColor(/(?:כסף|silver)/i, /(?:כסף|silver)/i, /(?:כסף\s*ו?זהב|silver\s*(?:&|and)?\s*gold)/i);
+  applyColor(/(?:זהב|gold)/i, /(?:זהב|gold)/i, /(?:כסף\s*ו?זהב|silver\s*(?:&|and)?\s*gold)/i);
+  applyColor(/(?:שחור|black)/i, /(?:שחור|black)/i, null);
+  applyColor(/(?:לבן|white)/i, /(?:לבן|white)/i, null);
+  applyColor(/(?:כחול|blue)/i, /(?:כחול|blue)/i, null);
+  applyColor(/(?:ירוק|green)/i, /(?:ירוק|green)/i, null);
+  applyColor(/(?:ורוד|pink|rose\s*gold)/i, /(?:ורוד|pink|rose\s*gold)/i, null);
+  return score;
 }
 
 function versansBotCatalogProductMatches(value, limit = 5) {
@@ -1120,6 +1187,7 @@ function versansBotCatalogProductMatches(value, limit = 5) {
     }
     if (title && expanded.includes(title)) score += 24;
     if (tokens.length && matched >= Math.max(2, tokens.length * 0.7)) score += 12;
+    score += versansBotVariantPreferenceScore(value, productTitle(product));
     if (dimensions.numbers.length) {
       const productNumbers = new Set((searchable.match(/\b\d+(?:\.\d+)?\b/g) || []).map((item) => String(Number(item))));
       for (const number of dimensions.numbers) {
@@ -1149,6 +1217,8 @@ function versansBotAugmentRelatedProducts(question, context) {
   const searchText = versansBotLikelyFollowUp(question, context)
     ? `${question} ${historyText}`
     : question;
+  const explicitGroups = versansBotProductMentionGroups(question);
+  context.productMentionGroups = explicitGroups;
   const matchMap = new Map();
   const addMatches = (query, eachLimit = 5) => {
     for (const match of versansBotCatalogProductMatches(query, eachLimit)) {
@@ -1169,6 +1239,12 @@ function versansBotAugmentRelatedProducts(question, context) {
     seen.add(item.url);
     merged.push(item);
   };
+  // Products explicitly named by the customer come first and stay grouped by
+  // the phrase that matched them. This prevents facts from one named product
+  // being accidentally attributed to another product in the same message.
+  for (const group of explicitGroups) {
+    for (const product of group.products || []) add(product);
+  }
   for (const match of matches) add(match.product);
   for (const existing of context.relatedProducts || []) add(existing);
   context.relatedProducts = merged.slice(0, 10);
@@ -1276,7 +1352,7 @@ function versansBotPersonalAccountRequested(question, context) {
   const history = context && Array.isArray(context.history)
     ? context.history.slice(-6).map((item) => versansBotText(item && item.text, 500)).join(' ')
     : '';
-  const text = versansBotNormalizedClaimText(`${question || ''} ${history}`);
+  const text = versansBotText(`${question || ''} ${history}`, 3600).toLowerCase();
   return /(שם\s*(?:ה)?משתמש|השם\s*שלי|שם\s*בחשבון|החשבון\s*שלי|פרופיל|הפרטים\s*שלי|טלפון|מספר\s*טלפון|אימייל|מייל|כמה\s*הזמנות|הזמנות\s*שלי|כמה\s*קניתי|כמה\s*הוצאתי|סכום\s*הזמנות|מה\s*קניתי|מה\s*הזמנתי|איזה\s*מוצרים\s*הזמנתי|מה\s*יש\s*בהזמנות\s*שלי|הרכישות\s*שלי|היסטוריית\s*(?:הזמנות|רכישות)|הזמנה\s*אחרונה|ההזמנה\s*האחרונה|מתי\s*נרשמתי|מתי\s*פתחתי\s*חשבון|my\s+account|my\s+orders|my\s+phone|my\s+email|order\s+history|purchase\s+history)/i.test(text);
 }
 
@@ -1335,6 +1411,123 @@ async function versansBotCustomerAccountContext(req) {
   };
 }
 
+
+
+function versansBotDisplayPhone(value) {
+  const phone = normalizePhone(value);
+  if (!phone) return '';
+  if (phone.startsWith('+972') && phone.length >= 12) return `0${phone.slice(4)}`;
+  return phone;
+}
+
+function versansBotFormatMoney(value) {
+  const amount = Number(value || 0);
+  if (!Number.isFinite(amount)) return '0 ₪';
+  return `${amount.toLocaleString('he-IL', { minimumFractionDigits: amount % 1 ? 2 : 0, maximumFractionDigits: 2 })} ₪`;
+}
+
+function versansBotFormatDate(value) {
+  const timestamp = Number(value || 0);
+  if (!timestamp) return '';
+  try { return new Intl.DateTimeFormat('he-IL', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(timestamp)); }
+  catch (_) { return ''; }
+}
+
+function versansBotAccountDirectResponse(question, accountAccess) {
+  const account = accountAccess && accountAccess.access === 'ok' ? accountAccess.account : null;
+  if (!account || !account.profile) return null;
+  const q = versansBotText(question, 900).toLowerCase();
+
+  const asksName = /(שם\s*(?:ה)?משתמש|השם\s*שלי|שם\s*בחשבון|איך\s*קוראים\s*לי|מה\s*השם\s*שלי)/i.test(q);
+  const asksPhone = /(?:מספר\s*)?טלפון(?:\s*שלי|\s*בחשבון|\s*שמחובר)?|איזה\s*מספר\s*מחובר/i.test(q);
+  const asksEmail = /(?:אימייל|מייל)(?:\s*שלי|\s*בחשבון|\s*שמחובר)?/i.test(q);
+  const asksCount = /(כמה\s*הזמנות|מספר\s*ההזמנות|כמה\s*פעמים\s*הזמנתי|כמה\s*הזמנתי)/i.test(q);
+  const asksSpent = /(כמה\s*(?:כסף\s*)?הוצאתי|כמה\s*שילמתי|סכום\s*ההזמנות|כמה\s*קניתי)/i.test(q);
+  const asksCreated = /(מתי\s*נרשמתי|מתי\s*פתחתי\s*חשבון|ממתי\s*החשבון)/i.test(q);
+  const asksHistory = /(היסטוריית\s*(?:הזמנות|רכישות)|מה\s*קניתי|מה\s*הזמנתי|איזה\s*מוצרים\s*הזמנתי|מה\s*יש\s*בהזמנות\s*שלי|ההזמנות\s*שלי)/i.test(q);
+
+  if (!(asksName || asksPhone || asksEmail || asksCount || asksSpent || asksCreated || asksHistory)) return null;
+  // If the same message also asks for a product recommendation/comparison, let
+  // the AI handle the mixed request with the verified account context included.
+  if (/(תמליצ|המלצ|צמיד|שרשרת|טבעת|שעון|כובע|משקפ|מוצר|תכשיט|שילוב|מתאים)/i.test(q) && !asksHistory) return null;
+
+  const parts = [];
+  if (asksName) parts.push(account.profile.name ? `השם בחשבון שלך הוא ${account.profile.name}.` : 'לא שמור כרגע שם בחשבון שלך.');
+  if (asksPhone) parts.push(account.profile.phone ? `מספר הטלפון שמחובר לחשבון הוא ${versansBotDisplayPhone(account.profile.phone)}.` : 'לא שמור כרגע מספר טלפון בחשבון שלך.');
+  if (asksEmail) parts.push(account.profile.email ? `האימייל שמחובר לחשבון הוא ${account.profile.email}.` : 'לא שמור כרגע אימייל בחשבון שלך.');
+  if (asksCount) parts.push(`יש בחשבון שלך ${Number(account.paidOrderCount || 0)} הזמנות ששולמו.`);
+  if (asksSpent) parts.push(`הסכום הכולל ששולם בהזמנות בחשבון הוא ${versansBotFormatMoney(account.totalSpent)}.`);
+  if (asksCreated) {
+    const date = versansBotFormatDate(account.profile.createdAt);
+    parts.push(date ? `החשבון נפתח בתאריך ${date}.` : 'אין לי כרגע תאריך פתיחת חשבון זמין.');
+  }
+  if (asksHistory) {
+    const orders = Array.isArray(account.recentOrders) ? account.recentOrders.slice(0, 5) : [];
+    if (!orders.length) {
+      parts.push('לא מצאתי בחשבון הזמנות ששולמו.');
+    } else {
+      const summaries = orders.map((order) => {
+        const itemText = (order.items || []).slice(0, 6).map((item) => `${versansBotText(item.name, 100)} ×${Math.max(1, Number(item.qty || 1))}`).join(', ');
+        return `${order.orderRef}: ${itemText || 'ללא פירוט מוצרים'} (${versansBotFormatMoney(order.amount)})`;
+      });
+      parts.push(`ההזמנות האחרונות בחשבון: ${summaries.join(' | ')}.`);
+    }
+  }
+
+  return {
+    ok: true,
+    answer: parts.join(' '),
+    links: [
+      { label: 'החשבון שלי', url: '/account' },
+      { label: 'ההזמנות שלי', url: '/my-orders' }
+    ],
+    images: []
+  };
+}
+
+function versansBotOrderDirectResponse(question, order) {
+  if (!order) return null;
+  const q = versansBotText(question, 900).toLowerCase();
+  const asksPhone = /(?:מספר\s*)?טלפון(?:\s*של\s*ההזמנה|\s*בהזמנה)|איזה\s*טלפון\s*(?:יש|רשום)\s*בהזמנה/i.test(q);
+  const asksEmail = /(?:אימייל|מייל)(?:\s*של\s*ההזמנה|\s*בהזמנה)/i.test(q);
+  const asksName = /שם(?:\s*הלקוח)?(?:\s*של\s*ההזמנה|\s*בהזמנה)/i.test(q);
+  const asksItems = /(מה\s*יש\s*בהזמנה|מה\s*הזמנתי|איזה\s*מוצרים\s*(?:יש|היו)\s*בהזמנה|תכולת\s*ההזמנה)/i.test(q);
+  const asksStatus = /(איפה\s*ההזמנה|מה\s*הסטטוס|סטטוס\s*ההזמנה|מה\s*קורה\s*עם\s*ההזמנה|הגיעה|נשלחה|בדרך)/i.test(q);
+  const asksAmount = /(כמה\s*(?:ההזמנה\s*)?(?:עלתה|עלה|שילמתי)|סכום\s*ההזמנה)/i.test(q);
+  if (!(asksPhone || asksEmail || asksName || asksItems || asksStatus || asksAmount)) return null;
+
+  const parts = [];
+  if (asksPhone) parts.push(order.customerPhone ? `מספר הטלפון שנרשם בהזמנה ${order.orderRef} הוא ${versansBotDisplayPhone(order.customerPhone)}.` : `לא שמור מספר טלפון בהזמנה ${order.orderRef}.`);
+  if (asksEmail) parts.push(order.customerEmail ? `האימייל שנרשם בהזמנה הוא ${order.customerEmail}.` : 'לא שמור אימייל בהזמנה הזאת.');
+  if (asksName) parts.push(order.customerName ? `השם שנרשם בהזמנה הוא ${order.customerName}.` : 'לא שמור שם לקוח בהזמנה הזאת.');
+  if (asksItems) {
+    const items = (order.items || []).slice(0, 20).map((item) => `${versansBotText(item.name, 180)} ×${Math.max(1, Number(item.qty || 1))}`);
+    parts.push(items.length ? `בהזמנה ${order.orderRef} יש: ${items.join(', ')}.` : `אין לי כרגע פירוט מוצרים להזמנה ${order.orderRef}.`);
+  }
+  if (asksStatus) {
+    parts.push(`הסטטוס של הזמנה ${order.orderRef}: ${versansBotText(order.statusLabel, 180) || 'הסטטוס עודכן'}.`);
+    if (order.description) parts.push(versansBotText(order.description, 420));
+    if (order.detail) parts.push(`עדכון נוסף: ${versansBotText(order.detail, 160)}.`);
+  }
+  if (asksAmount) parts.push(`סכום ההזמנה הוא ${versansBotFormatMoney(order.amount)}.`);
+
+  const images = [];
+  if (asksItems) {
+    for (const item of order.items || []) {
+      if (!item || !item.image) continue;
+      const product = productById(item.productId);
+      const descriptor = versansBotImageDescriptorForProduct(product);
+      if (descriptor && !images.some((existing) => existing.url === descriptor.url)) images.push(descriptor);
+      if (images.length >= 3) break;
+    }
+  }
+  return {
+    ok: true,
+    answer: parts.join(' '),
+    links: order.trackUrl ? [{ label: 'מעקב אחר ההזמנה', url: order.trackUrl }] : [],
+    images
+  };
+}
 
 async function versansBotCustomerOrderContext(req, requestedRef) {
   const user = await getCurrentUser(req);
@@ -1558,6 +1751,11 @@ async function versansBotApi(req, res, pathname) {
     ]) {
       if (!context.links.some((existing) => existing && existing.url === item.url)) context.links.push(item);
     }
+    const directAccountResponse = versansBotAccountDirectResponse(question, accountContext);
+    if (directAccountResponse) {
+      json(res, 200, directAccountResponse);
+      return true;
+    }
   }
 
 
@@ -1633,6 +1831,11 @@ async function versansBotApi(req, res, pathname) {
       });
       return true;
     }
+    const directOrderResponse = versansBotOrderDirectResponse(question, access.order);
+    if (directOrderResponse) {
+      json(res, 200, directOrderResponse);
+      return true;
+    }
   }
 
   const apiKey = String(process.env.OPENAI_API_KEY || '').trim();
@@ -1651,6 +1854,12 @@ async function versansBotApi(req, res, pathname) {
     question,
     current_page: context.page,
     current_product: versansBotPromptProduct(context.currentProduct),
+    mentioned_products: Array.isArray(context.productMentionGroups)
+      ? context.productMentionGroups.map((group) => ({
+          query: versansBotText(group && group.query, 220),
+          products: Array.isArray(group && group.products) ? group.products.map(versansBotPromptProduct).filter(Boolean) : []
+        })).filter((group) => group.query && group.products.length)
+      : [],
     related_products: context.relatedProducts.map(versansBotPromptProduct).filter(Boolean),
     relevant_site_information: context.relevantSiteInfo,
     store_facts: context.storeFacts,
@@ -1670,6 +1879,10 @@ async function versansBotApi(req, res, pathname) {
     'המידע היחיד שמותר לך להציג כעובדה על VerSans הוא המידע שסופק בבקשה: המוצר הנוכחי, טקסט העמוד, פרטי החנות, מידע מהתקנון/אחריות/מידות, מוצרים קשורים, customer_account ו-customer_order כאשר הם קיימים.',
     'כאשר הלקוח אומר "המוצר הזה", "זה", "ממה הוא עשוי" וכדומה, השתמש קודם ב-current_product וב-current_page.',
     'אם הלקוח מציין בשם מוצר אחר, סוג מוצר אחר או מידה/מאפיין שמצביעים בבירור על מוצר אחר, אל תיתקע על current_product רק בגלל העמוד שבו הוא נמצא. העדף את ההתאמה המתאימה מתוך related_products.',
+    'אם mentioned_products קיים ואינו ריק, הוא המקור הראשי להבנת מוצרים שהלקוח ציין במפורש בשאלה. כל קבוצה כוללת את הניסוח של הלקוח ואת המוצרים שהתאימו לו מתוך הקטלוג.',
+    'כאשר הלקוח מזכיר שני מוצרים או יותר באותה הודעה, שמור את העובדות של כל מוצר בנפרד. אסור להעביר חומר, אבן, מחיר, מידה, צבע או תיאור ממוצר אחד לאחר. אם אתה מתאר שילוב, ציין כל מוצר בשם שלו והסתמך רק על האובייקט שלו.',
+    'אם mentioned_products כבר זיהה מוצר שהלקוח התכוון אליו, אל תבקש ממנו לכתוב שוב את השם המדויק ואל תגיד שחסרים לך פרטי הדגם שכבר מופיעים באובייקט. השתמש בפרטי הקטלוג שסופקו.',
+    'בשאלת שילוב בין מוצרים, אפשר להביע התאמה סגנונית רק על בסיס עובדות כתובות כמו צבע, גוון, סוג עיצוב או קטגוריה. אל תייחס למוצר מאפיין שלא מופיע באובייקט שלו.',
     'השתמש תמיד ב-recent_conversation כדי להבין הודעות המשך. אם בהודעה הקודמת דיברתם על מוצר מסוים והלקוח כותב למשל "אבל הוא שווה את זה?", "ומה לגבי המחיר?", "יש אותו בזהב?" או משתמש בכינויים כמו הוא/היא/זה/אותו - התייחס למוצר או לנושא האחרון מהשיחה, ואל תסווג את ההודעה כלא קשורה ל-VerSans.',
     'שמות מוצרים אינם חייבים להיכתב בדיוק. related_products נבחר בצד השרת מתוך כל קטלוג VerSans לפי שם חלקי, קטגוריה, תעתיקים, מספרים/מידות ושגיאות קטנות. לדוגמה "צמידי הרמס" או "הרמס" יכולים להתייחס ל"צמיד אופנה HERMES", ו"שרשרת קובנית 6 ממ" יכולה להתייחס ל"שרשרת טניס קובנית משובצת 6 מ״מ". השתמש בהתאמות שסופקו וענה רק לפי נתוני המוצרים האמיתיים.',
     'אל תמציא שם של מוצר שלא קיים ב-current_product או related_products. אם יש כמה התאמות אפשריות, הצג עד 2-3 אפשרויות אמיתיות ושאל/הסבר את ההבדל ביניהן במקום לנחש.',
