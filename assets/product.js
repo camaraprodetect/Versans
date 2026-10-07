@@ -237,7 +237,7 @@
       .toLowerCase()
       .replace(/\bcolor\b/gi, ' ')
       .replace(/צבע/g, ' ')
-      .replace(/[\/|,+()_\-–-]+/g, ' ')
+      .replace(/[\/|,+()_\-–—]+/g, ' ')
       .split(/\s+/)
       .map(function (token) { return token.trim(); })
       .filter(Boolean)
@@ -2250,6 +2250,22 @@ async function uploadProductPhoto(blob, meta) {
     document.body.classList.toggle('is-locked', open);
   }
 
+
+  /* Product page mobile drawer must behave like a real touch menu, not a
+     desktop hover menu. Keep vertical drawer scrolling available while
+     removing double-tap delays/gesture ambiguity on the actual controls. */
+  (function prepareProductMobileNavTouch() {
+    var navmenu = $('#navmenu');
+    if (!navmenu) return;
+    navmenu.style.touchAction = 'pan-y';
+    navmenu.style.webkitOverflowScrolling = 'touch';
+    $$('#navmenu a, #navmenu button').forEach(function (control) {
+      control.style.touchAction = 'manipulation';
+      control.style.pointerEvents = 'auto';
+    });
+  })();
+
+
   document.addEventListener('click', function (e) {
     var necklaceButton = e.target.closest('[data-necklace]');
     if (necklaceButton) { selectNecklace(necklaceButton.getAttribute('data-necklace')); return; }
@@ -2285,21 +2301,30 @@ async function uploadProductPhoto(blob, meta) {
 
     var navParentToggle = e.target.closest('[data-nav-parent-toggle]');
     if (navParentToggle && window.matchMedia('(max-width: 980px)').matches) {
-      e.preventDefault();
       var navItem = navParentToggle.closest('.nav__item--has-submenu');
       var navSubmenu = navItem && navItem.querySelector('.nav__submenu');
       if (navSubmenu) {
-        var willOpen = !navSubmenu.classList.contains('is-open');
-        $$('.nav__submenu.is-open').forEach(function (menu) {
-          if (menu !== navSubmenu) menu.classList.remove('is-open');
-        });
-        $$('[data-nav-parent-toggle][aria-expanded="true"]').forEach(function (link) {
-          if (link !== navParentToggle) link.setAttribute('aria-expanded', 'false');
-        });
-        navSubmenu.classList.toggle('is-open', willOpen);
-        navParentToggle.setAttribute('aria-expanded', String(willOpen));
+        /* First tap opens the sub-category list. A second tap on the same
+           parent goes to the parent category itself. This keeps every
+           category reachable with touch on product pages. */
+        if (!navSubmenu.classList.contains('is-open')) {
+          e.preventDefault();
+          $$('.nav__submenu.is-open').forEach(function (menu) {
+            if (menu !== navSubmenu) menu.classList.remove('is-open');
+          });
+          $$('[data-nav-parent-toggle][aria-expanded="true"]').forEach(function (link) {
+            if (link !== navParentToggle) link.setAttribute('aria-expanded', 'false');
+          });
+          navSubmenu.classList.add('is-open');
+          navParentToggle.setAttribute('aria-expanded', 'true');
+          return;
+        }
+
+        /* Already open: do not prevent the link. Close the drawer and let
+           the browser follow the href to the category page. */
+        setMenu(false);
+        return;
       }
-      return;
     }
 
     if (e.target.closest('#burger')) { setMenu(!$('#navmenu').classList.contains('is-open')); return; }
