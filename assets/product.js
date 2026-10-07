@@ -42,6 +42,7 @@
   }
 
   function $(s) { return document.querySelector(s); }
+  function $$(s) { return Array.prototype.slice.call(document.querySelectorAll(s)); }
   function read(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function save(k, v) {
     try {
