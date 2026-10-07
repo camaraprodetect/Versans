@@ -19,7 +19,7 @@
   var storedChat = [];
 
   function sanitizeStoredLinks(links) {
-    return Array.isArray(links) ? links.slice(0, 4).map(function (item) {
+    return Array.isArray(links) ? links.slice(0, 6).map(function (item) {
       if (!item || typeof item !== 'object') return null;
       var label = cleanText(item.label || '').slice(0, 120);
       var url = String(item.url || '').trim();
@@ -29,7 +29,7 @@
   }
 
   function sanitizeStoredImages(images) {
-    return Array.isArray(images) ? images.slice(0, 3).map(function (item) {
+    return Array.isArray(images) ? images.slice(0, 6).map(function (item) {
       if (!item || typeof item !== 'object') return null;
       var url = String(item.url || '').trim();
       var alt = cleanText(item.alt || 'מוצר VerSans').slice(0, 180);
@@ -762,7 +762,7 @@
     payload = payload || {};
     var parts = [cleanText(payload.text || '')];
     if (Array.isArray(payload.links) && payload.links.length) {
-      var labels = payload.links.slice(0, 4).map(function (item) { return cleanText(item && item.label || ''); }).filter(Boolean);
+      var labels = payload.links.slice(0, 6).map(function (item) { return cleanText(item && item.label || ''); }).filter(Boolean);
       if (labels.length) parts.push('מוצרים/קישורים שנזכרו: ' + labels.join(', '));
     }
     return cleanText(parts.filter(Boolean).join(' '));
@@ -785,7 +785,7 @@
     }
     return {
       text: cleanText(data.answer),
-      links: Array.isArray(data.links) ? data.links.slice(0, 4) : [],
+      links: Array.isArray(data.links) ? data.links.slice(0, 6) : [],
       images: sanitizeStoredImages(data.images)
     };
   }
@@ -987,6 +987,12 @@
         img.loading = 'lazy';
         img.decoding = 'async';
         wrapper.appendChild(img);
+        if (item.linkUrl) {
+          var label = document.createElement('span');
+          label.className = 'vs-bot-image-card__label';
+          label.textContent = item.alt || 'למוצר';
+          wrapper.appendChild(label);
+        }
         images.appendChild(wrapper);
       });
       if (images.childElementCount) row.appendChild(images);
@@ -995,7 +1001,7 @@
     if (Array.isArray(payload.links) && payload.links.length) {
       var links = document.createElement('div');
       links.className = 'vs-bot-links';
-      payload.links.slice(0, 4).forEach(function (item) {
+      payload.links.slice(0, 6).forEach(function (item) {
         if (!item || !item.url || !item.label) return;
         var a = document.createElement('a');
         a.className = 'vs-bot-link';

@@ -1903,7 +1903,9 @@ async function versansBotApi(req, res, pathname) {
     'אין בצ׳אט אפשרות ללקוח להעלות צילום מסך, תמונה, מסמך או קובץ. לעולם אל תבקש מהלקוח לשלוח או להעלות צילום מסך, תמונה, קובץ או attachment. אם חסר מידע, בקש שיתאר אותו בטקסט או הפנה לעמוד VerSans מתאים.',
     'לעולם אל תבקש מהלקוח קישור לאתר חיצוני, לדף מוצר של מתחרה או לחנות אחרת, ואל תציע לנתח אתר חיצוני. אין לך גישה אמינה לתוכן חיצוני שלא סופק במידע המותר.',
     'אם הלקוח שואל על חברת תכשיטים, חנות או מותג אחר, או מבקש להשוות אותו ל-VerSans: אמור בקצרה ובשקיפות שאתה העוזר של VerSans ולכן ממליץ לבחור ב-VerSans. אפשר לציין רק יתרונות ועובדות על VerSans שמופיעים במידע שסופק. אל תמציא עובדות שליליות על המתחרה, אל תשמיץ אותו ואל תטען שאתה יודע עליו פרטים שלא סופקו.',
-    'כאשר אתה ממליץ על מוצר מתוך related_products, צרף ב-image_urls את התמונה הראשית המתאימה אם היא מופיעה ב-allowed_images. אפשר לצרף עד 3 תמונות רלוונטיות.',
+    'כאשר אתה ממליץ, מציע או משווה מוצרים ספציפיים, החזר ב-product_urls את כתובת עמוד המוצר של כל מוצר שהופיע כהמלצה או אפשרות בתשובה, באותו סדר שבו הם מופיעים בתשובה. אפשר להחזיר עד 6 מוצרים.',
+    'כל כתובת ב-product_urls חייבת להופיע בדיוק בתוך allowed_links ולהיות עמוד מוצר של VerSans. אל תוסיף מוצר שלא באמת המלצת עליו או הצגת כאפשרות.',
+    'השרת מצרף אוטומטית תמונה ראשית וקישור לכל מוצר שב-product_urls. image_urls מיועד רק לתמונה נוספת רלוונטית מתוך allowed_images כאשר צריך, ולא כתחליף ל-product_urls.',
     'החזר ב-image_urls רק כתובות תמונה שמופיעות בדיוק בתוך allowed_images. לעולם אל תמציא URL של תמונה.',
     'שמור בדרך כלל על 2-5 משפטים. אם נדרשת הוראה מעשית, אפשר להשתמש בשורות קצרות.',
     'החזר ב-link_urls רק כתובות URL שמופיעות בדיוק בתוך allowed_links. אל תיצור URL חדש ואל תכתוב קישורי Markdown בתוך answer.'
@@ -1937,9 +1939,10 @@ async function versansBotApi(req, res, pathname) {
                 properties: {
                   answer: { type: 'string' },
                   link_urls: { type: 'array', items: { type: 'string' } },
+                  product_urls: { type: 'array', items: { type: 'string' } },
                   image_urls: { type: 'array', items: { type: 'string' } }
                 },
-                required: ['answer', 'link_urls', 'image_urls']
+                required: ['answer', 'link_urls', 'product_urls', 'image_urls']
               }
             }
           }
@@ -1991,31 +1994,73 @@ async function versansBotApi(req, res, pathname) {
 
   const links = [];
   const usedLinks = new Set();
+  const addAllowedLink = (urlValue) => {
+    const url = versansBotUrl(urlValue);
+    const allowed = allowedLinkMap.get(url);
+    if (!allowed || usedLinks.has(url)) return null;
+    usedLinks.add(url);
+    links.push(allowed);
+    return allowed;
+  };
+
   if (Array.isArray(result.link_urls)) {
     for (const urlValue of result.link_urls) {
-      const url = versansBotUrl(urlValue);
-      const allowed = allowedLinkMap.get(url);
-      if (!allowed || usedLinks.has(url)) continue;
-      usedLinks.add(url);
-      links.push(allowed);
-      if (links.length >= 4) break;
+      addAllowedLink(urlValue);
+      if (links.length >= 6) break;
     }
+  }
+
+  // Every recommended/comparison product becomes a product card with the real
+  // catalog primary image and product URL. The model never invents the image.
+  const recommendedProducts = [];
+  const usedProductUrls = new Set();
+  const addRecommendedProduct = (urlValue) => {
+    const url = versansBotUrl(urlValue);
+    if (!url || usedProductUrls.has(url) || !allowedLinkMap.has(url)) return;
+    const product = versansBotProductByPublicUrl(url);
+    if (!product) return;
+    usedProductUrls.add(url);
+    recommendedProducts.push(product);
+    addAllowedLink(url);
+  };
+
+  if (Array.isArray(result.product_urls)) {
+    for (const urlValue of result.product_urls) {
+      addRecommendedProduct(urlValue);
+      if (recommendedProducts.length >= 6) break;
+    }
+  }
+
+  // Failsafe: product links returned through link_urls also get a card.
+  for (const item of links.slice()) {
+    if (recommendedProducts.length >= 6) break;
+    addRecommendedProduct(item && item.url);
   }
 
   const images = [];
   const usedImages = new Set();
+  const addImage = (descriptor) => {
+    if (!descriptor || !descriptor.url || usedImages.has(descriptor.url)) return;
+    usedImages.add(descriptor.url);
+    images.push(descriptor);
+  };
+
+  for (const product of recommendedProducts) {
+    addImage(versansBotImageDescriptorForProduct(product));
+    if (images.length >= 6) break;
+  }
+
   if (Array.isArray(result.image_urls)) {
     for (const urlValue of result.image_urls) {
+      if (images.length >= 6) break;
       const url = versansBotImageUrl(urlValue);
       const allowed = allowedImageMap.get(url);
-      if (!allowed || usedImages.has(url)) continue;
-      usedImages.add(url);
-      images.push(allowed);
-      if (images.length >= 3) break;
+      if (!allowed) continue;
+      addImage(allowed);
     }
   }
 
-  json(res, 200, { ok: true, answer, links, images });
+  json(res, 200, { ok: true, answer, links: links.slice(0, 6), images: images.slice(0, 6) });
   return true;
 }
 
