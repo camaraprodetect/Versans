@@ -97,17 +97,28 @@
     }
   }
 
+  function showVerificationUnavailable() {
+    // A failed API call is not a confirmed payment and is not proof of failure.
+    // In particular, never trust a browser-supplied CCode=0 as confirmation.
+    document.getElementById('result').innerHTML =
+      '<h1>סטטוס התשלום בבדיקה</h1>' +
+      '<p>לא הצלחנו לאמת כרגע את התשלום. אם חויבתם, אל תבצעו תשלום נוסף לפני שבדקתם את ההזמנה או פניתם לשירות הלקוחות.</p>' +
+      '<p class="result__cta"><a class="btn btn--primary" href="/my-orders">ההזמנות שלי</a></p>';
+  }
+
   var orderId = params.get('Order') || (pending && pending.order) || '';
 
   // אין פרמטרים בכלל – הגעה ישירה לעמוד
   if (!params.toString()) { show(false, ''); return; }
 
   fetch('/api/verify-payment?' + params.toString())
-    .then(function (r) { return r.json(); })
-    .then(function (data) { show(!!(data && data.ok), orderId); })
+    .then(function (r) { if (!r.ok) throw new Error('verification_unavailable'); return r.json(); })
+    .then(function (data) {
+      if (!data || typeof data.ok !== 'boolean') throw new Error('invalid_verification_response');
+      show(data.ok, orderId);
+    })
     .catch(function () {
-      // אם האימות בשרת נכשל, נופלים לקוד התשובה של HYP שחזר בכתובת
-      show(params.get('CCode') === '0', orderId);
+      showVerificationUnavailable();
     });
 })();
 </script>

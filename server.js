@@ -60,9 +60,6 @@ const ADMIN_PUSH_DEVICE_TTL_MS = 365 * 24 * 60 * 60 * 1000;
 const ADMIN_PUSH_VAPID_PUBLIC_META_KEY = 'admin_push_vapid_public_v1';
 const ADMIN_PUSH_VAPID_PRIVATE_META_KEY = 'admin_push_vapid_private_jwk_v1';
 const ADMIN_PUSH_TIMEOUT_MS = 10 * 1000;
-const USER_PURGE_META_KEY = 'purge_users_except_camaraprodetect_20260922_v1';
-const REVIEWS_PURGE_META_KEY = 'purge_all_reviews_20260924_v1';
-const ORDERS_PURGE_META_KEY = 'purge_all_orders_20261004_v3';
 const ADMIN_PAGES = new Set(['', 'dashboard', 'visitors', 'sales', 'orders', 'order-work', 'products', 'customers', 'reviews']);
 const BODY_LIMIT = 48 * 1024 * 1024;
 const REVIEW_IMAGE_LIMIT = 2 * 1024 * 1024;
@@ -228,7 +225,9 @@ function checkoutMode() {
     .trim()
     .toLowerCase()
     .replace(/^[\"']|[\"']$/g, '');
-  return raw === 'live' ? 'live' : 'demo';
+  // Live is the safe default. An absent/misspelled mode must never mark
+  // simulated orders as paid. Demo is only permitted outside production.
+  return raw === 'demo' && process.env.NODE_ENV !== 'production' ? 'demo' : 'live';
 }
 
 function newDemoOrderRef() {
@@ -5984,6 +5983,8 @@ async function adminApi(req, res, pathname, parsed) {
       users: userCounts,
       system: {
         checkoutMode: checkoutMode(),
+        hypConfigured: ['HYP_MASOF', 'HYP_API_KEY', 'HYP_PASSP']
+          .every((key) => Boolean(String(process.env[key] || '').trim())),
         databaseBackend: database.backend,
         persistentStorage,
         storageMode: database.backend === 'postgres' ? 'postgres' : (sqliteOutsideDeploy ? 'external-sqlite' : 'local-sqlite'),
@@ -7531,6 +7532,11 @@ const server = http.createServer(async (req, res) => {
     if (pathname === '/api/verify-payment' && req.method === 'GET') {
       const query = Object.fromEntries(parsed.searchParams.entries());
       const mode = checkoutMode();
+      // Demo callback URLs are not evidence of payment in LIVE mode.
+      if (mode === 'live' && (query.versans_demo === '1' || /^VS-DEMO-/i.test(String(query.Order || '')))) {
+        json(res, 400, { ok: false, error: 'demo_order_not_valid_in_live' });
+        return;
+      }
       let result;
       let orderRef;
       let order;
@@ -7589,12 +7595,14 @@ const server = http.createServer(async (req, res) => {
 
       let verifiedCustomer = false;
       let verifiedGuest = null;
+      let paymentAccepted = false;
 
       if (order) {
         if (result.ok) {
           const returnedAmount = result.amount == null || result.amount === '' ? null : amountToAgorot(result.amount);
           const amountMatches = returnedAmount === null || returnedAmount === Number(order.amount_agorot);
           if (amountMatches) {
+            paymentAccepted = true;
             const now = Date.now();
             await database.transaction(async (tx) => {
               await tx.markOrderPaid(now, order.id);
@@ -7644,7 +7652,9 @@ const server = http.createServer(async (req, res) => {
         }
       }
 
-      json(res, 200, { ...result, verifiedCustomer, guest: verifiedGuest });
+      // Never tell the storefront a payment was confirmed if there is no
+      // matching local order or the signed payment amount does not match.
+      json(res, 200, { ...result, ok: paymentAccepted, verifiedCustomer, guest: verifiedGuest });
       return;
     }
 
@@ -7790,63 +7800,13 @@ setInterval(async () => {
   try { await retryRecentAdminOrderPushes(); } catch (err) { console.error('Admin order push retry failed:', err); }
 }, ORDER_NOTIFICATION_WEBHOOK_RETRY_MS).unref();
 
-async function purgeAllOrdersOnce() {
-  const alreadyDone = await database.getSchemaMeta(ORDERS_PURGE_META_KEY);
-  if (alreadyDone) return;
-
-  const result = typeof database.deleteAllOrders === 'function'
-    ? await database.deleteAllOrders()
-    : { deletedOrders: 0 };
-
-  await database.setSchemaMeta(ORDERS_PURGE_META_KEY, JSON.stringify({
-    completedAt: Date.now(),
-    deletedOrders: Number(result && result.deletedOrders ? result.deletedOrders : 0)
-  }));
-
-  console.log(`One-time order purge complete: deleted ${Number(result && result.deletedOrders ? result.deletedOrders : 0)} orders.`);
-}
-
-async function purgeAllReviewsOnce() {
-  const alreadyDone = await database.getSchemaMeta(REVIEWS_PURGE_META_KEY);
-  if (alreadyDone) return;
-
-  const result = typeof database.deleteAllReviews === 'function'
-    ? await database.deleteAllReviews()
-    : { deletedReviews: 0 };
-  await database.setSchemaMeta(REVIEWS_PURGE_META_KEY, JSON.stringify({
-    completedAt: Date.now(),
-    deletedReviews: Number(result && result.deletedReviews ? result.deletedReviews : 0)
-  }));
-  console.log(`One-time review purge complete: deleted ${Number(result && result.deletedReviews ? result.deletedReviews : 0)} reviews.`);
-}
-
-async function purgeNonAdminUsersOnce() {
-  const alreadyDone = await database.getSchemaMeta(USER_PURGE_META_KEY);
-  if (alreadyDone) return;
-
-  const adminUser = await database.findUserByEmail(ADMIN_EMAIL);
-  if (!adminUser) {
-    console.error(`User purge skipped: protected account ${ADMIN_EMAIL} was not found.`);
-    return;
-  }
-
-  const result = await database.deleteUsersExceptEmail(ADMIN_EMAIL);
-  await database.setSchemaMeta(USER_PURGE_META_KEY, JSON.stringify({
-    completedAt: Date.now(),
-    protectedEmail: ADMIN_EMAIL,
-    deletedUsers: Number(result && result.deletedUsers ? result.deletedUsers : 0)
-  }));
-  console.log(`One-time user purge complete: deleted ${Number(result && result.deletedUsers ? result.deletedUsers : 0)} users; kept ${ADMIN_EMAIL}.`);
-}
-
 async function start() {
   await database.init();
-  await purgeAllOrdersOnce();
-  await purgeAllReviewsOnce();
-  await purgeNonAdminUsersOnce();
+  // Never purge real orders, reviews or customers during a deployment.
   await database.cleanupPresencePageViews(Date.now() - PRESENCE_RETENTION_MS);
   server.listen(PORT, HOST, () => {
     console.log(`VerSans running on http://${HOST}:${PORT}`);
+    console.log(`Checkout mode: ${checkoutMode()}`);
     console.log(`Database backend: ${database.backend}`);
     if (database.backend === 'sqlite') console.log(`SQLite: ${DB_PATH}`);
     const emailStartupTimer = setTimeout(() => {
