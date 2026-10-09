@@ -4735,3 +4735,89 @@ body[data-product-slug="product-273"] #colorOptions.product-option-grid--colors,
 body[data-product-slug="product-274"] #colorOptions.product-option-grid--colors,
 body[data-product-slug="product-275"] #colorOptions.product-option-grid--colors{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
 }
+
+
+/* VerSans 2026-10-09: prevent the product add-to-cart label from being clipped. */
+.product-page-body .product-purchase #addToCart {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  width: 100%;
+  min-width: 0;
+  min-height: 56px !important;
+  height: auto !important;
+  padding: 12px 14px !important;
+  line-height: 1.45 !important;
+  text-align: center !important;
+  white-space: normal !important;
+  overflow: visible !important;
+}
+@media (max-width: 700px) {
+  .product-page-body .product-purchase #addToCart {
+    min-height: 54px !important;
+    padding: 12px 10px !important;
+  }
+}
+
+/* VerSans 2026-10-09: catalog card CTA repair.
+   This targets the HOME/CATEGORY product card, NOT product.html #addToCart.
+   Two actions previously shared a fixed 68/72px grid slot, clipping "הוסף לסל". */
+@media (min-width: 701px) {
+  .home-page .prod__body {
+    grid-template-rows: 3.3rem 3rem 1.55rem 3rem minmax(104px, auto);
+  }
+}
+@media (max-width: 700px) {
+  .home-page .prod__body {
+    grid-template-rows: 2.45rem 2.2rem 1.45rem 2.7rem minmax(104px, auto);
+  }
+}
+.home-page .prod__actions {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  align-items: stretch !important;
+  align-self: stretch !important;
+  justify-content: flex-start !important;
+  min-width: 0 !important;
+  min-height: 96px !important;
+  height: auto !important;
+  margin-top: 0 !important;
+  padding-top: 4px !important;
+  overflow: visible !important;
+}
+.home-page .prod__actions > .btn {
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex: 0 0 auto !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  min-height: 44px !important;
+  height: auto !important;
+  padding: 10px 8px !important;
+  line-height: 1.35 !important;
+  white-space: normal !important;
+  text-align: center !important;
+  overflow: visible !important;
+}
+.home-page .prod__actions > .btn--ghost {
+  min-height: 40px !important;
+  padding: 8px !important;
+  border: 1px solid transparent !important;
+  background: #fff !important;
+  color: #142333 !important;
+  text-decoration: none !important;
+}
+/* Hover is visual feedback, never the resting state of the Add to Cart link. */
+@media (hover: hover) and (pointer: fine) {
+  .home-page .prod__actions > .btn--ghost:hover {
+    background: #f5f6f8 !important;
+    border-color: #bcc6cf !important;
+  }
+}
+.home-page .prod__actions > .btn--ghost:focus-visible {
+  outline: 2px solid #142333;
+  outline-offset: 2px;
+}
