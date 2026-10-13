@@ -4,7 +4,7 @@
   if (window.__versansBotLoaded) return;
   window.__versansBotLoaded = true;
 
-  var BOT_VERSION = '20261006-context-alias-v11';
+  var BOT_VERSION = '20261013-bot-welcome-hyphen-v13';
   var CHAT_STORAGE_KEY = 'versansBotChatV2';
   var activeChatStorageKey = CHAT_STORAGE_KEY + ':guest';
   var chatScopeReady = false;
@@ -436,12 +436,15 @@
   }
 
   function pageIntro(currentProduct) {
-    if (currentProduct) return 'אתם עכשיו בעמוד של ' + productTitle(currentProduct) + '. אפשר לשאול אותי על החומרים, המידות, המחיר, משלוח, אחריות או לבקש קישור לעמוד אחר.';
-    var ctx = getPageContext();
-    if (ctx.type === 'catalog') return 'אני Versans Bot. אני יודע באיזה עמוד אתם נמצאים ויכול לעזור למצוא מוצר, לבדוק מבצעים, משלוחים, אחריות, החזרות ומדריכי מידות.';
-    if (ctx.type === 'size-guide') return 'אני Versans Bot. אני יכול להסביר את מדריך המידות שבעמוד, או לקשר אתכם למוצרים המתאימים.';
-    if (ctx.type === 'policies' || ctx.type === 'warranty') return 'אני Versans Bot. אפשר לשאול אותי על מה שכתוב בעמוד הזה, או על מוצר ומדיניות אחרת באתר.';
-    return 'אני Versans Bot. אפשר לשאול אותי על מוצרים, מידות, משלוחים, אחריות, החזרות, מבצעים וקישורים באתר.';
+    var welcome = 'ברוכים הבאים ל־VerSans Bot! 👋 ' +
+      'אפשר לשאול אותי על כל מוצר בחנות, גם אם אתם לא בעמוד שלו - חומרים, מידות, צבעים, מחירים והמלצות. ' +
+      'אני יכול גם להציג תמונות וקישורים למוצרים ולעזור עם מבצעים, משלוחים, אחריות והחזרות. ' +
+      'אם אתם מחוברים לחשבון, אפשר לשאול על פרטי החשבון שלכם, כמה הזמנות ביצעתם, מה יש בהזמנה ומה סטטוס המשלוח. ' +
+      'פרטי חשבון והזמנות זמינים רק לבעל החשבון המחובר.';
+    if (currentProduct) {
+      return welcome + ' כרגע אתם צופים במוצר: ' + productTitle(currentProduct).slice(0, 110) + '. אפשר לשאול אותי עליו ישירות.';
+    }
+    return welcome;
   }
 
   function getQuickQuestions(product) {
@@ -1027,6 +1030,15 @@
     chatRestoreDone = true;
     storedChat = loadStoredChat();
     if (!storedChat.length) return false;
+    // Refresh only the previous automatic welcome. Preserve every customer
+    // message, recommendation, account answer and order response in history.
+    var first = storedChat[0];
+    if (first && first.role === 'bot' &&
+        /^(?:אני Versans Bot[. ]|אתם עכשיו בעמוד של )/.test(first.text || '') &&
+        !(first.links || []).length && !(first.images || []).length) {
+      first.text = pageIntro(null);
+      saveStoredChat();
+    }
     storedChat.forEach(function (item) {
       appendMessage(item.role, { text: item.text, links: item.links, images: item.images }, { skipPersist: true });
     });
