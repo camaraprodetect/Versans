@@ -112,12 +112,12 @@
     var e=document.createElement(tag); if(cls)e.className=cls;if(label!=null)e.textContent=label;return e;
   }
   function onKeydown(e){if(e.key==='Escape'){e.preventDefault();hide();}}
-  function hide() {
+  function hide(skipFocus) {
     if (!modal) return;
     if (player) {try{player.pause();}catch(_){}}
     document.removeEventListener('keydown',onKeydown,true);
     modal.remove();modal=null;player=null;
-    if (restoreFocus && restoreFocus.isConnected && restoreFocus.focus) {
+    if (skipFocus !== true && restoreFocus && restoreFocus.isConnected && restoreFocus.focus) {
       try{restoreFocus.focus({preventScroll:true});}catch(_){}
     }
     restoreFocus=null;
@@ -144,6 +144,14 @@
     actions.appendChild(action);dialog.append(x,visual,actions);backdrop.appendChild(dialog);
     document.body.appendChild(backdrop);modal=backdrop;player=video;
     x.addEventListener('click',hide);
+    action.addEventListener('click',function(e){
+      if (e.defaultPrevented || e.button!==0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      e.preventDefault();
+      var destination=action.href;
+      hide(true);
+      // Navigate after removal: native link navigation can be skipped for a detached anchor.
+      window.location.assign(destination);
+    });
     backdrop.addEventListener('click',function(e){if(e.target===backdrop)hide();});
     document.addEventListener('keydown',onKeydown,true);
     lastAt=Date.now();history.push(key);history=history.slice(-10);
