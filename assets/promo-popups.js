@@ -3,7 +3,7 @@
   'use strict';
   if (window.__versansVideoPromosReady) return;
   window.__versansVideoPromosReady = true;
-  var FIRST_MS = 10000, INTERVAL_MS = 120000, CART_GAP_MS = 45000;
+  var FIRST_MS = 10000, INTERVAL_MS = 180000, CART_GAP_MS = 45000;
   var STORAGE_KEY = 'versans-video-promos-20261013-v2';
   var DIR = '/assets/promo-videos/';
   var offers = {

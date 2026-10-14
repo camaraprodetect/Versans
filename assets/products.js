@@ -29331,7 +29331,1978 @@ var PRODUCTS = [
       "min": 9,
       "max": 14
     }
+  },
+  {
+    "id": "star-of-david-moissanite-necklace-silver-276",
+    "slug": "product-276",
+    "urlSlug": "star-of-david-moissanite-necklace-silver",
+    "sku": "VS-NK-276",
+    "category": "necklaces",
+    "categories": [
+      "necklaces"
+    ],
+    "badge": null,
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "showAllGalleryThumbs": true,
+    "defaultNecklaceId": "silver",
+    "hoverImage": "images/products/product-276/product-276-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-276/product-276-1.png",
+        "hoverImage": "images/products/product-276/product-276-2.png"
+      },
+      "men": {
+        "image": "images/products/product-276/product-276-1.png",
+        "hoverImage": "images/products/product-276/product-276-2.png"
+      }
+    },
+    "sourceUrl": "https://he.aliexpress.com/item/1005012828613798.html?invitationCode=UjM1V0lmRC9qTWQrc1RtUElIUUp0NjFWUUhSM280eEd3ZjliaTJtY2FqS2VQemFTZUJrNWVWT0s1MU1hdTAyWg&srcSns=sns_Copy&spreadType=socialShare&social_params=6000498131242&bizType=ProductDetail&spreadCode=UjM1V0lmRC9qTWQrc1RtUElIUUp0NjFWUUhSM280eEd3ZjliaTJtY2FqS2VQemFTZUJrNWVWT0s1MU1hdTAyWg&aff_fcid=2a9d48246e054d70823011a21eb0a5ce-1791987201664-06966-_c4pANDMd&tt=MG&aff_fsk=_c4pANDMd&aff_platform=default&sk=_c4pANDMd&aff_trace_key=2a9d48246e054d70823011a21eb0a5ce-1791987201664-06966-_c4pANDMd&shareId=6000498131242&businessType=ProductDetail&platform=AE&terminal_id=11c284625c2a4368aae236cae79df5d9&afSmartRedirect=y&gatewayAdapt=glo2isr#nav-specification",
+    "images": [
+      "images/products/product-276/product-276-1.png",
+      "images/products/product-276/product-276-2.png",
+      "images/products/product-276/product-276-3.png"
+    ],
+    "price": 399.9,
+    "necklaceHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "necklaceSummaryLabel": {
+      "he": "צבע",
+      "en": "Color"
+    },
+    "necklaces": [
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "image": "images/products/product-276/product-276-1.png"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "image": "images/products/product-276/product-276-3.png"
+      }
+    ],
+    "title": {
+      "he": "שרשרת מגן דוד משובצת VVS Moissanite - צבע כסף",
+      "en": "Star of David VVS Moissanite Necklace - Silver"
+    },
+    "subtitle": {
+      "he": "שרשרת יוניסקס עם תליון מגן דוד משובץ VVS Moissanite · כסף סטרלינג S925 · תליון 17x20 מ״מ · לבחירה בצבע",
+      "en": "Unisex Star of David pendant necklace with VVS Moissanite · S925 sterling silver · 17 x 20 mm pendant · choose your color"
+    },
+    "cardTitle": {
+      "he": "שרשרת מגן דוד משובצת VVS Moissanite - צבע כסף",
+      "en": "Star of David VVS Moissanite Necklace - Silver"
+    },
+    "cardMessage": {
+      "he": "שרשרת מגן דוד יוקרתית עם תליון משובץ VVS Moissanite בגודל 17x20 מ״מ ושרשרת חוליות עדינה.",
+      "en": "A luxury Star of David necklace with a 17 x 20 mm VVS Moissanite pendant and a refined link chain."
+    },
+    "description": {
+      "he": "שרשרת יוניסקס עם תליון מגן דוד משובץ אבני VVS Moissanite. התליון בגודל 17x20 מ״מ ומגיע עם שרשרת חוליות עדינה. הדגם עשוי כסף סטרלינג S925 וזמין בצבע כסף או זהב.",
+      "en": "A unisex necklace featuring a Star of David pendant set with VVS Moissanite stones. The pendant measures 17 x 20 mm and hangs from a refined link chain. Crafted from S925 sterling silver and available in silver or gold."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "תליון מגן דוד משובץ אבני VVS Moissanite",
+        "מידות התליון: 17 מ״מ רוחב × 20 מ״מ גובה",
+        "עשוי כסף סטרלינג S925",
+        "זמין בצבע כסף או זהב",
+        "שרשרת חוליות עדינה במראה יוקרתי",
+        "עיצוב יוניסקס - מתאים לנשים ולגברים",
+        "מראה נוצץ שמתאים ליום יום וגם כמתנה מיוחדת"
+      ],
+      "en": [
+        "Star of David pendant set with VVS Moissanite stones",
+        "Pendant size: 17 mm width × 20 mm height",
+        "Crafted from S925 sterling silver",
+        "Available in silver or gold",
+        "Refined link chain with a premium finish",
+        "Unisex design suitable for women and men",
+        "A bright elegant look for daily wear or gifting"
+      ]
+    },
+    "afterText": {
+      "he": "שרשרת מגן דוד משובצת VVS Moissanite עם תליון בגודל 17x20 מ״מ, זמינה בצבע כסף או זהב.",
+      "en": "A VVS Moissanite Star of David necklace with a 17 x 20 mm pendant, available in silver or gold."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    }
+  },
+  {
+    "id": "star-of-david-moissanite-necklace-gold-277",
+    "slug": "product-277",
+    "urlSlug": "star-of-david-moissanite-necklace-gold",
+    "sku": "VS-NK-277",
+    "category": "necklaces",
+    "categories": [
+      "necklaces"
+    ],
+    "badge": null,
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "showAllGalleryThumbs": true,
+    "defaultNecklaceId": "gold",
+    "hoverImage": "images/products/product-277/product-277-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-277/product-277-1.png",
+        "hoverImage": "images/products/product-277/product-277-2.png"
+      },
+      "men": {
+        "image": "images/products/product-277/product-277-1.png",
+        "hoverImage": "images/products/product-277/product-277-2.png"
+      }
+    },
+    "sourceUrl": "https://he.aliexpress.com/item/1005012828613798.html?invitationCode=UjM1V0lmRC9qTWQrc1RtUElIUUp0NjFWUUhSM280eEd3ZjliaTJtY2FqS2VQemFTZUJrNWVWT0s1MU1hdTAyWg&srcSns=sns_Copy&spreadType=socialShare&social_params=6000498131242&bizType=ProductDetail&spreadCode=UjM1V0lmRC9qTWQrc1RtUElIUUp0NjFWUUhSM280eEd3ZjliaTJtY2FqS2VQemFTZUJrNWVWT0s1MU1hdTAyWg&aff_fcid=2a9d48246e054d70823011a21eb0a5ce-1791987201664-06966-_c4pANDMd&tt=MG&aff_fsk=_c4pANDMd&aff_platform=default&sk=_c4pANDMd&aff_trace_key=2a9d48246e054d70823011a21eb0a5ce-1791987201664-06966-_c4pANDMd&shareId=6000498131242&businessType=ProductDetail&platform=AE&terminal_id=11c284625c2a4368aae236cae79df5d9&afSmartRedirect=y&gatewayAdapt=glo2isr#nav-specification",
+    "images": [
+      "images/products/product-277/product-277-1.png",
+      "images/products/product-277/product-277-2.png",
+      "images/products/product-277/product-277-3.png"
+    ],
+    "price": 399.9,
+    "necklaceHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "necklaceSummaryLabel": {
+      "he": "צבע",
+      "en": "Color"
+    },
+    "necklaces": [
+      {
+        "id": "silver",
+        "label": {
+          "he": "כסף",
+          "en": "Silver"
+        },
+        "image": "images/products/product-277/product-277-3.png"
+      },
+      {
+        "id": "gold",
+        "label": {
+          "he": "זהב",
+          "en": "Gold"
+        },
+        "image": "images/products/product-277/product-277-1.png"
+      }
+    ],
+    "title": {
+      "he": "שרשרת מגן דוד משובצת VVS Moissanite - צבע זהב",
+      "en": "Star of David VVS Moissanite Necklace - Gold"
+    },
+    "subtitle": {
+      "he": "שרשרת יוניסקס עם תליון מגן דוד משובץ VVS Moissanite · כסף סטרלינג S925 · תליון 17x20 מ״מ · לבחירה בצבע",
+      "en": "Unisex Star of David pendant necklace with VVS Moissanite · S925 sterling silver · 17 x 20 mm pendant · choose your color"
+    },
+    "cardTitle": {
+      "he": "שרשרת מגן דוד משובצת VVS Moissanite - צבע זהב",
+      "en": "Star of David VVS Moissanite Necklace - Gold"
+    },
+    "cardMessage": {
+      "he": "שרשרת מגן דוד יוקרתית עם תליון משובץ VVS Moissanite בגודל 17x20 מ״מ ושרשרת חוליות עדינה.",
+      "en": "A luxury Star of David necklace with a 17 x 20 mm VVS Moissanite pendant and a refined link chain."
+    },
+    "description": {
+      "he": "שרשרת יוניסקס עם תליון מגן דוד משובץ אבני VVS Moissanite. התליון בגודל 17x20 מ״מ ומגיע עם שרשרת חוליות עדינה. הדגם עשוי כסף סטרלינג S925 וזמין בצבע כסף או זהב.",
+      "en": "A unisex necklace featuring a Star of David pendant set with VVS Moissanite stones. The pendant measures 17 x 20 mm and hangs from a refined link chain. Crafted from S925 sterling silver and available in silver or gold."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "details": {
+      "he": [
+        "תליון מגן דוד משובץ אבני VVS Moissanite",
+        "מידות התליון: 17 מ״מ רוחב × 20 מ״מ גובה",
+        "עשוי כסף סטרלינג S925",
+        "זמין בצבע זהב או כסף",
+        "שרשרת חוליות עדינה במראה יוקרתי",
+        "עיצוב יוניסקס - מתאים לנשים ולגברים",
+        "מראה נוצץ שמתאים ליום יום וגם כמתנה מיוחדת"
+      ],
+      "en": [
+        "Star of David pendant set with VVS Moissanite stones",
+        "Pendant size: 17 mm width × 20 mm height",
+        "Crafted from S925 sterling silver",
+        "Available in silver or gold",
+        "Refined link chain with a premium finish",
+        "Unisex design suitable for women and men",
+        "A bright elegant look for daily wear or gifting"
+      ]
+    },
+    "afterText": {
+      "he": "שרשרת מגן דוד משובצת VVS Moissanite עם תליון בגודל 17x20 מ״מ, זמינה בצבע כסף או זהב.",
+      "en": "A VVS Moissanite Star of David necklace with a 17 x 20 mm pendant, available in silver or gold."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    }
+  },
+  {
+    "id": "clover-tennis-necklace-black-278",
+    "slug": "product-278",
+    "urlSlug": "clover-tennis-necklace-black",
+    "sku": "VS-NK-278",
+    "category": "necklaces",
+    "categories": [
+      "necklaces"
+    ],
+    "badge": null,
+    "sourceUrl": "https://he.aliexpress.com/item/1005007435716827.html?invitationCode=cDNOVDNpUnd1Ykw5a2pXWHRXdkFlSzFWUUhSM280eEd3ZjliaTJtY2FqS2VQemFTZUJrNWVWT0s1MU1hdTAyWg&srcSns=sns_Copy&spreadType=socialShare&social_params=6000499153564&bizType=ProductDetail&spreadCode=cDNOVDNpUnd1Ykw5a2pXWHRXdkFlSzFWUUhSM280eEd3ZjliaTJtY2FqS2VQemFTZUJrNWVWT0s1MU1hdTAyWg&aff_fcid=5630be5052b84287baebdf245e434f5c-1791989128825-06620-_c32pm8xx&tt=MG&aff_fsk=_c32pm8xx&aff_platform=default&sk=_c32pm8xx&aff_trace_key=5630be5052b84287baebdf245e434f5c-1791989128825-06620-_c32pm8xx&shareId=6000499153564&businessType=ProductDetail&platform=AE&terminal_id=11c284625c2a4368aae236cae79df5d9&afSmartRedirect=y&gatewayAdapt=glo2isr",
+    "hoverImage": "images/products/product-281/product-281-8.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-278/product-278-1.png",
+        "hoverImage": "images/products/product-281/product-281-8.png"
+      },
+      "men": {
+        "image": "images/products/product-278/product-278-1.png",
+        "hoverImage": "images/products/product-281/product-281-8.png"
+      }
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "showAllGalleryThumbs": true,
+    "images": [
+      "images/products/product-278/product-278-1.png",
+      "images/products/product-278/product-278-3.png",
+      "images/products/product-278/product-278-4.png",
+      "images/products/product-278/product-278-5.png",
+      "images/products/product-278/product-278-6.png",
+      "images/products/product-278/product-278-7.png",
+      "images/products/product-278/product-278-8.png"
+    ],
+    "price": 279.9,
+    "title": {
+      "he": "שרשרת טניס תלתן - צבע שחור",
+      "en": "Clover Tennis Necklace - Black"
+    },
+    "subtitle": {
+      "he": "שרשרת טניס יוניסקס עם תלתנים שחורים · לבחירה ב־40 / 45 / 50 / 55 ס״מ · גוון כסף / זהב לבן",
+      "en": "Unisex clover tennis necklace · choose 40 / 45 / 50 / 55 cm · choose your color"
+    },
+    "sizeHeading": {
+      "he": "בחרו אורך",
+      "en": "Choose length"
+    },
+    "sizes": [
+      {
+        "id": "40cm",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "279.90 ₪",
+          "en": "₪279.90"
+        },
+        "label": {
+          "he": "40 ס״מ",
+          "en": "40 cm"
+        }
+      },
+      {
+        "id": "45cm",
+        "addPrice": 5,
+        "priceLabel": {
+          "he": "284.90 ₪",
+          "en": "₪284.90"
+        },
+        "label": {
+          "he": "45 ס״מ",
+          "en": "45 cm"
+        }
+      },
+      {
+        "id": "50cm",
+        "addPrice": 10,
+        "priceLabel": {
+          "he": "289.90 ₪",
+          "en": "₪289.90"
+        },
+        "label": {
+          "he": "50 ס״מ",
+          "en": "50 cm"
+        }
+      },
+      {
+        "id": "55cm",
+        "addPrice": 15,
+        "priceLabel": {
+          "he": "294.90 ₪",
+          "en": "₪294.90"
+        },
+        "label": {
+          "he": "55 ס״מ",
+          "en": "55 cm"
+        }
+      }
+    ],
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "colorRequiredText": {
+      "he": "נא לבחור צבע",
+      "en": "Please choose a color"
+    },
+    "colors": [
+      {
+        "id": "black",
+        "addPrice": 0,
+        "label": {
+          "he": "שחור",
+          "en": "Black"
+        },
+        "swatch": "#111111",
+        "image": "images/products/product-278/product-278-1.png"
+      },
+      {
+        "id": "white",
+        "addPrice": 0,
+        "label": {
+          "he": "לבן",
+          "en": "White"
+        },
+        "swatch": "#f2f2f2",
+        "image": "images/products/product-278/product-278-3.png"
+      },
+      {
+        "id": "pink",
+        "addPrice": 0,
+        "label": {
+          "he": "ורוד",
+          "en": "Pink"
+        },
+        "swatch": "#f2a7c5",
+        "image": "images/products/product-278/product-278-4.png"
+      },
+      {
+        "id": "gold-black",
+        "addPrice": 0,
+        "label": {
+          "he": "שחור זהב",
+          "en": "Gold Black"
+        },
+        "swatch": "linear-gradient(135deg,#d6af37 0 50%,#111111 50% 100%)",
+        "image": "images/products/product-278/product-278-5.png"
+      },
+      {
+        "id": "gold-pink",
+        "addPrice": 0,
+        "label": {
+          "he": "ורוד זהב",
+          "en": "Gold Pink"
+        },
+        "swatch": "linear-gradient(135deg,#d6af37 0 50%,#f2a7c5 50% 100%)",
+        "image": "images/products/product-278/product-278-6.png"
+      }
+    ],
+    "defaultColorId": "black",
+    "cardTitle": {
+      "he": "שרשרת טניס תלתן - צבע שחור",
+      "en": "Clover Tennis Necklace - Black"
+    },
+    "cardMessage": {
+      "he": "שרשרת טניס תלתן במראה יוקרתי עם מרכזי תלתן שחורים, משובצת זירקונים נוצצים ובארבעה אורכים לבחירה.",
+      "en": "A premium clover tennis necklace with sparkling cubic zirconia and multiple length options."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "description": {
+      "he": "שרשרת טניס תלתן - צבע שחור. שרשרת טניס משובצת אבני Cubic Zirconia עם תלתנים מעוצבים, מתאימה לנשים ולגברים וכוללת בחירת אורך בין 40 ל־55 ס״מ.",
+      "en": "Clover Tennis Necklace - Black. A clover tennis necklace set with cubic zirconia stones, suitable for women and men, with 40 to 55 cm length options."
+    },
+    "details": {
+      "he": [
+        "שרשרת טניס תלתן יוניסקס לנשים ולגברים",
+        "משובצת אבני Cubic Zirconia במראה יוקרתי",
+        "צבע התלתנים: שחור",
+        "לבחירה באורכים: 40 ס״מ, 45 ס״מ, 50 ס״מ, 55 ס״מ",
+        "רוחב השרשרת: 4 מ״מ",
+        "גוון התכשיט: כסף / זהב לבן",
+        "סוג שרשרת: Tennis Chain / Link Chain",
+        "סוג מתכת: Copper",
+        "חומר: Cubic zirconia",
+        "מחיר התחלתי לאורך 40 ס״מ: 279.90 ₪",
+        "כל תוספת של 5 ס״מ מוסיפה 5 ₪",
+        "המחיר מתעדכן אוטומטית לפי האורך שנבחר"
+      ],
+      "en": [
+        "Unisex clover tennis necklace for women and men",
+        "Set with cubic zirconia stones for a luxurious look",
+        "Clover color: Black",
+        "Available in 40 cm, 45 cm, 50 cm and 55 cm lengths",
+        "Chain width: 4 mm",
+        "Jewelry tone: Silver / White Gold",
+        "Chain type: Tennis Chain / Link Chain",
+        "Metal type: Copper",
+        "Material: Cubic zirconia",
+        "Starting price for 40 cm: ₪279.90",
+        "Every additional 5 cm adds ₪5",
+        "Price updates automatically according to the selected length"
+      ]
+    },
+    "afterText": {
+      "he": "הגלריה כוללת את כל חמשת הצבעים, תמונת hover משותפת, ושתי תמונות דוגמן להמחשת המראה על הגוף.",
+      "en": "The gallery includes all five colors, a shared hover image, and two model photos for on-body reference."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    }
+  },
+  {
+    "id": "clover-tennis-necklace-white-279",
+    "slug": "product-279",
+    "urlSlug": "clover-tennis-necklace-white",
+    "sku": "VS-NK-279",
+    "category": "necklaces",
+    "categories": [
+      "necklaces"
+    ],
+    "badge": null,
+    "sourceUrl": "https://he.aliexpress.com/item/1005007435716827.html?invitationCode=cDNOVDNpUnd1Ykw5a2pXWHRXdkFlSzFWUUhSM280eEd3ZjliaTJtY2FqS2VQemFTZUJrNWVWT0s1MU1hdTAyWg&srcSns=sns_Copy&spreadType=socialShare&social_params=6000499153564&bizType=ProductDetail&spreadCode=cDNOVDNpUnd1Ykw5a2pXWHRXdkFlSzFWUUhSM280eEd3ZjliaTJtY2FqS2VQemFTZUJrNWVWT0s1MU1hdTAyWg&aff_fcid=5630be5052b84287baebdf245e434f5c-1791989128825-06620-_c32pm8xx&tt=MG&aff_fsk=_c32pm8xx&aff_platform=default&sk=_c32pm8xx&aff_trace_key=5630be5052b84287baebdf245e434f5c-1791989128825-06620-_c32pm8xx&shareId=6000499153564&businessType=ProductDetail&platform=AE&terminal_id=11c284625c2a4368aae236cae79df5d9&afSmartRedirect=y&gatewayAdapt=glo2isr",
+    "hoverImage": "images/products/product-281/product-281-8.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-279/product-279-1.png",
+        "hoverImage": "images/products/product-281/product-281-8.png"
+      },
+      "men": {
+        "image": "images/products/product-279/product-279-1.png",
+        "hoverImage": "images/products/product-281/product-281-8.png"
+      }
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "showAllGalleryThumbs": true,
+    "images": [
+      "images/products/product-279/product-279-1.png",
+      "images/products/product-279/product-279-2.png",
+      "images/products/product-279/product-279-4.png",
+      "images/products/product-279/product-279-5.png",
+      "images/products/product-279/product-279-6.png",
+      "images/products/product-279/product-279-7.png",
+      "images/products/product-279/product-279-8.png"
+    ],
+    "price": 279.9,
+    "title": {
+      "he": "שרשרת טניס תלתן - צבע לבן",
+      "en": "Clover Tennis Necklace - White"
+    },
+    "subtitle": {
+      "he": "שרשרת טניס יוניסקס עם תלתנים לבנים · לבחירה ב־40 / 45 / 50 / 55 ס״מ · גוון כסף / זהב לבן",
+      "en": "Unisex clover tennis necklace · choose 40 / 45 / 50 / 55 cm · choose your color"
+    },
+    "sizeHeading": {
+      "he": "בחרו אורך",
+      "en": "Choose length"
+    },
+    "sizes": [
+      {
+        "id": "40cm",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "279.90 ₪",
+          "en": "₪279.90"
+        },
+        "label": {
+          "he": "40 ס״מ",
+          "en": "40 cm"
+        }
+      },
+      {
+        "id": "45cm",
+        "addPrice": 5,
+        "priceLabel": {
+          "he": "284.90 ₪",
+          "en": "₪284.90"
+        },
+        "label": {
+          "he": "45 ס״מ",
+          "en": "45 cm"
+        }
+      },
+      {
+        "id": "50cm",
+        "addPrice": 10,
+        "priceLabel": {
+          "he": "289.90 ₪",
+          "en": "₪289.90"
+        },
+        "label": {
+          "he": "50 ס״מ",
+          "en": "50 cm"
+        }
+      },
+      {
+        "id": "55cm",
+        "addPrice": 15,
+        "priceLabel": {
+          "he": "294.90 ₪",
+          "en": "₪294.90"
+        },
+        "label": {
+          "he": "55 ס״מ",
+          "en": "55 cm"
+        }
+      }
+    ],
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "colorRequiredText": {
+      "he": "נא לבחור צבע",
+      "en": "Please choose a color"
+    },
+    "colors": [
+      {
+        "id": "black",
+        "addPrice": 0,
+        "label": {
+          "he": "שחור",
+          "en": "Black"
+        },
+        "swatch": "#111111",
+        "image": "images/products/product-279/product-279-2.png"
+      },
+      {
+        "id": "white",
+        "addPrice": 0,
+        "label": {
+          "he": "לבן",
+          "en": "White"
+        },
+        "swatch": "#f2f2f2",
+        "image": "images/products/product-279/product-279-1.png"
+      },
+      {
+        "id": "pink",
+        "addPrice": 0,
+        "label": {
+          "he": "ורוד",
+          "en": "Pink"
+        },
+        "swatch": "#f2a7c5",
+        "image": "images/products/product-279/product-279-4.png"
+      },
+      {
+        "id": "gold-black",
+        "addPrice": 0,
+        "label": {
+          "he": "שחור זהב",
+          "en": "Gold Black"
+        },
+        "swatch": "linear-gradient(135deg,#d6af37 0 50%,#111111 50% 100%)",
+        "image": "images/products/product-279/product-279-5.png"
+      },
+      {
+        "id": "gold-pink",
+        "addPrice": 0,
+        "label": {
+          "he": "ורוד זהב",
+          "en": "Gold Pink"
+        },
+        "swatch": "linear-gradient(135deg,#d6af37 0 50%,#f2a7c5 50% 100%)",
+        "image": "images/products/product-279/product-279-6.png"
+      }
+    ],
+    "defaultColorId": "white",
+    "cardTitle": {
+      "he": "שרשרת טניס תלתן - צבע לבן",
+      "en": "Clover Tennis Necklace - White"
+    },
+    "cardMessage": {
+      "he": "שרשרת טניס תלתן במראה יוקרתי עם מרכזי תלתן לבנים, משובצת זירקונים נוצצים ובארבעה אורכים לבחירה.",
+      "en": "A premium clover tennis necklace with sparkling cubic zirconia and multiple length options."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "description": {
+      "he": "שרשרת טניס תלתן - צבע לבן. שרשרת טניס משובצת אבני Cubic Zirconia עם תלתנים מעוצבים, מתאימה לנשים ולגברים וכוללת בחירת אורך בין 40 ל־55 ס״מ.",
+      "en": "Clover Tennis Necklace - White. A clover tennis necklace set with cubic zirconia stones, suitable for women and men, with 40 to 55 cm length options."
+    },
+    "details": {
+      "he": [
+        "שרשרת טניס תלתן יוניסקס לנשים ולגברים",
+        "משובצת אבני Cubic Zirconia במראה יוקרתי",
+        "צבע התלתנים: לבן",
+        "לבחירה באורכים: 40 ס״מ, 45 ס״מ, 50 ס״מ, 55 ס״מ",
+        "רוחב השרשרת: 4 מ״מ",
+        "גוון התכשיט: כסף / זהב לבן",
+        "סוג שרשרת: Tennis Chain / Link Chain",
+        "סוג מתכת: Copper",
+        "חומר: Cubic zirconia",
+        "מחיר התחלתי לאורך 40 ס״מ: 279.90 ₪",
+        "כל תוספת של 5 ס״מ מוסיפה 5 ₪",
+        "המחיר מתעדכן אוטומטית לפי האורך שנבחר"
+      ],
+      "en": [
+        "Unisex clover tennis necklace for women and men",
+        "Set with cubic zirconia stones for a luxurious look",
+        "Clover color: White",
+        "Available in 40 cm, 45 cm, 50 cm and 55 cm lengths",
+        "Chain width: 4 mm",
+        "Jewelry tone: Silver / White Gold",
+        "Chain type: Tennis Chain / Link Chain",
+        "Metal type: Copper",
+        "Material: Cubic zirconia",
+        "Starting price for 40 cm: ₪279.90",
+        "Every additional 5 cm adds ₪5",
+        "Price updates automatically according to the selected length"
+      ]
+    },
+    "afterText": {
+      "he": "הגלריה כוללת את כל חמשת הצבעים, תמונת hover משותפת, ושתי תמונות דוגמן להמחשת המראה על הגוף.",
+      "en": "The gallery includes all five colors, a shared hover image, and two model photos for on-body reference."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    }
+  },
+  {
+    "id": "clover-tennis-necklace-pink-280",
+    "slug": "product-280",
+    "urlSlug": "clover-tennis-necklace-pink",
+    "sku": "VS-NK-280",
+    "category": "necklaces",
+    "categories": [
+      "necklaces"
+    ],
+    "badge": null,
+    "sourceUrl": "https://he.aliexpress.com/item/1005007435716827.html?invitationCode=cDNOVDNpUnd1Ykw5a2pXWHRXdkFlSzFWUUhSM280eEd3ZjliaTJtY2FqS2VQemFTZUJrNWVWT0s1MU1hdTAyWg&srcSns=sns_Copy&spreadType=socialShare&social_params=6000499153564&bizType=ProductDetail&spreadCode=cDNOVDNpUnd1Ykw5a2pXWHRXdkFlSzFWUUhSM280eEd3ZjliaTJtY2FqS2VQemFTZUJrNWVWT0s1MU1hdTAyWg&aff_fcid=5630be5052b84287baebdf245e434f5c-1791989128825-06620-_c32pm8xx&tt=MG&aff_fsk=_c32pm8xx&aff_platform=default&sk=_c32pm8xx&aff_trace_key=5630be5052b84287baebdf245e434f5c-1791989128825-06620-_c32pm8xx&shareId=6000499153564&businessType=ProductDetail&platform=AE&terminal_id=11c284625c2a4368aae236cae79df5d9&afSmartRedirect=y&gatewayAdapt=glo2isr",
+    "hoverImage": "images/products/product-281/product-281-8.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-280/product-280-1.png",
+        "hoverImage": "images/products/product-281/product-281-8.png"
+      },
+      "men": {
+        "image": "images/products/product-280/product-280-1.png",
+        "hoverImage": "images/products/product-281/product-281-8.png"
+      }
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "showAllGalleryThumbs": true,
+    "images": [
+      "images/products/product-280/product-280-1.png",
+      "images/products/product-280/product-280-2.png",
+      "images/products/product-280/product-280-3.png",
+      "images/products/product-280/product-280-5.png",
+      "images/products/product-280/product-280-6.png",
+      "images/products/product-280/product-280-7.png",
+      "images/products/product-280/product-280-8.png"
+    ],
+    "price": 279.9,
+    "title": {
+      "he": "שרשרת טניס תלתן - צבע ורוד",
+      "en": "Clover Tennis Necklace - Pink"
+    },
+    "subtitle": {
+      "he": "שרשרת טניס יוניסקס עם תלתנים ורודים · לבחירה ב־40 / 45 / 50 / 55 ס״מ · גוון כסף / זהב לבן",
+      "en": "Unisex clover tennis necklace · choose 40 / 45 / 50 / 55 cm · choose your color"
+    },
+    "sizeHeading": {
+      "he": "בחרו אורך",
+      "en": "Choose length"
+    },
+    "sizes": [
+      {
+        "id": "40cm",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "279.90 ₪",
+          "en": "₪279.90"
+        },
+        "label": {
+          "he": "40 ס״מ",
+          "en": "40 cm"
+        }
+      },
+      {
+        "id": "45cm",
+        "addPrice": 5,
+        "priceLabel": {
+          "he": "284.90 ₪",
+          "en": "₪284.90"
+        },
+        "label": {
+          "he": "45 ס״מ",
+          "en": "45 cm"
+        }
+      },
+      {
+        "id": "50cm",
+        "addPrice": 10,
+        "priceLabel": {
+          "he": "289.90 ₪",
+          "en": "₪289.90"
+        },
+        "label": {
+          "he": "50 ס״מ",
+          "en": "50 cm"
+        }
+      },
+      {
+        "id": "55cm",
+        "addPrice": 15,
+        "priceLabel": {
+          "he": "294.90 ₪",
+          "en": "₪294.90"
+        },
+        "label": {
+          "he": "55 ס״מ",
+          "en": "55 cm"
+        }
+      }
+    ],
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "colorRequiredText": {
+      "he": "נא לבחור צבע",
+      "en": "Please choose a color"
+    },
+    "colors": [
+      {
+        "id": "black",
+        "addPrice": 0,
+        "label": {
+          "he": "שחור",
+          "en": "Black"
+        },
+        "swatch": "#111111",
+        "image": "images/products/product-280/product-280-2.png"
+      },
+      {
+        "id": "white",
+        "addPrice": 0,
+        "label": {
+          "he": "לבן",
+          "en": "White"
+        },
+        "swatch": "#f2f2f2",
+        "image": "images/products/product-280/product-280-3.png"
+      },
+      {
+        "id": "pink",
+        "addPrice": 0,
+        "label": {
+          "he": "ורוד",
+          "en": "Pink"
+        },
+        "swatch": "#f2a7c5",
+        "image": "images/products/product-280/product-280-1.png"
+      },
+      {
+        "id": "gold-black",
+        "addPrice": 0,
+        "label": {
+          "he": "שחור זהב",
+          "en": "Gold Black"
+        },
+        "swatch": "linear-gradient(135deg,#d6af37 0 50%,#111111 50% 100%)",
+        "image": "images/products/product-280/product-280-5.png"
+      },
+      {
+        "id": "gold-pink",
+        "addPrice": 0,
+        "label": {
+          "he": "ורוד זהב",
+          "en": "Gold Pink"
+        },
+        "swatch": "linear-gradient(135deg,#d6af37 0 50%,#f2a7c5 50% 100%)",
+        "image": "images/products/product-280/product-280-6.png"
+      }
+    ],
+    "defaultColorId": "pink",
+    "cardTitle": {
+      "he": "שרשרת טניס תלתן - צבע ורוד",
+      "en": "Clover Tennis Necklace - Pink"
+    },
+    "cardMessage": {
+      "he": "שרשרת טניס תלתן במראה יוקרתי עם מרכזי תלתן ורודים, משובצת זירקונים נוצצים ובארבעה אורכים לבחירה.",
+      "en": "A premium clover tennis necklace with sparkling cubic zirconia and multiple length options."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "description": {
+      "he": "שרשרת טניס תלתן - צבע ורוד. שרשרת טניס משובצת אבני Cubic Zirconia עם תלתנים מעוצבים, מתאימה לנשים ולגברים וכוללת בחירת אורך בין 40 ל־55 ס״מ.",
+      "en": "Clover Tennis Necklace - Pink. A clover tennis necklace set with cubic zirconia stones, suitable for women and men, with 40 to 55 cm length options."
+    },
+    "details": {
+      "he": [
+        "שרשרת טניס תלתן יוניסקס לנשים ולגברים",
+        "משובצת אבני Cubic Zirconia במראה יוקרתי",
+        "צבע התלתנים: ורוד",
+        "לבחירה באורכים: 40 ס״מ, 45 ס״מ, 50 ס״מ, 55 ס״מ",
+        "רוחב השרשרת: 4 מ״מ",
+        "גוון התכשיט: כסף / זהב לבן",
+        "סוג שרשרת: Tennis Chain / Link Chain",
+        "סוג מתכת: Copper",
+        "חומר: Cubic zirconia",
+        "מחיר התחלתי לאורך 40 ס״מ: 279.90 ₪",
+        "כל תוספת של 5 ס״מ מוסיפה 5 ₪",
+        "המחיר מתעדכן אוטומטית לפי האורך שנבחר"
+      ],
+      "en": [
+        "Unisex clover tennis necklace for women and men",
+        "Set with cubic zirconia stones for a luxurious look",
+        "Clover color: Pink",
+        "Available in 40 cm, 45 cm, 50 cm and 55 cm lengths",
+        "Chain width: 4 mm",
+        "Jewelry tone: Silver / White Gold",
+        "Chain type: Tennis Chain / Link Chain",
+        "Metal type: Copper",
+        "Material: Cubic zirconia",
+        "Starting price for 40 cm: ₪279.90",
+        "Every additional 5 cm adds ₪5",
+        "Price updates automatically according to the selected length"
+      ]
+    },
+    "afterText": {
+      "he": "הגלריה כוללת את כל חמשת הצבעים, תמונת hover משותפת, ושתי תמונות דוגמן להמחשת המראה על הגוף.",
+      "en": "The gallery includes all five colors, a shared hover image, and two model photos for on-body reference."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    }
+  },
+  {
+    "id": "clover-tennis-necklace-gold-black-281",
+    "slug": "product-281",
+    "urlSlug": "clover-tennis-necklace-gold-black",
+    "sku": "VS-NK-281",
+    "category": "necklaces",
+    "categories": [
+      "necklaces"
+    ],
+    "badge": null,
+    "sourceUrl": "https://he.aliexpress.com/item/1005007435716827.html?invitationCode=cDNOVDNpUnd1Ykw5a2pXWHRXdkFlSzFWUUhSM280eEd3ZjliaTJtY2FqS2VQemFTZUJrNWVWT0s1MU1hdTAyWg&srcSns=sns_Copy&spreadType=socialShare&social_params=6000499153564&bizType=ProductDetail&spreadCode=cDNOVDNpUnd1Ykw5a2pXWHRXdkFlSzFWUUhSM280eEd3ZjliaTJtY2FqS2VQemFTZUJrNWVWT0s1MU1hdTAyWg&aff_fcid=5630be5052b84287baebdf245e434f5c-1791989128825-06620-_c32pm8xx&tt=MG&aff_fsk=_c32pm8xx&aff_platform=default&sk=_c32pm8xx&aff_trace_key=5630be5052b84287baebdf245e434f5c-1791989128825-06620-_c32pm8xx&shareId=6000499153564&businessType=ProductDetail&platform=AE&terminal_id=11c284625c2a4368aae236cae79df5d9&afSmartRedirect=y&gatewayAdapt=glo2isr",
+    "hoverImage": "images/products/product-281/product-281-8.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-281/product-281-1.png",
+        "hoverImage": "images/products/product-281/product-281-8.png"
+      },
+      "men": {
+        "image": "images/products/product-281/product-281-1.png",
+        "hoverImage": "images/products/product-281/product-281-8.png"
+      }
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "showAllGalleryThumbs": true,
+    "images": [
+      "images/products/product-281/product-281-1.png",
+      "images/products/product-281/product-281-2.png",
+      "images/products/product-281/product-281-3.png",
+      "images/products/product-281/product-281-4.png",
+      "images/products/product-281/product-281-6.png",
+      "images/products/product-281/product-281-7.png",
+      "images/products/product-281/product-281-8.png"
+    ],
+    "price": 279.9,
+    "title": {
+      "he": "שרשרת טניס תלתן - צבע שחור זהב",
+      "en": "Clover Tennis Necklace - Gold Black"
+    },
+    "subtitle": {
+      "he": "שרשרת טניס יוניסקס בגימור זהב עם תלתנים שחורים · לבחירה ב־40 / 45 / 50 / 55 ס״מ",
+      "en": "Unisex clover tennis necklace · choose 40 / 45 / 50 / 55 cm · choose your color"
+    },
+    "sizeHeading": {
+      "he": "בחרו אורך",
+      "en": "Choose length"
+    },
+    "sizes": [
+      {
+        "id": "40cm",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "279.90 ₪",
+          "en": "₪279.90"
+        },
+        "label": {
+          "he": "40 ס״מ",
+          "en": "40 cm"
+        }
+      },
+      {
+        "id": "45cm",
+        "addPrice": 5,
+        "priceLabel": {
+          "he": "284.90 ₪",
+          "en": "₪284.90"
+        },
+        "label": {
+          "he": "45 ס״מ",
+          "en": "45 cm"
+        }
+      },
+      {
+        "id": "50cm",
+        "addPrice": 10,
+        "priceLabel": {
+          "he": "289.90 ₪",
+          "en": "₪289.90"
+        },
+        "label": {
+          "he": "50 ס״מ",
+          "en": "50 cm"
+        }
+      },
+      {
+        "id": "55cm",
+        "addPrice": 15,
+        "priceLabel": {
+          "he": "294.90 ₪",
+          "en": "₪294.90"
+        },
+        "label": {
+          "he": "55 ס״מ",
+          "en": "55 cm"
+        }
+      }
+    ],
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "colorRequiredText": {
+      "he": "נא לבחור צבע",
+      "en": "Please choose a color"
+    },
+    "colors": [
+      {
+        "id": "black",
+        "addPrice": 0,
+        "label": {
+          "he": "שחור",
+          "en": "Black"
+        },
+        "swatch": "#111111",
+        "image": "images/products/product-281/product-281-2.png"
+      },
+      {
+        "id": "white",
+        "addPrice": 0,
+        "label": {
+          "he": "לבן",
+          "en": "White"
+        },
+        "swatch": "#f2f2f2",
+        "image": "images/products/product-281/product-281-3.png"
+      },
+      {
+        "id": "pink",
+        "addPrice": 0,
+        "label": {
+          "he": "ורוד",
+          "en": "Pink"
+        },
+        "swatch": "#f2a7c5",
+        "image": "images/products/product-281/product-281-4.png"
+      },
+      {
+        "id": "gold-black",
+        "addPrice": 0,
+        "label": {
+          "he": "שחור זהב",
+          "en": "Gold Black"
+        },
+        "swatch": "linear-gradient(135deg,#d6af37 0 50%,#111111 50% 100%)",
+        "image": "images/products/product-281/product-281-1.png"
+      },
+      {
+        "id": "gold-pink",
+        "addPrice": 0,
+        "label": {
+          "he": "ורוד זהב",
+          "en": "Gold Pink"
+        },
+        "swatch": "linear-gradient(135deg,#d6af37 0 50%,#f2a7c5 50% 100%)",
+        "image": "images/products/product-281/product-281-6.png"
+      }
+    ],
+    "defaultColorId": "gold-black",
+    "cardTitle": {
+      "he": "שרשרת טניס תלתן - צבע שחור זהב",
+      "en": "Clover Tennis Necklace - Gold Black"
+    },
+    "cardMessage": {
+      "he": "שרשרת טניס תלתן בגימור זהב עם מרכזי תלתן שחורים, משובצת זירקונים נוצצים ובארבעה אורכים לבחירה.",
+      "en": "A premium clover tennis necklace with sparkling cubic zirconia and multiple length options."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "description": {
+      "he": "שרשרת טניס תלתן - צבע שחור זהב. שרשרת טניס משובצת אבני Cubic Zirconia עם תלתנים מעוצבים, מתאימה לנשים ולגברים וכוללת בחירת אורך בין 40 ל־55 ס״מ.",
+      "en": "Clover Tennis Necklace - Gold Black. A clover tennis necklace set with cubic zirconia stones, suitable for women and men, with 40 to 55 cm length options."
+    },
+    "details": {
+      "he": [
+        "שרשרת טניס תלתן יוניסקס לנשים ולגברים",
+        "משובצת אבני Cubic Zirconia במראה יוקרתי",
+        "צבע התלתנים: שחור זהב",
+        "לבחירה באורכים: 40 ס״מ, 45 ס״מ, 50 ס״מ, 55 ס״מ",
+        "רוחב השרשרת: 4 מ״מ",
+        "גוון התכשיט: זהב",
+        "סוג שרשרת: Tennis Chain / Link Chain",
+        "סוג מתכת: Copper",
+        "חומר: Cubic zirconia",
+        "מחיר התחלתי לאורך 40 ס״מ: 279.90 ₪",
+        "כל תוספת של 5 ס״מ מוסיפה 5 ₪",
+        "המחיר מתעדכן אוטומטית לפי האורך שנבחר"
+      ],
+      "en": [
+        "Unisex clover tennis necklace for women and men",
+        "Set with cubic zirconia stones for a luxurious look",
+        "Clover color: Gold Black",
+        "Available in 40 cm, 45 cm, 50 cm and 55 cm lengths",
+        "Chain width: 4 mm",
+        "Jewelry tone: Gold",
+        "Chain type: Tennis Chain / Link Chain",
+        "Metal type: Copper",
+        "Material: Cubic zirconia",
+        "Starting price for 40 cm: ₪279.90",
+        "Every additional 5 cm adds ₪5",
+        "Price updates automatically according to the selected length"
+      ]
+    },
+    "afterText": {
+      "he": "הגלריה כוללת את כל חמשת הצבעים, תמונת hover משותפת, ושתי תמונות דוגמן להמחשת המראה על הגוף.",
+      "en": "The gallery includes all five colors, a shared hover image, and two model photos for on-body reference."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    }
+  },
+  {
+    "id": "clover-tennis-necklace-gold-pink-282",
+    "slug": "product-282",
+    "urlSlug": "clover-tennis-necklace-gold-pink",
+    "sku": "VS-NK-282",
+    "category": "necklaces",
+    "categories": [
+      "necklaces"
+    ],
+    "badge": null,
+    "sourceUrl": "https://he.aliexpress.com/item/1005007435716827.html?invitationCode=cDNOVDNpUnd1Ykw5a2pXWHRXdkFlSzFWUUhSM280eEd3ZjliaTJtY2FqS2VQemFTZUJrNWVWT0s1MU1hdTAyWg&srcSns=sns_Copy&spreadType=socialShare&social_params=6000499153564&bizType=ProductDetail&spreadCode=cDNOVDNpUnd1Ykw5a2pXWHRXdkFlSzFWUUhSM280eEd3ZjliaTJtY2FqS2VQemFTZUJrNWVWT0s1MU1hdTAyWg&aff_fcid=5630be5052b84287baebdf245e434f5c-1791989128825-06620-_c32pm8xx&tt=MG&aff_fsk=_c32pm8xx&aff_platform=default&sk=_c32pm8xx&aff_trace_key=5630be5052b84287baebdf245e434f5c-1791989128825-06620-_c32pm8xx&shareId=6000499153564&businessType=ProductDetail&platform=AE&terminal_id=11c284625c2a4368aae236cae79df5d9&afSmartRedirect=y&gatewayAdapt=glo2isr",
+    "hoverImage": "images/products/product-281/product-281-8.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-282/product-282-1.png",
+        "hoverImage": "images/products/product-281/product-281-8.png"
+      },
+      "men": {
+        "image": "images/products/product-282/product-282-1.png",
+        "hoverImage": "images/products/product-281/product-281-8.png"
+      }
+    },
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "showAllGalleryThumbs": true,
+    "images": [
+      "images/products/product-282/product-282-1.png",
+      "images/products/product-282/product-282-2.png",
+      "images/products/product-282/product-282-3.png",
+      "images/products/product-282/product-282-4.png",
+      "images/products/product-282/product-282-5.png",
+      "images/products/product-282/product-282-7.png",
+      "images/products/product-282/product-282-8.png"
+    ],
+    "price": 279.9,
+    "title": {
+      "he": "שרשרת טניס תלתן - צבע ורוד זהב",
+      "en": "Clover Tennis Necklace - Gold Pink"
+    },
+    "subtitle": {
+      "he": "שרשרת טניס יוניסקס בגימור זהב עם תלתנים ורודים · לבחירה ב־40 / 45 / 50 / 55 ס״מ",
+      "en": "Unisex clover tennis necklace · choose 40 / 45 / 50 / 55 cm · choose your color"
+    },
+    "sizeHeading": {
+      "he": "בחרו אורך",
+      "en": "Choose length"
+    },
+    "sizes": [
+      {
+        "id": "40cm",
+        "addPrice": 0,
+        "priceLabel": {
+          "he": "279.90 ₪",
+          "en": "₪279.90"
+        },
+        "label": {
+          "he": "40 ס״מ",
+          "en": "40 cm"
+        }
+      },
+      {
+        "id": "45cm",
+        "addPrice": 5,
+        "priceLabel": {
+          "he": "284.90 ₪",
+          "en": "₪284.90"
+        },
+        "label": {
+          "he": "45 ס״מ",
+          "en": "45 cm"
+        }
+      },
+      {
+        "id": "50cm",
+        "addPrice": 10,
+        "priceLabel": {
+          "he": "289.90 ₪",
+          "en": "₪289.90"
+        },
+        "label": {
+          "he": "50 ס״מ",
+          "en": "50 cm"
+        }
+      },
+      {
+        "id": "55cm",
+        "addPrice": 15,
+        "priceLabel": {
+          "he": "294.90 ₪",
+          "en": "₪294.90"
+        },
+        "label": {
+          "he": "55 ס״מ",
+          "en": "55 cm"
+        }
+      }
+    ],
+    "colorHeading": {
+      "he": "בחרו צבע",
+      "en": "Choose color"
+    },
+    "colorRequiredText": {
+      "he": "נא לבחור צבע",
+      "en": "Please choose a color"
+    },
+    "colors": [
+      {
+        "id": "black",
+        "addPrice": 0,
+        "label": {
+          "he": "שחור",
+          "en": "Black"
+        },
+        "swatch": "#111111",
+        "image": "images/products/product-282/product-282-2.png"
+      },
+      {
+        "id": "white",
+        "addPrice": 0,
+        "label": {
+          "he": "לבן",
+          "en": "White"
+        },
+        "swatch": "#f2f2f2",
+        "image": "images/products/product-282/product-282-3.png"
+      },
+      {
+        "id": "pink",
+        "addPrice": 0,
+        "label": {
+          "he": "ורוד",
+          "en": "Pink"
+        },
+        "swatch": "#f2a7c5",
+        "image": "images/products/product-282/product-282-4.png"
+      },
+      {
+        "id": "gold-black",
+        "addPrice": 0,
+        "label": {
+          "he": "שחור זהב",
+          "en": "Gold Black"
+        },
+        "swatch": "linear-gradient(135deg,#d6af37 0 50%,#111111 50% 100%)",
+        "image": "images/products/product-282/product-282-5.png"
+      },
+      {
+        "id": "gold-pink",
+        "addPrice": 0,
+        "label": {
+          "he": "ורוד זהב",
+          "en": "Gold Pink"
+        },
+        "swatch": "linear-gradient(135deg,#d6af37 0 50%,#f2a7c5 50% 100%)",
+        "image": "images/products/product-282/product-282-1.png"
+      }
+    ],
+    "defaultColorId": "gold-pink",
+    "cardTitle": {
+      "he": "שרשרת טניס תלתן - צבע ורוד זהב",
+      "en": "Clover Tennis Necklace - Gold Pink"
+    },
+    "cardMessage": {
+      "he": "שרשרת טניס תלתן בגימור זהב עם מרכזי תלתן ורודים, משובצת זירקונים נוצצים ובארבעה אורכים לבחירה.",
+      "en": "A premium clover tennis necklace with sparkling cubic zirconia and multiple length options."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "description": {
+      "he": "שרשרת טניס תלתן - צבע ורוד זהב. שרשרת טניס משובצת אבני Cubic Zirconia עם תלתנים מעוצבים, מתאימה לנשים ולגברים וכוללת בחירת אורך בין 40 ל־55 ס״מ.",
+      "en": "Clover Tennis Necklace - Gold Pink. A clover tennis necklace set with cubic zirconia stones, suitable for women and men, with 40 to 55 cm length options."
+    },
+    "details": {
+      "he": [
+        "שרשרת טניס תלתן יוניסקס לנשים ולגברים",
+        "משובצת אבני Cubic Zirconia במראה יוקרתי",
+        "צבע התלתנים: ורוד זהב",
+        "לבחירה באורכים: 40 ס״מ, 45 ס״מ, 50 ס״מ, 55 ס״מ",
+        "רוחב השרשרת: 4 מ״מ",
+        "גוון התכשיט: זהב",
+        "סוג שרשרת: Tennis Chain / Link Chain",
+        "סוג מתכת: Copper",
+        "חומר: Cubic zirconia",
+        "מחיר התחלתי לאורך 40 ס״מ: 279.90 ₪",
+        "כל תוספת של 5 ס״מ מוסיפה 5 ₪",
+        "המחיר מתעדכן אוטומטית לפי האורך שנבחר"
+      ],
+      "en": [
+        "Unisex clover tennis necklace for women and men",
+        "Set with cubic zirconia stones for a luxurious look",
+        "Clover color: Gold Pink",
+        "Available in 40 cm, 45 cm, 50 cm and 55 cm lengths",
+        "Chain width: 4 mm",
+        "Jewelry tone: Gold",
+        "Chain type: Tennis Chain / Link Chain",
+        "Metal type: Copper",
+        "Material: Cubic zirconia",
+        "Starting price for 40 cm: ₪279.90",
+        "Every additional 5 cm adds ₪5",
+        "Price updates automatically according to the selected length"
+      ]
+    },
+    "afterText": {
+      "he": "הגלריה כוללת את כל חמשת הצבעים, תמונת hover משותפת, ושתי תמונות דוגמן להמחשת המראה על הגוף.",
+      "en": "The gallery includes all five colors, a shared hover image, and two model photos for on-body reference."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    }
+  },
+  {
+    "id": "infinity-ice-necklace-silver-283",
+    "slug": "product-283",
+    "urlSlug": "infinity-ice-necklace-silver",
+    "sku": "VS-NK-283",
+    "category": "necklaces",
+    "categories": [
+      "necklaces"
+    ],
+    "badge": null,
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "showAllGalleryThumbs": true,
+    "hoverImage": "images/products/product-283/product-283-2.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-283/product-283-1.png",
+        "hoverImage": "images/products/product-283/product-283-2.png"
+      },
+      "men": {
+        "image": "images/products/product-283/product-283-1.png",
+        "hoverImage": "images/products/product-283/product-283-2.png"
+      }
+    },
+    "images": [
+      "images/products/product-283/product-283-1.png",
+      "images/products/product-283/product-283-2.png",
+      "images/products/product-283/product-283-3.png",
+      "images/products/product-283/product-283-4.png",
+      "images/products/product-283/product-283-5.png"
+    ],
+    "price": 389.9,
+    "title": {
+      "he": "שרשרת אינפיניטי אייס משובצת - צבע כסף",
+      "en": "Infinity Ice Link Necklace - Silver"
+    },
+    "subtitle": {
+      "he": "שרשרת חוליות אינפיניטי משובצת קריסטלים · רוחב כ-6 מ״מ · לבחירה באורך 45 או 50 ס״מ",
+      "en": "Silver-tone crystal-pavé infinity link chain · approx. 6 mm wide · 45 or 50 cm"
+    },
+    "sizeHeading": {
+      "he": "בחרו אורך",
+      "en": "Choose length"
+    },
+    "sizeRequiredText": {
+      "he": "בחרו אורך שרשרת",
+      "en": "Choose a necklace length"
+    },
+    "sizes": [
+      {
+        "id": "45cm",
+        "addPrice": 0,
+        "label": {
+          "he": "45 ס״מ",
+          "en": "45 cm"
+        },
+        "priceLabel": {
+          "he": "389.90 ₪",
+          "en": "₪389.90"
+        }
+      },
+      {
+        "id": "50cm",
+        "addPrice": 10,
+        "label": {
+          "he": "50 ס״מ",
+          "en": "50 cm"
+        },
+        "priceLabel": {
+          "he": "399.90 ₪",
+          "en": "₪399.90"
+        }
+      }
+    ],
+    "cardTitle": {
+      "he": "שרשרת אינפיניטי אייס משובצת - צבע כסף",
+      "en": "Infinity Ice Link Necklace - Silver"
+    },
+    "cardMessage": {
+      "he": "שרשרת חוליות אינפיניטי נוצצת בגוון כסף עם שיבוץ קריסטלים ורוחב כ-6 מ״מ.",
+      "en": "A sparkling silver-tone infinity link chain set with pavé crystals."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "description": {
+      "he": "שרשרת אינפיניטי אייס בעיצוב חוליות משתלבות בצורת שמונה, בגוון כסף ובשיבוץ קריסטלים נוצצים. שרשרת יוניסקס שמתאימה לנשים ולגברים, עם סוגר קופסה משובץ ובחירה בין 45 ל-50 ס״מ.",
+      "en": "A silver-tone infinity-link necklace with crystal pavé detailing and an embellished box clasp. A unisex design available in 45 cm and 50 cm lengths."
+    },
+    "details": {
+      "he": [
+        "דגם: שרשרת חוליות אינפיניטי משובצת",
+        "צבע התכשיט: כסף",
+        "שיבוץ: קריסטלים נוצצים",
+        "רוחב השרשרת: כ-6 מ״מ",
+        "סוג שרשרת: חוליות משתלבות בעיצוב אינפיניטי",
+        "סוגר קופסה משובץ",
+        "אורכים לבחירה: 45 ס״מ או 50 ס״מ",
+        "45 ס״מ - 389.90 ₪",
+        "50 ס״מ - 399.90 ₪",
+        "עיצוב יוניסקס - מתאים לנשים ולגברים"
+      ],
+      "en": [
+        "Style: crystal-pavé infinity-link necklace",
+        "Jewelry color: silver",
+        "Stone detail: sparkling crystals",
+        "Chain width: approx. 6 mm",
+        "Chain type: interlocking infinity links",
+        "Embellished box clasp",
+        "Available lengths: 45 cm or 50 cm",
+        "45 cm - ₪389.90",
+        "50 cm - ₪399.90",
+        "Unisex design"
+      ]
+    },
+    "afterText": {
+      "he": "שרשרת אינפיניטי אייס משובצת בגוון כסף, זמינה באורך 45 או 50 ס״מ.",
+      "en": "A silver-tone crystal infinity necklace available in 45 cm or 50 cm."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    }
+  },
+  {
+    "id": "infinity-ice-bracelet-silver-284",
+    "slug": "product-284",
+    "urlSlug": "infinity-ice-bracelet-silver",
+    "sku": "VS-BR-284",
+    "category": "bracelets",
+    "categories": [
+      "bracelets",
+      "bracelets-men",
+      "bracelets-women"
+    ],
+    "badge": null,
+    "cardMode": "view",
+    "hideMessageCard": true,
+    "showAllGalleryThumbs": true,
+    "hoverImage": "images/products/product-284/product-284-3.png",
+    "collectionMedia": {
+      "women": {
+        "image": "images/products/product-284/product-284-1.png",
+        "hoverImage": "images/products/product-284/product-284-3.png"
+      },
+      "men": {
+        "image": "images/products/product-284/product-284-1.png",
+        "hoverImage": "images/products/product-284/product-284-3.png"
+      }
+    },
+    "images": [
+      "images/products/product-284/product-284-1.png",
+      "images/products/product-284/product-284-2.png",
+      "images/products/product-284/product-284-3.png"
+    ],
+    "price": 239.9,
+    "title": {
+      "he": "צמיד אינפיניטי אייס משובץ - צבע כסף",
+      "en": "Infinity Ice Bracelet - Silver"
+    },
+    "subtitle": {
+      "he": "צמיד חוליות אינפיניטי משובץ קריסטלים · גוון כסף · לבחירה באורך 18 או 20 ס״מ",
+      "en": "Silver-tone crystal-pavé infinity link bracelet · 18 cm or 20 cm"
+    },
+    "sizeHeading": {
+      "he": "בחרו אורך",
+      "en": "Choose length"
+    },
+    "sizeRequiredText": {
+      "he": "בחרו אורך צמיד",
+      "en": "Choose a bracelet length"
+    },
+    "sizes": [
+      {
+        "id": "18cm",
+        "addPrice": 0,
+        "label": {
+          "he": "18 ס״מ",
+          "en": "18 cm"
+        },
+        "priceLabel": {
+          "he": "239.90 ₪",
+          "en": "₪239.90"
+        }
+      },
+      {
+        "id": "20cm",
+        "addPrice": 10,
+        "label": {
+          "he": "20 ס״מ",
+          "en": "20 cm"
+        },
+        "priceLabel": {
+          "he": "249.90 ₪",
+          "en": "₪249.90"
+        }
+      }
+    ],
+    "cardTitle": {
+      "he": "צמיד אינפיניטי אייס משובץ - צבע כסף",
+      "en": "Infinity Ice Bracelet - Silver"
+    },
+    "cardMessage": {
+      "he": "צמיד חוליות אינפיניטי משובץ קריסטלים נוצצים, בגוון כסף וסוגר קופסה משובץ.",
+      "en": "Silver-tone crystal pavé infinity bracelet with a sparkling box clasp."
+    },
+    "signature": {
+      "he": "",
+      "en": ""
+    },
+    "description": {
+      "he": "צמיד אינפיניטי אייס משובץ בעיצוב חוליות משתלבות בצורת שמונה, בגוון כסף ובשיבוץ קריסטלים נוצצים. סוגר קופסה משובץ ועיצוב יוניסקס שמתאים לנשים ולגברים. זמין באורך 18 או 20 ס״מ.",
+      "en": "A silver-tone infinity-link bracelet with crystal pavé detailing and an embellished box clasp. Unisex style available in 18 and 20 cm lengths."
+    },
+    "details": {
+      "he": [
+        "דגם: צמיד חוליות אינפיניטי משובץ",
+        "צבע התכשיט: כסף",
+        "שיבוץ: קריסטלים נוצצים",
+        "סגנון: חוליות משתלבות בעיצוב אינפיניטי",
+        "סוגר קופסה משובץ",
+        "אורכים לבחירה: 18 ס״מ או 20 ס״מ",
+        "18 ס״מ - 239.90 ₪",
+        "20 ס״מ - 249.90 ₪",
+        "עיצוב יוניסקס - מתאים לנשים ולגברים"
+      ],
+      "en": [
+        "Style: crystal-pavé infinity link bracelet",
+        "Jewelry color: silver",
+        "Stone detail: sparkling crystals",
+        "Chain: interlocking infinity links",
+        "Embellished box clasp",
+        "Available lengths: 18 cm and 20 cm",
+        "18 cm - ₪239.90",
+        "20 cm - ₪249.90",
+        "Unisex design"
+      ]
+    },
+    "afterText": {
+      "he": "צמיד אינפיניטי אייס משובץ בגוון כסף, זמין באורך 18 או 20 ס״מ.",
+      "en": "A silver-tone crystal infinity bracelet available in 18 or 20 cm."
+    },
+    "deliveryBusinessDays": {
+      "min": 9,
+      "max": 14
+    }
+  },
+{
+  "id": "tennis-moissanite-ring-gold-285",
+  "slug": "product-285",
+  "urlSlug": "tennis-moissanite-ring-gold",
+  "sku": "VS-RING-285",
+  "category": "rings",
+  "categories": [
+    "rings"
+  ],
+  "badge": {
+    "he": "Moissanite 4mm",
+    "en": "Moissanite 4mm"
+  },
+  "cardMode": "view",
+  "hideMessageCard": true,
+  "cardImage": "images/products/product-285/product-285-1.png",
+  "hoverImage": "images/products/product-285/product-285-3.png",
+  "images": [
+    "images/products/product-285/product-285-1.png",
+    "images/products/product-285/product-285-2.png",
+    "images/products/product-285/product-285-3.png",
+    "images/products/product-286/product-286-1.png",
+    "images/products/product-286/product-286-2.png",
+    "images/products/product-286/product-286-3.png"
+  ],
+  "showAllGalleryThumbs": true,
+  "price": 199.9,
+  "title": {
+    "he": "טבעת טניס מויסנייט קלאסית - צבע זהב",
+    "en": "Classic Moissanite Tennis Ring - Gold"
+  },
+  "subtitle": {
+    "he": "טבעת טניס מויסנייט 4 מ״מ · לבחירה בצבע כסף או זהב ובמידות 5–9 כולל חצאים",
+    "en": "4mm moissanite tennis ring · choose silver or gold in sizes 5–9 including half sizes"
+  },
+  "sizeHeading": {
+    "he": "בחרו מידה",
+    "en": "Choose size"
+  },
+  "sizes": [
+    {
+      "id": "5",
+      "addPrice": 0,
+      "priceLabel": {
+        "he": "199.90 ₪",
+        "en": "₪199.90"
+      },
+      "label": {
+        "he": "5",
+        "en": "5"
+      }
+    },
+    {
+      "id": "5.5",
+      "addPrice": 0,
+      "priceLabel": {
+        "he": "199.90 ₪",
+        "en": "₪199.90"
+      },
+      "label": {
+        "he": "5.5",
+        "en": "5.5"
+      }
+    },
+    {
+      "id": "6",
+      "addPrice": 0,
+      "priceLabel": {
+        "he": "199.90 ₪",
+        "en": "₪199.90"
+      },
+      "label": {
+        "he": "6",
+        "en": "6"
+      }
+    },
+    {
+      "id": "6.5",
+      "addPrice": 0,
+      "priceLabel": {
+        "he": "199.90 ₪",
+        "en": "₪199.90"
+      },
+      "label": {
+        "he": "6.5",
+        "en": "6.5"
+      }
+    },
+    {
+      "id": "7",
+      "addPrice": 0,
+      "priceLabel": {
+        "he": "199.90 ₪",
+        "en": "₪199.90"
+      },
+      "label": {
+        "he": "7",
+        "en": "7"
+      }
+    },
+    {
+      "id": "7.5",
+      "addPrice": 0,
+      "priceLabel": {
+        "he": "199.90 ₪",
+        "en": "₪199.90"
+      },
+      "label": {
+        "he": "7.5",
+        "en": "7.5"
+      }
+    },
+    {
+      "id": "8",
+      "addPrice": 0,
+      "priceLabel": {
+        "he": "199.90 ₪",
+        "en": "₪199.90"
+      },
+      "label": {
+        "he": "8",
+        "en": "8"
+      }
+    },
+    {
+      "id": "8.5",
+      "addPrice": 0,
+      "priceLabel": {
+        "he": "199.90 ₪",
+        "en": "₪199.90"
+      },
+      "label": {
+        "he": "8.5",
+        "en": "8.5"
+      }
+    },
+    {
+      "id": "9",
+      "addPrice": 0,
+      "priceLabel": {
+        "he": "199.90 ₪",
+        "en": "₪199.90"
+      },
+      "label": {
+        "he": "9",
+        "en": "9"
+      }
+    }
+  ],
+  "colorHeading": {
+    "he": "בחרו צבע",
+    "en": "Choose color"
+  },
+  "colorRequiredText": {
+    "he": "נא לבחור צבע",
+    "en": "Please choose a color"
+  },
+  "colorDisplay": "color-row",
+  "colors": [
+    {
+      "id": "silver",
+      "label": {
+        "he": "כסף",
+        "en": "Silver"
+      },
+      "swatch": "linear-gradient(135deg,#fbfbfb 0%,#bfc5cc 48%,#f7f8fa 72%,#9da4ac 100%)",
+      "image": "images/products/product-286/product-286-1.png"
+    },
+    {
+      "id": "gold",
+      "label": {
+        "he": "זהב",
+        "en": "Gold"
+      },
+      "swatch": "linear-gradient(135deg,#fff0a8 0%,#d5a233 48%,#ffe28a 72%,#b67d18 100%)",
+      "image": "images/products/product-285/product-285-1.png"
+    }
+  ],
+  "defaultColorId": "gold",
+  "cardTitle": {
+    "he": "טבעת טניס מויסנייט קלאסית - צבע זהב",
+    "en": "Classic Moissanite Tennis Ring - Gold"
+  },
+  "cardMessage": {
+    "he": "טבעת טניס מויסנייט 4 מ״מ, לבחירה בצבע כסף או זהב ובמידות 5–9 כולל חצאים. כל המידות במחיר אחיד.",
+    "en": "4mm moissanite tennis ring available in silver or gold and sizes 5–9 including half sizes. All sizes at one price."
+  },
+  "signature": {
+    "he": "",
+    "en": ""
+  },
+  "details": {
+    "he": [
+      "אבנים: Moissanite DVVS1 בגודל 4 מ״מ",
+      "עיצוב: טבעת טניס קלאסית משובצת",
+      "צבעים לבחירה: כסף או זהב",
+      "מידות לבחירה: 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9",
+      "מחיר: 199.90 ₪ לכל המידות",
+      "הגלריה כוללת את כל 6 התמונות של גרסאות הכסף והזהב"
+    ],
+    "en": [
+      "Stones: 4mm DVVS1 moissanite",
+      "Design: classic tennis ring",
+      "Available colors: Silver or Gold",
+      "Available sizes: 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9",
+      "Price: ₪199.90 for all sizes",
+      "Gallery includes all 6 images of the silver and gold versions"
+    ]
+  },
+  "afterText": {
+    "he": "בחרו צבע ומידה. בעמוד המוצר מוצגות כל 6 התמונות של גרסאות הכסף והזהב.",
+    "en": "Choose a color and size. The product page displays all 6 images of the silver and gold versions."
+  },
+  "deliveryBusinessDays": {
+    "min": 9,
+    "max": 14
   }
+},
+{
+  "id": "tennis-moissanite-ring-silver-286",
+  "slug": "product-286",
+  "urlSlug": "tennis-moissanite-ring-silver",
+  "sku": "VS-RING-286",
+  "category": "rings",
+  "categories": [
+    "rings"
+  ],
+  "badge": {
+    "he": "Moissanite 4mm",
+    "en": "Moissanite 4mm"
+  },
+  "cardMode": "view",
+  "hideMessageCard": true,
+  "cardImage": "images/products/product-286/product-286-1.png",
+  "hoverImage": "images/products/product-286/product-286-3.png",
+  "images": [
+    "images/products/product-286/product-286-1.png",
+    "images/products/product-286/product-286-2.png",
+    "images/products/product-286/product-286-3.png",
+    "images/products/product-285/product-285-1.png",
+    "images/products/product-285/product-285-2.png",
+    "images/products/product-285/product-285-3.png"
+  ],
+  "showAllGalleryThumbs": true,
+  "price": 199.9,
+  "title": {
+    "he": "טבעת טניס מויסנייט קלאסית - צבע כסף",
+    "en": "Classic Moissanite Tennis Ring - Silver"
+  },
+  "subtitle": {
+    "he": "טבעת טניס מויסנייט 4 מ״מ · לבחירה בצבע כסף או זהב ובמידות 5–9 כולל חצאים",
+    "en": "4mm moissanite tennis ring · choose silver or gold in sizes 5–9 including half sizes"
+  },
+  "sizeHeading": {
+    "he": "בחרו מידה",
+    "en": "Choose size"
+  },
+  "sizes": [
+    {
+      "id": "5",
+      "addPrice": 0,
+      "priceLabel": {
+        "he": "199.90 ₪",
+        "en": "₪199.90"
+      },
+      "label": {
+        "he": "5",
+        "en": "5"
+      }
+    },
+    {
+      "id": "5.5",
+      "addPrice": 0,
+      "priceLabel": {
+        "he": "199.90 ₪",
+        "en": "₪199.90"
+      },
+      "label": {
+        "he": "5.5",
+        "en": "5.5"
+      }
+    },
+    {
+      "id": "6",
+      "addPrice": 0,
+      "priceLabel": {
+        "he": "199.90 ₪",
+        "en": "₪199.90"
+      },
+      "label": {
+        "he": "6",
+        "en": "6"
+      }
+    },
+    {
+      "id": "6.5",
+      "addPrice": 0,
+      "priceLabel": {
+        "he": "199.90 ₪",
+        "en": "₪199.90"
+      },
+      "label": {
+        "he": "6.5",
+        "en": "6.5"
+      }
+    },
+    {
+      "id": "7",
+      "addPrice": 0,
+      "priceLabel": {
+        "he": "199.90 ₪",
+        "en": "₪199.90"
+      },
+      "label": {
+        "he": "7",
+        "en": "7"
+      }
+    },
+    {
+      "id": "7.5",
+      "addPrice": 0,
+      "priceLabel": {
+        "he": "199.90 ₪",
+        "en": "₪199.90"
+      },
+      "label": {
+        "he": "7.5",
+        "en": "7.5"
+      }
+    },
+    {
+      "id": "8",
+      "addPrice": 0,
+      "priceLabel": {
+        "he": "199.90 ₪",
+        "en": "₪199.90"
+      },
+      "label": {
+        "he": "8",
+        "en": "8"
+      }
+    },
+    {
+      "id": "8.5",
+      "addPrice": 0,
+      "priceLabel": {
+        "he": "199.90 ₪",
+        "en": "₪199.90"
+      },
+      "label": {
+        "he": "8.5",
+        "en": "8.5"
+      }
+    },
+    {
+      "id": "9",
+      "addPrice": 0,
+      "priceLabel": {
+        "he": "199.90 ₪",
+        "en": "₪199.90"
+      },
+      "label": {
+        "he": "9",
+        "en": "9"
+      }
+    }
+  ],
+  "colorHeading": {
+    "he": "בחרו צבע",
+    "en": "Choose color"
+  },
+  "colorRequiredText": {
+    "he": "נא לבחור צבע",
+    "en": "Please choose a color"
+  },
+  "colorDisplay": "color-row",
+  "colors": [
+    {
+      "id": "silver",
+      "label": {
+        "he": "כסף",
+        "en": "Silver"
+      },
+      "swatch": "linear-gradient(135deg,#fbfbfb 0%,#bfc5cc 48%,#f7f8fa 72%,#9da4ac 100%)",
+      "image": "images/products/product-286/product-286-1.png"
+    },
+    {
+      "id": "gold",
+      "label": {
+        "he": "זהב",
+        "en": "Gold"
+      },
+      "swatch": "linear-gradient(135deg,#fff0a8 0%,#d5a233 48%,#ffe28a 72%,#b67d18 100%)",
+      "image": "images/products/product-285/product-285-1.png"
+    }
+  ],
+  "defaultColorId": "silver",
+  "cardTitle": {
+    "he": "טבעת טניס מויסנייט קלאסית - צבע כסף",
+    "en": "Classic Moissanite Tennis Ring - Silver"
+  },
+  "cardMessage": {
+    "he": "טבעת טניס מויסנייט 4 מ״מ, לבחירה בצבע כסף או זהב ובמידות 5–9 כולל חצאים. כל המידות במחיר אחיד.",
+    "en": "4mm moissanite tennis ring available in silver or gold and sizes 5–9 including half sizes. All sizes at one price."
+  },
+  "signature": {
+    "he": "",
+    "en": ""
+  },
+  "details": {
+    "he": [
+      "אבנים: Moissanite DVVS1 בגודל 4 מ״מ",
+      "עיצוב: טבעת טניס קלאסית משובצת",
+      "צבעים לבחירה: כסף או זהב",
+      "מידות לבחירה: 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9",
+      "מחיר: 199.90 ₪ לכל המידות",
+      "הגלריה כוללת את כל 6 התמונות של גרסאות הכסף והזהב"
+    ],
+    "en": [
+      "Stones: 4mm DVVS1 moissanite",
+      "Design: classic tennis ring",
+      "Available colors: Silver or Gold",
+      "Available sizes: 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9",
+      "Price: ₪199.90 for all sizes",
+      "Gallery includes all 6 images of the silver and gold versions"
+    ]
+  },
+  "afterText": {
+    "he": "בחרו צבע ומידה. בעמוד המוצר מוצגות כל 6 התמונות של גרסאות הכסף והזהב.",
+    "en": "Choose a color and size. The product page displays all 6 images of the silver and gold versions."
+  },
+  "deliveryBusinessDays": {
+    "min": 9,
+    "max": 14
+  }
+}
 ];
 
 var CATEGORIES = [

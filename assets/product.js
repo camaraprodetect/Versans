@@ -299,7 +299,8 @@
     if (titleEl) titleEl.textContent = title;
     var crumb = $('#crumbCurrent');
     if (crumb) crumb.textContent = title;
-    if (title) document.title = title + ' | VerSans';
+    // Keep the browser tab branded while the visible product title follows the selected color.
+    document.title = 'VerSans';
   }
   function hasSizeOptions() { return Array.isArray(product.sizes) && product.sizes.length; }
   function hasColorOptions() { return Array.isArray(product.colors) && product.colors.length; }
@@ -1847,6 +1848,23 @@ async function uploadProductPhoto(blob, meta) {
   function selectNecklace(optionId) {
     var option = findOption(product.necklaces, optionId);
     if (!option) return;
+
+    // This Star of David pair represents two separate catalog items. Swap the
+    // in-memory product rather than navigating so the name, gallery, details,
+    // price and cart SKU all stay in sync with the selected metal color.
+    if (product.slug === 'product-276' || product.slug === 'product-277') {
+      var pairedSlug = option.id === 'silver' ? 'product-276' : (option.id === 'gold' ? 'product-277' : '');
+      var pairedProduct = pairedSlug && findProduct(pairedSlug);
+      if (pairedProduct && pairedProduct.id !== product.id) {
+        product = pairedProduct;
+        selectedNecklaceId = option.id;
+        activeImageIndex = 0;
+        renderProduct();
+        updateSelectedProductIdentity();
+        return;
+      }
+    }
+
     selectedNecklaceId = option.id;
     updateVariantImageFromSelections();
     if (!product.variantImages && option.image) setMainImage(option.image, L(option.label));
@@ -2055,6 +2073,37 @@ async function uploadProductPhoto(blob, meta) {
     showAddedOnProductButton();
   }
 
+  // Size guides should reflect an actual selection on the product page.
+  // Color/metal and width/thickness controls alone do not require length guidance.
+  function productHasLengthChoices(value) {
+    var options = value && Array.isArray(value.sizes) ? value.sizes : [];
+    if (options.length < 2) return false;
+    var heading = value.sizeHeading || {};
+    var headingText = String(typeof heading === 'string' ? heading : ((heading.he || '') + ' ' + (heading.en || ''))).toLowerCase();
+    if (/רוחב|עובי|קוטר|width|thickness|diameter/i.test(headingText)) return false;
+    var headingIsLength = /אורך|length/i.test(headingText);
+    var lengthCount = 0;
+    for (var i = 0; i < options.length; i++) {
+      var option = options[i] || {};
+      var label = option.label || {};
+      var labelText = String(typeof label === 'string' ? label : ((label.he || '') + ' ' + (label.en || ''))).toLowerCase();
+      var idText = String(option.id || '').toLowerCase();
+      // A millimeter measurement denotes width/thickness here, not chain length.
+      if (/מ[״"׳']?מ|\bmm\b/i.test(labelText)) continue;
+      if (/ס[״"׳']?מ|\bcm\b|\binch(?:es)?\b|אינץ/i.test(labelText) ||
+          /(?:^|\d)in$/.test(idText) || headingIsLength) lengthCount++;
+    }
+    return lengthCount >= 2;
+  }
+
+  function productHasRingSizeChoices(value) {
+    var options = value && Array.isArray(value.sizes) ? value.sizes : [];
+    if (options.length < 2) return false;
+    var heading = value.sizeHeading || {};
+    var headingText = String(typeof heading === 'string' ? heading : ((heading.he || '') + ' ' + (heading.en || ''))).toLowerCase();
+    return !/רוחב|עובי|width|thickness/i.test(headingText);
+  }
+
   function renderProduct() {
     /* In the LOVE FOREVER necklace-picker flow the package is already chosen
        on the package product. Keep it on the pending bundle only; do not mark
@@ -2108,15 +2157,15 @@ async function uploadProductPhoto(blob, meta) {
 
     var isBraceletProduct = !suppressAllSizeGuides && (product.category === 'bracelets' || (Array.isArray(product.categories) && product.categories.indexOf('bracelets') !== -1));
     var braceletSizeGuideLink = $('#braceletSizeGuideLink');
-    if (braceletSizeGuideLink) braceletSizeGuideLink.hidden = !isBraceletProduct;
+    if (braceletSizeGuideLink) braceletSizeGuideLink.hidden = !(isBraceletProduct && productHasLengthChoices(product));
 
     var isRingProduct = !suppressAllSizeGuides && (product.category === 'rings' || (Array.isArray(product.categories) && product.categories.indexOf('rings') !== -1));
     var ringSizeGuideLink = $('#ringSizeGuideLink');
-    if (ringSizeGuideLink) ringSizeGuideLink.hidden = !isRingProduct;
+    if (ringSizeGuideLink) ringSizeGuideLink.hidden = !(isRingProduct && productHasRingSizeChoices(product));
 
     var isNecklaceProduct = !suppressAllSizeGuides && (product.category === 'necklaces' || (Array.isArray(product.categories) && product.categories.indexOf('necklaces') !== -1) || /שרשרת/.test(productTitleForGuide) || /necklace/i.test(productTitleForGuide));
     var necklaceSizeGuideLink = $('#necklaceSizeGuideLink');
-    if (necklaceSizeGuideLink) necklaceSizeGuideLink.hidden = !isNecklaceProduct;
+    if (necklaceSizeGuideLink) necklaceSizeGuideLink.hidden = !(isNecklaceProduct && productHasLengthChoices(product));
     $('#necklaceHeading').textContent = L(product.necklaceHeading) || (isBraceletProduct ? (lang === 'he' ? 'בחרו צבע' : 'Choose color') : (lang === 'he' ? 'בחרו שרשרת' : 'Choose a necklace'));
     $('#boxHeading').textContent = L(product.boxHeading) || (lang === 'he' ? 'בחרו קופסה' : 'Choose a box');
     $('#summaryNecklaceLabel').textContent = L(product.necklaceSummaryLabel) || (isBraceletProduct ? (lang === 'he' ? 'צמיד' : 'Bracelet') : (lang === 'he' ? 'שרשרת' : 'Necklace'));

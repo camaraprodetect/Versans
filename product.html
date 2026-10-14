@@ -99,6 +99,63 @@
   .product-help-link__copy small{font-size:.7rem}
 }
 </style>
+<!-- Compact size picker for the two new Moissanite tennis rings only -->
+<style id="versans-tennis-ring-compact-size-picker">
+body:is([data-product-slug="product-285"],[data-product-slug="product-286"]) #sizeBlock{
+  padding:.7rem .8rem .8rem!important;
+  gap:.45rem!important;
+  margin-bottom:.9rem!important;
+  border-radius:15px!important;
+}
+body:is([data-product-slug="product-285"],[data-product-slug="product-286"]) #sizeBlock>.product-option-head{
+  gap:.4rem!important;
+  margin:0!important;
+}
+body:is([data-product-slug="product-285"],[data-product-slug="product-286"]) #sizeBlock .product-option-head>div{gap:.4rem!important}
+body:is([data-product-slug="product-285"],[data-product-slug="product-286"]) #sizeBlock .product-option-step{
+  width:25px!important;height:25px!important;font-size:.76rem!important;
+}
+body:is([data-product-slug="product-285"],[data-product-slug="product-286"]) #sizeBlock .product-option-head h2{
+  font-size:.94rem!important;line-height:1.25!important;
+}
+body:is([data-product-slug="product-285"],[data-product-slug="product-286"]) #sizeBlock .product-option-status{font-size:.71rem!important}
+body:is([data-product-slug="product-285"],[data-product-slug="product-286"]) #sizeOptions{
+  display:grid!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:.4rem!important;
+}
+body:is([data-product-slug="product-285"],[data-product-slug="product-286"]) #sizeOptions .product-size-choice{
+  min-width:0!important;min-height:49px!important;
+  padding:.42rem .5rem!important;
+  gap:.3rem!important;
+  border-radius:10px!important;
+  box-shadow:inset 0 0 0 1px #d4dee7!important;
+  background:#fff!important;
+  transform:none!important;
+}
+body:is([data-product-slug="product-285"],[data-product-slug="product-286"]) #sizeOptions .product-size-choice.is-selected{
+  box-shadow:inset 0 0 0 2px var(--p-blue,#2f6edb)!important;
+}
+body:is([data-product-slug="product-285"],[data-product-slug="product-286"]) #sizeOptions .product-size-choice__label{
+  min-width:0;gap:.07rem!important;font-size:.83rem!important;line-height:1.15!important;
+}
+body:is([data-product-slug="product-285"],[data-product-slug="product-286"]) #sizeOptions .product-size-choice__label small{
+  font-size:.65rem!important;line-height:1.15!important;white-space:nowrap;
+}
+body:is([data-product-slug="product-285"],[data-product-slug="product-286"]) #sizeOptions .product-size-choice__check{
+  width:17px!important;height:17px!important;font-size:.58rem!important;
+}
+@media (max-width:760px){
+  body:is([data-product-slug="product-285"],[data-product-slug="product-286"]) #sizeOptions{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+}
+@media (max-width:359px){
+  body:is([data-product-slug="product-285"],[data-product-slug="product-286"]) #sizeOptions{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}
+</style>
 <link rel="stylesheet" href="/assets/promo-popups.css?v=20261013-video-minimal-v4">
 </head>
 <body class="product-page-body">
@@ -505,7 +562,7 @@
 <script src="/assets/pricing.js?v=20260928-buy2get1-v1"></script>
 <script src="/assets/cart-drawer.js?v=20261003-fashion-color-identity-v25"></script>
 <script src="assets/i18n.js?v=20260905-versans-v1"></script>
-<script src="assets/product.js?v=20261007-mobile-nav-touch-fix-v36"></script>
+<script src="assets/product.js?v=20261015-tab-title-brand-only-v1"></script>
 <script src="assets/product-reviews.js?v=20260924-product-review-name-v2"></script>
 <script src="assets/auth-nav.js?v=20260914-pretty-urls-v1"></script>
   <script src="/assets/presence.js?v=20260915-presence-v1"></script>
@@ -527,6 +584,6 @@
   });
 })();
 </script>
-<script src="/assets/promo-popups.js?v=20261013-close-on-cta-v5"></script>
+<script src="/assets/promo-popups.js?v=20261015-three-minute-v6"></script>
 </body>
 </html>
