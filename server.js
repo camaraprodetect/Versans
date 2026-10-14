@@ -92,6 +92,7 @@ const database = createDatabase({ root: ROOT, sqlitePath: DB_PATH });
 let liveCatalogScript = '';
 const catalogManager = createCatalogManager(database, () => {
   liveCatalogScript = '';
+  liveCatalogVersion = '';
   PRODUCT_BY_URL_SLUG.clear();
   for (const product of PRODUCTS) if (product.urlSlug) PRODUCT_BY_URL_SLUG.set(String(product.urlSlug), product);
 });
@@ -7196,6 +7197,39 @@ function safeInlineJson(value) {
     .replace(/&/g, '\\u0026');
 }
 
+
+// Use the same version for the storefront script and the HTML. A product edit
+// invalidates it immediately; an unchanged catalog keeps a stable URL.
+let liveCatalogVersion = '';
+function currentCatalogVersion() {
+  if (!liveCatalogVersion) {
+    liveCatalogVersion = crypto.createHash('sha256')
+      .update(JSON.stringify(PRODUCTS)).digest('hex').slice(0, 16);
+  }
+  return liveCatalogVersion;
+}
+
+// Inline only the durable admin edits *after* products.js has executed. This is
+// important on shops where a proxy/CDN still returns a cached products.js:
+// those clients will nonetheless apply exactly what was saved in PostgreSQL.
+// The inline code is small when no edits exist, unlike embedding every product
+// in the HTML document.
+function storefrontCatalogOverridesInline() {
+  const data = JSON.stringify(catalogManager.patches())
+    .replace(/</g, '\\u003c')
+    .replace(/\u2028/g, '\\u2028')
+    .replace(/\u2029/g, '\\u2029');
+  return '<script data-versans-catalog-overrides="inline">' +
+    '(function(){var arr=window.PRODUCTS;if(!Array.isArray(arr))return;' +
+    'var edits=' + data + ';var keys=Object.keys(edits);' +
+    'if(!keys.length)return;var seen=Object.create(null);' +
+    'var updated=arr.filter(function(p){return !Object.prototype.hasOwnProperty.call(edits,p.slug)||edits[p.slug]!==null;})' +
+    '.map(function(p){if(Object.prototype.hasOwnProperty.call(edits,p.slug)){seen[p.slug]=1;return edits[p.slug];}return p;});' +
+    'keys.forEach(function(k){if(edits[k]&&!seen[k]&&!updated.some(function(p){return p.slug===k;}))updated.push(edits[k]);});' +
+    'arr.splice.apply(arr,[0,arr.length].concat(updated));' +
+    '})();' + '</script>';
+}
+
 function injectStorefrontRouting(html, bootRoute) {
   const early = `<script>window.__VERSANS_BOOT_ROUTE__=${safeInlineJson(bootRoute)};</script><script src="/assets/route-state.js?v=20260924-home-no-refresh-v8"></script>`;
   const late = '<script src="/assets/url-mask.js?v=20260924-home-reviews-anchor-v4"></script>' +
@@ -7205,13 +7239,20 @@ function injectStorefrontRouting(html, bootRoute) {
     .replace(/(\/?assets\/config\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261001-product-help-v1')
     .replace(/(\/?assets\/styles\.css)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261001-product-help-v1')
     .replace(/(\/?assets\/store\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261004-cart-checkout-fix-v64')
-    .replace(/(\/?assets\/products\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261015-live-admin-catalog-v1')
+    .replace(/(\/?assets\/products\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=live-' + currentCatalogVersion())
     .replace(/(\/?assets\/product\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261003-all-color-identity-v48')
     .replace(/(\/?assets\/cart-drawer\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261004-cart-checkout-fix-v64')
     .replace(/(\/?assets\/cart-state\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261003-all-color-identity-v48')
     .replace(/(\/?assets\/site-header\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20260922-favorites-sync-v1')
     .replace(/(\/?assets\/auth-nav\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261003-guest-orders-v37')
     .replace(/(\/?assets\/presence\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20260922-urlmask-v2');
+  // Preserve the source script's load order: the inline patches run only
+  // after the base products.js, and before store.js/product.js reads PRODUCTS.
+  const catalogScript = /(<script\b[^>]*\bsrc\s*=\s*(["'])(?:\/)?assets\/products\.js(?:\?[^"']*)?\2[^>]*>\s*<\/script>)/gi;
+  if (catalogScript.test(out)) {
+    out = out.replace(/<script\b[^>]*\bsrc\s*=\s*(["'])\/?api\/catalog\/overrides\.js(?:\?[^"']*)?\1[^>]*>\s*<\/script>/gi, '');
+    out = out.replace(catalogScript, '$1\n' + storefrontCatalogOverridesInline());
+  }
   if (out.includes('</head>')) out = out.replace('</head>', `${early}\n</head>`);
   else out = early + out;
   if (out.includes('</body>')) out = out.replace('</body>', `${late}\n</body>`);
@@ -7228,7 +7269,8 @@ function serveStorefrontHtml(req, res, filePath, bootRoute) {
   const body = isAuthDocument ? source : injectStorefrontRouting(source, bootRoute || htmlBootRoute(req, '/'));
   res.statusCode = 200;
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
-  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+  res.setHeader('Pragma', 'no-cache');
   res.setHeader('Content-Length', Buffer.byteLength(body));
   if (req.method === 'HEAD') res.end();
   else res.end(body);
@@ -7326,6 +7368,16 @@ const server = http.createServer(async (req, res) => {
   catch (_) { json(res, 400, { error: 'Bad request' }); return; }
 
   try {
+    // A deployment may have multiple Node workers behind the same Render
+    // service. Check PostgreSQL before serving any public catalog document
+    // or product script so edits made in another worker appear immediately.
+    // This is a cheap schema_meta read; refresh() only rebuilds on changes.
+    if ((req.method === 'GET' || req.method === 'HEAD') && (
+      pathname === '/assets/products.js' ||
+      (!pathname.startsWith('/api/') && !pathname.startsWith('/assets/') &&
+       !pathname.startsWith('/images/') && !pathname.startsWith('/admin') &&
+       wantsHtmlDocument(req))
+    )) await catalogManager.refresh();
     // Backward-compatible cleanup for reset links issued before the hidden-token flow.
     // Convert the URL token into an HttpOnly cookie and immediately redirect to a clean URL.
     if (req.method === 'GET' && pathname === '/reset-password' && parsed.searchParams.has('token')) {
