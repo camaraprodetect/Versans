@@ -8,6 +8,7 @@ const { URL } = require('node:url');
 const { createDatabase } = require('./lib/database.js');
 const { createPaymentUrl, verifyPayment, priceOrder } = require('./api/_hyp.js');
 const { PRODUCTS } = require('./assets/products.js');
+const { createCatalogManager } = require('./lib/catalog-manager.js');
 const ROUTES = require('./assets/routes.js');
 const { normalizeAdminRange, normalizeStoredOrderItems, aggregatePaidOrders } = require('./lib/admin-analytics.js');
 const { absoluteUrl, isEmailConfigured, orderConfirmationEmail, passwordResetEmail, productAnnouncementEmail, sendEmail, termsUpdateEmail, welcomeEmail } = require('./lib/email.js');
@@ -86,6 +87,10 @@ const VERSANS_BOT_TIMEOUT_MS = 25 * 1000;
 const VERSANS_BOT_MAX_BODY_CHARS = 32000;
 
 const database = createDatabase({ root: ROOT, sqlitePath: DB_PATH });
+const catalogManager = createCatalogManager(database, () => {
+  PRODUCT_BY_URL_SLUG.clear();
+  for (const product of PRODUCTS) if (product.urlSlug) PRODUCT_BY_URL_SLUG.set(String(product.urlSlug), product);
+});
 
 function json(res, status, payload, extraHeaders = {}) {
   const body = JSON.stringify(payload);
@@ -404,7 +409,6 @@ function productById(id) {
 
 function productTitle(product) {
   if (!product) return 'המוצר שנרכש';
-  if (product.id === 'mom-heart-01') return 'שרשרת לאמא עם ברכה והקדשה מרגשת';
   return (product.title && (product.title.he || product.title.en)) || 'המוצר שנרכש';
 }
 
@@ -2634,7 +2638,7 @@ function adminProductInfo(id) {
   return {
     id: String(id || ''),
     name: product ? productTitle(product) : String(id || 'מוצר'),
-    image: product && Array.isArray(product.images) && product.images[0] ? '/' + product.images[0] : null,
+    image: product && Array.isArray(product.images) && product.images[0] ? (String(product.images[0]).startsWith('/') ? product.images[0] : '/' + product.images[0]) : null,
     href: product ? productPublicPath(product) : null
   };
 }
@@ -5952,6 +5956,38 @@ async function adminApi(req, res, pathname, parsed) {
     return true;
   }
 
+  // Product catalog management - owner/admin access only (staff has no write permission).
+  if (pathname === '/api/admin/catalog' && req.method === 'GET') {
+    json(res, 200, { ok: true, products: catalogManager.list(), pendingSheetIds: catalogManager.pendingSlugs(), sheetConfigured: Boolean(process.env.GOOGLE_PRODUCTS_WEBHOOK_URL && process.env.GOOGLE_PRODUCTS_WEBHOOK_SECRET) });
+    return true;
+  }
+  if (pathname === '/api/admin/catalog/images' && req.method === 'POST') {
+    if (!sameOriginAllowed(req)) { json(res, 403, {ok:false,error:'origin_not_allowed'}); return true; }
+    const body = await readJsonBody(req, 3 * 1024 * 1024);
+    const url = await catalogManager.uploadImage(body && body.image);
+    json(res, 201, {ok:true,url}); return true;
+  }
+  if (pathname === '/api/admin/catalog' && req.method === 'POST') {
+    if (!sameOriginAllowed(req)) { json(res, 403, {ok:false,error:'origin_not_allowed'}); return true; }
+    const body = await readJsonBody(req, 128 * 1024);
+    const result = await catalogManager.write(body && body.product);
+    const sheetSync = await catalogManager.syncOne(result.slug);
+    json(res, 201, {ok:true,...result,sheetSync});return true;
+  }
+  const catalogItemRoute = /^\/api\/admin\/catalog\/(product-[a-z0-9-]+)$/.exec(pathname);
+  if (catalogItemRoute && (req.method === 'PUT' || req.method === 'DELETE')) {
+    if (!sameOriginAllowed(req)) { json(res, 403, {ok:false,error:'origin_not_allowed'}); return true; }
+    const result = req.method === 'DELETE' ? await catalogManager.write(null,catalogItemRoute[1],true)
+      : await catalogManager.write((await readJsonBody(req,128*1024)).product,catalogItemRoute[1]);
+    const sheetSync = await catalogManager.syncOne(result.slug);
+    json(res, 200, {ok:true,...result,sheetSync});return true;
+  }
+  if (pathname === '/api/admin/catalog/sync' && req.method === 'POST') {
+    if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'});return true; }
+    const results = await catalogManager.syncPending(50);
+    json(res,200,{ok:true,results,pendingSheetIds:catalogManager.pendingSlugs()});return true;
+  }
+
   if (req.method !== 'GET') {
     json(res, 405, { ok: false, error: 'method_not_allowed' });
     return true;
@@ -7305,6 +7341,21 @@ const server = http.createServer(async (req, res) => {
       redirect(res, ROUTES.LEGACY_PAGE_PATHS[pathname] + (query ? '?' + query : ''), 301);
       return;
     }
+    // Uncached runtime catalog patch: the storefront still loads its original catalog
+    // first, then applies only admin changes before store.js/product.js.
+    if (pathname === '/api/catalog/overrides.js' && req.method === 'GET') {
+      const payload = JSON.stringify(catalogManager.patches()).replace(/</g,'\\u003c').replace(/\u2028/g,'\\u2028');
+      const script = '(function(){if(!Array.isArray(window.PRODUCTS))return;var changes='+payload+';var map=Object.create(null);Object.keys(changes).forEach(function(k){map[k]=changes[k]});var list=window.PRODUCTS.filter(function(p){return !Object.prototype.hasOwnProperty.call(map,p.slug)||map[p.slug]!==null}).map(function(p){return Object.prototype.hasOwnProperty.call(map,p.slug)?map[p.slug]:p});Object.keys(map).forEach(function(k){if(map[k] && !list.some(function(p){return p.slug===k}))list.push(map[k])});window.PRODUCTS.splice.apply(window.PRODUCTS,[0,window.PRODUCTS.length].concat(list));})();';
+      res.writeHead(200, {'Content-Type':'application/javascript; charset=utf-8','Cache-Control':'no-store','Content-Length':Buffer.byteLength(script)});
+      res.end(script);return;
+    }
+    const catalogImageMatch = /^\/api\/catalog\/media\/([a-f0-9-]{36})$/.exec(pathname);
+    if (catalogImageMatch && req.method === 'GET') {
+      const media = await catalogManager.getImage(catalogImageMatch[1]);
+      if (!media) { json(res,404,{ok:false,error:'image_not_found'});return; }
+      res.writeHead(200,{'Content-Type':media.type,'Content-Length':media.buffer.length,'Cache-Control':'public, max-age=86400','X-Content-Type-Options':'nosniff'});
+      res.end(media.buffer);return;
+    }
     if (await adminPage(req, res, pathname)) return;
     if (await marketingUnsubscribePage(req, res, pathname, parsed)) return;
     if (await providerMessageWebhookApi(req, res, pathname)) return;
@@ -7785,6 +7836,9 @@ setInterval(async () => {
   try { await syncActiveShipmentTracking(); } catch (err) { console.error('Active shipment tracking sync failed:', err); }
 }, 30 * 60 * 1000).unref();
 
+// Retry any queued product-sheet updates when Sheets is temporarily unavailable.
+setInterval(() => { catalogManager.syncPending().catch(err => console.error('Product-sheet sync retry:',err)); }, 5 * 60 * 1000).unref();
+
 // New-order WhatsApp is event-driven: the paid-order flow posts the webhook
 // immediately after the paid order is persisted. Google Sheets is independent.
 // This lightweight DB-only retry loop also backfills recent paid orders that
@@ -7802,6 +7856,7 @@ setInterval(async () => {
 
 async function start() {
   await database.init();
+  await catalogManager.init();
   // Never purge real orders, reviews or customers during a deployment.
   await database.cleanupPresencePageViews(Date.now() - PRESENCE_RETENTION_MS);
   server.listen(PORT, HOST, () => {

@@ -253,7 +253,13 @@
       script.src = CATALOG_SRC;
       script.async = true;
       script.setAttribute('data-versans-bot-products', '1');
-      script.onload = function () { resolve(getProducts()); };
+      script.onload = function () {
+        var patch = document.createElement('script');
+        patch.src = '/api/catalog/overrides.js?v=20261014-bot-catalog-v1';
+        patch.onload = function () { resolve(getProducts()); };
+        patch.onerror = function () { resolve(getProducts()); };
+        document.head.appendChild(patch);
+      };
       script.onerror = function () { resolve([]); };
       document.head.appendChild(script);
     });
