@@ -7,7 +7,7 @@ const crypto = require('node:crypto');
 const { URL } = require('node:url');
 const { createDatabase } = require('./lib/database.js');
 const { createPaymentUrl, verifyPayment, priceOrder } = require('./api/_hyp.js');
-const { PRODUCTS } = require('./assets/products.js');
+const { PRODUCTS, CATEGORIES } = require('./assets/products.js');
 const { createCatalogManager } = require('./lib/catalog-manager.js');
 const ROUTES = require('./assets/routes.js');
 const { normalizeAdminRange, normalizeStoredOrderItems, aggregatePaidOrders } = require('./lib/admin-analytics.js');
@@ -87,10 +87,26 @@ const VERSANS_BOT_TIMEOUT_MS = 25 * 1000;
 const VERSANS_BOT_MAX_BODY_CHARS = 32000;
 
 const database = createDatabase({ root: ROOT, sqlitePath: DB_PATH });
+// The public products script is regenerated whenever an admin saves an edit.
+// The browser must never receive the original on-disk catalog after a DB change.
+let liveCatalogScript = '';
 const catalogManager = createCatalogManager(database, () => {
+  liveCatalogScript = '';
   PRODUCT_BY_URL_SLUG.clear();
   for (const product of PRODUCTS) if (product.urlSlug) PRODUCT_BY_URL_SLUG.set(String(product.urlSlug), product);
 });
+function storefrontCatalogScript() {
+  if (!liveCatalogScript) {
+    const safe = (data) => JSON.stringify(data)
+      .replace(/</g, '\\u003c')
+      .replace(/\u2028/g, '\\u2028')
+      .replace(/\u2029/g, '\\u2029');
+    // Keep the same classic-script globals that store.js and product.js expect.
+    liveCatalogScript = 'var PRODUCTS = ' + safe(PRODUCTS) + ';\n' +
+      'var CATEGORIES = ' + safe(CATEGORIES) + ';\n';
+  }
+  return liveCatalogScript;
+}
 
 function json(res, status, payload, extraHeaders = {}) {
   const body = JSON.stringify(payload);
@@ -7189,7 +7205,7 @@ function injectStorefrontRouting(html, bootRoute) {
     .replace(/(\/?assets\/config\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261001-product-help-v1')
     .replace(/(\/?assets\/styles\.css)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261001-product-help-v1')
     .replace(/(\/?assets\/store\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261004-cart-checkout-fix-v64')
-    .replace(/(\/?assets\/products\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261001-product-help-v1')
+    .replace(/(\/?assets\/products\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261015-live-admin-catalog-v1')
     .replace(/(\/?assets\/product\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261003-all-color-identity-v48')
     .replace(/(\/?assets\/cart-drawer\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261004-cart-checkout-fix-v64')
     .replace(/(\/?assets\/cart-state\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261003-all-color-identity-v48')
@@ -7227,6 +7243,21 @@ function wantsHtmlDocument(req) {
 
 function serveStatic(req, res, pathname) {
   if (req.method !== 'GET' && req.method !== 'HEAD') return false;
+
+  // Every storefront uses /assets/products.js. Respond with the current
+  // PostgreSQL-backed catalog, not the stale products.js file on disk.
+  // Serving here also covers older pages that do not load overrides.js.
+  if (pathname === '/assets/products.js') {
+    const script = storefrontCatalogScript();
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('Content-Length', Buffer.byteLength(script));
+    if (req.method === 'HEAD') res.end();
+    else res.end(script);
+    return true;
+  }
 
   /*
    * V46: /my-orders is a real account document, never a storefront SPA route.
