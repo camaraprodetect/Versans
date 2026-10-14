@@ -2707,6 +2707,91 @@
     return {wrapper:wrapper,input:el};
   }
   function catalogObjectString(value) { return value ? JSON.stringify(value,null,2) : ''; }
+  // "פרטי המוצר" is a localized list of visible bullet points on product pages.
+  // It is intentionally separate from the advanced JSON options: merchants can
+  // manage each line without touching structured product configuration.
+  function catalogDetailsEditor(product) {
+    var local = product && product.details && typeof product.details === 'object' ? product.details : {};
+    var hebrew = Array.isArray(local.he) ? local.he : [];
+    var english = Array.isArray(local.en) ? local.en : [];
+    var section = make('section','admin-catalog-details admin-catalog-full');
+    section.setAttribute('aria-label','פרטי המוצר');
+    var header = make('div','admin-catalog-details-header');
+    var title = make('div');
+    title.appendChild(make('h3','','פרטי המוצר'));
+    title.appendChild(make('p','','הפרטים שמופיעים עם סימון ✓ בעמוד המוצר. אפשר לשנות, להוסיף, למחוק ולסדר אותם.'));
+    var add = catalogButton('+ הוסף פרט','admin-catalog-primary',function(){appendDetail('', '', true)});
+    add.setAttribute('aria-label','הוסף פרט למוצר');
+    header.append(title, add);
+    section.appendChild(header);
+    var list = make('div','admin-catalog-details-list');
+    section.appendChild(list);
+    var hint = make('p','admin-catalog-details-empty','אין עדיין פרטים למוצר. לחץ על "הוסף פרט" כדי להוסיף.');
+    section.appendChild(hint);
+    var counter = make('span','admin-catalog-details-counter');
+    counter.setAttribute('aria-live','polite');
+    section.appendChild(counter);
+    function updateRows() {
+      var rows = Array.from(list.children);
+      rows.forEach(function(row,index) {
+        row._number.textContent = String(index + 1);
+        row._up.disabled = index === 0;
+        row._down.disabled = index === rows.length - 1;
+      });
+      hint.hidden = rows.length > 0;
+      counter.textContent = rows.length + ' / 40 פרטים';
+      add.disabled = rows.length >= 40;
+    }
+    function appendDetail(he, en, focus) {
+      if(list.children.length >= 40) return;
+      var row = make('div','admin-catalog-detail-row');
+      var position = make('span','admin-catalog-detail-number');
+      position.setAttribute('aria-hidden','true');
+      var heField = catalogTextField('פרט בעברית',he);
+      heField.input.maxLength=500;
+      heField.input.placeholder='לדוגמה: מצופה 5 שכבות זהב לבן 18 קראט';
+      var enField = catalogTextField('באנגלית (אפשר לערוך בנפרד)',en);
+      enField.input.maxLength=500;
+      enField.input.placeholder='Optional English translation';
+      enField.input.dir='ltr';
+      var fields = make('div','admin-catalog-detail-fields');
+      fields.append(heField.wrapper,enField.wrapper);
+      var actions=make('div','admin-catalog-detail-actions');
+      var up=catalogButton('↑','admin-catalog-move',function(){if(row.previousElementSibling){list.insertBefore(row,row.previousElementSibling);updateRows()}});
+      var down=catalogButton('↓','admin-catalog-move',function(){if(row.nextElementSibling){list.insertBefore(row.nextElementSibling,row);updateRows()}});
+      var remove=catalogButton('מחק','admin-catalog-danger',function(){row.remove();updateRows()});
+      up.setAttribute('aria-label','העבר פרט למעלה');
+      down.setAttribute('aria-label','העבר פרט למטה');
+      remove.setAttribute('aria-label','מחק את הפרט הזה');
+      actions.append(up,down,remove);
+      row._number=position;
+      row._he=heField.input;
+      row._en=enField.input;
+      row._up=up;
+      row._down=down;
+      row.append(position,fields,actions);
+      list.appendChild(row);
+      updateRows();
+      if(focus) heField.input.focus();
+    }
+    hebrew.forEach(function(line,index){appendDetail(line,english[index] || '',false)});
+    updateRows();
+    function getValue() {
+      var he=[],en=[];
+      Array.from(list.children).forEach(function(row){
+        var heText=row._he.value.trim();
+        var enText=row._en.value.trim();
+        // An entirely empty new row is ignored; a row with only English is an error.
+        if(!heText && !enText) return;
+        if(!heText) {row._he.focus();throw Error('יש להזין טקסט בעברית לכל פרט, או למחוק את השורה.');}
+        if(heText.length>500 || enText.length>500) {row._he.focus();throw Error('כל פרט יכול להכיל עד 500 תווים.');}
+        he.push(heText);
+        en.push(enText || heText);
+      });
+      return {he:he,en:en};
+    }
+    return {section:section,getValue:getValue};
+  }
   async function catalogUploadImage(file) {
     if (!/^image\/(jpeg|png|webp)$/.test(file.type)) throw Error('יש להעלות תמונת JPG, PNG או WebP בלבד');
     if (file.size > 2 * 1024 * 1024) throw Error('התמונה גדולה מדי. יש להעלות תמונה עד 2MB');
@@ -2758,15 +2843,16 @@
       if(i===files.length)progress.textContent='התמונות נשמרו. לחץ שמירת מוצר כדי להציג אותן באתר.';
       fileInput.disabled=false;fileInput.value='';
     });
+    var detailsEditor=catalogDetailsEditor(product);
     var advanced=catalogTextField('אפשרויות מוצר מתקדמות (JSON): צבעים, מידות, אריזות, דגמים ותמונות וריאציה',catalogObjectString(product ? {
       colors:product.colors, sizes:product.sizes, boxes:product.boxes, necklaces:product.necklaces,
       giftPackaging:product.giftPackaging, variantImages:product.variantImages,
-      badge:product.badge, materials:product.materials, details:product.details, features:product.features
+      badge:product.badge, materials:product.materials, features:product.features
     }:{}),'textarea');advanced.wrapper.classList.add('admin-catalog-full');advanced.input.rows=8;
     var advancedToggle=catalogButton('אפשרויות מתקדמות ▾','admin-catalog-quiet',function(){advanced.wrapper.hidden=!advanced.wrapper.hidden});advanced.wrapper.hidden=true;
     var fields=make('div','admin-catalog-form-grid');
     [name,english,price,compareAt,category,categories,subtitle,description,sku,hover,gallery].forEach(function(x){fields.appendChild(x.wrapper)});
-    fields.appendChild(upload);fields.appendChild(advanced.wrapper);
+    fields.appendChild(upload);fields.appendChild(detailsEditor.section);fields.appendChild(advanced.wrapper);
     form.appendChild(fields);form.appendChild(advancedToggle);
     var message=make('div','admin-catalog-status');message.setAttribute('role','status');form.appendChild(message);
     var actions=make('div','admin-catalog-actions');var submit=make('button','admin-catalog-btn admin-catalog-primary',editing?'שמור שינויים':'צור מוצר');submit.type='submit';
@@ -2778,9 +2864,9 @@
           categories:Array.from(new Set([category.input.value].concat(categories.input.value.split(',').map(function(x){return x.trim()}).filter(Boolean)))),
           subtitle:{he:subtitle.input.value.trim(),en:(previous.subtitle && previous.subtitle.en)||''},
           description:{he:description.input.value.trim(),en:(previous.description && previous.description.en)||''},sku:sku.input.value.trim(),
-          images:gallery.input.value.split(/\r?\n/).map(function(s){return s.trim()}).filter(Boolean),hoverImage:hover.input.value.trim()};
+          images:gallery.input.value.split(/\r?\n/).map(function(s){return s.trim()}).filter(Boolean),hoverImage:hover.input.value.trim(),details:detailsEditor.getValue()};
         var extra=advanced.input.value.trim()?JSON.parse(advanced.input.value):{};
-        if(extra && typeof extra==='object')Object.keys(extra).forEach(function(k){if(extra[k]!==undefined)record[k]=extra[k]});
+        if(extra && typeof extra==='object')Object.keys(extra).forEach(function(k){if(k!=='details' && extra[k]!==undefined)record[k]=extra[k]});
         var endpoint=editing?('/api/admin/catalog/'+encodeURIComponent(product.slug)):'/api/admin/catalog';
         var out=await apiAction(endpoint,editing?'PUT':'POST',{product:record});
         backdrop.remove();
