@@ -9,6 +9,7 @@ const { createDatabase } = require('./lib/database.js');
 const { createPaymentUrl, verifyPayment, priceOrder } = require('./api/_hyp.js');
 const { PRODUCTS, CATEGORIES } = require('./assets/products.js');
 const { createCatalogManager } = require('./lib/catalog-manager.js');
+const { createCreatorProgram } = require('./lib/creator-program.js');
 const ROUTES = require('./assets/routes.js');
 const { normalizeAdminRange, normalizeStoredOrderItems, aggregatePaidOrders } = require('./lib/admin-analytics.js');
 const { absoluteUrl, isEmailConfigured, orderConfirmationEmail, passwordResetEmail, productAnnouncementEmail, sendEmail, termsUpdateEmail, welcomeEmail } = require('./lib/email.js');
@@ -61,7 +62,7 @@ const ADMIN_PUSH_DEVICE_TTL_MS = 365 * 24 * 60 * 60 * 1000;
 const ADMIN_PUSH_VAPID_PUBLIC_META_KEY = 'admin_push_vapid_public_v1';
 const ADMIN_PUSH_VAPID_PRIVATE_META_KEY = 'admin_push_vapid_private_jwk_v1';
 const ADMIN_PUSH_TIMEOUT_MS = 10 * 1000;
-const ADMIN_PAGES = new Set(['', 'dashboard', 'visitors', 'sales', 'orders', 'order-work', 'products', 'customers', 'reviews']);
+const ADMIN_PAGES = new Set(['', 'dashboard', 'visitors', 'sales', 'orders', 'order-work', 'products', 'customers', 'reviews', 'creators']);
 const BODY_LIMIT = 48 * 1024 * 1024;
 const REVIEW_IMAGE_LIMIT = 2 * 1024 * 1024;
 const REVIEW_VIDEO_LIMIT = 20 * 1024 * 1024;
@@ -87,6 +88,7 @@ const VERSANS_BOT_TIMEOUT_MS = 25 * 1000;
 const VERSANS_BOT_MAX_BODY_CHARS = 32000;
 
 const database = createDatabase({ root: ROOT, sqlitePath: DB_PATH });
+const creatorProgram = createCreatorProgram(database);
 // The public products script is regenerated whenever an admin saves an edit.
 // The browser must never receive the original on-disk catalog after a DB change.
 let liveCatalogScript = '';
@@ -4895,6 +4897,27 @@ async function adminApi(req, res, pathname, parsed) {
     json(res, 403, { ok: false, error: 'permission_denied' });
     return true;
   }
+  // Only the owner can issue, change or revoke creator permissions/codes.
+  if (pathname === '/api/admin/creators' && req.method === 'GET') {
+    json(res, 200, { ok: true, creators: await creatorProgram.listCreators() });
+    return true;
+  }
+  if (pathname === '/api/admin/creators' && req.method === 'POST') {
+    if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'}); return true; }
+    try {
+      const body=await readJsonBody(req);
+      const creator=await creatorProgram.grantByEmail(body.email,body.code,body.discountPercent);
+      json(res,200,{ok:true,creator});
+    } catch(err) { json(res,err.status||500,{ok:false,error:err.status?err.message:'creator_save_failed'}); }
+    return true;
+  }
+  const creatorRevokeMatch=/^\/api\/admin\/creators\/(\d+)\/revoke$/.exec(pathname);
+  if (creatorRevokeMatch && req.method === 'POST') {
+    if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'}); return true; }
+    const removed=await creatorProgram.revoke(Number(creatorRevokeMatch[1]));
+    json(res,removed?200:404,{ok:removed,error:removed?undefined:'creator_not_found'});
+    return true;
+  }
   if (pathname === '/api/admin/push/config' && req.method === 'GET') {
     const vapid = await ensureAdminPushVapidKeys();
     const subscriptions = await database.listAdminPushSubscriptions();
@@ -5934,7 +5957,7 @@ async function adminApi(req, res, pathname, parsed) {
   if (accessMatch && req.method === 'POST') {
     if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'}); return true; }
     if (!admin || !(normalizeEmail(admin.email) === ADMIN_EMAIL || String(admin.role || '') === 'admin')) { json(res,403,{ok:false,error:'permission_denied'}); return true; }
-    const body=await readJsonBody(req); const role=['customer','staff','admin'].includes(String(body.role||''))?String(body.role):'customer'; const blocked=body.blocked===true; const targetId=Number(accessMatch[1]);
+    const body=await readJsonBody(req); const role=['customer','staff','admin','contentcreator'].includes(String(body.role||''))?String(body.role):'customer'; const blocked=body.blocked===true; const targetId=Number(accessMatch[1]);
     if(targetId===Number(admin.id) && blocked){json(res,400,{ok:false,error:'cannot_block_self'});return true;}
     const changed=await database.setUserAccess(targetId,role,blocked,cleanCheckoutText(body.reason,300),Date.now()); json(res,changed?200:404,{ok:changed,error:changed?undefined:'user_not_found'}); return true;
   }
@@ -6332,6 +6355,43 @@ async function adminApi(req, res, pathname, parsed) {
   }
 
   json(res, 404, { ok: false, error: 'admin_route_not_found' });
+  return true;
+}
+
+async function creatorRoutes(req, res, pathname) {
+  const page = pathname === '/content' || pathname === '/content/' || pathname === '/content/dashboard' || pathname === '/content/leaderboard' || pathname === '/content.html';
+  const api = pathname === '/api/content/me' || pathname === '/api/content/leaderboard';
+  if (!page && !api) return false;
+  if (req.method !== 'GET' && req.method !== 'HEAD') { json(res,405,{ok:false,error:'method_not_allowed'}); return true; }
+  const user = await getCurrentUser(req);
+  if (!user) {
+    if (api) json(res,401,{ok:false,error:'login_required'});
+    else {
+      const secure=process.env.NODE_ENV==='production'||String(req.headers['x-forwarded-proto']||'').split(',')[0].trim()==='https';
+      res.setHeader('Set-Cookie','versans_login_next='+encodeURIComponent(pathname==='/content.html'?'/content':pathname)+'; Path=/; SameSite=Lax; Max-Age=600'+(secure?'; Secure':''));
+      redirect(res,'/login',302);
+    }
+    return true;
+  }
+  const access = String(user.role||'')==='contentcreator' && !Number(user.is_blocked) && await creatorProgram.getCreatorByUser(user.id);
+  if (!access) {
+    if (api) json(res,403,{ok:false,error:'contentcreator_required'});
+    else { res.statusCode=403;res.setHeader('Content-Type','text/plain; charset=utf-8');res.setHeader('Cache-Control','no-store');res.end('403 - Creator access required'); }
+    return true;
+  }
+  res.setHeader('Cache-Control','private, no-store');
+  res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive');
+  if (api) {
+    const payload = pathname === '/api/content/me' ? await creatorProgram.dashboard(user.id) : await creatorProgram.leaderboard();
+    json(res,200,pathname === '/api/content/me' ? {ok:true,creator:payload} : {ok:true,leaderboard:payload});
+    return true;
+  }
+  const file = path.join(ROOT,'content.html');
+  const stat = fs.statSync(file);
+  res.statusCode=200;
+  res.setHeader('Content-Type','text/html; charset=utf-8');
+  res.setHeader('Content-Length',stat.size);
+  if(req.method==='HEAD')res.end();else fs.createReadStream(file).pipe(res);
   return true;
 }
 
@@ -7238,7 +7298,7 @@ function injectStorefrontRouting(html, bootRoute) {
   out = out
     .replace(/(\/?assets\/config\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261001-product-help-v1')
     .replace(/(\/?assets\/styles\.css)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261001-product-help-v1')
-    .replace(/(\/?assets\/store\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261004-cart-checkout-fix-v64')
+    .replace(/(\/?assets\/store\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261016-creator-codes-v1')
     .replace(/(\/?assets\/products\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=live-' + currentCatalogVersion())
     .replace(/(\/?assets\/product\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261003-all-color-identity-v48')
     .replace(/(\/?assets\/cart-drawer\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261004-cart-checkout-fix-v64')
@@ -7368,6 +7428,7 @@ const server = http.createServer(async (req, res) => {
   catch (_) { json(res, 400, { error: 'Bad request' }); return; }
 
   try {
+    if (await creatorRoutes(req,res,pathname)) return;
     // A deployment may have multiple Node workers behind the same Render
     // service. Check PostgreSQL before serving any public catalog document
     // or product script so edits made in another worker appear immediately.
@@ -7458,16 +7519,16 @@ const server = http.createServer(async (req, res) => {
         return;
       }
       const currentUser = await getCurrentUser(req);
-      if (!currentUser) {
-        json(res, 401, { ok: false, error: 'login_required' });
-        return;
-      }
       const body = await readJsonBody(req);
       const code = normalizeCouponCode(body && body.code);
-      if (!code) {
-        json(res, 400, { ok: false, error: 'invalid_coupon' });
+      if (!code) { json(res,400,{ok:false,error:'invalid_coupon'}); return; }
+      const creatorCode = await creatorProgram.getActiveCode(code);
+      if (creatorCode) {
+        const priced=priceOrder(Array.isArray(body.items)?body.items:[],body.lang==='en'?'en':'he',{code:creatorCode.code,percent:Number(creatorCode.discount_percent)});
+        json(res,200,{ok:true,coupon:{code:creatorCode.code,percent:Number(creatorCode.discount_percent),kind:'creator',discount:priced.couponDiscount,total:priced.total}});
         return;
       }
+      if (!currentUser) { json(res,401,{ok:false,error:'login_required'}); return; }
       const coupon = await database.getCouponForUserByCode(currentUser.id, code);
       const status = couponStatus(coupon);
       if (status !== 'ok') {
@@ -7497,10 +7558,11 @@ const server = http.createServer(async (req, res) => {
       const guestIdentity = currentUser ? null : guestIdentityForRequest(req);
       const mode = checkoutMode();
       const requestedCouponCode = normalizeCouponCode(body && body.couponCode);
+      const creatorCoupon = requestedCouponCode ? await creatorProgram.getActiveCode(requestedCouponCode) : null;
 
       // Buying does not require an account. Personal welcome coupons still belong
       // to a specific account, so only coupon redemption requires authentication.
-      if (requestedCouponCode && !currentUser) {
+      if (requestedCouponCode && !creatorCoupon && !currentUser) {
         json(res, 401, { ok: false, error: 'login_required' });
         return;
       }
@@ -7517,9 +7579,9 @@ const server = http.createServer(async (req, res) => {
       // real charge. A slow/locked database previously left the checkout button
       // waiting forever even though demo mode itself did not need the write.
       if (mode === 'demo') {
-        const demoCoupon = requestedCouponCode
-          ? { code: requestedCouponCode, percent: WELCOME_COUPON_PERCENT }
-          : null;
+        const demoCoupon = creatorCoupon
+          ? {code:creatorCoupon.code,percent:Number(creatorCoupon.discount_percent)}
+          : (requestedCouponCode ? { code: requestedCouponCode, percent: WELCOME_COUPON_PERCENT } : null);
         const result = createDemoPaymentResult(paymentBody, { coupon: demoCoupon });
         const amountAgorot = amountToAgorot(result.total);
         if (amountAgorot === null) throw new Error('invalid_order_total');
@@ -7622,16 +7684,15 @@ const server = http.createServer(async (req, res) => {
       }
 
       let coupon = null;
-      if (requestedCouponCode) {
+      if (requestedCouponCode && !creatorCoupon) {
         coupon = await database.getCouponForUserByCode(currentUser.id, requestedCouponCode);
         const status = couponStatus(coupon);
-        if (status !== 'ok') {
-          json(res, 400, { ok: false, error: status });
-          return;
-        }
+        if (status !== 'ok') { json(res,400,{ok:false,error:status}); return; }
       }
       const paymentOptions = {
-        coupon: coupon ? { code: coupon.code, percent: Number(coupon.discount_percent || WELCOME_COUPON_PERCENT) } : null
+        coupon: creatorCoupon
+          ? { code:creatorCoupon.code,percent:Number(creatorCoupon.discount_percent) }
+          : (coupon ? { code: coupon.code, percent: Number(coupon.discount_percent || WELCOME_COUPON_PERCENT) } : null)
       };
       const result = await createPaymentUrl(paymentBody, paymentOptions);
       const customerEmail = customer.email;
@@ -7654,7 +7715,7 @@ const server = http.createServer(async (req, res) => {
         currency: String(result.currency || 'ILS'),
         itemsJson: JSON.stringify(Array.isArray(body.items) ? body.items : []),
         couponId: coupon ? Number(coupon.id) : null,
-        couponCode: coupon ? String(coupon.code) : null,
+        couponCode: creatorCoupon ? String(creatorCoupon.code) : (coupon ? String(coupon.code) : null),
         couponDiscountAgorot: amountToAgorot(result.couponDiscount || 0) || 0,
         createdAt: now,
         updatedAt: now
@@ -7939,6 +8000,7 @@ setInterval(async () => {
 
 async function start() {
   await database.init();
+  await creatorProgram.init();
   await catalogManager.init();
   // Never purge real orders, reviews or customers during a deployment.
   await database.cleanupPresencePageViews(Date.now() - PRESENCE_RETENTION_MS);

@@ -2684,8 +2684,8 @@ function orderTotal() {
     }).join('');
   }
   function couponRowHtml(summary) {
-    if (!(summary.couponDiscount > 0) || !state.coupon) return '';
-    return '<div class="cart-discount-group"><div class="sum sum--discount sum--coupon"><span>' + esc((state.lang === 'he' ? 'קופון ' : 'Coupon ') + state.coupon.code + ' (' + state.coupon.percent + '%)') + '</span><span>−' + money(summary.couponDiscount) + '</span></div></div>';
+    if (!state.coupon || (!(summary.couponDiscount > 0) && state.coupon.kind !== 'creator')) return '';
+    return '<div class="cart-discount-group"><div class="sum sum--discount sum--coupon"><span>' + esc((state.lang === 'he' ? 'קופון ' : 'Coupon ') + state.coupon.code + (state.coupon.percent ? ' (' + state.coupon.percent + '%)' : '')) + '</span><span>' + (summary.couponDiscount > 0 ? '−' + money(summary.couponDiscount) : '✓') + '</span></div></div>';
   }
   function savingsHtml(summary) {
     if (!(summary.totalSavings > 0)) return '';
@@ -2804,14 +2804,17 @@ function orderTotal() {
     var apply = $('#applyCouponBtn');
     var remove = $('#removeCouponBtn');
     if (!input) return;
+    var couponLabel = document.querySelector('label[for="coCouponCode"]');
+    if (couponLabel) couponLabel.textContent = state.lang === 'he' ? 'קוד קופון / יוצר' : 'Coupon / Creator code';
+    input.placeholder = state.lang === 'he' ? 'הקלידו קוד קופון או קוד יוצר' : 'Enter coupon or creator code';
     if (state.coupon && state.coupon.code) {
       input.value = state.coupon.code;
       input.disabled = true;
       if (apply) apply.hidden = true;
       if (remove) remove.hidden = false;
       couponMessage(state.lang === 'he'
-        ? 'הקופון הוחל בהצלחה - ' + state.coupon.percent + '% הנחה.'
-        : 'Coupon applied - ' + state.coupon.percent + '% off.', 'ok');
+        ? (state.coupon.kind === 'creator' ? ('קוד יוצר ' + state.coupon.code + ' הופעל' + (state.coupon.percent ? ' - ' + state.coupon.percent + '% הנחה.' : '.')) : ('הקופון הוחל בהצלחה - ' + state.coupon.percent + '% הנחה.'))
+        : (state.coupon.kind === 'creator' ? ('Creator code ' + state.coupon.code + ' applied' + (state.coupon.percent ? ' - ' + state.coupon.percent + '% off.' : '.')) : ('Coupon applied - ' + state.coupon.percent + '% off.')), 'ok');
     } else {
       input.disabled = false;
       if (apply) { apply.hidden = false; apply.disabled = false; }
@@ -2859,7 +2862,8 @@ function orderTotal() {
       if (!result.ok || !result.data || !result.data.ok || !result.data.coupon) throw result.data || { error: 'coupon_error' };
       state.coupon = {
         code: normalizeCouponCode(result.data.coupon.code),
-        percent: Number(result.data.coupon.percent) || 3,
+        percent: Number(result.data.coupon.percent) || 0,
+        kind: result.data.coupon.kind === 'creator' ? 'creator' : 'welcome',
         expiresAt: Number(result.data.coupon.expiresAt) || 0
       };
       renderCouponUi();

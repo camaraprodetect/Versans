@@ -23,6 +23,7 @@
     orders: ['טיפול בהזמנות', 'טיפול, Tracking, Google Sheets ופרטי הזמנה במקום אחד'],
     'order-work': ['טיפול בהזמנות', 'טיפול, Tracking, Google Sheets ופרטי הזמנה במקום אחד'],
     products: ['ניהול מוצרים', 'הוספה, עריכה, מחיקה וסנכרון קטלוג עם Google Sheets'],
+    creators: ['יוצרי תוכן', 'ניהול הרשאות, קודי יוצרים ומכירות'],
     customers: ['לקוחות', 'משתמשים רשומים, רכישות והוצאות מצטברות'],
     reviews: ['ביקורות', 'דירוגים, מוצרים מובילים וביקורות אחרונות']
   };
@@ -79,7 +80,7 @@
       return 'order-work';
     }
 
-    var match = /^\/admin\/(visitors|sales|order-work|products|customers|reviews)$/.exec(path);
+    var match = /^\/admin\/(visitors|sales|order-work|products|customers|reviews|creators)$/.exec(path);
     return match ? match[1] : 'dashboard';
   }
 
@@ -1683,6 +1684,7 @@
       ['/admin/sales', 'מכירות', 'Paid בלבד'],
       ['/admin/order-work', 'טיפול בהזמנות', 'Tracking + Google Sheets'],
       ['/admin/products', 'מוצרים', 'דירוג מכירות'],
+      ['/admin/creators', 'יוצרי תוכן', 'קודים ומכירות'],
       ['/admin/customers', 'לקוחות', 'הוצאות והזמנות'],
       ['/admin/reviews', 'ביקורות', 'דירוגים']
     ].forEach(function (item) {
@@ -2947,6 +2949,33 @@
     content.replaceChildren(frag);
   }
 
+  async function renderCreatorsPage() {
+    var data=await api('/api/admin/creators');
+    var frag=document.createDocumentFragment();
+    var box=make('section','admin-card');
+    var head=make('div','admin-card__head');
+    var heading=make('div');heading.appendChild(make('h2','','יוצרי תוכן'));heading.appendChild(make('p','','בחר חשבון רשום והענק לו הרשאת contentcreator וקוד ייחודי. ניתן להגדיר גם קוד ללא הנחה (0%).'));
+    head.appendChild(heading);box.appendChild(head);
+    var body=make('div','admin-card__body');
+    var form=make('form','admin-creators-form');
+    function input(label,type,name,placeholder){var field=make('label','admin-creator-field'),caption=make('span','',label),control=make('input','');control.type=type;control.name=name;control.required=true;control.placeholder=placeholder;field.append(caption,control);form.appendChild(field);return control;}
+    var email=input('כתובת אימייל של משתמש רשום','email','email','creator@example.com');
+    var code=input('קוד יוצר (באנגלית)','text','code','VERSANS-AB');code.maxLength=20;code.pattern='[A-Za-z0-9][A-Za-z0-9-]{3,19}';code.autocapitalize='characters';
+    var percent=input('הנחה ללקוח באחוזים (0-30)','number','percent','0');percent.min='0';percent.max='30';percent.step='1';percent.value='0';
+    var save=make('button','admin-small-button','שמירת יוצר תוכן');save.type='submit';form.appendChild(save);
+    var hint=make('p','admin-table__muted','ניתן לערוך קוד ליוצר קיים. רכישות קודמות ימשיכו להיספר גם אחרי החלפת הקוד.');
+    form.addEventListener('submit',async function(e){e.preventDefault();save.disabled=true;try{await apiAction('/api/admin/creators','POST',{email:email.value.trim(),code:code.value.trim().toUpperCase(),discountPercent:Number(percent.value)});showToast('קוד היוצר נשמר');await renderCurrentPage();}catch(err){var messages={user_not_found:'המשתמש לא רשום באתר. יש לבקש ממנו להירשם קודם.',creator_code_taken:'קוד היוצר הזה כבר תפוס.',coupon_code_taken:'הקוד הזה כבר משמש קופון.',invalid_creator_code:'הקוד חייב להכיל 4-20 תווים באנגלית, ספרות או מקף.',protected_role:'לא ניתן להמיר חשבון אדמין או צוות ליוצר תוכן.'};alert(messages[err.code]||err.message||'השמירה נכשלה');save.disabled=false;}});
+    body.append(form,hint);box.appendChild(body);frag.appendChild(box);
+    var users=(data.creators||[]).filter(function(item){return item.role==='contentcreator'&&item.active});
+    var table=renderTable({title:'יוצרי תוכן פעילים',subtitle:'מספר הרכישות מבוסס על הזמנות ששולמו בלבד',rows:users,emptyText:'עדיין לא נוצרו קודי יוצר.',columns:[
+      {label:'יוצר',render:function(row){return cellPrimary(row.name,row.email)}},
+      {label:'קוד יוצר',render:function(row){return make('strong','admin-table__mono',row.code)}},
+      {label:'הנחה',render:function(row){return Number(row.discountPercent)+'%'}},
+      {label:'רכישות',render:function(row){return numberFmt(row.sales)}},
+      {label:'פעולות',render:function(row){var wrap=make('div','admin-creators-actions');var edit=make('button','admin-small-button','ערוך');edit.type='button';edit.addEventListener('click',function(){email.value=row.email;code.value=row.code;percent.value=Number(row.discountPercent);email.scrollIntoView({behavior:'smooth',block:'center'});code.focus();});var revoke=make('button','admin-small-button admin-small-button--danger','בטל הרשאה');revoke.type='button';revoke.addEventListener('click',async function(){if(!window.confirm('לבטל את הרשאת יוצר התוכן של '+row.name+'? קוד היוצר יפסיק לפעול, אך המכירות ההיסטוריות יישמרו.'))return;revoke.disabled=true;try{await apiAction('/api/admin/creators/'+row.id+'/revoke','POST',{});showToast('ההרשאה בוטלה');await renderCurrentPage();}catch(err){alert('לא ניתן לבטל הרשאה');revoke.disabled=false;}});wrap.append(edit,revoke);return wrap;}}
+    ]});frag.appendChild(table);content.replaceChildren(frag);
+  }
+
   async function renderCustomersPage() {
     var offset = state.offsets.customers;
     var data = await api('/api/admin/customers?limit=50&offset=' + offset);
@@ -3205,6 +3234,7 @@
       else if (state.page === 'sales') await renderSalesPage();
       else if (state.page === 'order-work') await renderOrderWorkPage();
       else if (state.page === 'products') await renderProductsPage();
+      else if (state.page === 'creators') await renderCreatorsPage();
       else if (state.page === 'customers') await renderCustomersPage();
       else if (state.page === 'reviews') await renderReviewsPage();
       if (version !== state.requestVersion) return;

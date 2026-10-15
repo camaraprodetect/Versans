@@ -1182,3 +1182,7 @@ button,input,textarea,select,a{font:inherit}.admin-app{display:grid;grid-templat
 .admin-catalog-details-counter{display:block;margin-top:9px;font-size:11px;color:#657987}
 @media(max-width:790px){.admin-catalog-detail-row{grid-template-columns:28px minmax(0,1fr)}.admin-catalog-detail-fields{grid-template-columns:1fr}.admin-catalog-detail-actions{grid-column:2;justify-content:flex-start}}
 @media(max-width:460px){.admin-catalog-details{padding:10px}.admin-catalog-details-header{align-items:flex-start;flex-direction:column}.admin-catalog-details-header .admin-catalog-btn{align-self:stretch}.admin-catalog-detail-row{gap:7px;padding:9px}}
+
+/* Creator accounts and codes management */
+.admin-creators-form{display:grid;grid-template-columns:2fr 1.2fr 1fr auto;gap:12px;align-items:end;max-width:100%;margin:4px 0 16px}.admin-creator-field{display:flex;flex-direction:column;gap:7px;min-width:0;font-size:13px;font-weight:600}.admin-creator-field input{border:1px solid var(--line,#dce3eb);background:var(--surface,#fff);border-radius:9px;padding:12px 14px;width:100%;min-width:0;font:inherit;font-size:14px}.admin-creators-actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+@media(max-width:1020px){.admin-creators-form{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:610px){.admin-creators-form{grid-template-columns:1fr}.admin-creators-form>button{width:100%}}
