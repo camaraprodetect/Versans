@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&family=Frank+Ruhl+Libre:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&display=swap');
 :root{
   color-scheme:light;
   --cc-paper:#fff;
@@ -30,10 +30,10 @@ a{color:inherit;text-decoration:none}
 .cc-private{font-size:12px;font-weight:500;color:var(--cc-muted);display:inline-flex;align-items:center;gap:9px;white-space:nowrap}
 .cc-status-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--cc-ok)}
 main{flex:1;padding-bottom:55px}
-.cc-intro{padding:48px 0 30px}
+.cc-intro{padding:32px 0 24px}
 .cc-eyebrow{font:600 10px/1.5 Heebo,Arial,sans-serif;letter-spacing:.16em;color:var(--cc-gold);direction:ltr;text-align:right;margin:0 0 12px}
-.cc-intro h1{font:500 clamp(33px,4vw,48px)/1.2 'Frank Ruhl Libre',Georgia,serif;letter-spacing:-.025em;margin:0}
-.cc-intro>p:last-child{font-size:14px;margin:12px 0 0;color:var(--cc-muted)}
+
+.cc-intro>p:last-child{font-family:Heebo,Arial,sans-serif;font-size:15px;line-height:1.75;font-weight:500;margin:8px 0 0;color:var(--cc-muted)}
 .cc-toolbar{display:flex;flex-direction:column;gap:18px;margin-bottom:22px}
 .cc-tabs{display:flex;align-items:center;gap:25px;border-bottom:1px solid var(--cc-line);width:100%}
 .cc-tabs a{position:relative;display:inline-block;padding:0 3px 13px;font-size:14px;color:var(--cc-muted);font-weight:500;letter-spacing:.01em}
@@ -81,7 +81,18 @@ main{flex:1;padding-bottom:55px}
 @media(max-width:850px){.cc-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.cc-section{grid-template-columns:1fr}.cc-card{padding:21px}}
 @media(max-width:600px){
   .cc-layout{padding-inline:18px}.cc-header{height:76px;gap:8px}.cc-brand{gap:10px}.cc-brand img{width:105px}.cc-brand-divider{height:20px}.cc-brand-program{letter-spacing:.1em;font-size:9px}.cc-private{font-size:10px;white-space:normal;max-width:112px;line-height:1.4}
-  .cc-intro{padding:33px 0 24px}.cc-intro h1{font-size:33px}.cc-intro>p:last-child{font-size:13px}.cc-toolbar{gap:16px}.cc-tabs{gap:22px}.cc-range{display:block}.cc-range-label{display:block;margin:0 0 9px}.cc-range-options{gap:6px}.cc-range-options button{padding:7px 11px;min-height:33px;font-size:11px}
+  .cc-intro{padding:24px 0 20px}.cc-intro>p:last-child{font-size:14px}.cc-toolbar{gap:16px}.cc-tabs{gap:22px}.cc-range{display:block}.cc-range-label{display:block;margin:0 0 9px}.cc-range-options{gap:6px}.cc-range-options button{padding:7px 11px;min-height:33px;font-size:11px}
   .cc-kpis{gap:9px}.cc-card{padding:17px 14px}.cc-kpi-number{font-size:23px}.cc-kpi-label{font-size:11px}.cc-kpi-description{font-size:10px}.cc-section{gap:10px;margin-top:10px}.cc-section h2{font-size:15px}.cc-code-display{gap:10px}.cc-code-value{font-size:21px}.cc-leader-top{padding:19px 16px}.cc-table th,.cc-table td{padding:14px 16px}.cc-footer{font-size:11px}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+
+/* Paid-orders feed: compact, accessible table, no upfront download of history */
+.cc-purchases{margin-top:15px}
+.cc-orders-table{min-width:650px}
+.cc-order-ref{font-size:12px;direction:ltr;text-align:right;unicode-bidi:plaintext;font-weight:600}
+.cc-order-commission{font-weight:800;color:var(--cc-ok)}
+.cc-purchases-state{font-size:12px;color:var(--cc-muted);text-align:center;min-height:18px;margin:15px}
+.cc-purchases-sentinel{height:2px;width:100%;pointer-events:none}
+.cc-load-more{display:block;margin:0 auto 16px;background:#fff;color:var(--cc-navy);border:1px solid var(--cc-navy);padding:8px 16px;border-radius:5px;font-size:12px;font-weight:700}
+.cc-load-more:hover{background:var(--cc-navy);color:#fff}
+.cc-load-more:focus-visible{outline:2px solid var(--cc-gold);outline-offset:3px}

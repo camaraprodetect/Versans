@@ -4906,7 +4906,7 @@ async function adminApi(req, res, pathname, parsed) {
     if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'}); return true; }
     try {
       const body=await readJsonBody(req);
-      const creator=await creatorProgram.grantByEmail(body.email,body.code,body.discountPercent);
+      const creator=await creatorProgram.grantByEmail(body.email,body.code,body.discountPercent,body.commissionPercent);
       json(res,200,{ok:true,creator});
     } catch(err) { json(res,err.status||500,{ok:false,error:err.status?err.message:'creator_save_failed'}); }
     return true;
@@ -6370,7 +6370,7 @@ async function creatorRoutes(req, res, pathname, searchParams) {
   }
   const page = pathname === '/creators' || pathname === '/creators/' ||
     pathname === '/creators/dashboard' || pathname === '/creators/leaderboard';
-  const api = pathname === '/api/creators/me' || pathname === '/api/creators/leaderboard';
+  const api = pathname === '/api/creators/me' || pathname === '/api/creators/leaderboard' || pathname === '/api/creators/purchases';
   if (!page && !api) return false;
   if (req.method !== 'GET' && req.method !== 'HEAD') { json(res,405,{ok:false,error:'method_not_allowed'}); return true; }
   const user = await getCurrentUser(req);
@@ -6397,6 +6397,10 @@ async function creatorRoutes(req, res, pathname, searchParams) {
     if(pathname==='/api/creators/me'){
       const creator=await creatorProgram.dashboard(user.id,range);
       json(res,200,{ok:true,creator});
+    } else if(pathname==='/api/creators/purchases') {
+      const result=await creatorProgram.purchases(user.id,range,searchParams.get('cursor')||'',Number(searchParams.get('limit')||15));
+      if(!result){json(res,400,{ok:false,error:'invalid_page_parameters'});return true;}
+      json(res,200,{ok:true,...result});
     } else {
       const leaderboard=await creatorProgram.leaderboard(range);
       json(res,200,{ok:true,range,leaderboard});

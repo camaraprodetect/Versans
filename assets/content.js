@@ -7,6 +7,7 @@
   var requested=new URLSearchParams(location.search).get('range');
   var range=Object.prototype.hasOwnProperty.call(options,requested)?requested:'all';
   var renderCounter=0;
+  var purchaseObserver=null;
   function el(tag,cls,value){var node=document.createElement(tag);if(cls)node.className=cls;if(value!=null)node.textContent=String(value);return node;}
   function money(agorot){return new Intl.NumberFormat('he-IL',{style:'currency',currency:'ILS',maximumFractionDigits:2}).format(Number(agorot||0)/100);}
   function integer(value){return new Intl.NumberFormat('he-IL').format(Number(value||0));}
@@ -20,7 +21,7 @@
     kpis.appendChild(kpi('הכנסות דרך קוד היוצר',money(revenue),'סכום ההזמנות ששולמו, לא עמלת יוצר',true));
     kpis.appendChild(kpi('רכישות שהושלמו',integer(sales),'רכישות ששולמו בתקופה הנבחרת'));
     kpis.appendChild(kpi('ממוצע להזמנה',sales?money(Math.round(revenue/sales)):'₪0','מחיר רכישה ממוצע בתקופה'));
-    kpis.appendChild(kpi('רכישה אחרונה',date(c.lastPaidAt),'הרכישה האחרונה בתקופה הנבחרת'));
+    kpis.appendChild(kpi('עמלה שהרווחת',money(c.commissionAgorot),'לפי אחוז העמלה שנקבע באדמין בעת כל רכישה'));
     app.appendChild(kpis);
     var sec=el('section','cc-section'),code=el('article','cc-card'),facts=el('article','cc-card');
     code.appendChild(el('h2','','קוד היוצר שלך'));
@@ -34,8 +35,64 @@
     facts.appendChild(fact('שם היוצר',c.name));
     facts.appendChild(fact('התקופה המוצגת',options[range]));
     facts.appendChild(fact('הנחה ללקוחות',integer(c.discountPercent)+'%'));
+    facts.appendChild(fact('עמלה נוכחית',integer(c.commissionPercent)+'%'));
     facts.appendChild(fact('סטטוס הקוד','פעיל'));
     sec.append(code,facts);app.appendChild(sec);
+    purchases();
+  }
+  function purchases(){
+    var box=el('section','cc-purchases cc-leaderboard'),head=el('div','cc-leader-top');
+    var title=el('h2','','הרכישות שהגיעו מהקוד שלך');
+    var sub=el('span','','רכישות ששולמו · '+options[range]);
+    head.append(title,sub);box.appendChild(head);
+    var scroll=el('div','cc-table-scroll'),table=el('table','cc-table cc-orders-table');
+    var thead=el('thead'),tr=el('tr');
+    ['תאריך רכישה','מספר הזמנה','קוד יוצר','סכום רכישה','העמלה שלך'].forEach(function(label){tr.appendChild(el('th','',label));});
+    thead.appendChild(tr);table.appendChild(thead);
+    var tbody=el('tbody');table.appendChild(tbody);scroll.appendChild(table);box.appendChild(scroll);
+    var state=el('div','cc-purchases-state'), sentinel=el('div','cc-purchases-sentinel');
+    var button=el('button','cc-load-more','טעינת רכישות נוספות');button.type='button';button.hidden=true;
+    box.append(state,button,sentinel);app.appendChild(box);
+    var cursor='',hasMore=true,pending=false,failed=false,turn=renderCounter,reportRange=range;
+    function stop(){if(purchaseObserver){purchaseObserver.disconnect();purchaseObserver=null;}}
+    async function load(){
+      if(pending||!hasMore||turn!==renderCounter)return;
+      pending=true;failed=false;button.hidden=true;state.textContent='טוענים רכישות...';
+      try{
+        var url='/api/creators/purchases?range='+encodeURIComponent(reportRange)+'&limit=15';
+        if(cursor)url+='&cursor='+encodeURIComponent(cursor);
+        var data=await get(url);
+        if(turn!==renderCounter)return;
+        (data.orders||[]).forEach(function(item){
+          var row=el('tr');
+          row.appendChild(el('td','',date(item.paidAt)));
+          row.appendChild(el('td','cc-order-ref',item.orderRef));
+          var code=el('td');code.appendChild(el('span','cc-code-chip',item.code));row.appendChild(code);
+          row.appendChild(el('td','',money(item.amountAgorot)));
+          row.appendChild(el('td','cc-order-commission',money(item.commissionAgorot)));
+          tbody.appendChild(row);
+        });
+        hasMore=Boolean(data.hasMore&&data.nextCursor&&data.nextCursor!==cursor);
+        cursor=data.nextCursor||'';
+        if(!tbody.children.length){scroll.hidden=true;state.textContent='אין רכישות ששולמו בתקופה שבחרת.';}
+        else if(!hasMore){state.textContent='הצגת כל '+integer(tbody.children.length)+' הרכישות בתקופה.';}
+        else{state.textContent='';}
+        if(!hasMore)stop();
+      }catch(e){
+        if(turn!==renderCounter)return;
+        failed=true;stop();state.textContent='לא הצלחנו לטעון רכישות נוספות.';
+        button.hidden=false;
+      }finally{pending=false;}
+    }
+    button.addEventListener('click',function(){if(failed){failed=false;if('IntersectionObserver' in window)observe();}load();});
+    function observe(){
+      if(!('IntersectionObserver' in window)) {button.hidden=false;return;}
+      purchaseObserver=new IntersectionObserver(function(entries){
+        if(entries.some(function(entry){return entry.isIntersecting;})) load();
+      },{rootMargin:'280px 0px'});
+      purchaseObserver.observe(sentinel);
+    }
+    observe();load();
   }
   function leaderboard(rows){
     var section=el('section','cc-leaderboard'),heading=el('div','cc-leader-top');
@@ -62,10 +119,10 @@
     document.getElementById('tabDashboard').classList.toggle('is-active',!board);
     document.getElementById('tabDashboard').href='/creators/dashboard?range='+encodeURIComponent(range);
     document.getElementById('tabLeaderboard').href='/creators/leaderboard?range='+encodeURIComponent(range);
-    document.getElementById('pageTitle').textContent=board?'היוצרים המובילים.':'ההצלחה שלך, במקום אחד.';
     document.getElementById('pageSubtitle').textContent=board?'הדירוג מתעדכן בהתאם לתקופה שבחרת, לפי מספר רכישות ששולמו.':'כל נתוני המכירות שהגיעו דרך קוד היוצר שלך.';
   }
   async function render(){
+    if(purchaseObserver){purchaseObserver.disconnect();purchaseObserver=null;}
     updateControls();error.hidden=true;app.replaceChildren(el('div','cc-loading','טוענים נתונים...'));
     var myTurn=++renderCounter,board=isLeaderboard();
     try{
