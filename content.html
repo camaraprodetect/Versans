@@ -2,34 +2,53 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="robots" content="noindex,nofollow,noarchive">
-  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="color-scheme" content="light">
   <title>VerSans</title>
-  <link rel="stylesheet" href="/assets/content.css?v=20261016-1">
-  <script defer src="/assets/content.js?v=20261016-1"></script>
+  <link rel="stylesheet" href="/assets/content.css?v=20261016-2">
+  <script defer src="/assets/content.js?v=20261016-2"></script>
 </head>
 <body>
-  <div class="cc-ambient"></div>
   <div class="cc-layout">
     <header class="cc-header">
-      <div class="cc-brand"><span class="cc-mark">V</span><span>VerSans <small>CREATORS</small></span></div>
-      <div class="cc-private"><span class="cc-indicator"></span> אזור אישי ליוצרי תוכן</div>
+      <div class="cc-brand" aria-label="VerSans Creator Program">
+        <img src="/images/VersansLogoWordmarkWhite.png" width="719" height="171" alt="VerSans">
+        <span class="cc-brand-divider" aria-hidden="true"></span>
+        <span class="cc-brand-program">CREATORS</span>
+      </div>
+      <span class="cc-private"><span class="cc-status-dot" aria-hidden="true"></span> אזור אישי ליוצרי תוכן</span>
     </header>
     <main>
-      <section class="cc-intro">
-        <p class="cc-eyebrow">VERSANS · CREATOR PROGRAM</p>
-        <h1 id="pageTitle">ברוכים הבאים.</h1>
-        <p id="pageSubtitle">מרכז הבקרה האישי של יוצרי התוכן שלנו.</p>
-      </section>
-      <nav class="cc-tabs" aria-label="ניווט יוצר תוכן">
-        <a href="/content/dashboard" id="tabDashboard">Dashboard</a>
-        <a href="/content/leaderboard" id="tabLeaderboard">Leaderboard</a>
-      </nav>
+      <div class="cc-intro">
+        <p class="cc-eyebrow">VERSANS / CREATOR PROGRAM</p>
+        <h1 id="pageTitle">ההצלחה שלך, במקום אחד.</h1>
+        <p id="pageSubtitle">נתונים מדויקים על רכישות שבוצעו באמצעות קוד היוצר שלך.</p>
+      </div>
+      <div class="cc-toolbar">
+        <nav class="cc-tabs" aria-label="ניווט ליוצרי תוכן">
+          <a href="/creators/dashboard" id="tabDashboard">Dashboard</a>
+          <a href="/creators/leaderboard" id="tabLeaderboard">Leaderboard</a>
+        </nav>
+        <section class="cc-range" aria-label="סינון לפי תקופה">
+          <span class="cc-range-label">הצג נתונים עבור</span>
+          <div class="cc-range-options" id="rangeOptions" role="group" aria-label="בחירת תקופת הדוח">
+            <button type="button" data-range="all">כל הזמנים</button>
+            <button type="button" data-range="year">שנה</button>
+            <button type="button" data-range="6months">6 חודשים</button>
+            <button type="button" data-range="3months">3 חודשים</button>
+            <button type="button" data-range="month">חודש</button>
+            <button type="button" data-range="week">שבוע</button>
+            <button type="button" data-range="3days">3 ימים</button>
+            <button type="button" data-range="today">היום</button>
+          </div>
+        </section>
+      </div>
       <div class="cc-error" id="error" role="alert" hidden></div>
       <div id="app" aria-live="polite"><div class="cc-loading">טוענים את הנתונים שלך...</div></div>
     </main>
-    <footer class="cc-footer"><span>VerSans Creator Program</span><span>הנתונים מתעדכנים לפי הזמנות ששולמו בפועל בלבד</span></footer>
+    <footer class="cc-footer"><span>© VerSans Creator Program</span><span>נתוני המכירות מחושבים לפי הזמנות ששולמו בלבד</span></footer>
   </div>
 </body>
 </html>

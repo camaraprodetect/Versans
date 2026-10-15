@@ -6358,9 +6358,19 @@ async function adminApi(req, res, pathname, parsed) {
   return true;
 }
 
-async function creatorRoutes(req, res, pathname) {
-  const page = pathname === '/content' || pathname === '/content/' || pathname === '/content/dashboard' || pathname === '/content/leaderboard' || pathname === '/content.html';
-  const api = pathname === '/api/content/me' || pathname === '/api/content/leaderboard';
+async function creatorRoutes(req, res, pathname, searchParams) {
+  const legacy = pathname === '/content' || pathname === '/content/' || pathname === '/content/dashboard' ||
+    pathname === '/content/leaderboard' || pathname === '/content.html';
+  if (legacy) {
+    if (req.method !== 'GET' && req.method !== 'HEAD') { json(res,405,{ok:false,error:'method_not_allowed'}); return true; }
+    const destination = pathname.endsWith('/leaderboard') ? '/creators/leaderboard' : '/creators/dashboard';
+    res.setHeader('Cache-Control','no-store');
+    redirect(res,destination,302);
+    return true;
+  }
+  const page = pathname === '/creators' || pathname === '/creators/' ||
+    pathname === '/creators/dashboard' || pathname === '/creators/leaderboard';
+  const api = pathname === '/api/creators/me' || pathname === '/api/creators/leaderboard';
   if (!page && !api) return false;
   if (req.method !== 'GET' && req.method !== 'HEAD') { json(res,405,{ok:false,error:'method_not_allowed'}); return true; }
   const user = await getCurrentUser(req);
@@ -6368,7 +6378,7 @@ async function creatorRoutes(req, res, pathname) {
     if (api) json(res,401,{ok:false,error:'login_required'});
     else {
       const secure=process.env.NODE_ENV==='production'||String(req.headers['x-forwarded-proto']||'').split(',')[0].trim()==='https';
-      res.setHeader('Set-Cookie','versans_login_next='+encodeURIComponent(pathname==='/content.html'?'/content':pathname)+'; Path=/; SameSite=Lax; Max-Age=600'+(secure?'; Secure':''));
+      res.setHeader('Set-Cookie','versans_login_next='+encodeURIComponent(pathname)+'; Path=/; SameSite=Lax; Max-Age=600'+(secure?'; Secure':''));
       redirect(res,'/login',302);
     }
     return true;
@@ -6382,8 +6392,15 @@ async function creatorRoutes(req, res, pathname) {
   res.setHeader('Cache-Control','private, no-store');
   res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive');
   if (api) {
-    const payload = pathname === '/api/content/me' ? await creatorProgram.dashboard(user.id) : await creatorProgram.leaderboard();
-    json(res,200,pathname === '/api/content/me' ? {ok:true,creator:payload} : {ok:true,leaderboard:payload});
+    const range=String(searchParams.get('range')||'all');
+    if (!creatorProgram.reportPeriod(range)) { json(res,400,{ok:false,error:'invalid_range'});return true; }
+    if(pathname==='/api/creators/me'){
+      const creator=await creatorProgram.dashboard(user.id,range);
+      json(res,200,{ok:true,creator});
+    } else {
+      const leaderboard=await creatorProgram.leaderboard(range);
+      json(res,200,{ok:true,range,leaderboard});
+    }
     return true;
   }
   const file = path.join(ROOT,'content.html');
@@ -7428,7 +7445,7 @@ const server = http.createServer(async (req, res) => {
   catch (_) { json(res, 400, { error: 'Bad request' }); return; }
 
   try {
-    if (await creatorRoutes(req,res,pathname)) return;
+    if (await creatorRoutes(req,res,pathname,parsed.searchParams)) return;
     // A deployment may have multiple Node workers behind the same Render
     // service. Check PostgreSQL before serving any public catalog document
     // or product script so edits made in another worker appear immediately.
