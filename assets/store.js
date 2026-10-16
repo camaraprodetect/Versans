@@ -1803,6 +1803,10 @@
         groupProducts = moveProductToEnd(groupProducts, 'product-290');
         groupProducts = moveProductToEnd(groupProducts, 'product-291');
       }
+      if (group.key === 'bracelets') {
+        groupProducts = moveProductToEnd(groupProducts, 'product-292');
+        groupProducts = moveProductToEnd(groupProducts, 'product-293');
+      }
 
       var loop = isMobileHomeScroller() ? { items: groupProducts.slice(), buffer: 0 } : homeCarouselLoopProducts(groupProducts, 4);
       return '' +
@@ -2111,6 +2115,10 @@
       list = moveProductToEnd(list, 'product-289');
       list = moveProductToEnd(list, 'product-290');
       list = moveProductToEnd(list, 'product-291');
+    }
+    if (state.filter === 'bracelets' || state.filter === 'bracelets-men') {
+      list = moveProductToEnd(list, 'product-292');
+      list = moveProductToEnd(list, 'product-293');
     }
 
     var pagingKey = catalogPagingContextKey(grid);

@@ -1951,6 +1951,22 @@ async function uploadProductPhoto(blob, meta) {
         return;
       }
     }
+    // Silver and gold are separate Cuban bracelet products. Switch the
+    // active SKU, full gallery and details without navigating or resetting
+    // the selected length (which remains valid for both colors).
+    if (/^product-(292|293)$/.test(String(product.slug || ''))) {
+      var cubanSlug = option.id === 'silver' ? 'product-292' : (option.id === 'gold' ? 'product-293' : '');
+      var nextCuban = cubanSlug && findProduct(cubanSlug);
+      if (nextCuban && nextCuban.id !== product.id) {
+        product = nextCuban;
+        selectedColorId = option.id;
+        activeImageIndex = 0;
+        try { window.history.replaceState(window.history.state, '', productPath(product)); } catch (e) {}
+        renderProduct();
+        updateSelectedProductIdentity();
+        return;
+      }
+    }
     selectedColorId = option.id;
     if (requiresCompanion()) {
       var pending = readPendingBundle();

@@ -31972,6 +31972,370 @@ var PRODUCTS = [
     "min": 9,
     "max": 14
   }
+},
+{
+  "id": "classic-cuban-5mm-bracelet-silver-292",
+  "slug": "product-292",
+  "urlSlug": "classic-cuban-5mm-bracelet-silver",
+  "sku": "VS-BR-292",
+  "category": "bracelets",
+  "categories": [
+    "bracelets",
+    "bracelets-men"
+  ],
+  "badge": null,
+  "cardMode": "view",
+  "hideMessageCard": true,
+  "showAllGalleryThumbs": true,
+  "cardImage": "images/products/product-292/product-292-1.png",
+  "hoverImage": "images/products/product-292/product-292-2.png",
+  "collectionMedia": {
+    "men": {
+      "image": "images/products/product-292/product-292-1.png",
+      "hoverImage": "images/products/product-292/product-292-2.png"
+    }
+  },
+  "images": [
+    "images/products/product-292/product-292-1.png",
+    "images/products/product-292/product-292-2.png",
+    "images/products/product-292/product-292-3.png",
+    "images/products/product-292/product-292-4.png"
+  ],
+  "price": 349.9,
+  "title": {
+    "he": "צמיד קיובן קלאסי 5 מ״מ - צבע כסף",
+    "en": "Classic 5mm Cuban Bracelet - Silver"
+  },
+  "subtitle": {
+    "he": "צמיד חוליות קיובן 5 מ״מ בגוון כסף · כסף סטרלינג S925",
+    "en": "5mm Cuban link bracelet in Silver · S925 sterling silver"
+  },
+  "sizeHeading": {
+    "he": "בחרו אורך צמיד",
+    "en": "Choose bracelet length"
+  },
+  "sizeRequiredText": {
+    "he": "בחרו אורך צמיד",
+    "en": "Choose bracelet length"
+  },
+  "sizes": [
+    {
+      "id": "17cm",
+      "label": {
+        "he": "17 ס״מ",
+        "en": "17 cm"
+      },
+      "addPrice": 0,
+      "priceLabel": {
+        "he": "349.90 ₪",
+        "en": "₪349.90"
+      }
+    },
+    {
+      "id": "18cm",
+      "label": {
+        "he": "18 ס״מ",
+        "en": "18 cm"
+      },
+      "addPrice": 10,
+      "priceLabel": {
+        "he": "359.90 ₪",
+        "en": "₪359.90"
+      }
+    },
+    {
+      "id": "19cm",
+      "label": {
+        "he": "19 ס״מ",
+        "en": "19 cm"
+      },
+      "addPrice": 20,
+      "priceLabel": {
+        "he": "369.90 ₪",
+        "en": "₪369.90"
+      }
+    },
+    {
+      "id": "20cm",
+      "label": {
+        "he": "20 ס״מ",
+        "en": "20 cm"
+      },
+      "addPrice": 30,
+      "priceLabel": {
+        "he": "379.90 ₪",
+        "en": "₪379.90"
+      }
+    },
+    {
+      "id": "21cm",
+      "label": {
+        "he": "21 ס״מ",
+        "en": "21 cm"
+      },
+      "addPrice": 40,
+      "priceLabel": {
+        "he": "389.90 ₪",
+        "en": "₪389.90"
+      }
+    }
+  ],
+  "colorHeading": {
+    "he": "בחרו צבע",
+    "en": "Choose color"
+  },
+  "colorRequiredText": {
+    "he": "בחרו צבע צמיד",
+    "en": "Choose bracelet color"
+  },
+  "colorDisplay": "color-row",
+  "colors": [
+    {
+      "id": "silver",
+      "label": {
+        "he": "כסף",
+        "en": "Silver"
+      },
+      "swatch": "#ccd1d6",
+      "image": "images/products/product-292/product-292-1.png",
+      "addPrice": 0
+    },
+    {
+      "id": "gold",
+      "label": {
+        "he": "זהב",
+        "en": "Gold"
+      },
+      "swatch": "#d6ad4a",
+      "image": "images/products/product-293/product-293-1.png",
+      "addPrice": 0
+    }
+  ],
+  "defaultColorId": "silver",
+  "cardTitle": {
+    "he": "צמיד קיובן קלאסי 5 מ״מ - צבע כסף",
+    "en": "Classic 5mm Cuban Bracelet - Silver"
+  },
+  "cardMessage": {
+    "he": "צמיד קיובן קלאסי 5 מ״מ בגוון כסף",
+    "en": "Classic 5mm Cuban link bracelet in Silver"
+  },
+  "signature": {
+    "he": "",
+    "en": ""
+  },
+  "description": {
+    "he": "צמיד קיובן קלאסי ברוחב 5 מ״מ בצבע כסף, בעיצוב חוליות צפופות ומלוטשות. כסף סטרלינג S925. ניתן לבחור אורך של 17–21 ס״מ.",
+    "en": "A classic polished 5mm Cuban link bracelet in Silver. Crafted from S925 sterling silver. Available in lengths from 17 to 21 cm."
+  },
+  "details": {
+    "he": [
+      "סוג: צמיד חוליות קיובן קלאסי",
+      "רוחב: 5 מ״מ",
+      "חומר: כסף סטרלינג S925",
+      "צבע: כסף",
+      "אורכים לבחירה: 17, 18, 19, 20, 21 ס״מ",
+      "גימור: חוליות מלוטשות"
+    ],
+    "en": [
+      "Style: classic Cuban link bracelet",
+      "Width: 5 mm",
+      "Material: S925 sterling silver",
+      "Color: Silver",
+      "Available lengths: 17, 18, 19, 20, 21 cm",
+      "Finish: polished links"
+    ]
+  },
+  "afterText": {
+    "he": "צמיד קיובן 5 מ״מ בגוון כסף עם בחירת אורך לנוחות מרבית.",
+    "en": "Classic 5 mm Cuban link bracelet in Silver, with your choice of length."
+  },
+  "deliveryBusinessDays": {
+    "min": 9,
+    "max": 14
+  }
+},
+{
+  "id": "classic-cuban-5mm-bracelet-gold-293",
+  "slug": "product-293",
+  "urlSlug": "classic-cuban-5mm-bracelet-gold",
+  "sku": "VS-BR-293",
+  "category": "bracelets",
+  "categories": [
+    "bracelets",
+    "bracelets-men"
+  ],
+  "badge": null,
+  "cardMode": "view",
+  "hideMessageCard": true,
+  "showAllGalleryThumbs": true,
+  "cardImage": "images/products/product-293/product-293-1.png",
+  "hoverImage": "images/products/product-293/product-293-2.png",
+  "collectionMedia": {
+    "men": {
+      "image": "images/products/product-293/product-293-1.png",
+      "hoverImage": "images/products/product-293/product-293-2.png"
+    }
+  },
+  "images": [
+    "images/products/product-293/product-293-1.png",
+    "images/products/product-293/product-293-2.png",
+    "images/products/product-293/product-293-3.png",
+    "images/products/product-293/product-293-4.png"
+  ],
+  "price": 349.9,
+  "title": {
+    "he": "צמיד קיובן קלאסי 5 מ״מ - צבע זהב",
+    "en": "Classic 5mm Cuban Bracelet - Gold"
+  },
+  "subtitle": {
+    "he": "צמיד חוליות קיובן 5 מ״מ בגוון זהב · כסף סטרלינג S925 בציפוי זהב 18 קראט",
+    "en": "5mm Cuban link bracelet in Gold · 18K gold-plated S925 sterling silver"
+  },
+  "sizeHeading": {
+    "he": "בחרו אורך צמיד",
+    "en": "Choose bracelet length"
+  },
+  "sizeRequiredText": {
+    "he": "בחרו אורך צמיד",
+    "en": "Choose bracelet length"
+  },
+  "sizes": [
+    {
+      "id": "17cm",
+      "label": {
+        "he": "17 ס״מ",
+        "en": "17 cm"
+      },
+      "addPrice": 0,
+      "priceLabel": {
+        "he": "349.90 ₪",
+        "en": "₪349.90"
+      }
+    },
+    {
+      "id": "18cm",
+      "label": {
+        "he": "18 ס״מ",
+        "en": "18 cm"
+      },
+      "addPrice": 10,
+      "priceLabel": {
+        "he": "359.90 ₪",
+        "en": "₪359.90"
+      }
+    },
+    {
+      "id": "19cm",
+      "label": {
+        "he": "19 ס״מ",
+        "en": "19 cm"
+      },
+      "addPrice": 20,
+      "priceLabel": {
+        "he": "369.90 ₪",
+        "en": "₪369.90"
+      }
+    },
+    {
+      "id": "20cm",
+      "label": {
+        "he": "20 ס״מ",
+        "en": "20 cm"
+      },
+      "addPrice": 30,
+      "priceLabel": {
+        "he": "379.90 ₪",
+        "en": "₪379.90"
+      }
+    },
+    {
+      "id": "21cm",
+      "label": {
+        "he": "21 ס״מ",
+        "en": "21 cm"
+      },
+      "addPrice": 40,
+      "priceLabel": {
+        "he": "389.90 ₪",
+        "en": "₪389.90"
+      }
+    }
+  ],
+  "colorHeading": {
+    "he": "בחרו צבע",
+    "en": "Choose color"
+  },
+  "colorRequiredText": {
+    "he": "בחרו צבע צמיד",
+    "en": "Choose bracelet color"
+  },
+  "colorDisplay": "color-row",
+  "colors": [
+    {
+      "id": "silver",
+      "label": {
+        "he": "כסף",
+        "en": "Silver"
+      },
+      "swatch": "#ccd1d6",
+      "image": "images/products/product-292/product-292-1.png",
+      "addPrice": 0
+    },
+    {
+      "id": "gold",
+      "label": {
+        "he": "זהב",
+        "en": "Gold"
+      },
+      "swatch": "#d6ad4a",
+      "image": "images/products/product-293/product-293-1.png",
+      "addPrice": 0
+    }
+  ],
+  "defaultColorId": "gold",
+  "cardTitle": {
+    "he": "צמיד קיובן קלאסי 5 מ״מ - צבע זהב",
+    "en": "Classic 5mm Cuban Bracelet - Gold"
+  },
+  "cardMessage": {
+    "he": "צמיד קיובן קלאסי 5 מ״מ בגוון זהב",
+    "en": "Classic 5mm Cuban link bracelet in Gold"
+  },
+  "signature": {
+    "he": "",
+    "en": ""
+  },
+  "description": {
+    "he": "צמיד קיובן קלאסי ברוחב 5 מ״מ בצבע זהב, בעיצוב חוליות צפופות ומלוטשות. כסף סטרלינג S925 בציפוי זהב 18 קראט. ניתן לבחור אורך של 17–21 ס״מ.",
+    "en": "A classic polished 5mm Cuban link bracelet in Gold. Crafted from 18K gold-plated S925 sterling silver. Available in lengths from 17 to 21 cm."
+  },
+  "details": {
+    "he": [
+      "סוג: צמיד חוליות קיובן קלאסי",
+      "רוחב: 5 מ״מ",
+      "חומר: כסף סטרלינג S925 בציפוי זהב 18 קראט",
+      "צבע: זהב",
+      "אורכים לבחירה: 17, 18, 19, 20, 21 ס״מ",
+      "גימור: חוליות מלוטשות"
+    ],
+    "en": [
+      "Style: classic Cuban link bracelet",
+      "Width: 5 mm",
+      "Material: 18K gold-plated S925 sterling silver",
+      "Color: Gold",
+      "Available lengths: 17, 18, 19, 20, 21 cm",
+      "Finish: polished links"
+    ]
+  },
+  "afterText": {
+    "he": "צמיד קיובן 5 מ״מ בגוון זהב עם בחירת אורך לנוחות מרבית.",
+    "en": "Classic 5 mm Cuban link bracelet in Gold, with your choice of length."
+  },
+  "deliveryBusinessDays": {
+    "min": 9,
+    "max": 14
+  }
 }
 ];
 
