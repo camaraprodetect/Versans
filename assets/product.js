@@ -931,6 +931,44 @@
     block.hidden = false;
     block.style.display = '';
     var list = product.sizes || [];
+    // Display the three-drop Moissanite carat choices as a compact selectable
+    // table. Keep the existing option IDs, addPrice values and cart logic.
+    var useCaratTable = product.sizeDisplay === 'carat-table' ||
+      /^product-(289|290|291)$/.test(String(product.slug || ''));
+    wrap.classList.toggle('product-carat-size-wrap', useCaratTable);
+    if (useCaratTable) {
+      var headings = lang === 'he'
+        ? ['בחירה', 'אבן 1', 'אבן 2', 'אבן 3', 'מחיר']
+        : ['Select', 'Stone 1', 'Stone 2', 'Stone 3', 'Price'];
+      var tableHead = '<thead><tr>' + headings.map(function (heading, index) {
+        return '<th scope="col"' + (index === 0 ? ' class="product-carat-table__pick-head"' : '') + '>' + esc(heading) + '</th>';
+      }).join('') + '</tr></thead>';
+      var tableRows = list.map(function (option) {
+        var selected = option.id === selectedSizeId;
+        var weights = String(option.id || '').split('-');
+        if (weights.length !== 3 || weights.some(function (part) { return !/^\d+(?:\.\d+)?$/.test(part); })) {
+          var matches = (L(option.label) || '').match(/\d+(?:\.\d+)?/g) || [];
+          weights = matches.slice(-3);
+        }
+        var sizePrice = money(Number(product.price) + Number(option.addPrice || 0));
+        var optionLabel = (L(option.label) || option.id) + ' - ' + sizePrice;
+        return '<tr class="product-carat-table__row' + (selected ? ' is-selected' : '') + '"' +
+          ' data-size="' + esc(option.id) + '" tabindex="0"' +
+          ' aria-selected="' + String(selected) + '" aria-label="' + esc(optionLabel) + '">' +
+          '<td class="product-carat-table__pick"><span class="product-carat-table__radio" aria-hidden="true"></span></td>' +
+          weights.map(function (weight) { return '<td class="product-carat-table__weight" dir="ltr">' + esc(weight || '–') + '</td>'; }).join('') +
+          '<td class="product-carat-table__price" dir="ltr">' + esc(sizePrice) + '</td>' +
+        '</tr>';
+      }).join('');
+      wrap.innerHTML = '<table class="product-carat-table"><caption class="product-carat-table__caption">' +
+        esc(lang === 'he' ? 'בחרו שורה לפי משקל האבנים והמחיר' : 'Select a row by stone weights and price') +
+        '</caption>' + tableHead + '<tbody>' + tableRows + '</tbody></table>';
+      if (status) {
+        status.textContent = selectedSize() ? (lang === 'he' ? 'נבחר' : 'Selected') : (lang === 'he' ? 'בחרו שורה' : 'Select a row');
+        status.classList.toggle('is-done', !!selectedSize());
+      }
+      return;
+    }
     var sizeSwatches = product.sizeDisplay === 'swatch';
     var sizeColorRows = product.sizeDisplay === 'color-row';
     wrap.classList.toggle('product-swatch-grid', !!sizeSwatches);
@@ -1896,6 +1934,23 @@ async function uploadProductPhoto(blob, meta) {
     if (!option) return;
     var unavailable = unavailableCombination(selectedSizeId, option.id);
     if (unavailable) { showUnavailableCombination(unavailable); return; }
+
+    // The three Moissanite drop necklaces are three real SKUs. Switch the
+    // active product in memory without a page reload, keeping the selected
+    // carat sizes (and using the right SKU for the cart/order).
+    if (/^product-(289|290|291)$/.test(String(product.slug || ''))) {
+      var threeDropSlugs = { silver: 'product-289', gold: 'product-290', 'rose-gold': 'product-291' };
+      var nextDrop = findProduct(threeDropSlugs[option.id] || '');
+      if (nextDrop && nextDrop.id !== product.id) {
+        product = nextDrop;
+        selectedColorId = option.id;
+        activeImageIndex = 0;
+        try { window.history.replaceState(window.history.state, '', productPath(product)); } catch (e) {}
+        renderProduct();
+        updateSelectedProductIdentity();
+        return;
+      }
+    }
     selectedColorId = option.id;
     if (requiresCompanion()) {
       var pending = readPendingBundle();
@@ -2215,9 +2270,13 @@ async function uploadProductPhoto(blob, meta) {
       messageCard.hidden = true;
     }
 
+    // Keep the product detail strings in the exact order provided by product data/admin.
+    // Presentation only: no icons, numbering or duplicated metadata.
     var details = product.details && product.details.he || [];
+    var detailsTitle = $('#productDetailsSummaryTitle');
+    if (detailsTitle) detailsTitle.textContent = lang === 'he' ? 'פרטים' : 'Details';
     $('#productDetails').innerHTML = details.map(function (detail) {
-      return '<div class="product-detail-row"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12.5l5 5L20 6.5"/></svg><span>' + esc(detail) + '</span></div>';
+      return '<div class="product-detail-row">' + esc(detail) + '</div>';
     }).join('');
 
     $('#qtyValue').textContent = qty;
@@ -2445,6 +2504,19 @@ async function uploadProductPhoto(blob, meta) {
 
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') setMenu(false);
+    // Click and keyboard navigation select the same whole table row.
+    if (e.key === 'Enter' || e.key === ' ') {
+      var caratRow = e.target.closest && e.target.closest('.product-carat-table__row[data-size]');
+      if (caratRow) {
+        e.preventDefault();
+        selectSize(caratRow.getAttribute('data-size'));
+        // Restoring focus keeps keyboard users on the newly rendered table.
+        var activeRow = Array.prototype.slice.call(document.querySelectorAll('.product-carat-table__row')).find(function (row) {
+          return row.getAttribute('data-size') === caratRow.getAttribute('data-size');
+        });
+        if (activeRow) activeRow.focus();
+      }
+    }
   });
 
   window.addEventListener('storage', function (event) {

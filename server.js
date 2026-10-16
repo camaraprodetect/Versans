@@ -7319,7 +7319,7 @@ function injectStorefrontRouting(html, bootRoute) {
   out = out
     .replace(/(\/?assets\/config\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261001-product-help-v1')
     .replace(/(\/?assets\/styles\.css)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261001-product-help-v1')
-    .replace(/(\/?assets\/store\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261016-creator-codes-v1')
+    .replace(/(\/?assets\/store\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261016-necklaces-complete-v2')
     .replace(/(\/?assets\/products\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=live-' + currentCatalogVersion())
     .replace(/(\/?assets\/product\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261003-all-color-identity-v48')
     .replace(/(\/?assets\/cart-drawer\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261004-cart-checkout-fix-v64')

@@ -579,6 +579,14 @@
     return h >>> 0;
   }
 
+  // Keep a specific product last without changing the order of other products.
+  function moveProductToEnd(list, slug) {
+    var ordered = list.slice();
+    var index = ordered.findIndex(function (p) { return p && p.slug === slug; });
+    if (index >= 0 && index < ordered.length - 1) ordered.push(ordered.splice(index, 1)[0]);
+    return ordered;
+  }
+
   function orderHomeCollectionProducts(list) {
     var highlighted = [];
     var ordinary = [];
@@ -1787,6 +1795,15 @@
         : orderHomeCollectionProducts(groupProducts)
       );
 
+      // The new Moissanite flower necklace belongs at the end of necklaces.
+      if (group.key === 'necklaces') {
+        groupProducts = moveProductToEnd(groupProducts, 'product-287');
+        groupProducts = moveProductToEnd(groupProducts, 'product-288');
+        groupProducts = moveProductToEnd(groupProducts, 'product-289');
+        groupProducts = moveProductToEnd(groupProducts, 'product-290');
+        groupProducts = moveProductToEnd(groupProducts, 'product-291');
+      }
+
       var loop = isMobileHomeScroller() ? { items: groupProducts.slice(), buffer: 0 } : homeCarouselLoopProducts(groupProducts, 4);
       return '' +
         '<section class="all-collection-group" data-all-collection-group="' + esc(group.key) + '">' +
@@ -2088,6 +2105,13 @@
     grid.classList.remove('grid--hats-all');
     list = orderPriorityCatalogProducts(list);
     list = shuffleGlassesWithinList(list);
+    if (state.filter === 'necklaces') {
+      list = moveProductToEnd(list, 'product-287');
+      list = moveProductToEnd(list, 'product-288');
+      list = moveProductToEnd(list, 'product-289');
+      list = moveProductToEnd(list, 'product-290');
+      list = moveProductToEnd(list, 'product-291');
+    }
 
     var pagingKey = catalogPagingContextKey(grid);
     if (pagingKey !== catalogPagingKey) {
@@ -2101,7 +2125,12 @@
       return;
     }
 
-    var visibleCount = catalogVisibleCount(grid, catalogBatchesShown);
+    // Show the complete necklaces collection without pagination. On small
+    // screens the old 10-row cap displayed only 20 of 21 necklaces, hiding
+    // product-288 even though it was correctly kept at the end.
+    var visibleCount = state.filter === 'necklaces'
+      ? list.length
+      : catalogVisibleCount(grid, catalogBatchesShown);
     var visibleList = list.slice(0, visibleCount);
     grid.innerHTML = visibleList.map(renderProductCardHTML).join('');
 

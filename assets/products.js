@@ -29565,15 +29565,15 @@ var PRODUCTS = [
     ],
     "badge": null,
     "sourceUrl": "https://he.aliexpress.com/item/1005007435716827.html?invitationCode=cDNOVDNpUnd1Ykw5a2pXWHRXdkFlSzFWUUhSM280eEd3ZjliaTJtY2FqS2VQemFTZUJrNWVWT0s1MU1hdTAyWg&srcSns=sns_Copy&spreadType=socialShare&social_params=6000499153564&bizType=ProductDetail&spreadCode=cDNOVDNpUnd1Ykw5a2pXWHRXdkFlSzFWUUhSM280eEd3ZjliaTJtY2FqS2VQemFTZUJrNWVWT0s1MU1hdTAyWg&aff_fcid=5630be5052b84287baebdf245e434f5c-1791989128825-06620-_c32pm8xx&tt=MG&aff_fsk=_c32pm8xx&aff_platform=default&sk=_c32pm8xx&aff_trace_key=5630be5052b84287baebdf245e434f5c-1791989128825-06620-_c32pm8xx&shareId=6000499153564&businessType=ProductDetail&platform=AE&terminal_id=11c284625c2a4368aae236cae79df5d9&afSmartRedirect=y&gatewayAdapt=glo2isr",
-    "hoverImage": "images/products/product-281/product-281-8.png",
+    "hoverImage": "images/products/product-278/product-278-4.png",
     "collectionMedia": {
       "women": {
         "image": "images/products/product-278/product-278-1.png",
-        "hoverImage": "images/products/product-281/product-281-8.png"
+        "hoverImage": "images/products/product-278/product-278-4.png"
       },
       "men": {
         "image": "images/products/product-278/product-278-1.png",
-        "hoverImage": "images/products/product-281/product-281-8.png"
+        "hoverImage": "images/products/product-278/product-278-4.png"
       }
     },
     "cardMode": "view",
@@ -29778,15 +29778,15 @@ var PRODUCTS = [
     ],
     "badge": null,
     "sourceUrl": "https://he.aliexpress.com/item/1005007435716827.html?invitationCode=cDNOVDNpUnd1Ykw5a2pXWHRXdkFlSzFWUUhSM280eEd3ZjliaTJtY2FqS2VQemFTZUJrNWVWT0s1MU1hdTAyWg&srcSns=sns_Copy&spreadType=socialShare&social_params=6000499153564&bizType=ProductDetail&spreadCode=cDNOVDNpUnd1Ykw5a2pXWHRXdkFlSzFWUUhSM280eEd3ZjliaTJtY2FqS2VQemFTZUJrNWVWT0s1MU1hdTAyWg&aff_fcid=5630be5052b84287baebdf245e434f5c-1791989128825-06620-_c32pm8xx&tt=MG&aff_fsk=_c32pm8xx&aff_platform=default&sk=_c32pm8xx&aff_trace_key=5630be5052b84287baebdf245e434f5c-1791989128825-06620-_c32pm8xx&shareId=6000499153564&businessType=ProductDetail&platform=AE&terminal_id=11c284625c2a4368aae236cae79df5d9&afSmartRedirect=y&gatewayAdapt=glo2isr",
-    "hoverImage": "images/products/product-281/product-281-8.png",
+    "hoverImage": "images/products/product-279/product-279-4.png",
     "collectionMedia": {
       "women": {
         "image": "images/products/product-279/product-279-1.png",
-        "hoverImage": "images/products/product-281/product-281-8.png"
+        "hoverImage": "images/products/product-279/product-279-4.png"
       },
       "men": {
         "image": "images/products/product-279/product-279-1.png",
-        "hoverImage": "images/products/product-281/product-281-8.png"
+        "hoverImage": "images/products/product-279/product-279-4.png"
       }
     },
     "cardMode": "view",
@@ -29991,15 +29991,15 @@ var PRODUCTS = [
     ],
     "badge": null,
     "sourceUrl": "https://he.aliexpress.com/item/1005007435716827.html?invitationCode=cDNOVDNpUnd1Ykw5a2pXWHRXdkFlSzFWUUhSM280eEd3ZjliaTJtY2FqS2VQemFTZUJrNWVWT0s1MU1hdTAyWg&srcSns=sns_Copy&spreadType=socialShare&social_params=6000499153564&bizType=ProductDetail&spreadCode=cDNOVDNpUnd1Ykw5a2pXWHRXdkFlSzFWUUhSM280eEd3ZjliaTJtY2FqS2VQemFTZUJrNWVWT0s1MU1hdTAyWg&aff_fcid=5630be5052b84287baebdf245e434f5c-1791989128825-06620-_c32pm8xx&tt=MG&aff_fsk=_c32pm8xx&aff_platform=default&sk=_c32pm8xx&aff_trace_key=5630be5052b84287baebdf245e434f5c-1791989128825-06620-_c32pm8xx&shareId=6000499153564&businessType=ProductDetail&platform=AE&terminal_id=11c284625c2a4368aae236cae79df5d9&afSmartRedirect=y&gatewayAdapt=glo2isr",
-    "hoverImage": "images/products/product-281/product-281-8.png",
+    "hoverImage": "images/products/product-280/product-280-1.png",
     "collectionMedia": {
       "women": {
         "image": "images/products/product-280/product-280-1.png",
-        "hoverImage": "images/products/product-281/product-281-8.png"
+        "hoverImage": "images/products/product-280/product-280-1.png"
       },
       "men": {
         "image": "images/products/product-280/product-280-1.png",
-        "hoverImage": "images/products/product-281/product-281-8.png"
+        "hoverImage": "images/products/product-280/product-280-1.png"
       }
     },
     "cardMode": "view",
@@ -30204,15 +30204,15 @@ var PRODUCTS = [
     ],
     "badge": null,
     "sourceUrl": "https://he.aliexpress.com/item/1005007435716827.html?invitationCode=cDNOVDNpUnd1Ykw5a2pXWHRXdkFlSzFWUUhSM280eEd3ZjliaTJtY2FqS2VQemFTZUJrNWVWT0s1MU1hdTAyWg&srcSns=sns_Copy&spreadType=socialShare&social_params=6000499153564&bizType=ProductDetail&spreadCode=cDNOVDNpUnd1Ykw5a2pXWHRXdkFlSzFWUUhSM280eEd3ZjliaTJtY2FqS2VQemFTZUJrNWVWT0s1MU1hdTAyWg&aff_fcid=5630be5052b84287baebdf245e434f5c-1791989128825-06620-_c32pm8xx&tt=MG&aff_fsk=_c32pm8xx&aff_platform=default&sk=_c32pm8xx&aff_trace_key=5630be5052b84287baebdf245e434f5c-1791989128825-06620-_c32pm8xx&shareId=6000499153564&businessType=ProductDetail&platform=AE&terminal_id=11c284625c2a4368aae236cae79df5d9&afSmartRedirect=y&gatewayAdapt=glo2isr",
-    "hoverImage": "images/products/product-281/product-281-8.png",
+    "hoverImage": "images/products/product-281/product-281-4.png",
     "collectionMedia": {
       "women": {
         "image": "images/products/product-281/product-281-1.png",
-        "hoverImage": "images/products/product-281/product-281-8.png"
+        "hoverImage": "images/products/product-281/product-281-4.png"
       },
       "men": {
         "image": "images/products/product-281/product-281-1.png",
-        "hoverImage": "images/products/product-281/product-281-8.png"
+        "hoverImage": "images/products/product-281/product-281-4.png"
       }
     },
     "cardMode": "view",
@@ -30417,15 +30417,15 @@ var PRODUCTS = [
     ],
     "badge": null,
     "sourceUrl": "https://he.aliexpress.com/item/1005007435716827.html?invitationCode=cDNOVDNpUnd1Ykw5a2pXWHRXdkFlSzFWUUhSM280eEd3ZjliaTJtY2FqS2VQemFTZUJrNWVWT0s1MU1hdTAyWg&srcSns=sns_Copy&spreadType=socialShare&social_params=6000499153564&bizType=ProductDetail&spreadCode=cDNOVDNpUnd1Ykw5a2pXWHRXdkFlSzFWUUhSM280eEd3ZjliaTJtY2FqS2VQemFTZUJrNWVWT0s1MU1hdTAyWg&aff_fcid=5630be5052b84287baebdf245e434f5c-1791989128825-06620-_c32pm8xx&tt=MG&aff_fsk=_c32pm8xx&aff_platform=default&sk=_c32pm8xx&aff_trace_key=5630be5052b84287baebdf245e434f5c-1791989128825-06620-_c32pm8xx&shareId=6000499153564&businessType=ProductDetail&platform=AE&terminal_id=11c284625c2a4368aae236cae79df5d9&afSmartRedirect=y&gatewayAdapt=glo2isr",
-    "hoverImage": "images/products/product-281/product-281-8.png",
+    "hoverImage": "images/products/product-282/product-282-4.png",
     "collectionMedia": {
       "women": {
         "image": "images/products/product-282/product-282-1.png",
-        "hoverImage": "images/products/product-281/product-281-8.png"
+        "hoverImage": "images/products/product-282/product-282-4.png"
       },
       "men": {
         "image": "images/products/product-282/product-282-1.png",
-        "hoverImage": "images/products/product-281/product-281-8.png"
+        "hoverImage": "images/products/product-282/product-282-4.png"
       }
     },
     "cardMode": "view",
@@ -31297,6 +31297,676 @@ var PRODUCTS = [
   "afterText": {
     "he": "בחרו צבע ומידה. בעמוד המוצר מוצגות כל 6 התמונות של גרסאות הכסף והזהב.",
     "en": "Choose a color and size. The product page displays all 6 images of the silver and gold versions."
+  },
+  "deliveryBusinessDays": {
+    "min": 9,
+    "max": 14
+  }
+},
+{
+  "id": "moissanite-flower-necklace-silver-287",
+  "slug": "product-287",
+  "urlSlug": "moissanite-flower-necklace-silver",
+  "sku": "VS-NK-287",
+  "category": "necklaces",
+  "categories": [
+    "necklaces"
+  ],
+  "badge": {"he":"חדש","en":"New"},
+
+  "cardMode": "view",
+  "hideMessageCard": true,
+  "cardImage": "images/products/product-287/product-287-1.png",
+  "hoverImage": "images/products/product-287/product-287-2.png",
+  "images": [
+    "images/products/product-287/product-287-1.png",
+    "images/products/product-287/product-287-2.png",
+    "images/products/product-287/product-287-3.png"
+  ],
+  "showAllGalleryThumbs": true,
+  "price": 339.9,
+  "title": {
+    "he": "שרשרת פרחי מואסנייט - צבע כסף",
+    "en": "Moissanite Flower Necklace - Silver"
+  },
+  "subtitle": {
+    "he": "שרשרת פרחים משובצת אבני Moissanite · כסף סטרלינג S925 · אורך 40 ס״מ",
+    "en": "Moissanite flower necklace · S925 sterling silver · 40 cm"
+  },
+  "cardTitle": {
+    "he": "שרשרת פרחי מואסנייט - צבע כסף",
+    "en": "Moissanite Flower Necklace - Silver"
+  },
+  "cardMessage": {
+    "he": "שרשרת פרחים עדינה משובצת אבני מואסנייט, עשויה כסף סטרלינג S925 באורך 40 ס״מ.",
+    "en": "Delicate S925 sterling silver flower necklace with Moissanite stones, 40 cm long."
+  },
+  "signature": {
+    "he": "",
+    "en": ""
+  },
+  "description": {
+    "he": "שרשרת פרחי מואסנייט בגוון כסף, בעיצוב עדין של פרחים משובצים המסודרים בקשת מעוגלת. השרשרת עשויה כסף סטרלינג S925 ומשובצת אבני Moissanite, באורך 40 ס״מ.",
+    "en": "A delicate S925 sterling silver flower necklace with sparkling Moissanite stones arranged in a gently curved floral motif. Length: 40 cm."
+  },
+  "details": {
+    "he": [
+      "עיצוב: שרשרת פרחים עדינה עם שיבוץ נוצץ",
+      "אבנים: Moissanite",
+      "חומר: כסף סטרלינג S925",
+      "צבע: כסף",
+      "אורך השרשרת: 40 ס״מ",
+      "שרשרת הארכה: כ-5 ס״מ"
+    ],
+    "en": [
+      "Design: delicate floral necklace with sparkling stones",
+      "Stones: Moissanite",
+      "Material: S925 sterling silver",
+      "Color: Silver",
+      "Chain length: 40 cm",
+      "Extension chain: approx. 5 cm"
+    ]
+  },
+  "afterText": {
+    "he": "שרשרת פרחים עדינה בגוון כסף, משובצת אבני מואסנייט ובאורך 40 ס״מ.",
+    "en": "A delicate silver Moissanite flower necklace, 40 cm long."
+  },
+  "deliveryBusinessDays": {
+    "min": 9,
+    "max": 14
+  }
+},
+{
+  "id": "moissanite-clover-necklace-silver-288",
+  "slug": "product-288",
+  "urlSlug": "moissanite-clover-necklace-silver",
+  "sku": "VS-NK-288",
+  "category": "necklaces",
+  "categories": [
+    "necklaces"
+  ],
+  "badge": null,
+
+  "cardMode": "view",
+  "hideMessageCard": true,
+  "cardImage": "images/products/product-288/product-288-1.png",
+  "hoverImage": "images/products/product-288/product-288-2.png",
+  "images": [
+    "images/products/product-288/product-288-1.png",
+    "images/products/product-288/product-288-2.png",
+    "images/products/product-288/product-288-3.png",
+    "images/products/product-288/product-288-4.png",
+    "images/products/product-288/product-288-5.png"
+  ],
+  "showAllGalleryThumbs": true,
+  "price": 349.9,
+  "title": {
+    "he": "שרשרת תלתן מואסנייט - צבע כסף",
+    "en": "Moissanite Clover Necklace - Silver"
+  },
+  "subtitle": {
+    "he": "שרשרת תלתנים משובצת אבני Moissanite · כסף סטרלינג S925 · אורך 40 ס״מ",
+    "en": "Clover necklace set with Moissanite · S925 sterling silver · 40 cm"
+  },
+  "cardTitle": {
+    "he": "שרשרת תלתן מואסנייט - צבע כסף",
+    "en": "Moissanite Clover Necklace - Silver"
+  },
+  "cardMessage": {
+    "he": "שרשרת כסף סטרלינג S925 עם חמישה תלתנים נוצצים המשובצים אבני מואסנייט.",
+    "en": "S925 sterling silver necklace with five sparkling Moissanite clover motifs."
+  },
+  "signature": {
+    "he": "",
+    "en": ""
+  },
+  "description": {
+    "he": "שרשרת תלתן מואסנייט בגוון כסף, עשויה כסף סטרלינג S925 ומשובצת אבני Moissanite בעיצוב חמישה תלתנים עדינים לאורך השרשרת. אורך השרשרת 40 ס״מ עם שרשרת הארכה של כ-5 ס״מ.",
+    "en": "A delicate S925 sterling silver necklace featuring five clover motifs set with Moissanite stones. Chain length: 40 cm, plus an approximately 5 cm extension."
+  },
+  "details": {
+    "he": [
+      "עיצוב: חמישה תלתנים משובצים לאורך השרשרת",
+      "אבנים: Moissanite",
+      "חומר: כסף סטרלינג S925",
+      "גוון התכשיט: כסף",
+      "אורך השרשרת: 40 ס״מ",
+      "שרשרת הארכה: כ-5 ס״מ",
+      "מראה עדין ונוצץ לשימוש יומיומי ולאירועים"
+    ],
+    "en": [
+      "Design: five clover motifs along the chain",
+      "Gemstones: Moissanite",
+      "Material: S925 sterling silver",
+      "Jewelry color: Silver",
+      "Necklace length: 40 cm",
+      "Extension chain: approx. 5 cm",
+      "Delicate sparkle for everyday wear and occasions"
+    ]
+  },
+  "afterText": {
+    "he": "שרשרת תלתנים אלגנטית בגוון כסף עם אבני מואסנייט, עשויה כסף סטרלינג S925.",
+    "en": "Elegant S925 sterling silver clover necklace set with Moissanite stones."
+  },
+  "deliveryBusinessDays": {
+    "min": 9,
+    "max": 14
+  }
+},
+{
+  "id": "moissanite-three-drop-silver-289",
+  "slug": "product-289",
+  "urlSlug": "moissanite-three-drop-necklace-silver",
+  "sku": "VS-NK-289",
+  "category": "necklaces",
+  "categories": [
+    "necklaces"
+  ],
+  "badge": null,
+
+  "cardMode": "view",
+  "hideMessageCard": true,
+  "cardImage": "images/products/product-289/product-289-1.png",
+  "hoverImage": "images/products/product-289/product-289-3.png",
+  "images": [
+    "images/products/product-289/product-289-1.png",
+    "images/products/product-289/product-289-2.png",
+    "images/products/product-289/product-289-3.png"
+  ],
+  "showAllGalleryThumbs": true,
+  "price": 399.9,
+  "startingPrice": false,
+  "title": {
+    "he": "שרשרת טיפות מואסנייט - צבע כסף",
+    "en": "Moissanite Three-Drop Necklace - Silver"
+  },
+  "subtitle": {
+    "he": "שרשרת שלוש טיפות משובצת אבני Moissanite בחיתוך טיפה · גוון כסף · ארבע אפשרויות גודל",
+    "en": "Three pear-cut Moissanite stones · Silver finish · four stone-size options"
+  },
+  "sizeHeading": {
+    "he": "בחרו משקל אבנים (קראט)",
+    "en": "Choose stone carat weights"
+  },
+  "sizeRequiredText": {
+    "he": "נא לבחור גודל אבנים",
+    "en": "Please choose stone sizes"
+  },
+  "sizes": [
+    {
+      "id": "0.5-1-2",
+      "addPrice": 0.0,
+      "label": {
+        "he": "אבן 1: 0.5 קראט · אבן 2: 1 קראט · אבן 3: 2 קראט",
+        "en": "Stone 1: 0.5 ct · Stone 2: 1 ct · Stone 3: 2 ct"
+      },
+      "priceLabel": {
+        "he": "399.90 ₪",
+        "en": "₪399.90"
+      }
+    },
+    {
+      "id": "1-2-3",
+      "addPrice": 70.0,
+      "label": {
+        "he": "אבן 1: 1 קראט · אבן 2: 2 קראט · אבן 3: 3 קראט",
+        "en": "Stone 1: 1 ct · Stone 2: 2 ct · Stone 3: 3 ct"
+      },
+      "priceLabel": {
+        "he": "469.90 ₪",
+        "en": "₪469.90"
+      }
+    },
+    {
+      "id": "2-3-4",
+      "addPrice": 190.0,
+      "label": {
+        "he": "אבן 1: 2 קראט · אבן 2: 3 קראט · אבן 3: 4 קראט",
+        "en": "Stone 1: 2 ct · Stone 2: 3 ct · Stone 3: 4 ct"
+      },
+      "priceLabel": {
+        "he": "589.90 ₪",
+        "en": "₪589.90"
+      }
+    },
+    {
+      "id": "3-4-5",
+      "addPrice": 280.0,
+      "label": {
+        "he": "אבן 1: 3 קראט · אבן 2: 4 קראט · אבן 3: 5 קראט",
+        "en": "Stone 1: 3 ct · Stone 2: 4 ct · Stone 3: 5 ct"
+      },
+      "priceLabel": {
+        "he": "679.90 ₪",
+        "en": "₪679.90"
+      }
+    }
+  ],
+  "colorHeading": {
+    "he": "בחרו צבע",
+    "en": "Choose color"
+  },
+  "colorRequiredText": {
+    "he": "בחרו צבע",
+    "en": "Choose a color"
+  },
+  "colorDisplay": "image-choice",
+  "colors": [
+    {
+      "id": "silver",
+      "label": {
+        "he": "כסף",
+        "en": "Silver"
+      },
+      "swatch": "#d3d9df",
+      "image": "images/products/product-289/product-289-1.png",
+      "addPrice": 0
+    },
+    {
+      "id": "gold",
+      "label": {
+        "he": "זהב",
+        "en": "Gold"
+      },
+      "swatch": "#d6ad4a",
+      "image": "images/products/product-290/product-290-1.png",
+      "addPrice": 0
+    },
+    {
+      "id": "rose-gold",
+      "label": {
+        "he": "רוז גולד",
+        "en": "Rose Gold"
+      },
+      "swatch": "#dba188",
+      "image": "images/products/product-291/product-291-1.png",
+      "addPrice": 0
+    }
+  ],
+  "defaultColorId": "silver",
+  "cardTitle": {
+    "he": "שרשרת טיפות מואסנייט - צבע כסף",
+    "en": "Moissanite Three-Drop Necklace - Silver"
+  },
+  "cardMessage": {
+    "he": "שלוש אבני Moissanite בחיתוך טיפה עם ארבע אפשרויות קראט · גוון כסף.",
+    "en": "Three pear-cut Moissanite stones in Silver, four carat options."
+  },
+  "signature": {
+    "he": "",
+    "en": ""
+  },
+  "description": {
+    "he": "שרשרת שלוש טיפות מואסנייט בגוון כסף, משובצת שלוש אבני Moissanite בחיתוך טיפה (Pear Cut), בגדלים הנבחרים. עשויה כסף סטרלינג S925.",
+    "en": "Three pear-cut Moissanite-stone necklace in a Silver finish. Choose the weight of each stone from four available combinations."
+  },
+  "details": {
+    "he": [
+      "גוון השרשרת: כסף",
+      "חומר: כסף סטרלינג S925",
+      "שיבוץ: שלוש אבני Moissanite בחיתוך טיפה (Pear Cut)",
+      "אבני מואסנייט בחיתוך טיפה ובמראה נוצץ",
+      "לבחירה ארבעה שילובי משקלי אבנים (בקראט)",
+      "מחיר משתנה לפי גודל האבנים הנבחר"
+    ],
+    "en": [
+      "Finish: Silver",
+      "925 sterling silver base; finish varies by color",
+      "Three pear-cut Moissanite stones",
+      "Sparkling pear-cut Moissanite stones",
+      "Four gemstone carat combinations",
+      "Price adjusts to selected stone size"
+    ]
+  },
+  "afterText": {
+    "he": "שרשרת טיפות מואסנייט נוצצת, זמינה בשלושה צבעים ובארבע אפשרויות גודל לאבנים.",
+    "en": "Moissanite three-drop necklace available in three finishes and four carat combinations."
+  },
+  "deliveryBusinessDays": {
+    "min": 9,
+    "max": 14
+  }
+},
+{
+  "id": "moissanite-three-drop-gold-290",
+  "slug": "product-290",
+  "urlSlug": "moissanite-three-drop-necklace-gold",
+  "sku": "VS-NK-290",
+  "category": "necklaces",
+  "categories": [
+    "necklaces"
+  ],
+  "badge": null,
+
+  "cardMode": "view",
+  "hideMessageCard": true,
+  "cardImage": "images/products/product-290/product-290-1.png",
+  "hoverImage": "images/products/product-289/product-289-3.png",
+  "images": [
+    "images/products/product-290/product-290-1.png",
+    "images/products/product-289/product-289-3.png"
+  ],
+  "showAllGalleryThumbs": true,
+  "price": 399.9,
+  "startingPrice": false,
+  "title": {
+    "he": "שרשרת טיפות מואסנייט - צבע זהב",
+    "en": "Moissanite Three-Drop Necklace - Gold"
+  },
+  "subtitle": {
+    "he": "שרשרת שלוש טיפות משובצת אבני Moissanite בחיתוך טיפה · גוון זהב · ארבע אפשרויות גודל",
+    "en": "Three pear-cut Moissanite stones · Gold finish · four stone-size options"
+  },
+  "sizeHeading": {
+    "he": "בחרו משקל אבנים (קראט)",
+    "en": "Choose stone carat weights"
+  },
+  "sizeRequiredText": {
+    "he": "נא לבחור גודל אבנים",
+    "en": "Please choose stone sizes"
+  },
+  "sizes": [
+    {
+      "id": "0.5-1-2",
+      "addPrice": 0.0,
+      "label": {
+        "he": "אבן 1: 0.5 קראט · אבן 2: 1 קראט · אבן 3: 2 קראט",
+        "en": "Stone 1: 0.5 ct · Stone 2: 1 ct · Stone 3: 2 ct"
+      },
+      "priceLabel": {
+        "he": "399.90 ₪",
+        "en": "₪399.90"
+      }
+    },
+    {
+      "id": "1-2-3",
+      "addPrice": 70.0,
+      "label": {
+        "he": "אבן 1: 1 קראט · אבן 2: 2 קראט · אבן 3: 3 קראט",
+        "en": "Stone 1: 1 ct · Stone 2: 2 ct · Stone 3: 3 ct"
+      },
+      "priceLabel": {
+        "he": "469.90 ₪",
+        "en": "₪469.90"
+      }
+    },
+    {
+      "id": "2-3-4",
+      "addPrice": 190.0,
+      "label": {
+        "he": "אבן 1: 2 קראט · אבן 2: 3 קראט · אבן 3: 4 קראט",
+        "en": "Stone 1: 2 ct · Stone 2: 3 ct · Stone 3: 4 ct"
+      },
+      "priceLabel": {
+        "he": "589.90 ₪",
+        "en": "₪589.90"
+      }
+    },
+    {
+      "id": "3-4-5",
+      "addPrice": 280.0,
+      "label": {
+        "he": "אבן 1: 3 קראט · אבן 2: 4 קראט · אבן 3: 5 קראט",
+        "en": "Stone 1: 3 ct · Stone 2: 4 ct · Stone 3: 5 ct"
+      },
+      "priceLabel": {
+        "he": "679.90 ₪",
+        "en": "₪679.90"
+      }
+    }
+  ],
+  "colorHeading": {
+    "he": "בחרו צבע",
+    "en": "Choose color"
+  },
+  "colorRequiredText": {
+    "he": "בחרו צבע",
+    "en": "Choose a color"
+  },
+  "colorDisplay": "image-choice",
+  "colors": [
+    {
+      "id": "silver",
+      "label": {
+        "he": "כסף",
+        "en": "Silver"
+      },
+      "swatch": "#d3d9df",
+      "image": "images/products/product-289/product-289-1.png",
+      "addPrice": 0
+    },
+    {
+      "id": "gold",
+      "label": {
+        "he": "זהב",
+        "en": "Gold"
+      },
+      "swatch": "#d6ad4a",
+      "image": "images/products/product-290/product-290-1.png",
+      "addPrice": 0
+    },
+    {
+      "id": "rose-gold",
+      "label": {
+        "he": "רוז גולד",
+        "en": "Rose Gold"
+      },
+      "swatch": "#dba188",
+      "image": "images/products/product-291/product-291-1.png",
+      "addPrice": 0
+    }
+  ],
+  "defaultColorId": "gold",
+  "cardTitle": {
+    "he": "שרשרת טיפות מואסנייט - צבע זהב",
+    "en": "Moissanite Three-Drop Necklace - Gold"
+  },
+  "cardMessage": {
+    "he": "שלוש אבני Moissanite בחיתוך טיפה עם ארבע אפשרויות קראט · גוון זהב.",
+    "en": "Three pear-cut Moissanite stones in Gold, four carat options."
+  },
+  "signature": {
+    "he": "",
+    "en": ""
+  },
+  "description": {
+    "he": "שרשרת שלוש טיפות מואסנייט בגוון זהב, משובצת שלוש אבני Moissanite בחיתוך טיפה (Pear Cut), בגדלים הנבחרים. עשויה כסף סטרלינג S925 בציפוי זהב 18K.",
+    "en": "Three pear-cut Moissanite-stone necklace in a Gold finish. Choose the weight of each stone from four available combinations."
+  },
+  "details": {
+    "he": [
+      "גוון השרשרת: זהב",
+      "חומר: כסף סטרלינג S925 בציפוי זהב 18K",
+      "שיבוץ: שלוש אבני Moissanite בחיתוך טיפה (Pear Cut)",
+      "אבני מואסנייט בחיתוך טיפה ובמראה נוצץ",
+      "לבחירה ארבעה שילובי משקלי אבנים (בקראט)",
+      "מחיר משתנה לפי גודל האבנים הנבחר"
+    ],
+    "en": [
+      "Finish: Gold",
+      "925 sterling silver base; finish varies by color",
+      "Three pear-cut Moissanite stones",
+      "Sparkling pear-cut Moissanite stones",
+      "Four gemstone carat combinations",
+      "Price adjusts to selected stone size"
+    ]
+  },
+  "afterText": {
+    "he": "שרשרת טיפות מואסנייט נוצצת, זמינה בשלושה צבעים ובארבע אפשרויות גודל לאבנים.",
+    "en": "Moissanite three-drop necklace available in three finishes and four carat combinations."
+  },
+  "deliveryBusinessDays": {
+    "min": 9,
+    "max": 14
+  }
+},
+{
+  "id": "moissanite-three-drop-rose-gold-291",
+  "slug": "product-291",
+  "urlSlug": "moissanite-three-drop-necklace-rose-gold",
+  "sku": "VS-NK-291",
+  "category": "necklaces",
+  "categories": [
+    "necklaces"
+  ],
+  "badge": null,
+
+  "cardMode": "view",
+  "hideMessageCard": true,
+  "cardImage": "images/products/product-291/product-291-1.png",
+  "hoverImage": "images/products/product-289/product-289-3.png",
+  "images": [
+    "images/products/product-291/product-291-1.png",
+    "images/products/product-289/product-289-3.png"
+  ],
+  "showAllGalleryThumbs": true,
+  "price": 399.9,
+  "startingPrice": false,
+  "title": {
+    "he": "שרשרת טיפות מואסנייט - צבע רוז גולד",
+    "en": "Moissanite Three-Drop Necklace - Rose Gold"
+  },
+  "subtitle": {
+    "he": "שרשרת שלוש טיפות משובצת אבני Moissanite בחיתוך טיפה · גוון רוז גולד · ארבע אפשרויות גודל",
+    "en": "Three pear-cut Moissanite stones · Rose Gold finish · four stone-size options"
+  },
+  "sizeHeading": {
+    "he": "בחרו משקל אבנים (קראט)",
+    "en": "Choose stone carat weights"
+  },
+  "sizeRequiredText": {
+    "he": "נא לבחור גודל אבנים",
+    "en": "Please choose stone sizes"
+  },
+  "sizes": [
+    {
+      "id": "0.5-1-2",
+      "addPrice": 0.0,
+      "label": {
+        "he": "אבן 1: 0.5 קראט · אבן 2: 1 קראט · אבן 3: 2 קראט",
+        "en": "Stone 1: 0.5 ct · Stone 2: 1 ct · Stone 3: 2 ct"
+      },
+      "priceLabel": {
+        "he": "399.90 ₪",
+        "en": "₪399.90"
+      }
+    },
+    {
+      "id": "1-2-3",
+      "addPrice": 70.0,
+      "label": {
+        "he": "אבן 1: 1 קראט · אבן 2: 2 קראט · אבן 3: 3 קראט",
+        "en": "Stone 1: 1 ct · Stone 2: 2 ct · Stone 3: 3 ct"
+      },
+      "priceLabel": {
+        "he": "469.90 ₪",
+        "en": "₪469.90"
+      }
+    },
+    {
+      "id": "2-3-4",
+      "addPrice": 190.0,
+      "label": {
+        "he": "אבן 1: 2 קראט · אבן 2: 3 קראט · אבן 3: 4 קראט",
+        "en": "Stone 1: 2 ct · Stone 2: 3 ct · Stone 3: 4 ct"
+      },
+      "priceLabel": {
+        "he": "589.90 ₪",
+        "en": "₪589.90"
+      }
+    },
+    {
+      "id": "3-4-5",
+      "addPrice": 280.0,
+      "label": {
+        "he": "אבן 1: 3 קראט · אבן 2: 4 קראט · אבן 3: 5 קראט",
+        "en": "Stone 1: 3 ct · Stone 2: 4 ct · Stone 3: 5 ct"
+      },
+      "priceLabel": {
+        "he": "679.90 ₪",
+        "en": "₪679.90"
+      }
+    }
+  ],
+  "colorHeading": {
+    "he": "בחרו צבע",
+    "en": "Choose color"
+  },
+  "colorRequiredText": {
+    "he": "בחרו צבע",
+    "en": "Choose a color"
+  },
+  "colorDisplay": "image-choice",
+  "colors": [
+    {
+      "id": "silver",
+      "label": {
+        "he": "כסף",
+        "en": "Silver"
+      },
+      "swatch": "#d3d9df",
+      "image": "images/products/product-289/product-289-1.png",
+      "addPrice": 0
+    },
+    {
+      "id": "gold",
+      "label": {
+        "he": "זהב",
+        "en": "Gold"
+      },
+      "swatch": "#d6ad4a",
+      "image": "images/products/product-290/product-290-1.png",
+      "addPrice": 0
+    },
+    {
+      "id": "rose-gold",
+      "label": {
+        "he": "רוז גולד",
+        "en": "Rose Gold"
+      },
+      "swatch": "#dba188",
+      "image": "images/products/product-291/product-291-1.png",
+      "addPrice": 0
+    }
+  ],
+  "defaultColorId": "rose-gold",
+  "cardTitle": {
+    "he": "שרשרת טיפות מואסנייט - צבע רוז גולד",
+    "en": "Moissanite Three-Drop Necklace - Rose Gold"
+  },
+  "cardMessage": {
+    "he": "שלוש אבני Moissanite בחיתוך טיפה עם ארבע אפשרויות קראט · גוון רוז גולד.",
+    "en": "Three pear-cut Moissanite stones in Rose Gold, four carat options."
+  },
+  "signature": {
+    "he": "",
+    "en": ""
+  },
+  "description": {
+    "he": "שרשרת שלוש טיפות מואסנייט בגוון רוז גולד, משובצת שלוש אבני Moissanite בחיתוך טיפה (Pear Cut), בגדלים הנבחרים. עשויה כסף סטרלינג S925 בציפוי רוז גולד.",
+    "en": "Three pear-cut Moissanite-stone necklace in a Rose Gold finish. Choose the weight of each stone from four available combinations."
+  },
+  "details": {
+    "he": [
+      "גוון השרשרת: רוז גולד",
+      "חומר: כסף סטרלינג S925 בציפוי רוז גולד",
+      "שיבוץ: שלוש אבני Moissanite בחיתוך טיפה (Pear Cut)",
+      "אבני מואסנייט בחיתוך טיפה ובמראה נוצץ",
+      "לבחירה ארבעה שילובי משקלי אבנים (בקראט)",
+      "מחיר משתנה לפי גודל האבנים הנבחר"
+    ],
+    "en": [
+      "Finish: Rose Gold",
+      "925 sterling silver base; finish varies by color",
+      "Three pear-cut Moissanite stones",
+      "Sparkling pear-cut Moissanite stones",
+      "Four gemstone carat combinations",
+      "Price adjusts to selected stone size"
+    ]
+  },
+  "afterText": {
+    "he": "שרשרת טיפות מואסנייט נוצצת, זמינה בשלושה צבעים ובארבע אפשרויות גודל לאבנים.",
+    "en": "Moissanite three-drop necklace available in three finishes and four carat combinations."
   },
   "deliveryBusinessDays": {
     "min": 9,
