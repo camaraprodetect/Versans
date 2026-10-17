@@ -2683,6 +2683,9 @@
   var catalogItemsCache = [];
   var catalogPendingIds = [];
   var catalogPageSize = 36;
+  var catalogSelectedCategory = 'all';
+  var catalogShowHiddenOnly = false;
+  var catalogCategoryOrders = {};
   var catalogCategories = [
     ['greeting','תכשיט עם ברכה'],['greeting-mom','לאמא'],['greeting-partner','לאישה'],['greeting-daughter','לבת'],['greeting-sister','לאחות'],
     ['necklaces','שרשראות'],['bracelets','צמידים'],['bracelets-men','צמידים לגברים'],['bracelets-women','צמידים לנשים'],['bracelets-fashion','צמידי אופנה'],
@@ -2886,24 +2889,64 @@
   }
   function renderCatalogGrid(parent) {
     var normalized=catalogSearchText.trim().toLowerCase();
-    var list=catalogItemsCache.filter(function(p){return !normalized || [catalogTitle(p),p.id,p.slug,p.sku,p.category].some(function(s){return String(s||'').toLowerCase().indexOf(normalized)>=0})});
+    var list=catalogItemsCache.filter(function(p){
+      var categories=Array.isArray(p.categories)?p.categories:[p.category];
+      if(catalogSelectedCategory!=='all' && categories.indexOf(catalogSelectedCategory)<0)return false;
+      if(catalogShowHiddenOnly && !p.hidden)return false;
+      return !normalized || [catalogTitle(p),p.id,p.slug,p.sku,p.category].some(function(s){return String(s||'').toLowerCase().indexOf(normalized)>=0});
+    });
+    if(catalogSelectedCategory!=='all'){
+      var ranks=catalogCategoryOrders[catalogSelectedCategory]||[];
+      list.sort(function(a,b){
+        var ai=ranks.indexOf(a.slug),bi=ranks.indexOf(b.slug);
+        if(ai<0)ai=100000+catalogItemsCache.indexOf(a);
+        if(bi<0)bi=100000+catalogItemsCache.indexOf(b);
+        return ai-bi;
+      });
+    }
     var totalPages=Math.max(1,Math.ceil(list.length/catalogPageSize));catalogPageNumber=Math.min(catalogPageNumber,totalPages-1);
     var grid=make('div','admin-catalog-grid');
     list.slice(catalogPageNumber*catalogPageSize,(catalogPageNumber+1)*catalogPageSize).forEach(function(p){
-      var card=make('article','admin-catalog-product');
+      var card=make('article','admin-catalog-product' + (p.hidden?' is-hidden':''));
       var picture=make('img');picture.src=catalogPicture(p.image);picture.alt='';picture.loading='lazy';picture.onerror=function(){picture.style.visibility='hidden'};
       var meta=make('div','admin-catalog-product__text');meta.appendChild(make('strong','',catalogTitle(p)));
       meta.appendChild(make('small','',String(p.slug)+' · '+Number(p.price).toFixed(2)+' ₪'));
+      if(p.hidden)meta.appendChild(make('span','admin-catalog-hidden-label','מוסתר מהחנות'));
       if(catalogPendingIds.indexOf(p.slug)>=0)meta.appendChild(make('span','admin-catalog-pending','ממתין לסנכרון גיליון'));
       var tools=make('div','admin-catalog-product__actions');
       tools.appendChild(catalogButton('עריכה','admin-catalog-primary',function(){openCatalogEditor(p)}));
-      var site=make('a','admin-catalog-btn', 'צפייה');site.href=p.href;site.target='_blank';site.rel='noopener';tools.appendChild(site);
+      var site=make('a','admin-catalog-btn', p.hidden?'תצוגת אדמין':'צפייה');
+      site.href=p.hidden?('/product.html?id='+encodeURIComponent(p.slug)+'&admin_preview=1'):p.href;
+      site.target='_blank';site.rel='noopener';tools.appendChild(site);
+      tools.appendChild(catalogButton(p.hidden?'הצג בחנות':'הסתר','admin-catalog-quiet',async function(){
+        if(!window.confirm(p.hidden?'להחזיר את המוצר לחנות?':'להסתיר את המוצר מהחנות?'))return;
+        try{
+          await apiAction('/api/admin/catalog/'+encodeURIComponent(p.slug)+'/visibility','POST',{hidden:!p.hidden});
+          showToast(p.hidden?'המוצר הוחזר לחנות':'המוצר הוסתר מהחנות');await renderProductsPage();
+        }catch(e){showToast('הפעולה נכשלה: '+e.message)}
+      }));
       tools.appendChild(catalogButton('מחיקה','admin-catalog-danger',async function(){
         if(!window.confirm('למחוק את '+catalogTitle(p)+' מהחנות?\nהזמנות קיימות לא יימחקו.'))return;
         try{var result=await apiAction('/api/admin/catalog/'+encodeURIComponent(p.slug),'DELETE');await renderProductsPage();if(result.sheetSync&&!result.sheetSync.ok)alert('המוצר הוסר מהחנות, אבל מחיקתו מהגיליון ממתינה לסנכרון.');}
         catch(e){alert('לא ניתן למחוק: '+e.message)}
       }));
-      card.append(picture,meta,tools);grid.appendChild(card);
+      card.append(picture,meta,tools);
+      if(catalogSelectedCategory!=='all'){
+        var reposition=make('div','admin-catalog-reposition');
+        var ranks=catalogCategoryOrders[catalogSelectedCategory]||[];
+        var matching=catalogItemsCache.filter(function(item){return (item.categories||[item.category]).indexOf(catalogSelectedCategory)>=0});
+        var full=ranks.filter(function(slug){return matching.some(function(item){return item.slug===slug})}).concat(matching.map(function(item){return item.slug}).filter(function(slug){return ranks.indexOf(slug)<0}));
+        var position=make('input');position.type='number';position.min='1';position.max=String(full.length);position.value=String(full.indexOf(p.slug)+1);position.setAttribute('aria-label','מיקום בקטגוריה');
+        var move=catalogButton('העבר למיקום','',async function(){
+          var wanted=Number(position.value);
+          if(!Number.isInteger(wanted)||wanted<1||wanted>full.length){showToast('יש לבחור מיקום בין 1 ל-'+full.length);return}
+          move.disabled=true;
+          try{await apiAction('/api/admin/catalog/'+encodeURIComponent(p.slug)+'/position','POST',{category:catalogSelectedCategory,position:wanted});showToast('סדר המוצרים עודכן');await renderProductsPage()}
+          catch(e){move.disabled=false;showToast('לא ניתן לשנות סדר: '+e.message)}
+        });
+        reposition.appendChild(make('span','','מיקום בקטגוריה'));reposition.appendChild(position);reposition.appendChild(move);card.appendChild(reposition);
+      }
+      grid.appendChild(card);
     });
     parent.appendChild(grid);
     if(!list.length) parent.appendChild(make('p','admin-catalog-empty','לא נמצאו מוצרים מתאימים.'));
@@ -2916,6 +2959,7 @@
   async function renderCatalogSection() {
     var result = await api('/api/admin/catalog');
     catalogItemsCache=result.products||[];catalogPendingIds=result.pendingSheetIds||[];
+    catalogCategoryOrders=result.categoryOrders||{};
     var wrap=make('section','admin-catalog-section');
     var head=make('div','admin-catalog-heading');
     var title=make('div');title.appendChild(make('h2','','ניהול קטלוג'));title.appendChild(make('p','',catalogItemsCache.length+' מוצרים בחנות · עריכה, הוספה ומחיקה עם עדכון מיידי באתר'));
@@ -2924,8 +2968,19 @@
     buttons.appendChild(sync);head.append(title,buttons);wrap.appendChild(head);
     var info=make('p','admin-catalog-hint', result.sheetConfigured?'שינויים נשמרים במסד הנתונים ונשלחים לגיליון "קישורי מוצרים".':'שינויים בחנות נשמרים. כדי לעדכן גם את Google Sheets, יש להגדיר GOOGLE_PRODUCTS_WEBHOOK_URL ו-GOOGLE_PRODUCTS_WEBHOOK_SECRET ב-Render.');wrap.appendChild(info);
     var search=make('input','admin-catalog-search');search.type='search';search.placeholder='חיפוש לפי שם מוצר, מזהה, מק"ט או קטגוריה';search.value=catalogSearchText;search.setAttribute('aria-label','חיפוש מוצרים');
-    var gridHolder=make('div');search.addEventListener('input',function(){catalogSearchText=search.value;catalogPageNumber=0;gridHolder.replaceChildren();renderCatalogGrid(gridHolder)});
-    wrap.appendChild(search);wrap.appendChild(gridHolder);renderCatalogGrid(gridHolder);
+    var gridHolder=make('div');
+    var filters=make('div','admin-catalog-filter-row');
+    var categoryFilter=make('select');categoryFilter.setAttribute('aria-label','סינון לפי קטגוריה');
+    [['all','כל הקטגוריות']].concat(catalogCategories).forEach(function(row){var option=make('option','',row[1]);option.value=row[0];categoryFilter.appendChild(option)});
+    categoryFilter.value=catalogSelectedCategory;
+    var hiddenFilter=make('label','admin-catalog-hidden-filter');
+    var hiddenBox=make('input');hiddenBox.type='checkbox';hiddenBox.checked=catalogShowHiddenOnly;hiddenFilter.appendChild(hiddenBox);hiddenFilter.appendChild(make('span','','רק מוסתרים'));
+    var hint=make('p','admin-catalog-hint','בחר קטגוריה כדי לשנות את מיקום המוצרים בתוכה. מיקום 1 הוא הראשון בקטגוריה.');
+    filters.append(categoryFilter,hiddenFilter);
+    categoryFilter.addEventListener('change',function(){catalogSelectedCategory=categoryFilter.value;catalogPageNumber=0;gridHolder.replaceChildren();renderCatalogGrid(gridHolder)});
+    hiddenBox.addEventListener('change',function(){catalogShowHiddenOnly=hiddenBox.checked;catalogPageNumber=0;gridHolder.replaceChildren();renderCatalogGrid(gridHolder)});
+    search.addEventListener('input',function(){catalogSearchText=search.value;catalogPageNumber=0;gridHolder.replaceChildren();renderCatalogGrid(gridHolder)});
+    wrap.appendChild(search);wrap.appendChild(filters);wrap.appendChild(hint);wrap.appendChild(gridHolder);renderCatalogGrid(gridHolder);
     return wrap;
   }
 
@@ -2979,12 +3034,40 @@
     ]});frag.appendChild(table);content.replaceChildren(frag);
   }
 
+  function adminRoleManager() {
+    var section=make('section','admin-catalog-section admin-role-section');
+    section.appendChild(make('h2','','ניהול הרשאות אדמין'));
+    section.appendChild(make('p','admin-catalog-hint','אפשר להעניק או לבטל אדמין למשתמש רשום לפי המייל שלו. רק בעל החנות יכול לשנות הרשאות.'));
+    var form=make('form','admin-role-form');
+    var email=make('input');email.type='email';email.required=true;email.placeholder='מייל המשתמש הרשום';email.setAttribute('aria-label','כתובת המייל של המשתמש');
+    var grant=make('button','admin-catalog-btn admin-catalog-primary','הענק אדמין');grant.type='submit';
+    var revoke=make('button','admin-catalog-btn','בטל אדמין');revoke.type='button';
+    var status=make('p','admin-catalog-status');status.setAttribute('role','status');
+    async function updateRole(role){
+      if(!email.reportValidity())return;
+      var action=role==='admin'?'לתת':'לבטל';
+      if(!window.confirm(action+' הרשאת אדמין ל-'+email.value.trim()+'?'))return;
+      grant.disabled=true;revoke.disabled=true;
+      try{
+        var updated=await apiAction('/api/admin/access/role','POST',{email:email.value.trim(),role:role});
+        status.textContent='ההרשאה עודכנה בהצלחה עבור '+updated.user.email;
+        showToast('הרשאות המשתמש עודכנו');
+      }catch(e){status.textContent=e.code==='registered_user_not_found'?'המשתמש עדיין לא רשום באתר':'עדכון הרשאה נכשל: '+e.message}
+      finally{grant.disabled=false;revoke.disabled=false}
+    }
+    form.addEventListener('submit',function(e){e.preventDefault();updateRole('admin')});
+    revoke.addEventListener('click',function(){updateRole('customer')});
+    form.append(email,grant,revoke);section.append(form,status);return section;
+  }
   async function renderCustomersPage() {
+    var access=await api('/api/admin/access/me');
+    var isOwner=access.isOwner===true;
     var offset = state.offsets.customers;
     var data = await api('/api/admin/customers?limit=50&offset=' + offset);
     var paying = (data.customers || []).filter(function (customer) { return customer.paidOrderCount > 0; }).length;
     var spendOnPage = (data.customers || []).reduce(function (sum, customer) { return sum + Number(customer.paidSpendAgorot || 0); }, 0);
     var frag = document.createDocumentFragment();
+    if(isOwner)frag.appendChild(adminRoleManager());
     frag.appendChild(renderKpis([
       { label: 'משתמשים רשומים', value: numberFmt(data.count), hint: 'סה״כ חשבונות', primary: true },
       { label: 'לקוחות משלמים בעמוד', value: numberFmt(paying), hint: 'לפחות הזמנת Paid אחת' },
@@ -3005,7 +3088,7 @@
         { label: 'Paid אחרון', render: function (row) { return dateTime(row.lastPaidAt); } },
         { label: 'נרשם', render: function (row) { return dateOnly(row.createdAt); } },
         { label: 'לקוח מאומת', render: function (row) { return row.verifiedCustomer ? badge('מאומת', 'verified') : badge('לא', 'neutral'); } },
-        { label: 'גישה', render: function (row) { return row.blocked ? badge('חסום', 'failed') : badge('פעיל', 'verified'); } },
+        { label: 'גישה', render: function (row) { var wrap=make('div');wrap.appendChild(row.blocked ? badge('חסום','failed'):badge('פעיל','verified'));if(row.role==='admin')wrap.appendChild(badge('אדמין','verified'));return wrap; } },
         { label: 'פעולות', render: function (row) {
           var wrap = make('div');
           wrap.style.display = 'flex';
@@ -3036,6 +3119,18 @@
             }
           });
           wrap.appendChild(button);
+          if(isOwner && row.email){
+            var accessBtn=make('button','admin-small-button',row.role==='admin'?'הסר אדמין':'תן אדמין');
+            accessBtn.type='button';
+            accessBtn.addEventListener('click',async function(){
+              var role=row.role==='admin'?'customer':'admin';
+              if(!window.confirm('לשנות הרשאה עבור '+row.email+'?'))return;
+              accessBtn.disabled=true;
+              try{await apiAction('/api/admin/access/role','POST',{email:row.email,role:role});showToast('ההרשאה עודכנה');await renderCurrentPage()}
+              catch(e){accessBtn.disabled=false;showToast('לא ניתן לשנות הרשאה: '+e.message)}
+            });
+            wrap.appendChild(accessBtn);
+          }
           return wrap;
         } }
       ]

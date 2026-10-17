@@ -587,6 +587,15 @@
     return ordered;
   }
 
+  function applyAdminCategoryOrder(list, category) {
+    var rules = window.__VERSANS_CATEGORY_ORDERS__ || {};
+    var keys = Array.isArray(rules[category]) ? rules[category] : null;
+    if (!keys || !keys.length) return list;
+    var original = list.slice();
+    var selected = keys.map(function(slug){return original.find(function(p){return p.slug===slug})}).filter(Boolean);
+    return selected.concat(original.filter(function(p){return !keys.includes(p.slug)}));
+  }
+
   function orderHomeCollectionProducts(list) {
     var highlighted = [];
     var ordinary = [];
@@ -1808,6 +1817,7 @@
         groupProducts = moveProductToEnd(groupProducts, 'product-293');
       }
 
+      groupProducts = applyAdminCategoryOrder(groupProducts, group.key);
       var loop = isMobileHomeScroller() ? { items: groupProducts.slice(), buffer: 0 } : homeCarouselLoopProducts(groupProducts, 4);
       return '' +
         '<section class="all-collection-group" data-all-collection-group="' + esc(group.key) + '">' +
@@ -2121,6 +2131,7 @@
       list = moveProductToEnd(list, 'product-293');
     }
 
+    list = applyAdminCategoryOrder(list, state.filter);
     var pagingKey = catalogPagingContextKey(grid);
     if (pagingKey !== catalogPagingKey) {
       catalogPagingKey = pagingKey;

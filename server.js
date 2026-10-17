@@ -5953,12 +5953,38 @@ async function adminApi(req, res, pathname, parsed) {
     return true;
   }
 
+  if (pathname === '/api/admin/access/me' && req.method === 'GET') {
+    json(res,200,{ok:true,isOwner: Boolean(admin && normalizeEmail(admin.email)===ADMIN_EMAIL)});return true;
+  }
+  if (pathname === '/api/admin/access/role' && req.method === 'POST') {
+    if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'}); return true; }
+    if (!admin || normalizeEmail(admin.email)!==ADMIN_EMAIL) { json(res,403,{ok:false,error:'owner_only'}); return true; }
+    const body = await readJsonBody(req,4096);
+    const email = normalizeEmail(body && body.email);
+    const role = String(body && body.role || '');
+    if (!validEmail(email) || !['customer','admin'].includes(role)) {json(res,400,{ok:false,error:'invalid_role_or_email'});return true;}
+    if (email === ADMIN_EMAIL) {json(res,400,{ok:false,error:'cannot_change_owner'});return true;}
+    const target = await database.findUserByEmail(email);
+    if (!target) {json(res,404,{ok:false,error:'registered_user_not_found'});return true;}
+    if (Number(target.is_blocked) === 1 && role === 'admin') {json(res,400,{ok:false,error:'blocked_user'});return true;}
+    if (!['customer','admin'].includes(String(target.role||'customer')) && role === 'customer') {
+      json(res,409,{ok:false,error:'existing_special_role'});return true;
+    }
+    await database.setUserAccess(Number(target.id),role,Number(target.is_blocked)===1,target.blocked_reason||'',Date.now());
+    if (String(target.role||'customer') !== role) await database.deleteSessionsForUser(Number(target.id));
+    json(res,200,{ok:true,user:{id:Number(target.id),name:target.name,email:target.email,role}});return true;
+  }
   const accessMatch = /^\/api\/admin\/customers\/(\d+)\/access$/.exec(pathname);
   if (accessMatch && req.method === 'POST') {
     if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'}); return true; }
     if (!admin || !(normalizeEmail(admin.email) === ADMIN_EMAIL || String(admin.role || '') === 'admin')) { json(res,403,{ok:false,error:'permission_denied'}); return true; }
     const body=await readJsonBody(req); const role=['customer','staff','admin','contentcreator'].includes(String(body.role||''))?String(body.role):'customer'; const blocked=body.blocked===true; const targetId=Number(accessMatch[1]);
     if(targetId===Number(admin.id) && blocked){json(res,400,{ok:false,error:'cannot_block_self'});return true;}
+    const target = await database.findUserById(targetId);
+    if(!target){json(res,404,{ok:false,error:'user_not_found'});return true;}
+    if(normalizeEmail(target.email)===ADMIN_EMAIL){json(res,403,{ok:false,error:'cannot_change_owner'});return true;}
+    // Blocking a user must never covertly grant or revoke admin permissions.
+    if(role !== String(target.role||'customer')) {json(res,403,{ok:false,error:'use_owner_role_management'});return true;}
     const changed=await database.setUserAccess(targetId,role,blocked,cleanCheckoutText(body.reason,300),Date.now()); json(res,changed?200:404,{ok:changed,error:changed?undefined:'user_not_found'}); return true;
   }
   if (pathname === '/api/admin/cancellation-requests' && req.method === 'GET') {
@@ -5997,9 +6023,21 @@ async function adminApi(req, res, pathname, parsed) {
   }
 
   // Product catalog management - owner/admin access only (staff has no write permission).
+  if (pathname === '/api/admin/catalog' || pathname.startsWith('/api/admin/catalog/')) {
+    await catalogManager.refresh();
+  }
   if (pathname === '/api/admin/catalog' && req.method === 'GET') {
-    json(res, 200, { ok: true, products: catalogManager.list(), pendingSheetIds: catalogManager.pendingSlugs(), sheetConfigured: Boolean(process.env.GOOGLE_PRODUCTS_WEBHOOK_URL && process.env.GOOGLE_PRODUCTS_WEBHOOK_SECRET) });
+    json(res, 200, { ok: true, products: catalogManager.list(), categoryOrders:catalogManager.categoryOrders(), pendingSheetIds: catalogManager.pendingSlugs(), sheetConfigured: Boolean(process.env.GOOGLE_PRODUCTS_WEBHOOK_URL && process.env.GOOGLE_PRODUCTS_WEBHOOK_SECRET) });
     return true;
+  }
+  const displayRoute = /^\/api\/admin\/catalog\/(product-[a-z0-9-]+)\/(visibility|position)$/.exec(pathname);
+  if (displayRoute && req.method === 'POST') {
+    if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'}); return true; }
+    const body = await readJsonBody(req, 16 * 1024);
+    const result = displayRoute[2] === 'visibility'
+      ? await catalogManager.setHidden(displayRoute[1],body.hidden)
+      : await catalogManager.setPosition(displayRoute[1],String(body.category||''),Number(body.position));
+    json(res,200,{ok:true,...result});return true;
   }
   if (pathname === '/api/admin/catalog/images' && req.method === 'POST') {
     if (!sameOriginAllowed(req)) { json(res, 403, {ok:false,error:'origin_not_allowed'}); return true; }
@@ -6440,7 +6478,7 @@ async function adminPage(req, res, pathname) {
     redirect(res, '/login', 302);
     return true;
   }
-  if (normalizeEmail(currentUser.email) !== ADMIN_EMAIL) {
+  if (normalizeEmail(currentUser.email) !== ADMIN_EMAIL && String(currentUser.role||'') !== 'admin') {
     res.statusCode = 403;
     res.setHeader('Content-Type', 'text/plain; charset=utf-8');
     res.setHeader('Cache-Control', 'no-store');
@@ -7311,7 +7349,7 @@ function storefrontCatalogOverridesInline() {
     '})();' + '</script>';
 }
 
-function injectStorefrontRouting(html, bootRoute) {
+function injectStorefrontRouting(html, bootRoute, previewProduct) {
   const early = `<script>window.__VERSANS_BOOT_ROUTE__=${safeInlineJson(bootRoute)};</script><script src="/assets/route-state.js?v=20260924-home-no-refresh-v8"></script>`;
   const late = '<script src="/assets/url-mask.js?v=20260924-home-reviews-anchor-v4"></script>' +
     '<script src="/assets/cart-drawer.js?v=20261004-cart-checkout-fix-v64"></script>';
@@ -7332,7 +7370,13 @@ function injectStorefrontRouting(html, bootRoute) {
   const catalogScript = /(<script\b[^>]*\bsrc\s*=\s*(["'])(?:\/)?assets\/products\.js(?:\?[^"']*)?\2[^>]*>\s*<\/script>)/gi;
   if (catalogScript.test(out)) {
     out = out.replace(/<script\b[^>]*\bsrc\s*=\s*(["'])\/?api\/catalog\/overrides\.js(?:\?[^"']*)?\1[^>]*>\s*<\/script>/gi, '');
-    out = out.replace(catalogScript, '$1\n' + storefrontCatalogOverridesInline());
+    out = out.replace(catalogScript, '$1\n' + storefrontCatalogOverridesInline() +
+      '<script>window.__VERSANS_CATEGORY_ORDERS__=' + JSON.stringify(catalogManager.categoryOrders()).replace(/</g,'\\u003c') + ';</script>');
+  }
+  if (previewProduct) {
+    const previewJson = JSON.stringify(previewProduct).replace(/</g,'\\u003c');
+    out = out.replace(/(<script[^>]+data-versans-catalog-overrides="inline"[^>]*>[\s\S]*?<\/script>)/i,
+      '$1\n<script>window.PRODUCTS.push(' + previewJson + ');</script>');
   }
   if (out.includes('</head>')) out = out.replace('</head>', `${early}\n</head>`);
   else out = early + out;
@@ -7341,13 +7385,13 @@ function injectStorefrontRouting(html, bootRoute) {
   return out;
 }
 
-function serveStorefrontHtml(req, res, filePath, bootRoute) {
+function serveStorefrontHtml(req, res, filePath, bootRoute, previewProduct) {
   let source;
   try { source = fs.readFileSync(filePath, 'utf8'); } catch (_) { return false; }
   const isAuthDocument = /<body[^>]+class=["'][^"']*auth-page/.test(source);
   // Auth pages keep their real pathname. Password-reset secrets are held only in an HttpOnly cookie, never in the page URL.
   // The storefront URL masker intentionally hides catalog/product routes, but must not run here.
-  const body = isAuthDocument ? source : injectStorefrontRouting(source, bootRoute || htmlBootRoute(req, '/'));
+  const body = isAuthDocument ? source : injectStorefrontRouting(source, bootRoute || htmlBootRoute(req, '/'), previewProduct);
   res.statusCode = 200;
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
@@ -7476,6 +7520,17 @@ const server = http.createServer(async (req, res) => {
     }
 
     if ((req.method === 'GET' || req.method === 'HEAD') && pathname === '/product.html' && parsed.searchParams.has('id')) {
+      const productSlug = String(parsed.searchParams.get('id') || '');
+      const hiddenProduct = catalogManager.getAdminProduct(productSlug) ||
+        catalogManager.list().find(p => p.id === productSlug);
+      if (hiddenProduct && catalogManager.isHidden(productSlug)) {
+        const admin = parsed.searchParams.get('admin_preview') === '1' ? await getAdminUser(req) : null;
+        if (!admin || !adminCanAccess(admin, '/api/admin/catalog', 'GET')) {
+          json(res, 404, {ok:false,error:'product_not_found'}); return;
+        }
+        serveStorefrontHtml(req,res,path.join(ROOT,'product.html'),htmlBootRoute(req,pathname),hiddenProduct);
+        return;
+      }
       const product = productById(parsed.searchParams.get('id'));
       if (product && product.urlSlug) {
         const publicPath = productPublicPath(product);
@@ -7489,6 +7544,11 @@ const server = http.createServer(async (req, res) => {
       }
     }
 
+    if ((req.method === 'GET' || req.method === 'HEAD')) {
+      const hiddenRoute = String(pathname).slice(1);
+      const hiddenProduct = catalogManager.list().find(p=>p.hidden && p.urlSlug === hiddenRoute);
+      if (hiddenProduct) { json(res,404,{ok:false,error:'product_not_found'}); return; }
+    }
     if ((req.method === 'GET' || req.method === 'HEAD') && (pathname === '/' || pathname === '/index.html') && parsed.searchParams.has('cat')) {
       const category = parsed.searchParams.get('cat');
       const target = ROUTES.COLLECTION_PATHS[category];

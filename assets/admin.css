@@ -1186,3 +1186,16 @@ button,input,textarea,select,a{font:inherit}.admin-app{display:grid;grid-templat
 /* Creator accounts and codes management */
 .admin-creators-form{display:grid;grid-template-columns:2fr 1.3fr 1fr 1fr auto;gap:12px;align-items:end;max-width:100%;margin:4px 0 16px}.admin-creator-field{display:flex;flex-direction:column;gap:7px;min-width:0;font-size:13px;font-weight:600}.admin-creator-field input{border:1px solid var(--line,#dce3eb);background:var(--surface,#fff);border-radius:9px;padding:12px 14px;width:100%;min-width:0;font:inherit;font-size:14px}.admin-creators-actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
 @media(max-width:1020px){.admin-creators-form{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:610px){.admin-creators-form{grid-template-columns:1fr}.admin-creators-form>button{width:100%}}
+
+/* Catalog visibility, category placement and owner-managed staff access */
+.admin-catalog-product.is-hidden{opacity:.73;background:#f0f2f5;border-style:dashed}
+.admin-catalog-hidden-label{display:inline-flex;align-self:flex-start;border-radius:50px;background:#e9eff4;padding:4px 9px;color:#405469;font-weight:700;font-size:11px}
+.admin-catalog-filter-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:12px 0}
+.admin-catalog-filter-row select,.admin-role-form input{min-width:180px;max-width:100%;padding:11px;border:1px solid #d0dce3;border-radius:9px;background:#fff;color:#142333;font:inherit}
+.admin-catalog-hidden-filter{display:flex;align-items:center;gap:6px;font-weight:600;font-size:13px}
+.admin-catalog-reposition{display:flex;flex-wrap:wrap;gap:7px;align-items:center;grid-column:1/-1;border-top:1px solid #dde5ea;padding:8px 10px;color:#42586a;font-size:11px}
+.admin-catalog-reposition input{width:65px;padding:8px;border:1px solid #d0dbe3;border-radius:7px;color:#142333;text-align:center}
+.admin-catalog-reposition .admin-catalog-btn{flex:1;min-height:32px}
+.admin-role-form{display:flex;flex-wrap:wrap;gap:9px;margin:12px 0}
+.admin-role-form input{flex:1;min-width:225px}
+@media(max-width:580px){.admin-catalog-product__actions{flex-wrap:wrap}.admin-catalog-product__actions .admin-catalog-btn{flex-basis:calc(50% - 8px)}.admin-catalog-reposition{justify-content:space-between}}
