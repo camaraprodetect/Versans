@@ -3375,7 +3375,11 @@ async function adminPickupFallbackCandidates(parsed) {
     const city = String(customer.city || '').trim();
     const nearby = pickupMatching.comparePickupLocation(locationText, city);
     if (!nearby.match) continue;
+    // Double-check before returning the shortlist: a notice might have been
+    // confirmed sent after the initial database query began. A sent_at value
+    // also counts after a manual resend/reset changed the current state.
     const notification = await database.getShipmentNotification(shipment.id, 'customer', 'ready_for_pickup');
+    if (notification && (String(notification.state || '') === 'sent' || Number(notification.sent_at) > 0)) continue;
     candidates.push({
       shipmentId: Number(shipment.id),
       trackingId: String(shipment.tracking_number || ''),
@@ -3387,12 +3391,10 @@ async function adminPickupFallbackCandidates(parsed) {
       localityMatch: nearby.confidence,
       status: String(shipment.status || ''),
       latestEvent: String(shipment.latest_event || '').slice(0,240),
-      updatedAt: Number(shipment.updated_at || 0),
-      alreadySent: !!(notification && notification.state === 'sent')
+      updatedAt: Number(shipment.updated_at || 0)
     });
   }
   candidates.sort((a,b) =>
-    Number(a.alreadySent)-Number(b.alreadySent) ||
     (a.approximateDistanceKm == null ? 1 : 0)-(b.approximateDistanceKm == null ? 1 : 0) ||
     Number(a.approximateDistanceKm || 0)-Number(b.approximateDistanceKm || 0) ||
     b.updatedAt-a.updatedAt
