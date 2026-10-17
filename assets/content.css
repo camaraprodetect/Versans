@@ -96,3 +96,7 @@ main{flex:1;padding-bottom:55px}
 .cc-load-more{display:block;margin:0 auto 16px;background:#fff;color:var(--cc-navy);border:1px solid var(--cc-navy);padding:8px 16px;border-radius:5px;font-size:12px;font-weight:700}
 .cc-load-more:hover{background:var(--cc-navy);color:#fff}
 .cc-load-more:focus-visible{outline:2px solid var(--cc-gold);outline-offset:3px}
+
+/* A period-only leaderboard; the dashboard retains selectable report windows. */
+.cc-leader-note{margin:0;padding:12px 25px;background:var(--cc-cream);color:var(--cc-muted);font-size:12px;line-height:1.8;border-bottom:1px solid var(--cc-line)}
+@media(max-width:600px){.cc-leader-note{padding:12px 16px}}

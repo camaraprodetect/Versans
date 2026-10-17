@@ -3,15 +3,17 @@
   var app=document.getElementById('app');
   var error=document.getElementById('error');
   var rangeOptions=document.getElementById('rangeOptions');
-  var options={all:'כל הזמנים',year:'שנה','6months':'6 חודשים','3months':'3 חודשים',month:'חודש',week:'שבוע','3days':'3 ימים',today:'היום'};
+  var options={payment:'תקופת תשלום',today:'היום',week:'השבוע',all:'כל הזמנים'};
   var requested=new URLSearchParams(location.search).get('range');
-  var range=Object.prototype.hasOwnProperty.call(options,requested)?requested:'all';
+  var range=Object.prototype.hasOwnProperty.call(options,requested)?requested:'payment';
   var renderCounter=0;
   var purchaseObserver=null;
+  var viewedPeriodEnd=null;
   function el(tag,cls,value){var node=document.createElement(tag);if(cls)node.className=cls;if(value!=null)node.textContent=String(value);return node;}
   function money(agorot){return new Intl.NumberFormat('he-IL',{style:'currency',currency:'ILS',maximumFractionDigits:2}).format(Number(agorot||0)/100);}
   function integer(value){return new Intl.NumberFormat('he-IL').format(Number(value||0));}
   function date(value){return value?new Intl.DateTimeFormat('he-IL',{timeZone:'Asia/Jerusalem',day:'numeric',month:'long',year:'numeric'}).format(new Date(Number(value))):'אין רכישות בתקופה';}
+  function periodText(start,endExclusive){return start!=null&&endExclusive!=null?date(start)+' - '+date(endExclusive-1):'';}
   function kpi(label,value,description,primary){var box=el('article','cc-card'+(primary?' cc-card-primary':''));box.appendChild(el('div','cc-kpi-label',label));box.appendChild(el('div','cc-kpi-number',value));box.appendChild(el('div','cc-kpi-description',description));return box;}
   function fact(label,value){var row=el('div','cc-fact');row.appendChild(el('span','',label));row.appendChild(el('strong','',value));return row;}
   async function get(url){var res=await fetch(url,{credentials:'same-origin',cache:'no-store'});if(res.status===401){location.href='/login';throw new Error('login_required');}if(res.status===403)throw new Error('אין לך הרשאה לצפות בנתונים האלה.');if(!res.ok)throw new Error('לא הצלחנו לטעון את הנתונים. נסו שוב.');return res.json();}
@@ -34,6 +36,7 @@
     facts.appendChild(el('h2','','פרטי החשבון והדוח'));
     facts.appendChild(fact('שם היוצר',c.name));
     facts.appendChild(fact('התקופה המוצגת',options[range]));
+    if(range==='payment')facts.appendChild(fact('תאריכי תקופת התשלום',periodText(c.periodStartAt,c.periodEndExclusive)));
     facts.appendChild(fact('הנחה ללקוחות',integer(c.discountPercent)+'%'));
     facts.appendChild(fact('עמלה נוכחית',integer(c.commissionPercent)+'%'));
     facts.appendChild(fact('סטטוס הקוד','פעיל'));
@@ -94,10 +97,11 @@
     }
     observe();load();
   }
-  function leaderboard(rows){
+  function leaderboard(rows,periodStartAt,periodEndExclusive){
     var section=el('section','cc-leaderboard'),heading=el('div','cc-leader-top');
     heading.appendChild(el('h2','','דירוג יוצרי התוכן'));
-    heading.appendChild(el('span','','דירוג לפי רכישות ששולמו · '+options[range]));section.appendChild(heading);
+    heading.appendChild(el('span','','תקופת תשלום · '+periodText(periodStartAt,periodEndExclusive)));section.appendChild(heading);
+    section.appendChild(el('p','cc-leader-note','הדירוג מתחיל מחדש בסיום כל תקופת תשלום, אחרי ה־14 וה־28 בחודש. נתוני העבר נשמרים באפשרות ״כל הזמנים״ בדאשבורד.'));
     if(!rows.length){section.appendChild(el('div','cc-empty','אין עדיין יוצרים בדירוג.'));app.appendChild(section);return;}
     var scroll=el('div','cc-table-scroll'),table=el('table','cc-table'),thead=el('thead'),tr=el('tr');
     ['מקום','יוצר תוכן','קוד יוצר','רכישות'].forEach(function(label){tr.appendChild(el('th','',label));});thead.appendChild(tr);table.appendChild(thead);
@@ -118,17 +122,19 @@
     document.getElementById('tabLeaderboard').classList.toggle('is-active',board);
     document.getElementById('tabDashboard').classList.toggle('is-active',!board);
     document.getElementById('tabDashboard').href='/creators/dashboard?range='+encodeURIComponent(range);
-    document.getElementById('tabLeaderboard').href='/creators/leaderboard?range='+encodeURIComponent(range);
-    document.getElementById('pageSubtitle').textContent=board?'הדירוג מתעדכן בהתאם לתקופה שבחרת, לפי מספר רכישות ששולמו.':'כל נתוני המכירות שהגיעו דרך קוד היוצר שלך.';
+    document.getElementById('tabLeaderboard').href='/creators/leaderboard';
+    document.querySelector('.cc-range').hidden=board;
+    document.getElementById('pageSubtitle').textContent=board?'דירוג הרכישות ששולמו בתקופת התשלום הנוכחית. מתחיל מחדש ב־15 וב־29 לחודש (או ב־1 במרץ).':'נתוני המכירות שהגיעו דרך קוד היוצר שלך, לפי התקופה שתבחר.';
   }
   async function render(){
     if(purchaseObserver){purchaseObserver.disconnect();purchaseObserver=null;}
     updateControls();error.hidden=true;app.replaceChildren(el('div','cc-loading','טוענים נתונים...'));
     var myTurn=++renderCounter,board=isLeaderboard();
     try{
-      var data=await get((board?'/api/creators/leaderboard':'/api/creators/me')+'?range='+encodeURIComponent(range));
+      var data=await get(board?'/api/creators/leaderboard':'/api/creators/me?range='+encodeURIComponent(range));
       if(myTurn!==renderCounter)return;
-      app.replaceChildren();if(board)leaderboard(data.leaderboard||[]);else dashboard(data.creator);
+      viewedPeriodEnd=board?data.periodEndExclusive:data.creator.periodEndExclusive;
+      app.replaceChildren();if(board)leaderboard(data.leaderboard||[],data.periodStartAt,data.periodEndExclusive);else dashboard(data.creator);
     }catch(e){if(myTurn!==renderCounter)return;if(e.message!=='login_required'){error.textContent=e.message||'שגיאה בטעינת הנתונים';error.hidden=false;}app.replaceChildren();}
   }
   rangeOptions.addEventListener('click',function(event){
@@ -139,5 +145,14 @@
     history.replaceState({},'',url.pathname+url.search+url.hash);
     render();
   });
+  // Keep an open tab accurate when a payout period (or day/week) rolls over.
+  // Avoid continuous network requests; re-fetch only after the known boundary.
+  function refreshAtPeriodBoundary(){
+    if(document.visibilityState==='hidden'||viewedPeriodEnd==null)return;
+    if(Date.now()>=Number(viewedPeriodEnd))render();
+  }
+  window.setInterval(refreshAtPeriodBoundary,30000);
+  document.addEventListener('visibilitychange',refreshAtPeriodBoundary);
+  window.addEventListener('pageshow',refreshAtPeriodBoundary);
   render();
 })();

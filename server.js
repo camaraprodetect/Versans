@@ -6670,7 +6670,7 @@ async function creatorRoutes(req, res, pathname, searchParams) {
   res.setHeader('Cache-Control','private, no-store');
   res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive');
   if (api) {
-    const range=String(searchParams.get('range')||'all');
+    const range=pathname==='/api/creators/leaderboard'?'payment':String(searchParams.get('range')||'payment');
     if (!creatorProgram.reportPeriod(range)) { json(res,400,{ok:false,error:'invalid_range'});return true; }
     if(pathname==='/api/creators/me'){
       const creator=await creatorProgram.dashboard(user.id,range);
@@ -6680,8 +6680,10 @@ async function creatorRoutes(req, res, pathname, searchParams) {
       if(!result){json(res,400,{ok:false,error:'invalid_page_parameters'});return true;}
       json(res,200,{ok:true,...result});
     } else {
-      const leaderboard=await creatorProgram.leaderboard(range);
-      json(res,200,{ok:true,range,leaderboard});
+      const now=Date.now();
+      const leaderboard=await creatorProgram.leaderboard(now);
+      const period=creatorProgram.reportPeriod('payment',now);
+      json(res,200,{ok:true,range:'payment',periodStartAt:period.since,periodEndExclusive:period.before,leaderboard});
     }
     return true;
   }
