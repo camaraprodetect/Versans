@@ -69,7 +69,7 @@
     if (el && content) el.setAttribute('content', content);
   }
   function updateProductSeo() {
-    var title = 'VerSans';
+    var title = (L(product.title) || 'מוצר') + ' | VerSans';
     var description = L(product.title) + ' מבית VerSans. פרטים מלאים, מחיר, תמונות ואפשרויות בחירה בעמוד המוצר.';
     var canonicalUrl = 'https://versans.com' + productPath(product);
     var imagePath = product.cardImage || (Array.isArray(product.images) && product.images[0]) || product.hoverImage || 'images/VerSansLogoBlackJewlery.png';
@@ -621,7 +621,7 @@
     }
     main.hidden = false;
     main.src = src;
-    main.alt = alt || L(product.title);
+    main.alt = alt || (L(product.title) + ' - VerSans');
   }
 
   function clearGalleryActiveThumbs() {
@@ -808,7 +808,7 @@
       wrap.hidden = false;
       var imageButtons = imgs.map(function (src, i) {
         return '<button type="button" class="product-thumb' + (i === activeImageIndex ? ' is-active' : '') + '" data-gallery-index="' + i + '" aria-label="' + (lang === 'he' ? 'תמונה ' : 'Image ') + (i + 1) + '">' +
-          '<img src="' + PRODUCT_LAZY_PIXEL + '" data-product-src="' + esc(src) + '" alt="" loading="lazy" decoding="async">' +
+          '<img src="' + PRODUCT_LAZY_PIXEL + '" data-product-src="' + esc(src) + '" alt="' + esc(L(product.title) + ' - תמונה ' + (i + 1)) + '" loading="lazy" decoding="async">' +
         '</button>';
       }).join('');
       var videoButtons = videos.map(function (entry, i) {

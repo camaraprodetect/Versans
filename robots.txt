@@ -1,6 +1,11 @@
 User-agent: *
 Allow: /
 Allow: /api/reviews
+Allow: /api/catalog/media/
 Disallow: /api/
 
 Sitemap: https://versans.com/sitemap.xml
+
+# The public catalog is crawlable by Googlebot, Bingbot,
+# OAI-SearchBot (ChatGPT search) and Claude-SearchBot.
+# Public admin-uploaded product images can also be crawled.

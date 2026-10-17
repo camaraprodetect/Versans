@@ -11,6 +11,8 @@ const { PRODUCTS, CATEGORIES } = require('./assets/products.js');
 const { createCatalogManager } = require('./lib/catalog-manager.js');
 const { createCreatorProgram } = require('./lib/creator-program.js');
 const ROUTES = require('./assets/routes.js');
+const SEO = require('./lib/seo.js');
+const INDEXNOW = require('./lib/indexnow.js');
 const { normalizeAdminRange, normalizeStoredOrderItems, aggregatePaidOrders } = require('./lib/admin-analytics.js');
 const { absoluteUrl, isEmailConfigured, orderConfirmationEmail, passwordResetEmail, productAnnouncementEmail, sendEmail, termsUpdateEmail, welcomeEmail } = require('./lib/email.js');
 const {
@@ -94,11 +96,55 @@ const creatorProgram = createCreatorProgram(database);
 // The public products script is regenerated whenever an admin saves an edit.
 // The browser must never receive the original on-disk catalog after a DB change.
 let liveCatalogScript = '';
+let seoCatalogInitialized = false;
+let seoCatalogSnapshot = new Map();
+let seoIndexNowTimer = null;
+const seoIndexNowPending = new Set();
+function seoProductSignature(product) {
+  return JSON.stringify([product.title,product.subtitle,product.price,product.images,product.category,product.categories,product.urlSlug,product.sku]);
+}
+function seoSnapshot() {
+  return new Map(PRODUCTS.map(p => [String(p.slug), { product:p, signature:seoProductSignature(p) }]));
+}
+function handleSeoCatalogUpdate() {
+  if (!seoCatalogInitialized) return;
+  const latest = seoSnapshot();
+  for (const [slug, previous] of seoCatalogSnapshot) {
+    const current = latest.get(slug);
+    if (!current || current.signature !== previous.signature) {
+      seoIndexNowPending.add(productPublicPath(previous.product));
+      seoIndexNowPending.add('/');
+      for (const category of (previous.product.categories || [previous.product.category])) {
+        if (ROUTES.COLLECTION_PATHS[category]) seoIndexNowPending.add(ROUTES.COLLECTION_PATHS[category]);
+      }
+    }
+  }
+  for (const [slug, current] of latest) {
+    const previous = seoCatalogSnapshot.get(slug);
+    if (!previous || previous.signature !== current.signature) {
+      seoIndexNowPending.add(productPublicPath(current.product));
+      seoIndexNowPending.add('/');
+      for (const category of (current.product.categories || [current.product.category])) {
+        if (ROUTES.COLLECTION_PATHS[category]) seoIndexNowPending.add(ROUTES.COLLECTION_PATHS[category]);
+      }
+    }
+  }
+  seoCatalogSnapshot = latest;
+  if (seoIndexNowPending.size && !seoIndexNowTimer) {
+    seoIndexNowTimer = setTimeout(() => {
+      seoIndexNowTimer = null;
+      const urls = [...seoIndexNowPending]; seoIndexNowPending.clear();
+      INDEXNOW.publish(urls).catch(err => console.warn('IndexNow:', err.message));
+    }, 3500);
+    if (seoIndexNowTimer.unref) seoIndexNowTimer.unref();
+  }
+}
 const catalogManager = createCatalogManager(database, () => {
   liveCatalogScript = '';
   liveCatalogVersion = '';
   PRODUCT_BY_URL_SLUG.clear();
   for (const product of PRODUCTS) if (product.urlSlug) PRODUCT_BY_URL_SLUG.set(String(product.urlSlug), product);
+  handleSeoCatalogUpdate();
 });
 function storefrontCatalogScript() {
   if (!liveCatalogScript) {
@@ -7534,6 +7580,7 @@ function isPublicPath(pathname) {
     prettyRouteFile(pathname) ||
     pathname === '/robots.txt' ||
     pathname === '/sitemap.xml' ||
+    pathname === INDEXNOW.KEY_PATH ||
     pathname === '/favicon.ico' ||
     pathname === '/admin-sw.js' ||
     pathname === '/admin-manifest.webmanifest' ||
@@ -7633,7 +7680,12 @@ function serveStorefrontHtml(req, res, filePath, bootRoute, previewProduct) {
   const isAuthDocument = /<body[^>]+class=["'][^"']*auth-page/.test(source);
   // Auth pages keep their real pathname. Password-reset secrets are held only in an HttpOnly cookie, never in the page URL.
   // The storefront URL masker intentionally hides catalog/product routes, but must not run here.
-  const body = isAuthDocument ? source : injectStorefrontRouting(source, bootRoute || htmlBootRoute(req, '/'), previewProduct);
+  let body = isAuthDocument ? source : injectStorefrontRouting(source, bootRoute || htmlBootRoute(req, '/'), previewProduct);
+  if (!isAuthDocument) {
+    try { body = SEO.renderSeoHtml(body, bootRoute || htmlBootRoute(req, '/'), PRODUCTS, ROUTES, previewProduct); }
+    catch (error) { console.warn('SEO HTML enhancement skipped:', error.message); }
+  }
+  if (previewProduct) res.setHeader('X-Robots-Tag', 'noindex, nofollow');
   res.statusCode = 200;
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
@@ -7741,11 +7793,18 @@ const server = http.createServer(async (req, res) => {
     // or product script so edits made in another worker appear immediately.
     // This is a cheap schema_meta read; refresh() only rebuilds on changes.
     if ((req.method === 'GET' || req.method === 'HEAD') && (
-      pathname === '/assets/products.js' ||
+      pathname === '/assets/products.js' || pathname === '/sitemap.xml' ||
       (!pathname.startsWith('/api/') && !pathname.startsWith('/assets/') &&
        !pathname.startsWith('/images/') && !pathname.startsWith('/admin') &&
        wantsHtmlDocument(req))
     )) await catalogManager.refresh();
+    // Always reflect the live database catalog, not an outdated checked-in XML.
+    if ((req.method === 'GET' || req.method === 'HEAD') && pathname === '/sitemap.xml') {
+      const xml = SEO.renderSitemap(PRODUCTS, ROUTES);
+      res.writeHead(200, {'Content-Type':'application/xml; charset=utf-8', 'Cache-Control':'no-cache, max-age=0', 'Content-Length':Buffer.byteLength(xml)});
+      if (req.method === 'HEAD') res.end(); else res.end(xml);
+      return;
+    }
     // Backward-compatible cleanup for reset links issued before the hidden-token flow.
     // Convert the URL token into an HttpOnly cookie and immediately redirect to a clean URL.
     if (req.method === 'GET' && pathname === '/reset-password' && parsed.searchParams.has('token')) {
@@ -8325,6 +8384,8 @@ async function start() {
   await database.init();
   await creatorProgram.init();
   await catalogManager.init();
+  seoCatalogSnapshot = seoSnapshot();
+  seoCatalogInitialized = true;
   // Never purge real orders, reviews or customers during a deployment.
   await database.cleanupPresencePageViews(Date.now() - PRESENCE_RETENTION_MS);
   server.listen(PORT, HOST, () => {
