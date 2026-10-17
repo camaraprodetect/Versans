@@ -30,6 +30,8 @@ const {
   stop17Track,
   get17TrackInfo,
   get17TrackRealTimeInfo,
+  get17TrackInfoBatch,
+  verifiedTrackingAliases,
   verify17TrackSignature,
   shipmentStatusLabel,
   extractTrackingUpdate,
@@ -3298,6 +3300,117 @@ function shipmentManualPickupMeta(shipment) {
   }
 }
 
+// A changed pickup number is automatically matched against numbers which
+// 17TRACK itself linked to the existing origin number. Never match by
+// address, timestamp, last digits, similar text, or the pickup location.
+async function resolveIncomingPickupNumberAutomatically(incomingNumber) {
+  const incoming = normalizeTrackingNumber(incomingNumber).toUpperCase();
+  if (!/^[A-Z0-9][A-Z0-9._-]{5,79}$/.test(incoming)) return null;
+  const already = await database.getShipmentByTracking(incoming);
+  if (already) return already;
+
+  const now = Date.now();
+  const recent = await database.listActiveShipments(1000, now + 2000, now - 180 * 86400000);
+  // First check provider responses stored from the normal tracking sync.
+  const matched = new Map();
+  for (const shipment of recent) {
+    if (!shipment.raw_json) continue;
+    try {
+      const raw = JSON.parse(shipment.raw_json);
+      if (verifiedTrackingAliases(raw).includes(incoming)) matched.set(Number(shipment.id), shipment);
+    } catch (_) {}
+  }
+
+  // If no existing response ties the numbers together, ask 17TRACK to
+  // refresh origin numbers in batches, newest first. Avoid billing-heavy
+  // real-time/Instant queries. The regular 30-minute sync separately indexes
+  // confirmed local numbers even when there is no pickup message.
+  if (!matched.size && is17TrackConfigured()) {
+    const candidates = recent.slice().sort((a, b) => Number(b.created_at || 0) - Number(a.created_at || 0));
+    // Keep a web request bounded; older parcels continue to be indexed by
+    // the normal background sync. This is not an unbounded API crawl.
+    for (let i = 0; i < Math.min(candidates.length, 160); i += 40) {
+      const batch = candidates.slice(i, i + 40);
+      try {
+        const updates = await get17TrackInfoBatch(batch);
+        const byNumber = new Map(batch.map(row => [String(row.tracking_number || '').toUpperCase(), row]));
+        for (const entry of updates) {
+          if (!verifiedTrackingAliases(entry).includes(incoming)) continue;
+          const origin = byNumber.get(String(entry.number || '').toUpperCase());
+          if (origin) matched.set(Number(origin.id), origin);
+        }
+      } catch (error) {
+        console.error('Carrier handoff matching lookup failed:', error && error.message);
+      }
+    }
+  }
+  if (matched.size > 1) {
+    const error = new Error('tracking_auto_match_ambiguous');
+    error.code = 'tracking_auto_match_ambiguous';
+    throw error;
+  }
+  if (matched.size !== 1) return null;
+  const shipment = matched.values().next().value;
+  await database.addShipmentTrackingAlias(shipment.id, incoming, '17track_verified_local_number');
+  return database.getShipmentByTracking(incoming);
+}
+
+
+// The fallback shortlist uses approximate locality-center proximity and never
+// sends a pickup notice until an administrator confirms the specific shipment.
+const pickupMatching = require('./lib/pickup-matching');
+
+async function adminPickupFallbackCandidates(parsed) {
+  const locationText = [parsed && parsed.address, parsed && parsed.pickupPoint].filter(Boolean).join(' ');
+  const pickupLocality = pickupMatching.cityFromText(locationText);
+  const shipments = await database.listPickupCandidateShipments(0, 10000);
+  const candidates = [];
+  let readyCount = 0;
+  for (const shipment of shipments) {
+    if (!pickupMatching.isPickupReady(shipment)) continue;
+    readyCount += 1;
+    const order = await database.getOrderById(shipment.order_id);
+    if (!order || String(order.status || '') !== 'paid') continue;
+    const customer = parseStoredCustomer(order);
+    const city = String(customer.city || '').trim();
+    const nearby = pickupMatching.comparePickupLocation(locationText, city);
+    if (!nearby.match) continue;
+    const notification = await database.getShipmentNotification(shipment.id, 'customer', 'ready_for_pickup');
+    candidates.push({
+      shipmentId: Number(shipment.id),
+      trackingId: String(shipment.tracking_number || ''),
+      orderRef: String(order.order_ref || ''),
+      customerName: ([customer.firstName,customer.lastName].filter(Boolean).join(' ').trim() || customer.name || 'לקוח/ה').slice(0,130),
+      orderCity: city.slice(0,100),
+      pickupCity: nearby.pickupCity || null,
+      approximateDistanceKm: nearby.distanceKm,
+      localityMatch: nearby.confidence,
+      status: String(shipment.status || ''),
+      latestEvent: String(shipment.latest_event || '').slice(0,240),
+      updatedAt: Number(shipment.updated_at || 0),
+      alreadySent: !!(notification && notification.state === 'sent')
+    });
+  }
+  candidates.sort((a,b) =>
+    Number(a.alreadySent)-Number(b.alreadySent) ||
+    (a.approximateDistanceKm == null ? 1 : 0)-(b.approximateDistanceKm == null ? 1 : 0) ||
+    Number(a.approximateDistanceKm || 0)-Number(b.approximateDistanceKm || 0) ||
+    b.updatedAt-a.updatedAt
+  );
+  return {
+    candidates:candidates.slice(0,100),
+    totalMatches:candidates.length,
+    checkedShipments:shipments.length,
+    pickupReadyShipments:readyCount,
+    pickupCity:pickupLocality && pickupLocality.name || null,
+    pickupAddress:parsed && parsed.address || null,
+    distanceMethod:'approximate_locality_centers',
+    radiusKm:10,
+    searchTruncated:shipments.length === 10000,
+    note:'המרחקים משוערים, לפי מרכזי יישובים ולא לפי כתובות מדויקות. קרבה ומצב איסוף אינם הוכחה שהמספרים שייכים לאותו משלוח.'
+  };
+}
+
 async function saveAdminPickupMessage(messageText) {
   const parsedPickup = parseProviderPickupMessage(messageText);
   if (!parsedPickup.trackingNumber) {
@@ -4057,6 +4170,26 @@ async function applyTrackingUpdate(update) {
   const shipment = await database.getShipmentByTracking(update.trackingNumber);
   if (!shipment) return { ok: false, ignored: true, trackingNumber: update.trackingNumber };
 
+  // Save confirmed carrier handoff numbers even if this status update is
+  // older than the status stored in VerSans. 17TRACK explicitly identifies
+  // the new number in track_info.misc_info.local_number.
+  if (update.rawJson) {
+    try {
+      const providerRaw = JSON.parse(update.rawJson);
+      for (const localNumber of verifiedTrackingAliases(providerRaw)) {
+        try {
+          await database.addShipmentTrackingAlias(shipment.id, localNumber, '17track_misc_info_local_number');
+        } catch (error) {
+          if (error && error.code === 'tracking_alias_conflict') {
+            console.error('17TRACK handoff number conflicts with another order:', localNumber);
+          } else { throw error; }
+        }
+      }
+    } catch (error) {
+      console.error('Cannot process carrier tracking alias:', error && error.message);
+    }
+  }
+
   // Never let an empty/older provider response erase tracking history we
   // already have. This matters when a DSV subscription temporarily reports
   // NotFound while Cainiao still has the cross-border history for the same ID.
@@ -4069,22 +4202,6 @@ async function applyTrackingUpdate(update) {
   }
 
   const now = Date.now();
-  // 17TRACK occasionally supplies a confirmed last-mile identifier for the
-  // same tracked parcel. Persist that relationship; never infer it from a
-  // similar number, address, name, or pickup-code suffix.
-  if (update.rawJson) {
-    try {
-      const providerRaw = JSON.parse(update.rawJson);
-      const localNumber = normalizeTrackingNumber(providerRaw && providerRaw.local_number);
-      if (localNumber && localNumber.toUpperCase() !== String(shipment.tracking_number || '').toUpperCase()) {
-        await database.addShipmentTrackingAlias(shipment.id, localNumber, '17track_local_number', now);
-      }
-    } catch (error) {
-      if (error && error.code === 'tracking_alias_conflict') {
-        console.error('17TRACK local tracking number already belongs to a different shipment:', update.trackingNumber);
-      }
-    }
-  }
   const providerTrackingUrl = shipmentProviderTrackingUrl(shipment);
   if (providerTrackingUrl) {
     let incomingRaw = null;
@@ -4979,9 +5096,9 @@ async function adminApi(req, res, pathname, parsed) {
     if (!messageText) { json(res, 400, { ok: false, error: 'missing_message_text' }); return true; }
 
     // A last-mile number (PH...) may replace the original ALS... number.
-    // If we have already linked it from verified 17TRACK data, the lookup below
-    // works automatically. Otherwise require the admin to identify the old
-    // tracking number and confirm the matched order before notifications fire.
+    // Use any saved handoff alias, then automatically query 17TRACK handoff
+    // identifiers for the original numbers. Manual confirmation is only a
+    // fallback if the carrier does not expose the cross-reference.
     const parsedForLink = parseProviderPickupMessage(messageText);
     if (!parsedForLink.trackingNumber) { json(res, 422, {ok:false,error:'tracking_number_not_found'}); return true; }
     if (!providerPickupDetailsAreActionable(parsedForLink)) { json(res, 422, {ok:false,error:'pickup_details_not_found'}); return true; }
@@ -4990,6 +5107,53 @@ async function adminApi(req, res, pathname, parsed) {
     const previewOnly = body && body.previewOnly === true;
     const confirmLink = body && body.confirmLink === true;
     let linkedShipment = await database.getShipmentByTracking(incomingTracking);
+    if (!linkedShipment && !previousTracking) {
+      try {
+        linkedShipment = await resolveIncomingPickupNumberAutomatically(incomingTracking);
+      } catch (error) {
+        const code = error && error.code || 'tracking_auto_match_failed';
+        if (code === 'tracking_auto_match_ambiguous') {
+          json(res,409,{ok:false,error:code,trackingId:incomingTracking});
+          return true;
+        }
+        console.error('Pickup carrier match unavailable, falling back to candidate search:',code);
+      }
+    }
+    // Stage 2: when no provider-confirmed handoff number exists, build a
+    // human-reviewed shortlist of ready-for-pickup parcels around the city in
+    // the message. Never dispatch by geographic proximity alone.
+    const selectedShipmentId = Number(body && body.selectedShipmentId);
+    const confirmSelection = body && body.confirmSelection === true;
+    if (!linkedShipment && !previousTracking) {
+      const fallback = await adminPickupFallbackCandidates(parsedForLink);
+      if (confirmSelection) {
+        const selected = Number.isSafeInteger(selectedShipmentId) && selectedShipmentId > 0
+          ? fallback.candidates.find((entry) => entry.shipmentId === selectedShipmentId) : null;
+        if (!selected) {
+          json(res,409,{ok:false,error:'pickup_candidate_no_longer_valid',trackingId:incomingTracking});
+          return true;
+        }
+        try {
+          await database.addShipmentTrackingAlias(selected.shipmentId, incomingTracking, 'admin_pickup_candidate_confirmed');
+          linkedShipment = await database.getShipmentByTracking(incomingTracking);
+        } catch (error) {
+          const code = error && error.code || 'tracking_alias_failed';
+          json(res,code === 'tracking_alias_conflict' ? 409 : 422,{ok:false,error:code,trackingId:incomingTracking});
+          return true;
+        }
+      } else if (fallback.candidates.length) {
+        json(res,200,{ok:true,needsSelection:true,trackingId:incomingTracking,...fallback});
+        return true;
+      } else {
+        json(res,404,{ok:false,error:'tracking_not_found',trackingId:incomingTracking,
+          parsed:parsedForLink,canLinkPreviousTracking:true,searchSummary:fallback});
+        return true;
+      }
+    }
+    if (linkedShipment && confirmSelection && !previousTracking && Number(linkedShipment.id) !== selectedShipmentId) {
+      json(res,409,{ok:false,error:'tracking_alias_conflict'});
+      return true;
+    }
     if (!linkedShipment && previousTracking) {
       const previousShipment = await database.getShipmentByTracking(previousTracking);
       if (!previousShipment) {

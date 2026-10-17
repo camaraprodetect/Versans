@@ -1930,7 +1930,10 @@
     var code = error && error.code;
     if (code === 'tracking_number_not_found') return 'לא נמצא מספר משלוח בהודעה. ודאו שמספר המשלוח מופיע ליד המילה "משלוח".';
     if (code === 'pickup_details_not_found') return 'נמצא מספר משלוח, אבל לא נמצאו בהודעה פרטי איסוף שימושיים.';
-    if (code === 'tracking_not_found') return 'התקבל מספר מעקב חדש שאינו מוכר. קשרו אותו למספר המעקב הקודם של החבילה ולאחר בדיקה ניתן לשלוח ללקוח.';
+    if (code === 'tracking_not_found') return 'המערכת בדקה אוטומטית את הקשרים שסופקו בשירות המעקב, אך עדיין לא התקבלה התאמה מאומתת למספר החדש. לא נשלחה הודעה ללקוח שגוי.';
+    if (code === 'tracking_auto_match_ambiguous') return 'שירות המעקב החזיר יותר מהתאמה אחת למספר החדש. מטעמי בטיחות ההודעה לא נשלחה.';
+    if (code === 'pickup_candidate_no_longer_valid') return 'ההזמנה שנבחרה כבר לא מתאימה לתנאי החיפוש. בדקו שוב את מספר המעקב והסטטוס.';
+    if (code === 'tracking_auto_match_failed') return 'לא הצלחנו לבדוק את נתוני המעקב כרגע. נסו שוב מאוחר יותר.';
     if (code === 'previous_tracking_not_found') return 'מספר המעקב הקודם לא נמצא במערכת. בדקו את מספר המעקב כפי שהוא מופיע בהזמנה.';
     if (code === 'tracking_alias_conflict') return 'מספר המעקב הזה כבר מחובר להזמנה אחרת. ההודעה לא נשלחה. בדקו את פרטי החבילה.';
     if (code === 'tracking_alias_failed' || code === 'invalid_tracking_number') return 'לא ניתן לקשר את מספרי המעקב. בדקו את המספרים ונסו שוב.';
@@ -2006,6 +2009,84 @@
     linkPanel.appendChild(linkMatch);
     form.appendChild(linkPanel);
 
+
+    // A nearby ready-to-pick-up shipment is only a candidate; never send
+    // until the admin selects and confirms exactly one shipment.
+    var candidatesPanel = make('section', 'admin-pickup-candidates');
+    candidatesPanel.hidden = true;
+    var candidateSelection = null;
+    var candidateConfirm = make('button', 'admin-shipment-submit admin-pickup-candidates__confirm', 'אשר התאמה ושלח הודעת איסוף');
+    candidateConfirm.type = 'button';
+    candidateConfirm.hidden = true;
+    form.appendChild(candidatesPanel);
+
+    function clearCandidates() {
+      candidateSelection = null;
+      candidatesPanel.hidden = true;
+      candidatesPanel.replaceChildren();
+      candidateConfirm.hidden = true;
+    }
+    function renderPickupCandidates(data) {
+      clearCandidates();
+      linkPanel.hidden = true;
+      candidatesPanel.hidden = false;
+      candidatesPanel.appendChild(make('h3', '', 'נמצאו משלוחים שממתינים לאיסוף באזור'));
+      var summary = 'מספר לא מוכר: ' + (data.trackingId || '-') + ' · ' +
+        (data.totalMatches || 0) + ' הזמנות אפשריות';
+      if (data.pickupCity) summary += ' · אזור האיסוף: ' + data.pickupCity;
+      candidatesPanel.appendChild(make('p', 'admin-pickup-candidates__summary', summary));
+      if (data.searchTruncated || Number(data.totalMatches || 0) > (data.candidates || []).length) candidatesPanel.appendChild(make('p', 'admin-pickup-candidates__warning', 'נמצאו התאמות נוספות שלא מוצגות ברשימה; אפשר לצמצם לאחר התעדכנות המעקב.'));
+      candidatesPanel.appendChild(make('p', 'admin-pickup-candidates__warning', 'המרחקים מחושבים בקירוב בין מרכזי יישובים (עד כ-10 ק״מ), לא בין כתובות מדויקות. זה אינו אישור ששני המספרים שייכים לאותה חבילה. בחרו רק לאחר בדיקה.'));
+      var list = make('div', 'admin-pickup-candidates__list');
+      (data.candidates || []).forEach(function (item) {
+        var card = make('div', 'admin-pickup-candidate');
+        var main = make('div', 'admin-pickup-candidate__main');
+        main.appendChild(make('strong', '', 'הזמנה ' + item.orderRef + ' · ' + (item.customerName || 'לקוח/ה')));
+        main.appendChild(make('div', '', 'מספר מעקב קיים: ' + item.trackingId));
+        main.appendChild(make('div', '', 'עיר בהזמנה: ' + (item.orderCity || 'לא צוינה')));
+        if (item.approximateDistanceKm != null) {
+          main.appendChild(make('div', '', 'מרחק משוער בין היישובים: ' + item.approximateDistanceKm.toFixed(1) + ' ק״מ'));
+        } else {
+          main.appendChild(make('div', '', 'התאמה לפי שם יישוב · מרחק מדויק לא ידוע'));
+        }
+        main.appendChild(make('div', '', 'סטטוס: ממתין לאיסוף' + (item.alreadySent ? ' · הודעת איסוף כבר נשלחה' : '')));
+        if (item.latestEvent) main.appendChild(make('small', '', item.latestEvent));
+        var choose = make('button', 'admin-pickup-candidate__choose', 'בחר בהזמנה זו');
+        choose.type = 'button';
+        choose.addEventListener('click', function () {
+          Array.prototype.forEach.call(list.children, function(node) {node.classList.remove('is-selected');});
+          card.classList.add('is-selected');
+          candidateSelection = {message:textarea.value.trim(),shipmentId:item.shipmentId,orderRef:item.orderRef};
+          candidateConfirm.hidden = false;
+          candidateConfirm.textContent = 'אשר התאמה להזמנה ' + item.orderRef + ' ושלח';
+        });
+        card.appendChild(main);
+        card.appendChild(choose);
+        list.appendChild(card);
+      });
+      candidatesPanel.appendChild(list);
+      candidatesPanel.appendChild(candidateConfirm);
+      candidatesPanel.appendChild(make('p', 'admin-pickup-candidates__warning', 'בחירה וקישור יישמרו גם להודעות הבאות. אם אינכם בטוחים, אל תאשרו.'));
+    }
+    candidateConfirm.addEventListener('click', async function () {
+      if (!candidateSelection || candidateSelection.message !== textarea.value.trim()) {
+        clearCandidates();showToast('ההודעה השתנתה - חפשו שוב לפני אישור');return;
+      }
+      var old = candidateConfirm.textContent;
+      candidateConfirm.disabled = true;
+      candidateConfirm.textContent = 'מקשר ושולח…';
+      try {
+        var data = await apiAction('/api/admin/shipping/pickup-message', 'POST', {
+          message:candidateSelection.message,selectedShipmentId:candidateSelection.shipmentId,
+          confirmSelection:true,forceResend:resend.checked===true
+        });
+        showPickupSuccess(data);
+      } catch(error) {showPickupError(error);} finally {
+        candidateConfirm.disabled = false;
+        candidateConfirm.textContent = old;
+      }
+    });
+
     var result = make('div', 'admin-pickup-message-result');
     result.hidden = true;
     form.appendChild(result);
@@ -2018,9 +2099,10 @@
       linkMatch.replaceChildren();
     }
     previousInput.addEventListener('input', clearCheckedMatch);
-    textarea.addEventListener('input', clearCheckedMatch);
+    textarea.addEventListener('input', function () {clearCheckedMatch();clearCandidates();});
 
     function showPickupSuccess(data) {
+      clearCandidates();
       linkPanel.hidden = true;
       clearCheckedMatch();
       result.className = 'admin-pickup-message-result is-success';
@@ -2056,6 +2138,10 @@
       if (error && error.code === 'tracking_not_found' && payload && payload.canLinkPreviousTracking) {
         linkPanel.hidden = false;
         clearCheckedMatch();
+        if (payload.searchSummary) {
+          var details = payload.searchSummary;
+          result.appendChild(make('p', '', 'נבדקו ' + details.checkedShipments + ' משלוחים ונמצאו ' + details.pickupReadyShipments + ' משלוחים עם סטטוס איסוף, אבל לא נמצאה התאמה גיאוגרפית. אפשר לנסות בהמשך כשהמעקב יתעדכן.'));
+        }
       }
       result.hidden = false;
     }
@@ -2071,11 +2157,17 @@
       result.replaceChildren();
       try {
         var data = await apiAction('/api/admin/shipping/pickup-message', 'POST', {message:message,forceResend:resend.checked===true});
-        showPickupSuccess(data);
+        if (data.needsSelection) {
+          result.hidden = true;
+          renderPickupCandidates(data);
+        } else {
+          showPickupSuccess(data);
+        }
       } catch (error) {
         showPickupError(error);
       } finally {
-        result.hidden = false;
+        if (!candidatesPanel.hidden) result.hidden = true;
+        else result.hidden = false;
         submit.disabled = false;
         submit.textContent = old;
       }
