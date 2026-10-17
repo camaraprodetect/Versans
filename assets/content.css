@@ -137,3 +137,11 @@ main{flex:1;padding-bottom:55px}
 .cc-video-timestamp{margin:12px 0 0}
 .cc-video-error{font-size:12px;color:#b14533;margin:7px 0 0}
 @media(max-width:600px){.cc-video-inner{padding:17px 15px}.cc-video-facts{grid-template-columns:1fr}.cc-video-button{width:100%}}
+
+/* Creators navigation: all three tabs are separate views. */
+.cc-tabs{flex-wrap:wrap;column-gap:25px;row-gap:0}
+.cc-video-message.is-error{color:#ad332a;font-weight:600}
+@media(max-width:600px){
+  .cc-tabs{gap:12px 16px;justify-content:space-between}
+  .cc-tabs a{padding:0 2px 12px;font-size:12px;white-space:nowrap}
+}

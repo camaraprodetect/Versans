@@ -44,7 +44,6 @@
     facts.appendChild(fact('עמלה נוכחית',integer(c.commissionPercent)+'%'));
     facts.appendChild(fact('סטטוס הקוד','פעיל'));
     sec.append(code,facts);app.appendChild(sec);
-    creatorVideosSection();
     purchases();
   }
 
@@ -57,15 +56,48 @@
     var form=el('form','cc-video-form');
     var url=el('input');url.type='url';url.required=true;url.placeholder='https://www.tiktok.com/@username/video/...';url.dir='ltr';url.maxLength=350;url.setAttribute('aria-label','קישור לסרטון TikTok');
     var submit=el('button','cc-video-button','הוספת סרטון');submit.type='submit';form.append(url,submit);
-    var message=el('div','cc-video-message');message.setAttribute('role','status');
+    var message=el('div','cc-video-message');message.setAttribute('role','status');message.setAttribute('aria-live','polite');
     form.addEventListener('submit',async function(event){
-      event.preventDefault();submit.disabled=true;message.textContent='בודקים דרך TikTok שהסרטון שייך לחשבון שלך...';
+      event.preventDefault();submit.disabled=true;message.classList.remove('is-error');message.textContent='בודקים דרך Apify שהסרטון שייך לחשבון שלך...';
       try {
         var response=await fetch('/api/creators/videos',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:url.value})});
-        var data=await response.json();
-        if(!response.ok)throw new Error(({invalid_tiktok_video_url:'יש להדביק קישור מלא של סרטון TikTok, לא קישור מקוצר.',video_already_registered:'הסרטון כבר רשום במערכת.',daily_submission_limit:'ניתן לשלוח עד 8 סרטונים ביום.',video_limit_reached:'הגעת למגבלת הסרטונים.',creator_tiktok_profile_required:'מנהל החנות צריך להגדיר לך חשבון TikTok ותעריף לפני העלאת סרטון.',video_not_owned_by_creator:'הסרטון לא שייך לשם המשתמש שהוגדר לך. יש לשלוח סרטון מהחשבון שלך בלבד.',apify_not_configured:'מערכת בדיקת הסרטונים לא הוגדרה עדיין.',apify_video_not_found:'לא הצלחנו לאתר את הסרטון. נסה שוב מאוחר יותר.',apify_author_missing:'לא הצלחנו לאמת מי פרסם את הסרטון. נסה שוב מאוחר יותר.',apify_unavailable:'שירות הבדיקה אינו זמין כרגע. נסה שוב מאוחר יותר.'})[data.error]||'לא ניתן להוסיף את הסרטון.');
+        var data=await response.json().catch(function(){return {error:'invalid_server_response'};});
+        if(!response.ok){
+          var code=String(data.error||'unknown');
+          var errors={
+            invalid_tiktok_video_url:'יש להדביק קישור מלא של סרטון TikTok, לא קישור מקוצר.',
+            video_already_registered:'הסרטון הזה כבר רשום במערכת.',
+            daily_submission_limit:'ניתן לשלוח עד 8 סרטונים ביום.',
+            video_limit_reached:'הגעת למגבלת הסרטונים הפעילים.',
+            creator_tiktok_profile_required:'צריך להגדיר באדמין שם משתמש TikTok ותעריף לפני העלאת סרטון.',
+            video_not_owned_by_creator:'החשבון שפרסם את הסרטון אינו תואם לשם המשתמש שהוגדר לך באדמין.',
+            apify_not_configured:'חיבור Apify טרם הוגדר בשרת. יש להגדיר APIFY_API_TOKEN ב־Render.',
+            apify_video_not_found:'Apify לא הצליח למצוא את הסרטון. ודא שהוא ציבורי וזמין בטיקטוק.',
+            apify_author_missing:'Apify החזיר את הסרטון בלי שם משתמש מאומת של המפרסם. נסה שוב מאוחר יותר.',
+            apify_views_missing:'Apify לא החזיר נתון צפיות תקין לסרטון.',
+            apify_invalid_result:'Apify החזיר מידע בפורמט לא צפוי. יש לבדוק את ה־Actor.',
+            apify_timeout:'בדיקת הסרטון דרך Apify ארכה זמן רב מדי. נסה שוב.',
+            apify_unavailable:'Apify אינו זמין כרגע. בדוק שה־Actor פועל ונסה שוב.',
+            apify_failed:'חלה שגיאה בבדיקת Apify. נסה שוב מאוחר יותר.',
+            apify_http_401:'טוקן Apify אינו תקין. מנהל החנות צריך לבדוק את החיבור.',
+            apify_http_402:'נגמר הקרדיט או נדרש תשלום ב־Apify.',
+            apify_http_403:'אין הרשאה להריץ את ה־Actor דרך הטוקן שהוגדר.',
+            apify_http_404:'ה־Actor של Apify לא נמצא. יש לבדוק את שם ה־Actor.',
+            apify_http_429:'Apify הגביל זמנית את כמות הבדיקות. נסה שוב מאוחר יותר.',
+            apify_http_408:'Apify לא סיים את הבדיקה בזמן. נסה שוב.',
+            invalid_server_response:'השרת החזיר תשובה לא תקינה. נסה שוב מאוחר יותר.',
+            video_submission_failed:'אירעה תקלה בשרת בזמן הוספת הסרטון. מנהל האתר יכול לבדוק את השגיאה בלוגים.',
+            origin_not_allowed:'הבקשה נחסמה מטעמי אבטחה. רענן את העמוד ונסה שוב.',
+            login_required:'צריך להתחבר מחדש לפני הוספת סרטון.',
+            contentcreator_required:'למשתמש אין כרגע הרשאת יוצר פעילה.'
+          };
+          var text=errors[code] || (code.indexOf('apify_http_')===0?'הבדיקה מול Apify נכשלה (HTTP '+code.slice(11)+'). נסה שוב או פנה למנהל.':
+            'לא ניתן להוסיף את הסרטון (שגיאה: '+code.replace(/[^a-z0-9_]/gi,'').slice(0,55)+', HTTP '+response.status+').');
+          if(data.reference)text+=' · מזהה תקלה: '+String(data.reference).slice(0,12);
+          throw new Error(text);
+        }
         url.value='';message.textContent='הסרטון נשלח לאישור מנהל ✓';loadCreatorVideos(list,stats);
-      }catch(err){message.textContent=err.message;}finally{submit.disabled=false;}
+      }catch(err){message.classList.add('is-error');message.textContent=err.message||'בדיקת הסרטון נכשלה. נסה שוב.';}finally{submit.disabled=false;}
     });
     var stats=el('div','cc-video-stats');var list=el('div','cc-video-list');
     inner.append(form,message,stats,list);section.appendChild(inner);app.appendChild(section);
@@ -208,26 +240,36 @@
     });table.appendChild(tbody);scroll.appendChild(table);section.appendChild(scroll);app.appendChild(section);
   }
   function isLeaderboard(){return location.pathname.replace(/\/$/,'')==='/creators/leaderboard';}
+  function isTikTokPage(){return location.pathname.replace(/\/$/,'')==='/creators/tiktok';}
   function updateControls(){
     rangeOptions.querySelectorAll('button[data-range]').forEach(function(button){
       var selected=button.dataset.range===range;
       button.classList.toggle('is-active',selected);
       button.setAttribute('aria-pressed',selected?'true':'false');
     });
-    var board=isLeaderboard();
+    var board=isLeaderboard(),videos=isTikTokPage();
     document.getElementById('tabLeaderboard').classList.toggle('is-active',board);
-    document.getElementById('tabDashboard').classList.toggle('is-active',!board);
+    document.getElementById('tabTikTok').classList.toggle('is-active',videos);
+    document.getElementById('tabDashboard').classList.toggle('is-active',!board&&!videos);
     document.getElementById('tabDashboard').href='/creators/dashboard?range='+encodeURIComponent(range);
+    document.getElementById('tabTikTok').href='/creators/tiktok?range='+encodeURIComponent(range);
     document.getElementById('tabLeaderboard').href='/creators/leaderboard';
     document.querySelector('.cc-range').hidden=board;
-    document.getElementById('pageSubtitle').textContent=board?'דירוג הרכישות ששולמו בתקופת התשלום הנוכחית. מתחיל מחדש ב־15 וב־29 לחודש (או ב־1 במרץ).':'נתוני המכירות שהגיעו דרך קוד היוצר שלך, לפי התקופה שתבחר.';
+    document.getElementById('pageSubtitle').textContent=board?'דירוג הרכישות ששולמו בתקופת התשלום הנוכחית. מתחיל מחדש ב־15 וב־29 לחודש (או ב־1 במרץ).':videos?'מעקב צפיות ותגמול לסרטוני TikTok שאושרו על ידי VerSans.':'נתוני המכירות שהגיעו דרך קוד היוצר שלך, לפי התקופה שתבחר.';
   }
   async function render(){
     if(purchaseObserver){purchaseObserver.disconnect();purchaseObserver=null;}
     countdownParts=null;
     updateControls();error.hidden=true;app.replaceChildren(el('div','cc-loading','טוענים נתונים...'));
-    var myTurn=++renderCounter,board=isLeaderboard();
+    var myTurn=++renderCounter,board=isLeaderboard(),videos=isTikTokPage();
     try{
+      if(videos){
+        // The TikTok tab loads its own creator video API. Sales dashboards and
+        // commission metrics remain isolated and are not fetched here.
+        if(myTurn!==renderCounter)return;
+        viewedPeriodEnd=null;
+        app.replaceChildren();creatorVideosSection();return;
+      }
       var data=await get(board?'/api/creators/leaderboard':'/api/creators/me?range='+encodeURIComponent(range));
       if(myTurn!==renderCounter)return;
       // The dashboard may show "today", "week" or "all" while its countdown

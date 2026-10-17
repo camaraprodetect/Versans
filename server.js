@@ -6713,7 +6713,7 @@ async function creatorRoutes(req, res, pathname, searchParams) {
     return true;
   }
   const page = pathname === '/creators' || pathname === '/creators/' ||
-    pathname === '/creators/dashboard' || pathname === '/creators/leaderboard';
+    pathname === '/creators/dashboard' || pathname === '/creators/tiktok' || pathname === '/creators/leaderboard';
   const videoApi = pathname === '/api/creators/videos';
   const api = videoApi || pathname === '/api/creators/me' || pathname === '/api/creators/leaderboard' || pathname === '/api/creators/purchases';
   if (!page && !api) return false;
@@ -6740,7 +6740,13 @@ async function creatorRoutes(req, res, pathname, searchParams) {
     if (req.method === 'POST') {
       if (!sameOriginAllowed(req)) {json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
       try {const body=await readJsonBody(req,4096);const item=await creatorVideos.submit(user.id,body.url);json(res,201,{ok:true,video:item});}
-      catch(err){json(res,err.status||500,{ok:false,error:err.status?err.message:'video_submission_failed'});}
+      catch(err){
+        const reference=crypto.randomBytes(5).toString('hex');
+        // Log only technical failure details and a reference. Never log a token,
+        // submitted URL, or private user details.
+        console.error('[Creators TikTok submission]',reference,'status:',err.status||500,'code:',String(err.message||'unknown').slice(0,85));
+        json(res,err.status||500,{ok:false,error:err.status?err.message:'video_submission_failed',reference});
+      }
       return true;
     }
     const range=String(searchParams.get('range')||'payment');
