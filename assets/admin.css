@@ -1251,3 +1251,19 @@ button,input,textarea,select,a{font:inherit}.admin-app{display:grid;grid-templat
 .admin-video-table th{color:#66717b;background:#f7f8fa;font-weight:700}
 .admin-video-table a{color:#142333;text-decoration:underline;white-space:nowrap}
 .admin-video-rate{width:85px;max-width:100%;padding:7px;border:1px solid #cdd5de;border-radius:5px;direction:ltr}
+
+/* TikTok creator-video moderation: centered, branded confirmation and action feedback */
+.admin-creator-video-confirm{align-items:center;justify-items:center}
+.admin-creator-video-confirm .admin-confirm-modal{width:min(470px,100%);padding:clamp(20px,4vw,30px)}
+.admin-creator-video-confirm .admin-confirm-modal__icon{background:#edf5fa;color:#142333;border-color:#dce8ef}
+.admin-creator-video-confirm .admin-confirm-modal__title{font-size:clamp(19px,2vw,23px)}
+.admin-creator-video-confirm .admin-confirm-modal__message{font-size:14px;line-height:1.9}
+.admin-creator-video-feedback{display:flex;align-items:center;gap:7px;flex-basis:100%;max-width:310px;padding:8px 10px;border-radius:9px;font-size:12px;line-height:1.7;font-weight:650;direction:rtl}
+.admin-creator-video-feedback.is-loading{color:#25435c;background:#eef5fa}
+.admin-creator-video-feedback.is-loading::before{content:'';width:14px;height:14px;flex:none;border:2px solid #b9cbd7;border-top-color:#142333;border-radius:50%;animation:admin-creator-spin .75s linear infinite}
+.admin-creator-video-feedback.is-success{color:#0e634d;background:#e7f7f0}
+.admin-creator-video-feedback.is-error{color:#963245;background:#fff0f2;border:1px solid #f3c7cf}
+.admin-creators-actions[data-busy="1"] button{cursor:wait;opacity:.58}
+@keyframes admin-creator-spin{to{transform:rotate(360deg)}}
+@media(max-width:520px){.admin-creator-video-confirm{align-items:center;justify-items:center}.admin-creator-video-confirm .admin-confirm-modal__actions{grid-template-columns:1fr 1fr}}
+@media(prefers-reduced-motion:reduce){.admin-creator-video-feedback.is-loading::before{animation:none}}

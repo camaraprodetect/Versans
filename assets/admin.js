@@ -200,6 +200,7 @@
       var previousFocus = document.activeElement;
       var overlay = make('div', 'admin-confirm-overlay');
       if (options.catalogVisibility) overlay.classList.add('admin-catalog-visibility-confirm');
+      if (options.creatorVideo) overlay.classList.add('admin-creator-video-confirm');
       overlay.setAttribute('role', 'presentation');
 
       var modal = make('div', 'admin-confirm-modal');
@@ -3247,6 +3248,53 @@
     content.replaceChildren(frag);
   }
 
+  // TikTok moderation must preserve 403 validation errors rather than treating
+  // every 403 as a logout. This endpoint is owner-only, but a valid owner can
+  // also receive video_not_owned_by_creator or an Apify validation error.
+  async function creatorVideoActionRequest(id, action) {
+    var response = await fetch('/api/admin/creator-videos/' + encodeURIComponent(id) + '/action', {
+      method: 'POST', credentials: 'same-origin',
+      headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+      body: JSON.stringify({action: action})
+    });
+    var payload = null;
+    try { payload = await response.json(); } catch (_) { payload = null; }
+    if (response.status === 401 || (response.status === 403 && payload && ['owner_only','admin_required','permission_denied'].includes(payload.error))) {
+      window.location.href = '/login?next=' + encodeURIComponent(window.location.pathname + window.location.search);
+    }
+    if (!response.ok || !payload || payload.ok !== true) {
+      var errorCode = payload && (payload.error || payload.message) || 'request_failed_' + response.status;
+      var error = new Error(errorCode);
+      error.code = errorCode;
+      throw error;
+    }
+    return payload;
+  }
+  function creatorVideoActionError(error) {
+    var code = String(error && (error.code || error.message) || 'unknown');
+    var errors = {
+      video_not_owned_by_creator: 'אי אפשר לאשר: הסרטון לא שייך לחשבון TikTok שהוגדר ליוצר.',
+      creator_tiktok_profile_required: 'יש להגדיר שם משתמש TikTok ותעריף צפיות ליוצר לפני האישור.',
+      video_not_found: 'הסרטון לא נמצא. רענן את הדף ונסה שוב.',
+      invalid_video_status: 'מצב הסרטון השתנה. רענן את הדף ונסה שוב.',
+      invalid_video_action: 'הפעולה המבוקשת אינה זמינה למצב הסרטון.',
+      creator_not_active: 'חשבון היוצר אינו פעיל.',
+      apify_not_configured: 'חסר APIFY_API_TOKEN בשרת. יש להגדיר אותו ב־Render.',
+      apify_unavailable: 'Apify אינו זמין כרגע. נסה שוב מאוחר יותר.',
+      apify_timeout: 'הבדיקה מול Apify נמשכה יותר מדי זמן. נסה שוב מאוחר יותר.',
+      apify_video_not_found: 'Apify לא מצא את הסרטון. ודא שהוא ציבורי.',
+      apify_author_missing: 'Apify לא החזיר את שם מפרסם הסרטון.',
+      apify_views_missing: 'Apify לא החזיר מספר צפיות תקין.',
+      origin_not_allowed: 'בקשת האישור נחסמה. נסה לרענן את הדף.',
+      owner_only: 'רק בעל החנות יכול לאשר סרטוני יוצרים.',
+      admin_required: 'צריך להתחבר מחדש לחשבון האדמין.'
+    };
+    if (errors[code]) return errors[code];
+    if (code.indexOf('apify_http_') === 0) return 'Apify החזיר שגיאה (' + code.slice(11) + '). נסה שוב או בדוק את החשבון.';
+    if (code.indexOf('request_failed_') === 0) return 'בקשת האישור נכשלה (HTTP ' + code.slice(15) + '). נסה שוב.';
+    return 'האישור לא נשמר: ' + code;
+  }
+
   async function renderCreatorVideosAdmin(frag){
     var response;
     try {response=await api('/api/admin/creator-videos');}catch(_){return;}
@@ -3269,9 +3317,43 @@
       tr.appendChild(make('td','',(Number(v.ratePer1000Agorot)/100).toFixed(2)+' ₪'));
       var actions=make('td'),buttons=make('div','admin-creators-actions');
       async function run(action){
-        if(!window.confirm(action==='approve'&&v.status==='pending'?'אשר רק סרטון שהיוצר העלה עבור קמפיין Versans. באישור ראשון כל צפיות הסרטון (כולל אלו שלפני האישור) יהיו זכאיות לתגמול. להמשיך?':'האם לבצע את הפעולה עבור סרטון זה?'))return;
-        try {await apiAction('/api/admin/creator-videos/'+v.id+'/action','POST',{action:action});showToast('הפעולה נשמרה');await renderCurrentPage();}
-        catch(err){alert('הפעולה נכשלה: '+(err.code||err.message||'unknown'));}
+        if(buttons.dataset.busy === '1') return;
+        var isApproval = action === 'approve';
+        var labels = {
+          approve: {title: v.status === 'paused' ? 'חידוש מדידת צפיות' : 'אישור סרטון TikTok',
+            message: v.status === 'paused' ? 'לחדש את מדידת הסרטון והתגמול על צפיות חדשות? צפיות שנצברו בזמן ההשהיה לא יזוכו.' : 'יש לאשר רק סרטון שהיוצר פרסם עבור קמפיין Versans. הצפיות מהפרסום ועד המדידה הראשונה יהיו זכאיות לתגמול לאחר אימות בעלות.',
+            confirmText: v.status === 'paused' ? 'חדש מדידה' : 'אשר והפעל'},
+          reject: {title:'דחיית סרטון TikTok',message:'לדחות את הסרטון? לא יצטבר עליו תגמול צפיות.',confirmText:'דחה סרטון'},
+          pause: {title:'השהיית מדידת צפיות',message:'להשהות את המעקב והתשלום על צפיות חדשות בסרטון הזה?',confirmText:'השהה מדידה'}
+        };
+        var copy = labels[action];
+        if(!copy) return;
+        var confirmed = await adminConfirm({
+          creatorVideo:true, icon:isApproval?'✓':'!', eyebrow:'VERSANS CREATORS',
+          title:copy.title, message:copy.message,
+          cancelText:'ביטול', confirmText:copy.confirmText, danger:action==='reject'
+        });
+        if(!confirmed) return;
+        buttons.dataset.busy='1';
+        var actionButtons=Array.from(buttons.querySelectorAll('button'));
+        actionButtons.forEach(function(button){button.disabled=true;});
+        var feedback=make('div','admin-creator-video-feedback is-loading',isApproval?'מאמת את הסרטון ושומר אישור…':'שומר את השינוי…');
+        feedback.setAttribute('role','status');feedback.setAttribute('aria-live','polite');
+        actions.appendChild(feedback);
+        try {
+          await creatorVideoActionRequest(v.id,action);
+          feedback.className='admin-creator-video-feedback is-success';
+          feedback.textContent=isApproval?'הסרטון אושר והמעקב הופעל בהצלחה.':'הפעולה נשמרה בהצלחה.';
+          showToast(feedback.textContent);
+          // Approval has been persisted: a refresh failure must not be reported as a failed approval.
+          await renderCurrentPage();
+        } catch(err) {
+          feedback.className='admin-creator-video-feedback is-error';
+          feedback.textContent=creatorVideoActionError(err);
+          actionButtons.forEach(function(button){button.disabled=false;});
+        } finally {
+          delete buttons.dataset.busy;
+        }
       }
       function btn(label,action){var b=make('button','admin-small-button',label);b.type='button';b.addEventListener('click',function(){run(action)});buttons.appendChild(b);}
       if(v.status==='pending'){btn('אשר והפעל','approve');btn('דחה','reject');}
