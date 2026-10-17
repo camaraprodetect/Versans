@@ -10,6 +10,7 @@ const { createPaymentUrl, verifyPayment, priceOrder } = require('./api/_hyp.js')
 const { PRODUCTS, CATEGORIES } = require('./assets/products.js');
 const { createCatalogManager } = require('./lib/catalog-manager.js');
 const { createCreatorProgram } = require('./lib/creator-program.js');
+const { createCreatorVideos } = require('./lib/creator-videos.js');
 const ROUTES = require('./assets/routes.js');
 const SEO = require('./lib/seo.js');
 const INDEXNOW = require('./lib/indexnow.js');
@@ -93,6 +94,7 @@ const VERSANS_BOT_MAX_BODY_CHARS = 32000;
 
 const database = createDatabase({ root: ROOT, sqlitePath: DB_PATH });
 const creatorProgram = createCreatorProgram(database);
+const creatorVideos = createCreatorVideos(database, creatorProgram);
 // The public products script is regenerated whenever an admin saves an edit.
 // The browser must never receive the original on-disk catalog after a DB change.
 let liveCatalogScript = '';
@@ -5079,15 +5081,33 @@ async function adminApi(req, res, pathname, parsed) {
     return true;
   }
   // Only the owner can issue, change or revoke creator permissions/codes.
+  // Video rewards: financially sensitive changes are owner-only.
+  if (pathname === '/api/admin/creator-videos' && req.method === 'GET') {
+    if (normalizeEmail(admin?.email)!==ADMIN_EMAIL) {json(res,403,{ok:false,error:'owner_only'});return true;}
+    json(res,200,{ok:true,videos:await creatorVideos.listAdmin(),latestRun:await creatorVideos.latestRun(),configured:Boolean(process.env.APIFY_API_TOKEN)});
+    return true;
+  }
+  const creatorVideoAction=/^\/api\/admin\/creator-videos\/(\d+)\/action$/.exec(pathname);
+  if (creatorVideoAction && req.method === 'POST') {
+    if (!admin || normalizeEmail(admin.email)!==ADMIN_EMAIL) {json(res,403,{ok:false,error:'owner_only'});return true;}
+    if (!sameOriginAllowed(req)) {json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
+    try {
+      const body=await readJsonBody(req,4096);
+      const result=await creatorVideos.changeVideo(Number(creatorVideoAction[1]),body.action,body.ratePer1000Agorot);
+      json(res,200,result);
+    } catch(err) {json(res,err.status||500,{ok:false,error:err.status?err.message:'video_action_failed'});}
+    return true;
+  }
   if (pathname === '/api/admin/creators' && req.method === 'GET') {
     json(res, 200, { ok: true, creators: await creatorProgram.listCreators() });
     return true;
   }
   if (pathname === '/api/admin/creators' && req.method === 'POST') {
+    if (!admin || normalizeEmail(admin.email)!==ADMIN_EMAIL) { json(res,403,{ok:false,error:'owner_only'});return true; }
     if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'}); return true; }
     try {
       const body=await readJsonBody(req);
-      const creator=await creatorProgram.grantByEmail(body.email,body.code,body.discountPercent,body.commissionPercent);
+      const creator=await creatorProgram.grantByEmail(body.email,body.code,body.discountPercent,body.commissionPercent,body.tiktokUsername,body.viewRatePer1000Agorot);
       json(res,200,{ok:true,creator});
     } catch(err) { json(res,err.status||500,{ok:false,error:err.status?err.message:'creator_save_failed'}); }
     return true;
@@ -6694,9 +6714,10 @@ async function creatorRoutes(req, res, pathname, searchParams) {
   }
   const page = pathname === '/creators' || pathname === '/creators/' ||
     pathname === '/creators/dashboard' || pathname === '/creators/leaderboard';
-  const api = pathname === '/api/creators/me' || pathname === '/api/creators/leaderboard' || pathname === '/api/creators/purchases';
+  const videoApi = pathname === '/api/creators/videos';
+  const api = videoApi || pathname === '/api/creators/me' || pathname === '/api/creators/leaderboard' || pathname === '/api/creators/purchases';
   if (!page && !api) return false;
-  if (req.method !== 'GET' && req.method !== 'HEAD') { json(res,405,{ok:false,error:'method_not_allowed'}); return true; }
+  if (req.method !== 'GET' && req.method !== 'HEAD' && !(videoApi && req.method === 'POST')) { json(res,405,{ok:false,error:'method_not_allowed'}); return true; }
   const user = await getCurrentUser(req);
   if (!user) {
     if (api) json(res,401,{ok:false,error:'login_required'});
@@ -6715,6 +6736,18 @@ async function creatorRoutes(req, res, pathname, searchParams) {
   }
   res.setHeader('Cache-Control','private, no-store');
   res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive');
+  if (videoApi) {
+    if (req.method === 'POST') {
+      if (!sameOriginAllowed(req)) {json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
+      try {const body=await readJsonBody(req,4096);const item=await creatorVideos.submit(user.id,body.url);json(res,201,{ok:true,video:item});}
+      catch(err){json(res,err.status||500,{ok:false,error:err.status?err.message:'video_submission_failed'});}
+      return true;
+    }
+    const range=String(searchParams.get('range')||'payment');
+    try {json(res,200,{ok:true,...await creatorVideos.listForCreator(user.id,range)});}
+    catch(err){json(res,err.status||500,{ok:false,error:err.status?err.message:'creator_video_failed'});}
+    return true;
+  }
   if (api) {
     const range=pathname==='/api/creators/leaderboard'?'payment':String(searchParams.get('range')||'payment');
     if (!creatorProgram.reportPeriod(range)) { json(res,400,{ok:false,error:'invalid_range'});return true; }
@@ -8383,6 +8416,7 @@ setInterval(async () => {
 async function start() {
   await database.init();
   await creatorProgram.init();
+  await creatorVideos.init();
   await catalogManager.init();
   seoCatalogSnapshot = seoSnapshot();
   seoCatalogInitialized = true;
@@ -8392,6 +8426,7 @@ async function start() {
     console.log(`VerSans running on http://${HOST}:${PORT}`);
     console.log(`Checkout mode: ${checkoutMode()}`);
     console.log(`Database backend: ${database.backend}`);
+    creatorVideos.startScheduler();
     if (database.backend === 'sqlite') console.log(`SQLite: ${DB_PATH}`);
     const emailStartupTimer = setTimeout(() => {
       processPendingWelcomeEmails().catch((err) => console.error('Pending welcome email processing failed:', err));

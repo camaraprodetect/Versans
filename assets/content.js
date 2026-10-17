@@ -44,8 +44,63 @@
     facts.appendChild(fact('עמלה נוכחית',integer(c.commissionPercent)+'%'));
     facts.appendChild(fact('סטטוס הקוד','פעיל'));
     sec.append(code,facts);app.appendChild(sec);
+    creatorVideosSection();
     purchases();
   }
+
+  function creatorVideosSection(){
+    var section=el('section','cc-leaderboard cc-video-section');
+    var top=el('div','cc-leader-top');top.appendChild(el('h2','','סרטוני TikTok ותשלום לפי צפיות'));
+    top.appendChild(el('span','','בדיקה יומית ב־23:59 · שעון ישראל'));section.appendChild(top);
+    var inner=el('div','cc-video-inner');
+    inner.appendChild(el('p','cc-video-info','הדבק קישור לסרטון מחשבון ה־TikTok שהוגדר לך באדמין. המערכת תאמת את שם המשתמש דרך Apify לפני קבלת הסרטון. התשלום מחושב לפי התעריף שסוכם איתך ורק לאחר אישור.'));
+    var form=el('form','cc-video-form');
+    var url=el('input');url.type='url';url.required=true;url.placeholder='https://www.tiktok.com/@username/video/...';url.dir='ltr';url.maxLength=350;url.setAttribute('aria-label','קישור לסרטון TikTok');
+    var submit=el('button','cc-video-button','הוספת סרטון');submit.type='submit';form.append(url,submit);
+    var message=el('div','cc-video-message');message.setAttribute('role','status');
+    form.addEventListener('submit',async function(event){
+      event.preventDefault();submit.disabled=true;message.textContent='בודקים דרך TikTok שהסרטון שייך לחשבון שלך...';
+      try {
+        var response=await fetch('/api/creators/videos',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:url.value})});
+        var data=await response.json();
+        if(!response.ok)throw new Error(({invalid_tiktok_video_url:'יש להדביק קישור מלא של סרטון TikTok, לא קישור מקוצר.',video_already_registered:'הסרטון כבר רשום במערכת.',daily_submission_limit:'ניתן לשלוח עד 8 סרטונים ביום.',video_limit_reached:'הגעת למגבלת הסרטונים.',creator_tiktok_profile_required:'מנהל החנות צריך להגדיר לך חשבון TikTok ותעריף לפני העלאת סרטון.',video_not_owned_by_creator:'הסרטון לא שייך לשם המשתמש שהוגדר לך. יש לשלוח סרטון מהחשבון שלך בלבד.',apify_not_configured:'מערכת בדיקת הסרטונים לא הוגדרה עדיין.',apify_video_not_found:'לא הצלחנו לאתר את הסרטון. נסה שוב מאוחר יותר.',apify_author_missing:'לא הצלחנו לאמת מי פרסם את הסרטון. נסה שוב מאוחר יותר.',apify_unavailable:'שירות הבדיקה אינו זמין כרגע. נסה שוב מאוחר יותר.'})[data.error]||'לא ניתן להוסיף את הסרטון.');
+        url.value='';message.textContent='הסרטון נשלח לאישור מנהל ✓';loadCreatorVideos(list,stats);
+      }catch(err){message.textContent=err.message;}finally{submit.disabled=false;}
+    });
+    var stats=el('div','cc-video-stats');var list=el('div','cc-video-list');
+    inner.append(form,message,stats,list);section.appendChild(inner);app.appendChild(section);
+    loadCreatorVideos(list,stats);
+  }
+  async function loadCreatorVideos(list,stats){
+    var activeTurn=renderCounter;list.textContent='טוענים נתוני סרטונים...';
+    try {
+      var data=await get('/api/creators/videos?range='+encodeURIComponent(range));
+      if(activeTurn!==renderCounter || !list.isConnected)return;
+      if(data.tiktokUsername){var title=el('p','cc-video-info','חשבון TikTok מאושר: @'+data.tiktokUsername+' · תעריף: '+money(data.viewRatePer1000Agorot)+' ל־1,000 צפיות');stats.replaceChildren(title);}else{stats.replaceChildren(el('p','cc-video-error','מנהל החנות צריך להגדיר לך שם משתמש ותעריף TikTok.'));}
+      var totals=el('div','cc-video-totals');
+      totals.appendChild(el('span','','צפיות חדשות בתקופה: '+integer(data.totalGainedViews)));
+      totals.appendChild(el('strong','','תגמול צפיות בתקופה: '+money(data.totalEarnedAgorot)));
+      stats.appendChild(totals);list.replaceChildren();
+      if(!data.items.length){list.appendChild(el('p','cc-video-info','עדיין לא נוספו סרטונים.'));return;}
+      var labels={pending:'ממתין לאישור',active:'פעיל',paused:'מושהה',rejected:'נדחה'};
+      data.items.forEach(function(v){
+        var card=el('article','cc-video-item');
+        var title=el('a','cc-video-url','צפייה בסרטון TikTok ↗');title.href=v.url;title.target='_blank';title.rel='noopener noreferrer';
+        var badge=el('span','cc-video-status cc-video-'+v.status,labels[v.status]||v.status);
+        var head=el('div','cc-video-head');head.append(title,badge);card.appendChild(head);
+        var vals=el('div','cc-video-facts');
+        vals.appendChild(el('span','','סה״כ צפיות במדידה: '+(v.views==null?'ממתין למדידה':integer(v.views))));
+        vals.appendChild(el('span','','צפיות חדשות בתקופה: '+integer(v.gainedViews)));
+        vals.appendChild(el('span','','תשלום בתקופה: '+money(v.earnedAgorot)));
+        vals.appendChild(el('span','','תעריף: '+money(v.ratePer1000Agorot)+' ל־1,000 צפיות'));
+        card.appendChild(vals);
+        if(v.checkedAt)card.appendChild(el('p','cc-video-timestamp','בדיקה אחרונה: '+new Intl.DateTimeFormat('he-IL',{timeZone:'Asia/Jerusalem',dateStyle:'short',timeStyle:'short'}).format(new Date(v.checkedAt))));
+        if(v.error)card.appendChild(el('p','cc-video-error','הבדיקה האחרונה נכשלה; נתוני התשלום הקיימים נשמרו.'));
+        list.appendChild(card);
+      });
+    }catch(err){if(activeTurn===renderCounter && list.isConnected)list.textContent='לא הצלחנו לטעון את נתוני הסרטונים.';}
+  }
+
   function purchases(){
     var box=el('section','cc-purchases cc-leaderboard'),head=el('div','cc-leader-top');
     var title=el('h2','','הרכישות שהגיעו מהקוד שלך');

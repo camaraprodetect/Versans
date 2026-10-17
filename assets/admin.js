@@ -3225,9 +3225,11 @@
     var code=input('קוד יוצר (באנגלית)','text','code','VERSANS-AB');code.maxLength=20;code.pattern='[A-Za-z0-9][A-Za-z0-9-]{3,19}';code.autocapitalize='characters';
     var percent=input('הנחה ללקוח באחוזים (0-30)','number','percent','0');percent.min='0';percent.max='30';percent.step='1';percent.value='0';
     var commission=input('עמלת יוצר באחוזים מכל רכישה (0-100)','number','commissionPercent','0');commission.min='0';commission.max='100';commission.step='1';commission.value='0';
+    var username=input('שם משתמש TikTok (חובה)','text','tiktokUsername','@username');username.maxLength=25;username.dir='ltr';username.autocapitalize='off';username.autocomplete='off';
+    var viewRate=input('תשלום בשקלים לכל 1,000 צפיות (חובה)','number','viewRate','3.00');viewRate.min='0';viewRate.max='1000';viewRate.step='0.01';viewRate.value='3.00';
     var save=make('button','admin-small-button','שמירת יוצר תוכן');save.type='submit';form.appendChild(save);
-    var hint=make('p','admin-table__muted','אחוז ההנחה הוא מה שהלקוח מקבל; אחוז העמלה הוא מה שהיוצר מרוויח מסכום רכישה ששולמה. שינוי עמלה משפיע על רכישות חדשות בלבד, ולא משנה עמלה מרכישות קודמות. ניתן לעדכן את האחוזים והקוד בכל זמן.');
-    form.addEventListener('submit',async function(e){e.preventDefault();save.disabled=true;try{await apiAction('/api/admin/creators','POST',{email:email.value.trim(),code:code.value.trim().toUpperCase(),discountPercent:Number(percent.value),commissionPercent:Number(commission.value)});showToast('קוד היוצר נשמר');await renderCurrentPage();}catch(err){var messages={user_not_found:'המשתמש לא רשום באתר. יש לבקש ממנו להירשם קודם.',creator_code_taken:'קוד היוצר הזה כבר תפוס.',coupon_code_taken:'הקוד הזה כבר משמש קופון.',invalid_creator_code:'הקוד חייב להכיל 4-20 תווים באנגלית, ספרות או מקף.',protected_role:'לא ניתן להמיר חשבון אדמין או צוות ליוצר תוכן.',invalid_commission_percent:'יש להגדיר אחוז עמלה שלם בין 0 ל-100.'};alert(messages[err.code]||err.message||'השמירה נכשלה');save.disabled=false;}});
+    var hint=make('p','admin-table__muted','שם המשתמש בטיקטוק חייב להיות החשבון שמפרסם בפועל את הסרטונים. אימות מתבצע דרך Apify לפני שסרטון מתקבל לתשלום. התעריף לצפיות נשמר לכל יוצר, ושינוי שלו חל רק על בדיקות עתידיות. אחוז ההנחה הוא מה שהלקוח מקבל; אחוז העמלה הוא מה שהיוצר מרוויח מסכום רכישה ששולמה. שינוי עמלה משפיע על רכישות חדשות בלבד, ולא משנה עמלה מרכישות קודמות. ניתן לעדכן את האחוזים והקוד בכל זמן.');
+    form.addEventListener('submit',async function(e){e.preventDefault();save.disabled=true;try{await apiAction('/api/admin/creators','POST',{email:email.value.trim(),code:code.value.trim().toUpperCase(),discountPercent:Number(percent.value),commissionPercent:Number(commission.value),tiktokUsername:username.value.trim(),viewRatePer1000Agorot:Math.round(Number(viewRate.value)*100)});showToast('קוד היוצר נשמר');await renderCurrentPage();}catch(err){var messages={user_not_found:'המשתמש לא רשום באתר. יש לבקש ממנו להירשם קודם.',creator_code_taken:'קוד היוצר הזה כבר תפוס.',coupon_code_taken:'הקוד הזה כבר משמש קופון.',invalid_creator_code:'הקוד חייב להכיל 4-20 תווים באנגלית, ספרות או מקף.',protected_role:'לא ניתן להמיר חשבון אדמין או צוות ליוצר תוכן.',invalid_commission_percent:'יש להגדיר אחוז עמלה שלם בין 0 ל-100.',invalid_tiktok_username:'יש לרשום שם משתמש TikTok תקין (ללא רווחים).',tiktok_username_taken:'שם המשתמש TikTok הזה משויך כבר ליוצר אחר.',invalid_view_rate:'יש להגדיר מחיר בין 0 ל־1,000 ₪ לכל 1,000 צפיות.',owner_only:'רק בעל החנות יכול לשנות הגדרות יוצר.'};alert(messages[err.code]||err.message||'השמירה נכשלה');save.disabled=false;}});
     body.append(form,hint);box.appendChild(body);frag.appendChild(box);
     var users=(data.creators||[]).filter(function(item){return item.role==='contentcreator'&&item.active});
     var table=renderTable({title:'יוצרי תוכן פעילים',subtitle:'מספר הרכישות מבוסס על הזמנות ששולמו בלבד',rows:users,emptyText:'עדיין לא נוצרו קודי יוצר.',columns:[
@@ -3235,10 +3237,48 @@
       {label:'קוד יוצר',render:function(row){return make('strong','admin-table__mono',row.code)}},
       {label:'הנחה ללקוח',render:function(row){return Number(row.discountPercent)+'%'}},
       {label:'עמלת יוצר',render:function(row){return Number(row.commissionPercent||0)+'%'}},
+      {label:'TikTok',render:function(row){return row.tiktokUsername?'@'+row.tiktokUsername:'חסר - יש להגדיר'}},
+      {label:'₪ / 1,000 צפיות',render:function(row){return row.viewRatePer1000Agorot==null?'לא הוגדר':(Number(row.viewRatePer1000Agorot)/100).toFixed(2)+' ₪'}},
       {label:'עמלות שנצברו',render:function(row){return moneyAgorot(Number(row.commissionAgorot||0))}},
       {label:'רכישות',render:function(row){return numberFmt(row.sales)}},
-      {label:'פעולות',render:function(row){var wrap=make('div','admin-creators-actions');var edit=make('button','admin-small-button','ערוך');edit.type='button';edit.addEventListener('click',function(){email.value=row.email;code.value=row.code;percent.value=Number(row.discountPercent);commission.value=Number(row.commissionPercent||0);email.scrollIntoView({behavior:'smooth',block:'center'});code.focus();});var revoke=make('button','admin-small-button admin-small-button--danger','בטל הרשאה');revoke.type='button';revoke.addEventListener('click',async function(){if(!window.confirm('לבטל את הרשאת יוצר התוכן של '+row.name+'? קוד היוצר יפסיק לפעול, אך המכירות ההיסטוריות יישמרו.'))return;revoke.disabled=true;try{await apiAction('/api/admin/creators/'+row.id+'/revoke','POST',{});showToast('ההרשאה בוטלה');await renderCurrentPage();}catch(err){alert('לא ניתן לבטל הרשאה');revoke.disabled=false;}});wrap.append(edit,revoke);return wrap;}}
-    ]});frag.appendChild(table);content.replaceChildren(frag);
+      {label:'פעולות',render:function(row){var wrap=make('div','admin-creators-actions');var edit=make('button','admin-small-button','ערוך');edit.type='button';edit.addEventListener('click',function(){email.value=row.email;code.value=row.code;percent.value=Number(row.discountPercent);commission.value=Number(row.commissionPercent||0);username.value=row.tiktokUsername?'@'+row.tiktokUsername:'';viewRate.value=row.viewRatePer1000Agorot==null?'3.00':(Number(row.viewRatePer1000Agorot)/100).toFixed(2);email.scrollIntoView({behavior:'smooth',block:'center'});code.focus();});var revoke=make('button','admin-small-button admin-small-button--danger','בטל הרשאה');revoke.type='button';revoke.addEventListener('click',async function(){if(!window.confirm('לבטל את הרשאת יוצר התוכן של '+row.name+'? קוד היוצר יפסיק לפעול, אך המכירות ההיסטוריות יישמרו.'))return;revoke.disabled=true;try{await apiAction('/api/admin/creators/'+row.id+'/revoke','POST',{});showToast('ההרשאה בוטלה');await renderCurrentPage();}catch(err){alert('לא ניתן לבטל הרשאה');revoke.disabled=false;}});wrap.append(edit,revoke);return wrap;}}
+    ]});frag.appendChild(table);
+    await renderCreatorVideosAdmin(frag);
+    content.replaceChildren(frag);
+  }
+
+  async function renderCreatorVideosAdmin(frag){
+    var response;
+    try {response=await api('/api/admin/creator-videos');}catch(_){return;}
+    var section=make('section','admin-card');
+    var head=make('div','admin-card__head');var h=make('div');h.appendChild(make('h2','','סרטוני TikTok - תגמול צפיות'));
+    h.appendChild(make('p','','היוצר שולח קישור, והמערכת מוודאת מול Apify שהסרטון שייך לחשבון TikTok שהוגדר ליוצר. התעריף נקבע ביצירת היוצר. מעקב יומי ב־23:59 שעון ישראל.'));
+    head.appendChild(h);section.appendChild(head);
+    var area=make('div','admin-card__body');
+    if(!response.configured)area.appendChild(make('p','admin-table__muted','כדי להפעיל מדידות הוסף APIFY_API_TOKEN ב־Render.'));
+    if(response.latestRun){var run=response.latestRun;area.appendChild(make('p','admin-table__muted','בדיקה אחרונה: '+run.scheduled_day+' | '+({done:'הושלמה',partial:'חלקית',failed:'נכשלה',running:'בתהליך'})[run.status]+' | '+(run.details||'')));}
+    if(!(response.videos||[]).length){area.appendChild(make('p','admin-table__muted','עדיין לא נשלחו סרטונים.'));section.appendChild(area);frag.appendChild(section);return;}
+    var tableWrap=make('div','admin-video-wrap'),table=make('table','admin-video-table');
+    var thead=make('thead'),heading=make('tr');['יוצר','סרטון','צפיות אחרונות','מצב','₪ / 1000 צפיות','פעולות'].forEach(function(x){heading.appendChild(make('th','',x));});thead.appendChild(heading);table.appendChild(thead);
+    var tbody=make('tbody');
+    (response.videos||[]).forEach(function(v){
+      var tr=make('tr');tr.appendChild(make('td','',v.creator+' ('+v.email+')'+(v.tiktokUsername?' · @'+v.tiktokUsername:' · TikTok לא הוגדר')));
+      var linktd=make('td'),a=make('a','', 'פתיחת סרטון ↗');a.href=v.url;a.target='_blank';a.rel='noopener noreferrer';linktd.appendChild(a);tr.appendChild(linktd);
+      tr.appendChild(make('td','',v.views==null?'—':numberFmt(v.views)));
+      tr.appendChild(make('td','',({pending:'ממתין לאישור',active:'פעיל',paused:'מושהה',rejected:'נדחה'})[v.status]||v.status));
+      tr.appendChild(make('td','',(Number(v.ratePer1000Agorot)/100).toFixed(2)+' ₪'));
+      var actions=make('td'),buttons=make('div','admin-creators-actions');
+      async function run(action){
+        if(!window.confirm(action==='approve'&&v.status==='pending'?'אשר רק סרטון שהיוצר העלה עבור קמפיין Versans. באישור ראשון כל צפיות הסרטון (כולל אלו שלפני האישור) יהיו זכאיות לתגמול. להמשיך?':'האם לבצע את הפעולה עבור סרטון זה?'))return;
+        try {await apiAction('/api/admin/creator-videos/'+v.id+'/action','POST',{action:action});showToast('הפעולה נשמרה');await renderCurrentPage();}
+        catch(err){alert('הפעולה נכשלה: '+(err.code||err.message||'unknown'));}
+      }
+      function btn(label,action){var b=make('button','admin-small-button',label);b.type='button';b.addEventListener('click',function(){run(action)});buttons.appendChild(b);}
+      if(v.status==='pending'){btn('אשר והפעל','approve');btn('דחה','reject');}
+      if(v.status==='active')btn('השהה','pause');
+      if(v.status==='paused')btn('חדש מדידה','approve');
+      actions.appendChild(buttons);tr.appendChild(actions);tbody.appendChild(tr);
+    });table.appendChild(tbody);tableWrap.appendChild(table);area.appendChild(tableWrap);section.appendChild(area);frag.appendChild(section);
   }
 
   function adminRoleManager() {

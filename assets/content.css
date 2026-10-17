@@ -113,3 +113,27 @@ main{flex:1;padding-bottom:55px}
 .cc-countdown-label{display:block;margin-top:4px;color:var(--cc-muted);font-size:11px;font-weight:500}
 .cc-countdown-footnote{margin:15px 0 0;color:var(--cc-muted);text-align:center;font-size:11px}
 @media(max-width:600px){.cc-countdown{padding:19px 12px 16px;margin-bottom:11px}.cc-countdown-heading{margin-bottom:14px}.cc-countdown-grid{gap:7px}.cc-countdown-unit{padding:11px 2px 9px}.cc-countdown-number{font-size:clamp(22px,6vw,29px)}.cc-countdown-label{font-size:10px}.cc-countdown-footnote{font-size:10px}}
+
+/* TikTok creator rewards */
+.cc-video-section{margin-top:15px}
+.cc-video-inner{padding:20px 24px}
+.cc-video-info,.cc-video-timestamp{font-size:12px;color:var(--cc-muted);margin:0 0 14px}
+.cc-video-form{display:flex;gap:9px;align-items:stretch;flex-wrap:wrap}
+.cc-video-form input{font:inherit;flex:1 1 310px;min-width:0;border:1px solid var(--cc-line);border-radius:5px;padding:11px 12px;background:#fff;color:var(--cc-text)}
+.cc-video-form input:focus{outline:2px solid #a8bac9;outline-offset:1px}
+.cc-video-button{padding:10px 19px;border:0;border-radius:5px;background:var(--cc-navy);color:#fff;font-size:13px;font-weight:700}
+.cc-video-button:disabled{opacity:.55;cursor:wait}
+.cc-video-message{font-size:12px;min-height:22px;color:var(--cc-ok);margin:8px 0}
+.cc-video-totals{display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap;padding:14px 0;border-block:1px solid var(--cc-line);font-size:13px}
+.cc-video-totals strong{color:var(--cc-navy)}
+.cc-video-item{border-bottom:1px solid var(--cc-line);padding:18px 0}
+.cc-video-item:last-child{border:0;padding-bottom:0}
+.cc-video-head{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;align-items:center}
+.cc-video-url{font-size:13px;color:var(--cc-navy);font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.cc-video-status{font-size:11px;border-radius:20px;padding:3px 9px;background:#f4f4f4;color:#5c6369}
+.cc-video-active{background:#eaf6ed;color:#23633e}
+.cc-video-rejected{background:#fff0f0;color:#aa2828}
+.cc-video-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;font-size:12px;color:var(--cc-muted);margin-top:12px}
+.cc-video-timestamp{margin:12px 0 0}
+.cc-video-error{font-size:12px;color:#b14533;margin:7px 0 0}
+@media(max-width:600px){.cc-video-inner{padding:17px 15px}.cc-video-facts{grid-template-columns:1fr}.cc-video-button{width:100%}}

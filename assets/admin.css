@@ -1243,3 +1243,11 @@ button,input,textarea,select,a{font:inherit}.admin-app{display:grid;grid-templat
 .admin-pickup-candidate.is-selected .admin-pickup-candidate__choose{background:#d8f1e2;border-color:#23824f}
 .admin-pickup-candidates__confirm{background:#142333;color:white;padding:13px 16px;border:0;border-radius:10px;font-weight:800;cursor:pointer}
 @media(max-width:700px){.admin-pickup-candidates{padding:12px}.admin-pickup-candidate{display:grid}.admin-pickup-candidate__choose{width:100%}}
+
+/* Admin creator video review table */
+.admin-video-wrap{width:100%;overflow-x:auto}
+.admin-video-table{border-collapse:collapse;width:100%;min-width:780px;text-align:right}
+.admin-video-table th,.admin-video-table td{border-bottom:1px solid #e6e9ed;padding:12px 10px;font-size:12px;vertical-align:middle}
+.admin-video-table th{color:#66717b;background:#f7f8fa;font-weight:700}
+.admin-video-table a{color:#142333;text-decoration:underline;white-space:nowrap}
+.admin-video-rate{width:85px;max-width:100%;padding:7px;border:1px solid #cdd5de;border-radius:5px;direction:ltr}
