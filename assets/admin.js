@@ -199,6 +199,7 @@
     return new Promise(function (resolve) {
       var previousFocus = document.activeElement;
       var overlay = make('div', 'admin-confirm-overlay');
+      if (options.catalogVisibility) overlay.classList.add('admin-catalog-visibility-confirm');
       overlay.setAttribute('role', 'presentation');
 
       var modal = make('div', 'admin-confirm-modal');
@@ -2918,11 +2919,23 @@
       var site=make('a','admin-catalog-btn', p.hidden?'תצוגת אדמין':'צפייה');
       site.href=p.hidden?('/product.html?id='+encodeURIComponent(p.slug)+'&admin_preview=1'):p.href;
       site.target='_blank';site.rel='noopener';tools.appendChild(site);
-      tools.appendChild(catalogButton(p.hidden?'הצג בחנות':'הסתר','admin-catalog-quiet',async function(){
-        if(!window.confirm(p.hidden?'להחזיר את המוצר לחנות?':'להסתיר את המוצר מהחנות?'))return;
+      tools.appendChild(catalogButton(p.hidden?'הצג בחנות':'הסתר',p.hidden?'admin-catalog-unhide':'admin-catalog-quiet',async function(){
+        var wasHidden=Boolean(p.hidden);
+        var approved=await adminConfirm({
+          catalogVisibility:true,
+          danger:!wasHidden,
+          icon:wasHidden?'↺':'!',
+          title:wasHidden?'להחזיר את המוצר לחנות?':'להסתיר את המוצר מהחנות?',
+          message:wasHidden
+            ? 'המוצר "'+catalogTitle(p)+'" יחזור להופיע בקטגוריות ויהיה זמין ללקוחות.'
+            : 'המוצר "'+catalogTitle(p)+'" יוסר מהתצוגה ללקוחות. הוא יישמר באדמין ותוכל להציג אותו שוב בכל עת.',
+          cancelText:'ביטול',
+          confirmText:wasHidden?'כן, הצג בחנות':'כן, הסתר מוצר'
+        });
+        if(!approved)return;
         try{
-          await apiAction('/api/admin/catalog/'+encodeURIComponent(p.slug)+'/visibility','POST',{hidden:!p.hidden});
-          showToast(p.hidden?'המוצר הוחזר לחנות':'המוצר הוסתר מהחנות');await renderProductsPage();
+          await apiAction('/api/admin/catalog/'+encodeURIComponent(p.slug)+'/visibility','POST',{hidden:!wasHidden});
+          showToast(wasHidden?'המוצר הוחזר לחנות':'המוצר הוסתר מהחנות');await renderProductsPage();
         }catch(e){showToast('הפעולה נכשלה: '+e.message)}
       }));
       tools.appendChild(catalogButton('מחיקה','admin-catalog-danger',async function(){

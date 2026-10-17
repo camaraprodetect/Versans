@@ -1188,8 +1188,21 @@ button,input,textarea,select,a{font:inherit}.admin-app{display:grid;grid-templat
 @media(max-width:1020px){.admin-creators-form{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:610px){.admin-creators-form{grid-template-columns:1fr}.admin-creators-form>button{width:100%}}
 
 /* Catalog visibility, category placement and owner-managed staff access */
-.admin-catalog-product.is-hidden{opacity:.73;background:#f0f2f5;border-style:dashed}
-.admin-catalog-hidden-label{display:inline-flex;align-self:flex-start;border-radius:50px;background:#e9eff4;padding:4px 9px;color:#405469;font-weight:700;font-size:11px}
+/* Hidden products stay fully readable, with a clear red visual status. */
+.admin-catalog-product.is-hidden{opacity:1;background:#fff5f5;border:1px solid #e8a3ad;box-shadow:inset -4px 0 0 #cb4455,0 3px 12px rgba(164,41,57,.07)}
+.admin-catalog-product.is-hidden .admin-catalog-product__text strong{color:#8d2230}
+.admin-catalog-product.is-hidden .admin-catalog-product__actions{border-top-color:#f1cdd2;background:#fff7f7}
+.admin-catalog-product.is-hidden .admin-catalog-reposition{border-top-color:#f1cdd2}
+.admin-catalog-hidden-label{display:inline-flex;align-self:flex-start;border:1px solid #f0bbc4;border-radius:50px;background:#ffe5e9;padding:4px 10px;color:#a02536;font-weight:800;font-size:11px}
+.admin-catalog-unhide{border-color:#d9a5ad;color:#9e293a;background:#fff}
+.admin-catalog-unhide:hover{background:#ffecef;border-color:#cc7c88}
+/* Center the product hide / restore confirmation on every screen size. */
+.admin-catalog-visibility-confirm{align-items:center;justify-items:center}
+.admin-catalog-visibility-confirm .admin-confirm-modal{width:min(440px,100%)}
+.admin-catalog-visibility-confirm .admin-confirm-modal__message{font-size:13px;line-height:1.85}
+.admin-catalog-visibility-confirm .admin-confirm-modal__title{font-size:20px}
+.admin-catalog-visibility-confirm .admin-confirm-modal__button--danger{background:#b72e40;border-color:#b72e40}
+.admin-catalog-visibility-confirm .admin-confirm-modal__button--danger:hover{background:#952333;border-color:#952333}
 .admin-catalog-filter-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:12px 0}
 .admin-catalog-filter-row select,.admin-role-form input{min-width:180px;max-width:100%;padding:11px;border:1px solid #d0dce3;border-radius:9px;background:#fff;color:#142333;font:inherit}
 .admin-catalog-hidden-filter{display:flex;align-items:center;gap:6px;font-weight:600;font-size:13px}
