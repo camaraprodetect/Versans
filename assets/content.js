@@ -20,6 +20,7 @@
   function fact(label,value){var row=el('div','cc-fact');row.appendChild(el('span','',label));row.appendChild(el('strong','',value));return row;}
   async function get(url){var res=await fetch(url,{credentials:'same-origin',cache:'no-store'});if(res.status===401){location.href='/login';throw new Error('login_required');}if(res.status===403)throw new Error('אין לך הרשאה לצפות בנתונים האלה.');if(!res.ok)throw new Error('לא הצלחנו לטעון את הנתונים. נסו שוב.');return res.json();}
   function dashboard(c){
+    countdown(c.paymentPeriodEndExclusive,false);
     var sales=Number(c.sales||0), revenue=Number(c.revenueAgorot||0);
     var kpis=el('section','cc-kpis');
     kpis.appendChild(kpi('הכנסות דרך קוד היוצר',money(revenue),'סכום ההזמנות ששולמו, לא עמלת יוצר',true));
@@ -101,14 +102,14 @@
   }
   // The leaderboard receives the next Israel-local payment boundary from the server.
   // Count down to that exact timestamp; no client timezone math is necessary.
-  function countdown(periodEndExclusive){
+  function countdown(periodEndExclusive,isBoard){
     var target=Number(periodEndExclusive);
     if(!Number.isFinite(target)||target<=0){countdownParts=null;return;}
     var section=el('section','cc-countdown');
-    section.setAttribute('aria-label','ספירה לאחור לאיפוס הלידרבורד');
+    section.setAttribute('aria-label',isBoard?'ספירה לאחור לאיפוס הלידרבורד':'ספירה לאחור לסיום תקופת התשלום');
     var title=el('div','cc-countdown-heading');
     title.appendChild(el('span','cc-countdown-eyebrow','תקופת התשלום הנוכחית'));
-    title.appendChild(el('h2','','הלידרבורד מתאפס בעוד'));
+    title.appendChild(el('h2','',isBoard?'הלידרבורד מתאפס בעוד':'תקופת התשלום מסתיימת בעוד'));
     section.appendChild(title);
     var grid=el('div','cc-countdown-grid');
     var cells=[];
@@ -121,7 +122,7 @@
     });
     section.appendChild(grid);
     var resetDate=new Intl.DateTimeFormat('he-IL',{timeZone:'Asia/Jerusalem',day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date(target));
-    section.appendChild(el('p','cc-countdown-footnote','האיפוס הבא: '+resetDate+' (שעון ישראל)'));
+    section.appendChild(el('p','cc-countdown-footnote',(isBoard?'האיפוס הבא: ':'סיום תקופת התשלום: ')+resetDate+' (שעון ישראל)'));
     app.appendChild(section);
     countdownParts={target:target,cells:cells,section:section};
     updateCountdown();
@@ -137,7 +138,7 @@
     if(seconds===0)refreshAtPeriodBoundary();
   }
   function leaderboard(rows,periodStartAt,periodEndExclusive){
-    countdown(periodEndExclusive);
+    countdown(periodEndExclusive,true);
     var section=el('section','cc-leaderboard'),heading=el('div','cc-leader-top');
     heading.appendChild(el('h2','','דירוג יוצרי התוכן'));
     heading.appendChild(el('span','','תקופת תשלום · '+periodText(periodStartAt,periodEndExclusive)));section.appendChild(heading);
@@ -174,7 +175,12 @@
     try{
       var data=await get(board?'/api/creators/leaderboard':'/api/creators/me?range='+encodeURIComponent(range));
       if(myTurn!==renderCounter)return;
-      viewedPeriodEnd=board?data.periodEndExclusive:data.creator.periodEndExclusive;
+      // The dashboard may show "today", "week" or "all" while its countdown
+      // always uses the current payout period. Refresh on whichever boundary
+      // occurs first, so the countdown resets without reloading the tab.
+      var boundaries=board?[data.periodEndExclusive]:[data.creator.periodEndExclusive,data.creator.paymentPeriodEndExclusive];
+      var futureBoundaries=boundaries.map(Number).filter(function(value){return Number.isFinite(value)&&value>0;});
+      viewedPeriodEnd=futureBoundaries.length?Math.min.apply(null,futureBoundaries):null;
       app.replaceChildren();if(board)leaderboard(data.leaderboard||[],data.periodStartAt,data.periodEndExclusive);else dashboard(data.creator);
     }catch(e){if(myTurn!==renderCounter)return;if(e.message!=='login_required'){error.textContent=e.message||'שגיאה בטעינת הנתונים';error.hidden=false;}app.replaceChildren();}
   }
