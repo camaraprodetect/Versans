@@ -165,9 +165,11 @@
 
   function hatsOfferMarkup() {
     if (lang === 'he') {
-      return '2 ב־239.90 ₪ <span style="opacity:.45; margin:0 .32rem;">|</span> 3 ב־299.90 ₪';
+      return '<strong>מבצע כובעים: 3 כובעים ב־299.90 ₪</strong>' +
+        '<span style="opacity:.5; margin:0 .4rem;">•</span>2 כובעים ב־239.90 ₪';
     }
-    return '2 for ₪239.90 <span style="opacity:.45; margin:0 .32rem;">|</span> 3 for ₪299.90';
+    return '<strong>Hats deal: 3 hats for ₪299.90</strong>' +
+      '<span style="opacity:.5; margin:0 .4rem;">•</span>2 hats for ₪239.90';
   }
   function findOption(list, optionId) {
     if (!Array.isArray(list)) return null;
@@ -1763,7 +1765,9 @@ async function uploadProductPhoto(blob, meta) {
         promoLine.style.fontSize = window.innerWidth <= 768 ? '13px' : '14px';
         promoLine.style.fontWeight = '600';
         promoLine.style.lineHeight = '1.35';
-        promoLine.style.whiteSpace = 'nowrap';
+        promoLine.style.whiteSpace = 'normal';
+        promoLine.style.maxWidth = '100%';
+        promoLine.style.boxSizing = 'border-box';
       } else {
         promoLine.hidden = true;
         promoLine.innerHTML = '';

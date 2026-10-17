@@ -1250,6 +1250,12 @@ button,input,textarea,select,a{font:inherit}.admin-app{display:grid;grid-templat
 .admin-video-table th,.admin-video-table td{border-bottom:1px solid #e6e9ed;padding:12px 10px;font-size:12px;vertical-align:middle}
 .admin-video-table th{color:#66717b;background:#f7f8fa;font-weight:700}
 .admin-video-table a{color:#142333;text-decoration:underline;white-space:nowrap}
+/* TikTok moderation: approved / active videos are visibly green; other statuses stay white. */
+.admin-video-table tbody tr{background:#fff}
+.admin-video-table tbody tr.admin-video-row--approved{background:#e8f7ed}
+.admin-video-table tbody tr.admin-video-row--approved:hover{background:#d9f1e2}
+.admin-video-table tbody tr.admin-video-row--approved td:first-child{box-shadow:inset -4px 0 0 #29965c}
+.admin-video-table tbody tr.admin-video-row--approved td:nth-child(4){color:#147748;font-weight:800}
 .admin-video-rate{width:85px;max-width:100%;padding:7px;border:1px solid #cdd5de;border-radius:5px;direction:ltr}
 
 /* TikTok creator-video moderation: centered, branded confirmation and action feedback */

@@ -3310,7 +3310,7 @@
     var thead=make('thead'),heading=make('tr');['יוצר','סרטון','צפיות אחרונות','מצב','₪ / 1000 צפיות','פעולות'].forEach(function(x){heading.appendChild(make('th','',x));});thead.appendChild(heading);table.appendChild(thead);
     var tbody=make('tbody');
     (response.videos||[]).forEach(function(v){
-      var tr=make('tr');tr.appendChild(make('td','',v.creator+' ('+v.email+')'+(v.tiktokUsername?' · @'+v.tiktokUsername:' · TikTok לא הוגדר')));
+      var tr=make('tr', v.status === 'active' ? 'admin-video-row--approved' : '');tr.appendChild(make('td','',v.creator+' ('+v.email+')'+(v.tiktokUsername?' · @'+v.tiktokUsername:' · TikTok לא הוגדר')));
       var linktd=make('td'),a=make('a','', 'פתיחת סרטון ↗');a.href=v.url;a.target='_blank';a.rel='noopener noreferrer';linktd.appendChild(a);tr.appendChild(linktd);
       tr.appendChild(make('td','',v.views==null?'—':numberFmt(v.views)));
       tr.appendChild(make('td','',({pending:'ממתין לאישור',active:'פעיל',paused:'מושהה',rejected:'נדחה'})[v.status]||v.status));
