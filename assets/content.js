@@ -108,6 +108,18 @@
     try {
       var data=await get('/api/creators/videos?range='+encodeURIComponent(range));
       if(activeTurn!==renderCounter || !list.isConnected)return;
+      // Use the SAME server-provided payout boundary as dashboard and leaderboard,
+      // not the end of the selected video report range (today/week/all).
+      var paymentEnd=Number(data.paymentPeriodEndExclusive);
+      if(Number.isFinite(paymentEnd)&&paymentEnd>0){
+        viewedPeriodEnd=paymentEnd;
+        if(!countdownParts || countdownParts.target!==paymentEnd || !countdownParts.section.isConnected){
+          countdown(paymentEnd,false);
+          if(countdownParts && countdownParts.section.isConnected){
+            app.insertBefore(countdownParts.section,app.firstChild);
+          }
+        }
+      }
       if(data.tiktokUsername){var title=el('p','cc-video-info','חשבון TikTok מאושר: @'+data.tiktokUsername+' · תעריף: '+money(data.viewRatePer1000Agorot)+' ל־1,000 צפיות');stats.replaceChildren(title);}else{stats.replaceChildren(el('p','cc-video-error','מנהל החנות צריך להגדיר לך שם משתמש ותעריף TikTok.'));}
       var totals=el('div','cc-video-totals');
       totals.appendChild(el('span','','צפיות חדשות בתקופה: '+integer(data.totalGainedViews)));
@@ -264,8 +276,8 @@
     var myTurn=++renderCounter,board=isLeaderboard(),videos=isTikTokPage();
     try{
       if(videos){
-        // The TikTok tab loads its own creator video API. Sales dashboards and
-        // commission metrics remain isolated and are not fetched here.
+        // The TikTok tab loads only its creator video API, including the
+        // authoritative current payout boundary for the shared countdown.
         if(myTurn!==renderCounter)return;
         viewedPeriodEnd=null;
         app.replaceChildren();creatorVideosSection();return;
