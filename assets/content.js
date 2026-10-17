@@ -9,6 +9,8 @@
   var renderCounter=0;
   var purchaseObserver=null;
   var viewedPeriodEnd=null;
+  var countdownParts=null;
+  var lastBoundaryRefreshAttempt=0;
   function el(tag,cls,value){var node=document.createElement(tag);if(cls)node.className=cls;if(value!=null)node.textContent=String(value);return node;}
   function money(agorot){return new Intl.NumberFormat('he-IL',{style:'currency',currency:'ILS',maximumFractionDigits:2}).format(Number(agorot||0)/100);}
   function integer(value){return new Intl.NumberFormat('he-IL').format(Number(value||0));}
@@ -97,7 +99,45 @@
     }
     observe();load();
   }
+  // The leaderboard receives the next Israel-local payment boundary from the server.
+  // Count down to that exact timestamp; no client timezone math is necessary.
+  function countdown(periodEndExclusive){
+    var target=Number(periodEndExclusive);
+    if(!Number.isFinite(target)||target<=0){countdownParts=null;return;}
+    var section=el('section','cc-countdown');
+    section.setAttribute('aria-label','ספירה לאחור לאיפוס הלידרבורד');
+    var title=el('div','cc-countdown-heading');
+    title.appendChild(el('span','cc-countdown-eyebrow','תקופת התשלום הנוכחית'));
+    title.appendChild(el('h2','','הלידרבורד מתאפס בעוד'));
+    section.appendChild(title);
+    var grid=el('div','cc-countdown-grid');
+    var cells=[];
+    [['ימים','days'],['שעות','hours'],['דקות','minutes'],['שניות','seconds']].forEach(function(item){
+      var cell=el('div','cc-countdown-unit'),number=el('span','cc-countdown-number','00');
+      number.setAttribute('aria-hidden','true');
+      cell.append(number,el('span','cc-countdown-label',item[0]));
+      grid.appendChild(cell);
+      cells.push(number);
+    });
+    section.appendChild(grid);
+    var resetDate=new Intl.DateTimeFormat('he-IL',{timeZone:'Asia/Jerusalem',day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date(target));
+    section.appendChild(el('p','cc-countdown-footnote','האיפוס הבא: '+resetDate+' (שעון ישראל)'));
+    app.appendChild(section);
+    countdownParts={target:target,cells:cells,section:section};
+    updateCountdown();
+  }
+  function updateCountdown(){
+    if(!countdownParts||!countdownParts.section.isConnected)return;
+    var seconds=Math.max(0,Math.ceil((countdownParts.target-Date.now())/1000));
+    var values=[Math.floor(seconds/86400),Math.floor(seconds%86400/3600),Math.floor(seconds%3600/60),seconds%60];
+    values.forEach(function(value,index){
+      var displayed=String(value).padStart(2,'0');
+      if(countdownParts.cells[index].textContent!==displayed)countdownParts.cells[index].textContent=displayed;
+    });
+    if(seconds===0)refreshAtPeriodBoundary();
+  }
   function leaderboard(rows,periodStartAt,periodEndExclusive){
+    countdown(periodEndExclusive);
     var section=el('section','cc-leaderboard'),heading=el('div','cc-leader-top');
     heading.appendChild(el('h2','','דירוג יוצרי התוכן'));
     heading.appendChild(el('span','','תקופת תשלום · '+periodText(periodStartAt,periodEndExclusive)));section.appendChild(heading);
@@ -128,6 +168,7 @@
   }
   async function render(){
     if(purchaseObserver){purchaseObserver.disconnect();purchaseObserver=null;}
+    countdownParts=null;
     updateControls();error.hidden=true;app.replaceChildren(el('div','cc-loading','טוענים נתונים...'));
     var myTurn=++renderCounter,board=isLeaderboard();
     try{
@@ -149,10 +190,15 @@
   // Avoid continuous network requests; re-fetch only after the known boundary.
   function refreshAtPeriodBoundary(){
     if(document.visibilityState==='hidden'||viewedPeriodEnd==null)return;
-    if(Date.now()>=Number(viewedPeriodEnd))render();
+    var now=Date.now();
+    // At the reset boundary, re-fetch the new rankings; throttle retries on API failure.
+    if(now>=Number(viewedPeriodEnd)&&now-lastBoundaryRefreshAttempt>=15000){
+      lastBoundaryRefreshAttempt=now;
+      render();
+    }
   }
-  window.setInterval(refreshAtPeriodBoundary,30000);
-  document.addEventListener('visibilitychange',refreshAtPeriodBoundary);
-  window.addEventListener('pageshow',refreshAtPeriodBoundary);
+  window.setInterval(function(){updateCountdown();refreshAtPeriodBoundary();},1000);
+  document.addEventListener('visibilitychange',function(){updateCountdown();refreshAtPeriodBoundary();});
+  window.addEventListener('pageshow',function(){updateCountdown();refreshAtPeriodBoundary();});
   render();
 })();

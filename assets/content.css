@@ -100,3 +100,15 @@ main{flex:1;padding-bottom:55px}
 /* A period-only leaderboard; the dashboard retains selectable report windows. */
 .cc-leader-note{margin:0;padding:12px 25px;background:var(--cc-cream);color:var(--cc-muted);font-size:12px;line-height:1.8;border-bottom:1px solid var(--cc-line)}
 @media(max-width:600px){.cc-leader-note{padding:12px 16px}}
+
+/* Leaderboard reset timer: the cutoff is provided by the payout-period API. */
+.cc-countdown{margin:0 0 14px;padding:24px 26px 19px;background:var(--cc-navy);color:#fff;border:1px solid #20364b;border-radius:var(--cc-radius);box-shadow:0 7px 25px rgba(20,35,51,.09)}
+.cc-countdown-heading{text-align:center;margin:0 0 19px}
+.cc-countdown-eyebrow{display:block;font-size:11px;color:#b9c5ce;font-weight:500;margin-bottom:5px}
+.cc-countdown-heading h2{font-size:clamp(17px,2.5vw,22px);font-weight:700;line-height:1.5;margin:0}
+.cc-countdown-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;max-width:610px;margin:0 auto}
+.cc-countdown-unit{min-width:0;text-align:center;padding:13px 5px 10px;border:1px solid rgba(255,255,255,.15);border-radius:5px;background:rgba(255,255,255,.055)}
+.cc-countdown-number{display:block;direction:ltr;unicode-bidi:isolate;font:700 clamp(24px,3.2vw,38px)/1.25 Heebo,Arial,sans-serif;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.cc-countdown-label{display:block;margin-top:4px;color:#c8d2da;font-size:11px;font-weight:500}
+.cc-countdown-footnote{margin:16px 0 0;color:#c5d0d9;text-align:center;font-size:11px}
+@media(max-width:600px){.cc-countdown{padding:20px 12px 16px;margin-bottom:10px}.cc-countdown-heading{margin-bottom:15px}.cc-countdown-grid{gap:7px}.cc-countdown-unit{padding:12px 2px 9px}.cc-countdown-number{font-size:clamp(22px,6vw,29px)}.cc-countdown-label{font-size:10px}.cc-countdown-footnote{font-size:10px}}

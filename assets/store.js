@@ -2013,7 +2013,10 @@
       catalogBatchesShown = 1;
     }
 
-    var orderedList = positionLeagueEssentialHats(filteredList);
+    // Hats have a separate grid renderer. Respect the category order saved by
+    // the admin AFTER the default League Essential placement, just as the other
+    // category grids do. Without this, moving hats in admin has no effect.
+    var orderedList = applyAdminCategoryOrder(positionLeagueEssentialHats(filteredList), 'hats');
     var visibleCount = catalogVisibleCount(grid, catalogBatchesShown);
     var visibleList = orderedList.slice(0, visibleCount);
     grid.innerHTML = visibleList.map(renderProductCardHTML).join('');
