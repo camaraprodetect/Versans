@@ -4069,6 +4069,22 @@ async function applyTrackingUpdate(update) {
   }
 
   const now = Date.now();
+  // 17TRACK occasionally supplies a confirmed last-mile identifier for the
+  // same tracked parcel. Persist that relationship; never infer it from a
+  // similar number, address, name, or pickup-code suffix.
+  if (update.rawJson) {
+    try {
+      const providerRaw = JSON.parse(update.rawJson);
+      const localNumber = normalizeTrackingNumber(providerRaw && providerRaw.local_number);
+      if (localNumber && localNumber.toUpperCase() !== String(shipment.tracking_number || '').toUpperCase()) {
+        await database.addShipmentTrackingAlias(shipment.id, localNumber, '17track_local_number', now);
+      }
+    } catch (error) {
+      if (error && error.code === 'tracking_alias_conflict') {
+        console.error('17TRACK local tracking number already belongs to a different shipment:', update.trackingNumber);
+      }
+    }
+  }
   const providerTrackingUrl = shipmentProviderTrackingUrl(shipment);
   if (providerTrackingUrl) {
     let incomingRaw = null;
@@ -4961,6 +4977,64 @@ async function adminApi(req, res, pathname, parsed) {
     const messageText = String(body && (body.message || body.rawText || body.text) || '').trim();
     const forceResend = Boolean(body && body.forceResend === true);
     if (!messageText) { json(res, 400, { ok: false, error: 'missing_message_text' }); return true; }
+
+    // A last-mile number (PH...) may replace the original ALS... number.
+    // If we have already linked it from verified 17TRACK data, the lookup below
+    // works automatically. Otherwise require the admin to identify the old
+    // tracking number and confirm the matched order before notifications fire.
+    const parsedForLink = parseProviderPickupMessage(messageText);
+    if (!parsedForLink.trackingNumber) { json(res, 422, {ok:false,error:'tracking_number_not_found'}); return true; }
+    if (!providerPickupDetailsAreActionable(parsedForLink)) { json(res, 422, {ok:false,error:'pickup_details_not_found'}); return true; }
+    const incomingTracking = parsedForLink.trackingNumber;
+    const previousTracking = normalizeTrackingNumber(body && body.previousTrackingNumber);
+    const previewOnly = body && body.previewOnly === true;
+    const confirmLink = body && body.confirmLink === true;
+    let linkedShipment = await database.getShipmentByTracking(incomingTracking);
+    if (!linkedShipment && previousTracking) {
+      const previousShipment = await database.getShipmentByTracking(previousTracking);
+      if (!previousShipment) {
+        json(res, 404, {ok:false,error:'previous_tracking_not_found',trackingId:previousTracking,parsed:parsedForLink});
+        return true;
+      }
+      const candidateOrder = await database.getOrderById(previousShipment.order_id);
+      if (!candidateOrder || String(candidateOrder.status || '') !== 'paid') {
+        json(res, 409, {ok:false,error:'paid_order_not_found'});return true;
+      }
+      const customer = parseStoredCustomer(candidateOrder);
+      const customerName = [customer.firstName,customer.lastName].filter(Boolean).join(' ').trim() || customer.name || 'לקוח/ה';
+      if (!confirmLink || previewOnly) {
+        json(res, 200, {ok:true,needsConfirmation:true,orderRef:candidateOrder.order_ref,
+          customerName,trackingId:incomingTracking,previousTrackingNumber:previousTracking,
+          shipmentId:Number(previousShipment.id),message:'אשרו שזו ההזמנה המתאימה לפני חיבור המספרים ושליחת ההודעה.'});
+        return true;
+      }
+      try {
+        await database.addShipmentTrackingAlias(previousShipment.id, incomingTracking, 'admin_confirmed');
+        linkedShipment = await database.getShipmentByTracking(incomingTracking);
+      } catch (error) {
+        const code = error && error.code || 'tracking_alias_failed';
+        json(res, code === 'tracking_alias_conflict' ? 409 : 422, {ok:false,error:code,trackingId:incomingTracking});
+        return true;
+      }
+    }
+    if (!linkedShipment) {
+      json(res, 404, {ok:false,error:'tracking_not_found',trackingId:incomingTracking,parsed:parsedForLink,canLinkPreviousTracking:true});
+      return true;
+    }
+    if (previousTracking && confirmLink) {
+      const previousShipment = await database.getShipmentByTracking(previousTracking);
+      if (!previousShipment || Number(previousShipment.id) !== Number(linkedShipment.id)) {
+        json(res,409,{ok:false,error:'tracking_alias_conflict'});return true;
+      }
+    }
+    if (previewOnly) {
+      const candidateOrder = await database.getOrderById(linkedShipment.order_id);
+      const customer = candidateOrder ? parseStoredCustomer(candidateOrder) : {};
+      json(res, 200, {ok:true,needsConfirmation:false,orderRef:candidateOrder && candidateOrder.order_ref,
+        customerName:[customer.firstName,customer.lastName].filter(Boolean).join(' ') || customer.name || null,
+        trackingId:incomingTracking,shipmentId:Number(linkedShipment.id)});
+      return true;
+    }
 
     let saved;
     try {

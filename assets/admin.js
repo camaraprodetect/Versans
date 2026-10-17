@@ -1930,7 +1930,10 @@
     var code = error && error.code;
     if (code === 'tracking_number_not_found') return 'לא נמצא מספר משלוח בהודעה. ודאו שמספר המשלוח מופיע ליד המילה "משלוח".';
     if (code === 'pickup_details_not_found') return 'נמצא מספר משלוח, אבל לא נמצאו בהודעה פרטי איסוף שימושיים.';
-    if (code === 'tracking_not_found') return 'מספר המשלוח נמצא בהודעה, אבל הוא לא מחובר כרגע להזמנה ב-VerSans.';
+    if (code === 'tracking_not_found') return 'התקבל מספר מעקב חדש שאינו מוכר. קשרו אותו למספר המעקב הקודם של החבילה ולאחר בדיקה ניתן לשלוח ללקוח.';
+    if (code === 'previous_tracking_not_found') return 'מספר המעקב הקודם לא נמצא במערכת. בדקו את מספר המעקב כפי שהוא מופיע בהזמנה.';
+    if (code === 'tracking_alias_conflict') return 'מספר המעקב הזה כבר מחובר להזמנה אחרת. ההודעה לא נשלחה. בדקו את פרטי החבילה.';
+    if (code === 'tracking_alias_failed' || code === 'invalid_tracking_number') return 'לא ניתן לקשר את מספרי המעקב. בדקו את המספרים ונסו שוב.';
     if (code === 'paid_order_not_found') return 'המשלוח נמצא, אבל לא נמצאה עבורו הזמנת Paid תקינה.';
     if (code === 'missing_whatsapp_number') return 'להזמנה אין מספר WhatsApp תקין.';
     if (code === 'pickup_notification_already_queued') return 'הודעת האיסוף כבר נמצאת בתהליך שליחה. נסו שוב בעוד כמה דקות רק אם לא נשלחה.';
@@ -1975,10 +1978,87 @@
     actions.appendChild(make('small', 'admin-table__muted', 'אין צורך לפתוח AliExpress או Cainiao. ההודעה נשלחת דרך Order Notifications הקיים.'));
     form.appendChild(actions);
 
+    var linkPanel = make('div', 'admin-pickup-link-panel');
+    linkPanel.hidden = true;
+    linkPanel.appendChild(make('strong', '', 'מספר המעקב השתנה? חברו אותו להזמנה המקורית'));
+    linkPanel.appendChild(make('p', '', 'הזינו את מספר המעקב הראשון שמופיע במשלוח ב-VerSans (למשל ALS...). לפני השליחה נציג את ההזמנה שנמצאה לאישור.'));
+    var previousLabel = make('label');
+    previousLabel.appendChild(make('span', '', 'מספר מעקב קודם'));
+    var previousInput = document.createElement('input');
+    previousInput.type = 'text';
+    previousInput.maxLength = 80;
+    previousInput.placeholder = 'ALS...';
+    previousInput.autocomplete = 'off';
+    previousInput.dir = 'ltr';
+    previousLabel.appendChild(previousInput);
+    linkPanel.appendChild(previousLabel);
+    var linkButtons = make('div', 'admin-pickup-link-panel__actions');
+    var checkLink = make('button', 'admin-shipment-submit', 'בדוק התאמה להזמנה');
+    checkLink.type = 'button';
+    var confirmLink = make('button', 'admin-shipment-submit admin-pickup-link-confirm', 'אשר קשר ושלח ללקוח');
+    confirmLink.type = 'button';
+    confirmLink.hidden = true;
+    linkButtons.appendChild(checkLink);
+    linkButtons.appendChild(confirmLink);
+    linkPanel.appendChild(linkButtons);
+    var linkMatch = make('div', 'admin-pickup-link-match');
+    linkMatch.hidden = true;
+    linkPanel.appendChild(linkMatch);
+    form.appendChild(linkPanel);
+
     var result = make('div', 'admin-pickup-message-result');
     result.hidden = true;
     form.appendChild(result);
 
+    var checkedMatch = null;
+    function clearCheckedMatch() {
+      checkedMatch = null;
+      confirmLink.hidden = true;
+      linkMatch.hidden = true;
+      linkMatch.replaceChildren();
+    }
+    previousInput.addEventListener('input', clearCheckedMatch);
+    textarea.addEventListener('input', clearCheckedMatch);
+
+    function showPickupSuccess(data) {
+      linkPanel.hidden = true;
+      clearCheckedMatch();
+      result.className = 'admin-pickup-message-result is-success';
+      result.replaceChildren();
+      result.appendChild(make('strong', '', data.alreadySent ? 'הודעת האיסוף כבר נשלחה ללקוח.' : 'הפרטים נקלטו וההודעה הועברה לשליחה ✅'));
+      var meta = [];
+      if (data.orderRef) meta.push('הזמנה: ' + data.orderRef);
+      if (data.trackingId) meta.push('משלוח: ' + data.trackingId);
+      if (data.customerName) meta.push('לקוח: ' + data.customerName);
+      if (meta.length) result.appendChild(make('div', 'admin-pickup-message-result__meta', meta.join(' · ')));
+      if (data.customerPickupDetails) result.appendChild(make('pre', 'admin-pickup-message-result__details', data.customerPickupDetails));
+      textarea.value = '';
+      previousInput.value = '';
+      resend.checked = false;
+      showToast(data.forceResend ? 'הודעת האיסוף הועברה שוב לבדיקה' : (data.alreadySent ? 'ההודעה כבר סומנה כנשלחה' : 'הודעת האיסוף הועברה לשליחה'));
+      result.hidden = false;
+    }
+    function showPickupError(error) {
+      result.className = 'admin-pickup-message-result is-error';
+      result.replaceChildren();
+      result.appendChild(make('strong', '', manualPickupErrorMessage(error)));
+      var payload = error && error.payload;
+      if (payload && payload.orderRef) result.appendChild(make('div', 'admin-pickup-message-result__meta', 'הזמנה: ' + payload.orderRef + (payload.trackingId ? ' · משלוח: ' + payload.trackingId : '')));
+      if (payload && payload.whatsappWebUrl) {
+        var fallback = document.createElement('a');
+        fallback.className = 'admin-pickup-message-result__fallback';
+        fallback.href = payload.whatsappWebUrl;
+        fallback.target = '_blank';
+        fallback.rel = 'noopener';
+        fallback.textContent = 'פתח WhatsApp ידנית עם ההודעה המוכנה';
+        result.appendChild(fallback);
+      }
+      if (error && error.code === 'tracking_not_found' && payload && payload.canLinkPreviousTracking) {
+        linkPanel.hidden = false;
+        clearCheckedMatch();
+      }
+      result.hidden = false;
+    }
     form.addEventListener('submit', async function (event) {
       event.preventDefault();
       var message = textarea.value.trim();
@@ -1990,39 +2070,61 @@
       result.className = 'admin-pickup-message-result';
       result.replaceChildren();
       try {
-        var data = await apiAction('/api/admin/shipping/pickup-message', 'POST', { message: message, forceResend: resend.checked === true });
-        result.classList.add('is-success');
-        result.appendChild(make('strong', '', data.alreadySent ? 'הודעת האיסוף כבר נשלחה ללקוח.' : 'הפרטים נקלטו וההודעה הועברה לשליחה ✅'));
-        var meta = [];
-        if (data.orderRef) meta.push('הזמנה: ' + data.orderRef);
-        if (data.trackingId) meta.push('משלוח: ' + data.trackingId);
-        if (data.customerName) meta.push('לקוח: ' + data.customerName);
-        if (meta.length) result.appendChild(make('div', 'admin-pickup-message-result__meta', meta.join(' · ')));
-        if (data.customerPickupDetails) {
-          var details = make('pre', 'admin-pickup-message-result__details', data.customerPickupDetails);
-          result.appendChild(details);
-        }
-        textarea.value = '';
-        resend.checked = false;
-        showToast(data.forceResend ? 'הודעת האיסוף הועברה שוב לבדיקה' : (data.alreadySent ? 'ההודעה כבר סומנה כנשלחה' : 'הודעת האיסוף הועברה לשליחה'));
+        var data = await apiAction('/api/admin/shipping/pickup-message', 'POST', {message:message,forceResend:resend.checked===true});
+        showPickupSuccess(data);
       } catch (error) {
-        result.classList.add('is-error');
-        result.appendChild(make('strong', '', manualPickupErrorMessage(error)));
-        var payload = error && error.payload;
-        if (payload && payload.orderRef) result.appendChild(make('div', 'admin-pickup-message-result__meta', 'הזמנה: ' + payload.orderRef + (payload.trackingId ? ' · משלוח: ' + payload.trackingId : '')));
-        if (payload && payload.whatsappWebUrl) {
-          var fallback = document.createElement('a');
-          fallback.className = 'admin-pickup-message-result__fallback';
-          fallback.href = payload.whatsappWebUrl;
-          fallback.target = '_blank';
-          fallback.rel = 'noopener';
-          fallback.textContent = 'פתח WhatsApp ידנית עם ההודעה המוכנה';
-          result.appendChild(fallback);
-        }
+        showPickupError(error);
       } finally {
         result.hidden = false;
         submit.disabled = false;
         submit.textContent = old;
+      }
+    });
+    checkLink.addEventListener('click', async function () {
+      var previous = previousInput.value.trim();
+      var message = textarea.value.trim();
+      if (!message || !previous) {showToast('יש להזין הודעת איסוף ומספר מעקב קודם');return;}
+      var old = checkLink.textContent;
+      checkLink.disabled = true;
+      checkLink.textContent = 'בודק התאמה…';
+      clearCheckedMatch();
+      result.hidden = true;
+      try {
+        var data = await apiAction('/api/admin/shipping/pickup-message', 'POST', {
+          message:message,previousTrackingNumber:previous,previewOnly:true
+        });
+        if (!data.orderRef || !data.shipmentId) throw new Error('order_match_missing');
+        checkedMatch = {message:message,previousTrackingNumber:previous,orderRef:data.orderRef};
+        linkMatch.replaceChildren();
+        linkMatch.appendChild(make('strong', '', 'נמצאה הזמנה - בדקו לפני שליחה'));
+        linkMatch.appendChild(make('div', '', 'הזמנה: ' + data.orderRef + ' · לקוח: ' + (data.customerName || 'לא צוין')));
+        linkMatch.appendChild(make('div', '', 'מספר ישן: ' + previous + ' · מספר חדש: ' + data.trackingId));
+        linkMatch.appendChild(make('small', '', 'לחיצה על אישור תקשר את המספר החדש למשלוח ותפעיל את הודעת האיסוף.'));
+        linkMatch.hidden = false;
+        confirmLink.hidden = false;
+      } catch(error) {showPickupError(error);} finally {
+        checkLink.disabled=false;
+        checkLink.textContent=old;
+      }
+    });
+    confirmLink.addEventListener('click', async function () {
+      if (!checkedMatch || checkedMatch.message!==textarea.value.trim() || checkedMatch.previousTrackingNumber!==previousInput.value.trim()) {
+        clearCheckedMatch();
+        showToast('יש לבדוק שוב את ההתאמה לפני שליחה');
+        return;
+      }
+      var old=confirmLink.textContent;
+      confirmLink.disabled=true;
+      confirmLink.textContent='מקשר ושולח…';
+      try {
+        var data=await apiAction('/api/admin/shipping/pickup-message','POST',{
+          message:checkedMatch.message,previousTrackingNumber:checkedMatch.previousTrackingNumber,
+          confirmLink:true,forceResend:resend.checked===true
+        });
+        showPickupSuccess(data);
+      } catch(error) {showPickupError(error);} finally {
+        confirmLink.disabled=false;
+        confirmLink.textContent=old;
       }
     });
 
