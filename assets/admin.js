@@ -3110,7 +3110,7 @@
       if(p.hidden)meta.appendChild(make('span','admin-catalog-hidden-label','מוסתר מהחנות'));
       if(catalogPendingIds.indexOf(p.slug)>=0)meta.appendChild(make('span','admin-catalog-pending','ממתין לסנכרון גיליון'));
       var tools=make('div','admin-catalog-product__actions');
-      tools.appendChild(catalogButton('עריכה','admin-catalog-primary',function(){openCatalogEditor(p)}));
+      tools.appendChild(catalogButton('עריכה בעמוד המוצר','admin-catalog-primary',function(){window.location.href='/product.html?id='+encodeURIComponent(p.slug)+'&edit=1&admin_preview=1';}));
       var site=make('a','admin-catalog-btn', p.hidden?'תצוגת אדמין':'צפייה');
       site.href=p.hidden?('/product.html?id='+encodeURIComponent(p.slug)+'&admin_preview=1'):p.href;
       site.target='_blank';site.rel='noopener';tools.appendChild(site);

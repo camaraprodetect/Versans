@@ -1299,17 +1299,18 @@
   }
 
   function renderProductCardHTML(p) {
+    var outOfStock = p.inStock === false;
     var isGreetingEditorEntry = !!p.greetingEditorEntry;
     var cardPrice = catalogPrice(p);
     var cardHref = productPath(p);
     var isHat = ((Array.isArray(p.categories) ? p.categories : [p.category]).indexOf('hats') !== -1);
     var priority = priorityInfo(p);
-    var badge = isHat
+    var badge = outOfStock ? (state.lang === 'he' ? 'אזל מהמלאי' : 'Out of stock') : isHat
       ? (state.lang === 'he' ? '2 ב־239.90 ₪ | 3 ב־299.90 ₪' : '2 for ₪239.90 | 3 for ₪299.90')
       : (priority ? priority.badge : L(p.badge));
     var isGlasses = isGlassesProduct(p);
     return '' +
-    '<article class="prod">' +
+    '<article class="prod' + (outOfStock ? ' prod--sold-out' : '') + '">' +
       (badge ? '<span class="prod__badge"' +
         (isHat
           ? ' style="inset-inline-start:auto!important;inset-inline-end:auto!important;right:auto!important;left:10px!important;font-size:clamp(10px,2.6vw,13px)!important;line-height:1.2!important;padding:6px 8px!important;white-space:nowrap!important;"'
@@ -1323,7 +1324,7 @@
         '<p class="prod__price">' + (p.startingPrice ? (state.lang === 'he' ? 'החל מ־' : 'From ') : '') + money(cardPrice) +
         '</p>' +
         '<div class="prod__actions">' +
-          (isGreetingEditorEntry
+          (outOfStock ? '<button class="btn btn--primary" disabled>אזל מהמלאי</button>' : (isGreetingEditorEntry
             ? '<a class="btn btn--primary" href="' + cardHref + '">' + esc(state.lang === 'he' ? 'עיצוב ברכה אישית' : 'Design greeting') + '</a>'
             : (((p.necklaces && p.necklaces.length && p.boxes && p.boxes.length)
               ? '<a class="btn btn--primary" href="' + cardHref + '">' + esc(state.lang === 'he' ? 'לבחירת אפשרויות' : 'Choose options') + '</a>'
@@ -1336,7 +1337,7 @@
                     : (p.cardMode === 'view'
                     ? '<a class="btn btn--primary" href="' + cardHref + '">' + esc(state.lang === 'he' ? 'לצפייה במוצר' : 'View product') + '</a>'
                     : '<button class="btn btn--primary" data-add="' + esc(p.id) + '">' + esc(t('card.add')) + '</button>'))))) +
-              '<a class="btn btn--ghost" href="#" data-card-add="' + esc(p.id) + '">' + esc(state.lang === 'he' ? 'הוסף לסל' : 'Add to cart') + '</a>')) +
+              '<a class="btn btn--ghost" href="#" data-card-add="' + esc(p.id) + '">' + esc(state.lang === 'he' ? 'הוסף לסל' : 'Add to cart') + '</a>'))) +
         '</div>' +
       '</div>' +
     '</article>';
@@ -2662,6 +2663,7 @@ function orderTotal() {
   function addToCart(id, qty, triggerButton) {
     qty = qty || 1;
     var product = byId(id);
+    if (!product || product.inStock === false) return false;
     if (product && ((product.necklaces && product.necklaces.length) || (product.boxes && product.boxes.length) || (product.sizes && product.sizes.length) || (product.colors && product.colors.length) || (product.customName && product.customName.required) || (product.customPhoto && product.customPhoto.required) || product.giftPackaging || product.requiresCompanion)) {
       window.location.href = productPath(id);
       return false;
@@ -3013,6 +3015,12 @@ function orderTotal() {
 
     Promise.resolve(checkoutItemsPayloadWithAssets())
     .then(function (itemsPayload) {
+      // Prevent an old tab from silently charging a newer price after admin edits.
+      var displayedLines = cartLines();
+      itemsPayload.forEach(function(item,index) {
+        if (displayedLines[index] && Number.isFinite(Number(displayedLines[index].unitPrice)))
+          item._displayedUnitPrice = Number(displayedLines[index].unitPrice);
+      });
       return fetch('/api/create-payment', {
         method: 'POST',
         credentials: 'same-origin',
@@ -3058,6 +3066,8 @@ function orderTotal() {
         renderCouponUi();
         renderSummary();
         errBox.textContent = couponErrorText(err.code);
+      } else if (err && ['price_changed','product_not_available','product_out_of_stock','option_out_of_stock','combination_out_of_stock'].indexOf(err.code) !== -1) {
+        errBox.textContent = 'המחיר או זמינות המוצר השתנו. רעננו את הדף כדי לראות את הסל והמחירים המעודכנים לפני התשלום.';
       } else {
         errBox.textContent = t('co.err.server');
       }

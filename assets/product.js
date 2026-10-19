@@ -101,7 +101,7 @@
         '@type': 'Offer', url: canonicalUrl,
         priceCurrency: (CFG.currency && CFG.currency.code) || 'ILS',
         price: Number(product.price || 0).toFixed(2),
-        availability: 'https://schema.org/InStock'
+        availability: product.inStock === false ? 'https://schema.org/OutOfStock' : 'https://schema.org/InStock'
       }
     });
   }
@@ -165,15 +165,13 @@
 
   function hatsOfferMarkup() {
     if (lang === 'he') {
-      return '<strong>מבצע כובעים: 3 כובעים ב־299.90 ₪</strong>' +
-        '<span style="opacity:.5; margin:0 .4rem;">•</span>2 כובעים ב־239.90 ₪';
+      return '2 ב־239.90 ₪ <span style="opacity:.45; margin:0 .32rem;">|</span> 3 ב־299.90 ₪';
     }
-    return '<strong>Hats deal: 3 hats for ₪299.90</strong>' +
-      '<span style="opacity:.5; margin:0 .4rem;">•</span>2 hats for ₪239.90';
+    return '2 for ₪239.90 <span style="opacity:.45; margin:0 .32rem;">|</span> 3 for ₪299.90';
   }
   function findOption(list, optionId) {
     if (!Array.isArray(list)) return null;
-    for (var i = 0; i < list.length; i++) if (list[i].id === optionId) return list[i];
+    for (var i = 0; i < list.length; i++) if (list[i].id === optionId && list[i].hidden !== true) return list[i];
     return null;
   }
   function cart() {
@@ -476,7 +474,7 @@
     var sizeReady = !hasSizeOptions() || !!selectedSize();
     var colorReady = !hasColorOptions() || !!selectedColor();
     var combinationReady = !unavailableCombination(selectedSizeId, selectedColorId);
-    return necklaceReady && boxReady && sizeReady && colorReady && combinationReady && customNameReady() && customPhotoReady() && companionReady();
+    return product.inStock !== false && necklaceReady && boxReady && sizeReady && colorReady && combinationReady && [selectedNecklace(),selectedBox(),selectedSize(),selectedColor(),selectedPackaging()].every(function(o){return !o || o.inStock !== false}) && customNameReady() && customPhotoReady() && companionReady();
   }
   function galleryImages() {
     var images = Array.isArray(product.images) ? product.images.slice() : [];
@@ -917,6 +915,21 @@
     }).join('');
   }
 
+  function decorateSoldOutOptions() {
+    [['data-size',product.sizes],['data-color',product.colors],['data-necklace',product.necklaces],['data-box',product.boxes],['data-packaging',product.giftPackaging && product.giftPackaging.options]].forEach(function(group) {
+      (group[1]||[]).forEach(function(option) {
+        if (option.inStock !== false) return;
+        $$('['+group[0]+']').forEach(function(node) {
+          if (node.getAttribute(group[0]) !== option.id) return;
+          node.classList.add('versans-option-sold-out');
+          node.setAttribute('aria-disabled','true');
+          node.setAttribute('title','אזל מהמלאי');
+          if (node.tagName === 'BUTTON') node.disabled=true;
+          if (node.tagName === 'TR') node.setAttribute('tabindex','-1');
+        });
+      });
+    });
+  }
   function renderSizeOptions() {
     var block = $('#sizeBlock');
     var wrap = $('#sizeOptions');
@@ -1717,6 +1730,7 @@ async function uploadProductPhoto(blob, meta) {
   }
 
   function updatePriceAndPurchase() {
+    decorateSoldOutOptions();
     var box = selectedBox();
     var currentUnitPrice = unitPrice();
     var price = $('#productPrice');
@@ -1765,9 +1779,7 @@ async function uploadProductPhoto(blob, meta) {
         promoLine.style.fontSize = window.innerWidth <= 768 ? '13px' : '14px';
         promoLine.style.fontWeight = '600';
         promoLine.style.lineHeight = '1.35';
-        promoLine.style.whiteSpace = 'normal';
-        promoLine.style.maxWidth = '100%';
-        promoLine.style.boxSizing = 'border-box';
+        promoLine.style.whiteSpace = 'nowrap';
       } else {
         promoLine.hidden = true;
         promoLine.innerHTML = '';
@@ -1804,10 +1816,12 @@ async function uploadProductPhoto(blob, meta) {
 
     var ready = isReadyToBuy();
     if (addBtn) {
-      addBtn.disabled = false;
+      addBtn.disabled = product.inStock === false;
       addBtn.setAttribute('aria-disabled', String(!ready));
       addBtn.classList.toggle('is-not-ready', !ready);
-      if (hasNecklaceOptions() && !selectedNecklace()) {
+      if (product.inStock === false || [selectedNecklace(),selectedBox(),selectedSize(),selectedColor(),selectedPackaging()].some(function(o){return o && o.inStock === false})) {
+        addBtn.textContent = 'אזל מהמלאי';
+      } else if (hasNecklaceOptions() && !selectedNecklace()) {
         addBtn.textContent = L(product.necklaceRequiredText) || (lang === 'he' ? 'נא לבחור אפשרות' : 'Please choose an option');
       } else if (hasBoxOptions() && !selectedBox()) {
         addBtn.textContent = L(product.boxRequiredText) || (lang === 'he' ? 'נא לבחור אפשרות' : 'Please choose an option');
@@ -1889,6 +1903,7 @@ async function uploadProductPhoto(blob, meta) {
 
   function selectNecklace(optionId) {
     var option = findOption(product.necklaces, optionId);
+    if (option && option.inStock === false) { toast('האפשרות הזאת אזלה מהמלאי'); return; }
     if (!option) return;
 
     // This Star of David pair represents two separate catalog items. Swap the
@@ -1915,6 +1930,7 @@ async function uploadProductPhoto(blob, meta) {
 
   function selectBox(optionId) {
     var option = findOption(product.boxes, optionId);
+    if (option && option.inStock === false) { toast('האפשרות הזאת אזלה מהמלאי'); return; }
     if (!option) return;
     selectedBoxId = option.id;
     setMainImage(option.image, L(option.label));
@@ -1923,6 +1939,7 @@ async function uploadProductPhoto(blob, meta) {
 
   function selectSize(optionId) {
     var option = findOption(product.sizes, optionId);
+    if (option && option.inStock === false) { toast('האפשרות הזאת אזלה מהמלאי'); return; }
     if (!option) return;
     var unavailable = unavailableCombination(option.id, selectedColorId);
     if (unavailable) { showUnavailableCombination(unavailable); return; }
@@ -1935,6 +1952,7 @@ async function uploadProductPhoto(blob, meta) {
 
   function selectColor(optionId) {
     var option = findOption(product.colors, optionId);
+    if (option && option.inStock === false) { toast('האפשרות הזאת אזלה מהמלאי'); return; }
     if (!option) return;
     var unavailable = unavailableCombination(selectedSizeId, option.id);
     if (unavailable) { showUnavailableCombination(unavailable); return; }
@@ -2008,6 +2026,7 @@ async function uploadProductPhoto(blob, meta) {
   }
 
   function addToCart() {
+    if (product.inStock === false || [selectedNecklace(),selectedBox(),selectedSize(),selectedColor(),selectedPackaging()].some(function(o){return o && o.inStock === false})) { toast('המוצר או האפשרות שנבחרה אזלו מהמלאי'); return; }
     if (hasNecklaceOptions() && !selectedNecklace()) {
       toast(L(product.necklaceRequiredText) || (lang === 'he' ? 'נא לבחור אפשרות' : 'Please choose an option'));
       return;
@@ -2337,6 +2356,20 @@ async function uploadProductPhoto(blob, meta) {
     }
 
     renderOptions();
+    // The same stock badges and disabled controls apply to every category's
+    // option renderer (including the 3-stone table and swatch layouts).
+    [['data-size',product.sizes],['data-color',product.colors],['data-necklace',product.necklaces],['data-box',product.boxes]].forEach(function(group) {
+      (group[1] || []).forEach(function(option) {
+        if (option.inStock !== false) return;
+        $$('['+group[0]+']').forEach(function(node) {
+          if (node.getAttribute(group[0]) !== option.id) return;
+          node.classList.add('versans-option-sold-out');
+          node.setAttribute('aria-disabled','true');
+          node.setAttribute('title','אזל מהמלאי');
+          if (node.tagName === 'BUTTON') node.disabled = true;
+        });
+      });
+    });
     restoreCustomPhoto();
   }
 

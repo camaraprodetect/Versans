@@ -71,7 +71,8 @@ function priceOrder(items, lang, coupon = null) {
   const itemIds = new Set(items.map((item) => item && item.id).filter(Boolean));
   items.forEach((item) => {
     const product = PRODUCTS.find((p) => p.id === item.id);
-    if (!product) return;
+    if (!product) { const err = new Error('product_not_available'); err.status = 409; throw err; }
+    if (product.inStock === false) { const err = new Error('product_out_of_stock'); err.status = 409; throw err; }
 
     const qty = Math.min(20, Math.max(1, parseInt(item.qty, 10) || 1));
     let unitPrice = Number(product.price);
@@ -105,6 +106,7 @@ function priceOrder(items, lang, coupon = null) {
         err.status = 400;
         throw err;
       }
+      if (necklace.inStock === false) { const err = new Error('option_out_of_stock'); err.status=409; throw err; }
       unitPrice += Number(necklace.addPrice || 0);
       nameParts.push(localText(necklace.label, lang) || necklace.id);
     }
@@ -116,6 +118,7 @@ function priceOrder(items, lang, coupon = null) {
         err.status = 400;
         throw err;
       }
+      if (box.inStock === false) { const err = new Error('option_out_of_stock'); err.status=409; throw err; }
       unitPrice += Number(box.addPrice || 0);
       nameParts.push(localText(box.label, lang) || box.id);
     }
@@ -127,6 +130,7 @@ function priceOrder(items, lang, coupon = null) {
         err.status = 400;
         throw err;
       }
+      if (size.inStock === false) { const err = new Error('option_out_of_stock'); err.status=409; throw err; }
       unitPrice += Number(size.addPrice || 0);
       nameParts.push(localText(size.label, lang) || size.id);
     }
@@ -138,6 +142,7 @@ function priceOrder(items, lang, coupon = null) {
         err.status = 400;
         throw err;
       }
+      if (color.inStock === false) { const err = new Error('option_out_of_stock'); err.status=409; throw err; }
       unitPrice += Number(color.addPrice || 0);
       if (isRealColorSelector(product, color)) {
         nameParts[0] = selectedColorProductName(product, item, lang);
@@ -158,6 +163,7 @@ function priceOrder(items, lang, coupon = null) {
         err.status = 400;
         throw err;
       }
+      if (packaging.inStock === false) { const err = new Error('option_out_of_stock'); err.status=409; throw err; }
       unitPrice += Number(packaging.addPrice || 0);
       nameParts[0] += lang === 'he' ? ' + מארז LOVE FOREVER' : ' + LOVE FOREVER packaging';
       nameParts.push((lang === 'he' ? 'אריזה: ' : 'Packaging: ') + (localText(packaging.label, lang) || packaging.id));
@@ -229,7 +235,17 @@ function priceOrder(items, lang, coupon = null) {
       }
     }
 
+    if (Array.isArray(product.unavailableCombinations) && product.unavailableCombinations.some(combo =>
+      combo && combo.size === item.size && combo.color === item.color)) {
+      const err = new Error('combination_out_of_stock'); err.status = 409; throw err;
+    }
     unitPrice = Number(unitPrice.toFixed(2));
+    // The browser's displayed price is advisory. Never charge a new DB price
+    // without asking the customer to refresh and review it first.
+    if (item._displayedUnitPrice != null && Number.isFinite(Number(item._displayedUnitPrice)) &&
+        Math.abs(unitPrice - Number(item._displayedUnitPrice)) > 0.009) {
+      const err = new Error('price_changed'); err.status = 409; throw err;
+    }
     const productCollections = Array.isArray(product.categories) && product.categories.length ? product.categories : [product.category];
     lines.push({
       id: product.id,
