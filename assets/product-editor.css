@@ -1,29 +1,104 @@
-/* Isolated styling: ordinary product pages are unchanged. */
-.versans-editor{position:fixed;z-index:9998;right:0;top:0;bottom:0;width:min(470px,100vw);background:#fbfcfd;border-left:1px solid #dfe5ec;box-shadow:-12px 0 40px #1423332b;display:flex;flex-direction:column;direction:rtl;color:#15283d;font:500 14px/1.5 Arial,sans-serif}
-.versans-editor-open{padding-right:min(470px,100vw)}
+/* Scoped visual editor; storefront styling is untouched outside edit mode. */
+.versans-editor{--ve-ink:#142333;--ve-muted:#718094;--ve-stroke:#e5e9ef;position:fixed;z-index:9998;inset:0 0 0 auto;width:min(530px,42vw);min-width:425px;background:#f7f9fb;border-left:1px solid #e0e5eb;box-shadow:-12px 0 38px #14233317;display:flex;flex-direction:column;direction:rtl;color:var(--ve-ink);font:500 14px/1.5 -apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif}
+.versans-editor-open{padding-right:min(530px,42vw)!important}
 .versans-editor *{box-sizing:border-box}
-.versans-editor__head,.versans-editor__footer{padding:17px 20px;background:#fff;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.versans-editor__footer{border-bottom:0;border-top:1px solid #e2e8f0;flex-wrap:wrap}
-.versans-editor__head h2{font-size:20px;margin:3px 0 0}
-.versans-editor__eyebrow{font-size:11px;letter-spacing:.15em;color:#7a8798}
-.versans-editor__close{color:#1e4366;border:1px solid #dce4ec;text-decoration:none;padding:8px 12px;border-radius:9px;font-weight:700}
-.versans-editor__scroll{overflow-y:auto;padding:16px;flex:1;overscroll-behavior:contain}
-.versans-editor__section{background:#fff;border:1px solid #e3e9ef;border-radius:14px;padding:15px;margin-bottom:15px;display:flex;flex-direction:column;gap:12px}
-.versans-editor__section h3{font-size:17px;margin:0}.versans-editor__hint{color:#63768b;margin:0;font-size:12px}
-.versans-editor__field{display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:700;color:#405269}
-.versans-editor__field input,.versans-editor__field textarea,.versans-editor__detail input{border:1px solid #cfd8e4;border-radius:9px;padding:10px;min-width:0;width:100%;background:#fff;color:#12263c;font:500 14px Arial;direction:auto}
-.versans-editor__field textarea{resize:vertical;min-height:64px}.versans-editor__field input:focus,.versans-editor__field textarea:focus{outline:2px solid #80afdc}
-.versans-editor__toggle{display:flex;gap:8px;align-items:center;padding:8px 0;font-size:13px}
-.versans-editor__toggle input{accent-color:#196d6a;width:16px;height:16px}
-.versans-editor__images{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.versans-editor__image{border:1px solid #e0e7ee;border-radius:10px;padding:7px}.versans-editor__image img{display:block;width:100%;aspect-ratio:1;object-fit:contain}
-.versans-editor__inline{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
-.versans-editor__btn{border:1px solid #cbd6e1;border-radius:8px;background:#fff;color:#183349;cursor:pointer;font:700 12px Arial;padding:9px 11px}
-.versans-editor__btn:hover{background:#edf4f8}.versans-editor__btn.is-primary{background:#142333;color:#fff;border-color:#142333}.versans-editor__btn.is-danger{color:#a92c3b;border-color:#f2b7be}
-.versans-editor__btn:disabled{opacity:.4;cursor:wait}.versans-editor__upload{border:1px dashed #a7bbce;padding:15px;border-radius:11px;display:flex;flex-direction:column;gap:8px}
-.versans-editor__option{padding:12px;border:1px solid #e2e9ef;border-radius:10px;display:flex;flex-direction:column;gap:9px;margin-bottom:12px}
-.versans-editor__detail{display:flex;gap:8px;align-items:center;margin:8px 0}
-.versans-editor__status{flex:1;min-width:100%;font-size:12px;color:#64748b}.versans-editor__status.is-error{color:#b42318}.versans-editor__status.is-success{color:#087054}
-.versans-editor details summary{cursor:pointer;color:#1d4c71;font-weight:700}.versans-editor details textarea{width:100%;min-height:150px;direction:ltr;font:12px monospace}
+.versans-editor [hidden]{display:none!important}
+.versans-editor__head{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 20px 11px;background:#fff}
+.versans-editor__heading{min-width:0;display:flex;flex-direction:column;gap:1px}
+.versans-editor__eyebrow{font-size:10px;letter-spacing:.15em;color:#7c8795;direction:ltr;text-align:right}
+.versans-editor__head h2{font-size:22px;line-height:1.35;font-weight:750;margin:0;color:var(--ve-ink)}
+.versans-editor__ref{font-size:11px;color:#8290a0;direction:ltr;text-align:right}
+.versans-editor__nav{display:flex;flex:0 0 auto;gap:4px;padding:7px 13px 10px;border-bottom:1px solid var(--ve-stroke);background:#fff;overflow-x:auto;scrollbar-width:thin;min-height:54px}
+.versans-editor__nav .versans-editor__btn{min-width:0;flex:1 0 auto;white-space:nowrap;border:1px solid transparent;background:transparent;border-radius:8px;font-size:13px;font-weight:650;padding:9px 11px;color:#5f7187;box-shadow:none;transition:background .15s,color .15s}
+.versans-editor__nav .versans-editor__btn.is-current{background:#142333;color:#fff}
+.versans-editor__nav .versans-editor__btn:focus-visible{outline:2px solid #6b9cc9;outline-offset:1px}
+.versans-editor__scroll{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:18px 17px 26px;scrollbar-color:#d3dbe4 transparent;scrollbar-width:thin}
+.versans-editor__section{background:#fff;border:1px solid var(--ve-stroke);border-radius:13px;padding:17px;margin:0 0 13px;display:flex;flex-direction:column;gap:13px;box-shadow:0 1px 2px #0a274508}
+.versans-editor__section h3{font-weight:750;font-size:16px;line-height:1.45;margin:0;color:var(--ve-ink)}
+.versans-editor__hint{color:#77869a;margin:-5px 0 1px;font-size:12px;line-height:1.65}
+.versans-editor__field{display:flex;flex-direction:column;gap:5px;color:#46566b;font-size:12px;font-weight:700;margin:0;min-width:0}
+.versans-editor__field input,.versans-editor__field textarea,.versans-editor__detail input{width:100%;min-width:0;background:#fff;color:#15263c;border:1px solid #d9e0e8;border-radius:9px;padding:10px 11px;font:500 14px/1.5 -apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;box-shadow:0 1px 2px #14233306;direction:auto}
+.versans-editor__field input:hover,.versans-editor__field textarea:hover{border-color:#b6c3d1}
+.versans-editor__field input:focus,.versans-editor__field textarea:focus,.versans-editor__detail input:focus{outline:2px solid #9cbcd7;outline-offset:0;border-color:#47789d}
+.versans-editor__field textarea{resize:vertical;min-height:80px}
+.versans-editor__two-col{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.versans-editor__toggle{display:flex;gap:9px;align-items:center;padding:8px 0;font-size:13px;font-weight:600;color:#24364a;cursor:pointer}
+.versans-editor__toggle input{accent-color:#147767;width:17px;height:17px;flex:0 0 auto}
+.versans-editor__btn{font:700 13px/1.3 -apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;background:#fff;color:#293b50;border:1px solid #d8e1ea;border-radius:9px;padding:10px 13px;cursor:pointer;white-space:nowrap;transition:background .15s,border-color .15s}
+.versans-editor__btn:hover:not(:disabled){background:#eff4f7;border-color:#c5d2df}
+.versans-editor__btn.is-primary{background:#142333;border-color:#142333;color:#fff;box-shadow:0 2px 5px #14233318;padding-inline:20px}
+.versans-editor__btn.is-primary:hover:not(:disabled){background:#243e55;border-color:#243e55}
+.versans-editor__btn.is-danger{color:#ae3742;background:#fff;border-color:#efcdd1}
+.versans-editor__btn.is-danger:hover:not(:disabled){background:#fff3f4;border-color:#da9da4}
+.versans-editor__btn.is-add{display:block;width:100%;border-style:dashed;background:#f7fafc;color:#265270;margin-top:10px}
+.versans-editor__btn:disabled{opacity:.48;cursor:default}
+.versans-editor__close{font-size:12px!important;background:#fff}
+.versans-editor__footer{flex:0 0 auto;background:#fff;border-top:1px solid var(--ve-stroke);box-shadow:0 -8px 24px #1423330a;padding:10px 16px 13px;display:flex;flex-direction:column;gap:10px}
+.versans-editor__footer-meta{display:flex;align-items:center;flex-wrap:wrap;gap:5px 12px;min-width:0}
+.versans-editor__dirty{color:#168060;font-size:12px;font-weight:750;white-space:nowrap}
+.versans-editor.has-changes .versans-editor__dirty{color:#b2771a}
+.versans-editor__status{flex:1;color:#758599;font-size:11px;min-width:130px}
+.versans-editor__status.is-error{color:#bb3442;font-weight:700}
+.versans-editor__status.is-success{color:#147453;font-weight:700}
+.versans-editor__footer-actions{display:flex;gap:8px}
+.versans-editor__footer-actions .versans-editor__btn.is-primary{flex:1}
+.versans-editor__footer-actions .versans-editor__btn.is-secondary{flex:0 0 auto}
+.versans-editor__images{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.versans-editor__image{border:1px solid var(--ve-stroke);border-radius:11px;padding:8px;min-width:0;position:relative;display:flex;flex-direction:column;gap:5px;background:#fff}
+.versans-editor__image img{display:block;width:100%;aspect-ratio:1.4;object-fit:contain;border-radius:6px;background:#fafbfd}
+.versans-editor__primary-label{position:absolute;top:14px;right:14px;background:#142333;color:#fff;font-size:10px;padding:3px 7px;border-radius:5px}
+.versans-editor__image-index{font-size:11px;color:#78879a}
+.versans-editor__image-actions{display:flex;gap:4px;margin-top:auto}
+.versans-editor__image-actions .versans-editor__btn{flex:1;padding:7px 4px;font-size:12px}
+.versans-editor__image-actions .versans-editor__btn.is-danger{flex:1.35}
+.versans-editor__upload{border:1px dashed #b6c7d5;border-radius:11px;background:#f8fbfd;padding:16px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;text-align:center}
+.versans-editor__upload:hover{border-color:#6f9dbb;background:#f2f7fb}
+.versans-editor__upload-icon{font-size:24px;color:#456e91;font-weight:400;line-height:1}
+.versans-editor__upload strong{font-size:13px}
+.versans-editor__upload small{font-size:11px;color:#77889b}
+.versans-editor__upload input{width:100%;max-width:240px;font-size:11px;margin-top:7px;color:#5d7187}
+.versans-editor__group{background:#fff;border:1px solid var(--ve-stroke);border-radius:12px;margin:0 0 10px;overflow:hidden;box-shadow:0 1px 2px #0a274508}
+.versans-editor__group-summary{display:flex;align-items:center;gap:10px;padding:14px 15px;cursor:pointer;list-style:none;font-size:14px;user-select:none}
+.versans-editor__group-summary::-webkit-details-marker,.versans-editor__option-summary::-webkit-details-marker,.versans-editor__fold>summary::-webkit-details-marker{display:none}
+.versans-editor__group-title{font-weight:750;flex:1}
+.versans-editor__count{font-size:11px;color:#798b9d;background:#f3f6f9;padding:4px 8px;border-radius:50px;white-space:nowrap}
+.versans-editor__chevron{color:#728299;font-size:19px;transition:transform .17s;line-height:1}
+.versans-editor__group[open]>.versans-editor__group-summary .versans-editor__chevron,.versans-editor__option[open]>.versans-editor__option-summary .versans-editor__chevron{transform:rotate(180deg)}
+.versans-editor__group[open]>.versans-editor__group-summary{border-bottom:1px solid #edf0f5}
+.versans-editor__group-content{padding:14px}
+.versans-editor__group-content>.versans-editor__hint{margin:0 0 12px}
+.versans-editor__options{display:flex;flex-direction:column;gap:7px}
+.versans-editor__option{border:1px solid #e7ebf1;border-radius:9px;background:#fff;overflow:hidden}
+.versans-editor__option[open]{border-color:#bacada;box-shadow:0 3px 12px #1423330a}
+.versans-editor__option-summary{display:flex;align-items:center;gap:10px;padding:11px 10px;cursor:pointer;list-style:none}
+.versans-editor__option-summary:hover{background:#f7f9fb}
+.versans-editor__option-number{width:25px;height:25px;flex:0 0 25px;border-radius:7px;background:#eef2f6;color:#647c92;display:grid;place-items:center;font-size:12px}
+.versans-editor__option-info{flex:1;display:flex;align-items:center;flex-wrap:wrap;min-width:0;gap:3px 9px}
+.versans-editor__option-info strong{font-size:13px;font-weight:700;overflow-wrap:anywhere}
+.versans-editor__option-sub{font-size:11px;color:#728399;white-space:nowrap}
+.versans-editor__flags{display:flex;gap:5px;flex-wrap:wrap}
+.versans-editor__flag{font-size:10px;color:#ad4937;background:#fff2eb;border-radius:5px;padding:2px 6px}
+.versans-editor__flag.is-out{color:#9d3644;background:#fff0f1}
+.versans-editor__option-controls{padding:14px;display:flex;flex-direction:column;gap:10px;background:#f9fafb;border-top:1px solid #edf0f4}
+.versans-editor__option-controls .versans-editor__field:first-child{display:none}
+.versans-editor__option-controls .versans-editor__inline{display:flex;flex-wrap:wrap;gap:6px;border-top:1px solid #e8edf2;padding-top:11px}
+.versans-editor__option-controls .versans-editor__inline .versans-editor__btn{flex:1 1 auto;font-size:11px;padding:9px 7px}
+.versans-editor__fold{display:block}
+.versans-editor__fold>summary{padding:10px 13px;cursor:pointer;list-style:none;border:1px solid #e2e8ef;border-radius:8px;background:#f8fafc;color:#365873;font-weight:700}
+.versans-editor__fold[open]>summary{margin-bottom:13px}
+.versans-editor__fold>.versans-editor__field{margin:12px 0}
+.versans-editor__details{display:flex;flex-direction:column;gap:8px}
+.versans-editor__detail{display:flex;gap:7px;align-items:center}
+.versans-editor__detail .versans-editor__btn{flex:0 0 auto}
+.versans-editor__section details>summary{cursor:pointer}
+.versans-editor__section details textarea{width:100%;min-height:160px;direction:ltr;font:12px/1.5 monospace;margin-top:12px}
+.versans-editor__modal-cover{position:absolute;z-index:8;inset:0;background:#14233378;display:grid;place-items:center;padding:18px}
+.versans-editor__modal{background:#fff;border-radius:15px;box-shadow:0 16px 50px #14233335;width:min(380px,100%);padding:25px}
+.versans-editor__modal h3{font-size:20px;margin:0 0 10px}
+.versans-editor__modal p{color:#637287;font-size:13px;line-height:1.7;margin:0 0 20px}
+.versans-editor__modal-actions{display:flex;gap:10px}
+.versans-editor__modal-actions .versans-editor__btn{flex:1}
 .versans-option-sold-out{opacity:.5!important;text-decoration:line-through!important;cursor:not-allowed!important}
-@media(max-width:900px){.versans-editor-open{padding-right:0}.versans-editor{width:min(460px,100vw);box-shadow:0 0 0 100vmax #14233330}}
+@media(max-width:1050px){.versans-editor{width:min(500px,55vw);min-width:0}.versans-editor-open{padding-right:min(500px,55vw)!important}}
+@media(max-width:750px){.versans-editor{width:100vw;min-width:0;box-shadow:0 0 0 100vmax #14233355}.versans-editor-open{padding-right:0!important}.versans-editor__head{padding:10px 14px}.versans-editor__head h2{font-size:19px}.versans-editor__nav{padding:6px 9px 8px;min-height:49px}.versans-editor__nav .versans-editor__btn{font-size:12px;padding:8px 9px}.versans-editor__scroll{padding:12px 11px 22px}.versans-editor__section{padding:13px;gap:11px}.versans-editor__footer{padding:8px 11px 12px}.versans-editor__footer-actions .versans-editor__btn{font-size:12px}.versans-editor__group-summary{padding:12px 13px}}
+@media(max-width:350px){.versans-editor__two-col{grid-template-columns:1fr}.versans-editor__footer-actions{gap:5px}.versans-editor__nav .versans-editor__btn{font-size:11px;padding:8px 7px}}
