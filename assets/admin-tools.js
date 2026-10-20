@@ -94,33 +94,91 @@
   };
   function escapeHtml(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
   function reportPage(data,selected,params){
-    var colMap=new Map(data.columns.map(function(c){return [c.key,c.label];}));var names=selected.filter(function(k){return colMap.has(k);});
-    var head=names.map(function(k){return '<th>'+escapeHtml(colMap.get(k))+'</th>';}).join('');
-    var body=data.rows.map(function(row){return '<tr>'+names.map(function(k){return '<td>'+escapeHtml(row[k])+'</td>';}).join('')+'</tr>';}).join('');
+    var colMap=new Map(data.columns.map(function(c){return [c.key,c.label];}));
+    var names=selected.filter(function(k){return colMap.has(k);});
     var range=(params.from||params.to)?'טווח: '+(params.from||'התחלה')+' עד '+(params.to||'היום'):'כל התאריכים';
-    var note=data.truncated?'שימו לב: הדוח מציג את '+data.limit+' הרשומות הראשונות בלבד; ניתן לסנן כדי לצמצם תוצאות.':'';
-    return '<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>VerSans · '+escapeHtml(data.title)+'</title><style>@page{size:A4 landscape;margin:14mm}body{font-family:Arial,system-ui,sans-serif;color:#142333;margin:25px;direction:rtl}header{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #142333;padding-bottom:12px}h1{margin:12px 0;font-size:22px}p{color:#586579}table{width:100%;border-collapse:collapse;font-size:11px;table-layout:auto}th,td{border:1px solid #d5dfe6;padding:6px;text-align:right;vertical-align:top;overflow-wrap:anywhere}th{background:#e7edf2}tr:nth-child(even){background:#f8fafb}tr{break-inside:avoid}thead{display:table-header-group}.print-toolbar{text-align:left;padding:14px 0}.print-toolbar button{font-size:15px;border:0;background:#142333;color:white;padding:10px 16px;border-radius:8px;cursor:pointer}.warn{color:#923416}@media print{.print-toolbar{display:none}body{margin:0}table{font-size:10px}}</style></head><body><div class="print-toolbar"><button onclick="window.print()">הדפס / שמור כ־PDF</button></div><header><strong style="font-size:24px">VERSANS</strong><small>דוח ניהול פנימי · לעיון מורשים בלבד</small></header><h1>'+escapeHtml(data.title)+'</h1><p>'+escapeHtml(range)+' · '+data.rows.length+' רשומות · הופק: '+escapeHtml(new Date(data.generatedAt).toLocaleString('he-IL',{timeZone:'Asia/Jerusalem'}))+'</p>'+(note?'<p class="warn">'+escapeHtml(note)+'</p>':'')+'<table><thead><tr>'+head+'</tr></thead><tbody>'+body+'</tbody></table></body></html>';
+    var note=data.truncated?'הדוח מציג עד '+data.limit+' רשומות. לסינון נוסף השתמש בטווח תאריכים.':'';
+    var isCards=names.length>4;
+    var contents='';
+    if(isCards){
+      contents=data.rows.map(function(row,i){
+        var cells=names.map(function(k){return '<div class="entry-field"><span class="entry-label">'+escapeHtml(colMap.get(k))+'</span><span class="entry-value">'+escapeHtml(row[k])+'</span></div>';}).join('');
+        return '<section class="entry"><div class="entry-title">רשומה '+(i+1)+'</div><div class="entry-fields">'+cells+'</div></section>';
+      }).join('');
+    }else{
+      var head=names.map(function(k){return '<th>'+escapeHtml(colMap.get(k))+'</th>';}).join('');
+      var body=data.rows.map(function(row){return '<tr>'+names.map(function(k){return '<td>'+escapeHtml(row[k])+'</td>';}).join('')+'</tr>';}).join('');
+      contents='<table><thead><tr>'+head+'</tr></thead><tbody>'+body+'</tbody></table>';
+    }
+    if(!data.rows.length)contents='<p class="empty">אין נתונים בטווח שנבחר.</p>';
+    return '<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+
+      '<title>VerSans · '+escapeHtml(data.title)+'</title><style>'+ 
+      '@page{size:A4 portrait;margin:12mm}*,*:before,*:after{box-sizing:border-box}html{direction:rtl}'+
+      'body{max-width:186mm;margin:12px auto;padding:0;font:12px/1.55 Arial,system-ui,sans-serif;color:#142333;background:#fff}'+
+      'header{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #142333;padding-bottom:10px;gap:12px}'+
+      'header strong{font:700 26px Georgia,serif;letter-spacing:1px}header small{font-size:10px;color:#667789}'+
+      'h1{font-size:21px;margin:15px 0 8px}.meta{color:#586579;margin:0 0 16px;font-size:11px}.warn{color:#9b501c;font-weight:700}'+
+      'table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:10px}'+
+      'th,td{border:1px solid #d5dfe6;padding:7px 6px;text-align:right;vertical-align:top;overflow-wrap:anywhere;word-break:break-word;white-space:pre-wrap}'+
+      'th{background:#e7edf2}tr:nth-child(even){background:#f8fafb}thead{display:table-header-group}tr{break-inside:avoid;page-break-inside:avoid}'+
+      '.entry{border:1px solid #d5dfe6;border-radius:7px;margin-bottom:10px;break-inside:avoid;page-break-inside:avoid;overflow:hidden}'+
+      '.entry-title{padding:6px 12px;background:#e7edf2;font-weight:700}.entry-fields{display:grid;grid-template-columns:1fr 1fr}'+
+      '.entry-field{padding:7px 10px;border-top:1px solid #e2e9ed;min-width:0;display:grid;gap:2px;overflow-wrap:anywhere}'+
+      '.entry-label{font-size:10px;color:#657483;font-weight:700}.entry-value{font-size:11px;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word}'+
+      '.empty{border:1px dashed #d6dde4;padding:18px;color:#657483;text-align:center}'+
+      '.print-toolbar{position:sticky;top:0;text-align:left;background:#fff;padding:10px 0;border-bottom:1px solid #e4e9ed;margin-bottom:12px}'+
+      '.print-toolbar button{background:#142333;color:#fff;padding:10px 16px;border:0;border-radius:8px;font-size:14px;cursor:pointer}'+
+      '@media print{body{max-width:initial;margin:0}.print-toolbar{display:none}thead{display:table-header-group}'+
+      'th,td{-webkit-print-color-adjust:exact;print-color-adjust:exact}.entry{break-inside:avoid}}'+
+      '</style></head><body><div class="print-toolbar"><button type="button" onclick="window.print()">הדפס</button></div>'+ 
+      '<header><strong>VERSANS</strong><small>דוח ניהול פנימי · לעיון מורשים בלבד</small></header>'+ 
+      '<h1>'+escapeHtml(data.title)+'</h1><p class="meta">'+escapeHtml(range)+' · '+data.rows.length+' רשומות · הופק: '+
+      escapeHtml(new Date(data.generatedAt).toLocaleString('he-IL',{timeZone:'Asia/Jerusalem'}))+'</p>'+ 
+      (note?'<p class="warn">'+escapeHtml(note)+'</p>':'')+contents+
+      '</body></html>';
   }
   async function renderReports(root){
-    var view=el('div','admin-tools-page');add(view,el('h2','','ייצוא נתונים ל־PDF'),el('p','admin-tools-lead','בחר דוח, סנן תאריכים ושדות והפק PDF מסודר בעברית. המידע זמין למנהלי האתר בלבד.'));
+    var view=el('div','admin-tools-page');add(view,el('h2','','ייצוא נתונים ל־PDF'),el('p','admin-tools-lead','בחר נתונים, טווח תאריכים ושדות. הורד קובץ A4 ישירות או הדפס אותו.'));
     var form=el('div','admin-tools-export-form');var type=pick('סוג הנתונים',REPORT_TYPES,'orders');var from=field('מתאריך (כולל)','date'),to=field('עד תאריך (כולל)','date'),limit=pick('מספר שורות מרבי',[['100','100'],['300','300'],['500','500'],['1000','1,000'],['2000','2,000']],'500');add(form,type.wrap,from.wrap,to.wrap,limit.wrap);view.append(form);
     var fields=el('div','admin-tools-export-fields');view.append(el('h3','','אילו פרטים יופיעו בדוח?'),fields);
     function showFields(){fields.replaceChildren();(FIELD_OPTIONS[type.input.value]||[]).forEach(function(c){var label=el('label','admin-tools-field-chip');var check=el('input');check.type='checkbox';check.value=c[0];check.checked=true;add(label,check,el('span','',c[1]));fields.append(label);});}
     function syncDateFields(){var noDate=type.input.value==='products';from.wrap.hidden=noDate;to.wrap.hidden=noDate;if(noDate){from.input.value='';to.input.value='';}dateNote.hidden=!noDate;}
     var dateNote=el('p','admin-tools-export-note','למוצרים אין תאריך יצירה/עדכון מובנה במאגר, ולכן מסנן התאריכים לא חל על דוח מוצרים.');view.append(dateNote);
     type.input.addEventListener('change',function(){showFields();syncDateFields();});showFields();syncDateFields();
-    var info=el('p','admin-tools-export-note','הייצוא נפתח בתצוגת הדפסה. בחר במדפסת „Save as PDF / שמירה כ־PDF” כדי לשמור את הקובץ. הנתונים לא מועלים לשירות חיצוני.');view.append(info);
-    var exportButton=button('הפק דוח PDF','is-primary',async function(){
+    view.append(el('p','admin-tools-export-note','הורדה שומרת PDF בגודל A4 לאורך ישירות למכשיר. הדפסה פותחת חלון הדפסה נפרד. נתוני הדוחות לא נשלחים לשירות חיצוני.'));
+    var buttons=el('div','admin-tools-report-actions');
+    var downloadBtn=button('שמור PDF','is-primary',function(){execute('download');});
+    var printBtn=button('הדפס','is-secondary',function(){execute('print');});
+    add(buttons,downloadBtn,printBtn);view.append(buttons);
+    async function execute(mode){
       if(from.input.value&&to.input.value&&from.input.value>to.input.value){showMessage(view,'תאריך ההתחלה חייב להיות לפני תאריך הסיום.');return;}
-      var selected=Array.from(fields.querySelectorAll('input:checked')).map(function(x){return x.value;});if(!selected.length){showMessage(view,'בחר לפחות עמודה אחת.');return;}
-      var popup=window.open('','_blank');if(!popup){showMessage(view,'הדפדפן חסם חלון חדש. אפשר חלונות קופצים לאדמין ונסה שוב.');return;}
-      popup.document.write('<!doctype html><html dir="rtl" lang="he"><meta charset="utf-8"><title>מכין דוח</title><body>מכין דוח PDF…</body></html>');popup.document.close();
-      exportButton.disabled=true;exportButton.textContent='מפיק דוח…';
-      try{var params={type:type.input.value,from:from.input.value,to:to.input.value,limit:limit.input.value};var qs=new URLSearchParams(params);var result=await get('export-data?'+qs);
-        var html=reportPage(result,selected,params);popup.document.open();popup.document.write(html);popup.document.close();showMessage(view,'הדוח נפתח בחלון חדש. בחר „הדפס / שמור כ־PDF”.',true);
-      }catch(e){popup.close();showMessage(view,'לא ניתן להפיק דוח: '+e.message);}
-      finally{exportButton.disabled=false;exportButton.textContent='הפק דוח PDF';}
-    });view.append(exportButton);root.replaceChildren(view);
+      var selected=Array.from(fields.querySelectorAll('input:checked')).map(function(x){return x.value;});
+      if(!selected.length){showMessage(view,'בחר לפחות עמודה אחת.');return;}
+      var popup=null;
+      if(mode==='print'){
+        popup=window.open('','_blank');
+        if(!popup){showMessage(view,'הדפדפן חסם חלון הדפסה. אפשר פתיחת חלונות קופצים ונסה שוב.');return;}
+        popup.document.write('<!doctype html><html lang="he" dir="rtl"><meta charset="utf-8"><title>מכין הדפסה</title><body>מכין את הדוח להדפסה…</body></html>');popup.document.close();
+      }
+      downloadBtn.disabled=true;printBtn.disabled=true;
+      if(mode==='download')downloadBtn.textContent='מכין PDF…';else printBtn.textContent='מכין הדפסה…';
+      try{
+        var params={type:type.input.value,from:from.input.value,to:to.input.value,limit:limit.input.value};
+        var result=await get('export-data?'+new URLSearchParams(params));
+        if(mode==='print'){
+          popup.document.open();popup.document.write(reportPage(result,selected,params));popup.document.close();
+          setTimeout(function(){if(!popup.closed){popup.focus();popup.print();}},300);
+          showMessage(view,'הדוח נפתח להדפסה בגודל A4 לאורך.',true);
+        }else{
+          if(!window.VersansReportPDF||typeof window.VersansReportPDF.download!=='function')throw Error('מנוע ה־PDF לא נטען. רענן את האדמין ונסה שוב.');
+          await new Promise(function(resolve){setTimeout(resolve,40);});
+          var saved=await window.VersansReportPDF.download(result,selected,params);
+          showMessage(view,'ה־PDF ירד למכשיר בגודל A4 ('+saved.pages+' עמודים).',true);
+        }
+      }catch(e){if(popup&&!popup.closed)popup.close();showMessage(view,'לא ניתן '+(mode==='print'?'להדפיס':'להוריד')+' את הדוח: '+e.message);}
+      finally{downloadBtn.disabled=false;printBtn.disabled=false;downloadBtn.textContent='שמור PDF';printBtn.textContent='הדפס';}
+    }
+    root.replaceChildren(view);
   }
   window.VersansAdminTools={renderTasks:renderTasks,renderReports:renderReports};
 })();

@@ -17,4 +17,6 @@ html[data-admin-theme="dark"] .admin-tools-page,html[data-admin-theme="dark"] .a
 html[data-admin-theme="dark"] .admin-tools-btn.is-primary{background:#d5e5f1;border-color:#d5e5f1;color:#132539}
 @media(max-width:800px){.admin-tools-controls,.admin-tools-export-form{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-tools-task-list{grid-template-columns:1fr}}
 @media(max-width:490px){.admin-tools-form-grid{grid-template-columns:1fr}.admin-tools-controls,.admin-tools-export-form{grid-template-columns:1fr}.admin-tools-modal{padding:15px}.admin-tools-btn{padding:10px 12px}.admin-tools-page{gap:13px}}
-.admin-tools-field[hidden]{display:none!important}
+
+.admin-tools-report-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.admin-tools-report-actions .admin-tools-btn{min-width:135px}
