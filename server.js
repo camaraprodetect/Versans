@@ -6422,6 +6422,12 @@ async function adminApi(req, res, pathname, parsed) {
     json(res, 200, { ok: true, products: catalogManager.list(), categoryOrders:catalogManager.categoryOrders(), categoryHidden:catalogManager.hiddenCategories(), categoryHiddenFlags:catalogManager.categoryHiddenFlags(), pendingSheetIds: catalogManager.pendingSlugs(), sheetConfigured: Boolean(process.env.GOOGLE_PRODUCTS_WEBHOOK_URL && process.env.GOOGLE_PRODUCTS_WEBHOOK_SECRET) });
     return true;
   }
+  if (pathname === '/api/admin/catalog/bulk' && req.method === 'POST') {
+    if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'}); return true; }
+    const body=await readJsonBody(req, 24 * 1024);
+    const result=await catalogManager.bulkEdit(body,admin && admin.email);
+    json(res,200,{ok:true,...result}); return true;
+  }
   if (pathname === '/api/admin/catalog/categories/visibility' && req.method === 'POST') {
     if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'}); return true; }
     const body = await readJsonBody(req, 4096);

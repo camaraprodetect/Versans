@@ -1425,3 +1425,23 @@ button,input,textarea,select,a{font:inherit}.admin-app{display:grid;grid-templat
 .admin-undo-button:disabled{opacity:.43;cursor:not-allowed}
 .admin-undo-button:not(:disabled):hover{background:#eef5fa;border-color:#9aafc1}
 @media(max-width:620px){.admin-undo-button{font-size:11px;padding:9px 8px}}
+
+/* Compact bulk catalog actions, visible/hidden filter and multi-selection */
+.admin-catalog-product{position:relative}
+.admin-catalog-product.is-selected{border-color:#4a81af;box-shadow:0 0 0 2px rgba(42,113,163,.14)}
+.admin-catalog-select{position:absolute;top:7px;right:7px;display:flex;align-items:center;gap:5px;cursor:pointer;font-size:11px;font-weight:700;color:#20394d;background:rgba(255,255,255,.96);border:1px solid #c7d5df;border-radius:7px;padding:5px 8px;box-shadow:0 1px 5px rgba(0,0,0,.08)}
+.admin-catalog-select input{accent-color:#142333;width:16px;height:16px;margin:0;cursor:pointer}
+.admin-catalog-visibility-filter{display:flex;align-items:center;flex-wrap:wrap;gap:8px;color:#273f50;font-size:13px;font-weight:700}
+.admin-catalog-visibility-filter select{min-width:155px}
+.admin-catalog-filter-counts{font-size:12px;color:#667987}
+.admin-catalog-bulk{border:1px solid #cbd9e2;border-radius:14px;background:#f6f9fb;padding:14px;display:grid;gap:12px;margin:10px 0 15px}
+.admin-catalog-bulk-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.admin-catalog-bulk-count{font-size:14px;color:#142333}
+.admin-catalog-bulk-selection{display:flex;gap:7px;flex-wrap:wrap}
+.admin-catalog-bulk-fields{display:flex;align-items:end;gap:10px;flex-wrap:wrap}
+.admin-catalog-bulk-field{display:flex;flex-direction:column;gap:5px;min-width:175px;flex:1;font-weight:700;font-size:12px;color:#314858}
+.admin-catalog-bulk-field input,.admin-catalog-bulk-field select{width:100%;min-height:40px;box-sizing:border-box;border-radius:9px;border:1px solid #cbd9e2;background:#fff;color:#142333;padding:8px 11px;font:inherit;font-size:13px}
+.admin-catalog-bulk-field[hidden]{display:none}
+.admin-catalog-bulk-fields>.admin-catalog-btn{min-height:40px}
+.admin-catalog-bulk-note{margin:0;font-size:11px;line-height:1.65;color:#6b7d89}
+@media(max-width:640px){.admin-catalog-bulk{padding:12px}.admin-catalog-bulk-field{min-width:100%;flex:1 1 100%}.admin-catalog-bulk-fields>.admin-catalog-btn{width:100%}.admin-catalog-select{top:5px;right:5px}}
