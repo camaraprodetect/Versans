@@ -11,6 +11,7 @@
   var mobileNav = document.getElementById('adminMobileNav');
   var toast = document.getElementById('adminToast');
   var pushButton = document.getElementById('adminPushToggle');
+  var shippingWorkMode = 'packed'; // Default: in-house VerSans packing.
   var requestedOrderRef = new URLSearchParams(window.location.search).get('order') || '';
   var requestedOrderOpened = false;
   var pushConfigPromise = null;
@@ -2240,7 +2241,7 @@
     toolbar.appendChild(filters);
     toolbar.appendChild(make('span', 'admin-toolbar-note', 'אדום = לא חובר מעקב · צהוב = חובר רק חלק מההזמנה · ירוק = כל המוצרים מחוברים'));
     frag.appendChild(toolbar);
-    frag.appendChild(manualPickupMessageCard());
+    frag.appendChild(shippingProcessingPanel());
     frag.appendChild(renderKpis([
       { label: 'הזמנות בתצוגה', value: numberFmt(data.count), hint: status === 'all' ? 'כל הסטטוסים' : status, primary: status === 'paid', tone: status === 'paid' ? 'green' : 'amber' },
       { label: 'עמוד', value: numberFmt(Math.floor(data.offset / data.limit) + 1), hint: numberFmt(data.limit) + ' רשומות בעמוד' }
@@ -2387,17 +2388,202 @@
     return link;
   }
 
-  function orderWorkMessagePanel() {
-    var section = make('section', 'admin-order-work-message-panel');
-    var head = make('div', 'admin-order-work-message-panel__head');
-    head.appendChild(make('strong', '', 'שליחת הודעת איסוף ללקוח'));
-    head.appendChild(make('span', '', 'כלי אחד קבוע לכל ההזמנות'));
-    section.appendChild(head);
+  function packedShippingPanel() {
+    var wrap=make('div','vs-pack-work');
+    var intro=make('div','vs-pack-intro');
+    intro.appendChild(make('strong','','קליטת חבילות למרכז האריזה של VerSans'));
+    intro.appendChild(make('p','','סרקו חבילה, העלו צילום או הדביקו תמונה. המערכת תאתר את מספר המעקב ואת פריטי ההזמנה. קליטה מאושרת תסמן אותם כהגיעו.'));
+    wrap.appendChild(intro);
 
-    var body = make('div', 'admin-order-work-message-panel__body');
-    body.appendChild(manualPickupMessageCard());
+    var form=make('form','vs-pack-search');
+    var trackingInput=make('input','vs-pack-tracking');
+    trackingInput.name='trackingNumber';trackingInput.type='text';trackingInput.autocomplete='off';
+    trackingInput.dir='ltr';trackingInput.placeholder='מספר מעקב (ALS / PH / כל מספר אחר)';
+    trackingInput.setAttribute('aria-label','מספר מעקב');
+    var find=make('button','vs-pack-primary','חפש משלוח');find.type='submit';
+    form.append(trackingInput,find);wrap.appendChild(form);
+    var actions=make('div','vs-pack-actions');
+    var photo=make('input');photo.type='file';photo.accept='image/*';photo.hidden=true;
+    var camera=make('input');camera.type='file';camera.accept='image/*';camera.setAttribute('capture','environment');camera.hidden=true;
+    var cameraButton=make('button','vs-pack-secondary','📷 סריקה במצלמה');cameraButton.type='button';cameraButton.onclick=function(){camera.click();};
+    var uploadButton=make('button','vs-pack-secondary','⬆ העלאת תמונה');uploadButton.type='button';uploadButton.onclick=function(){photo.click();};
+    var pasteZone=make('div','vs-pack-paste','להדבקת תמונה: לחץ כאן ואז Ctrl+V');pasteZone.tabIndex=0;
+    pasteZone.setAttribute('role','button');pasteZone.setAttribute('aria-label','הדבקת תמונת חבילה מהלוח');
+    actions.append(cameraButton,uploadButton,pasteZone,photo,camera);wrap.appendChild(actions);
+    var info=make('div','vs-pack-feedback');info.setAttribute('role','status');info.hidden=true;wrap.appendChild(info);
+    var candidates=make('div','vs-pack-candidates');wrap.appendChild(candidates);
+    var result=make('section','vs-pack-result');result.hidden=true;wrap.appendChild(result);
+    var currentTracking='';
+    var lastOrder='';
+    function feedback(message,isError){info.hidden=!message;info.className='vs-pack-feedback'+(isError?' is-error':'');info.textContent=message||'';}
+    function message(error){
+      var code=(error && (error.code || (error.payload && error.payload.error))) || '';
+      return ({tracking_not_found:'מספר המעקב לא נמצא בהזמנות. בדוק שהוא חובר תחילה דרך ניהול Tracking.',paid_order_not_found:'לא נמצאה הזמנה ששולמה למספר הזה.',shipment_has_no_assigned_items:'המשלוח קיים, אבל לא שויכו אליו פריטים. קודם שייכו את המשלוח למוצרים בניהול Tracking.',invalid_tracking_number:'מספר המעקב אינו תקין.',admin_required:'יש להתחבר לחשבון אדמין.',permission_denied:'אין הרשאה לפעולה זו.',invalid_packaging_unit:'מספר היחידה אינו תקין.'})[code] || (error && error.message ? error.message : 'לא הצלחנו להשלים את הפעולה. נסו שוב.');
+    }
+    function customerLine(customer){
+      var raw=[customer.street,customer.houseNumber,customer.apartment?'דירה '+customer.apartment:'',customer.city,customer.zip].filter(Boolean);
+      return raw.join(', ') || 'כתובת לא צוינה';
+    }
+    function addDetail(container,label,value){if(!value)return;var div=make('div','vs-pack-detail');div.appendChild(make('small','',label));div.appendChild(make('strong','',value));container.appendChild(div);}
+    function showOrder(data) {
+      currentTracking=data.shipments && data.shipments.find(function(x){return Number(x.id)===Number(data.focusShipmentId);});
+      currentTracking=currentTracking && currentTracking.trackingNumber || trackingInput.value.trim();
+      lastOrder=data.orderRef;
+      result.replaceChildren();result.hidden=false;
+      var summary=make('header','vs-pack-result-header'+(data.readyToPack?' is-ready':''));
+      summary.appendChild(make('div','', 'הזמנה ' + data.orderRef));
+      summary.appendChild(make('strong','', data.readyToPack?'✅ כל פריטי ההזמנה הגיעו — מוכנה לאריזה ולשליחה':'התקבלו '+data.receivedUnits+' מתוך '+data.totalUnits+' פריטים · חסרים '+data.missingUnits));
+      if(data.readyToPack)summary.appendChild(make('p','','יש לארוז את המוצרים בקופסת VerSans ולשלוח ללקוח. לא נשלחה הודעה אוטומטית.'));
+      result.appendChild(summary);
+      var customer=data.customer||{};
+      var customerInfo=make('div','vs-pack-details');
+      addDetail(customerInfo,'לקוח',customer.fullName||'לא צוין');
+      addDetail(customerInfo,'טלפון',customer.phone||data.customerPhone);
+      addDetail(customerInfo,'כתובת למשלוח',customerLine(customer));
+      addDetail(customerInfo,'הערות',customer.notes);
+      addDetail(customerInfo,'מייל',customer.email||data.customerEmail);
+      result.appendChild(customerInfo);
+      var shipments=make('div','vs-pack-shipment-chips');
+      (data.shipments||[]).forEach(function(shipment){
+        var chip=make('span','vs-pack-shipment-chip'+(Number(shipment.id)===Number(data.focusShipmentId)?' is-current':''),shipment.trackingNumber);
+        shipments.appendChild(chip);
+      });result.appendChild(shipments);
+      var list=make('div','vs-pack-item-list');
+      (data.items||[]).forEach(function(item){
+        var card=make('article','vs-pack-item'+(item.receivedQty===item.qty?' is-complete':''));
+        if(item.image){var img=document.createElement('img');img.src=item.image;img.alt=item.name;img.loading='lazy';card.appendChild(img);}
+        var main=make('div','vs-pack-item-main');
+        main.appendChild(make('strong','',item.name));
+        main.appendChild(make('small','',item.receivedQty+' / '+item.qty+' הגיעו'));
+        var units=make('div','vs-pack-units');
+        (item.units||[]).forEach(function(unit){
+          var label=make('label','vs-pack-unit'+(unit.arrived?' is-arrived':''));
+          var box=make('input');box.type='checkbox';box.checked=Boolean(unit.arrived);
+          label.append(box,make('span','',item.qty>1?'יחידה '+unit.unitNumber:'הגיע'));
+          if(unit.trackingNumber) label.title='משלוח: '+unit.trackingNumber;
+          box.addEventListener('change',async function(){
+            var wanted=box.checked;box.disabled=true;
+            try{
+              var updated=await apiAction('/api/admin/packaging/unit','POST',{
+                orderRef:data.orderRef,itemIndex:item.itemIndex,unitNumber:unit.unitNumber,received:wanted
+              });
+              showOrder(updated);feedback('סימון הפריט נשמר בדאטהבייס.');
+            } catch(error){box.checked=!wanted;box.disabled=false;feedback(message(error),true);}
+          });
+          units.appendChild(label);
+        });main.appendChild(units);card.appendChild(main);list.appendChild(card);
+      });result.appendChild(list);
+      if(data.focusShipmentId&&!data.scanned){
+        var confirm=make('button','vs-pack-primary vs-pack-confirm','✓ קלוט משלוח וסמן את הפריטים כהגיעו');confirm.type='button';
+        confirm.addEventListener('click',async function(){
+          confirm.disabled=true;confirm.textContent='שומר קליטה…';
+          try{
+            var updated=await apiAction('/api/admin/packaging/scan','POST',{trackingNumber:currentTracking});
+            showOrder(updated);
+            feedback(updated.newlyReceived?'החבילה נקלטה. '+updated.newlyReceived+' יחידות סומנו כהגיעו.':'המשלוח כבר נקלט. סימונים ידניים נשמרו.');
+          }catch(error){confirm.disabled=false;confirm.textContent='✓ קלוט משלוח וסמן את הפריטים כהגיעו';feedback(message(error),true);}
+        });result.appendChild(confirm);
+      }
+    }
+    async function lookup(tracking){
+      var input=String(tracking||'').trim().replace(/\s+/g,'').toUpperCase();
+      if(!input){feedback('יש להזין מספר מעקב.',true);return;}
+      trackingInput.value=input;find.disabled=true;result.hidden=true;
+      candidates.replaceChildren();feedback('בודק לאיזו הזמנה שייך המשלוח…');
+      try{
+        var found=await api('/api/admin/packaging/lookup?trackingNumber='+encodeURIComponent(input));
+        showOrder(found);feedback('נמצאה הזמנה. בדקו את הפרטים ולחצו על קליטת משלוח.');
+      }catch(error){feedback(message(error),true);}
+      finally{find.disabled=false;}
+    }
+    form.addEventListener('submit',function(event){event.preventDefault();lookup(trackingInput.value);});
+    function tokensFromText(text){
+      var all=String(text||'').toUpperCase().match(/[A-Z0-9][A-Z0-9._-]{6,50}/g)||[];
+      return Array.from(new Set(all.filter(function(t){return (t.match(/[0-9]/g)||[]).length>=5 && !/^\d{4}-\d{2}-\d{2}$/.test(t);}).map(function(t){return t.replace(/[.,;:]+$/,'');}))).slice(0,12);
+    }
+    async function analyzeImage(file){
+      if(!file)return;
+      feedback('מזהה מספר מעקב מהתמונה…');candidates.replaceChildren();
+      var extracted=[];
+      if('BarcodeDetector' in window && 'createImageBitmap' in window){
+        try{
+          var bmp=await createImageBitmap(file);
+          var formats=await BarcodeDetector.getSupportedFormats();
+          var detector=new BarcodeDetector({formats:formats});
+          var found=await detector.detect(bmp);
+          bmp.close();
+          found.forEach(function(x){extracted.push(x.rawValue);});
+        }catch(_){/* Browser OCR fallback below */}
+      }
+      // Optical character recognition runs in the browser; no image is sent to VerSans.
+      try{
+        if(!window.Tesseract){
+          await new Promise(function(resolve,reject){
+            var script=document.createElement('script');script.src='https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';
+            script.onload=resolve;script.onerror=function(){reject(new Error('ocr_unavailable'));};document.head.appendChild(script);
+          });
+        }
+        if(window.Tesseract){var ocr=await window.Tesseract.recognize(file,'eng');extracted.push(ocr.data && ocr.data.text || '');}
+      }catch(_){if(!extracted.length){feedback('הסריקה האוטומטית אינה זמינה בדפדפן. אפשר להקליד את מספר המעקב ידנית.',true);return;}}
+      var matches=tokensFromText(extracted.join(' '));
+      if(!matches.length){feedback('לא זוהה מספר מעקב ברור. צלמו את המדבקה מקרוב או הקלידו את המספר.',true);return;}
+      var valid=[];
+      for(var index=0;index<matches.length;index++){
+        try{var r=await api('/api/admin/packaging/lookup?trackingNumber='+encodeURIComponent(matches[index]));if(r.orderRef)valid.push(matches[index]);}catch(_){/* a barcode can be a packaging-only barcode */}
+      }
+      if(valid.length===1){lookup(valid[0]);return;}
+      if(!valid.length){
+        feedback('זוהו מספרים בתמונה, אבל אף אחד מהם לא משויך למשלוח במערכת. בחרו מספר לבדיקה ידנית.',true);
+      } else feedback('נמצאו כמה משלוחים. בחרו את המספר שמתאים לחבילה.');
+      (valid.length?valid:matches).forEach(function(candidate){
+        var button=make('button','vs-pack-candidate',candidate);button.type='button';
+        button.onclick=function(){lookup(candidate);};candidates.appendChild(button);
+      });
+    }
+    camera.addEventListener('change',function(){analyzeImage(camera.files&&camera.files[0]);camera.value='';});
+    photo.addEventListener('change',function(){analyzeImage(photo.files&&photo.files[0]);photo.value='';});
+    pasteZone.addEventListener('paste',function(event){
+      var items=event.clipboardData&&event.clipboardData.items||[];
+      for(var i=0;i<items.length;i++)if(items[i].type.indexOf('image/')===0){event.preventDefault();analyzeImage(items[i].getAsFile());return;}
+      var text=event.clipboardData&&event.clipboardData.getData('text')||'';
+      if(text){event.preventDefault();lookup(text);}
+    });
+    var orderSearch=make('details','vs-pack-manual-order');
+    orderSearch.appendChild(make('summary','','חיפוש הזמנה ידני ועדכון פריטים ללא סריקה'));
+    var orderForm=make('form','vs-pack-search');
+    var orderInput=make('input');orderInput.placeholder='מספר הזמנה';orderInput.setAttribute('aria-label','מספר הזמנה');orderInput.dir='ltr';
+    var orderButton=make('button','vs-pack-secondary','פתח הזמנה');orderButton.type='submit';
+    orderForm.append(orderInput,orderButton);orderSearch.appendChild(orderForm);wrap.appendChild(orderSearch);
+    orderForm.addEventListener('submit',async function(event){
+      event.preventDefault();if(!orderInput.value.trim())return;
+      try{feedback('טוען הזמנה…');var data=await api('/api/admin/packaging/order?orderRef='+encodeURIComponent(orderInput.value.trim()));showOrder(data);feedback('ניתן לערוך ידנית את סימוני ההגעה של כל מוצר.');}
+      catch(error){feedback(message(error),true);}
+    });
+    return wrap;
+  }
+
+  function shippingProcessingPanel() {
+    var section=make('section','admin-order-work-message-panel vs-shipping-modes');
+    var tabs=make('div','vs-shipping-tabs');
+    var packed=make('button','vs-shipping-tab'+(shippingWorkMode==='packed'?' is-active':''),'📦 משלוחים ארוזים');
+    var dropshipping=make('button','vs-shipping-tab'+(shippingWorkMode==='dropshipping'?' is-active':''),'משלוחי דרופשיפינג');
+    packed.type=dropshipping.type='button';tabs.append(packed,dropshipping);section.appendChild(tabs);
+    var body=make('div','admin-order-work-message-panel__body');
     section.appendChild(body);
+    function change(mode){
+      shippingWorkMode=mode;
+      packed.classList.toggle('is-active',mode==='packed');dropshipping.classList.toggle('is-active',mode==='dropshipping');
+      body.replaceChildren();
+      if(mode==='packed')body.appendChild(packedShippingPanel());
+      else body.appendChild(manualPickupMessageCard());
+    }
+    packed.onclick=function(){change('packed');};dropshipping.onclick=function(){change('dropshipping');};
+    change(shippingWorkMode);
     return section;
+  }
+
+  function orderWorkMessagePanel() {
+    return shippingProcessingPanel();
   }
 
   function renderOrderWorkCard(order) {

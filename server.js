@@ -5057,6 +5057,45 @@ async function googleOrderStatusWebhookApi(req, res, pathname) {
   return true;
 }
 
+
+// Packing arrivals are separate from delivery tracking and the legacy order-work checkboxes.
+// Never infer that the order arrived solely because the carrier says 'delivered'.
+async function packingOrderSummary(order, focusShipmentId = null) {
+  const orderItems = normalizeStoredOrderItems(order.items_json, PRODUCTS);
+  const shipments = await listOrderShipmentsPayload(order.id);
+  const receivedRows = await database.listOrderPackagingUnits(order.id);
+  const received = new Map(receivedRows.map(row => [`${Number(row.item_index)}:${Number(row.unit_number)}`, row]));
+  let totalUnits = 0;
+  let receivedUnits = 0;
+  const items = orderItems.map((item, itemIndex) => {
+    const allocations = orderItemUnitAssignments(shipments, itemIndex, item.qty);
+    const units = allocations.map((shipment, idx) => {
+      const unitNumber = idx + 1;
+      const row = received.get(`${itemIndex}:${unitNumber}`);
+      const arrived = Boolean(row && Number(row.received) === 1);
+      totalUnits++;
+      if (arrived) receivedUnits++;
+      return {unitNumber, arrived, shipmentId: shipment ? Number(shipment.id) : null, trackingNumber: shipment && shipment.trackingNumber || null};
+    });
+    const product = adminProductInfo(item.id);
+    const url = item.image ? String(item.image) : product.image;
+    return {
+      itemIndex, productId:item.id, name:item.name, qty:item.qty,
+      image:url ? (/^https?:\/\//i.test(url) ? url : '/' + url.replace(/^\/+/, '')) : null,
+      receivedQty:units.filter(unit=>unit.arrived).length, units
+    };
+  });
+  const sheet = buildPaidOrderPayload(order);
+  return {
+    ok:true, orderRef:order.order_ref, orderStatus:order.status, customer:sheet.customer || {},
+    customerPhone:order.customer_phone || null, customerEmail:order.customer_email || null,
+    items, shipments:shipments.map(x=>({id:x.id,trackingNumber:x.trackingNumber,status:x.status,statusLabel:x.statusLabel})),
+    focusShipmentId:focusShipmentId==null?null:Number(focusShipmentId),
+    totalUnits, receivedUnits, missingUnits:totalUnits-receivedUnits,
+    readyToPack: totalUnits>0 && totalUnits===receivedUnits
+  };
+}
+
 async function adminApi(req, res, pathname, parsed) {
   if (!pathname.startsWith('/api/admin/')) return false;
   const shippingBotEndpoint = pathname === '/api/admin/bot/shipping/ready-pickups'
@@ -5078,6 +5117,59 @@ async function adminApi(req, res, pathname, parsed) {
     json(res, 403, { ok: false, error: 'permission_denied' });
     return true;
   }
+  // Admin-only parcel reception workflow; doesn't change tracking or send WhatsApp.
+  if (pathname === '/api/admin/packaging/lookup' && req.method === 'GET') {
+    const tracking = normalizeTrackingNumber(parsed.searchParams.get('trackingNumber'));
+    if (!/^[A-Za-z0-9._-]{5,80}$/.test(tracking)) { json(res,400,{ok:false,error:'invalid_tracking_number'}); return true; }
+    const shipment = await database.getShipmentByTracking(tracking);
+    if (!shipment) { json(res,404,{ok:false,error:'tracking_not_found'}); return true; }
+    const order = await database.getOrderById(shipment.order_id);
+    if (!order || order.status !== 'paid') { json(res,404,{ok:false,error:'paid_order_not_found'}); return true; }
+    json(res,200,await packingOrderSummary(order, shipment.id));
+    return true;
+  }
+  if (pathname === '/api/admin/packaging/scan' && req.method === 'POST') {
+    if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'}); return true; }
+    const body=await readJsonBody(req,4096);
+    const tracking=normalizeTrackingNumber(body && body.trackingNumber);
+    if (!/^[A-Za-z0-9._-]{5,80}$/.test(tracking)) { json(res,400,{ok:false,error:'invalid_tracking_number'}); return true; }
+    const shipment=await database.getShipmentByTracking(tracking);
+    if (!shipment) { json(res,404,{ok:false,error:'tracking_not_found'}); return true; }
+    const order=await database.getOrderById(shipment.order_id);
+    if (!order || order.status!=='paid') { json(res,404,{ok:false,error:'paid_order_not_found'}); return true; }
+    const payload=await packingOrderSummary(order,shipment.id);
+    const units=[];
+    for(const item of payload.items) for(const unit of item.units) {
+      if (Number(unit.shipmentId)===Number(shipment.id)) units.push({itemIndex:item.itemIndex,unitNumber:unit.unitNumber});
+    }
+    if (!units.length) { json(res,409,{ok:false,error:'shipment_has_no_assigned_items',orderRef:order.order_ref}); return true; }
+    const added=await database.receivePackagingShipmentUnits(order.id,shipment.id,units,Date.now());
+    json(res,200,{...(await packingOrderSummary(order,shipment.id)), scanned:true, newlyReceived:added, shipmentUnitCount:units.length});
+    return true;
+  }
+  if (pathname === '/api/admin/packaging/order' && req.method === 'GET') {
+    const orderRef=String(parsed.searchParams.get('orderRef')||'').trim();
+    if (orderRef.length<3 || orderRef.length>150) { json(res,400,{ok:false,error:'invalid_order_ref'}); return true; }
+    const order=await database.getOrderByRef(orderRef);
+    if (!order || order.status!=='paid') { json(res,404,{ok:false,error:'paid_order_not_found'}); return true; }
+    json(res,200,await packingOrderSummary(order));
+    return true;
+  }
+  if (pathname === '/api/admin/packaging/unit' && req.method === 'POST') {
+    if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'}); return true; }
+    const body=await readJsonBody(req,4096);
+    const order=await database.getOrderByRef(String(body && body.orderRef || '').trim());
+    if (!order || order.status!=='paid') { json(res,404,{ok:false,error:'paid_order_not_found'}); return true; }
+    const items=normalizeStoredOrderItems(order.items_json,PRODUCTS);
+    const itemIndex=Number(body && body.itemIndex), unitNumber=Number(body && body.unitNumber);
+    if (!Number.isInteger(itemIndex)||itemIndex<0||itemIndex>=items.length||!Number.isInteger(unitNumber)||unitNumber<1||unitNumber>Number(items[itemIndex].qty)||typeof body.received!=='boolean') {
+      json(res,400,{ok:false,error:'invalid_packaging_unit'}); return true;
+    }
+    await database.markPackagingUnit(order.id,itemIndex,unitNumber,body.received,null,Date.now());
+    json(res,200,await packingOrderSummary(order));
+    return true;
+  }
+
   // Only the owner can issue, change or revoke creator permissions/codes.
   if (pathname === '/api/admin/creators' && req.method === 'GET') {
     json(res, 200, { ok: true, creators: await creatorProgram.listCreators() });

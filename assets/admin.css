@@ -1273,3 +1273,45 @@ button,input,textarea,select,a{font:inherit}.admin-app{display:grid;grid-templat
 @keyframes admin-creator-spin{to{transform:rotate(360deg)}}
 @media(max-width:520px){.admin-creator-video-confirm{align-items:center;justify-items:center}.admin-creator-video-confirm .admin-confirm-modal__actions{grid-template-columns:1fr 1fr}}
 @media(prefers-reduced-motion:reduce){.admin-creator-video-feedback.is-loading::before{animation:none}}
+
+/* In-house package arrivals: separate from customer pickup-message dispatch. */
+.vs-shipping-modes{overflow:hidden;border:1px solid #dce6ed;border-radius:16px;background:#fff;margin-bottom:20px}
+.vs-shipping-tabs{display:flex;gap:8px;flex-wrap:wrap;padding:13px 16px;background:#f4f7f9;border-bottom:1px solid #e2e8ed}
+.vs-shipping-tab{padding:12px 18px;border:1px solid #dbe2e8;background:#fff;color:#405262;border-radius:10px;cursor:pointer;font-weight:800;font-size:13px;min-height:44px}
+.vs-shipping-tab.is-active{background:#142333;border-color:#142333;color:white;box-shadow:0 5px 14px rgba(20,35,51,.12)}
+.vs-shipping-tab:focus-visible,.vs-pack-work button:focus-visible,.vs-pack-paste:focus-visible{outline:3px solid #5c94d0;outline-offset:2px}
+.vs-shipping-modes>.admin-order-work-message-panel__body{padding:16px 18px}
+.vs-pack-work{display:grid;gap:15px;max-width:100%;font-size:13px}
+.vs-pack-intro{display:grid;gap:5px}.vs-pack-intro strong{font-size:17px;color:#142333}.vs-pack-intro p{margin:0;color:#586979;line-height:1.7}
+.vs-pack-search{display:flex;gap:10px;min-width:0}
+.vs-pack-search input{border:1px solid #cdd8df;background:#fff;color:#142333;border-radius:11px;min-height:44px;padding:10px 14px;flex:1;min-width:0;font-size:14px}
+.vs-pack-primary,.vs-pack-secondary,.vs-pack-candidate{border:1px solid #d0dae1;border-radius:10px;min-height:44px;padding:10px 16px;background:#fff;color:#142333;font-size:12px;font-weight:800;cursor:pointer}
+.vs-pack-primary{background:#142333;color:#fff;border-color:#142333}.vs-pack-primary:hover:not(:disabled){background:#263f56}.vs-pack-secondary:hover{background:#f3f7fa}
+.vs-pack-primary:disabled,.vs-pack-secondary:disabled{opacity:.6;cursor:wait}
+.vs-pack-actions{display:flex;flex-wrap:wrap;gap:9px;align-items:center}
+.vs-pack-paste{min-height:44px;display:flex;align-items:center;padding:8px 14px;border:1px dashed #93a8b9;border-radius:10px;background:#f7fafc;color:#496274;cursor:text}
+.vs-pack-feedback{border:1px solid #dce6ed;border-radius:10px;padding:12px 15px;color:#214661;background:#f1f7fc;font-weight:600;line-height:1.55}
+.vs-pack-feedback.is-error{background:#fff3f1;color:#a43737;border-color:#f3d0cd}
+.vs-pack-feedback[hidden],.vs-pack-result[hidden]{display:none!important}
+.vs-pack-candidates{display:flex;flex-wrap:wrap;gap:8px;direction:ltr;justify-content:flex-end}
+.vs-pack-candidate{font-variant-numeric:tabular-nums}
+.vs-pack-result{border:1px solid #dbe3e9;background:#fff;border-radius:15px;padding:15px;display:grid;gap:15px}
+.vs-pack-result-header{border:1px solid #f0d9aa;background:#fff8e9;padding:14px;border-radius:11px;display:grid;gap:6px;color:#5c4515}
+.vs-pack-result-header.is-ready{border-color:#b9ddc4;background:#e9f7ef;color:#21593c}
+.vs-pack-result-header>div{font-size:12px;font-weight:800}.vs-pack-result-header strong{font-size:16px}.vs-pack-result-header p{margin:2px 0 0;line-height:1.55}
+.vs-pack-details{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.vs-pack-detail{min-width:0;padding:10px 12px;border-radius:9px;background:#f5f7f9;display:grid;gap:5px;overflow-wrap:anywhere}
+.vs-pack-detail small{color:#6d7a87;font-size:10px}.vs-pack-detail strong{font-size:12px;font-weight:700}
+.vs-pack-shipment-chips{display:flex;flex-wrap:wrap;gap:8px;direction:ltr;justify-content:flex-end}
+.vs-pack-shipment-chip{border:1px solid #dce4e9;border-radius:99px;padding:6px 11px;color:#4e6373;font-size:11px;background:#fff}
+.vs-pack-shipment-chip.is-current{border-color:#85b19a;background:#f0f8f2;color:#17623b}
+.vs-pack-item-list{display:grid;gap:10px}.vs-pack-item{display:flex;gap:12px;padding:12px;border-radius:12px;border:1px solid #e3e9ed;align-items:center}
+.vs-pack-item.is-complete{background:#f3faf5;border-color:#c9e4cf}
+.vs-pack-item>img{width:66px;height:66px;object-fit:cover;background:#eef2f4;border-radius:10px;flex-shrink:0}
+.vs-pack-item-main{display:grid;gap:6px;flex:1;min-width:0}.vs-pack-item-main>strong{font-size:13px;overflow-wrap:anywhere;color:#142333}.vs-pack-item-main>small{color:#6a7a87}
+.vs-pack-units{display:flex;flex-wrap:wrap;gap:7px}
+.vs-pack-unit{display:flex;gap:6px;align-items:center;padding:8px 10px;background:#fff;border:1px solid #d7e0e6;border-radius:9px;cursor:pointer;font-size:11px}
+.vs-pack-unit.is-arrived{background:#e5f6eb;border-color:#a4cfb3;color:#1d6b42;font-weight:800}
+.vs-pack-unit input{accent-color:#188044;width:16px;height:16px;margin:0;cursor:pointer}
+.vs-pack-confirm{justify-self:start}.vs-pack-manual-order{border-top:1px solid #e3e8ec;padding-top:13px}.vs-pack-manual-order summary{cursor:pointer;font-weight:700;color:#526879;margin-bottom:12px}
+@media(max-width:750px){.vs-shipping-modes>.admin-order-work-message-panel__body{padding:12px}.vs-shipping-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));padding:9px}.vs-shipping-tab{font-size:11px;padding:8px}.vs-pack-search{display:grid}.vs-pack-actions{display:grid;grid-template-columns:1fr 1fr}.vs-pack-paste{grid-column:1/-1}.vs-pack-details{grid-template-columns:repeat(2,minmax(0,1fr))}.vs-pack-result{padding:10px}.vs-pack-item{align-items:start}.vs-pack-item>img{width:55px;height:55px}.vs-pack-primary{width:100%}}
