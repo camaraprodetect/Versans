@@ -11,6 +11,7 @@
   var mobileNav = document.getElementById('adminMobileNav');
   var toast = document.getElementById('adminToast');
   var pushButton = document.getElementById('adminPushToggle');
+  var undoButton = document.getElementById('adminUndoLast');
   var shippingWorkMode = 'packed'; // Default: in-house VerSans packing.
   var requestedOrderRef = new URLSearchParams(window.location.search).get('order') || '';
   var requestedOrderOpened = false;
@@ -185,6 +186,7 @@
       err.payload = payload || null;
       throw err;
     }
+    if(/^\/api\/admin\/catalog(?:\/|$)/.test(url)&&method!=='GET')refreshCatalogUndo().catch(function(){});
     return payload || {};
   }
 
@@ -196,6 +198,20 @@
     showToast.timer = window.setTimeout(function () { toast.hidden = true; }, 2600);
   }
 
+  async function refreshCatalogUndo(){
+    if(!undoButton)return;
+    try{var data=await api('/api/admin/catalog/undo');undoButton.disabled=!data.available;undoButton.title=data.available?'ביטול: '+data.label:'אין פעולה בקטלוג שניתן לבטל';}
+    catch(e){undoButton.disabled=true;}
+  }
+  if(undoButton)undoButton.addEventListener('click',async function(){
+    if(undoButton.disabled)return;
+    var approved=await adminConfirm({title:'לבטל את הפעולה האחרונה?',message:undoButton.title+' — השינוי ישוחזר רק אם לא נערך שוב מאז.',confirmText:'כן, בטל פעולה',cancelText:'השאר כפי שהוא',icon:'↶'});
+    if(!approved)return;
+    undoButton.disabled=true;
+    try{var result=await apiAction('/api/admin/catalog/undo','POST',{});showToast('הפעולה בוטלה: '+result.label);await renderCurrentPage();if(result.sheetSync&&result.sheetSync.ok===false)showToast('הפעולה שוחזרה בחנות; הסנכרון לגיליון ממתין.');}
+    catch(e){showToast(e.code==='undo_conflict'?'המוצר השתנה מאז. לא ניתן לבטל בלי לדרוס שינויים חדשים.':e.code==='undo_unavailable'?'אין כרגע פעולה זמינה לביטול.':'הביטול נכשל: '+e.message);}
+    finally{await refreshCatalogUndo();}
+  });
   function adminConfirm(options) {
     options = options || {};
     return new Promise(function (resolve) {
@@ -4154,6 +4170,7 @@
     renderCurrentPage({ keepContent: true }).then(function () { showToast('הנתונים עודכנו'); });
   });
 
+  refreshCatalogUndo();
   initGlobalAdminSearch();
   initAdminNotificationCenter();
   initAdminPush().catch(function () {});

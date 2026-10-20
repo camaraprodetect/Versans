@@ -102,3 +102,7 @@
 @media(max-width:1050px){.versans-editor{width:min(500px,55vw);min-width:0}.versans-editor-open{padding-right:min(500px,55vw)!important}}
 @media(max-width:750px){.versans-editor{width:100vw;min-width:0;box-shadow:0 0 0 100vmax #14233355}.versans-editor-open{padding-right:0!important}.versans-editor__head{padding:10px 14px}.versans-editor__head h2{font-size:19px}.versans-editor__nav{padding:6px 9px 8px;min-height:49px}.versans-editor__nav .versans-editor__btn{font-size:12px;padding:8px 9px}.versans-editor__scroll{padding:12px 11px 22px}.versans-editor__section{padding:13px;gap:11px}.versans-editor__footer{padding:8px 11px 12px}.versans-editor__footer-actions .versans-editor__btn{font-size:12px}.versans-editor__group-summary{padding:12px 13px}}
 @media(max-width:350px){.versans-editor__two-col{grid-template-columns:1fr}.versans-editor__footer-actions{gap:5px}.versans-editor__nav .versans-editor__btn{font-size:11px;padding:8px 7px}}
+
+.versans-editor__autosave{font-size:11px;color:#5b7890;flex:1 1 100%;line-height:1.5}
+.versans-editor__modal-actions{flex-wrap:wrap}
+.versans-editor__modal-actions .versans-editor__btn{white-space:normal}

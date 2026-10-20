@@ -6335,7 +6335,7 @@ async function adminApi(req, res, pathname, parsed) {
   }
 
   if (pathname === '/api/admin/access/me' && req.method === 'GET') {
-    json(res,200,{ok:true,isOwner: Boolean(admin && normalizeEmail(admin.email)===ADMIN_EMAIL)});return true;
+    json(res,200,{ok:true,isOwner: Boolean(admin && normalizeEmail(admin.email)===ADMIN_EMAIL),email:admin && admin.email || ''});return true;
   }
   if (pathname === '/api/admin/access/role' && req.method === 'POST') {
     if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'}); return true; }
@@ -6407,6 +6407,17 @@ async function adminApi(req, res, pathname, parsed) {
   if (pathname === '/api/admin/catalog' || pathname.startsWith('/api/admin/catalog/')) {
     await catalogManager.refresh();
   }
+  if (pathname === '/api/admin/catalog/undo' && req.method === 'GET') {
+    await catalogManager.readUndo();
+    json(res,200,{ok:true,...catalogManager.undoState(admin && admin.email)});
+    return true;
+  }
+  if (pathname === '/api/admin/catalog/undo' && req.method === 'POST') {
+    if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'}); return true; }
+    const result=await catalogManager.undoLast(admin && admin.email);
+    const sheetSync=result.slug ? await catalogManager.syncOne(result.slug) : undefined;
+    json(res,200,{ok:true,...result,sheetSync});return true;
+  }
   if (pathname === '/api/admin/catalog' && req.method === 'GET') {
     json(res, 200, { ok: true, products: catalogManager.list(), categoryOrders:catalogManager.categoryOrders(), categoryHidden:catalogManager.hiddenCategories(), categoryHiddenFlags:catalogManager.categoryHiddenFlags(), pendingSheetIds: catalogManager.pendingSlugs(), sheetConfigured: Boolean(process.env.GOOGLE_PRODUCTS_WEBHOOK_URL && process.env.GOOGLE_PRODUCTS_WEBHOOK_SECRET) });
     return true;
@@ -6414,7 +6425,7 @@ async function adminApi(req, res, pathname, parsed) {
   if (pathname === '/api/admin/catalog/categories/visibility' && req.method === 'POST') {
     if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'}); return true; }
     const body = await readJsonBody(req, 4096);
-    const result = await catalogManager.setCategoryHidden(String(body && body.category || ''), body && body.hidden);
+    const result = await catalogManager.setCategoryHidden(String(body && body.category || ''), body && body.hidden, admin && admin.email);
     json(res,200,{ok:true,...result}); return true;
   }
   const singleCatalogGet = /^\/api\/admin\/catalog\/(product-[a-z0-9-]+)$/.exec(pathname);
@@ -6429,8 +6440,8 @@ async function adminApi(req, res, pathname, parsed) {
     if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'}); return true; }
     const body = await readJsonBody(req, 16 * 1024);
     const result = displayRoute[2] === 'visibility'
-      ? await catalogManager.setHidden(displayRoute[1],body.hidden)
-      : await catalogManager.setPosition(displayRoute[1],String(body.category||''),Number(body.position));
+      ? await catalogManager.setHidden(displayRoute[1],body.hidden, admin && admin.email)
+      : await catalogManager.setPosition(displayRoute[1],String(body.category||''),Number(body.position), admin && admin.email);
     json(res,200,{ok:true,...result});return true;
   }
   if (pathname === '/api/admin/catalog/images' && req.method === 'POST') {
@@ -6442,15 +6453,15 @@ async function adminApi(req, res, pathname, parsed) {
   if (pathname === '/api/admin/catalog' && req.method === 'POST') {
     if (!sameOriginAllowed(req)) { json(res, 403, {ok:false,error:'origin_not_allowed'}); return true; }
     const body = await readJsonBody(req, 128 * 1024);
-    const result = await catalogManager.write(body && body.product);
+    const result = await catalogManager.write(body && body.product, undefined, false, admin && admin.email);
     const sheetSync = await catalogManager.syncOne(result.slug);
     json(res, 201, {ok:true,...result,sheetSync});return true;
   }
   const catalogItemRoute = /^\/api\/admin\/catalog\/(product-[a-z0-9-]+)$/.exec(pathname);
   if (catalogItemRoute && (req.method === 'PUT' || req.method === 'DELETE')) {
     if (!sameOriginAllowed(req)) { json(res, 403, {ok:false,error:'origin_not_allowed'}); return true; }
-    const result = req.method === 'DELETE' ? await catalogManager.write(null,catalogItemRoute[1],true)
-      : await catalogManager.write((await readJsonBody(req,128*1024)).product,catalogItemRoute[1]);
+    const result = req.method === 'DELETE' ? await catalogManager.write(null,catalogItemRoute[1],true, admin && admin.email)
+      : await catalogManager.write((await readJsonBody(req,128*1024)).product,catalogItemRoute[1],false, admin && admin.email);
     const sheetSync = await catalogManager.syncOne(result.slug);
     json(res, 200, {ok:true,...result,sheetSync});return true;
   }

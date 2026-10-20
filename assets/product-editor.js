@@ -7,6 +7,29 @@
   var slug = params.get('id') || document.body.dataset.productSlug || decodeURIComponent(location.pathname.slice(1));
   if (!/^product-[a-z0-9-]+$/i.test(slug)) return;
   var root, draft, original, saving=false, saved=false, advanced, activeTab='general';
+  var draftStoreKey='', draftSaveTimer=null, localDraftOk=true, editedThisSession=false;
+  var draftMaxAge=7*24*60*60*1000;
+  function storedDraft(){
+    if(!draftStoreKey)return null;
+    try {var raw=localStorage.getItem(draftStoreKey);var item=raw?JSON.parse(raw):null;
+      if(item && Date.now()-Number(item.savedAt)<draftMaxAge && item.draft && item.base)return item;
+      if(raw)localStorage.removeItem(draftStoreKey);
+    } catch(e) {localDraftOk=false;}
+    return null;
+  }
+  function clearStoredDraft(){if(draftSaveTimer)clearTimeout(draftSaveTimer);draftSaveTimer=null;try {if(draftStoreKey)localStorage.removeItem(draftStoreKey);}catch(e){}}
+  function advancedText(){var area=advanced&&advanced.querySelector('textarea');return advanced&&advanced._isModified&&advanced._isModified()&&area?area.value:null;}
+  function persistDraft(){
+    if(saving || saved || !draftStoreKey || !localDraftOk || !original)return;
+    try {
+      if(!isDirty()){localStorage.removeItem(draftStoreKey);return;}
+      var value={schema:1, savedAt:Date.now(),base:JSON.stringify(original),draft:copy(draft),advancedRaw:advancedText()};
+      localStorage.setItem(draftStoreKey,JSON.stringify(value));
+      var label=root&&root.querySelector('[data-edit-autosave]');if(label)label.textContent='טיוטה נשמרה בדפדפן · '+new Date(value.savedAt).toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'});
+    }catch(e){localDraftOk=false;var label=root&&root.querySelector('[data-edit-autosave]');if(label)label.textContent='אין אפשרות לשמור טיוטה בדפדפן הזה';}
+  }
+  function queueDraft(){if(!draftStoreKey||saving||saved)return;if(draftSaveTimer)clearTimeout(draftSaveTimer);draftSaveTimer=setTimeout(persistDraft,850);}
+
   var tabs={general:'כללי',images:'תמונות',options:'אפשרויות',details:'פרטים נוספים'};
   function isDirty(){return !!draft && !!original && JSON.stringify(draft)!==JSON.stringify(original) || !!(advanced && advanced._isModified && advanced._isModified());}
   function touch(){
@@ -15,6 +38,8 @@
     var flag=root.querySelector('[data-edit-dirty]');
     if(flag)flag.textContent=isDirty()?'● שינויים שלא נשמרו':'✓ הכול שמור';
     var discard=root.querySelector('[data-edit-discard]');if(discard)discard.disabled=!isDirty()||saving;
+    if(isDirty()){editedThisSession=true;queueDraft();}
+    else if(editedThisSession&&draftStoreKey&&!saving){clearStoredDraft();editedThisSession=false;}
   }
   function tab(name){
     activeTab=name;
@@ -28,15 +53,19 @@
     if(!isDirty()){onYes();return;}
     var mask=el('div','versans-editor__modal-cover');
     var dialog=el('div','versans-editor__modal');dialog.setAttribute('role','dialog');dialog.setAttribute('aria-modal','true');
-    put(dialog,el('h3','','לצאת בלי לשמור?'),el('p','','יש שינויים במוצר שעדיין לא נשמרו. ביציאה הם יאבדו.'));
+    put(dialog,el('h3','','לצאת מהעריכה?'),el('p','',localDraftOk&&draftStoreKey?'השינויים עדיין לא פורסמו בחנות. הטיוטה תישמר בדפדפן ותוכל לשחזר אותה בחזרה לעמוד.':'יש שינויים שלא נשמרו. ביציאה הם עלולים להיאבד.'));
     var buttons=el('div','versans-editor__modal-actions');
     var cancel=btn('המשך עריכה',function(){mask.remove();});
-    var leave=btn('צא ללא שמירה',function(){mask.remove();onYes();},'is-danger');
+    var leave=btn('צא והשאר טיוטה',function(){persistDraft();mask.remove();onYes();},'is-danger');
     put(buttons,cancel,leave);dialog.appendChild(buttons);mask.appendChild(dialog);root.appendChild(mask);cancel.focus();
     mask.addEventListener('click',function(e){if(e.target===mask)mask.remove();});
     mask.addEventListener('keydown',function(e){if(e.key==='Escape'){e.preventDefault();mask.remove();}});
   }
-  window.addEventListener('beforeunload',function(event){if(root && !saved && !saving && isDirty()){event.preventDefault();event.returnValue='';}});
+  window.addEventListener('beforeunload',function(event){
+    if(root && !saved && !saving && isDirty()) {persistDraft();if(!localDraftOk){event.preventDefault();event.returnValue='';}}
+  });
+  document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden')persistDraft();});
+  window.addEventListener('pagehide',persistDraft);
   function el(tag, cls, text) { var n=document.createElement(tag); if(cls)n.className=cls; if(text!==undefined)n.textContent=String(text); return n; }
   function copy(obj) {return JSON.parse(JSON.stringify(obj));}
   function localized(v) {return (v && typeof v==='object')?(v.he||v.en||''):String(v||'');}
@@ -215,8 +244,39 @@
     if(!res.ok||data.ok!==true)throw Error(data.error||'שגיאת תקשורת '+res.status);
     return data;
   }
+  function renderEditorFields(){
+    Object.keys(tabs).forEach(function(k){var pane=root.querySelector('[data-edit-pane="'+k+'"]');if(pane)pane.replaceChildren();});
+    textSection();photoSection();
+    optionSection('sizes','מידות ואורכים',draft.sizes||[]);
+    optionSection('colors','צבעים',draft.colors||[]);
+    optionSection('necklaces','בחירות שרשרת',draft.necklaces||[]);
+    optionSection('boxes','בחירות קופסה',draft.boxes||[]);
+    if(draft.giftPackaging&&Array.isArray(draft.giftPackaging.options))optionSection('giftPackaging','אפשרויות אריזה',draft.giftPackaging.options);
+    detailsSection();advanced=advancedSection();tab(activeTab);preview();touch();
+  }
+  async function promptDraftRecovery(){
+    var record=storedDraft();if(!record)return;
+    var changedOnServer=record.base!==JSON.stringify(original);
+    var cover=el('div','versans-editor__modal-cover');var modal=el('div','versans-editor__modal');
+    modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');modal.setAttribute('aria-label','שחזור טיוטת עריכה');
+    put(modal,el('h3','','נמצאה טיוטה שלא פורסמה'),el('p','',changedOnServer
+      ?'המוצר עודכן בשרת מאז שמירת הטיוטה. שחזור יחזיר את הטיוטה לשדות העריכה בלבד; מומלץ לבדוק כל שינוי לפני שמירה כדי לא להחליף עדכונים חדשים.'
+      :'מצאנו שינויים ששמרת בדפדפן. הם לא פורסמו באתר. האם לשחזר אותם?'));
+    var actions=el('div','versans-editor__modal-actions');
+    var later=btn('לא עכשיו',function(){cover.remove();});
+    var discard=btn('מחק טיוטה',function(){clearStoredDraft();cover.remove();},'is-danger');
+    var restore=btn('שחזר טיוטה',function(){
+      draft=copy(record.draft);renderEditorFields();
+      if(record.advancedRaw!==null&&record.advancedRaw!==undefined){var area=advanced.querySelector('textarea');if(area){area.value=record.advancedRaw;area.dataset.modified='1';}}
+      touch();cover.remove();note('הטיוטה שוחזרה לעריכה בלבד. בדוק את השדות ולחץ ״שמור שינויים״ כדי לפרסם.','is-success');
+    },'is-primary');
+    put(actions,later,discard,restore);modal.appendChild(actions);cover.appendChild(modal);root.appendChild(cover);restore.focus();
+  }
   async function start(){
-    try {var response=await api('/api/admin/catalog/'+encodeURIComponent(slug));draft=copy(response.product);original=copy(response.product);}
+    try {var response=await api('/api/admin/catalog/'+encodeURIComponent(slug));draft=copy(response.product);original=copy(response.product);
+      var identity=await api('/api/admin/access/me');
+      if(identity&&identity.email)draftStoreKey='versans:product-editor:draft:v1:'+String(identity.email).toLowerCase()+':'+slug;
+    }
     catch(e){return;} // Hide editor if the visitor is not an admin.
     root=el('aside','versans-editor');root.dir='rtl';root.setAttribute('aria-label','עריכת מוצר VerSans');
     var head=el('div','versans-editor__head');
@@ -232,12 +292,12 @@
     Object.keys(tabs).forEach(function(k){var pane=el('div','versans-editor__pane');pane.dataset.editPane=k;pane.id='edit-'+k;pane.setAttribute('role','tabpanel');main.appendChild(pane);});
     root.appendChild(main);
     var foot=el('div','versans-editor__footer');
-    var meta=el('div','versans-editor__footer-meta');var flag=el('span','versans-editor__dirty','✓ הכול שמור');flag.dataset.editDirty='';var status=el('span','versans-editor__status','השינויים יתעדכנו באתר לאחר שמירה');status.dataset.editStatus='';put(meta,flag,status);
+    var meta=el('div','versans-editor__footer-meta');var flag=el('span','versans-editor__dirty','✓ הכול שמור');flag.dataset.editDirty='';var status=el('span','versans-editor__status','השינויים יתעדכנו באתר לאחר שמירה');status.dataset.editStatus='';var autosave=el('span','versans-editor__autosave','טיוטה נשמרת אוטומטית בדפדפן');autosave.dataset.editAutosave='';put(meta,flag,status,autosave);
     var actionbar=el('div','versans-editor__footer-actions');
-    var discard=btn('בטל שינויים',function(){confirmLeave(function(){saved=true;location.reload();});},'is-secondary');discard.dataset.editDiscard='';discard.disabled=true;
+    var discard=btn('בטל שינויים',function(){confirmLeave(function(){clearStoredDraft();saved=true;location.reload();});},'is-secondary');discard.dataset.editDiscard='';discard.disabled=true;
     var save=btn('שמור שינויים',async function(){
       if(saving)return;
-      saving=true;save.disabled=true;discard.disabled=true;note('שומר שינויים בדאטהבייס…');
+      saving=true;save.disabled=true;discard.disabled=true;if(draftSaveTimer)clearTimeout(draftSaveTimer);note('שומר שינויים בדאטהבייס…');
       try{
         advanced._getAdvanced();
         if(!localized(draft.title).trim())throw Error('חסר שם מוצר');
@@ -247,20 +307,14 @@
         draft.categories=Array.from(new Set([draft.category].concat(draft.categories||[]).filter(Boolean)));
         var response=await api('/api/admin/catalog/'+encodeURIComponent(slug),'PUT',{product:draft});
         note(response.sheetSync&&response.sheetSync.ok===false?'נשמר באתר. הסנכרון לגיליון ממתין.':'נשמר בהצלחה! טוען את המוצר המעודכן…','is-success');
-        saved=true;
+        clearStoredDraft();saved=true;
         var url=new URL(location.href);url.searchParams.set('edit','1');url.searchParams.set('id',slug);url.searchParams.set('admin_preview','1');
         setTimeout(function(){location.href='/product.html?'+url.searchParams.toString();},650);
       }catch(err){note('השמירה נכשלה: '+err.message,'is-error');saving=false;save.disabled=false;touch();}
     },'is-primary');
     put(actionbar,discard,save);put(foot,meta,actionbar);root.appendChild(foot);
     document.body.appendChild(root);document.body.classList.add('versans-editor-open');
-    textSection();photoSection();
-    optionSection('sizes','מידות ואורכים',draft.sizes||[]);
-    optionSection('colors','צבעים',draft.colors||[]);
-    optionSection('necklaces','בחירות שרשרת',draft.necklaces||[]);
-    optionSection('boxes','בחירות קופסה',draft.boxes||[]);
-    if(draft.giftPackaging&&Array.isArray(draft.giftPackaging.options))optionSection('giftPackaging','אפשרויות אריזה',draft.giftPackaging.options);
-    detailsSection();advanced=advancedSection();tab('general');touch();
+    renderEditorFields();await promptDraftRecovery();
   }
   
   start();
