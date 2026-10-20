@@ -5835,7 +5835,9 @@ async function adminApi(req, res, pathname, parsed) {
   }
 
   if (pathname === '/api/admin/bot/orders/new-order') {
-    if (req.method !== 'GET') { json(res, 405, { ok: false, error: 'method_not_allowed' }); return true; }
+  
+
+  if (req.method !== 'GET') { json(res, 405, { ok: false, error: 'method_not_allowed' }); return true; }
     const botAccess = await orderNotificationsBotAccessAllowed(req);
     if (!botAccess.ok) {
       json(res, 401, { ok: false, error: orderNotificationsBotKeyConfigured() ? 'bot_auth_required' : 'admin_auth_required' });
@@ -6458,6 +6460,15 @@ async function adminApi(req, res, pathname, parsed) {
     json(res,200,{ok:true,results,pendingSheetIds:catalogManager.pendingSlugs()});return true;
   }
 
+  if (pathname === '/api/admin/notification-center/read' && req.method === 'POST') {
+    if(!sameOriginAllowed(req)){json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
+    const body=await readJsonBody(req,10000);
+    const keys=Array.from(new Set((Array.isArray(body.keys)?body.keys:[]).map(String).filter(key=>key.length>0&&key.length<=160))).slice(0,150);
+    if(!keys.length){json(res,400,{ok:false,error:'missing_keys'});return true;}
+    await database.markAdminNotificationsRead(Number(admin.id),keys);
+    json(res,200,{ok:true,updated:keys.length});return true;
+  }
+
   if (req.method !== 'GET') {
     json(res, 405, { ok: false, error: 'method_not_allowed' });
     return true;
@@ -6558,6 +6569,66 @@ async function adminApi(req, res, pathname, parsed) {
       summary, orders: actionable.concat(waitingRecent) });
     return true;
   }
+
+  // Actionable admin notification center. All data stays behind admin authentication.
+  if (pathname === '/api/admin/notification-center' && req.method === 'GET') {
+    const now = Date.now();
+    const since = now - 90 * 86400000;
+    const [rows, shipments, failedMessages, failedPayments] = await Promise.all([
+      database.listAdminOrders({status:'paid',since,limit:3000,offset:0}),
+      database.listAdminAttentionShipments(now-7*86400000,100),
+      database.listAdminFailedNotifications(now-7*86400000,60),
+      database.listAdminOrders({status:'failed',since:now-3*86400000,limit:50,offset:0})
+    ]);
+    const orderIds=rows.map(row=>Number(row.id)).filter(id=>id>0);
+    const receptions=await database.listAdminPackagingUnitsForOrders(orderIds);
+    const received=new Map();
+    for(const unit of receptions){
+      if(Number(unit.received)!==1)continue;
+      const id=Number(unit.order_id);
+      if(!received.has(id))received.set(id,new Set());
+      received.get(id).add(`${Number(unit.item_index)}:${Number(unit.unit_number)}`);
+    }
+    const alerts=[];
+    function add(key,type,level,title,description,orderRef,at){alerts.push({key,type,level,title,description,orderRef:orderRef||null,at:Number(at||now)});}
+    for(const row of rows){
+      const items=normalizeStoredOrderItems(row.items_json,PRODUCTS);
+      const total=items.reduce((sum,item)=>sum+Math.max(0,Math.min(500,Number(item.qty||0))),0);
+      if(!total)continue;
+      const keys=received.get(Number(row.id))||new Set();
+      const qtyReceived=items.reduce((sum,item,index)=>{
+        const qty=Math.max(0,Math.min(500,Number(item.qty||0)));
+        for(let n=1;n<=qty;n++)if(keys.has(`${index}:${n}`))sum++;
+        return sum;
+      },0);
+      const paidAt=Number(row.paid_at||row.created_at||0);
+      if(qtyReceived===total){
+        add('pack-ready:'+row.order_ref+':'+total,'packing','success','הזמנה מוכנה לאריזה',`כל ${total} הפריטים נקלטו. בדוק אריזה ושליחה ללקוח.`,row.order_ref,paidAt);
+      } else if(qtyReceived>0){
+        add('pack-partial:'+row.order_ref+':'+qtyReceived,'missing','warning','חסרים פריטים בהזמנה',`${qtyReceived} מתוך ${total} יחידות הגיעו. חסרות ${total-qtyReceived} יחידות.`,row.order_ref,paidAt);
+      } else if(paidAt>now-48*3600000){
+        add('new-order:'+row.order_ref,'orders','info','הזמנה חדשה לטיפול',`הזמנה ששולמה: ${row.order_ref}. עדיין אין פריטים שנקלטו.`,row.order_ref,paidAt);
+      }
+    }
+    for(const row of shipments){
+      const status=String(row.status||'');
+      const isIssue=status==='exception'||status==='delivery_failed';
+      const isPickup=status==='ready_for_pickup';
+      add('shipment:'+row.id+':'+status,'shipments',isIssue?'danger':isPickup?'warning':'info',
+        isIssue?'משלוח עם בעיה':isPickup?'משלוח ממתין לאיסוף':'משלוח חדש במעקב',
+        `מעקב ${row.tracking_number} · ${isIssue?'נדרש לבדוק חריגה במשלוח':isPickup?'נדרש טיפול באיסוף':'משלוח חדש נוסף למעקב'}`,
+        row.order_ref,row.updated_at);
+    }
+    for(const row of failedMessages)add('notice-failed:'+row.order_ref,'issues','danger','הודעת הזמנה לא נשלחה',`יש לבדוק את מנגנון ההודעות להזמנה ${row.order_ref}.`,row.order_ref,row.updated_at);
+    for(const row of failedPayments)add('payment-failed:'+row.order_ref,'payment','danger','תשלום הזמנה נכשל',`הזמנה ${row.order_ref} לא שולמה. בדוק לפני טיפול במוצרים.`,row.order_ref,row.updated_at);
+    alerts.sort((a,b)=>b.at-a.at);
+    const trimmed=alerts.slice(0,150);
+    const read=new Set(await database.listAdminNotificationReads(Number(admin.id)));
+    const items=trimmed.map(alert=>({...alert,read:read.has(alert.key)}));
+    json(res,200,{ok:true,items,unread:items.filter(alert=>!alert.read).length,generatedAt:now});
+    return true;
+  }
+
 
   // All admin search results are fetched server-side; no customer data is exposed to public APIs.
   if (pathname === '/api/admin/search' && req.method === 'GET') {
@@ -6661,6 +6732,25 @@ async function adminApi(req, res, pathname, parsed) {
     const range = String(parsed.searchParams.get('range') || '30d');
     const workStatus = String(parsed.searchParams.get('workStatus') || 'all');
     const normalizedRange = normalizeAdminRange(range);
+    const customerQuery=String(parsed.searchParams.get('customer')||'').trim().toLowerCase().slice(0,120);
+    const tracking=String(parsed.searchParams.get('tracking')||'all');
+    const dateFrom=String(parsed.searchParams.get('from')||'');
+    const dateTo=String(parsed.searchParams.get('to')||'');
+    const minAmountRaw=String(parsed.searchParams.get('minAmount')||'');
+    const maxAmountRaw=String(parsed.searchParams.get('maxAmount')||'');
+    const validDate=value=>!value||(/^\d{4}-\d{2}-\d{2}$/.test(value)&&!Number.isNaN(Date.parse(value+'T12:00:00Z'))&&new Date(value+'T12:00:00Z').toISOString().slice(0,10)===value);
+    const dateStart=value=>value?israelStartOfDayMs(Date.parse(value+'T12:00:00Z')):null;
+    const toStart=dateTo&&validDate(dateTo)?dateStart(new Date(Date.parse(dateTo+'T12:00:00Z')+86400000).toISOString().slice(0,10)):null;
+    const fromStart=dateFrom&&validDate(dateFrom)?dateStart(dateFrom):null;
+    const minAmount=minAmountRaw===''?null:Number(minAmountRaw);
+    const maxAmount=maxAmountRaw===''?null:Number(maxAmountRaw);
+    if(!validDate(dateFrom)||!validDate(dateTo)||!['all','none','partial','complete'].includes(tracking)||
+      (minAmount!==null&&(!Number.isFinite(minAmount)||minAmount<0||minAmount>10000000))||
+      (maxAmount!==null&&(!Number.isFinite(maxAmount)||maxAmount<0||maxAmount>10000000))||
+      (minAmount!==null&&maxAmount!==null&&minAmount>maxAmount)||
+      (fromStart!==null&&toStart!==null&&fromStart>=toStart)) {
+      json(res,400,{ok:false,error:'invalid_advanced_filters'});return true;
+    }
 
     if (!normalizedRange) {
       json(res, 400, { ok: false, error: 'invalid_range' });
@@ -6726,9 +6816,24 @@ async function adminApi(req, res, pathname, parsed) {
       green: classified.filter((entry) => entry.summary.workState === 'green').length
     };
 
-    const filtered = workStatus === 'all'
-      ? classified
-      : classified.filter((entry) => entry.summary.workState === workStatus);
+    const filtered=classified.filter(entry=>{
+      const row=entry.row;
+      if(workStatus!=='all'&&entry.summary.workState!==workStatus)return false;
+      const timestamp=Number(row.paid_at||row.created_at||0);
+      if(fromStart!==null&&timestamp<fromStart)return false;
+      if(toStart!==null&&timestamp>=toStart)return false;
+      const amount=Number(row.amount_agorot||0)/100;
+      if(minAmount!==null&&amount<minAmount)return false;
+      if(maxAmount!==null&&amount>maxAmount)return false;
+      if(tracking!=='all'&&entry.fulfillment.state!==tracking)return false;
+      if(customerQuery){
+        const c=parseStoredCustomer(row);
+        const haystack=[row.order_ref,row.user_name,row.guest_username,row.customer_email,row.user_email,row.customer_phone,c.firstName,c.lastName,c.email,c.phone,c.city]
+          .filter(Boolean).join(' ').toLowerCase();
+        if(!haystack.includes(customerQuery))return false;
+      }
+      return true;
+    });
 
     const count = filtered.length;
     const pageEntries = filtered.slice(offset, offset + limit);
@@ -6748,6 +6853,7 @@ async function adminApi(req, res, pathname, parsed) {
       ok: true,
       range: normalizedRange.range,
       workStatus,
+      advancedFilters:{customer:customerQuery,tracking,from:dateFrom,to:dateTo,minAmount,maxAmount},
       statusCounts,
       count,
       limit,
