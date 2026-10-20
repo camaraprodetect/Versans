@@ -6508,6 +6508,84 @@ async function adminApi(req, res, pathname, parsed) {
     return true;
   }
 
+  // Compact action dashboard: paid orders from the last 90 days. Reception is distinct from shipping status.
+  if (pathname === '/api/admin/command-center' && req.method === 'GET') {
+    const now = Date.now();
+    const since = now - 90 * 24 * 60 * 60 * 1000;
+    const rows = await database.listAdminOrders({ status: 'paid', since, limit: 5000, offset: 0 });
+    const ids = rows.map(row => Number(row.id)).filter(id => Number.isInteger(id) && id > 0);
+    const receivedRows = typeof database.listAdminPackagingUnitsForOrders === 'function'
+      ? await database.listAdminPackagingUnitsForOrders(ids) : [];
+    const receivedByOrder = new Map();
+    for (const receipt of receivedRows) {
+      const id = Number(receipt.order_id);
+      if (!receivedByOrder.has(id)) receivedByOrder.set(id, new Set());
+      if (Number(receipt.received) === 1) receivedByOrder.get(id).add(`${Number(receipt.item_index)}:${Number(receipt.unit_number)}`);
+    }
+    const summary = { waiting: 0, partial: 0, ready: 0, arrivedToday: 0, total: 0 };
+    const today = israelStartOfDayMs(now);
+    for (const row of receivedRows) if (Number(row.received) === 1 && Number(row.updated_at || 0) >= today) summary.arrivedToday++;
+    const records = [];
+    for (const order of rows) {
+      const items = normalizeStoredOrderItems(order.items_json, PRODUCTS);
+      const keys = receivedByOrder.get(Number(order.id)) || new Set();
+      let total = 0, received = 0;
+      items.forEach((item,index) => {
+        const qty = Math.max(0, Math.min(500, Number(item.qty || 0)));
+        for (let n = 1; n <= qty; n++) {
+          total++;
+          if (keys.has(`${index}:${n}`)) received++;
+        }
+      });
+      if (!total) continue;
+      const status = received >= total ? 'ready' : received > 0 ? 'partial' : 'waiting';
+      summary[status]++;
+      summary.total++;
+      records.push({
+        orderRef: order.order_ref,
+        customerName: order.user_name || order.guest_username || order.customer_email || 'לקוח',
+        amountAgorot: Number(order.amount_agorot || 0),
+        paidAt: Number(order.paid_at || order.created_at || 0),
+        totalUnits: total,
+        receivedUnits: received,
+        state: status
+      });
+    }
+    // Newest ready and partially received orders are the most actionable; never claim that they were not shipped yet.
+    const actionable = records.filter(row => row.state !== 'waiting').slice(0, 8);
+    const waitingRecent = records.filter(row => row.state === 'waiting').slice(0, Math.max(0, 8 - actionable.length));
+    json(res, 200, { ok: true, windowDays: 90, truncated: rows.length === 5000,
+      summary, orders: actionable.concat(waitingRecent) });
+    return true;
+  }
+
+  // All admin search results are fetched server-side; no customer data is exposed to public APIs.
+  if (pathname === '/api/admin/search' && req.method === 'GET') {
+    const query = String(parsed.searchParams.get('q') || '').trim().slice(0, 100);
+    if (query.length < 2) { json(res,200,{ok:true,query,orders:[],customers:[],products:[]}); return true; }
+    const found = await database.adminUniversalSearch(query, 10);
+    const lowered = query.toLocaleLowerCase();
+    const products = catalogManager.list().filter(product => {
+      const title = typeof product.title === 'object'
+        ? [product.title.he,product.title.en].filter(Boolean).join(' ') : String(product.title || '');
+      return [title,product.slug,product.id,product.sku,product.category]
+        .some(value => String(value || '').toLocaleLowerCase().includes(lowered));
+    }).slice(0, 10).map(product => ({
+      id: product.id, slug: product.slug, title: typeof product.title === 'object'
+        ? (product.title.he || product.title.en || product.slug) : String(product.title || product.slug),
+      image: product.image || null, hidden: Boolean(product.hidden), price: Number(product.price || 0)
+    }));
+    json(res,200,{ok:true,query,orders:found.orders.map(row => ({
+      orderRef: row.order_ref, customerName: row.user_name || row.guest_username || row.customer_email || 'לקוח',
+      customerPhone: row.customer_phone || '', customerEmail: row.customer_email || row.user_email || '',
+      status: row.status, amountAgorot: Number(row.amount_agorot || 0),
+      paidAt: Number(row.paid_at || row.created_at || 0)
+    })), customers:found.customers.map(user => ({
+      id: Number(user.id), name: user.name || '', email: user.email || '', phone: user.phone || ''
+    })), products});
+    return true;
+  }
+
   if (pathname === '/api/admin/sales') {
     const range = String(parsed.searchParams.get('range') || '30d');
     const sales = await adminSalesData(range);

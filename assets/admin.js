@@ -1717,9 +1717,58 @@
     return card('בדיקת מערכת', subtitle, body, system.persistentStorage ? badge('Persistent', 'verified') : badge('לא מתמשך', 'failed'));
   }
 
+  function commandCenterPanel(data) {
+    var summary = data.summary || {};
+    var wrapper = make('section','admin-command-center');
+    var heading = make('div','admin-command-head');
+    var headingText = make('div');
+    headingText.appendChild(make('span','admin-command-kicker','VERSANS · עבודה יומית'));
+    headingText.appendChild(make('h2','','מה דורש טיפול עכשיו?'));
+    headingText.appendChild(make('p','','קליטת פריטים לפי סימוני ההגעה באדמין · הזמנות ששולמו ב־90 הימים האחרונים'));
+    var action = make('a','admin-command-link','פתיחת טיפול בהזמנות ←');
+    action.href='/admin/order-work';
+    heading.append(headingText,action);wrapper.appendChild(heading);
+    var tiles = make('div','admin-command-tiles');
+    [
+      {icon:'◷',title:'ממתינות לפריטים',value:summary.waiting||0,tone:'waiting',description:'עדיין לא נקלטה אף יחידה'},
+      {icon:'◐',title:'הגיעו חלקית',value:summary.partial||0,tone:'partial',description:'חלק מהפריטים הגיעו'},
+      {icon:'✓',title:'כל הפריטים הגיעו',value:summary.ready||0,tone:'ready',description:'יש לבדוק מוכנות לאריזה'},
+      {icon:'▣',title:'יחידות שנקלטו היום',value:summary.arrivedToday||0,tone:'today',description:'סימוני קליטה שבוצעו היום'}
+    ].forEach(function(item){
+      var tile=make('div','admin-command-tile admin-command-tile--'+item.tone);
+      tile.appendChild(make('span','admin-command-tile__symbol',item.icon));
+      tile.appendChild(make('strong','admin-command-tile__number',numberFmt(item.value)));
+      tile.appendChild(make('span','admin-command-tile__label',item.title));
+      tile.appendChild(make('small','',item.description));
+      tiles.appendChild(tile);
+    });
+    wrapper.appendChild(tiles);
+    var listHead=make('div','admin-command-list-heading');
+    listHead.appendChild(make('h3','','הזמנות לטיפול מהיר'));
+    listHead.appendChild(make('span','','לחץ לפתיחת פרטי ההזמנה'));
+    wrapper.appendChild(listHead);
+    var list=make('div','admin-command-order-list');
+    (data.orders || []).forEach(function(order){
+      var button=make('button','admin-command-order admin-command-order--'+order.state);button.type='button';
+      var primary=make('div','admin-command-order__main');
+      primary.appendChild(make('strong','',order.orderRef));
+      primary.appendChild(make('small','',order.customerName+' · '+dateTime(order.paidAt)));
+      var progress=make('div','admin-command-order__progress');
+      progress.appendChild(make('b','',numberFmt(order.receivedUnits)+' / '+numberFmt(order.totalUnits)));
+      progress.appendChild(make('span','',order.state==='ready'?'הכול הגיע':order.state==='partial'?'הגיע חלקית':'ממתין לפריטים'));
+      button.append(primary,progress,make('span','admin-command-order__arrow','←'));
+      button.addEventListener('click',function(){openOrderDetailsByRef(order.orderRef);});list.appendChild(button);
+    });
+    if (!list.childNodes.length) list.appendChild(make('p','admin-command-empty','אין כרגע הזמנות להצגה בטווח הזה.'));
+    wrapper.appendChild(list);
+    if(data.truncated) wrapper.appendChild(make('p','admin-command-note','מוצגות עד 5,000 הזמנות. ניתן לחפש הזמנות ותיקות דרך החיפוש הראשי.'));
+    return wrapper;
+  }
+
   async function renderDashboardPage() {
     var range = state.ranges.dashboard;
-    var data = await api('/api/admin/overview?range=' + encodeURIComponent(range));
+    var results = await Promise.all([api('/api/admin/overview?range=' + encodeURIComponent(range)),api('/api/admin/command-center').catch(function(){return null;})]);
+    var data=results[0],commandData=results[1];
     var frag = document.createDocumentFragment();
     var toolbar = make('div', 'admin-toolbar');
     toolbar.appendChild(renderRangeFilter(range, rangeOptions, function (next) {
@@ -1728,6 +1777,7 @@
     }));
     toolbar.appendChild(make('span', 'admin-toolbar-note', 'מכירות והכנסות מחושבות מ־Paid בלבד'));
     frag.appendChild(toolbar);
+    if(commandData)frag.appendChild(commandCenterPanel(commandData));
     frag.appendChild(systemHealthCard(data.system));
     frag.appendChild(renderKpis([
       { label: 'הכנסות Paid', value: moneyAgorot(data.revenueAgorot), hint: 'בטווח שנבחר', primary: true, tone: 'green' },
@@ -1747,6 +1797,98 @@
     frag.appendChild(topProductsTable((data.topProducts || []).slice(0, 5), 'Top Products', 'המוצרים המובילים בטווח שנבחר'));
     frag.appendChild(ordersTable(data.recentOrders || [], 'הזמנות Paid אחרונות', 'הזמנות אחרונות בכל הזמנים'));
     content.replaceChildren(frag);
+  }
+
+  function initGlobalAdminSearch() {
+    var openButton=document.getElementById('adminGlobalSearchOpen');
+    if(!openButton)return;
+    var backdrop=make('div','admin-global-search-backdrop');backdrop.hidden=true;
+    var panel=make('section','admin-global-search-dialog');
+    panel.setAttribute('role','dialog');panel.setAttribute('aria-modal','true');
+    panel.setAttribute('aria-label','חיפוש בכל האדמין');
+    var bar=make('div','admin-global-search-bar');
+    var input=make('input','admin-global-search-input');input.type='search';input.placeholder='הזמנה, לקוח, טלפון, מייל, מוצר או מעקב...';
+    input.autocomplete='off';input.maxLength=100;input.setAttribute('aria-label','חיפוש באדמין');
+    var exit=make('button','admin-global-search-close','✕');exit.type='button';exit.setAttribute('aria-label','סגור חיפוש');
+    bar.append(input,exit);panel.appendChild(bar);
+    var tips=make('div','admin-global-search-tips','ניתן לחפש גם לפי מספר מעקב חדש או חלופי של משלוח');
+    panel.appendChild(tips);
+    var results=make('div','admin-global-search-results');panel.appendChild(results);
+    backdrop.appendChild(panel);document.body.appendChild(backdrop);
+    var timer=null,version=0,selected=0,interactive=[];
+    function close(){version++;window.clearTimeout(timer);backdrop.hidden=true;document.body.classList.remove('admin-search-open');openButton.focus();}
+    function open(){backdrop.hidden=false;document.body.classList.add('admin-search-open');input.value='';showHint();window.setTimeout(function(){input.focus();},0);}
+    function showHint(){results.replaceChildren(make('p','admin-global-search-empty','הקלד לפחות שני תווים כדי לחפש בכל החנות'));interactive=[];selected=0;}
+    function focusResult(index){if(!interactive.length)return;selected=(index+interactive.length)%interactive.length;interactive.forEach(function(btn,i){btn.classList.toggle('is-focused',i===selected);});interactive[selected].scrollIntoView({block:'nearest'});}
+    function resultItem(title,subtitle,tag,callback){
+      var btn=make('button','admin-global-search-result');btn.type='button';
+      var labels=make('span','admin-global-search-result__copy');
+      labels.appendChild(make('strong','',title));labels.appendChild(make('small','',subtitle));
+      btn.append(make('span','admin-global-search-result__tag',tag),labels,make('span','admin-global-search-result__arrow','←'));
+      btn.addEventListener('click',function(){close();callback();});interactive.push(btn);return btn;
+    }
+    function group(label,items,renderer){
+      if(!items || !items.length)return;
+      var section=make('section','admin-global-search-group');
+      section.appendChild(make('h3','',label+' · '+numberFmt(items.length)));
+      items.forEach(function(row){section.appendChild(renderer(row));});results.appendChild(section);
+    }
+    async function search(query){
+      var current=++version;
+      results.replaceChildren(make('p','admin-global-search-empty','מחפש...'));
+      try{
+        var data=await api('/api/admin/search?q='+encodeURIComponent(query));
+        if(current!==version || backdrop.hidden || input.value.trim()!==query)return;
+        interactive=[];selected=0;results.replaceChildren();
+        group('הזמנות',data.orders,function(row){
+          return resultItem(row.orderRef,row.customerName+' · '+(row.customerPhone||row.customerEmail||'')+' · '+moneyAgorot(row.amountAgorot),'הזמנה',function(){openOrderDetailsByRef(row.orderRef);});
+        });
+        group('לקוחות',data.customers,function(row){
+          return resultItem(row.name||row.email,[row.email,row.phone].filter(Boolean).join(' · '),'לקוח',function(){
+            showCustomerSearchDetail(row);
+          });
+        });
+        group('מוצרים',data.products,function(row){
+          return resultItem(row.title,(row.slug||row.id)+(row.hidden?' · מוסתר':'') ,'מוצר',function(){
+            window.location.href='/product.html?id='+encodeURIComponent(row.slug||row.id)+'&edit=1&admin_preview=1';
+          });
+        });
+        if(!interactive.length)results.appendChild(make('p','admin-global-search-empty','לא נמצאו תוצאות. נסה מספר מעקב, מייל, טלפון או שם אחר.'));
+        else focusResult(0);
+      }catch(err){if(current===version && !backdrop.hidden)results.replaceChildren(make('p','admin-global-search-empty','לא ניתן לחפש כרגע. נסה שוב.'));}
+    }
+    function showCustomerSearchDetail(row){
+      var overlay=make('div','admin-search-customer-backdrop');
+      var dialog=make('div','admin-search-customer-dialog');
+      dialog.appendChild(make('span','admin-command-kicker','פרטי לקוח'));
+      dialog.appendChild(make('h2','',row.name || 'לקוח'));
+      [['אימייל',row.email],['טלפון',row.phone],['מספר משתמש','#'+row.id]].forEach(function(pair){
+        var entry=make('div','admin-search-customer-field');entry.append(make('span','',pair[0]),make('strong','',text(pair[1])));dialog.appendChild(entry);
+      });
+      var actions=make('div','admin-search-customer-actions');
+      var copy=make('button','admin-command-link','חיפוש הזמנות של הלקוח');copy.type='button';
+      copy.addEventListener('click',function(){overlay.remove();open();input.value=row.email || row.phone || row.name;search(input.value.trim());});
+      var dismiss=make('button','admin-small-button','סגור');dismiss.type='button';dismiss.addEventListener('click',function(){overlay.remove()});
+      actions.append(copy,dismiss);dialog.appendChild(actions);overlay.appendChild(dialog);
+      overlay.addEventListener('click',function(e){if(e.target===overlay)overlay.remove()});document.body.appendChild(overlay);
+    }
+    openButton.addEventListener('click',open);exit.addEventListener('click',close);
+    backdrop.addEventListener('click',function(e){if(e.target===backdrop)close();});
+    input.addEventListener('input',function(){
+      window.clearTimeout(timer);version++;var q=input.value.trim();if(q.length<2){showHint();return;}
+      timer=window.setTimeout(function(){search(q);},280);
+    });
+    document.addEventListener('keydown',function(e){
+      if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();if(backdrop.hidden)open();else close();return;}
+      if(e.key==='/' && backdrop.hidden && !/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement&&document.activeElement.tagName||'')){
+        e.preventDefault();open();return;
+      }
+      if(backdrop.hidden)return;
+      if(e.key==='Escape'){e.preventDefault();close();}
+      else if(e.key==='ArrowDown'){e.preventDefault();focusResult(selected+1);}
+      else if(e.key==='ArrowUp'){e.preventDefault();focusResult(selected-1);}
+      else if(e.key==='Enter'&&interactive.length){e.preventDefault();interactive[selected].click();}
+    });
   }
 
   function visitorsTable(data, onSelect) {
@@ -3095,9 +3237,6 @@
   var catalogSelectedCategory = 'all';
   var catalogShowHiddenOnly = false;
   var catalogCategoryOrders = {};
-  var catalogHiddenCategories = {};
-  var catalogHiddenCategoryFlags = {};
-  var catalogCategoryManagerOpen = false;
   var catalogCategories = [
     ['greeting','תכשיט עם ברכה'],['greeting-mom','לאמא'],['greeting-partner','לאישה'],['greeting-daughter','לבת'],['greeting-sister','לאחות'],
     ['necklaces','שרשראות'],['bracelets','צמידים'],['bracelets-men','צמידים לגברים'],['bracelets-women','צמידים לנשים'],['bracelets-fashion','צמידי אופנה'],
@@ -3380,68 +3519,16 @@
     pager.appendChild(catalogButton('הבא','',function(){catalogPageNumber=Math.min(totalPages-1,catalogPageNumber+1);parent.replaceChildren();renderCatalogGrid(parent)}));
     parent.appendChild(pager);
   }
-  function renderCategoryVisibilitySection() {
-    var section = make('details','admin-category-visibility');
-    section.open = catalogCategoryManagerOpen;
-    section.addEventListener('toggle', function(){catalogCategoryManagerOpen=section.open;});
-    var heading=make('summary','admin-category-visibility__head');
-    heading.appendChild(make('strong','','הצגה והסתרה של קטגוריות'));
-    var hiddenCount=Object.keys(catalogHiddenCategories).filter(function(k){return catalogHiddenCategories[k] && !/^greeting-(mom|partner|daughter|sister)$/.test(k)}).length;
-    heading.appendChild(make('span','admin-category-visibility__count',hiddenCount ? hiddenCount+' קטגוריות מוסתרות' : 'כל הקטגוריות מוצגות'));
-    section.appendChild(heading);
-    section.appendChild(make('p','admin-category-visibility__hint','אפשר להסתיר קטגוריה או תת־קטגוריה, בלי למחוק אף מוצר. לחיצה חוזרת על הצג תחזיר אותה לחנות.'));
-    var grid=make('div','admin-category-visibility__grid');
-    var parentLabels={greeting:'תכשיט עם ברכה',bracelets:'צמידים',watches:'שעונים',glasses:'משקפיים'};
-    catalogCategories.filter(function(row){return [
-      'greeting','greeting-mom','greeting-partner','greeting-daughter','greeting-sister',
-      'necklaces','bracelets','bracelets-men','bracelets-women','bracelets-fashion',
-      'rings','photo-bracelets','watches','watches-men','watches-women',
-      'glasses','glasses-men','glasses-women','glasses-unisex','hats'
-    ].indexOf(row[0])>=0;}).forEach(function(row){
-      var key=row[0], parent=key.startsWith('bracelets-')?'bracelets':key.startsWith('watches-')?'watches':key.startsWith('glasses-')?'glasses':null;
-      var isHidden=!!catalogHiddenCategories[key];
-      var hiddenByParent=!!(parent && catalogHiddenCategories[parent]);
-      var directlyHidden=!!catalogHiddenCategoryFlags[key];
-      var label=parent?parentLabels[parent]+' / '+row[1]:row[1];
-      var item=make('div','admin-category-visibility__item'+(isHidden?' is-hidden':''));
-      var description=make('div','admin-category-visibility__details');
-      description.appendChild(make('strong','',label));
-      description.appendChild(make('span','admin-category-visibility__status',hiddenByParent?'מוסתר בגלל קטגוריית האב':isHidden?'מוסתר מהחנות':'מוצג בחנות'));
-      var button=catalogButton(directlyHidden?'הצג':'הסתר',directlyHidden?'admin-catalog-unhide':'admin-catalog-quiet',async function(){
-        if(hiddenByParent){showToast('יש להציג קודם את הקטגוריה הראשית: '+parentLabels[parent]);return;}
-        var result=await adminConfirm({
-          catalogVisibility:true,danger:!directlyHidden,icon:directlyHidden?'↺':'!',
-          title:directlyHidden?'להחזיר את הקטגוריה לחנות?':'להסתיר את הקטגוריה מהחנות?',
-          message:directlyHidden?'הקטגוריה "'+label+'" תוצג שוב בתפריטי החנות ובדף הקטגוריה.':'הקטגוריה "'+label+'" תוסתר מהחנות ומהתפריטים. המוצרים שלה יישמרו בקטלוג.',
-          cancelText:'ביטול',confirmText:directlyHidden?'כן, הצג קטגוריה':'כן, הסתר קטגוריה'
-        });
-        if(!result)return;
-        button.disabled=true;
-        try{
-          await apiAction('/api/admin/catalog/categories/visibility','POST',{category:key,hidden:!directlyHidden});
-          showToast(directlyHidden?'הקטגוריה הוצגה בחנות':'הקטגוריה הוסתרה מהחנות');
-          await renderProductsPage();
-        }catch(e){button.disabled=false;showToast('לא ניתן לעדכן קטגוריה: '+(e.message||'שגיאה'));}
-      });
-      button.disabled=hiddenByParent;
-      item.append(description,button);grid.appendChild(item);
-    });
-    section.appendChild(grid);
-    return section;
-  }
   async function renderCatalogSection() {
     var result = await api('/api/admin/catalog');
     catalogItemsCache=result.products||[];catalogPendingIds=result.pendingSheetIds||[];
     catalogCategoryOrders=result.categoryOrders||{};
-    catalogHiddenCategories=result.categoryHidden||{};
-    catalogHiddenCategoryFlags=result.categoryHiddenFlags||{};
     var wrap=make('section','admin-catalog-section');
     var head=make('div','admin-catalog-heading');
     var title=make('div');title.appendChild(make('h2','','ניהול קטלוג'));title.appendChild(make('p','',catalogItemsCache.length+' מוצרים בחנות · עריכה, הוספה ומחיקה עם עדכון מיידי באתר'));
     var buttons=make('div','admin-catalog-heading-actions');buttons.appendChild(catalogButton('+ הוסף מוצר','admin-catalog-primary',function(){openCatalogEditor(null)}));
     var sync=catalogButton('סנכרן לגיליון','',async function(){sync.disabled=true;try{var res=await apiAction('/api/admin/catalog/sync','POST',{});await renderProductsPage();if((res.pendingSheetIds||[]).length)alert('יש עדיין '+res.pendingSheetIds.length+' מוצרים הממתינים לסנכרון. יש לבדוק את הגדרת Webhook.');}catch(err){alert(err.message)}finally{sync.disabled=false}});
     buttons.appendChild(sync);head.append(title,buttons);wrap.appendChild(head);
-    wrap.appendChild(renderCategoryVisibilitySection());
     var info=make('p','admin-catalog-hint', result.sheetConfigured?'שינויים נשמרים במסד הנתונים ונשלחים לגיליון "קישורי מוצרים".':'שינויים בחנות נשמרים. כדי לעדכן גם את Google Sheets, יש להגדיר GOOGLE_PRODUCTS_WEBHOOK_URL ו-GOOGLE_PRODUCTS_WEBHOOK_SECRET ב-Render.');wrap.appendChild(info);
     var search=make('input','admin-catalog-search');search.type='search';search.placeholder='חיפוש לפי שם מוצר, מזהה, מק"ט או קטגוריה';search.value=catalogSearchText;search.setAttribute('aria-label','חיפוש מוצרים');
     var gridHolder=make('div');
@@ -3962,6 +4049,7 @@
     renderCurrentPage({ keepContent: true }).then(function () { showToast('הנתונים עודכנו'); });
   });
 
+  initGlobalAdminSearch();
   initAdminPush().catch(function () {});
   renderCurrentPage();
 })();
