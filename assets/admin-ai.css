@@ -1,0 +1,37 @@
+.admin-ai-launch{background:#142333;color:white;border:1px solid #314657;border-radius:11px;padding:9px 13px;font-weight:700;cursor:pointer;white-space:nowrap;font:inherit}
+.admin-ai-launch:hover{background:#29465f}
+.vs-admin-ai-open{overflow:hidden}
+.vs-admin-ai-backdrop{position:fixed;inset:0;z-index:100500;background:rgba(11,22,35,.56);display:flex;align-items:center;justify-content:center;padding:18px;font-family:inherit;direction:rtl}
+.vs-admin-ai-panel{background:#fff;color:#142333;border-radius:18px;border:1px solid #e5e8ed;box-shadow:0 20px 68px rgba(0,0,0,.25);width:min(800px,100%);height:min(80vh,790px);display:flex;flex-direction:column;overflow:hidden;min-height:380px}
+.vs-admin-ai-head{padding:17px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #e5e9ed;background:#f8fafc}
+.vs-admin-ai-head strong{font-size:20px;display:block}
+.vs-admin-ai-head small{color:#607184;display:block;font-size:12px;margin-top:4px}
+.vs-admin-ai-close{font-size:27px;color:#43576b;background:white;border:1px solid #dde3e9;border-radius:9px;cursor:pointer;width:38px;height:38px}
+.vs-admin-ai-messages{padding:18px;overflow:auto;flex:1;display:flex;flex-direction:column;gap:13px;min-height:0;background:white}
+.vs-admin-ai-message{display:flex;max-width:100%}
+.vs-admin-ai-message.user{justify-content:flex-start}
+.vs-admin-ai-message.assistant,.vs-admin-ai-message.error{justify-content:flex-end}
+.vs-admin-ai-bubble{max-width:93%;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.7;padding:11px 14px;border-radius:13px;background:#f1f5f8;color:#142333;font-size:14px;text-align:right}
+.vs-admin-ai-message.user .vs-admin-ai-bubble{background:#142333;color:white}
+.vs-admin-ai-message.error .vs-admin-ai-bubble{background:#fff0f1;color:#a22739;border:1px solid #f5cbd1}
+.vs-admin-ai-proposal-holder{padding:0 16px;max-height:46%;overflow-y:auto}
+.vs-admin-ai-proposal{margin-bottom:12px;border:1px solid #b8c9d6;background:#f3f8fc;border-radius:13px;padding:14px;color:#142333}
+.vs-admin-ai-proposal-title{font-size:15px;font-weight:800}.vs-admin-ai-summary{margin:9px 0;font-size:14px;line-height:1.7;overflow-wrap:anywhere}
+.vs-admin-ai-change-list{display:grid;gap:7px}.vs-admin-ai-change{display:grid;grid-template-columns:minmax(65px,1fr) minmax(50px,2fr) auto minmax(50px,2fr);gap:7px;padding:8px;background:white;border-radius:8px;align-items:start;font-size:12px;overflow-wrap:anywhere}
+.vs-admin-ai-details summary{cursor:pointer;font-size:12px;font-weight:bold;padding:7px 0}.vs-admin-ai-details pre{font:12px/1.6 monospace;white-space:pre-wrap;overflow-wrap:anywhere;max-height:180px;overflow:auto;background:white;border-radius:8px;padding:10px;direction:ltr;text-align:left}
+.vs-admin-ai-proposal-actions{display:flex;gap:10px;justify-content:flex-start;margin-top:12px}
+.vs-admin-ai-confirm,.vs-admin-ai-send{background:#142333;border:1px solid #142333;color:white;border-radius:10px;cursor:pointer;padding:12px 16px;font-weight:700;font:inherit}
+.vs-admin-ai-confirm:hover,.vs-admin-ai-send:hover{background:#29465f}.vs-admin-ai-confirm:disabled,.vs-admin-ai-send:disabled{opacity:.6;cursor:wait}
+.vs-admin-ai-cancel{background:white;border:1px solid #ccd7e0;color:#142333;border-radius:10px;padding:12px 16px;cursor:pointer;font:inherit}
+.vs-admin-ai-footer{padding:14px 17px;border-top:1px solid #e9edef;background:#f8fafc}.vs-admin-ai-compose{display:flex;align-items:stretch;gap:9px}
+.vs-admin-ai-input{flex:1;min-width:0;background:white;border:1px solid #cbd5df;border-radius:10px;padding:10px;color:#142333;font:inherit;resize:vertical;min-height:62px;max-height:150px}
+.vs-admin-ai-disclaimer{font-size:11px;color:#6a7784;margin:8px 0 0}
+html[data-admin-theme="dark"] .vs-admin-ai-panel{background:#1d2b3a;color:#edf3f8;border-color:#3c5164}
+html[data-admin-theme="dark"] .vs-admin-ai-head,html[data-admin-theme="dark"] .vs-admin-ai-footer{background:#1b2938;border-color:#3c5164}
+html[data-admin-theme="dark"] .vs-admin-ai-messages{background:#1d2b3a}
+html[data-admin-theme="dark"] .vs-admin-ai-bubble{background:#293c4f;color:#f2f5f8}
+html[data-admin-theme="dark"] .vs-admin-ai-message.user .vs-admin-ai-bubble{background:#426780}
+html[data-admin-theme="dark"] .vs-admin-ai-proposal{background:#21384a;color:#eef4f8;border-color:#506577}
+html[data-admin-theme="dark"] .vs-admin-ai-change,html[data-admin-theme="dark"] .vs-admin-ai-details pre{background:#1b2938;color:#eef4f8}
+html[data-admin-theme="dark"] .vs-admin-ai-input{background:#253748;color:white;border-color:#516577}
+@media(max-width:680px){.vs-admin-ai-backdrop{padding:0;align-items:stretch}.vs-admin-ai-panel{width:100%;height:100dvh;max-height:none;border-radius:0}.vs-admin-ai-head{padding:13px}.vs-admin-ai-messages{padding:12px}.vs-admin-ai-bubble{max-width:100%}.vs-admin-ai-proposal-holder{max-height:50%}.vs-admin-ai-compose{flex-direction:column}.vs-admin-ai-send{align-self:stretch}.vs-admin-ai-input{min-height:54px}.admin-ai-launch{padding:9px}}

@@ -7,6 +7,7 @@ const crypto = require('node:crypto');
 const { URL } = require('node:url');
 const { createDatabase } = require('./lib/database.js');
 const { createAdminTools } = require('./lib/admin-tools.js');
+const { createAdminAI } = require('./lib/admin-ai.js');
 const { createPaymentUrl, verifyPayment, priceOrder } = require('./api/_hyp.js');
 const { PRODUCTS, CATEGORIES } = require('./assets/products.js');
 const { createCatalogManager } = require('./lib/catalog-manager.js');
@@ -5149,6 +5150,13 @@ async function packingOrderSummary(order, focusShipmentId = null) {
 }
 
 const adminTools = createAdminTools(database, catalogManager);
+const adminAI = createAdminAI({
+  database, catalog:catalogManager, tools:adminTools,
+  getSales:adminSalesData, orderDetail:adminOrderDetailPayload,
+  ownerEmail:ADMIN_EMAIL,
+  modelName:String(process.env.VERSANS_ADMIN_BOT_MODEL || VERSANS_BOT_MODEL),
+  apiKey:String(process.env.OPENAI_API_KEY || '').trim()
+});
 
 async function adminApi(req, res, pathname, parsed) {
   if (!pathname.startsWith('/api/admin/')) return false;
@@ -5169,6 +5177,32 @@ async function adminApi(req, res, pathname, parsed) {
   }
   if (admin && !adminCanAccess(admin, pathname, req.method)) {
     json(res, 403, { ok: false, error: 'permission_denied' });
+    return true;
+  }
+  // Admin-only AI assistant. Every operation is proposed first; confirmation is
+  // a separate authenticated request made by a real admin pressing a button.
+  if (pathname === '/api/admin/ai/chat' && req.method === 'POST') {
+    if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'});return true; }
+    const body=await readJsonBody(req);
+    try {
+      const result=await adminAI.chat(body&&body.message,body&&body.history,admin);
+      json(res,200,result);
+    } catch(error) {
+      const status=Number(error.status)||500;
+      if(status>=500)console.error('Admin AI chat failed:',error.message);
+      json(res,status,{ok:false,error:status===500?'admin_ai_error':error.message});
+    }
+    return true;
+  }
+  if (pathname === '/api/admin/ai/confirm' && req.method === 'POST') {
+    if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'});return true; }
+    const body=await readJsonBody(req);
+    const token=String(body&&body.token||'');
+    if(!/^[A-Za-z0-9_-]{32}$/.test(token)){json(res,400,{ok:false,error:'invalid_confirmation'});return true;}
+    try {json(res,200,await adminAI.confirm(token,admin));}
+    catch(error){const status=Number(error.status)||500;
+      if(status>=500)console.error('Admin AI confirm failed:',error.message);
+      json(res,status,{ok:false,error:status===500?'admin_ai_error':error.message});}
     return true;
   }
   // Internal task board and on-demand reports; adminCanAccess was checked above.
