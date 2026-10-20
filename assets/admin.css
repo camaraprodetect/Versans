@@ -1315,3 +1315,25 @@ button,input,textarea,select,a{font:inherit}.admin-app{display:grid;grid-templat
 .vs-pack-unit input{accent-color:#188044;width:16px;height:16px;margin:0;cursor:pointer}
 .vs-pack-confirm{justify-self:start}.vs-pack-manual-order{border-top:1px solid #e3e8ec;padding-top:13px}.vs-pack-manual-order summary{cursor:pointer;font-weight:700;color:#526879;margin-bottom:12px}
 @media(max-width:750px){.vs-shipping-modes>.admin-order-work-message-panel__body{padding:12px}.vs-shipping-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));padding:9px}.vs-shipping-tab{font-size:11px;padding:8px}.vs-pack-search{display:grid}.vs-pack-actions{display:grid;grid-template-columns:1fr 1fr}.vs-pack-paste{grid-column:1/-1}.vs-pack-details{grid-template-columns:repeat(2,minmax(0,1fr))}.vs-pack-result{padding:10px}.vs-pack-item{align-items:start}.vs-pack-item>img{width:55px;height:55px}.vs-pack-primary{width:100%}}
+
+/* Category visibility manager: clear public/hidden state without altering products. */
+.admin-category-visibility{margin:18px 0;padding:18px;border:1px solid #d9e2e8;border-radius:16px;background:#fff;direction:rtl}
+.admin-category-visibility__head h3{font-size:18px;margin:0 0 6px;color:#162b3e}
+.admin-category-visibility__head p{margin:0 0 16px;color:#667581;font-size:13px;line-height:1.55}
+.admin-category-visibility__grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}
+.admin-category-visibility__item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border:1px solid #dde5ea;border-radius:12px;background:#f9fbfc;min-width:0}
+.admin-category-visibility__item.is-hidden{border-color:#ebadaf;background:#fff2f2}
+.admin-category-visibility__details{display:flex;flex-direction:column;gap:5px;min-width:0}
+.admin-category-visibility__details strong{font-size:14px;color:#182e40;overflow-wrap:anywhere}
+.admin-category-visibility__status{font-size:12px;color:#14704a}
+.is-hidden .admin-category-visibility__status{font-weight:700;color:#b32630}
+.admin-category-visibility__item .admin-catalog-btn{flex-shrink:0}
+.admin-category-visibility__item .admin-catalog-btn:disabled{opacity:.48;cursor:not-allowed}
+@media(max-width:600px){.admin-category-visibility{padding:12px}.admin-category-visibility__grid{grid-template-columns:1fr}.admin-category-visibility__item{padding:10px}}
+
+.admin-category-visibility__head{display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;list-style:none}
+.admin-category-visibility__head::-webkit-details-marker{display:none}
+.admin-category-visibility__head strong{font-size:17px;color:#162b3e}
+.admin-category-visibility__count{font-size:12px;color:#7a8894;background:#f2f5f7;border-radius:100px;padding:5px 10px}
+.admin-category-visibility[open] .admin-category-visibility__head{margin-bottom:10px}
+.admin-category-visibility__hint{font-size:13px;line-height:1.55;color:#657782;margin:0 0 16px}

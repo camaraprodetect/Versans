@@ -154,7 +154,8 @@ function storefrontCatalogScript() {
       .replace(/\u2029/g, '\\u2029');
     // Keep the same classic-script globals that store.js and product.js expect.
     liveCatalogScript = 'var PRODUCTS = ' + safe(PRODUCTS) + ';\n' +
-      'var CATEGORIES = ' + safe(CATEGORIES) + ';\n';
+      'var CATEGORIES = ' + safe(CATEGORIES) + ';\n' +
+      'window.__VERSANS_HIDDEN_CATEGORIES__ = ' + safe(catalogManager.hiddenCategories()) + ';\n';
   }
   return liveCatalogScript;
 }
@@ -6405,8 +6406,14 @@ async function adminApi(req, res, pathname, parsed) {
     await catalogManager.refresh();
   }
   if (pathname === '/api/admin/catalog' && req.method === 'GET') {
-    json(res, 200, { ok: true, products: catalogManager.list(), categoryOrders:catalogManager.categoryOrders(), pendingSheetIds: catalogManager.pendingSlugs(), sheetConfigured: Boolean(process.env.GOOGLE_PRODUCTS_WEBHOOK_URL && process.env.GOOGLE_PRODUCTS_WEBHOOK_SECRET) });
+    json(res, 200, { ok: true, products: catalogManager.list(), categoryOrders:catalogManager.categoryOrders(), categoryHidden:catalogManager.hiddenCategories(), categoryHiddenFlags:catalogManager.categoryHiddenFlags(), pendingSheetIds: catalogManager.pendingSlugs(), sheetConfigured: Boolean(process.env.GOOGLE_PRODUCTS_WEBHOOK_URL && process.env.GOOGLE_PRODUCTS_WEBHOOK_SECRET) });
     return true;
+  }
+  if (pathname === '/api/admin/catalog/categories/visibility' && req.method === 'POST') {
+    if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'}); return true; }
+    const body = await readJsonBody(req, 4096);
+    const result = await catalogManager.setCategoryHidden(String(body && body.category || ''), body && body.hidden);
+    json(res,200,{ok:true,...result}); return true;
   }
   const singleCatalogGet = /^\/api\/admin\/catalog\/(product-[a-z0-9-]+)$/.exec(pathname);
   if (singleCatalogGet && req.method === 'GET') {
@@ -7738,14 +7745,23 @@ function storefrontCatalogOverridesInline() {
 }
 
 function injectStorefrontRouting(html, bootRoute, previewProduct) {
-  const early = `<script>window.__VERSANS_BOOT_ROUTE__=${safeInlineJson(bootRoute)};</script><script src="/assets/route-state.js?v=20260924-home-no-refresh-v8"></script>`;
+  const hiddenKeys = Object.keys(catalogManager.hiddenCategories());
+  // CSS is rendered server-side so hidden links never flash on mobile during hydration.
+  const hideSelectors = hiddenKeys.flatMap(key => {
+    const attr = key.replace(/[^a-z0-9-]/g, '');
+    const url = ROUTES.COLLECTION_PATHS[key];
+    const links = url ? [`a[href=\"${url}\"]`, `a[href^=\"${url}#\"]`, `a[href^=\"${url}?\"]`] : [];
+    return [`[data-cat=\"${attr}\"]`, `[data-nav-group=\"${attr}\"]`, `[data-nav-cat=\"${attr}\"]`, `[data-nav-subcat=\"${attr}\"]`, ...links];
+  });
+  const categoryCss = hideSelectors.length ? '<style data-versans-category-visibility>' + hideSelectors.join(',') + '{display:none!important}</style>' : '';
+  const early = categoryCss + `<script>window.__VERSANS_HIDDEN_CATEGORIES__=${JSON.stringify(catalogManager.hiddenCategories()).replace(/</g,'\\u003c')};window.__VERSANS_BOOT_ROUTE__=${safeInlineJson(bootRoute)};</script><script src="/assets/route-state.js?v=20260924-home-no-refresh-v8"></script>`;
   const late = '<script src="/assets/url-mask.js?v=20260924-home-reviews-anchor-v4"></script>' +
     '<script src="/assets/cart-drawer.js?v=20261004-cart-checkout-fix-v64"></script>';
   let out = String(html || '');
   out = out
     .replace(/(\/?assets\/config\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261001-product-help-v1')
     .replace(/(\/?assets\/styles\.css)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261001-product-help-v1')
-    .replace(/(\/?assets\/store\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261017-hats-admin-order-v1')
+    .replace(/(\/?assets\/store\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261020-categories-visibility-v1')
     .replace(/(\/?assets\/products\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=live-' + currentCatalogVersion())
     .replace(/(\/?assets\/product\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261003-all-color-identity-v48')
     .replace(/(\/?assets\/cart-drawer\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261004-cart-checkout-fix-v64')
@@ -7759,7 +7775,7 @@ function injectStorefrontRouting(html, bootRoute, previewProduct) {
   if (catalogScript.test(out)) {
     out = out.replace(/<script\b[^>]*\bsrc\s*=\s*(["'])\/?api\/catalog\/overrides\.js(?:\?[^"']*)?\1[^>]*>\s*<\/script>/gi, '');
     out = out.replace(catalogScript, '$1\n' + storefrontCatalogOverridesInline() +
-      '<script>window.__VERSANS_CATEGORY_ORDERS__=' + JSON.stringify(catalogManager.categoryOrders()).replace(/</g,'\\u003c') + ';</script>');
+      '<script>window.__VERSANS_CATEGORY_ORDERS__=' + JSON.stringify(catalogManager.categoryOrders()).replace(/</g,'\\u003c') + ';window.__VERSANS_HIDDEN_CATEGORIES__=' + JSON.stringify(catalogManager.hiddenCategories()).replace(/</g,'\\u003c') + ';</script>');
   }
   if (previewProduct) {
     const previewJson = JSON.stringify(previewProduct).replace(/</g,'\\u003c');
@@ -7899,10 +7915,18 @@ const server = http.createServer(async (req, res) => {
     )) await catalogManager.refresh();
     // Always reflect the live database catalog, not an outdated checked-in XML.
     if ((req.method === 'GET' || req.method === 'HEAD') && pathname === '/sitemap.xml') {
-      const xml = SEO.renderSitemap(PRODUCTS, ROUTES);
+      const xml = SEO.renderSitemap(PRODUCTS, ROUTES, catalogManager.hiddenCategories());
       res.writeHead(200, {'Content-Type':'application/xml; charset=utf-8', 'Cache-Control':'no-cache, max-age=0', 'Content-Length':Buffer.byteLength(xml)});
       if (req.method === 'HEAD') res.end(); else res.end(xml);
       return;
+    }
+    // Hidden collections are not available via direct URL or the old ?cat= route.
+    if (req.method === 'GET' || req.method === 'HEAD') {
+      const routeCategory = ROUTES.categoryFromPath(pathname) ||
+        ((pathname === '/' || pathname === '/index.html') ? parsed.searchParams.get('cat') : null);
+      if (routeCategory && catalogManager.isCategoryHidden(routeCategory)) {
+        json(res,404,{ok:false,error:'category_not_found'}); return;
+      }
     }
     // Backward-compatible cleanup for reset links issued before the hidden-token flow.
     // Convert the URL token into an HttpOnly cookie and immediately redirect to a clean URL.

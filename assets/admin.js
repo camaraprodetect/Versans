@@ -3095,6 +3095,9 @@
   var catalogSelectedCategory = 'all';
   var catalogShowHiddenOnly = false;
   var catalogCategoryOrders = {};
+  var catalogHiddenCategories = {};
+  var catalogHiddenCategoryFlags = {};
+  var catalogCategoryManagerOpen = false;
   var catalogCategories = [
     ['greeting','תכשיט עם ברכה'],['greeting-mom','לאמא'],['greeting-partner','לאישה'],['greeting-daughter','לבת'],['greeting-sister','לאחות'],
     ['necklaces','שרשראות'],['bracelets','צמידים'],['bracelets-men','צמידים לגברים'],['bracelets-women','צמידים לנשים'],['bracelets-fashion','צמידי אופנה'],
@@ -3377,16 +3380,68 @@
     pager.appendChild(catalogButton('הבא','',function(){catalogPageNumber=Math.min(totalPages-1,catalogPageNumber+1);parent.replaceChildren();renderCatalogGrid(parent)}));
     parent.appendChild(pager);
   }
+  function renderCategoryVisibilitySection() {
+    var section = make('details','admin-category-visibility');
+    section.open = catalogCategoryManagerOpen;
+    section.addEventListener('toggle', function(){catalogCategoryManagerOpen=section.open;});
+    var heading=make('summary','admin-category-visibility__head');
+    heading.appendChild(make('strong','','הצגה והסתרה של קטגוריות'));
+    var hiddenCount=Object.keys(catalogHiddenCategories).filter(function(k){return catalogHiddenCategories[k] && !/^greeting-(mom|partner|daughter|sister)$/.test(k)}).length;
+    heading.appendChild(make('span','admin-category-visibility__count',hiddenCount ? hiddenCount+' קטגוריות מוסתרות' : 'כל הקטגוריות מוצגות'));
+    section.appendChild(heading);
+    section.appendChild(make('p','admin-category-visibility__hint','אפשר להסתיר קטגוריה או תת־קטגוריה, בלי למחוק אף מוצר. לחיצה חוזרת על הצג תחזיר אותה לחנות.'));
+    var grid=make('div','admin-category-visibility__grid');
+    var parentLabels={greeting:'תכשיט עם ברכה',bracelets:'צמידים',watches:'שעונים',glasses:'משקפיים'};
+    catalogCategories.filter(function(row){return [
+      'greeting','greeting-mom','greeting-partner','greeting-daughter','greeting-sister',
+      'necklaces','bracelets','bracelets-men','bracelets-women','bracelets-fashion',
+      'rings','photo-bracelets','watches','watches-men','watches-women',
+      'glasses','glasses-men','glasses-women','glasses-unisex','hats'
+    ].indexOf(row[0])>=0;}).forEach(function(row){
+      var key=row[0], parent=key.startsWith('bracelets-')?'bracelets':key.startsWith('watches-')?'watches':key.startsWith('glasses-')?'glasses':null;
+      var isHidden=!!catalogHiddenCategories[key];
+      var hiddenByParent=!!(parent && catalogHiddenCategories[parent]);
+      var directlyHidden=!!catalogHiddenCategoryFlags[key];
+      var label=parent?parentLabels[parent]+' / '+row[1]:row[1];
+      var item=make('div','admin-category-visibility__item'+(isHidden?' is-hidden':''));
+      var description=make('div','admin-category-visibility__details');
+      description.appendChild(make('strong','',label));
+      description.appendChild(make('span','admin-category-visibility__status',hiddenByParent?'מוסתר בגלל קטגוריית האב':isHidden?'מוסתר מהחנות':'מוצג בחנות'));
+      var button=catalogButton(directlyHidden?'הצג':'הסתר',directlyHidden?'admin-catalog-unhide':'admin-catalog-quiet',async function(){
+        if(hiddenByParent){showToast('יש להציג קודם את הקטגוריה הראשית: '+parentLabels[parent]);return;}
+        var result=await adminConfirm({
+          catalogVisibility:true,danger:!directlyHidden,icon:directlyHidden?'↺':'!',
+          title:directlyHidden?'להחזיר את הקטגוריה לחנות?':'להסתיר את הקטגוריה מהחנות?',
+          message:directlyHidden?'הקטגוריה "'+label+'" תוצג שוב בתפריטי החנות ובדף הקטגוריה.':'הקטגוריה "'+label+'" תוסתר מהחנות ומהתפריטים. המוצרים שלה יישמרו בקטלוג.',
+          cancelText:'ביטול',confirmText:directlyHidden?'כן, הצג קטגוריה':'כן, הסתר קטגוריה'
+        });
+        if(!result)return;
+        button.disabled=true;
+        try{
+          await apiAction('/api/admin/catalog/categories/visibility','POST',{category:key,hidden:!directlyHidden});
+          showToast(directlyHidden?'הקטגוריה הוצגה בחנות':'הקטגוריה הוסתרה מהחנות');
+          await renderProductsPage();
+        }catch(e){button.disabled=false;showToast('לא ניתן לעדכן קטגוריה: '+(e.message||'שגיאה'));}
+      });
+      button.disabled=hiddenByParent;
+      item.append(description,button);grid.appendChild(item);
+    });
+    section.appendChild(grid);
+    return section;
+  }
   async function renderCatalogSection() {
     var result = await api('/api/admin/catalog');
     catalogItemsCache=result.products||[];catalogPendingIds=result.pendingSheetIds||[];
     catalogCategoryOrders=result.categoryOrders||{};
+    catalogHiddenCategories=result.categoryHidden||{};
+    catalogHiddenCategoryFlags=result.categoryHiddenFlags||{};
     var wrap=make('section','admin-catalog-section');
     var head=make('div','admin-catalog-heading');
     var title=make('div');title.appendChild(make('h2','','ניהול קטלוג'));title.appendChild(make('p','',catalogItemsCache.length+' מוצרים בחנות · עריכה, הוספה ומחיקה עם עדכון מיידי באתר'));
     var buttons=make('div','admin-catalog-heading-actions');buttons.appendChild(catalogButton('+ הוסף מוצר','admin-catalog-primary',function(){openCatalogEditor(null)}));
     var sync=catalogButton('סנכרן לגיליון','',async function(){sync.disabled=true;try{var res=await apiAction('/api/admin/catalog/sync','POST',{});await renderProductsPage();if((res.pendingSheetIds||[]).length)alert('יש עדיין '+res.pendingSheetIds.length+' מוצרים הממתינים לסנכרון. יש לבדוק את הגדרת Webhook.');}catch(err){alert(err.message)}finally{sync.disabled=false}});
     buttons.appendChild(sync);head.append(title,buttons);wrap.appendChild(head);
+    wrap.appendChild(renderCategoryVisibilitySection());
     var info=make('p','admin-catalog-hint', result.sheetConfigured?'שינויים נשמרים במסד הנתונים ונשלחים לגיליון "קישורי מוצרים".':'שינויים בחנות נשמרים. כדי לעדכן גם את Google Sheets, יש להגדיר GOOGLE_PRODUCTS_WEBHOOK_URL ו-GOOGLE_PRODUCTS_WEBHOOK_SECRET ב-Render.');wrap.appendChild(info);
     var search=make('input','admin-catalog-search');search.type='search';search.placeholder='חיפוש לפי שם מוצר, מזהה, מק"ט או קטגוריה';search.value=catalogSearchText;search.setAttribute('aria-label','חיפוש מוצרים');
     var gridHolder=make('div');

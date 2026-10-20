@@ -8,6 +8,7 @@
   var CFG = window.STORE_CONFIG;
   var ROUTES = window.VERSANS_ROUTES || null;
   var LS = { lang: 'kw_lang', cart: 'kw_cart', pending: 'kw_pending' };
+  function isCategoryHidden(key) { return !!(window.__VERSANS_HIDDEN_CATEGORIES__ && window.__VERSANS_HIDDEN_CATEGORIES__[key]); }
 
   function logicalPath() {
     try { return window.VERSANS_URL_STATE && window.VERSANS_URL_STATE.path ? window.VERSANS_URL_STATE.path() : window.location.pathname; }
@@ -315,7 +316,7 @@
 
   function productTypeKeys(p) {
     var collections = p && Array.isArray(p.categories) && p.categories.length ? p.categories : [p && p.category];
-    return TYPE_DEFS.filter(function (def) { return collections.indexOf(def.key) !== -1; }).map(function (def) { return def.key; });
+    return TYPE_DEFS.filter(function (def) { return !isCategoryHidden(def.key) && collections.indexOf(def.key) !== -1; }).map(function (def) { return def.key; });
   }
 
   function productMaterialKeys(p) {
@@ -1795,6 +1796,7 @@
 
   function renderAllCollectionGroups(grid, filteredList) {
     var sections = ALL_COLLECTION_GROUPS.map(function (group) {
+      if (isCategoryHidden(group.key)) return '';
       var groupProducts = filteredList.filter(function (p) {
         return productBelongsToCollection(p, group.key);
       });
