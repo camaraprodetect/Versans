@@ -18,6 +18,109 @@
   var pushConfigPromise = null;
   var pushRegistrationPromise = null;
 
+  // Persisted independently per administrator in PostgreSQL / SQLite.
+  var DEFAULT_DISPLAY_SECTIONS = ['command','system','kpis','sales','links','top','orders'];
+  var DEFAULT_DISPLAY_KPIS = ['revenue','paidOrders','aov','units','online','todayVisitors','lifetimeVisitors','users'];
+  var DEFAULT_DISPLAY_TILES = ['waiting','partial','ready','today'];
+  var displaySectionLabels = {command:'מרכז העבודה היומי',system:'בדיקת מערכת',kpis:'מדדי מכירות ומבקרים',sales:'מגמת מכירות',links:'קיצורי דרך',top:'מוצרים מובילים',orders:'הזמנות אחרונות'};
+  var displayKpiLabels = {revenue:'הכנסות',paidOrders:'הזמנות ששולמו',aov:'ממוצע להזמנה',units:'יחידות שנמכרו',online:'מחוברים עכשיו',todayVisitors:'מבקרים היום',lifetimeVisitors:'כלל המבקרים',users:'משתמשים רשומים'};
+  var displayTileLabels = {waiting:'ממתינות לפריטים',partial:'הגיעו חלקית',ready:'מוכנות לאריזה',today:'יחידות שנקלטו היום'};
+  function defaultDisplayPrefs() { return { theme:'light', sections:DEFAULT_DISPLAY_SECTIONS.slice(),kpis:DEFAULT_DISPLAY_KPIS.slice(),tiles:DEFAULT_DISPLAY_TILES.slice() }; }
+  var displayPrefs=defaultDisplayPrefs();
+  function normalizeDisplayPrefs(source) {
+    var defaults=defaultDisplayPrefs();
+    if (!source || typeof source !== 'object') return defaults;
+    ['sections','kpis','tiles'].forEach(function(key){
+      var allowed=defaults[key];
+      if(Array.isArray(source[key]))defaults[key]=Array.from(new Set(source[key].filter(function(x){return allowed.indexOf(x)>=0;})));
+    });
+    defaults.theme=source.theme==='dark'?'dark':'light';
+    return defaults;
+  }
+  function applyAdminTheme(theme) {
+    var dark=theme==='dark';
+    document.documentElement.setAttribute('data-admin-theme',dark?'dark':'light');
+    document.documentElement.style.colorScheme=dark?'dark':'light';
+    var button=document.getElementById('adminThemeToggle');
+    if(button){button.setAttribute('aria-label',dark?'הפעל מצב בהיר':'הפעל מצב כהה');button.title=dark?'הפעל מצב בהיר':'הפעל מצב כהה';button.replaceChildren(document.createTextNode(dark?'☀ ':'☾ '),make('span','',dark?'מצב בהיר':'מצב כהה'));}
+  }
+  async function saveDisplayPrefs(next) {
+    var saved=await apiAction('/api/admin/display-preferences','POST',next);
+    displayPrefs=normalizeDisplayPrefs(saved.preferences);
+    applyAdminTheme(displayPrefs.theme);
+    if(state.page==='dashboard')await renderCurrentPage({keepContent:true});
+  }
+  async function loadDisplayPrefs() {
+    try {var response=await api('/api/admin/display-preferences');displayPrefs=normalizeDisplayPrefs(response.preferences);}
+    catch(e){ if(e.message==='admin_required') throw e;displayPrefs=defaultDisplayPrefs(); }
+    applyAdminTheme(displayPrefs.theme);
+  }
+  function createDisplaySettingsModal() {
+    var next=normalizeDisplayPrefs(displayPrefs);
+    var backdrop=make('div','admin-pref-overlay');
+    var panel=make('section','admin-pref-panel');panel.setAttribute('role','dialog');panel.setAttribute('aria-modal','true');panel.setAttribute('aria-label','התאמה אישית של האדמין');panel.setAttribute('tabindex','-1');
+    var header=make('div','admin-pref-head');var labels=make('div');labels.append(make('strong','','התאמה אישית'),make('small','','ההגדרות נשמרות לחשבון שלך בכל מכשיר'));
+    var close=make('button','admin-pref-close','×');close.type='button';close.setAttribute('aria-label','סגור');header.append(labels,close);
+    var scroll=make('div','admin-pref-scroll');
+    var mode=make('div','admin-pref-section');mode.append(make('h3','','מצב תצוגה'),make('p','','בחר את הצבעים המתאימים לך בכל מסכי האדמין'));
+    var modes=make('div','admin-pref-modes');
+    [['light','☀','בהיר'],['dark','☾','כהה']].forEach(function(item){
+      var button=make('button','admin-pref-mode',item[1]+' '+item[2]);button.type='button';
+      button.addEventListener('click',function(){next.theme=item[0];refreshModes();});
+      button.dataset.theme=item[0];modes.appendChild(button);
+    });
+    function refreshModes(){Array.prototype.forEach.call(modes.children,function(button){var on=button.dataset.theme===next.theme;button.classList.toggle('is-active',on);button.setAttribute('aria-pressed',String(on));});}
+    refreshModes();mode.appendChild(modes);scroll.appendChild(mode);
+    var section=make('div','admin-pref-section');section.append(make('h3','','כרטיסי הדאשבורד'),make('p','','סמן להצגה. השתמש בחצים כדי לשנות את הסדר מלמעלה למטה.'));
+    var sectionList=make('div','admin-pref-list');
+    function renderSections(){
+      sectionList.replaceChildren();
+      DEFAULT_DISPLAY_SECTIONS.forEach(function(id){
+        if(next.sections.indexOf(id)<0)return;
+        sectionList.appendChild(rowFor(id,true));
+      });
+      DEFAULT_DISPLAY_SECTIONS.forEach(function(id){
+        if(next.sections.indexOf(id)>=0)return;
+        sectionList.appendChild(rowFor(id,false));
+      });
+    }
+    function rowFor(id,enabled){
+      var row=make('div','admin-pref-row'+(enabled?'':' is-disabled'));
+      var label=make('label','admin-pref-label');var check=make('input');check.type='checkbox';check.checked=enabled;
+      check.addEventListener('change',function(){
+        if(check.checked)next.sections.push(id);else next.sections=next.sections.filter(function(x){return x!==id;});renderSections();
+      });label.append(check,make('span','',displaySectionLabels[id]));row.appendChild(label);
+      var actions=make('div','admin-pref-arrows');
+      [['↑',-1,'העלה'],['↓',1,'הורד']].forEach(function(v){var b=make('button','',''+v[0]);b.type='button';b.setAttribute('aria-label',v[2]+' '+displaySectionLabels[id]);
+        var idx=next.sections.indexOf(id);b.disabled=!enabled||(v[1]<0?idx<=0:idx>=next.sections.length-1);
+        b.addEventListener('click',function(){var i=next.sections.indexOf(id),j=i+v[1];if(i<0||j<0||j>=next.sections.length)return;var t=next.sections[i];next.sections[i]=next.sections[j];next.sections[j]=t;renderSections();});actions.appendChild(b);
+      });row.appendChild(actions);return row;
+    }
+    renderSections();section.appendChild(sectionList);scroll.appendChild(section);
+    function addCheckboxSection(title,description,key,ids,labels){
+      var block=make('div','admin-pref-section');block.append(make('h3','',title),make('p','',description));var grid=make('div','admin-pref-checks');
+      ids.forEach(function(id){var lab=make('label','admin-pref-check');var input=make('input');input.type='checkbox';input.dataset.prefKey=key;input.dataset.prefId=id;input.checked=next[key].indexOf(id)>=0;input.addEventListener('change',function(){if(input.checked){if(next[key].indexOf(id)<0)next[key].push(id);}else next[key]=next[key].filter(function(x){return x!==id;});});lab.append(input,make('span','',labels[id]));grid.appendChild(lab);});block.appendChild(grid);scroll.appendChild(block);
+    }
+    addCheckboxSection('מדדים בדאשבורד','בחר אילו נתוני מכירות ומבקרים יופיעו','kpis',DEFAULT_DISPLAY_KPIS,displayKpiLabels);
+    addCheckboxSection('כרטיסי קליטת משלוחים','בחירת המדדים בתוך מרכז העבודה היומי','tiles',DEFAULT_DISPLAY_TILES,displayTileLabels);
+    var foot=make('div','admin-pref-footer');var reset=make('button','admin-pref-reset','איפוס לברירת מחדל');reset.type='button';
+    reset.addEventListener('click',function(){next=defaultDisplayPrefs();refreshModes();renderSections();Array.prototype.forEach.call(gridInputs(),function(input){input.checked=next[input.dataset.prefKey].indexOf(input.dataset.prefId)>=0;});});
+    function gridInputs(){return scroll.querySelectorAll('.admin-pref-check input');}
+    var cancel=make('button','admin-pref-cancel','ביטול');cancel.type='button';var save=make('button','admin-pref-save','שמור העדפות');save.type='button';
+    foot.append(reset,cancel,save);panel.append(header,scroll,foot);backdrop.appendChild(panel);document.body.appendChild(backdrop);document.body.classList.add('admin-pref-open');
+    var previousFocus=document.activeElement;
+    function shut(){document.removeEventListener('keydown',onKey);document.body.classList.remove('admin-pref-open');backdrop.remove();if(previousFocus&&previousFocus.focus)previousFocus.focus();}
+    function onKey(event){if(event.key==='Escape'){event.preventDefault();shut();}else if(event.key==='Tab'){var focusable=Array.from(panel.querySelectorAll('button:not([disabled]),input:not([disabled])'));if(!focusable.length)return;var first=focusable[0],last=focusable[focusable.length-1];if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}}}
+    document.addEventListener('keydown',onKey);close.addEventListener('click',shut);cancel.addEventListener('click',shut);backdrop.addEventListener('click',function(e){if(e.target===backdrop)shut();});
+    save.addEventListener('click',async function(){save.disabled=true;save.textContent='שומר…';try{await saveDisplayPrefs(next);shut();showToast('ההעדפות נשמרו');}catch(e){save.disabled=false;save.textContent='שמור העדפות';showToast('לא ניתן לשמור את ההעדפות. נסה שוב.');}});
+    close.focus();
+  }
+  function initializeAdminPreferenceControls(){
+    var config=document.getElementById('adminDisplaySettings'),theme=document.getElementById('adminThemeToggle');
+    if(config)config.addEventListener('click',createDisplaySettingsModal);
+    if(theme)theme.addEventListener('click',async function(){if(theme.disabled)return;theme.disabled=true;try{await saveDisplayPrefs(Object.assign({},displayPrefs,{theme:displayPrefs.theme==='dark'?'light':'dark'}));showToast('מצב התצוגה עודכן');}catch(e){showToast('שמירת מצב התצוגה נכשלה');}finally{theme.disabled=false;}});
+  }
+
   var pageMeta = {
     dashboard: ['Dashboard', 'תמונה מהירה של המכירות, המבקרים והלקוחות של VerSans'],
     visitors: ['מבקרים', 'מי נמצא באתר, מי ביקר בעבר ואיך הוא השתמש באתר'],
@@ -1751,7 +1854,7 @@
       {icon:'◐',title:'הגיעו חלקית',value:summary.partial||0,tone:'partial',description:'חלק מהפריטים הגיעו'},
       {icon:'✓',title:'כל הפריטים הגיעו',value:summary.ready||0,tone:'ready',description:'יש לבדוק מוכנות לאריזה'},
       {icon:'▣',title:'יחידות שנקלטו היום',value:summary.arrivedToday||0,tone:'today',description:'סימוני קליטה שבוצעו היום'}
-    ].forEach(function(item){
+    ].filter(function(item){return displayPrefs.tiles.indexOf(item.tone)>=0;}).forEach(function(item){
       var tile=make('div','admin-command-tile admin-command-tile--'+item.tone);
       tile.appendChild(make('span','admin-command-tile__symbol',item.icon));
       tile.appendChild(make('strong','admin-command-tile__number',numberFmt(item.value)));
@@ -1783,36 +1886,45 @@
   }
 
   async function renderDashboardPage() {
-    var range = state.ranges.dashboard;
-    var results = await Promise.all([api('/api/admin/overview?range=' + encodeURIComponent(range)),api('/api/admin/command-center').catch(function(){return null;})]);
+    var range=state.ranges.dashboard;
+    var needsCommand=displayPrefs.sections.indexOf('command')>=0;
+    var results=await Promise.all([api('/api/admin/overview?range='+encodeURIComponent(range)),needsCommand?api('/api/admin/command-center').catch(function(){return null;}):Promise.resolve(null)]);
     var data=results[0],commandData=results[1];
-    var frag = document.createDocumentFragment();
-    var toolbar = make('div', 'admin-toolbar');
-    toolbar.appendChild(renderRangeFilter(range, rangeOptions, function (next) {
-      state.ranges.dashboard = next;
-      renderCurrentPage();
-    }));
-    toolbar.appendChild(make('span', 'admin-toolbar-note', 'מכירות והכנסות מחושבות מ־Paid בלבד'));
+    var frag=document.createDocumentFragment();
+    var toolbar=make('div','admin-toolbar');
+    toolbar.appendChild(renderRangeFilter(range,rangeOptions,function(next){state.ranges.dashboard=next;renderCurrentPage();}));
+    toolbar.appendChild(make('span','admin-toolbar-note','מכירות והכנסות מחושבות מ־Paid בלבד'));
+    var customize=make('button','admin-dashboard-customize','⚙ התאמה אישית של הדאשבורד');customize.type='button';customize.addEventListener('click',createDisplaySettingsModal);toolbar.appendChild(customize);
     frag.appendChild(toolbar);
-    if(commandData)frag.appendChild(commandCenterPanel(commandData));
-    frag.appendChild(systemHealthCard(data.system));
-    frag.appendChild(renderKpis([
-      { label: 'הכנסות Paid', value: moneyAgorot(data.revenueAgorot), hint: 'בטווח שנבחר', primary: true, tone: 'green' },
-      { label: 'הזמנות Paid', value: numberFmt(data.orderCount), hint: 'הזמנות ששולמו' },
-      { label: 'ממוצע להזמנה', value: moneyAgorot(data.averageOrderAgorot), hint: 'AOV' },
-      { label: 'יחידות שנמכרו', value: numberFmt(data.unitsSold), hint: 'מכל המוצרים' },
-      { label: 'Online עכשיו', value: numberFmt(data.visitors && data.visitors.online), hint: 'מבקרים פעילים', tone: 'green' },
-      { label: 'מבקרים היום', value: numberFmt(data.visitors && data.visitors.today), hint: 'Visitor IDs ייחודיים' },
-      { label: 'מבקרים Lifetime', value: numberFmt(data.visitors && data.visitors.lifetime), hint: 'מהרגע שהשמירה הופעלה' },
-      { label: 'משתמשים רשומים', value: numberFmt(data.users && data.users.registeredUsers), hint: numberFmt(data.users && data.users.payingCustomers) + ' לקוחות שילמו' }
-    ]));
-
-    var grid = make('div', 'admin-grid-2');
-    grid.appendChild(card('מגמת מכירות', 'הכנסה יומית מהזמנות Paid', renderSalesChart(data.dailySales, range)));
-    grid.appendChild(card('קיצורי דרך', 'גישה מהירה לכל נתוני החנות', quickLinks()));
-    frag.appendChild(grid);
-    frag.appendChild(topProductsTable((data.topProducts || []).slice(0, 5), 'Top Products', 'המוצרים המובילים בטווח שנבחר'));
-    frag.appendChild(ordersTable(data.recentOrders || [], 'הזמנות Paid אחרונות', 'הזמנות אחרונות בכל הזמנים'));
+    var kpiRows=[
+      { id:'revenue',label:'הכנסות Paid',value:moneyAgorot(data.revenueAgorot),hint:'בטווח שנבחר',primary:true,tone:'green' },
+      { id:'paidOrders',label:'הזמנות Paid',value:numberFmt(data.orderCount),hint:'הזמנות ששולמו' },
+      { id:'aov',label:'ממוצע להזמנה',value:moneyAgorot(data.averageOrderAgorot),hint:'AOV' },
+      { id:'units',label:'יחידות שנמכרו',value:numberFmt(data.unitsSold),hint:'מכל המוצרים' },
+      { id:'online',label:'Online עכשיו',value:numberFmt(data.visitors&&data.visitors.online),hint:'מבקרים פעילים',tone:'green' },
+      { id:'todayVisitors',label:'מבקרים היום',value:numberFmt(data.visitors&&data.visitors.today),hint:'Visitor IDs ייחודיים' },
+      { id:'lifetimeVisitors',label:'מבקרים Lifetime',value:numberFmt(data.visitors&&data.visitors.lifetime),hint:'מהרגע שהשמירה הופעלה' },
+      { id:'users',label:'משתמשים רשומים',value:numberFmt(data.users&&data.users.registeredUsers),hint:numberFmt(data.users&&data.users.payingCustomers)+' לקוחות שילמו' }
+    ];
+    var sections={
+      command: commandData?commandCenterPanel(commandData):null,
+      system:systemHealthCard(data.system),
+      kpis:displayPrefs.kpis.length?renderKpis(kpiRows.filter(function(row){return displayPrefs.kpis.indexOf(row.id)>=0;})):null,
+      sales:card('מגמת מכירות','הכנסה יומית מהזמנות Paid',renderSalesChart(data.dailySales,range)),
+      links:card('קיצורי דרך','גישה מהירה לכל נתוני החנות',quickLinks()),
+      top:topProductsTable((data.topProducts||[]).slice(0,5),'Top Products','המוצרים המובילים בטווח שנבחר'),
+      orders:ordersTable(data.recentOrders||[],'הזמנות Paid אחרונות','הזמנות אחרונות בכל הזמנים')
+    };
+    for(var i=0;i<displayPrefs.sections.length;i++){
+      var id=displayPrefs.sections[i],node=sections[id];
+      if(!node)continue;
+      var nextId=displayPrefs.sections[i+1];
+      if((id==='sales'&&nextId==='links')||(id==='links'&&nextId==='sales')){
+        var grid=make('div','admin-grid-2 admin-display-grid');
+        grid.append(node,sections[nextId]);frag.appendChild(grid);i++;
+      }else frag.appendChild(node);
+    }
+    if(!displayPrefs.sections.length)frag.appendChild(make('div','admin-empty','כל כרטיסי הדאשבורד הוסתרו. לחץ על „התאמה אישית” כדי להציג אותם מחדש.'));
     content.replaceChildren(frag);
   }
 
@@ -4272,9 +4384,10 @@
     renderCurrentPage({ keepContent: true }).then(function () { showToast('הנתונים עודכנו'); });
   });
 
+  initializeAdminPreferenceControls();
   refreshCatalogUndo();
   initGlobalAdminSearch();
   initAdminNotificationCenter();
   initAdminPush().catch(function () {});
-  renderCurrentPage();
+  loadDisplayPrefs().then(function(){renderCurrentPage();}).catch(function(e){if(e.message!=='admin_required')renderCurrentPage();});
 })();

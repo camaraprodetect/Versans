@@ -1,0 +1,61 @@
+/* Versans Admin — display preferences. Kept separate from existing functional styles. */
+.admin-display-theme,.admin-display-settings,.admin-dashboard-customize{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:38px;padding:8px 11px;border-radius:10px;border:1px solid var(--admin-line);background:var(--admin-card);color:var(--admin-text);cursor:pointer;font-size:11px;font-weight:800;white-space:nowrap}
+.admin-display-theme:hover,.admin-display-settings:hover,.admin-dashboard-customize:hover{border-color:#8ca7be}
+.admin-display-theme:disabled{opacity:.55;cursor:wait}
+.admin-dashboard-customize{min-height:36px;color:#25466a}
+.admin-pref-open{overflow:hidden}
+.admin-pref-overlay{position:fixed;inset:0;z-index:1500;background:rgba(6,15,26,.65);display:flex;justify-content:center;align-items:center;padding:20px;direction:rtl}
+.admin-pref-panel{width:min(620px,100%);max-height:min(92vh,920px);min-height:0;display:flex;flex-direction:column;border-radius:18px;background:var(--admin-card);border:1px solid var(--admin-line);color:var(--admin-text);box-shadow:0 30px 100px rgba(0,0,0,.25);overflow:hidden}
+.admin-pref-head{display:flex;justify-content:space-between;align-items:center;padding:20px 23px;border-bottom:1px solid var(--admin-line);gap:12px}
+.admin-pref-head>div{display:grid;gap:4px}.admin-pref-head strong{font-size:20px}.admin-pref-head small{font-size:11px;color:var(--admin-muted)}
+.admin-pref-close{width:38px;height:38px;border:1px solid var(--admin-line);background:transparent;border-radius:10px;font-size:24px;line-height:1;color:var(--admin-text);cursor:pointer}
+.admin-pref-scroll{min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:2px 23px 24px}
+.admin-pref-section{padding:19px 0;border-bottom:1px solid var(--admin-line)}.admin-pref-section:last-child{border:0}
+.admin-pref-section h3{font-size:15px;margin:0 0 5px;color:var(--admin-text)}.admin-pref-section p{font-size:11px;color:var(--admin-muted);margin:0 0 13px;line-height:1.55}
+.admin-pref-modes{display:grid;grid-template-columns:1fr 1fr;gap:10px}.admin-pref-mode{padding:12px;border-radius:11px;border:1px solid var(--admin-line);color:var(--admin-text);background:var(--admin-bg);cursor:pointer;font-size:13px;font-weight:800}.admin-pref-mode.is-active{border:2px solid #438dcc;background:var(--admin-blue-soft);color:var(--admin-text)}
+.admin-pref-list{display:grid;gap:7px}.admin-pref-row{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:50px;padding:7px 10px;border:1px solid var(--admin-line);border-radius:11px;background:var(--admin-bg)}.admin-pref-row.is-disabled{opacity:.65}.admin-pref-label{display:flex;align-items:center;gap:10px;font-size:12px;cursor:pointer;font-weight:700;min-width:0}.admin-pref-label input,.admin-pref-check input{accent-color:#315d83;width:16px;height:16px;flex:none}.admin-pref-arrows{display:flex;gap:5px}.admin-pref-arrows button{border:1px solid var(--admin-line);border-radius:8px;background:var(--admin-card);color:var(--admin-text);width:33px;height:33px;cursor:pointer}.admin-pref-arrows button:disabled{cursor:not-allowed;opacity:.3}
+.admin-pref-checks{display:grid;grid-template-columns:1fr 1fr;gap:7px}.admin-pref-check{display:flex;align-items:center;gap:9px;font-size:12px;padding:10px;background:var(--admin-bg);border:1px solid var(--admin-line);border-radius:9px;cursor:pointer}
+.admin-pref-footer{border-top:1px solid var(--admin-line);padding:14px 23px;display:flex;align-items:center;gap:9px;flex-wrap:wrap;background:var(--admin-card)}
+.admin-pref-footer button{border:1px solid var(--admin-line);padding:11px 15px;border-radius:10px;background:var(--admin-card);color:var(--admin-text);font-size:12px;font-weight:800;cursor:pointer}
+.admin-pref-footer .admin-pref-save{background:#142333;border-color:#142333;color:white;margin-inline-start:auto}.admin-pref-footer .admin-pref-save:disabled{opacity:.55;cursor:wait}
+.admin-pref-footer .admin-pref-reset{color:var(--admin-muted)}
+.admin-display-grid{margin-bottom:18px}.admin-display-grid>.admin-card{height:100%}
+@media(max-width:1190px){.admin-header__actions>.admin-display-theme span,.admin-header__actions>.admin-display-settings span{display:none}.admin-display-theme,.admin-display-settings{padding:7px 9px;min-width:36px;font-size:16px}}
+@media(max-width:650px){.admin-pref-overlay{padding:0;align-items:end}.admin-pref-panel{width:100%;max-height:94dvh;border-radius:20px 20px 0 0}.admin-pref-head{padding:17px}.admin-pref-scroll{padding:0 17px 18px}.admin-pref-footer{padding:13px 17px}.admin-pref-checks{grid-template-columns:1fr 1fr}.admin-dashboard-customize{font-size:10px}}
+/* The dark skin is restricted to /admin and does not alter the shop or product editor. */
+html[data-admin-theme="dark"]{color-scheme:dark;--admin-bg:#0e1824;--admin-card:#1a2a3a;--admin-line:#344759;--admin-line-strong:#42586b;--admin-text:#e7eff7;--admin-muted:#b0bdca;--admin-muted-2:#92a5b5;--admin-green:#59ce97;--admin-green-soft:#173d32;--admin-red:#f29e9e;--admin-red-soft:#3a222c;--admin-amber:#ffcb7d;--admin-amber-soft:#413323;--admin-blue:#93c5fd;--admin-blue-soft:#223c59;--admin-shadow:0 12px 28px rgba(0,0,0,.15)}
+html[data-admin-theme="dark"] .admin-header{background:rgba(24,39,54,.98)}
+html[data-admin-theme="dark"] .admin-sidebar{background:linear-gradient(180deg,#122131,#081521)}
+html[data-admin-theme="dark"] :is(.admin-header h1,.admin-card__head h2,.admin-card__head h3,.admin-table-head h2,.admin-command-head h2,.admin-command-tile__number,.admin-command-tile__label,.admin-kpi__value,.admin-table__strong,.admin-table td,.admin-table th,.admin-kpi__label,.detail-section h3,.detail-item strong,.admin-advanced-orders__head strong,.admin-catalog-heading h2,.admin-catalog-product__text strong,.admin-notices-head strong,.admin-notice__main strong){color:var(--admin-text)}
+html[data-admin-theme="dark"] :is(.admin-card,.admin-kpi,.admin-table-card,.admin-command-tile,.admin-catalog-product,.admin-advanced-orders,.admin-tracking-row,.admin-product-tracking-card,.admin-order-shipping-card,.admin-notices-panel,.admin-notice,.admin-shipping-panel,.admin-visitor-grid,.admin-order-work-card,.admin-filter-card,.admin-info-card,.admin-review-card){background:var(--admin-card);border-color:var(--admin-line);color:var(--admin-text)}
+html[data-admin-theme="dark"] :is(.admin-kpi--primary,.admin-filter-group button.is-active,.admin-notices-toolbar button.is-active,.admin-site-link,.admin-shipment-submit,.admin-advanced-orders__apply){background:#315879;border-color:#315879;color:#fff}
+html[data-admin-theme="dark"] :is(.admin-filter-group button,.admin-sales-chart__button,.admin-pagination button,.admin-icon-button,.admin-mobile-nav,.admin-notice-trigger,.admin-global-search-trigger,.admin-undo-button,.admin-push-button,.admin-more-link,.admin-small-button,.admin-catalog-btn,.admin-notices-close,.admin-notices-toolbar button,.admin-notice__actions button,.admin-notice__actions a,.admin-advanced-orders__reset,.admin-confirm-modal__button--cancel){background:#25394b;color:var(--admin-text);border-color:var(--admin-line)}
+html[data-admin-theme="dark"] :is(.admin-filter-group button:hover,.admin-pagination button:hover,.admin-icon-button:hover,.admin-more-link:hover,.admin-quick-link:hover,.admin-sales-chart__button:hover:not(:disabled)){background:#2e455b}
+html[data-admin-theme="dark"] :is(.admin-quick-link,.admin-sales-chart__tooltip,.admin-product-tracking-card__head,.admin-order-shipping-card__top,.admin-order-shipping-items,.admin-order-shipping-help,.admin-tracking-details>div,.admin-tracking-history__event,.admin-tracking-row,.admin-shipment-card,.admin-shipping-empty,.admin-shipping-customer-preview,.admin-shipping-note,.admin-product-tracking-form,.admin-product-tracking-waiting,.admin-shipment-check,.admin-advanced-orders,.admin-command-order,.admin-command-order__main,.admin-command-list-heading,.admin-command-empty,.admin-detail-panel,.detail-item,.admin-notice.is-read){background:#203245;color:var(--admin-text);border-color:var(--admin-line)}
+html[data-admin-theme="dark"] :is(.admin-table th,.admin-table tbody tr:hover td,.admin-table-card thead,.admin-toolbar,.admin-catalog-toolbar){background:#213447;color:var(--admin-text)}
+html[data-admin-theme="dark"] .admin-toolbar{background:transparent}
+html[data-admin-theme="dark"] :is(.admin-table td,.admin-card__head,.admin-table-head,.admin-tracking-row,.admin-product-tracking-card__head,.admin-shipping-section,.history-item,.admin-notice__actions){border-color:var(--admin-line)}
+html[data-admin-theme="dark"] :is(input,select,textarea){background:#1b2e40;color:var(--admin-text);border-color:var(--admin-line-strong)}
+html[data-admin-theme="dark"] :is(input,select,textarea)::placeholder{color:#a5b5c3}
+html[data-admin-theme="dark"] :is(.admin-quick-link,.admin-rank,.admin-table__mono,.admin-command-order__arrow,.admin-order-ref,.admin-tracking-row__meta strong,.admin-tracking-details strong,.admin-order-shipping-card__top strong,.admin-notice__actions a){color:var(--admin-text)}
+html[data-admin-theme="dark"] .admin-sales-chart__axis{color:var(--admin-muted)}
+html[data-admin-theme="dark"] .admin-sales-chart__grid{stroke:#3c5162}
+html[data-admin-theme="dark"] .admin-sales-chart__line{stroke:#7fb6d9}
+html[data-admin-theme="dark"] .admin-sales-chart__area{fill:rgba(100,160,205,.09)}
+html[data-admin-theme="dark"] .admin-page-loading,html[data-admin-theme="dark"] .admin-empty{color:var(--admin-muted)}
+html[data-admin-theme="dark"] :is(.admin-command-order--ready,.admin-command-tile--ready,.admin-table tbody tr.admin-order-row--connected td,.admin-shipping-customer-preview){background:#17392f;color:#d5f4e3}
+html[data-admin-theme="dark"] :is(.admin-command-order--partial,.admin-command-tile--partial,.admin-table tbody tr.admin-order-row--partial td){background:#41351f;color:#ffe6aa}
+html[data-admin-theme="dark"] :is(.admin-command-order--waiting,.admin-command-tile--waiting,.admin-table tbody tr.admin-order-row--unconnected td){background:#392a32;color:#ffd0d0}
+html[data-admin-theme="dark"] .admin-table tbody tr.admin-order-row--connected:hover td{background:#1a4839}
+html[data-admin-theme="dark"] .admin-table tbody tr.admin-order-row--partial:hover td{background:#524323}
+html[data-admin-theme="dark"] .admin-table tbody tr.admin-order-row--unconnected:hover td{background:#49303b}
+html[data-admin-theme="dark"] .admin-notice--warning{background:#403420}
+html[data-admin-theme="dark"] .admin-notice--danger{background:#432730}
+html[data-admin-theme="dark"] .admin-notice--success{background:#203e35}
+html[data-admin-theme="dark"] .admin-confirm-modal,html[data-admin-theme="dark"] .admin-confirm-panel{background:var(--admin-card);color:var(--admin-text)}
+html[data-admin-theme="dark"] .admin-pref-modes .is-active{background:#244362}
+@media(max-width:720px){
+ .admin-header{height:auto;min-height:106px;display:grid;grid-template-columns:minmax(0,1fr);gap:8px;padding:12px 15px}
+ .admin-header__left{min-width:0}.admin-header__actions{min-width:0;width:100%;overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-width:thin;flex-wrap:nowrap;padding-bottom:3px;gap:8px}
+ .admin-header__actions>*{flex:0 0 auto}.admin-header h1{font-size:21px}
+}

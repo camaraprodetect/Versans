@@ -6334,6 +6334,34 @@ async function adminApi(req, res, pathname, parsed) {
     return true;
   }
 
+  // Dashboard layout and appearance are private to the signed-in administrator.
+  if (pathname === '/api/admin/display-preferences' && req.method === 'GET') {
+    const prefs = await database.getAdminDisplayPreferences(Number(admin.id));
+    json(res,200,{ok:true,preferences:prefs});
+    return true;
+  }
+  if (pathname === '/api/admin/display-preferences' && req.method === 'POST') {
+    if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'}); return true; }
+    const body=await readJsonBody(req,4096);
+    const allowedSections=['command','system','kpis','sales','links','top','orders'];
+    const allowedKpis=['revenue','paidOrders','aov','units','online','todayVisitors','lifetimeVisitors','users'];
+    const allowedTiles=['waiting','partial','ready','today'];
+    function cleanIds(values, allowed) {
+      if (!Array.isArray(values) || values.length>allowed.length || values.some(v=>typeof v!=='string'||!allowed.includes(v))) return null;
+      return Array.from(new Set(values));
+    }
+    const theme=body && body.theme;
+    const sections=cleanIds(body && body.sections,allowedSections);
+    const kpis=cleanIds(body && body.kpis,allowedKpis);
+    const tiles=cleanIds(body && body.tiles,allowedTiles);
+    if (!['light','dark'].includes(theme)||!sections||!kpis||!tiles) {
+      json(res,400,{ok:false,error:'invalid_display_preferences'});return true;
+    }
+    const prefs={theme,sections,kpis,tiles};
+    await database.saveAdminDisplayPreferences(Number(admin.id),prefs);
+    json(res,200,{ok:true,preferences:prefs});return true;
+  }
+
   if (pathname === '/api/admin/access/me' && req.method === 'GET') {
     json(res,200,{ok:true,isOwner: Boolean(admin && normalizeEmail(admin.email)===ADMIN_EMAIL),email:admin && admin.email || ''});return true;
   }

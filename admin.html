@@ -16,6 +16,7 @@
   <title>VerSans Admin</title>
   <link rel="stylesheet" href="/assets/fonts.css?v=20260930-admin-font-v1">
   <link rel="stylesheet" href="/assets/admin.css?v=20261020-bulk-hidden-filters-v1">
+  <link rel="stylesheet" href="/assets/admin-preferences.css?v=20261020-personalization-v1">
 </head>
 <body class="admin-body">
   <script>
@@ -65,6 +66,8 @@
           </div>
         </div>
         <div class="admin-header__actions">
+          <button class="admin-display-theme" id="adminThemeToggle" type="button" aria-label="הפעל מצב כהה" title="מעבר בין מצב כהה ובהיר">☾ <span>מצב כהה</span></button>
+          <button class="admin-display-settings" id="adminDisplaySettings" type="button" title="התאמה אישית של הדאשבורד">⚙ <span>התאמה אישית</span></button>
           <button class="admin-undo-button" id="adminUndoLast" type="button" disabled title="ביטול הפעולה האחרונה בקטלוג">↶ בטל פעולה</button>
           <button class="admin-global-search-trigger" id="adminGlobalSearchOpen" type="button" aria-label="חיפוש בכל האדמין" title="חיפוש בכל האדמין (Ctrl+K)">⌕ <span>חיפוש בכל האדמין</span><kbd>Ctrl K</kbd></button>
           <button class="admin-notice-trigger" id="adminNoticeOpen" type="button" aria-label="מרכז התראות" aria-haspopup="dialog" title="מרכז התראות">♢ <span>התראות</span><b id="adminNoticeCount" hidden>0</b></button>
@@ -113,6 +116,6 @@
       });
     }
   </script>
-  <script src="/assets/admin.js?v=20261020-bulk-hidden-filters-v1"></script>
+  <script src="/assets/admin.js?v=20261020-personalization-v1"></script>
 </body>
 </html>
