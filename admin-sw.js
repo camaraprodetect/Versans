@@ -1,5 +1,5 @@
-const CACHE_VERSION = "versans-admin-20261004-push-v65";
-const SW_VERSION = "20261004-push-v65";
+const CACHE_VERSION = "versans-admin-20261020-task-push-v66";
+const SW_VERSION = "20261020-task-push-v66";
 const NOTIFICATION_ICON = "/images/apple-touch-icon.png";
 
 self.addEventListener("install", () => {
@@ -17,7 +17,7 @@ self.addEventListener("message", (event) => {
     return;
   }
   if (type === "CHECK_PENDING") {
-    if (event.waitUntil) event.waitUntil(showPendingOrderNotifications());
+    if (event.waitUntil) event.waitUntil(Promise.allSettled([showPendingOrderNotifications(),showPendingTaskNotifications()]));
   }
 });
 
@@ -137,8 +137,37 @@ async function showPendingOrderNotifications() {
   }
 }
 
+async function showPendingTaskNotifications() {
+  const response=await fetch('/api/admin/push/tasks/pending',{
+    method:'GET',credentials:'include',cache:'no-store',headers:{Accept:'application/json'}
+  });
+  if(!response.ok)return;
+  const payload=await response.json().catch(()=>({}));
+  const events=Array.isArray(payload.tasks)?payload.tasks:[];
+  let highest=0;
+  for(const task of events) {
+    const id=Number(task.id||0);
+    if(!Number.isSafeInteger(id)||id<1)continue;
+    const manager=String(task.assignedByName||'מנהל').slice(0,100);
+    try {
+      await self.registration.showNotification(task.slot===0?'משימה חדשה ב־Versans':'תזכורת למשימה ב־Versans',{
+        body:task.slot===0?'יש לך משימה חדשה ששויכה על ידי '+manager:'יש לך משימה שעדיין צריך להשלים',
+        icon:NOTIFICATION_ICON,badge:NOTIFICATION_ICON,
+        tag:'versans-task-'+id,renotify:false,requireInteraction:false,
+        data:{url:'/admin/tasks'}
+      });
+      highest=Math.max(highest,id);
+    } catch(_) {break;}
+  }
+  if(highest>0) await fetch('/api/admin/push/tasks/ack',{
+    method:'POST',credentials:'include',cache:'no-store',headers:{
+      Accept:'application/json','Content-Type':'application/json','X-Versans-Admin-Push':'1'
+    },body:JSON.stringify({eventId:highest})
+  }).catch(()=>null);
+}
+
 self.addEventListener("push", (event) => {
-  event.waitUntil(showPendingOrderNotifications());
+  event.waitUntil(Promise.allSettled([showPendingOrderNotifications(),showPendingTaskNotifications()]));
 });
 
 self.addEventListener("notificationclick", (event) => {

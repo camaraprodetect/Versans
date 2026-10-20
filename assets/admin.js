@@ -130,7 +130,9 @@
     products: ['ניהול מוצרים', 'הוספה, עריכה, מחיקה וסנכרון קטלוג עם Google Sheets'],
     creators: ['יוצרי תוכן', 'ניהול הרשאות, קודי יוצרים ומכירות'],
     customers: ['לקוחות', 'משתמשים רשומים, רכישות והוצאות מצטברות'],
-    reviews: ['ביקורות', 'דירוגים, מוצרים מובילים וביקורות אחרונות']
+    reviews: ['ביקורות', 'דירוגים, מוצרים מובילים וביקורות אחרונות'],
+    tasks: ['משימות פנימיות', 'תקלות, שיפורים, משימות ועדיפויות לצוות'],
+    reports: ['ייצוא נתונים ל־PDF', 'בחירת דוח, סינון ושמירה כקובץ PDF']
   };
 
   var rangeOptions = [
@@ -186,7 +188,7 @@
       return 'order-work';
     }
 
-    var match = /^\/admin\/(visitors|sales|order-work|products|customers|reviews|creators)$/.exec(path);
+    var match = /^\/admin\/(visitors|sales|order-work|products|customers|reviews|creators|tasks|reports)$/.exec(path);
     return match ? match[1] : 'dashboard';
   }
 
@@ -258,7 +260,7 @@
 
   async function api(url) {
     var response = await fetch(url, { credentials: 'same-origin', headers: { Accept: 'application/json' } });
-    if (response.status === 401 || response.status === 403) {
+    if (response.status === 401) {
       window.location.href = '/login?next=' + encodeURIComponent(window.location.pathname + window.location.search);
       throw new Error('admin_required');
     }
@@ -277,7 +279,7 @@
       options.body = JSON.stringify(body);
     }
     var response = await fetch(url, options);
-    if (response.status === 401 || response.status === 403) {
+    if (response.status === 401) {
       window.location.href = '/login?next=' + encodeURIComponent(window.location.pathname + window.location.search);
       throw new Error('admin_required');
     }
@@ -472,14 +474,14 @@
       if (scriptUrl.indexOf('/admin-sw.js') === -1) continue;
 
       var version = await readAdminWorkerVersion(registration.active);
-      if (version === '20261004-push-v65') return registration;
+      if (version === '20261020-task-push-v66') return registration;
 
       // An older VerSans Admin worker is still actually receiving pushes.
       // Remove its subscription and registration so iOS cannot keep using it.
       await removeOldAdminWorkerRegistration(registration);
     }
 
-    var fresh = await navigator.serviceWorker.register('/admin-sw.js?v=20261004-push-v65', {
+    var fresh = await navigator.serviceWorker.register('/admin-sw.js?v=20261020-task-push-v66', {
       scope: '/',
       updateViaCache: 'none'
     });
@@ -4354,6 +4356,8 @@
       else if (state.page === 'creators') await renderCreatorsPage();
       else if (state.page === 'customers') await renderCustomersPage();
       else if (state.page === 'reviews') await renderReviewsPage();
+      else if (state.page === 'tasks') await window.VersansAdminTools.renderTasks(content);
+      else if (state.page === 'reports') await window.VersansAdminTools.renderReports(content);
       if (version !== state.requestVersion) return;
     } catch (error) {
       if (version === state.requestVersion && error.message !== 'admin_required') setError(error);

@@ -6,6 +6,7 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const { URL } = require('node:url');
 const { createDatabase } = require('./lib/database.js');
+const { createAdminTools } = require('./lib/admin-tools.js');
 const { createPaymentUrl, verifyPayment, priceOrder } = require('./api/_hyp.js');
 const { PRODUCTS, CATEGORIES } = require('./assets/products.js');
 const { createCatalogManager } = require('./lib/catalog-manager.js');
@@ -66,7 +67,7 @@ const ADMIN_PUSH_DEVICE_TTL_MS = 365 * 24 * 60 * 60 * 1000;
 const ADMIN_PUSH_VAPID_PUBLIC_META_KEY = 'admin_push_vapid_public_v1';
 const ADMIN_PUSH_VAPID_PRIVATE_META_KEY = 'admin_push_vapid_private_jwk_v1';
 const ADMIN_PUSH_TIMEOUT_MS = 10 * 1000;
-const ADMIN_PAGES = new Set(['', 'dashboard', 'visitors', 'sales', 'orders', 'order-work', 'products', 'customers', 'reviews', 'creators']);
+const ADMIN_PAGES = new Set(['tasks', 'reports', '', 'dashboard', 'visitors', 'sales', 'orders', 'order-work', 'products', 'customers', 'reviews', 'creators']);
 const BODY_LIMIT = 48 * 1024 * 1024;
 const REVIEW_IMAGE_LIMIT = 2 * 1024 * 1024;
 const REVIEW_VIDEO_LIMIT = 20 * 1024 * 1024;
@@ -2321,6 +2322,11 @@ function adminCanAccess(user, pathname, method) {
   if (!user) return false;
   if (normalizeEmail(user.email) === ADMIN_EMAIL || String(user.role || '') === 'admin') return true;
   if (String(user.role || '') !== 'staff') return false;
+  // Staff can read and complete only tasks assigned to their own account.
+  if (pathname === '/api/admin/internal-tasks' && method === 'GET') return true;
+  if (/^\/api\/admin\/internal-tasks\/\d+$/.test(pathname) && method === 'PATCH') return true;
+  if (pathname === '/api/admin/push/config' && method === 'GET') return true;
+  if (['/api/admin/push/subscribe','/api/admin/push/unsubscribe'].includes(pathname) && method === 'POST') return true;
   if (method !== 'GET') return false;
   return pathname === '/api/admin/orders' || pathname === '/api/admin/order-work' || /^\/api\/admin\/order-work\/[^/]+(?:\/items\/\d+)?$/.test(pathname) || /^\/api\/admin\/orders\/[^/]+$/.test(pathname) || /^\/api\/admin\/orders\/[^/]+\/shipments$/.test(pathname);
 }
@@ -2453,6 +2459,30 @@ async function sendAdminOrderPush(order) {
   return { ok: delivered > 0, delivered, errors };
 }
 
+async function dispatchTaskPushEvents(events) {
+  if (!events || !events.length) return;
+  const subscriptions=await database.listAdminPushSubscriptions();
+  if (!subscriptions.length) return;
+  const vapid=await ensureAdminPushVapidKeys();
+  const userIds=new Set(events.map(x=>Number(x.userId)));
+  for(const subscription of subscriptions) {
+    if(!userIds.has(Number(subscription.user_id))) continue;
+    try {
+      const response=await sendAdminPushWake(subscription,vapid);
+      if(response.ok) await database.markAdminPushSubscriptionSuccess(subscription.endpoint,Date.now());
+      else if([404,410].includes(Number(response.status))) await database.deleteAdminPushSubscription(subscription.endpoint);
+    } catch(error) { console.error('Task push wake failed:', error && error.message || error); }
+  }
+}
+let taskPushCheckRunning=false;
+async function checkTaskPushSchedule() {
+  if(taskPushCheckRunning) return;
+  taskPushCheckRunning=true;
+  try {
+    const events=await adminTools.duePushEvents(Date.now());
+    if(events.length) await dispatchTaskPushEvents(events);
+  } finally {taskPushCheckRunning=false;}
+}
 function adminPushOrderSummary(order) {
   const customer = parseStoredCustomer(order);
   const customerName = [customer.firstName, customer.lastName].filter(Boolean).join(' ').trim() || customer.name || order.customer_email || 'לקוח/ה';
@@ -2471,15 +2501,36 @@ function adminPushOrderSummary(order) {
 }
 
 async function adminPushDeviceApi(req, res, pathname) {
-  if (pathname !== '/api/admin/push/pending' && pathname !== '/api/admin/push/ack') return false;
+  if (!['/api/admin/push/pending','/api/admin/push/ack',
+         '/api/admin/push/tasks/pending','/api/admin/push/tasks/ack'].includes(pathname)) return false;
   const deviceToken = getAdminPushDeviceToken(req);
   if (!deviceToken) { json(res, 401, { ok: false, error: 'push_device_required' }); return true; }
   const subscription = await database.getAdminPushSubscriptionByDeviceToken(deviceToken);
   if (!subscription) { json(res, 401, { ok: false, error: 'push_device_unknown' }, { 'Set-Cookie': clearAdminPushDeviceCookie(req) }); return true; }
-
+  const pushUser=await getAdminUser(req);
+  if(!pushUser || Number(pushUser.id)!==Number(subscription.user_id)) {
+    json(res,403,{ok:false,error:'push_account_mismatch'});return true;
+  }
+  if(pathname==='/api/admin/push/tasks/pending') {
+    if(req.method!=='GET'){json(res,405,{ok:false,error:'method_not_allowed'});return true;}
+    const tasks=await adminTools.pendingTaskPushes(deviceToken,Number(pushUser.id));
+    json(res,200,{ok:true,tasks});return true;
+  }
+  if(pathname==='/api/admin/push/tasks/ack') {
+    if(req.method!=='POST'){json(res,405,{ok:false,error:'method_not_allowed'});return true;}
+    if(!sameOriginAllowed(req)||String(req.headers['x-versans-admin-push']||'')!=='1'){
+      json(res,403,{ok:false,error:'push_ack_forbidden'});return true;
+    }
+    const body=await readJsonBody(req,8192);
+    const eventId=Number(body && body.eventId);
+    if(!Number.isSafeInteger(eventId)||eventId<1){json(res,400,{ok:false,error:'invalid_event_id'});return true;}
+    const accepted=await adminTools.acknowledgeTaskPushes(deviceToken,Number(pushUser.id),eventId);
+    json(res,accepted?200:404,{ok:accepted});return true;
+  }
   if (pathname === '/api/admin/push/pending') {
     if (req.method !== 'GET') { json(res, 405, { ok: false, error: 'method_not_allowed' }); return true; }
-    const rows = await database.listPaidOrdersAfterId(Number(subscription.last_notified_order_id || 0), 20);
+    const canSeeOrders=normalizeEmail(pushUser.email)===ADMIN_EMAIL || String(pushUser.role||'')==='admin';
+    const rows = canSeeOrders ? await database.listPaidOrdersAfterId(Number(subscription.last_notified_order_id || 0), 20) : [];
     json(res, 200, { ok: true, orders: rows.map(adminPushOrderSummary) });
     return true;
   }
@@ -5097,6 +5148,8 @@ async function packingOrderSummary(order, focusShipmentId = null) {
   };
 }
 
+const adminTools = createAdminTools(database, catalogManager);
+
 async function adminApi(req, res, pathname, parsed) {
   if (!pathname.startsWith('/api/admin/')) return false;
   const shippingBotEndpoint = pathname === '/api/admin/bot/shipping/ready-pickups'
@@ -5116,6 +5169,76 @@ async function adminApi(req, res, pathname, parsed) {
   }
   if (admin && !adminCanAccess(admin, pathname, req.method)) {
     json(res, 403, { ok: false, error: 'permission_denied' });
+    return true;
+  }
+  // Internal task board and on-demand reports; adminCanAccess was checked above.
+  if (pathname === '/api/admin/internal-tasks/assignees' && req.method === 'GET') {
+    const isManager=normalizeEmail(admin.email)===ADMIN_EMAIL || String(admin.role)==='admin';
+    if(!isManager){json(res,403,{ok:false,error:'permission_denied'});return true;}
+    json(res,200,{ok:true,assignees:await adminTools.assignees()});return true;
+  }
+  if (pathname === '/api/admin/internal-tasks') {
+    if (req.method === 'GET') {
+      const canManage=normalizeEmail(admin.email)===ADMIN_EMAIL || String(admin.role)==='admin';
+      const tasks=await adminTools.listTasks();
+      json(res,200,{ok:true,canManage,tasks:canManage?tasks:tasks.filter(x=>String(x.assignedTo||'').toLowerCase()===normalizeEmail(admin.email))});return true;
+    }
+    if (req.method === 'POST') {
+      if(String(admin.role)==='staff'){json(res,403,{ok:false,error:'permission_denied'});return true;}
+      if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'});return true; }
+      const body = await readJsonBody(req, 12 * 1024);
+      try {
+        const task=await adminTools.addTask(body||{},Number(admin.id));
+        json(res,201,{ok:true,task});
+        checkTaskPushSchedule().catch(e=>console.error('Task assignment notification failed:',e));
+      }
+      catch(e){ if(e.code===400)json(res,400,{ok:false,error:e.message}); else throw e; }
+      return true;
+    }
+    json(res,405,{ok:false,error:'method_not_allowed'});return true;
+  }
+  const internalTaskMatch=/^\/api\/admin\/internal-tasks\/(\d+)$/.exec(pathname);
+  if (internalTaskMatch) {
+    if (!['PATCH','DELETE'].includes(req.method)) {json(res,405,{ok:false,error:'method_not_allowed'});return true;}
+    if (!sameOriginAllowed(req)){json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
+    const taskId=Number(internalTaskMatch[1]);
+    if (!Number.isSafeInteger(taskId) || taskId<1) {json(res,400,{ok:false,error:'invalid_task_id'});return true;}
+    const body=await readJsonBody(req,12*1024);
+    try {
+      const isStaff=String(admin.role)==='staff' && normalizeEmail(admin.email)!==ADMIN_EMAIL;
+      if(isStaff){
+        if(req.method!=='PATCH'){json(res,403,{ok:false,error:'permission_denied'});return true;}
+        const previous=(await adminTools.listTasks()).find(x=>x.id===taskId);
+        if(!previous || String(previous.assignedTo||'').toLowerCase()!==normalizeEmail(admin.email)
+            || !['done','in_progress'].includes(String(body&&body.status))) {
+          json(res,403,{ok:false,error:'task_not_assigned_to_you'});return true;
+        }
+        // Staff may only change the progress, never reassignment or other fields.
+        const patch={...previous,status:body.status,updatedAt:body.updatedAt};
+        const task=await adminTools.updateTask(taskId,patch,Number(admin.id));
+        json(res,200,{ok:true,task});return true;
+      }
+      if(req.method==='DELETE'){
+        await adminTools.deleteTask(taskId, Number(body&&body.updatedAt));
+        json(res,200,{ok:true});
+      }else{
+        const task=await adminTools.updateTask(taskId,body||{},Number(admin.id));
+        if(!task)json(res,404,{ok:false,error:'task_not_found'});
+        else {
+          json(res,200,{ok:true,task});
+          checkTaskPushSchedule().catch(e=>console.error('Task reassignment notification failed:',e));
+        }
+      }
+    }catch(e){if(e.code===400||e.code===409)json(res,e.code,{ok:false,error:e.message});else throw e;}
+    return true;
+  }
+  if (pathname === '/api/admin/export-data') {
+    if (req.method !== 'GET') {json(res,405,{ok:false,error:'method_not_allowed'});return true;}
+    try {
+      const result=await adminTools.report(Object.fromEntries(parsed.searchParams.entries()));
+      res.setHeader('Cache-Control','no-store');
+      json(res,200,{ok:true,...result});
+    } catch(e){if(e.code===400)json(res,400,{ok:false,error:e.message});else throw e;}
     return true;
   }
   // Admin-only parcel reception workflow; doesn't change tracking or send WhatsApp.
@@ -5217,6 +5340,7 @@ async function adminApi(req, res, pathname, parsed) {
     if (!deviceToken) deviceToken = crypto.randomBytes(32).toString('base64url');
     if (cursor === null) cursor = await database.maxPaidOrderId();
     await database.upsertAdminPushSubscription(Number(admin.id), deviceToken, subscription, String(req.headers['user-agent'] || ''), cursor, Date.now());
+    await adminTools.initializeTaskPushCursor(deviceToken,Number(admin.id));
     json(res, 200, { ok: true }, { 'Set-Cookie': adminPushDeviceCookie(deviceToken, req) });
     return true;
   }
@@ -7101,7 +7225,8 @@ async function adminPage(req, res, pathname) {
     redirect(res, '/login', 302);
     return true;
   }
-  if (normalizeEmail(currentUser.email) !== ADMIN_EMAIL && String(currentUser.role||'') !== 'admin') {
+  if (normalizeEmail(currentUser.email) !== ADMIN_EMAIL && String(currentUser.role||'') !== 'admin'
+      && !(String(currentUser.role||'')==='staff' && slug==='tasks')) {
     res.statusCode = 403;
     res.setHeader('Content-Type', 'text/plain; charset=utf-8');
     res.setHeader('Cache-Control', 'no-store');
@@ -8734,10 +8859,19 @@ setInterval(async () => {
   try { await retryRecentAdminOrderPushes(); } catch (err) { console.error('Admin order push retry failed:', err); }
 }, ORDER_NOTIFICATION_WEBHOOK_RETRY_MS).unref();
 
+setInterval(()=>{checkTaskPushSchedule().catch(e=>console.error('Task reminder scheduler failed:',e));},60*1000).unref();
+
 async function start() {
   await database.init();
   await creatorProgram.init();
   await catalogManager.init();
+  await adminTools.ensure();
+  // Upgrade previously subscribed devices before creating fresh task events.
+  for(const subscription of await database.listAdminPushSubscriptions()) {
+    if(subscription.user_id) await adminTools.initializeTaskPushCursor(subscription.device_token,Number(subscription.user_id));
+  }
+  // Catch up missed schedule checks after a Render redeploy.
+  checkTaskPushSchedule().catch(e=>console.error('Task reminder startup check failed:',e));
   seoCatalogSnapshot = seoSnapshot();
   seoCatalogInitialized = true;
   // Never purge real orders, reviews or customers during a deployment.

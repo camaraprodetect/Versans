@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="/assets/fonts.css?v=20260930-admin-font-v1">
   <link rel="stylesheet" href="/assets/admin.css?v=20261020-bulk-hidden-filters-v1">
   <link rel="stylesheet" href="/assets/admin-preferences.css?v=20261020-personalization-v1">
+  <link rel="stylesheet" href="/assets/admin-tools.css?v=20261020-task-push-v66">
 </head>
 <body class="admin-body">
   <script>
@@ -43,6 +44,8 @@
         <a href="/admin/products" data-admin-page="products"><span class="admin-nav__icon">◇</span><span>מוצרים</span></a>
         <a href="/admin/creators" data-admin-page="creators"><span class="admin-nav__icon">♛</span><span>יוצרי תוכן</span></a>
         <a href="/admin/customers" data-admin-page="customers"><span class="admin-nav__icon">♙</span><span>לקוחות</span></a>
+        <a href="/admin/tasks" data-admin-page="tasks"><span class="admin-nav__icon">☑</span><span>משימות פנימיות</span></a>
+        <a href="/admin/reports" data-admin-page="reports"><span class="admin-nav__icon">▣</span><span>ייצוא דוחות PDF</span></a>
         <a href="/admin/reviews" data-admin-page="reviews"><span class="admin-nav__icon">★</span><span>ביקורות</span></a>
       </nav>
 
@@ -91,7 +94,7 @@
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", async function () {
         try {
-          const registration = await navigator.serviceWorker.register("/admin-sw.js?v=20261004-push-v65", {
+          const registration = await navigator.serviceWorker.register("/admin-sw.js?v=20261020-task-push-v66", {
             scope: "/",
             updateViaCache: "none"
           });
@@ -116,6 +119,7 @@
       });
     }
   </script>
-  <script src="/assets/admin.js?v=20261020-personalization-v1"></script>
+  <script src="/assets/admin-tools.js?v=20261020-task-push-v66"></script>
+  <script src="/assets/admin.js?v=20261020-task-push-v66"></script>
 </body>
 </html>
