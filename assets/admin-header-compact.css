@@ -1,0 +1,62 @@
+/* Compact admin toolbar. Keeps the existing controls, IDs and event handlers. */
+.admin-header{height:auto!important;min-height:94px;padding-block:13px!important;gap:16px!important;overflow:visible!important}
+.admin-header__left{min-width:180px;flex:0 1 auto}
+.admin-header__actions{display:flex!important;align-items:center;justify-content:flex-start!important;flex-wrap:nowrap!important;gap:8px!important;min-width:0;margin-inline-start:0;padding:0!important;overflow:visible!important}
+.admin-header__actions>.admin-ai-launch{order:1}
+.admin-header__actions>.admin-global-search-trigger{order:2}
+.admin-header__actions>.admin-notice-trigger{order:3}
+.admin-header__actions>.admin-header-more{order:4}
+.admin-header__actions>button:not(.admin-ai-launch):not(.admin-global-search-trigger):not(.admin-notice-trigger):not(.admin-header-more__trigger),.admin-header__actions>a:not(.admin-header-more__trigger){display:none}
+.admin-header__actions>button,.admin-header-more__trigger{white-space:nowrap;flex-shrink:0;height:42px;min-height:42px;box-sizing:border-box}
+.admin-header__actions>.admin-global-search-trigger kbd{display:none}
+.admin-header-more{position:relative;z-index:80;flex-shrink:0;direction:rtl}
+.admin-header-more__trigger{display:inline-flex;align-items:center;gap:8px;padding:0 14px;border:1px solid var(--admin-line,#dce3ea);background:var(--admin-card,#fff);color:var(--admin-text,#142333);border-radius:12px;font:inherit;font-size:12px;font-weight:800;cursor:pointer;box-shadow:none}
+.admin-header-more__trigger:hover,.admin-header-more.is-open .admin-header-more__trigger{background:var(--admin-bg,#f4f7f9);border-color:#92a6b8}
+.admin-header-more__trigger>span:first-child{font-size:23px;line-height:1;transform:translateY(-3px)}
+.admin-header-more__panel{position:absolute;top:calc(100% + 12px);inset-inline-start:0;width:235px;max-width:calc(100vw - 28px);padding:8px;background:var(--admin-card,#fff);color:var(--admin-text,#142333);border:1px solid var(--admin-line,#d8e1e9);border-radius:16px;box-shadow:0 22px 60px rgba(5,20,36,.20);display:grid;gap:4px;z-index:100;max-height:min(70vh,520px);overflow-y:auto}
+.admin-header-more__panel[hidden]{display:none!important}
+.admin-header-more__item{display:flex;align-items:center;min-height:44px;border-radius:10px}
+.admin-header-more__item>button,.admin-header-more__item>a{display:flex!important;align-items:center;justify-content:flex-start;gap:11px;height:auto!important;min-height:43px!important;width:100%;padding:9px 12px!important;border:0!important;border-radius:10px!important;background:transparent!important;color:var(--admin-text,#142333)!important;text-decoration:none;font:inherit!important;font-size:13px!important;font-weight:700!important;white-space:normal!important;box-shadow:none!important;text-align:right!important}
+.admin-header-more__item>button:hover,.admin-header-more__item>a:hover{background:var(--admin-bg,#eef3f7)!important;transform:none!important}
+.admin-header-more__item>button span{display:inline!important}
+.admin-header-more__item>button:disabled{opacity:.48;cursor:not-allowed}
+.admin-header-more__item>button[hidden]{display:none!important}
+.admin-header-more__item.is-status{padding:8px 12px}
+.admin-header-more__item .admin-live{display:inline-flex!important;padding:4px 10px;box-shadow:none!important}
+.admin-header-more__item>.admin-icon-button{font-size:17px!important}
+.admin-header__actions>.admin-notice-trigger,.admin-header__actions>.admin-global-search-trigger{font-size:13px!important;font-weight:800}
+.admin-header__actions>.admin-notice-trigger b{margin-inline-start:3px}
+@media(max-width:1200px){
+ .admin-header__eyebrow{display:none}
+ .admin-header__actions>.admin-global-search-trigger span{display:none!important}
+ .admin-header__actions>.admin-global-search-trigger{width:42px;justify-content:center;padding-inline:0!important;font-size:20px!important}
+ .admin-header__actions>.admin-notice-trigger span{display:none!important}
+ .admin-header__actions>.admin-notice-trigger{min-width:42px;padding-inline:10px!important;font-size:18px!important}
+}
+@media(max-width:900px){
+ .admin-header{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:space-between!important;min-height:74px;padding:10px 14px!important}
+ .admin-header__left{flex:1 1 auto;min-width:0!important;gap:9px}
+ .admin-header__left>div{min-width:0}
+ .admin-header__left p:last-child{display:none!important}
+ .admin-header h1{font-size:18px!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:35vw}
+ .admin-header__actions{width:auto!important;flex:0 0 auto;gap:5px!important;overflow:visible!important}
+ .admin-header__actions>.admin-ai-launch{width:41px;min-width:41px;padding:0!important}
+ .admin-header__actions>.admin-ai-launch .admin-ai-launch__label{display:none!important}
+ .admin-header__actions>.admin-ai-launch .admin-ai-launch__icon{margin:0}
+ .admin-header-more__trigger{min-width:41px;width:41px;justify-content:center;padding:0}
+ .admin-header-more__label{display:none!important}
+ .admin-header-more__panel{inset-inline-start:auto;inset-inline-end:0}
+}
+@media(max-width:530px){
+ .admin-header h1{font-size:16px!important;max-width:30vw}
+ .admin-header__actions{gap:4px!important}
+ .admin-header__actions>.admin-notice-trigger,.admin-header__actions>.admin-global-search-trigger,.admin-header__actions>.admin-ai-launch,.admin-header-more__trigger{width:38px!important;min-width:38px!important;height:39px!important;min-height:39px!important;border-radius:11px!important}
+ .admin-header{padding-inline:10px!important;gap:7px!important}
+ .admin-mobile-nav{min-width:36px;padding-inline:8px}
+}
+html[data-admin-theme="dark"] .admin-header-more__trigger{background:var(--admin-card,#213346);color:var(--admin-text,#e4eef5);border-color:var(--admin-line,#39516a)}
+
+/* Keep the dropdown entirely within the workspace, clear of the desktop sidebar. */
+.admin-header-more__panel{inset-inline-start:auto!important;inset-inline-end:auto!important;left:0!important;right:auto!important}
+.admin-header-more__item[hidden]{display:none!important}
+.admin-header-more__item .admin-icon-button span{font:700 13px/1.35 inherit}
