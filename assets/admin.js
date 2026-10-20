@@ -2392,7 +2392,7 @@
     var wrap=make('div','vs-pack-work');
     var intro=make('div','vs-pack-intro');
     intro.appendChild(make('strong','','קליטת חבילות למרכז האריזה של VerSans'));
-    intro.appendChild(make('p','','סרקו חבילה, העלו צילום או הדביקו תמונה. המערכת תאתר את מספר המעקב ואת פריטי ההזמנה. קליטה מאושרת תסמן אותם כהגיעו.'));
+    intro.appendChild(make('p','','צלמו חבילה, העלו תמונה או הדביקו צילום: אם זוהה משלוח יחיד, הפריטים המשויכים אליו יסומנו כהגיעו אוטומטית. בחיפוש ידני אפשר לבדוק את ההזמנה לפני אישור קליטה.'));
     wrap.appendChild(intro);
 
     var form=make('form','vs-pack-search');
@@ -2455,6 +2455,9 @@
         var main=make('div','vs-pack-item-main');
         main.appendChild(make('strong','',item.name));
         main.appendChild(make('small','',item.receivedQty+' / '+item.qty+' הגיעו'));
+        if(data.focusShipmentId && (item.units||[]).some(function(unit){return Number(unit.shipmentId)===Number(data.focusShipmentId);})){
+          main.appendChild(make('small','vs-pack-linked-label','משויך לחבילה שזוהתה'));
+        }
         var units=make('div','vs-pack-units');
         (item.units||[]).forEach(function(unit){
           var label=make('label','vs-pack-unit'+(unit.arrived?' is-arrived':''));
@@ -2485,14 +2488,26 @@
         });result.appendChild(confirm);
       }
     }
-    async function lookup(tracking){
+    async function lookup(tracking, receiveOnScan){
       var input=String(tracking||'').trim().replace(/\s+/g,'').toUpperCase();
       if(!input){feedback('יש להזין מספר מעקב.',true);return;}
       trackingInput.value=input;find.disabled=true;result.hidden=true;
-      candidates.replaceChildren();feedback('בודק לאיזו הזמנה שייך המשלוח…');
+      candidates.replaceChildren();
+      feedback(receiveOnScan?'משלוח זוהה. קולט את הפריטים המשויכים…':'בודק לאיזו הזמנה שייך המשלוח…');
       try{
-        var found=await api('/api/admin/packaging/lookup?trackingNumber='+encodeURIComponent(input));
-        showOrder(found);feedback('נמצאה הזמנה. בדקו את הפרטים ולחצו על קליטת משלוח.');
+        var found=receiveOnScan
+          ? await apiAction('/api/admin/packaging/scan','POST',{trackingNumber:input})
+          : await api('/api/admin/packaging/lookup?trackingNumber='+encodeURIComponent(input));
+        showOrder(found);
+        if(receiveOnScan){
+          if(found.newlyReceived>0){
+            feedback('✓ החבילה נקלטה אוטומטית! '+found.newlyReceived+' יחידות סומנו כהגיעו.');
+          } else {
+            feedback('המשלוח זוהה, אבל לא סומנו יחידות חדשות. ייתכן שכבר נקלט או שסומנו פריטים ידנית כלא הגיעו. אפשר לתקן את הסימונים ברשימה.');
+          }
+        } else {
+          feedback('נמצאה הזמנה. לבדיקה ידנית, בדקו את הפריטים ולחצו על קליטת משלוח.');
+        }
       }catch(error){feedback(message(error),true);}
       finally{find.disabled=false;}
     }
@@ -2528,16 +2543,28 @@
       var matches=tokensFromText(extracted.join(' '));
       if(!matches.length){feedback('לא זוהה מספר מעקב ברור. צלמו את המדבקה מקרוב או הקלידו את המספר.',true);return;}
       var valid=[];
+      var seenShipments=Object.create(null);
       for(var index=0;index<matches.length;index++){
-        try{var r=await api('/api/admin/packaging/lookup?trackingNumber='+encodeURIComponent(matches[index]));if(r.orderRef)valid.push(matches[index]);}catch(_){/* a barcode can be a packaging-only barcode */}
+        try{
+          var r=await api('/api/admin/packaging/lookup?trackingNumber='+encodeURIComponent(matches[index]));
+          if(r.orderRef){
+            // A label may contain the original tracking number and its alias.
+            // Both point to the same physical parcel and must count as one match.
+            var shipmentKey=String(r.focusShipmentId||matches[index]);
+            if(!seenShipments[shipmentKey]){
+              seenShipments[shipmentKey]=true;
+              valid.push(matches[index]);
+            }
+          }
+        }catch(_){/* a barcode can be a packaging-only barcode */}
       }
-      if(valid.length===1){lookup(valid[0]);return;}
+      if(valid.length===1){lookup(valid[0],true);return;}
       if(!valid.length){
         feedback('זוהו מספרים בתמונה, אבל אף אחד מהם לא משויך למשלוח במערכת. בחרו מספר לבדיקה ידנית.',true);
       } else feedback('נמצאו כמה משלוחים. בחרו את המספר שמתאים לחבילה.');
       (valid.length?valid:matches).forEach(function(candidate){
         var button=make('button','vs-pack-candidate',candidate);button.type='button';
-        button.onclick=function(){lookup(candidate);};candidates.appendChild(button);
+        button.onclick=function(){lookup(candidate,valid.length>0);};candidates.appendChild(button);
       });
     }
     camera.addEventListener('change',function(){analyzeImage(camera.files&&camera.files[0]);camera.value='';});
