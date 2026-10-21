@@ -69,7 +69,7 @@
     var labels={};data.columns.forEach(function(c){labels[c.key]=txt(c.label);});
     var pages=[],pageNum=0,canvas=document.createElement('canvas');canvas.width=W;canvas.height=H;
     var ctx=canvas.getContext('2d',{alpha:false});if(!ctx)throw new Error('הדפדפן לא תומך ביצירת PDF');
-    var y=TOP,wide=names.length>4,cellWidth=(W-2*X)/Math.min(names.length,4),lineH=27;
+    var y=TOP,wide=names.length>4&&!params.forceTable,cellWidth=(W-2*X)/(params.forceTable?names.length:Math.min(names.length,4)),lineH=27;
     var range=(params.from||params.to)?'טווח: '+(params.from||'התחלה')+' עד '+(params.to||'היום'):'כל התאריכים';
     var when=new Date(data.generatedAt||Date.now()).toLocaleString('he-IL',{timeZone:'Asia/Jerusalem'});
     function begin(){

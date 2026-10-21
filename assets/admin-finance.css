@@ -1,0 +1,44 @@
+/* Business ledger pages, aligned with the existing VerSans Admin palette. */
+.vs-finance{display:grid;gap:19px;color:var(--admin-navy,#142333);width:100%;min-width:0;direction:rtl}
+.vs-finance-intro h2{margin:0 0 6px;font-size:21px;font-weight:800}
+.vs-finance-intro p{margin:0;font-size:12px;color:var(--admin-muted,#667582);line-height:1.7}
+.vs-finance-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.vs-finance-stat,.vs-finance-panel{background:var(--admin-card,#fff);border:1px solid var(--admin-line,#e0e6eb);border-radius:14px}
+.vs-finance-stat{padding:20px 22px;display:grid;gap:7px}
+.vs-finance-stat span{font-size:12px;color:var(--admin-muted,#667582);font-weight:600}
+.vs-finance-stat strong{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums}
+.vs-finance-panel{padding:22px;min-width:0}
+.vs-finance-panel h3{margin:0;font-size:16px;font-weight:800}
+.vs-finance-entry{display:grid;gap:16px}
+.vs-finance-entry-grid{display:grid;grid-template-columns:minmax(180px,2fr) minmax(110px,1fr) minmax(135px,1fr) minmax(135px,1fr);gap:12px}
+.vs-finance-field{display:flex;flex-direction:column;gap:7px;min-width:0;color:var(--admin-navy,#142333)}
+.vs-finance-field span{font-size:11px;font-weight:700}
+.vs-finance-field input,.vs-finance-field select{width:100%;height:41px;min-width:0;border:1px solid var(--admin-line-strong,#cbd4dc);border-radius:9px;background:var(--admin-card,#fff);padding:8px 10px;color:inherit;font:inherit;font-size:12px;outline:none}
+.vs-finance-field input:focus,.vs-finance-field select:focus{border-color:#50657b;box-shadow:0 0 0 3px rgba(20,35,51,.08)}
+.vs-finance-form-foot{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.vs-finance-form-foot small{font-size:10px;color:var(--admin-muted,#667582)}
+.vs-finance-button{border-radius:9px;min-height:39px;padding:8px 16px;font-size:12px;font-family:inherit;font-weight:750;cursor:pointer;white-space:nowrap;transition:background .16s ease}
+.vs-finance-primary{background:#142333;border:1px solid #142333;color:#fff}
+.vs-finance-primary:hover:not(:disabled){background:#263e55}
+.vs-finance-neutral{background:var(--admin-card,#fff);border:1px solid var(--admin-line-strong,#cbd4dc);color:inherit}
+.vs-finance-neutral:hover:not(:disabled){background:var(--admin-soft,#f4f7f9)}
+.vs-finance-button:disabled{opacity:.52;cursor:not-allowed}
+.vs-finance-toolbar{display:flex;align-items:end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:13px}
+.vs-finance-filters{display:flex;align-items:end;flex-wrap:wrap;gap:8px}
+.vs-finance-filters .vs-finance-field input{width:143px;height:39px}
+.vs-finance-scroll{width:100%;overflow-x:auto}
+.vs-finance-table{border-collapse:collapse;width:100%;min-width:560px;font-size:12px;text-align:right}
+.vs-finance-table th{background:var(--admin-soft,#f5f7f8);padding:12px 13px;color:var(--admin-muted,#667582);font-size:11px;font-weight:800;border-bottom:1px solid var(--admin-line,#e0e6eb);white-space:nowrap}
+.vs-finance-table td{padding:14px 13px;border-bottom:1px solid var(--admin-line,#e0e6eb);vertical-align:middle;line-height:1.5;overflow-wrap:anywhere}
+.vs-finance-table tbody tr:hover{background:var(--admin-soft,#f9fafb)}
+.vs-finance-money{font-weight:800;white-space:nowrap;font-variant-numeric:tabular-nums}
+.vs-finance-ref{direction:ltr;text-align:right;font-weight:750;unicode-bidi:isolate}
+.vs-finance-order-link{color:#255b85;text-decoration:underline;text-underline-offset:3px;font-weight:750}
+.vs-finance-empty{text-align:center;padding:30px!important;color:var(--admin-muted,#667582)}
+.vs-finance-pagination{display:flex;justify-content:center;align-items:center;gap:17px;padding-top:18px}
+.vs-finance-pagination span{font-size:11px;color:var(--admin-muted,#667582);font-variant-numeric:tabular-nums}
+.vs-finance-status{margin:0;min-height:0;font-size:11px;color:#36735b}
+.vs-finance-status:empty{display:none}
+.vs-finance-status.is-error{color:#bf3845}
+@media(max-width:950px){.vs-finance-entry-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.vs-finance{gap:13px}.vs-finance-stat{padding:15px}.vs-finance-stat strong{font-size:20px}.vs-finance-panel{padding:14px}.vs-finance-entry-grid{grid-template-columns:1fr}.vs-finance-filters{width:100%}.vs-finance-filters .vs-finance-field{flex:1 1 120px}.vs-finance-filters .vs-finance-field input{width:100%}.vs-finance-filters .vs-finance-button{flex:1 1 auto}}

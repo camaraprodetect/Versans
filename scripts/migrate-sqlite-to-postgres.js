@@ -28,6 +28,12 @@ const TABLES = [
     numeric: ['id','user_id','amount_agorot','created_at','paid_at','updated_at']
   },
   {
+    name: 'admin_expenses',
+    key: 'id',
+    columns: ['id','description','category','amount_agorot','expense_date','employee_user_id','employee_name','request_id','created_at'],
+    numeric: ['id','amount_agorot','employee_user_id','created_at']
+  },
+  {
     name: 'reviews',
     key: 'id',
     columns: ['id','user_id','review_name','contact_phone','verified_purchase','review_product_id','review_product_variant','rating','body','review_date','image_blob','image_mime','status','created_at','updated_at'],
@@ -165,9 +171,9 @@ async function copySnapshotToPostgres(client, snapshot, replaceTarget = false) {
 
   await client.query('BEGIN');
   try {
-    if (replaceTarget) await client.query('TRUNCATE review_images, review_products, reviews, orders, sessions, users, schema_meta RESTART IDENTITY CASCADE');
+    if (replaceTarget) await client.query('TRUNCATE review_images, review_products, reviews, admin_expenses, orders, sessions, users, schema_meta RESTART IDENTITY CASCADE');
     for (const descriptor of TABLES) await insertTable(client, descriptor, snapshot[descriptor.name]);
-    for (const table of ['users','sessions','orders','reviews','review_images']) await resetIdentity(client, table);
+    for (const table of ['users','sessions','orders','admin_expenses','reviews','review_images']) await resetIdentity(client, table);
     await client.query('COMMIT');
   } catch (err) {
     try { await client.query('ROLLBACK'); } catch (_) {}

@@ -68,7 +68,7 @@ const ADMIN_PUSH_DEVICE_TTL_MS = 365 * 24 * 60 * 60 * 1000;
 const ADMIN_PUSH_VAPID_PUBLIC_META_KEY = 'admin_push_vapid_public_v1';
 const ADMIN_PUSH_VAPID_PRIVATE_META_KEY = 'admin_push_vapid_private_jwk_v1';
 const ADMIN_PUSH_TIMEOUT_MS = 10 * 1000;
-const ADMIN_PAGES = new Set(['tasks', 'reports', '', 'dashboard', 'visitors', 'sales', 'orders', 'order-work', 'products', 'customers', 'reviews', 'creators']);
+const ADMIN_PAGES = new Set(['tasks', 'reports', 'expenses', 'income', '', 'dashboard', 'visitors', 'sales', 'orders', 'order-work', 'products', 'customers', 'reviews', 'creators']);
 const BODY_LIMIT = 48 * 1024 * 1024;
 const REVIEW_IMAGE_LIMIT = 2 * 1024 * 1024;
 const REVIEW_VIDEO_LIMIT = 20 * 1024 * 1024;
@@ -2324,6 +2324,7 @@ function adminCanAccess(user, pathname, method) {
   if (normalizeEmail(user.email) === ADMIN_EMAIL || String(user.role || '') === 'admin') return true;
   if (String(user.role || '') !== 'staff') return false;
   // Staff can read and complete only tasks assigned to their own account.
+  if (pathname === '/api/admin/finance/expenses' && ['GET','POST'].includes(method)) return true;
   if (pathname === '/api/admin/internal-tasks' && method === 'GET') return true;
   if (/^\/api\/admin\/internal-tasks\/\d+$/.test(pathname) && method === 'PATCH') return true;
   if (pathname === '/api/admin/push/config' && method === 'GET') return true;
@@ -5248,6 +5249,67 @@ async function adminApi(req, res, pathname, parsed) {
     json(res, 403, { ok: false, error: 'permission_denied' });
     return true;
   }
+  // Money dashboard: expenses are staff-editable with a server-stamped employee identity.
+  // Income is derived solely from verified paid orders, so a repeated callback cannot duplicate it.
+  if (pathname === '/api/admin/finance/expenses' || pathname === '/api/admin/finance/income') {
+    const isExpenses=pathname.endsWith('/expenses');
+    if (req.method === 'POST' && isExpenses) {
+      if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'});return true; }
+      const body=await readJsonBody(req);
+      const description=String(body && body.description || '').trim();
+      const category=String(body && body.category || 'אחר').trim();
+      const amountText=String(body && body.amount || '').trim();
+      const expenseDate=String(body && body.date || '').trim();
+      const requestId=String(body && body.requestId || '').trim();
+      const validDate=/^\d{4}-\d{2}-\d{2}$/.test(expenseDate)
+        && Number.isFinite(Date.parse(expenseDate+'T00:00:00Z'))
+        && new Date(expenseDate+'T00:00:00Z').toISOString().slice(0,10)===expenseDate;
+      if (!description || description.length>300 || !category || category.length>70 ||
+          !/^\d{1,8}(?:\.\d{1,2})?$/.test(amountText) || !validDate ||
+          !/^[0-9a-f-]{36}$/i.test(requestId)) {
+        json(res,400,{ok:false,error:'invalid_expense'});return true;
+      }
+      const amountAgorot=Math.round(Number(amountText)*100);
+      if(!Number.isSafeInteger(amountAgorot)||amountAgorot<=0) { json(res,400,{ok:false,error:'invalid_amount'});return true; }
+      const id=await database.createAdminExpense({
+        description,category,amountAgorot,expenseDate,employeeUserId:Number(admin.id),
+        employeeName:String(admin.name || admin.email || 'עובד').slice(0,150),
+        requestId,createdAt:Date.now()
+      });
+      json(res,200,{ok:true,id});return true;
+    }
+    if (req.method !== 'GET') { json(res,405,{ok:false,error:'method_not_allowed'});return true; }
+    const dateValid=value=>!value || (/^\d{4}-\d{2}-\d{2}$/.test(value) &&
+      Number.isFinite(Date.parse(value+'T00:00:00Z')) &&
+      new Date(value+'T00:00:00Z').toISOString().slice(0,10)===value);
+    const from=String(parsed.searchParams.get('from')||'');
+    const to=String(parsed.searchParams.get('to')||'');
+    if(!dateValid(from)||!dateValid(to)||(from&&to&&from>to)) {json(res,400,{ok:false,error:'invalid_date_range'});return true;}
+    const limit=Math.max(1,Math.min(500,Math.floor(Number(parsed.searchParams.get('limit'))||50)));
+    const offset=Math.max(0,Math.min(1000000,Math.floor(Number(parsed.searchParams.get('offset'))||0)));
+    let result;
+    if(isExpenses) result=await database.listAdminExpenses({from,to,limit,offset});
+    else {
+      // DST-safe start-of-day in Israel (GMT+2 winter / GMT+3 summer).
+      const israelMidnight=date=>{
+        const utc=Date.parse(date+'T00:00:00Z');
+        let instant=utc-3*3600000;
+        const formatter=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Jerusalem',timeZoneName:'shortOffset'});
+        for(let i=0;i<3;i++){
+          const zone=formatter.formatToParts(new Date(instant)).find(p=>p.type==='timeZoneName').value;
+          const match=/GMT([+-])(\d{1,2})(?::(\d{2}))?/.exec(zone);
+          if(!match)throw new Error('israel_timezone_unavailable');
+          const minutes=(Number(match[2])*60+Number(match[3]||0))*(match[1]==='+'?1:-1);
+          instant=utc-minutes*60000;
+        }
+        return instant;
+      };
+      const nextDay=date=>new Date(Date.parse(date+'T00:00:00Z')+86400000).toISOString().slice(0,10);
+      result=await database.listAdminIncome({since:from?israelMidnight(from):null,before:to?israelMidnight(nextDay(to)):null,limit,offset});
+    }
+    json(res,200,{ok:true,...result,limit,offset});return true;
+  }
+
   // Admin-only AI assistant. Every operation is proposed first; confirmation is
   // a separate authenticated request made by a real admin pressing a button.
   if (pathname === '/api/admin/ai/chat' && req.method === 'POST') {
@@ -7329,7 +7391,7 @@ async function adminPage(req, res, pathname) {
     return true;
   }
   if (normalizeEmail(currentUser.email) !== ADMIN_EMAIL && String(currentUser.role||'') !== 'admin'
-      && !(String(currentUser.role||'')==='staff' && slug==='tasks')) {
+      && !(String(currentUser.role||'')==='staff' && (slug==='tasks'||slug==='expenses'))) {
     res.statusCode = 403;
     res.setHeader('Content-Type', 'text/plain; charset=utf-8');
     res.setHeader('Cache-Control', 'no-store');
