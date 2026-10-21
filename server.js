@@ -58,7 +58,8 @@ const PORT = Number(process.env.PORT || 3000);
 const HOST = process.env.HOST || '0.0.0.0';
 const SESSION_COOKIE = 'versans_session';
 const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000;
-const ADMIN_SESSION_TTL_MS = 8 * 60 * 60 * 1000;
+const ADMIN_SESSION_TTL_MS = SESSION_TTL_MS; // Admin and staff no longer expire after 8 hours.
+const SESSION_RENEW_WINDOW_MS = 15 * 24 * 60 * 60 * 1000; // Renew active logins when less than 15 days remain.
 const VISITOR_COOKIE = 'versans_visitor';
 const VISITOR_TTL_MS = 365 * 24 * 60 * 60 * 1000;
 const PRESENCE_RETENTION_MS = 90 * 24 * 60 * 60 * 1000;
@@ -165,12 +166,21 @@ function storefrontCatalogScript() {
 
 function json(res, status, payload, extraHeaders = {}) {
   const body = JSON.stringify(payload);
-  res.writeHead(status, {
+  const headers = {
     'Content-Type': 'application/json; charset=utf-8',
     'Content-Length': Buffer.byteLength(body),
     'Cache-Control': 'no-store',
     ...extraHeaders
-  });
+  };
+  // Do not lose a renewed login cookie if the response also sets a visitor cookie.
+  const existingCookie = res.getHeader('Set-Cookie');
+  if (existingCookie && extraHeaders['Set-Cookie']) {
+    headers['Set-Cookie'] = [
+      ...(Array.isArray(existingCookie) ? existingCookie : [existingCookie]),
+      ...(Array.isArray(extraHeaders['Set-Cookie']) ? extraHeaders['Set-Cookie'] : [extraHeaders['Set-Cookie']])
+    ];
+  }
+  res.writeHead(status, headers);
   res.end(body);
 }
 
@@ -609,13 +619,37 @@ function getPasswordResetToken(req) {
   return String(parseCookies(req.headers.cookie)[PASSWORD_RESET_COOKIE] || '').trim().toLowerCase();
 }
 
-async function getCurrentUser(req) {
+function appendSessionCookie(res, cookie) {
+  if (!res || res.headersSent) return;
+  const previous = res.getHeader('Set-Cookie');
+  const cookies = previous == null ? [] : (Array.isArray(previous) ? previous : [previous]);
+  res.setHeader('Set-Cookie', [...cookies, cookie]);
+}
+
+async function getCurrentUser(req, res) {
+  // Some account/admin helpers receive only the request; use its response
+  // so those authenticated actions can also refresh the persistent cookie.
+  res = res || req._sessionResponse;
   const token = getSessionToken(req);
   if (!token || token.length < 20) return null;
-  const user = await database.findPublicUserBySession(tokenHash(token), Date.now()) || null;
+  const hash = tokenHash(token);
+  const now = Date.now();
+  const user = await database.findPublicUserBySession(hash, now) || null;
   if (user && Number(user.is_blocked || 0) === 1) {
-    await database.deleteSession(tokenHash(token));
+    await database.deleteSession(hash);
     return null;
+  }
+  // Sliding sessions: visitors, staff and admins remain signed in while using
+  // the site. Both the DB expiration and HttpOnly cookie must be renewed.
+  // Sessions still expire after 30 days without authenticated activity, and
+  // explicit logout, account blocking or password reset still revoke them.
+  if (user && Number(user.session_expires_at || 0) - now <= SESSION_RENEW_WINDOW_MS) {
+    // Do not renew a session unless we can also send its replacement cookie.
+    if (res && !res.headersSent) {
+      const renewed = await database.renewSession(hash, now, now + SESSION_TTL_MS);
+      if (!renewed) return null; // Revoked or expired between lookup and update.
+      appendSessionCookie(res, sessionCookie(token, req));
+    }
   }
   return user;
 }
@@ -2739,7 +2773,7 @@ async function presenceApi(req, res, pathname) {
   const body = await readJsonBody(req);
   const existingVisitorId = getVisitorId(req);
   const visitorId = existingVisitorId || crypto.randomUUID();
-  const currentUser = await getCurrentUser(req);
+  const currentUser = await getCurrentUser(req, res);
   const now = Date.now();
   await database.recordPresence(presencePayload(body, visitorId, currentUser ? currentUser.id : null, now));
   const headers = existingVisitorId ? {} : { 'Set-Cookie': visitorCookie(visitorId, req) };
@@ -7393,7 +7427,7 @@ async function creatorRoutes(req, res, pathname, searchParams) {
   const api = pathname === '/api/creators/me' || pathname === '/api/creators/leaderboard' || pathname === '/api/creators/purchases';
   if (!page && !api) return false;
   if (req.method !== 'GET' && req.method !== 'HEAD') { json(res,405,{ok:false,error:'method_not_allowed'}); return true; }
-  const user = await getCurrentUser(req);
+  const user = await getCurrentUser(req, res);
   if (!user) {
     if (api) json(res,401,{ok:false,error:'login_required'});
     else {
@@ -7444,7 +7478,7 @@ async function adminPage(req, res, pathname) {
   if (!isLegacy && slug === null) return false;
   if (!isLegacy && !ADMIN_PAGES.has(slug)) return false;
   if (req.method !== 'GET' && req.method !== 'HEAD') return false;
-  const currentUser = await getCurrentUser(req);
+  const currentUser = await getCurrentUser(req, res);
   if (!currentUser) {
     const requestedNext = String(req.url || '/admin');
     const next = requestedNext.startsWith('/') ? requestedNext : '/admin';
@@ -7522,7 +7556,7 @@ async function authApi(req, res, pathname, parsed) {
     const reason = cleanCheckoutText(body.reason, 1200);
     if (!requestType || !orderRef || name.length < 2 || !validEmail(email) || !phone) { json(res, 400, { ok: false, error: 'invalid_request' }); return true; }
     const order = await database.getOrderByRef(orderRef);
-    const currentUser = await getCurrentUser(req);
+    const currentUser = await getCurrentUser(req, res);
     const emailMatches = order && normalizeEmail(order.customer_email) === email;
     const ownsOrder = order && currentUser && (Number(order.user_id || 0) === Number(currentUser.id) || normalizeEmail(currentUser.email) === normalizeEmail(order.customer_email));
     if (!order || (!emailMatches && !ownsOrder)) { json(res, 404, { ok: false, error: 'order_not_found_or_mismatch' }); return true; }
@@ -7541,7 +7575,7 @@ async function authApi(req, res, pathname, parsed) {
     const requestType = ['access','correction'].includes(String(body.requestType || '')) ? String(body.requestType) : '';
     const name = cleanName(body.name), email = normalizeEmail(body.email), phone = normalizePhone(body.phone), details = cleanCheckoutText(body.details,1600);
     if (!requestType || name.length < 2 || !validEmail(email) || !details) { json(res,400,{ok:false,error:'invalid_request'}); return true; }
-    const user = await getCurrentUser(req); const now=Date.now();
+    const user = await getCurrentUser(req, res); const now=Date.now();
     const requestRef='VS-PRV-'+now.toString(36).toUpperCase()+'-'+crypto.randomBytes(3).toString('hex').toUpperCase();
     await database.insertPrivacyRequest({requestRef,userId:user?Number(user.id):null,requestType,name,email,phone,details,createdAt:now,updatedAt:now});
     json(res,201,{ok:true,requestRef,status:'received'});
@@ -7550,7 +7584,7 @@ async function authApi(req, res, pathname, parsed) {
   }
 
   if (pathname === '/api/auth/me' && req.method === 'GET') {
-    const user = await ensureVerifiedCustomer(await getCurrentUser(req));
+    const user = await ensureVerifiedCustomer(await getCurrentUser(req, res));
 
     if (user) {
       json(res, 200, { ok: true, user: safeUser(user), guest: null });
@@ -7800,14 +7834,14 @@ async function authApi(req, res, pathname, parsed) {
 
   if (pathname === '/api/auth/account' && req.method === 'PATCH') {
     if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'}); return true; }
-    const user=await getCurrentUser(req); if(!user){json(res,401,{ok:false,error:'login_required'});return true;}
+    const user=await getCurrentUser(req, res); if(!user){json(res,401,{ok:false,error:'login_required'});return true;}
     const body=await readJsonBody(req), name=cleanName(body.name), phone=normalizePhone(body.phone);
     if(name.length<2||name.length>70){json(res,400,{ok:false,error:'invalid_name'});return true;} if(!phone){json(res,400,{ok:false,error:'invalid_phone'});return true;}
     await database.updateAccount(user.id,name,phone); const refreshed=await database.findUserById(user.id); json(res,200,{ok:true,user:safeUser({...user,...refreshed})}); return true;
   }
   if (pathname === '/api/auth/marketing-preferences' && req.method === 'PATCH') {
     if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'}); return true; }
-    const user=await getCurrentUser(req); if(!user){json(res,401,{ok:false,error:'login_required'});return true;}
+    const user=await getCurrentUser(req, res); if(!user){json(res,401,{ok:false,error:'login_required'});return true;}
     const body=await readJsonBody(req); const prefs={email:body.email===true,sms:body.sms===true,whatsapp:body.whatsapp===true};
     await database.updateMarketingPreferences(user.id,prefs,Date.now(),TERMS_VERSION);
     if(prefs.email) await createWelcomeCoupon(database,user.id,Date.now());
@@ -7815,19 +7849,19 @@ async function authApi(req, res, pathname, parsed) {
   }
   if (pathname === '/api/auth/accept-terms' && req.method === 'POST') {
     if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'}); return true; }
-    const user=await getCurrentUser(req); if(!user){json(res,401,{ok:false,error:'login_required'});return true;}
+    const user=await getCurrentUser(req, res); if(!user){json(res,401,{ok:false,error:'login_required'});return true;}
     if(typeof database.acceptTermsForUser==='function') await database.acceptTermsForUser(user.id,TERMS_VERSION,Date.now());
     json(res,200,{ok:true,termsVersion:TERMS_VERSION}); return true;
   }
   if (pathname === '/api/auth/account' && req.method === 'DELETE') {
     if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'}); return true; }
-    const sessionUser=await getCurrentUser(req); if(!sessionUser){json(res,401,{ok:false,error:'login_required'});return true;}
+    const sessionUser=await getCurrentUser(req, res); if(!sessionUser){json(res,401,{ok:false,error:'login_required'});return true;}
     const body=await readJsonBody(req), password=String(body.password||''); const full=await database.findUserById(sessionUser.id);
     if(!full||!verifyPassword(password,full.password_hash)){json(res,401,{ok:false,error:'reauth_failed'});return true;}
     await database.deleteUserPreservingReviews(sessionUser.id); json(res,200,{ok:true},{'Set-Cookie':clearSessionCookie(req)}); return true;
   }
   if (pathname === '/api/account/orders' && req.method === 'GET') {
-    const user=await getCurrentUser(req);
+    const user=await getCurrentUser(req, res);
     let rows=[];
     let ownerType='account';
     let ownerName=user ? user.name : null;
@@ -7890,7 +7924,7 @@ async function authApi(req, res, pathname, parsed) {
 
 async function reviewsApi(req, res, pathname) {
   if (pathname === '/api/reviews/eligible-products' && req.method === 'GET') {
-    const user = await ensureVerifiedCustomer(await getCurrentUser(req));
+    const user = await ensureVerifiedCustomer(await getCurrentUser(req, res));
     if (!user) {
       json(res, 401, { ok: false, error: 'login_required' });
       return true;
@@ -7904,7 +7938,7 @@ async function reviewsApi(req, res, pathname) {
   }
 
   if (pathname === '/api/reviews/mine' && req.method === 'GET') {
-    const user = await ensureVerifiedCustomer(await getCurrentUser(req));
+    const user = await ensureVerifiedCustomer(await getCurrentUser(req, res));
     if (!user) {
       json(res, 401, { ok: false, error: 'login_required' });
       return true;
@@ -7927,7 +7961,7 @@ async function reviewsApi(req, res, pathname) {
       json(res, 403, { ok: false, error: 'origin_not_allowed' });
       return true;
     }
-    const user = await ensureVerifiedCustomer(await getCurrentUser(req));
+    const user = await ensureVerifiedCustomer(await getCurrentUser(req, res));
     if (!user) {
       json(res, 401, { ok: false, error: 'login_required' });
       return true;
@@ -8069,7 +8103,7 @@ async function reviewsApi(req, res, pathname) {
       json(res, 403, { ok: false, error: 'origin_not_allowed' });
       return true;
     }
-    const user = await ensureVerifiedCustomer(await getCurrentUser(req));
+    const user = await ensureVerifiedCustomer(await getCurrentUser(req, res));
     if (!user) {
       json(res, 401, { ok: false, error: 'login_required' });
       return true;
@@ -8479,6 +8513,7 @@ function serveStatic(req, res, pathname) {
 }
 
 const server = http.createServer(async (req, res) => {
+  req._sessionResponse = res;
   securityHeaders(res);
 
   let parsed;
@@ -8614,7 +8649,7 @@ const server = http.createServer(async (req, res) => {
         json(res, 403, { ok: false, error: 'origin_not_allowed' });
         return;
       }
-      const currentUser = await getCurrentUser(req);
+      const currentUser = await getCurrentUser(req, res);
       const body = await readJsonBody(req);
       const code = normalizeCouponCode(body && body.code);
       if (!code) { json(res,400,{ok:false,error:'invalid_coupon'}); return; }
@@ -8652,7 +8687,7 @@ const server = http.createServer(async (req, res) => {
       // Always price against the latest database catalog, including edits by another worker.
       await catalogManager.refresh();
       const body = await readJsonBody(req);
-      const currentUser = await getCurrentUser(req);
+      const currentUser = await getCurrentUser(req, res);
       const guestIdentity = currentUser ? null : guestIdentityForRequest(req);
       const mode = checkoutMode();
       const requestedCouponCode = normalizeCouponCode(body && body.couponCode);
