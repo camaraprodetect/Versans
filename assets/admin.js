@@ -129,6 +129,7 @@
     expenses: ['מערכת הוצאות', 'רישום הוצאות, עובד מדווח וייצוא דוחות PDF'],
     orders: ['טיפול בהזמנות', 'טיפול, Tracking, Google Sheets ופרטי הזמנה במקום אחד'],
     'order-work': ['טיפול בהזמנות', 'טיפול, Tracking, Google Sheets ופרטי הזמנה במקום אחד'],
+    anomalies: ['הזמנות חריגות', 'זיהוי הזמנות כפולות, סכומים לא סבירים וניסיונות תשלום חוזרים'],
     products: ['ניהול מוצרים', 'הוספה, עריכה, מחיקה וסנכרון קטלוג עם Google Sheets'],
     creators: ['יוצרי תוכן', 'ניהול הרשאות, קודי יוצרים ומכירות'],
     customers: ['לקוחות', 'משתמשים רשומים, רכישות והוצאות מצטברות'],
@@ -190,7 +191,7 @@
       return 'order-work';
     }
 
-    var match = /^\/admin\/(visitors|sales|income|expenses|order-work|products|customers|reviews|creators|tasks|reports)$/.exec(path);
+    var match = /^\/admin\/(visitors|sales|income|expenses|order-work|anomalies|products|customers|reviews|creators|tasks|reports)$/.exec(path);
     return match ? match[1] : 'dashboard';
   }
 
@@ -4356,6 +4357,7 @@
       else if (state.page === 'expenses') await window.VersansFinance.render(content,'expenses');
       else if (state.page === 'income') await window.VersansFinance.render(content,'income');
       else if (state.page === 'order-work') await renderOrderWorkPage();
+      else if (state.page === 'anomalies') await window.VersansAnomalies.render(content);
       else if (state.page === 'products') await renderProductsPage();
       else if (state.page === 'creators') await renderCreatorsPage();
       else if (state.page === 'customers') await renderCustomersPage();

@@ -7,6 +7,7 @@ const crypto = require('node:crypto');
 const { URL } = require('node:url');
 const { createDatabase, importOpeningExpenseLedger } = require('./lib/database');
 const { createAdminTools } = require('./lib/admin-tools.js');
+const orderAnomalies = require('./lib/admin-order-anomalies.js');
 const { createAdminAI } = require('./lib/admin-ai.js');
 const { createPaymentUrl, verifyPayment, priceOrder } = require('./api/_hyp.js');
 const { PRODUCTS, CATEGORIES } = require('./assets/products.js');
@@ -68,7 +69,7 @@ const ADMIN_PUSH_DEVICE_TTL_MS = 365 * 24 * 60 * 60 * 1000;
 const ADMIN_PUSH_VAPID_PUBLIC_META_KEY = 'admin_push_vapid_public_v1';
 const ADMIN_PUSH_VAPID_PRIVATE_META_KEY = 'admin_push_vapid_private_jwk_v1';
 const ADMIN_PUSH_TIMEOUT_MS = 10 * 1000;
-const ADMIN_PAGES = new Set(['tasks', 'reports', 'expenses', 'income', '', 'dashboard', 'visitors', 'sales', 'orders', 'order-work', 'products', 'customers', 'reviews', 'creators']);
+const ADMIN_PAGES = new Set(['tasks', 'reports', 'expenses', 'income', '', 'dashboard', 'visitors', 'sales', 'orders', 'order-work', 'anomalies', 'products', 'customers', 'reviews', 'creators']);
 const BODY_LIMIT = 48 * 1024 * 1024;
 const REVIEW_IMAGE_LIMIT = 2 * 1024 * 1024;
 const REVIEW_VIDEO_LIMIT = 20 * 1024 * 1024;
@@ -5249,6 +5250,67 @@ async function adminApi(req, res, pathname, parsed) {
     json(res, 403, { ok: false, error: 'permission_denied' });
     return true;
   }
+  // Rule-based order review. Flags are advisory; purchases and fulfillment stay untouched.
+  if (pathname === '/api/admin/order-anomalies' && req.method === 'GET') {
+    const range = String(parsed.searchParams.get('range') || '30d');
+    const ranges = { '7d': 7, '30d': 30, '90d': 90, all: null };
+    const severity = String(parsed.searchParams.get('severity') || 'all');
+    const reviewState = String(parsed.searchParams.get('reviewState') || 'open');
+    const kind = String(parsed.searchParams.get('kind') || 'all');
+    const query = String(parsed.searchParams.get('q') || '').trim().slice(0,120).toLowerCase();
+    if (!Object.prototype.hasOwnProperty.call(ranges,range) ||
+        !['all','high','medium','low'].includes(severity) ||
+        !['all','open','reviewed','dismissed'].includes(reviewState) ||
+        !['all','duplicate','price','payment'].includes(kind)) {
+      json(res,400,{ok:false,error:'invalid_anomaly_filters'});return true;
+    }
+    const {limit,offset} = adminPagination(parsed,30);
+    const now = Date.now();
+    const since = ranges[range] == null ? null : now-(ranges[range]*86400000+3600000);
+    const rows = await database.listAdminOrders({status:'all',since,limit:5000,offset:0});
+    const flags = orderAnomalies.computeSignals(rows, PRODUCTS);
+    const reviews = await orderAnomalies.getReviews(database);
+    const dayCutoff = ranges[range] == null ? null : now-ranges[range]*86400000;
+    const kindPrefixes = {duplicate:['duplicate_'],price:['invalid_total','unusually_high_total','empty_paid_order','high_price_mismatch','low_price_mismatch'],payment:['repeated_failed_payments','paid_after_failures']};
+    const filtered = flags.filter(flag => {
+      if (dayCutoff !== null && flag.createdAt < dayCutoff) return false;
+      const review = reviews.get(flag.orderRef);
+      const current = review ? review.state : 'open';
+      if (reviewState !== 'all' && current !== reviewState) return false;
+      if (severity !== 'all' && flag.severity !== severity) return false;
+      if (query && !(flag.orderRef+' '+flag.customerName).toLowerCase().includes(query)) return false;
+      if (kind !== 'all' && !flag.reasons.some(reason => kindPrefixes[kind].some(prefix => reason.code.startsWith(prefix)))) return false;
+      return true;
+    });
+    const summary = {all:0,open:0,reviewed:0,dismissed:0,high:0,medium:0,low:0};
+    for(const flag of flags){
+      if(dayCutoff !== null && flag.createdAt < dayCutoff) continue;
+      const state = (reviews.get(flag.orderRef)||{}).state || 'open';
+      summary.all++;summary[state]++;summary[flag.severity]++;
+    }
+    json(res,200,{ok:true,summary,range,limit,offset,count:filtered.length,
+      hasMore:offset+limit<filtered.length,truncated:rows.length===5000,
+      orders:filtered.slice(offset,offset+limit).map(flag => ({...flag,
+        review:reviews.get(flag.orderRef)||{state:'open',note:'',updatedAt:null,updatedBy:''}}))});
+    return true;
+  }
+  if (pathname === '/api/admin/order-anomalies/review' && req.method === 'POST') {
+    if (!sameOriginAllowed(req)) {json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
+    const body = await readJsonBody(req, 2048);
+    const ref = String(body && body.orderRef || '').trim();
+    const reviewState = String(body && body.state || '');
+    const note = String(body && body.note || '').trim();
+    if(!ref || ref.length > 150 || !['open','reviewed','dismissed'].includes(reviewState) || note.length > 300){
+      json(res,400,{ok:false,error:'invalid_anomaly_review'});return true;
+    }
+    // Only known flagged orders may be changed; do not create reviews for arbitrary refs.
+    const order = await database.getOrderByRef(ref);
+    if(!order){json(res,404,{ok:false,error:'order_not_found'});return true;}
+    await orderAnomalies.saveReview(database,ref,reviewState,note,String(admin.name || admin.email || 'admin').slice(0,120));
+    json(res,200,{ok:true,orderRef:ref,state:reviewState});
+    return true;
+  }
+
   // Money dashboard: expenses are staff-editable with a server-stamped employee identity.
   // Income is derived solely from verified paid orders, so a repeated callback cannot duplicate it.
   if (pathname === '/api/admin/finance/expenses' || pathname === '/api/admin/finance/income') {
