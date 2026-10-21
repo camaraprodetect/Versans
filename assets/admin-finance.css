@@ -42,3 +42,19 @@
 .vs-finance-status.is-error{color:#bf3845}
 @media(max-width:950px){.vs-finance-entry-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.vs-finance{gap:13px}.vs-finance-stat{padding:15px}.vs-finance-stat strong{font-size:20px}.vs-finance-panel{padding:14px}.vs-finance-entry-grid{grid-template-columns:1fr}.vs-finance-filters{width:100%}.vs-finance-filters .vs-finance-field{flex:1 1 120px}.vs-finance-filters .vs-finance-field input{width:100%}.vs-finance-filters .vs-finance-button{flex:1 1 auto}}
+
+/* Per-partner ledger, visible by default with a reversible privacy toggle. */
+.vs-finance-balance{display:grid;gap:12px}
+.vs-finance-balance-heading{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.vs-finance-balance-heading h3{margin:0 0 4px;font-size:15px;font-weight:800}
+.vs-finance-balance-heading p{margin:0;font-size:11px;color:var(--admin-muted,#667582);line-height:1.5}
+.vs-finance-balance-body{display:grid;gap:8px}
+.vs-finance-balance-body[hidden]{display:none!important}
+.vs-finance-balance-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.vs-finance-balance-legacy{margin:0;font-size:11px;color:var(--admin-muted,#667582)}
+.vs-finance-balance-legacy:empty{display:none}
+.vs-finance-entry-grid{grid-template-columns:minmax(175px,2fr) repeat(5,minmax(105px,1fr))}
+.vs-finance-field input[readonly]{background:var(--admin-soft,#f4f7f9);font-weight:800;cursor:default}
+.vs-finance-table td:nth-child(4),.vs-finance-table td:nth-child(5),.vs-finance-table td:nth-child(6){font-variant-numeric:tabular-nums}
+@media(max-width:950px){.vs-finance-entry-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:600px){.vs-finance-balance-cards{grid-template-columns:1fr}.vs-finance-entry-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.vs-finance-entry-grid>.vs-finance-field:first-child{grid-column:1/-1}}

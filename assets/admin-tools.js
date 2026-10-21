@@ -79,8 +79,11 @@
     }
     [search.input,stat.input,type.input,priority.input].forEach(function(input){input.addEventListener('input',draw);input.addEventListener('change',draw);});draw();root.replaceChildren(view);
   }
-  var REPORT_TYPES=[['orders','הזמנות'],['sales','מכירות יומיות'],['products','מוצרים'],['customers','לקוחות'],['shipments','משלוחים'],['reviews','ביקורות'],['visitors','מבקרים'],['creators','יוצרי תוכן'],['tiktok','סרטוני TikTok'],['tasks','משימות פנימיות']];
+  var REPORT_TYPES=[['finance','הכנסות והוצאות (משולב)'],['income','הכנסות'],['expenses','הוצאות'],['orders','הזמנות'],['sales','מכירות יומיות'],['products','מוצרים'],['customers','לקוחות'],['shipments','משלוחים'],['reviews','ביקורות'],['visitors','מבקרים'],['creators','יוצרי תוכן'],['tiktok','סרטוני TikTok'],['tasks','משימות פנימיות']];
   var FIELD_OPTIONS={
+    income:[['date','תאריך תשלום'],['order','מספר הזמנה'],['amount','סכום']],
+    expenses:[['date','תאריך'],['description','תיאור ההוצאה'],['category','קטגוריה'],['maor','מאור'],['gal','גל'],['amount','סה״כ'],['employee','עובד מדווח']],
+    finance:[['date','תאריך'],['kind','סוג'],['details','תיאור / מספר הזמנה'],['income','הכנסה'],['expense','הוצאה'],['maor','מאור'],['gal','גל']],
     orders:[['ref','מספר הזמנה'],['customer','לקוח'],['email','אימייל'],['phone','טלפון'],['status','סטטוס'],['amount','סכום'],['date','תאריך'],['items','מוצרים']],
     sales:[['date','תאריך'],['orders','הזמנות'],['revenue','הכנסות']],
     products:[['id','מזהה'],['title','שם'],['price','מחיר'],['category','קטגוריות'],['hidden','מוסתר'],['availability','מלאי']],
@@ -99,6 +102,8 @@
     var range=(params.from||params.to)?'טווח: '+(params.from||'התחלה')+' עד '+(params.to||'היום'):'כל התאריכים';
     var note=data.truncated?'הדוח מציג עד '+data.limit+' רשומות. לסינון נוסף השתמש בטווח תאריכים.':'';
     var isCards=names.length>4;
+    var summary=Array.isArray(data.summary)?data.summary:[];
+    var summaryHtml=summary.length?'<div class="report-summary">'+summary.map(function(item){return '<div><span>'+escapeHtml(item.label)+'</span><strong>'+escapeHtml(item.value)+'</strong></div>';}).join('')+'</div>':'';
     var contents='';
     if(isCards){
       contents=data.rows.map(function(row,i){
@@ -125,6 +130,7 @@
       '.entry-title{padding:6px 12px;background:#e7edf2;font-weight:700}.entry-fields{display:grid;grid-template-columns:1fr 1fr}'+
       '.entry-field{padding:7px 10px;border-top:1px solid #e2e9ed;min-width:0;display:grid;gap:2px;overflow-wrap:anywhere}'+
       '.entry-label{font-size:10px;color:#657483;font-weight:700}.entry-value{font-size:11px;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word}'+
+      '.report-summary{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 18px}.report-summary>div{display:grid;gap:3px;border:1px solid #d5dfe6;border-radius:7px;padding:7px 10px;min-width:125px;background:#f8fafb}.report-summary span{font-size:10px;color:#657483}.report-summary strong{font-size:12px}'+
       '.empty{border:1px dashed #d6dde4;padding:18px;color:#657483;text-align:center}'+
       '.print-toolbar{position:sticky;top:0;text-align:left;background:#fff;padding:10px 0;border-bottom:1px solid #e4e9ed;margin-bottom:12px}'+
       '.print-toolbar button{background:#142333;color:#fff;padding:10px 16px;border:0;border-radius:8px;font-size:14px;cursor:pointer}'+
@@ -134,7 +140,7 @@
       '<header><strong>VERSANS</strong><small>דוח ניהול פנימי · לעיון מורשים בלבד</small></header>'+ 
       '<h1>'+escapeHtml(data.title)+'</h1><p class="meta">'+escapeHtml(range)+' · '+data.rows.length+' רשומות · הופק: '+
       escapeHtml(new Date(data.generatedAt).toLocaleString('he-IL',{timeZone:'Asia/Jerusalem'}))+'</p>'+ 
-      (note?'<p class="warn">'+escapeHtml(note)+'</p>':'')+contents+
+      (note?'<p class="warn">'+escapeHtml(note)+'</p>':'')+summaryHtml+contents+
       '</body></html>';
   }
   async function renderReports(root){

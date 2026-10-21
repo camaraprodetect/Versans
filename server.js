@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const { URL } = require('node:url');
-const { createDatabase } = require('./lib/database.js');
+const { createDatabase, importOpeningExpenseLedger } = require('./lib/database');
 const { createAdminTools } = require('./lib/admin-tools.js');
 const { createAdminAI } = require('./lib/admin-ai.js');
 const { createPaymentUrl, verifyPayment, priceOrder } = require('./api/_hyp.js');
@@ -5259,20 +5259,30 @@ async function adminApi(req, res, pathname, parsed) {
       const description=String(body && body.description || '').trim();
       const category=String(body && body.category || 'אחר').trim();
       const amountText=String(body && body.amount || '').trim();
+      const hasSplit=body && (Object.prototype.hasOwnProperty.call(body,'maorAmount') || Object.prototype.hasOwnProperty.call(body,'galAmount'));
+      const maorText=hasSplit ? String(body.maorAmount ?? '0').trim() : '';
+      const galText=hasSplit ? String(body.galAmount ?? '0').trim() : '';
       const expenseDate=String(body && body.date || '').trim();
       const requestId=String(body && body.requestId || '').trim();
       const validDate=/^\d{4}-\d{2}-\d{2}$/.test(expenseDate)
         && Number.isFinite(Date.parse(expenseDate+'T00:00:00Z'))
         && new Date(expenseDate+'T00:00:00Z').toISOString().slice(0,10)===expenseDate;
       if (!description || description.length>300 || !category || category.length>70 ||
-          !/^\d{1,8}(?:\.\d{1,2})?$/.test(amountText) || !validDate ||
+          !/^\d{1,8}(?:\.\d{1,2})?$/.test(amountText) ||
+          (hasSplit && (!/^\d{1,8}(?:\.\d{1,2})?$/.test(maorText) || !/^\d{1,8}(?:\.\d{1,2})?$/.test(galText))) || !validDate ||
           !/^[0-9a-f-]{36}$/i.test(requestId)) {
         json(res,400,{ok:false,error:'invalid_expense'});return true;
       }
       const amountAgorot=Math.round(Number(amountText)*100);
-      if(!Number.isSafeInteger(amountAgorot)||amountAgorot<=0) { json(res,400,{ok:false,error:'invalid_amount'});return true; }
+      const maorAgorot=hasSplit ? Math.round(Number(maorText)*100) : null;
+      const galAgorot=hasSplit ? Math.round(Number(galText)*100) : null;
+      if(!Number.isSafeInteger(amountAgorot)||amountAgorot<=0 ||
+          (hasSplit && (!Number.isSafeInteger(maorAgorot)||!Number.isSafeInteger(galAgorot)||
+          maorAgorot<0||galAgorot<0||maorAgorot+galAgorot!==amountAgorot))) {
+        json(res,400,{ok:false,error:'invalid_amount'});return true;
+      }
       const id=await database.createAdminExpense({
-        description,category,amountAgorot,expenseDate,employeeUserId:Number(admin.id),
+        description,category,amountAgorot,maorAgorot,galAgorot,expenseDate,employeeUserId:Number(admin.id),
         employeeName:String(admin.name || admin.email || 'עובד').slice(0,150),
         requestId,createdAt:Date.now()
       });
@@ -9028,6 +9038,7 @@ setInterval(()=>{checkTaskPushSchedule().catch(e=>console.error('Task reminder s
 
 async function start() {
   await database.init();
+  if (process.env.NODE_ENV !== 'test') await importOpeningExpenseLedger(database);
   await creatorProgram.init();
   await catalogManager.init();
   await adminTools.ensure();

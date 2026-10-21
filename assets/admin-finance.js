@@ -53,32 +53,68 @@
     var countCard=make('div','vs-finance-stat');countCard.append(make('span','',expenseMode?'מספר הוצאות':'הזמנות ששולמו'));
     var count=make('strong','','—');countCard.appendChild(count);stats.append(sumCard,countCard);view.appendChild(stats);
 
+    // Grouped split totals are computed on the server across the full date-filtered ledger.
+    // The visibility toggle affects only the display, never the saved accounting data.
+    var maorTotal=null,galTotal=null,balanceTotal=null,unallocatedInfo=null;
+    if(expenseMode){
+      var balancePanel=make('section','vs-finance-balance');
+      var balanceHeading=make('div','vs-finance-balance-heading');
+      var balanceTitle=make('div');balanceTitle.append(
+        make('h3','','מאזן הוצאות - מאור וגל'),
+        make('p','','ההפרש הוא גל פחות מאור; אינו מייצג חוב אוטומטי.'));
+      var balanceCards=make('div','vs-finance-balance-cards');
+      function balanceCard(label){var card=make('div','vs-finance-stat');card.appendChild(make('span','',label));var amount=make('strong','','—');card.appendChild(amount);balanceCards.appendChild(card);return amount;}
+      maorTotal=balanceCard('הוצאות מאור');
+      galTotal=balanceCard('הוצאות גל');
+      balanceTotal=balanceCard('מאזן (גל - מאור)');
+      var balanceBody=make('div','vs-finance-balance-body');balanceBody.appendChild(balanceCards);
+      unallocatedInfo=make('p','vs-finance-balance-legacy');balanceBody.appendChild(unallocatedInfo);
+      var hidden=false;
+      try{hidden=localStorage.getItem('versans-finance-balance-hidden')==='1';}catch(_){/* privacy mode */}
+      var balanceToggle=button('הסתר מאזן','vs-finance-neutral vs-finance-toggle');
+      function applyBalanceVisibility(){balanceBody.hidden=hidden;balanceToggle.textContent=hidden?'הצג מאזן':'הסתר מאזן';balanceToggle.setAttribute('aria-expanded',String(!hidden));}
+      balanceToggle.addEventListener('click',function(){hidden=!hidden;applyBalanceVisibility();try{localStorage.setItem('versans-finance-balance-hidden',hidden?'1':'0');}catch(_){/* privacy mode */}});
+      balanceHeading.append(balanceTitle,balanceToggle);balancePanel.append(balanceHeading,balanceBody);view.appendChild(balancePanel);
+      applyBalanceVisibility();
+    }
+
     if(expenseMode){
       var form=make('form','vs-finance-panel vs-finance-entry');
       form.appendChild(make('h3','','רישום הוצאה חדשה'));
       var fields=make('div','vs-finance-entry-grid');
       var description=input('text',{placeholder:'לדוגמה: קניית קופסאות תכשיטים',maxLength:300,required:true});
-      var amount=input('number',{placeholder:'0.00',min:'0.01',max:'99999999',step:'0.01',required:true});
+      var amount=input('number',{placeholder:'0.00',min:'0.01',max:'99999999',step:'0.01',required:true,readOnly:true});
+      var maorInput=input('number',{placeholder:'0.00',min:'0',max:'99999999',step:'0.01'});
+      var galInput=input('number',{placeholder:'0.00',min:'0',max:'99999999',step:'0.01'});
       var category=make('select');
       ['מוצרים ומלאי','אריזות','משלוחים','פרסום ושיווק','ציוד','שכר','שירותים','אחר'].forEach(function(v){var o=make('option','',v);o.value=v;category.appendChild(o);});
       var expenseDate=input('date',{value:nowIsraelDate(),required:true});
-      fields.append(wrapField('על מה ההוצאה?',description),wrapField('סכום (₪)',amount),wrapField('קטגוריה',category),wrapField('תאריך ההוצאה',expenseDate));
+      fields.append(wrapField('על מה ההוצאה?',description),wrapField('קטגוריה',category),
+        wrapField('שולם ע״י מאור (₪)',maorInput),wrapField('שולם ע״י גל (₪)',galInput),
+        wrapField('סה״כ הוצאה (₪)',amount),wrapField('תאריך ההוצאה',expenseDate));
+      function updateAmount(){
+        var maor=maorInput.value?Number(maorInput.value):0,gal=galInput.value?Number(galInput.value):0;
+        if(!Number.isFinite(maor)||!Number.isFinite(gal)||maor<0||gal<0){amount.value='';return;}
+        var total=Math.round(maor*100)+Math.round(gal*100);
+        amount.value=total>0?(total/100).toFixed(2):'';
+      }
+      maorInput.addEventListener('input',updateAmount);galInput.addEventListener('input',updateAmount);
       form.appendChild(fields);
       var formFoot=make('div','vs-finance-form-foot');
-      var formNote=make('small','','שם העובד ותאריך הרישום נשמרים מתוך החשבון המחובר.');
+      var formNote=make('small','','אפשר לרשום תשלום של אחד מהם או פיצול ביניהם. סה״כ מחושב אוטומטית; שם העובד המדווח נשמר מתוך החשבון המחובר.');
       var formStatus=make('p','vs-finance-status');formStatus.setAttribute('role','status');
       var submit=button('שמור הוצאה','vs-finance-primary');submit.type='submit';
       formFoot.append(formNote,submit);form.append(formFoot,formStatus);view.appendChild(form);
       var pendingId=null;
       form.addEventListener('submit',async function(event){
-        event.preventDefault();if(!form.reportValidity())return;
+        event.preventDefault();updateAmount();if(!form.reportValidity())return;
         if(!pendingId)pendingId=window.crypto.randomUUID();
         submit.disabled=true;submit.textContent='שומר…';setStatus(formStatus,'');
         try{
-          var res=await fetch('/api/admin/finance/expenses',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({description:description.value.trim(),amount:amount.value,category:category.value,date:expenseDate.value,requestId:pendingId})});
+          var res=await fetch('/api/admin/finance/expenses',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({description:description.value.trim(),amount:amount.value,maorAmount:maorInput.value||'0',galAmount:galInput.value||'0',category:category.value,date:expenseDate.value,requestId:pendingId})});
           var data=await res.json().catch(function(){return {};});
-          if(!res.ok)throw new Error(data.error==='invalid_expense'?'בדוק את סכום ההוצאה, התאריך והתיאור':'לא ניתן לשמור את ההוצאה');
-          pendingId=null;description.value='';amount.value='';category.selectedIndex=0;expenseDate.value=nowIsraelDate();
+          if(!res.ok)throw new Error(data.error==='invalid_expense'||data.error==='invalid_amount'?'בדוק את התאריך, התיאור והסכומים. יש להזין לפחות סכום אחד.':'לא ניתן לשמור את ההוצאה');
+          pendingId=null;description.value='';maorInput.value='';galInput.value='';amount.value='';category.selectedIndex=0;expenseDate.value=nowIsraelDate();
           state.offset=0;setStatus(formStatus,'ההוצאה נשמרה בהצלחה');await loadRows();
         }catch(err){setStatus(formStatus,err.message,true);}finally{submit.disabled=false;submit.textContent='שמור הוצאה';}
       });
@@ -100,7 +136,7 @@
     var scroll=make('div','vs-finance-scroll');
     var table=make('table','vs-finance-table');
     var thead=make('thead'),headRow=make('tr');
-    (expenseMode?['תאריך','הוצאה','קטגוריה','סכום','עובד']:['תאריך תשלום','מספר הזמנה','הכנסה','פרטי הזמנה']).forEach(function(v){headRow.appendChild(make('th','',v));});
+    (expenseMode?['תאריך','תיאור ההוצאה','קטגוריה','מאור','גל','סה״כ','עובד מדווח']:['תאריך תשלום','מספר הזמנה','הכנסה','פרטי הזמנה']).forEach(function(v){headRow.appendChild(make('th','',v));});
     thead.appendChild(headRow);var tbody=make('tbody');table.append(thead,tbody);scroll.appendChild(table);panel.appendChild(scroll);
     var pagination=make('div','vs-finance-pagination');
     var previous=button('הקודם','vs-finance-neutral',function(){state.offset=Math.max(0,state.offset-PAGE_SIZE);loadRows();});
@@ -123,12 +159,19 @@
         }while(offset<total);
         var columns=expenseMode?[
           {key:'date',label:'תאריך'},{key:'description',label:'הוצאה'},{key:'category',label:'קטגוריה'},
-          {key:'amount',label:'סכום (₪)'},{key:'employee',label:'עובד'}
+          {key:'maor',label:'מאור (₪)'},{key:'gal',label:'גל (₪)'},
+          {key:'amount',label:'סה״כ (₪)'},{key:'employee',label:'עובד מדווח'}
         ]:[{key:'date',label:'תאריך תשלום'},{key:'order',label:'מספר הזמנה'},{key:'amount',label:'סכום (₪)'}];
         var rows=items.map(function(item){return expenseMode?{
           date:prettyDate(item.expense_date),description:item.description,category:item.category,
+          maor:item.maor_agorot==null?'לא משויך':money(item.maor_agorot),
+          gal:item.gal_agorot==null?'לא משויך':money(item.gal_agorot),
           amount:money(item.amount_agorot),employee:item.employee_name
         }:{date:prettyTime(item.paid_at),order:item.order_ref,amount:money(item.amount_agorot)};});
+        if(expenseMode && result){
+          rows.push({date:'',description:'סה״כ בתקופה',category:'',maor:money(result.maorAgorot),gal:money(result.galAgorot),amount:money(result.totalAgorot),employee:''});
+          rows.push({date:'',description:'מאזן (גל - מאור)',category:'',maor:'',gal:'',amount:money(Number(result.galAgorot||0)-Number(result.maorAgorot||0)),employee:''});
+        }
         await window.VersansReportPDF.download({title:expenseMode?'דו״ח הוצאות':'דו״ח הכנסות',columns:columns,rows:rows,generatedAt:Date.now()},columns.map(function(c){return c.key;}),{type:expenseMode?'expenses':'income',from:state.from,to:state.to,forceTable:true});
         setStatus(status,'הדוח הופק עם '+number.format(rows.length)+' רשומות.');
       }catch(err){setStatus(status,err.message||'לא ניתן להפיק PDF',true);}finally{pdf.disabled=false;pdf.textContent='ייצוא PDF';}
@@ -139,11 +182,21 @@
       try{
         var data=await request(type,state,PAGE_SIZE,state.offset);
         sum.textContent=money(data.totalAgorot);count.textContent=number.format(data.total);
+        if(expenseMode){
+          maorTotal.textContent=money(data.maorAgorot);
+          galTotal.textContent=money(data.galAgorot);
+          balanceTotal.textContent=money(Number(data.galAgorot||0)-Number(data.maorAgorot||0));
+          var notAllocated=Number(data.unallocatedAgorot||0);
+          unallocatedInfo.textContent=notAllocated?'הוצאות ישנות ללא שיוך למאור/גל: '+money(notAllocated)+'. אינן נספרות במאזן האישי.':'';
+        }
         tbody.replaceChildren();
         (data.rows||[]).forEach(function(item){
           var row=make('tr');
           if(expenseMode){
-            [prettyDate(item.expense_date),item.description,item.category,money(item.amount_agorot),item.employee_name].forEach(function(v,index){row.appendChild(make('td',index===3?'vs-finance-money':'',v));});
+            [prettyDate(item.expense_date),item.description,item.category,
+              item.maor_agorot==null?'—':money(item.maor_agorot),
+              item.gal_agorot==null?'—':money(item.gal_agorot),
+              money(item.amount_agorot),item.employee_name].forEach(function(v,index){row.appendChild(make('td',[3,4,5].includes(index)?'vs-finance-money':'',v));});
           }else{
             row.appendChild(make('td','',prettyTime(item.paid_at)));
             row.appendChild(make('td','vs-finance-ref',item.order_ref));
@@ -152,7 +205,7 @@
           }
           tbody.appendChild(row);
         });
-        if(!data.rows.length){var row=make('tr'),td=make('td','vs-finance-empty','אין רשומות בטווח שנבחר');td.colSpan=expenseMode?5:4;row.appendChild(td);tbody.appendChild(row);}
+        if(!data.rows.length){var row=make('tr'),td=make('td','vs-finance-empty','אין רשומות בטווח שנבחר');td.colSpan=expenseMode?7:4;row.appendChild(td);tbody.appendChild(row);}
         var start=data.total?state.offset+1:0;
         pageLabel.textContent=number.format(start)+'–'+number.format(Math.min(state.offset+data.rows.length,data.total))+' מתוך '+number.format(data.total);
         previous.disabled=state.offset===0;next.disabled=state.offset+data.rows.length>=data.total;

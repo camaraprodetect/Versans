@@ -72,6 +72,7 @@
     var y=TOP,wide=names.length>4&&!params.forceTable,cellWidth=(W-2*X)/(params.forceTable?names.length:Math.min(names.length,4)),lineH=27;
     var range=(params.from||params.to)?'טווח: '+(params.from||'התחלה')+' עד '+(params.to||'היום'):'כל התאריכים';
     var when=new Date(data.generatedAt||Date.now()).toLocaleString('he-IL',{timeZone:'Asia/Jerusalem'});
+    var summaries=Array.isArray(data.summary)?data.summary:[];
     function begin(){
       pageNum++;
       ctx.fillStyle=C.white;ctx.fillRect(0,0,W,H);
@@ -85,6 +86,12 @@
       colorText(ctx,'עמוד '+pageNum,RIGHT,1692,17,false,C.muted);
       ctx.direction='ltr';ctx.textAlign='left';ctx.font='16px Arial';ctx.fillText('VERSANS / INTERNAL REPORT',X,1692);
       y=TOP;
+      if(summaries.length){
+        var summaryText=summaries.map(function(item){return txt(item.label)+': '+txt(item.value);}).join('   |   ');
+        var lines=wrap(ctx,summaryText,W-2*X-10,20);
+        lines.forEach(function(line){colorText(ctx,line,RIGHT-4,y,20,true,C.ink);y+=32;});
+        y+=24;
+      }
     }
     function next(){if(pageNum)pages.push(jpegBytes(canvas));begin();}
     function need(h){if(y+h>BOTTOM)next();}

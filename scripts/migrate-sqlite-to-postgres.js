@@ -30,8 +30,8 @@ const TABLES = [
   {
     name: 'admin_expenses',
     key: 'id',
-    columns: ['id','description','category','amount_agorot','expense_date','employee_user_id','employee_name','request_id','created_at'],
-    numeric: ['id','amount_agorot','employee_user_id','created_at']
+    columns: ['id','description','category','amount_agorot','expense_date','employee_user_id','employee_name','request_id','created_at','maor_agorot','gal_agorot'],
+    numeric: ['id','amount_agorot','employee_user_id','created_at','maor_agorot','gal_agorot']
   },
   {
     name: 'reviews',
