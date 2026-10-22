@@ -1,12 +1,54 @@
+/* Shared admin header polish (independent of removed AI). */
+.admin-header__actions{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap;min-width:0;margin-inline-start:auto}
+.admin-header__actions>button,.admin-header__actions>a{min-height:42px;border-radius:14px;box-shadow:0 6px 20px rgba(20,35,51,.05);transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease,background .16s ease}
+.admin-header__actions>button:hover,.admin-header__actions>a:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(20,35,51,.09)}
+.admin-global-search-trigger,.admin-notice-trigger,.admin-display-theme,.admin-display-settings,.admin-undo-button,.admin-icon-button,.admin-site-link,.admin-push-button{display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.admin-global-search-trigger kbd{margin-inline-start:2px;border:1px solid rgba(110,126,143,.22);background:rgba(245,248,250,.95);border-radius:8px;padding:4px 6px;line-height:1;color:#687887;font-size:10px;box-shadow:none}
+.admin-notice-trigger b{min-width:20px;height:20px;padding:0 5px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center}
+.admin-live{min-height:42px;padding:8px 12px;box-shadow:0 6px 20px rgba(21,128,74,.08)}
+
+html[data-admin-theme="dark"] .admin-header__actions>button,html[data-admin-theme="dark"] .admin-header__actions>a{box-shadow:0 8px 24px rgba(0,0,0,.16)}
+html[data-admin-theme="dark"] .admin-global-search-trigger kbd{background:rgba(255,255,255,.07);color:#d5e1eb;border-color:rgba(255,255,255,.12)}
+
+@media (max-width:1260px){
+  .admin-header__actions{gap:8px}
+  .admin-display-theme span,.admin-display-settings span,.admin-notice-trigger span,.admin-global-search-trigger span{display:none}
+  .admin-global-search-trigger kbd{display:none}
+  .admin-display-theme,.admin-display-settings,.admin-global-search-trigger,.admin-notice-trigger{min-width:42px;padding-inline:11px}
+  .admin-undo-button{position:relative;min-width:42px;padding-inline:0;font-size:0}
+  .admin-undo-button::before{content:"↶";font-size:18px;line-height:1}
+}
+
+@media (max-width:900px){
+  .admin-header{display:grid;grid-template-columns:1fr;align-items:start;gap:12px;padding:14px 14px 10px}
+  .admin-header__left{width:100%;justify-content:space-between;gap:12px}
+  .admin-header__actions{width:100%;justify-content:flex-start;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;padding:2px 1px 6px;scrollbar-width:none;-ms-overflow-style:none}
+  .admin-header__actions::-webkit-scrollbar{display:none}
+  .admin-header__actions>*{flex:0 0 auto;scroll-snap-align:start}
+}
+
+@media (max-width:620px){
+  .admin-header__eyebrow{display:none}
+  .admin-header h1{font-size:22px}
+  .admin-header__left p:last-child{font-size:11px;line-height:1.45}
+  .admin-live{font-size:9px;padding:8px 10px}
+  .admin-site-link{display:inline-flex;padding:10px 12px;font-size:11px}
+}
+
+@media (max-width:420px){
+  .admin-header{padding:12px 12px 8px}
+  .admin-header__actions{gap:7px}
+  .admin-icon-button,.admin-mobile-nav,.admin-display-theme,.admin-display-settings,.admin-global-search-trigger,.admin-notice-trigger,.admin-site-link,.admin-undo-button{min-height:40px;border-radius:12px}
+}
+
 /* Compact admin toolbar. Keeps the existing controls, IDs and event handlers. */
 .admin-header{height:auto!important;min-height:94px;padding-block:13px!important;gap:16px!important;overflow:visible!important}
 .admin-header__left{min-width:180px;flex:0 1 auto}
 .admin-header__actions{display:flex!important;align-items:center;justify-content:flex-start!important;flex-wrap:nowrap!important;gap:8px!important;min-width:0;margin-inline-start:0;padding:0!important;overflow:visible!important}
-.admin-header__actions>.admin-ai-launch{order:1}
 .admin-header__actions>.admin-global-search-trigger{order:2}
 .admin-header__actions>.admin-notice-trigger{order:3}
 .admin-header__actions>.admin-header-more{order:4}
-.admin-header__actions>button:not(.admin-ai-launch):not(.admin-global-search-trigger):not(.admin-notice-trigger):not(.admin-header-more__trigger),.admin-header__actions>a:not(.admin-header-more__trigger){display:none}
+.admin-header__actions>button:not(.admin-global-search-trigger):not(.admin-notice-trigger):not(.admin-header-more__trigger),.admin-header__actions>a:not(.admin-header-more__trigger){display:none}
 .admin-header__actions>button,.admin-header-more__trigger{white-space:nowrap;flex-shrink:0;height:42px;min-height:42px;box-sizing:border-box}
 .admin-header__actions>.admin-global-search-trigger kbd{display:none}
 .admin-header-more{position:relative;z-index:80;flex-shrink:0;direction:rtl}
@@ -40,9 +82,6 @@
  .admin-header__left p:last-child{display:none!important}
  .admin-header h1{font-size:18px!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:35vw}
  .admin-header__actions{width:auto!important;flex:0 0 auto;gap:5px!important;overflow:visible!important}
- .admin-header__actions>.admin-ai-launch{width:41px;min-width:41px;padding:0!important}
- .admin-header__actions>.admin-ai-launch .admin-ai-launch__label{display:none!important}
- .admin-header__actions>.admin-ai-launch .admin-ai-launch__icon{margin:0}
  .admin-header-more__trigger{min-width:41px;width:41px;justify-content:center;padding:0}
  .admin-header-more__label{display:none!important}
  .admin-header-more__panel{inset-inline-start:auto;inset-inline-end:0}
@@ -50,7 +89,7 @@
 @media(max-width:530px){
  .admin-header h1{font-size:16px!important;max-width:30vw}
  .admin-header__actions{gap:4px!important}
- .admin-header__actions>.admin-notice-trigger,.admin-header__actions>.admin-global-search-trigger,.admin-header__actions>.admin-ai-launch,.admin-header-more__trigger{width:38px!important;min-width:38px!important;height:39px!important;min-height:39px!important;border-radius:11px!important}
+ .admin-header__actions>.admin-notice-trigger,.admin-header__actions>.admin-global-search-trigger,.admin-header-more__trigger{width:38px!important;min-width:38px!important;height:39px!important;min-height:39px!important;border-radius:11px!important}
  .admin-header{padding-inline:10px!important;gap:7px!important}
  .admin-mobile-nav{min-width:36px;padding-inline:8px}
 }

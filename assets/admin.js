@@ -15,9 +15,9 @@
       var page=link.dataset.adminPage;
       if(!me.pages[page] || !hasCapability(me.pages[page]))link.remove();
     });
-    ['adminUndoLast','adminGlobalSearchOpen','adminAIOpen','adminNoticeOpen','adminDisplaySettings'].forEach(function(id){
+    ['adminUndoLast','adminGlobalSearchOpen','adminNoticeOpen','adminDisplaySettings'].forEach(function(id){
       var element=document.getElementById(id);
-      if(element && (id!=='adminAIOpen'||!hasCapability('ai.use')))element.hidden=true;
+      if(element)element.hidden=true;
     });
   }
   var pageTitle = document.getElementById('adminPageTitle');

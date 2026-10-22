@@ -9,7 +9,6 @@ const { createDatabase, importOpeningExpenseLedger } = require('./lib/database')
 const { createAdminTools } = require('./lib/admin-tools.js');
 const employeePolicy = require('./lib/employee-access.js');
 const orderAnomalies = require('./lib/admin-order-anomalies.js');
-const { createAdminAI } = require('./lib/admin-ai.js');
 const { createPaymentUrl, verifyPayment, priceOrder } = require('./api/_hyp.js');
 const { PRODUCTS, CATEGORIES } = require('./assets/products.js');
 const { createCatalogManager } = require('./lib/catalog-manager.js');
@@ -5185,84 +5184,7 @@ async function packingOrderSummary(order, focusShipmentId = null) {
   };
 }
 
-// Read-only intelligence views shared by the admin AI and the existing admin
-// screens. They reuse the same live database and tracking/packing projections.
-// No 17TRACK/Cainiao refresh or write is triggered by a question: any operation
-// that changes server state must continue through explicit confirmation.
-async function adminAIReadSql(sql, params = []) {
-  if (database.backend === 'postgres') {
-    let index = 0;
-    return (await database._query(sql.replace(/\?/g, () => '$' + (++index)), params)).rows;
-  }
-  return database.db.prepare(sql).all(...params);
-}
-async function adminAIShipmentPayload(row) {
-  const payload = await shipmentWithItems(row);
-  if (!payload) return null;
-  const aliases = await adminAIReadSql('SELECT tracking_number FROM shipment_tracking_aliases WHERE shipment_id=? ORDER BY created_at,tracking_number', [Number(row.id)]);
-  return {
-    ...payload, aliases:aliases.map(x => x.tracking_number),
-    // Bound verbose provider history for fast answers; all recent events are
-    // still available to the full tracking screen.
-    history:Array.isArray(payload.history) ? payload.history.slice(0,20) : []
-  };
-}
-async function adminAIOrderIntelligence(row) {
-  const [order, shippingRows, packing, work, notification] = await Promise.all([
-    adminOrderDetailPayload(row),
-    database.listShipmentsForOrder(row.id),
-    packingOrderSummary(row),
-    adminOrderWorkPayload(row),
-    database.getOrderNotification(row.order_ref)
-  ]);
-  const shipments = await Promise.all(shippingRows.map(adminAIShipmentPayload));
-  return {
-    kind:'order_intelligence', checkedAt:Date.now(), orderRef:row.order_ref,
-    order, shipments:shipments.filter(Boolean),
-    packaging:packing, work:{completedCount:work.completedCount,itemCount:work.itemCount,items:work.items.map(x=>({
-      name:x.name||x.productName,itemIndex:x.itemIndex,completed:x.completed,completionUpdatedAt:x.completionUpdatedAt
-    }))},
-    orderNotification:notification ? {state:notification.state,status:notification.status,sent_at:notification.sent_at} : null
-  };
-}
-async function adminAIShipmentIntelligence(trackingNumber) {
-  const normalized=String(trackingNumber||'').trim().toUpperCase();
-  if(!normalized || !/^[A-Z0-9._-]{6,80}$/.test(normalized)) return {kind:'shipment_intelligence',trackingNumber:normalized,shipment:null};
-  const row=await database.getShipmentByTracking(normalized);
-  if(!row) return {kind:'shipment_intelligence',trackingNumber:normalized,shipment:null};
-  const order=await database.getOrderById(row.order_id);
-  const [shipment,detail,packing]=await Promise.all([
-    adminAIShipmentPayload(row),
-    order?adminOrderDetailPayload(order):null,
-    order?packingOrderSummary(order):null
-  ]);
-  return {kind:'shipment_intelligence',trackingNumber:normalized,shipment,orderRef:order&&order.order_ref||null,order:detail,packaging:packing};
-}
-async function adminAIAllShipments() {
-  const [totalRows,statusRows,latestRows]=await Promise.all([
-    adminAIReadSql('SELECT COUNT(*) AS total FROM shipments'),
-    adminAIReadSql('SELECT status,COUNT(*) AS count FROM shipments GROUP BY status ORDER BY count DESC,status'),
-    adminAIReadSql(`SELECT s.id,s.tracking_number,s.status,s.provider_status,s.latest_event,s.latest_location,s.updated_at,o.order_ref
-      FROM shipments s LEFT JOIN orders o ON o.id=s.order_id ORDER BY s.updated_at DESC,s.id DESC LIMIT 30`)
-  ]);
-  const total=Number(totalRows[0]&&totalRows[0].total||0);
-  return {kind:'shipments_intelligence',total,truncated:total>latestRows.length,
-    statuses:statusRows.map(x=>({status:String(x.status||'registered'),count:Number(x.count||0)})),
-    shipments:latestRows.map(x=>({trackingNumber:x.tracking_number,orderRef:x.order_ref,status:x.status,
-      statusLabel:shipmentStatusLabel(x.status),providerStatus:x.provider_status,
-      latestEvent:x.latest_event,latestLocation:x.latest_location,updatedAt:Number(x.updated_at||0)}))};
-}
-
 const adminTools = createAdminTools(database, catalogManager);
-const adminAI = createAdminAI({
-  database, catalog:catalogManager, tools:adminTools,
-  getSales:adminSalesData, orderDetail:adminOrderDetailPayload,
-  orderIntelligence:adminAIOrderIntelligence, shipmentIntelligence:adminAIShipmentIntelligence, allShipments:adminAIAllShipments,
-  ownerEmail:ADMIN_EMAIL,
-  modelName:String(process.env.VERSANS_ADMIN_BOT_MODEL || VERSANS_BOT_MODEL),
-  apiKey:String(process.env.OPENAI_API_KEY || '').trim()
-});
-
 async function adminApi(req, res, pathname, parsed) {
   if (!pathname.startsWith('/api/admin/')) return false;
   const shippingBotEndpoint = pathname === '/api/admin/bot/shipping/ready-pickups'
@@ -5498,32 +5420,6 @@ async function adminApi(req, res, pathname, parsed) {
     json(res,200,{ok:true,...result,limit,offset});return true;
   }
 
-  // Admin-only AI assistant. Every operation is proposed first; confirmation is
-  // a separate authenticated request made by a real admin pressing a button.
-  if (pathname === '/api/admin/ai/chat' && req.method === 'POST') {
-    if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'});return true; }
-    const body=await readJsonBody(req);
-    try {
-      const result=await adminAI.chat(body&&body.message,body&&body.history,admin);
-      json(res,200,result);
-    } catch(error) {
-      const status=Number(error.status)||500;
-      if(status>=500)console.error('Admin AI chat failed:',error.message);
-      json(res,status,{ok:false,error:status===500?'admin_ai_error':error.message});
-    }
-    return true;
-  }
-  if (pathname === '/api/admin/ai/confirm' && req.method === 'POST') {
-    if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'});return true; }
-    const body=await readJsonBody(req);
-    const token=String(body&&body.token||'');
-    if(!/^[A-Za-z0-9_-]{32}$/.test(token)){json(res,400,{ok:false,error:'invalid_confirmation'});return true;}
-    try {json(res,200,await adminAI.confirm(token,admin));}
-    catch(error){const status=Number(error.status)||500;
-      if(status>=500)console.error('Admin AI confirm failed:',error.message);
-      json(res,status,{ok:false,error:status===500?'admin_ai_error':error.message});}
-    return true;
-  }
   // Internal task board and on-demand reports; adminCanAccess was checked above.
   if (pathname === '/api/admin/internal-tasks/assignees' && req.method === 'GET') {
     const isManager=hasAdminPermission(admin,'tasks.assign');
