@@ -87,7 +87,7 @@
       var maorInput=input('number',{placeholder:'0.00',min:'0',max:'99999999',step:'0.01'});
       var galInput=input('number',{placeholder:'0.00',min:'0',max:'99999999',step:'0.01'});
       var category=make('select');
-      ['מוצרים ומלאי','אריזות','משלוחים','פרסום ושיווק','ציוד','שכר','שירותים','אחר'].forEach(function(v){var o=make('option','',v);o.value=v;category.appendChild(o);});
+      ['מוצרים ומלאי','אריזות','משלוחים','פרסום ושיווק','יוצרי תוכן','ציוד','שכר','שירותים','אחר'].forEach(function(v){var o=make('option','',v);o.value=v;category.appendChild(o);});
       var expenseDate=input('date',{value:nowIsraelDate(),required:true});
       fields.append(wrapField('על מה ההוצאה?',description),wrapField('קטגוריה',category),
         wrapField('שולם ע״י מאור (₪)',maorInput),wrapField('שולם ע״י גל (₪)',galInput),
@@ -187,7 +187,7 @@
           galTotal.textContent=money(data.galAgorot);
           balanceTotal.textContent=money(Number(data.galAgorot||0)-Number(data.maorAgorot||0));
           var notAllocated=Number(data.unallocatedAgorot||0);
-          unallocatedInfo.textContent=notAllocated?'הוצאות ישנות ללא שיוך למאור/גל: '+money(notAllocated)+'. אינן נספרות במאזן האישי.':'';
+          unallocatedInfo.textContent=notAllocated?'הוצאות ללא שיוך למאור/גל (כולל תשלומים אוטומטיים ליוצרים): '+money(notAllocated)+'. אינן נספרות במאזן האישי.':'';
         }
         tbody.replaceChildren();
         (data.rows||[]).forEach(function(item){

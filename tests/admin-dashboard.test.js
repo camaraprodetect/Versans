@@ -64,9 +64,29 @@ test('creator ledger pays commission once, records manual payment once, and prev
   assert.equal(first.videoRewardsAvailable,true);
   const request=crypto.randomUUID();
   await dashboard.payCreator(creatorId,4000,request,'העברה בנקאית',admin);
+  const expenses=await database.listAdminExpenses({});
+  assert.equal(expenses.total,1);
+  assert.equal(expenses.totalAgorot,4000);
+  assert.equal(expenses.rows[0].category,'יוצרי תוכן');
+  assert.match(expenses.rows[0].description,/תשלום ליוצר תוכן - Creator - העברה בנקאית/);
+  assert.equal(expenses.rows[0].employee_name,'בעל החנות');
+  assert.equal(expenses.rows[0].expense_date,dayKey(Date.now()));
+  assert.equal(expenses.rows[0].maor_agorot,null);
+  assert.equal(expenses.rows[0].gal_agorot,null);
   const retry=await dashboard.payCreator(creatorId,4000,request,'העברה בנקאית',admin);
   assert.equal(retry.duplicate,true);
+  assert.equal((await database.listAdminExpenses({})).total,1,'idempotent retry must not double-count expense');
   const second=await dashboard.creatorLiabilities();
   assert.equal(second.totalDueAgorot,6000);
   await assert.rejects(()=>dashboard.payCreator(creatorId,6001,crypto.randomUUID(),'',admin),/payment_exceeds_balance/);
+  assert.equal((await database.listAdminExpenses({})).total,1,'overpayment must not create an expense');
+  const originalCreate=database.createAdminExpense;
+  database.createAdminExpense=async()=>{throw new Error('expense_insert_failed');};
+  try{
+    await assert.rejects(()=>dashboard.payCreator(creatorId,1000,crypto.randomUUID(),'',admin),/expense_insert_failed/);
+  }finally{database.createAdminExpense=originalCreate;}
+  assert.equal((await database.listAdminExpenses({})).total,1);
+  assert.equal((await dashboard.creatorLiabilities()).totalDueAgorot,6000,'failed expense save rolls payout back');
+  assert.equal(database.db.prepare('SELECT COUNT(*) AS count FROM admin_creator_payments').get().count,1);
+
 });

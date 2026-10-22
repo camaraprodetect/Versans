@@ -2030,10 +2030,14 @@
         var form=make('form','admin-dashboard-payout-form');
         var input=make('input');input.type='number';input.min='0.01';input.step='0.01';input.max=String((creator.dueAgorot/100).toFixed(2));input.value=String((creator.dueAgorot/100).toFixed(2));input.required=true;input.setAttribute('aria-label','סכום תשלום ל'+(creator.name||'יוצר התוכן')+' בשקלים');
         var pay=make('button','admin-dashboard-btn','רשום תשלום');pay.type='submit';form.append(input,pay);
+        // Keep one idempotency key across retries (including a lost HTTP response).
+        var pendingPaymentId=null;
+        input.addEventListener('input',function(){pendingPaymentId=null;});
         form.addEventListener('submit',async function(e){e.preventDefault();var amount=Math.round(Number(input.value)*100);if(!Number.isSafeInteger(amount)||amount<1||amount>creator.dueAgorot){showToast('סכום תשלום לא תקין');return;}
-          var approved=await adminConfirm({title:'רישום תשלום ליוצר',message:'לרשום תשלום שבוצע ל-'+(creator.name||'היוצר')+' בסך '+moneyAgorot(amount)+'? פעולה זו אינה מעבירה כסף בפועל.',confirmText:'אשר רישום',cancelText:'ביטול'});
+          var approved=await adminConfirm({title:'רישום תשלום ליוצר',message:'לרשום תשלום שבוצע ל-'+(creator.name||'היוצר')+' בסך '+moneyAgorot(amount)+'? הפעולה תירשם גם במערכת ההוצאות, ללא שיוך למאור או גל. לא מתבצעת העברת כסף בפועל.',confirmText:'אשר רישום',cancelText:'ביטול'});
           if(!approved)return;pay.disabled=true;
-          try{await apiAction('/api/admin/dashboard/creator-payment','POST',{creatorId:Number(creator.id),amountAgorot:amount,requestId:window.crypto.randomUUID(),note:''});showToast('התשלום נרשם');await renderCurrentPage({keepContent:true});}
+          if(!pendingPaymentId)pendingPaymentId=window.crypto.randomUUID();
+          try{await apiAction('/api/admin/dashboard/creator-payment','POST',{creatorId:Number(creator.id),amountAgorot:amount,requestId:pendingPaymentId,note:''});showToast('התשלום נרשם גם במערכת ההוצאות');await renderCurrentPage({keepContent:true});}
           catch(err){showToast('לא ניתן לרשום את התשלום: '+(err.code||'שגיאה'));pay.disabled=false;}
         });action.appendChild(form);
       }else action.appendChild(make('span','admin-dashboard-muted',creator.dueAgorot>0?'לצפייה בלבד':'אין יתרה לתשלום'));
