@@ -7,6 +7,7 @@ const crypto = require('node:crypto');
 const { URL } = require('node:url');
 const { createDatabase, importOpeningExpenseLedger } = require('./lib/database');
 const { createAdminTools } = require('./lib/admin-tools.js');
+const { createFinanceLedger } = require('./lib/finance-ledger.js');
 const employeePolicy = require('./lib/employee-access.js');
 const orderAnomalies = require('./lib/admin-order-anomalies.js');
 const { createPaymentUrl, verifyPayment, priceOrder } = require('./api/_hyp.js');
@@ -97,6 +98,7 @@ const VERSANS_BOT_TIMEOUT_MS = 25 * 1000;
 const VERSANS_BOT_MAX_BODY_CHARS = 32000;
 
 const database = createDatabase({ root: ROOT, sqlitePath: DB_PATH });
+const financeLedger = createFinanceLedger(database);
 const creatorProgram = createCreatorProgram(database);
 const { createCreatorVideos } = require('./lib/creator-videos.js');
 const creatorVideosStore = createCreatorVideos(database,creatorProgram);
@@ -5199,7 +5201,7 @@ async function packingOrderSummary(order, focusShipmentId = null) {
   };
 }
 
-const adminTools = createAdminTools(database, catalogManager);
+const adminTools = createAdminTools(database, catalogManager, financeLedger);
 async function adminApi(req, res, pathname, parsed) {
   if (!pathname.startsWith('/api/admin/')) return false;
   const shippingBotEndpoint = pathname === '/api/admin/bot/shipping/ready-pickups'
@@ -5364,6 +5366,81 @@ async function adminApi(req, res, pathname, parsed) {
     return true;
   }
 
+  // Immutable finance audit, recurring templates and manually reconciled refunds.
+  const financeExpenseMatch=/^\/api\/admin\/finance\/expenses\/(\d+)$/.exec(pathname);
+  const financeRecurringMatch=/^\/api\/admin\/finance\/recurring\/(\d+)$/.exec(pathname);
+  const financeRefundMatch=/^\/api\/admin\/finance\/refunds\/(\d+)$/.exec(pathname);
+  if(financeExpenseMatch || financeRecurringMatch || financeRefundMatch ||
+     ['/api/admin/finance/recurring','/api/admin/finance/refunds','/api/admin/finance/export'].includes(pathname)){
+    if(req.method!=='GET' && !sameOriginAllowed(req)){json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
+    const readFilters=()=>{
+      const from=String(parsed.searchParams.get('from')||''),to=String(parsed.searchParams.get('to')||'');
+      const valid=x=>!x||(/^\d{4}-\d{2}-\d{2}$/.test(x)&&!Number.isNaN(Date.parse(x+'T00:00:00Z'))&&new Date(x+'T00:00:00Z').toISOString().slice(0,10)===x);
+      if(!valid(from)||!valid(to)||(from&&to&&from>to))throw Object.assign(new Error('invalid_date_range'),{status:400});
+      return {from,to};
+    };
+    try{
+      if(financeExpenseMatch){
+        const id=Number(financeExpenseMatch[1]);
+        if(req.method==='GET'){json(res,200,{ok:true,history:await financeLedger.expenseHistory(id)});return true;}
+        if(req.method==='PATCH'||req.method==='DELETE'){
+          const body=await readJsonBody(req);
+          const changed=await financeLedger.modifyExpense(id,req.method==='DELETE'?'cancel':'edit',body||{},admin);
+          await adminDashboard.log(admin,'expenses',req.method==='DELETE'?'ביטול הוצאה':'עריכת הוצאה',String(id)).catch(()=>{});
+          json(res,200,{ok:true,...changed});return true;
+        }
+      }
+      if(pathname==='/api/admin/finance/recurring'){
+        if(req.method==='GET'){
+          const generated=await financeLedger.generateRecurring();
+          json(res,200,{ok:true,items:await financeLedger.recurringList(),generated});return true;
+        }
+        if(req.method==='POST'){
+          const id=await financeLedger.createRecurring(await readJsonBody(req),admin);
+          await financeLedger.generateRecurring();
+          json(res,201,{ok:true,id});return true;
+        }
+      }
+      if(financeRecurringMatch && req.method==='PATCH'){
+        const body=await readJsonBody(req);
+        if(typeof body.active!=='boolean'){json(res,400,{ok:false,error:'invalid_request'});return true;}
+        await financeLedger.setRecurringActive(Number(financeRecurringMatch[1]),body.active);
+        if(body.active)await financeLedger.generateRecurring();
+        json(res,200,{ok:true});return true;
+      }
+      if(pathname==='/api/admin/finance/refunds'){
+        if(req.method==='GET'){
+          const filters=readFilters();
+          const limit=Math.max(1,Math.min(500,Math.floor(Number(parsed.searchParams.get('limit'))||50)));
+          const offset=Math.max(0,Math.min(1000000,Math.floor(Number(parsed.searchParams.get('offset'))||0)));
+          json(res,200,{ok:true,...await financeLedger.refundList({...filters,limit,offset})});return true;
+        }
+        if(req.method==='POST'){
+          const id=await financeLedger.createRefund(await readJsonBody(req),admin);
+          json(res,201,{ok:true,id});return true;
+        }
+      }
+      if(financeRefundMatch&&req.method==='PATCH'){
+        const body=await readJsonBody(req),action=String(body.action||'');
+        if(!['confirm','cancel'].includes(action)){json(res,400,{ok:false,error:'invalid_action'});return true;}
+        await financeLedger.updateRefund(Number(financeRefundMatch[1]),action,body,admin);
+        json(res,200,{ok:true});return true;
+      }
+      if(pathname==='/api/admin/finance/export' && req.method==='GET'){
+        const kind=String(parsed.searchParams.get('kind')||'combined');
+        if((['expenses','combined'].includes(kind)&&!hasAdminPermission(admin,'expenses.view'))||
+           (['income','refunds','combined'].includes(kind)&&!hasAdminPermission(admin,'income.view'))){
+          json(res,403,{ok:false,error:'permission_denied'});return true;
+        }
+        const filters=readFilters();
+        const csv=await financeLedger.exportCsv(kind,filters.from,filters.to);
+        res.writeHead(200,{'Content-Type':'text/csv; charset=utf-8','Content-Disposition':`attachment; filename="versans-${kind}-${Date.now()}.csv"`,'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});
+        res.end(csv);return true;
+      }
+      json(res,405,{ok:false,error:'method_not_allowed'});return true;
+    }catch(e){json(res,e.status||500,{ok:false,error:e.status?e.message:'finance_operation_failed'});return true;}
+  }
+
   // Money dashboard: expenses are staff-editable with a server-stamped employee identity.
   // Income is derived solely from verified paid orders, so a repeated callback cannot duplicate it.
   if (pathname === '/api/admin/finance/expenses' || pathname === '/api/admin/finance/income') {
@@ -5431,6 +5508,23 @@ async function adminApi(req, res, pathname, parsed) {
       };
       const nextDay=date=>new Date(Date.parse(date+'T00:00:00Z')+86400000).toISOString().slice(0,10);
       result=await database.listAdminIncome({since:from?israelMidnight(from):null,before:to?israelMidnight(nextDay(to)):null,limit,offset});
+    }
+    if(isExpenses){
+      result.categories=await financeLedger.categorySummary(from,to);
+      result.canEdit=hasAdminPermission(admin,'expenses.edit');
+      result.canCancel=hasAdminPermission(admin,'expenses.cancel');
+      result.canCreate=hasAdminPermission(admin,'expenses.create');
+      result.canRecurring=hasAdminPermission(admin,'expenses.recurring');
+      result.canExport=hasAdminPermission(admin,'reports.view');
+      result.canCombinedExport=result.canExport&&hasAdminPermission(admin,'income.view');
+    }else{
+      const refundSummary=await financeLedger.refundList({from,to,limit:1,offset:0});
+      result.confirmedRefundAgorot=refundSummary.confirmedAgorot;
+      result.pendingRefundAgorot=refundSummary.pendingAgorot;
+      result.netIncomeAgorot=Number(result.totalAgorot)-refundSummary.confirmedAgorot;
+      result.canRefund=hasAdminPermission(admin,'income.refunds');
+      result.canExport=hasAdminPermission(admin,'reports.view');
+      result.canCombinedExport=result.canExport&&hasAdminPermission(admin,'expenses.view');
     }
     json(res,200,{ok:true,...result,limit,offset});return true;
   }
@@ -9210,9 +9304,12 @@ setInterval(async () => {
 }, ORDER_NOTIFICATION_WEBHOOK_RETRY_MS).unref();
 
 setInterval(()=>{checkTaskPushSchedule().catch(e=>console.error('Task reminder scheduler failed:',e));},60*1000).unref();
+setInterval(()=>{financeLedger.generateRecurring().catch(e=>console.error('Monthly expense generator failed:',e));},6*60*60*1000).unref();
 
 async function start() {
   await database.init();
+  await financeLedger.init();
+  await financeLedger.generateRecurring();
   if (process.env.NODE_ENV !== 'test') await importOpeningExpenseLedger(database);
   await creatorProgram.init();
   await creatorVideosStore.init();

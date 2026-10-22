@@ -58,3 +58,46 @@
 .vs-finance-table td:nth-child(4),.vs-finance-table td:nth-child(5),.vs-finance-table td:nth-child(6){font-variant-numeric:tabular-nums}
 @media(max-width:950px){.vs-finance-entry-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:600px){.vs-finance-balance-cards{grid-template-columns:1fr}.vs-finance-entry-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.vs-finance-entry-grid>.vs-finance-field:first-child{grid-column:1/-1}}
+
+/* Extended bookkeeping controls - visually consistent and mobile safe. */
+.vs-finance-stats{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+.vs-finance-details{display:grid;gap:14px}
+.vs-finance-details>summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;font-size:15px;font-weight:800}
+.vs-finance-details>summary::after{content:'⌄';font-size:22px;line-height:1;transition:transform .2s}
+.vs-finance-details[open]>summary::after{transform:rotate(180deg)}
+.vs-finance-details>summary::-webkit-details-marker{display:none}
+.vs-finance-details>.vs-finance-entry{margin-top:5px}
+.vs-finance-help{font-size:12px;line-height:1.7;margin:0;color:var(--admin-muted,#657586)}
+.vs-finance-categories{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:10px;margin-top:15px}
+.vs-finance-category{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--admin-soft,#f7f9fa);padding:12px;border-radius:10px;font-size:11px}
+.vs-finance-category strong{font-size:13px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.vs-finance-recurring-list{display:grid;gap:8px}
+.vs-finance-recurring-item{display:flex;align-items:center;flex-wrap:wrap;gap:12px;padding:12px;background:var(--admin-soft,#f7f9fa);border-radius:10px}
+.vs-finance-recurring-item strong{font-size:12px}
+.vs-finance-recurring-item span{font-size:11px;color:var(--admin-muted,#657586);flex:1 1 150px}
+.vs-finance-small{font-size:11px;padding:6px 9px;min-height:31px}
+.vs-finance-row-actions{min-width:150px;max-width:300px}
+.vs-finance-row-actions>.vs-finance-button{display:inline-block;margin:2px}
+.vs-finance-state{display:block;font-size:11px;font-weight:750;margin-bottom:4px;color:#317653}
+.vs-finance-state.is-cancelled{color:#a54d50}
+.vs-finance-is-cancelled{opacity:.64}
+.vs-finance-is-cancelled .vs-finance-money{text-decoration:line-through}
+.vs-finance-refund-totals{font-weight:800;font-size:13px;padding:12px;background:var(--admin-soft,#f7f9fa);border-radius:10px}
+.vs-finance-refund-list{min-width:0}
+.vs-finance-refund-table{min-width:730px}
+.vs-finance-details .vs-finance-entry-grid{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.vs-finance-entry>.vs-finance-button{justify-self:start}
+.vs-finance-entry .vs-finance-field{max-width:100%}
+.vs-finance-row-actions button:focus-visible,.vs-finance-details>summary:focus-visible{outline:3px solid #76a5c7;outline-offset:2px}
+@media(max-width:600px){.vs-finance-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.vs-finance-details .vs-finance-entry-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.vs-finance-details{padding:14px}.vs-finance-recurring-item{align-items:start;flex-direction:column}}
+@media(max-width:380px){.vs-finance-stats{grid-template-columns:1fr}.vs-finance-details .vs-finance-entry-grid{grid-template-columns:1fr}}
+/* Prevent a wide refund grid from increasing mobile page width; only its table scrolls. */
+.vs-finance-details,.vs-finance-refund-list,.vs-finance-refund-list>.vs-finance-scroll{min-width:0;max-width:100%;width:100%}
+.vs-finance-refund-list{overflow:hidden}
+.vs-finance-details[open]{display:block}
+.vs-finance-details>summary{margin-bottom:14px}
+.vs-finance-details>.vs-finance-entry{margin:15px 0}
+.vs-finance-details{box-sizing:border-box}
+.vs-finance-entry[hidden],.vs-finance-row-actions [hidden]{display:none!important}
+
+.vs-finance-button[hidden]{display:none!important}
