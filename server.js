@@ -7,6 +7,8 @@ const crypto = require('node:crypto');
 const { URL } = require('node:url');
 const { createDatabase, importOpeningExpenseLedger } = require('./lib/database');
 const { createAdminTools } = require('./lib/admin-tools.js');
+const { createAdminReporting, SENSITIVE_TYPES, SOURCE_PERMISSIONS } = require('./lib/admin-reporting.js');
+const reportExport = require('./lib/report-export.js');
 const { createFinanceLedger } = require('./lib/finance-ledger.js');
 const employeePolicy = require('./lib/employee-access.js');
 const orderAnomalies = require('./lib/admin-order-anomalies.js');
@@ -5202,6 +5204,7 @@ async function packingOrderSummary(order, focusShipmentId = null) {
 }
 
 const adminTools = createAdminTools(database, catalogManager, financeLedger);
+const adminReporting = createAdminReporting(database, adminTools, ADMIN_EMAIL);
 async function adminApi(req, res, pathname, parsed) {
   if (!pathname.startsWith('/api/admin/')) return false;
   const shippingBotEndpoint = pathname === '/api/admin/bot/shipping/ready-pickups'
@@ -5427,6 +5430,7 @@ async function adminApi(req, res, pathname, parsed) {
         json(res,200,{ok:true});return true;
       }
       if(pathname==='/api/admin/finance/export' && req.method==='GET'){
+        if(!hasAdminPermission(admin,'reports.export')){json(res,403,{ok:false,error:'permission_denied'});return true;}
         const kind=String(parsed.searchParams.get('kind')||'combined');
         if((['expenses','combined'].includes(kind)&&!hasAdminPermission(admin,'expenses.view'))||
            (['income','refunds','combined'].includes(kind)&&!hasAdminPermission(admin,'income.view'))){
@@ -5515,7 +5519,7 @@ async function adminApi(req, res, pathname, parsed) {
       result.canCancel=hasAdminPermission(admin,'expenses.cancel');
       result.canCreate=hasAdminPermission(admin,'expenses.create');
       result.canRecurring=hasAdminPermission(admin,'expenses.recurring');
-      result.canExport=hasAdminPermission(admin,'reports.view');
+      result.canExport=hasAdminPermission(admin,'reports.export');
       result.canCombinedExport=result.canExport&&hasAdminPermission(admin,'income.view');
     }else{
       const refundSummary=await financeLedger.refundList({from,to,limit:1,offset:0});
@@ -5523,7 +5527,7 @@ async function adminApi(req, res, pathname, parsed) {
       result.pendingRefundAgorot=refundSummary.pendingAgorot;
       result.netIncomeAgorot=Number(result.totalAgorot)-refundSummary.confirmedAgorot;
       result.canRefund=hasAdminPermission(admin,'income.refunds');
-      result.canExport=hasAdminPermission(admin,'reports.view');
+      result.canExport=hasAdminPermission(admin,'reports.export');
       result.canCombinedExport=result.canExport&&hasAdminPermission(admin,'expenses.view');
     }
     json(res,200,{ok:true,...result,limit,offset});return true;
@@ -5604,22 +5608,70 @@ async function adminApi(req, res, pathname, parsed) {
     }catch(e){if(e.code===400||e.code===409)json(res,e.code,{ok:false,error:e.message});else throw e;}
     return true;
   }
-  if (pathname === '/api/admin/export-data') {
-    if (req.method !== 'GET') {json(res,405,{ok:false,error:'method_not_allowed'});return true;}
+  // Reports: viewing the page is independent from exporting its data.
+  function reportAllowed(type,extraPermission) {
+    const required=SOURCE_PERMISSIONS[type];
+    return !!required && hasAdminPermission(admin,'reports.view') &&
+      (!extraPermission||hasAdminPermission(admin,extraPermission)) &&
+      required.every(key=>hasAdminPermission(admin,key)) &&
+      (!SENSITIVE_TYPES.has(type)||hasAdminPermission(admin,'reports.sensitive'));
+  }
+  if(pathname==='/api/admin/reports/work-session') {
+    if(!hasAdminPermission(admin,'orders.edit')){json(res,403,{ok:false,error:'permission_denied'});return true;}
+    try {
+      if(req.method==='GET'){json(res,200,{ok:true,...await adminReporting.session(admin,'status')});return true;}
+      if(req.method!=='POST'){json(res,405,{ok:false,error:'method_not_allowed'});return true;}
+      if(!sameOriginAllowed(req)){json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
+      const body=await readJsonBody(req,3000);
+      const action=String(body.action||''),ref=String(body.orderRef||'');
+      if(!['start','stop'].includes(action)||ref.length>150){json(res,400,{ok:false,error:'invalid_action'});return true;}
+      json(res,200,{ok:true,...await adminReporting.session(admin,action,ref)});return true;
+    }catch(e){if(e.status)json(res,e.status,{ok:false,error:e.message});else throw e;return true;}
+  }
+  if(pathname==='/api/admin/report-schedules'||/^\/api\/admin\/report-schedules\/\d+$/.test(pathname)) {
+    if(!hasAdminPermission(admin,'reports.view')){json(res,403,{ok:false,error:'permission_denied'});return true;}
+    try {
+      if(pathname==='/api/admin/report-schedules'&&req.method==='GET') {
+        json(res,200,{ok:true,configured:isEmailConfigured(),schedules:await adminReporting.schedules(Number(admin.id))});return true;
+      }
+      if(!hasAdminPermission(admin,'reports.schedule')||!hasAdminPermission(admin,'reports.export')){json(res,403,{ok:false,error:'permission_denied'});return true;}
+      if(!sameOriginAllowed(req)){json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
+      if(pathname==='/api/admin/report-schedules'&&req.method==='POST') {
+        if(!isEmailConfigured()){json(res,409,{ok:false,error:'email_not_configured'});return true;}
+        const body=await readJsonBody(req,5000);
+        if(!reportAllowed(String(body.type||''),'reports.export')){json(res,403,{ok:false,error:'permission_denied'});return true;}
+        json(res,200,{ok:true,schedules:await adminReporting.saveSchedule(admin,body)});return true;
+      }
+      const match=/^\/api\/admin\/report-schedules\/(\d+)$/.exec(pathname);
+      if(match&&req.method==='DELETE'){
+        const ok=await adminReporting.stopSchedule(admin,Number(match[1]));json(res,ok?200:404,{ok,error:ok?undefined:'schedule_not_found'});return true;
+      }
+      json(res,405,{ok:false,error:'method_not_allowed'});return true;
+    }catch(e){if(e.status)json(res,e.status,{ok:false,error:e.message});else throw e;return true;}
+  }
+  if(pathname==='/api/admin/export-data'||pathname==='/api/admin/report-download') {
+    if(req.method!=='GET'){json(res,405,{ok:false,error:'method_not_allowed'});return true;}
     try {
       const reportKind=String(parsed.searchParams.get('type')||'orders');
-      const requiredReportPerm={income:'income.view',expenses:'expenses.view',finance:'income.view',orders:'orders.view',sales:'sales.view',products:'products.view',customers:'customers.view',shipments:'orders.view',reviews:'reviews.view',visitors:'visitors.view',creators:'creators.view',tiktok:'creators.view',tasks:'tasks.view'};
-      if(admin.role==='staff' && (!requiredReportPerm[reportKind] || !hasAdminPermission(admin,requiredReportPerm[reportKind]) || (reportKind==='finance'&&!hasAdminPermission(admin,'expenses.view')))){json(res,403,{ok:false,error:'permission_denied'});return true;}
-      const result=await adminTools.report(Object.fromEntries(parsed.searchParams.entries()));
+      if(!reportAllowed(reportKind,'reports.export')){json(res,403,{ok:false,error:'permission_denied'});return true;}
+      const options=Object.fromEntries(parsed.searchParams.entries());
+      const result=await adminReporting.report(options);
       if(admin.role==='staff' && reportKind==='tasks' && !['tasks.edit','tasks.assign','tasks.create','tasks.delete'].some(k=>hasAdminPermission(admin,k))){
         result.rows=result.rows.filter(row=>String(row.assignedTo||'').toLowerCase()===normalizeEmail(admin.email));
-        result.totalCount=result.rows.length;
-        result.summary=[];
+        result.totalCount=result.rows.length;result.summary=[];
       }
-      res.setHeader('Cache-Control','no-store');
-      json(res,200,{ok:true,...result});
-    } catch(e){if(e.code===400)json(res,400,{ok:false,error:e.message});else throw e;}
-    return true;
+      res.setHeader('Cache-Control','private, no-store');
+      res.setHeader('X-Content-Type-Options','nosniff');
+      if(pathname==='/api/admin/report-download') {
+        const format=String(parsed.searchParams.get('format')||'');
+        if(!['csv','xlsx'].includes(format)){json(res,400,{ok:false,error:'invalid_export_format'});return true;}
+        const selected=String(parsed.searchParams.get('fields')||'').split(',').filter(Boolean);
+        const file=format==='csv'?reportExport.csv(result,selected):reportExport.xlsx(result,selected);
+        res.writeHead(200,{'Content-Type':format==='csv'?'text/csv; charset=utf-8':'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','Content-Disposition':`attachment; filename="versans-${reportKind}-${Date.now()}.${format}"`,'Content-Length':file.length});
+        res.end(file);return true;
+      }
+      json(res,200,{ok:true,...result});return true;
+    }catch(e){if(e.code===400||e.status===400)json(res,400,{ok:false,error:e.message});else throw e;return true;}
   }
   // Admin-only parcel reception workflow; doesn't change tracking or send WhatsApp.
   if (pathname === '/api/admin/packaging/lookup' && req.method === 'GET') {
@@ -9305,6 +9357,10 @@ setInterval(async () => {
 
 setInterval(()=>{checkTaskPushSchedule().catch(e=>console.error('Task reminder scheduler failed:',e));},60*1000).unref();
 setInterval(()=>{financeLedger.generateRecurring().catch(e=>console.error('Monthly expense generator failed:',e));},6*60*60*1000).unref();
+setInterval(()=>{adminReporting.deliverScheduled(async(user,type)=>{
+  const permissions=user.role==='staff'?await employeeAccess.read(Number(user.id)):[];
+  return user.role==='admin'||normalizeEmail(user.email)===ADMIN_EMAIL||(['reports.view','reports.export','reports.schedule',...(SOURCE_PERMISSIONS[type]||[]),...(SENSITIVE_TYPES.has(type)?['reports.sensitive']:[])].every(k=>permissions.includes(k)));
+}).catch(e=>console.error('Scheduled reports failed:',e));},5*60*1000).unref();
 
 async function start() {
   await database.init();
@@ -9316,12 +9372,17 @@ async function start() {
   await adminDashboard.init();
   await catalogManager.init();
   await adminTools.ensure();
+  await adminReporting.init();
   // Upgrade previously subscribed devices before creating fresh task events.
   for(const subscription of await database.listAdminPushSubscriptions()) {
     if(subscription.user_id) await adminTools.initializeTaskPushCursor(subscription.device_token,Number(subscription.user_id));
   }
   // Catch up missed schedule checks after a Render redeploy.
   checkTaskPushSchedule().catch(e=>console.error('Task reminder startup check failed:',e));
+  adminReporting.deliverScheduled(async(user,type)=>{
+    const permissions=user.role==='staff'?await employeeAccess.read(Number(user.id)):[];
+    return user.role==='admin'||normalizeEmail(user.email)===ADMIN_EMAIL||(['reports.view','reports.export','reports.schedule',...(SOURCE_PERMISSIONS[type]||[]),...(SENSITIVE_TYPES.has(type)?['reports.sensitive']:[])].every(k=>permissions.includes(k)));
+  }).catch(e=>console.error('Report scheduler startup failed:',e));
   seoCatalogSnapshot = seoSnapshot();
   seoCatalogInitialized = true;
   // Never purge real orders, reviews or customers during a deployment.

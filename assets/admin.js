@@ -159,7 +159,7 @@
     customers: ['לקוחות', 'משתמשים רשומים, רכישות והוצאות מצטברות'],
     reviews: ['ביקורות', 'דירוגים, מוצרים מובילים וביקורות אחרונות'],
     tasks: ['משימות פנימיות', 'תקלות, שיפורים, משימות ועדיפויות לצוות'],
-    reports: ['ייצוא נתונים ל־PDF', 'בחירת דוח, סינון ושמירה כקובץ PDF'],
+    reports: ['דוחות וייצוא', 'דוחות פעילות, שעות, המרות והורדה כ-PDF, CSV או Excel'],
     employees: ['עובדים והרשאות', 'ניהול עובדים והגדרת הרשאה נפרדת לכל פעולה']
   };
 
@@ -3277,6 +3277,25 @@
     actions.appendChild(orderWorkActionButton('ניהול Tracking', 'admin-order-work-action--primary', function () {
       openShipmentManager(order);
     }));
+    // Explicit staff timer: reporting never guesses hours from checkbox timestamps.
+    if(hasCapability('orders.edit')){
+      var workTimer=orderWorkActionButton('מדידת זמן טיפול','',async function(){
+        workTimer.disabled=true;
+        try{
+          var current=await api('/api/admin/reports/work-session');
+          var active=current.active;
+          if(active && String(active.order_ref)!==String(order.orderRef)){
+            showToast('מדידת זמן פעילה להזמנה '+active.order_ref+'. יש לסיים אותה קודם.');return;
+          }
+          var mode=active?'stop':'start';
+          var result=await apiAction('/api/admin/reports/work-session','POST',{action:mode,orderRef:order.orderRef});
+          workTimer.textContent=mode==='start'?'סיים מדידת זמן':'מדידת זמן טיפול';
+          showToast(mode==='start'?'מדידת זמן התחילה':'זמן הטיפול נשמר בדוחות: '+(result.stopped?Math.round(result.stopped.durationSeconds/60):0)+' דקות');
+        }catch(e){showToast('מדידת זמן: '+message(e));}
+        finally{workTimer.disabled=false;}
+      });
+      actions.appendChild(workTimer);
+    }
     actions.appendChild(orderWorkTrackLink(order));
     actions.appendChild(orderWorkActionButton('פרטי הזמנה', '', function () {
       openOrderDetailsByRef(order.orderRef);
