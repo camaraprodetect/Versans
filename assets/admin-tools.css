@@ -20,3 +20,11 @@ html[data-admin-theme="dark"] .admin-tools-btn.is-primary{background:#d5e5f1;bor
 
 .admin-tools-report-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .admin-tools-report-actions .admin-tools-btn{min-width:135px}
+/* Segmented task board: a single status is shown, never an all-status default. */
+.admin-tools-status-tabs{display:flex;gap:6px;overflow-x:auto;padding:5px;background:var(--admin-card,#fff);border:1px solid var(--admin-border,#dce3ea);border-radius:13px;scrollbar-width:thin}
+.admin-tools-status-tabs .admin-tools-btn{flex:1;min-width:max-content;padding:12px 16px;border:0;background:transparent;font-weight:750;border-radius:9px;color:var(--admin-muted,#526478)}
+.admin-tools-status-tabs .admin-tools-btn.is-active{background:#142333;color:white;box-shadow:0 2px 9px #14233328}
+.admin-tools-task-status{max-width:190px;min-width:142px}
+.admin-tools-task-status select{padding:8px;min-height:35px}
+.admin-tools-controls{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(max-width:650px){.admin-tools-status-tabs .admin-tools-btn{font-size:12px;padding:10px 13px}.admin-tools-task-status{max-width:100%}.admin-tools-controls{grid-template-columns:1fr}}

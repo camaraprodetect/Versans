@@ -2,6 +2,24 @@
   'use strict';
 
   var content = document.getElementById('adminContent');
+  var staffIdentity = null;
+  function hasCapability(key){return !staffIdentity || staffIdentity.role==='admin' || staffIdentity.permissions.indexOf(key)>=0;}
+  function configureStaffView(me){
+    staffIdentity=me;
+    if(me.role==='admin')return;
+    document.body.classList.add('admin-is-staff');
+    ['orders.edit','products.edit','expenses.create','anomalies.edit','reviews.edit'].forEach(function(permission){
+      if(!hasCapability(permission))document.body.classList.add('admin-no-'+permission.replace('.','-'));
+    });
+    document.querySelectorAll('[data-admin-page]').forEach(function(link){
+      var page=link.dataset.adminPage;
+      if(!me.pages[page] || !hasCapability(me.pages[page]))link.remove();
+    });
+    ['adminUndoLast','adminGlobalSearchOpen','adminAIOpen','adminNoticeOpen','adminDisplaySettings'].forEach(function(id){
+      var element=document.getElementById(id);
+      if(element && (id!=='adminAIOpen'||!hasCapability('ai.use')))element.hidden=true;
+    });
+  }
   var pageTitle = document.getElementById('adminPageTitle');
   var pageSubtitle = document.getElementById('adminPageSubtitle');
   var refreshButton = document.getElementById('adminRefresh');
@@ -135,7 +153,8 @@
     customers: ['לקוחות', 'משתמשים רשומים, רכישות והוצאות מצטברות'],
     reviews: ['ביקורות', 'דירוגים, מוצרים מובילים וביקורות אחרונות'],
     tasks: ['משימות פנימיות', 'תקלות, שיפורים, משימות ועדיפויות לצוות'],
-    reports: ['ייצוא נתונים ל־PDF', 'בחירת דוח, סינון ושמירה כקובץ PDF']
+    reports: ['ייצוא נתונים ל־PDF', 'בחירת דוח, סינון ושמירה כקובץ PDF'],
+    employees: ['עובדים והרשאות', 'ניהול עובדים והגדרת הרשאה נפרדת לכל פעולה']
   };
 
   var rangeOptions = [
@@ -191,7 +210,7 @@
       return 'order-work';
     }
 
-    var match = /^\/admin\/(visitors|sales|income|expenses|order-work|anomalies|products|customers|reviews|creators|tasks|reports)$/.exec(path);
+    var match = /^\/admin\/(visitors|sales|income|expenses|order-work|anomalies|products|customers|reviews|creators|tasks|reports|employees)$/.exec(path);
     return match ? match[1] : 'dashboard';
   }
 
@@ -1822,7 +1841,7 @@
       labels.appendChild(make('strong', '', item[1]));
       labels.appendChild(make('small', 'admin-table__muted', item[2]));
       link.append(labels, make('span', '', '‹'));
-      body.appendChild(link);
+      if(!staffIdentity || hasCapability((staffIdentity.pages||{})[item[0].replace('/admin/','')]))body.appendChild(link);
     });
     return body;
   }
@@ -2682,6 +2701,7 @@
   function orderWorkActionButton(label, className, onClick) {
     var button = make('button', 'admin-order-work-action' + (className ? ' ' + className : ''), label);
     button.type = 'button';
+    if(!hasCapability('orders.edit') && label==='ניהול Tracking')button.hidden=true;
     button.addEventListener('click', function (event) {
       event.preventDefault();
       event.stopPropagation();
@@ -2964,6 +2984,7 @@
     var orderCheck = document.createElement('input');
     orderCheck.type = 'checkbox';
     orderCheck.checked = !!order.completed;
+    orderCheck.disabled = !hasCapability('orders.edit');
     orderCheckWrap.appendChild(orderCheck);
     orderCheckWrap.appendChild(make('span', '', 'כל ההזמנה בוצעה'));
 
@@ -3895,7 +3916,7 @@
     var toolbar = make('div', 'admin-toolbar');
     toolbar.appendChild(renderRangeFilter(range, rangeOptions, function (next) { state.ranges.products = next; state.offsets.products = 0; renderCurrentPage(); }));
     toolbar.appendChild(make('span', 'admin-toolbar-note', 'טבלת המכירות למטה מציגה רק מוצרים שנמכרו בטווח'));
-    frag.appendChild(await renderCatalogSection());
+    if(hasCapability('products.edit'))frag.appendChild(await renderCatalogSection());
     frag.appendChild(toolbar);
     frag.appendChild(renderKpis([
       { label: 'מוצרים שנמכרו', value: numberFmt(data.count), hint: 'מוצרים ייחודיים עם Paid', primary: true },
@@ -3910,6 +3931,7 @@
   async function renderCreatorsPage() {
     var data=await api('/api/admin/creators');
     var frag=document.createDocumentFragment();
+    var creatorsWritable=hasCapability('creators.edit');
     var box=make('section','admin-card');
     var head=make('div','admin-card__head');
     var heading=make('div');heading.appendChild(make('h2','','יוצרי תוכן'));heading.appendChild(make('p','','בחר חשבון רשום והענק לו הרשאת contentcreator וקוד ייחודי. ניתן להגדיר גם קוד ללא הנחה (0%).'));
@@ -3926,7 +3948,7 @@
     var save=make('button','admin-small-button','שמירת יוצר תוכן');save.type='submit';form.appendChild(save);
     var hint=make('p','admin-table__muted','שם המשתמש בטיקטוק חייב להיות החשבון שמפרסם בפועל את הסרטונים. אימות מתבצע דרך Apify לפני שסרטון מתקבל לתשלום. התעריף לצפיות נשמר לכל יוצר, ושינוי שלו חל רק על בדיקות עתידיות. אחוז ההנחה הוא מה שהלקוח מקבל; אחוז העמלה הוא מה שהיוצר מרוויח מסכום רכישה ששולמה. שינוי עמלה משפיע על רכישות חדשות בלבד, ולא משנה עמלה מרכישות קודמות. ניתן לעדכן את האחוזים והקוד בכל זמן.');
     form.addEventListener('submit',async function(e){e.preventDefault();save.disabled=true;try{await apiAction('/api/admin/creators','POST',{email:email.value.trim(),code:code.value.trim().toUpperCase(),discountPercent:Number(percent.value),commissionPercent:Number(commission.value),tiktokUsername:username.value.trim(),viewRatePer1000Agorot:Math.round(Number(viewRate.value)*100)});showToast('קוד היוצר נשמר');await renderCurrentPage();}catch(err){var messages={user_not_found:'המשתמש לא רשום באתר. יש לבקש ממנו להירשם קודם.',creator_code_taken:'קוד היוצר הזה כבר תפוס.',coupon_code_taken:'הקוד הזה כבר משמש קופון.',invalid_creator_code:'הקוד חייב להכיל 4-20 תווים באנגלית, ספרות או מקף.',protected_role:'לא ניתן להמיר חשבון אדמין או צוות ליוצר תוכן.',invalid_commission_percent:'יש להגדיר אחוז עמלה שלם בין 0 ל-100.',invalid_tiktok_username:'יש לרשום שם משתמש TikTok תקין (ללא רווחים).',tiktok_username_taken:'שם המשתמש TikTok הזה משויך כבר ליוצר אחר.',invalid_view_rate:'יש להגדיר מחיר בין 0 ל־1,000 ₪ לכל 1,000 צפיות.',owner_only:'רק בעל החנות יכול לשנות הגדרות יוצר.'};alert(messages[err.code]||err.message||'השמירה נכשלה');save.disabled=false;}});
-    body.append(form,hint);box.appendChild(body);frag.appendChild(box);
+    if(creatorsWritable){body.append(form,hint);box.appendChild(body);frag.appendChild(box);}
     var users=(data.creators||[]).filter(function(item){return item.role==='contentcreator'&&item.active});
     var table=renderTable({title:'יוצרי תוכן פעילים',subtitle:'מספר הרכישות מבוסס על הזמנות ששולמו בלבד',rows:users,emptyText:'עדיין לא נוצרו קודי יוצר.',columns:[
       {label:'יוצר',render:function(row){return cellPrimary(row.name,row.email)}},
@@ -3937,9 +3959,9 @@
       {label:'₪ / 1,000 צפיות',render:function(row){return row.viewRatePer1000Agorot==null?'לא הוגדר':(Number(row.viewRatePer1000Agorot)/100).toFixed(2)+' ₪'}},
       {label:'עמלות שנצברו',render:function(row){return moneyAgorot(Number(row.commissionAgorot||0))}},
       {label:'רכישות',render:function(row){return numberFmt(row.sales)}},
-      {label:'פעולות',render:function(row){var wrap=make('div','admin-creators-actions');var edit=make('button','admin-small-button','ערוך');edit.type='button';edit.addEventListener('click',function(){email.value=row.email;code.value=row.code;percent.value=Number(row.discountPercent);commission.value=Number(row.commissionPercent||0);username.value=row.tiktokUsername?'@'+row.tiktokUsername:'';viewRate.value=row.viewRatePer1000Agorot==null?'3.00':(Number(row.viewRatePer1000Agorot)/100).toFixed(2);email.scrollIntoView({behavior:'smooth',block:'center'});code.focus();});var revoke=make('button','admin-small-button admin-small-button--danger','בטל הרשאה');revoke.type='button';revoke.addEventListener('click',async function(){if(!window.confirm('לבטל את הרשאת יוצר התוכן של '+row.name+'? קוד היוצר יפסיק לפעול, אך המכירות ההיסטוריות יישמרו.'))return;revoke.disabled=true;try{await apiAction('/api/admin/creators/'+row.id+'/revoke','POST',{});showToast('ההרשאה בוטלה');await renderCurrentPage();}catch(err){alert('לא ניתן לבטל הרשאה');revoke.disabled=false;}});wrap.append(edit,revoke);return wrap;}}
+      {label:'פעולות',render:function(row){var wrap=make('div','admin-creators-actions');if(!creatorsWritable)return wrap;var edit=make('button','admin-small-button','ערוך');edit.type='button';edit.addEventListener('click',function(){email.value=row.email;code.value=row.code;percent.value=Number(row.discountPercent);commission.value=Number(row.commissionPercent||0);username.value=row.tiktokUsername?'@'+row.tiktokUsername:'';viewRate.value=row.viewRatePer1000Agorot==null?'3.00':(Number(row.viewRatePer1000Agorot)/100).toFixed(2);email.scrollIntoView({behavior:'smooth',block:'center'});code.focus();});var revoke=make('button','admin-small-button admin-small-button--danger','בטל הרשאה');revoke.type='button';revoke.addEventListener('click',async function(){if(!window.confirm('לבטל את הרשאת יוצר התוכן של '+row.name+'? קוד היוצר יפסיק לפעול, אך המכירות ההיסטוריות יישמרו.'))return;revoke.disabled=true;try{await apiAction('/api/admin/creators/'+row.id+'/revoke','POST',{});showToast('ההרשאה בוטלה');await renderCurrentPage();}catch(err){alert('לא ניתן לבטל הרשאה');revoke.disabled=false;}});wrap.append(edit,revoke);return wrap;}}
     ]});frag.appendChild(table);
-    await renderCreatorVideosAdmin(frag);
+    if(creatorsWritable)await renderCreatorVideosAdmin(frag);
     content.replaceChildren(frag);
   }
 
@@ -4084,8 +4106,9 @@
     form.append(email,grant,revoke);section.append(form,status);return section;
   }
   async function renderCustomersPage() {
-    var access=await api('/api/admin/access/me');
+    var access=await api('/api/admin/access/me').catch(function(){return {isOwner:false};});
     var isOwner=access.isOwner===true;
+    var canEditCustomers=hasCapability('customers.edit');
     var offset = state.offsets.customers;
     var data = await api('/api/admin/customers?limit=50&offset=' + offset);
     var paying = (data.customers || []).filter(function (customer) { return customer.paidOrderCount > 0; }).length;
@@ -4142,7 +4165,7 @@
               showToast(error && error.code === 'cannot_block_self' ? 'אי אפשר לחסום את חשבון האדמין שמחובר כרגע' : 'לא ניתן לעדכן את הגישה למשתמש');
             }
           });
-          wrap.appendChild(button);
+          if(canEditCustomers)wrap.appendChild(button);
           if(isOwner && row.email){
             var accessBtn=make('button','admin-small-button',row.role==='admin'?'הסר אדמין':'תן אדמין');
             accessBtn.type='button';
@@ -4286,7 +4309,7 @@
     var reviewsTable = renderTable({
       title: 'ביקורות אחרונות',
       subtitle: 'עד 20 ביקורות אחרונות בטווח · אפשר למחוק ביקורת אחת או כמה ביקורות יחד',
-      action: actions,
+      action: hasCapability('reviews.edit')?actions:null,
       rows: reviews,
       emptyText: 'אין ביקורות בטווח שנבחר.',
       columns: [
@@ -4332,7 +4355,7 @@
           });
           return button;
         } }
-      ]
+      ].filter(function(c){return hasCapability('reviews.edit') || (c.label!=='סימון' && c.label!=='פעולות');})
     });
     frag.appendChild(reviewsTable);
     content.replaceChildren(frag);
@@ -4363,6 +4386,7 @@
       else if (state.page === 'customers') await renderCustomersPage();
       else if (state.page === 'reviews') await renderReviewsPage();
       else if (state.page === 'tasks') await window.VersansAdminTools.renderTasks(content);
+      else if (state.page === 'employees') await window.VersansAdminEmployees.render(content,staffIdentity);
       else if (state.page === 'reports') await window.VersansAdminTools.renderReports(content);
       if (version !== state.requestVersion) return;
     } catch (error) {
@@ -4394,10 +4418,15 @@
     renderCurrentPage({ keepContent: true }).then(function () { showToast('הנתונים עודכנו'); });
   });
 
-  initializeAdminPreferenceControls();
-  refreshCatalogUndo();
-  initGlobalAdminSearch();
-  initAdminNotificationCenter();
-  initAdminPush().catch(function () {});
-  loadDisplayPrefs().then(function(){renderCurrentPage();}).catch(function(e){if(e.message!=='admin_required')renderCurrentPage();});
+  api('/api/admin/employees/me').then(function(me){
+    configureStaffView(me);
+    initializeAdminPreferenceControls();
+    if(me.role==='admin'){
+      refreshCatalogUndo();initGlobalAdminSearch();initAdminNotificationCenter();
+    }
+    initAdminPush().catch(function(){});
+    return loadDisplayPrefs();
+  }).then(function(){renderCurrentPage();}).catch(function(e){
+    if(e.message!=='admin_required')content.replaceChildren(make('div','admin-error','לא ניתן לטעון הרשאות. רענן את הדף.'));
+  });
 })();

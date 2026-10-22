@@ -1445,3 +1445,11 @@ button,input,textarea,select,a{font:inherit}.admin-app{display:grid;grid-templat
 .admin-catalog-bulk-fields>.admin-catalog-btn{min-height:40px}
 .admin-catalog-bulk-note{margin:0;font-size:11px;line-height:1.65;color:#6b7d89}
 @media(max-width:640px){.admin-catalog-bulk{padding:12px}.admin-catalog-bulk-field{min-width:100%;flex:1 1 100%}.admin-catalog-bulk-fields>.admin-catalog-btn{width:100%}.admin-catalog-select{top:5px;right:5px}}
+
+/* Permission-aware employee view: the server remains authoritative. */
+.admin-no-expenses-create .vs-finance-entry{display:none!important}
+.admin-no-anomalies-edit .vs-anomaly-actions button{display:none!important}
+.admin-no-orders-edit .admin-order-work-card__actions .admin-order-work-action--primary,
+.admin-no-orders-edit .admin-order-work-order-check,
+.admin-no-orders-edit .admin-order-work-card__details-body button[data-mutation],
+.admin-no-orders-edit .admin-order-work-card__details-body input[type="checkbox"]{display:none!important}

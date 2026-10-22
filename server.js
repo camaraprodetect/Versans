@@ -7,6 +7,7 @@ const crypto = require('node:crypto');
 const { URL } = require('node:url');
 const { createDatabase, importOpeningExpenseLedger } = require('./lib/database');
 const { createAdminTools } = require('./lib/admin-tools.js');
+const employeePolicy = require('./lib/employee-access.js');
 const orderAnomalies = require('./lib/admin-order-anomalies.js');
 const { createAdminAI } = require('./lib/admin-ai.js');
 const { createPaymentUrl, verifyPayment, priceOrder } = require('./api/_hyp.js');
@@ -70,7 +71,7 @@ const ADMIN_PUSH_DEVICE_TTL_MS = 365 * 24 * 60 * 60 * 1000;
 const ADMIN_PUSH_VAPID_PUBLIC_META_KEY = 'admin_push_vapid_public_v1';
 const ADMIN_PUSH_VAPID_PRIVATE_META_KEY = 'admin_push_vapid_private_jwk_v1';
 const ADMIN_PUSH_TIMEOUT_MS = 10 * 1000;
-const ADMIN_PAGES = new Set(['tasks', 'reports', 'expenses', 'income', '', 'dashboard', 'visitors', 'sales', 'orders', 'order-work', 'anomalies', 'products', 'customers', 'reviews', 'creators']);
+const ADMIN_PAGES = new Set(['tasks', 'reports', 'expenses', 'income', '', 'dashboard', 'visitors', 'sales', 'orders', 'order-work', 'anomalies', 'products', 'customers', 'reviews', 'creators', 'employees']);
 const BODY_LIMIT = 48 * 1024 * 1024;
 const REVIEW_IMAGE_LIMIT = 2 * 1024 * 1024;
 const REVIEW_VIDEO_LIMIT = 20 * 1024 * 1024;
@@ -97,6 +98,7 @@ const VERSANS_BOT_MAX_BODY_CHARS = 32000;
 
 const database = createDatabase({ root: ROOT, sqlitePath: DB_PATH });
 const creatorProgram = createCreatorProgram(database);
+const employeeAccess = employeePolicy.createEmployeeAccess(database);
 // The public products script is regenerated whenever an admin saves an edit.
 // The browser must never receive the original on-disk catalog after a DB change.
 let liveCatalogScript = '';
@@ -2350,22 +2352,18 @@ function visitorSummary(row, now) {
 async function getAdminUser(req) {
   const user = await getCurrentUser(req);
   if (!user) return null;
-  if (normalizeEmail(user.email) === ADMIN_EMAIL) return { ...user, role: 'admin' };
-  return ['admin','staff'].includes(String(user.role || '')) ? user : null;
+  if (normalizeEmail(user.email) === ADMIN_EMAIL) return { ...user, role: 'admin', permissions: [] };
+  if (String(user.role || '') === 'admin') return { ...user, permissions: [] };
+  if (String(user.role || '') === 'staff') return { ...user, permissions: await employeeAccess.read(Number(user.id)) };
+  return null;
 }
 
 function adminCanAccess(user, pathname, method) {
-  if (!user) return false;
-  if (normalizeEmail(user.email) === ADMIN_EMAIL || String(user.role || '') === 'admin') return true;
-  if (String(user.role || '') !== 'staff') return false;
-  // Staff can read and complete only tasks assigned to their own account.
-  if (pathname === '/api/admin/finance/expenses' && ['GET','POST'].includes(method)) return true;
-  if (pathname === '/api/admin/internal-tasks' && method === 'GET') return true;
-  if (/^\/api\/admin\/internal-tasks\/\d+$/.test(pathname) && method === 'PATCH') return true;
-  if (pathname === '/api/admin/push/config' && method === 'GET') return true;
-  if (['/api/admin/push/subscribe','/api/admin/push/unsubscribe'].includes(pathname) && method === 'POST') return true;
-  if (method !== 'GET') return false;
-  return pathname === '/api/admin/orders' || pathname === '/api/admin/order-work' || /^\/api\/admin\/order-work\/[^/]+(?:\/items\/\d+)?$/.test(pathname) || /^\/api\/admin\/orders\/[^/]+$/.test(pathname) || /^\/api\/admin\/orders\/[^/]+\/shipments$/.test(pathname);
+  return employeePolicy.allowed(user, pathname, method);
+}
+
+function hasAdminPermission(user, key) {
+  return employeePolicy.can(user, key);
 }
 
 function adminPushDeviceCookie(deviceToken, req) {
@@ -2549,11 +2547,13 @@ async function adminPushDeviceApi(req, res, pathname) {
     json(res,403,{ok:false,error:'push_account_mismatch'});return true;
   }
   if(pathname==='/api/admin/push/tasks/pending') {
+    if(!hasAdminPermission(pushUser,'tasks.view')){json(res,403,{ok:false,error:'permission_denied'});return true;}
     if(req.method!=='GET'){json(res,405,{ok:false,error:'method_not_allowed'});return true;}
     const tasks=await adminTools.pendingTaskPushes(deviceToken,Number(pushUser.id));
     json(res,200,{ok:true,tasks});return true;
   }
   if(pathname==='/api/admin/push/tasks/ack') {
+    if(!hasAdminPermission(pushUser,'tasks.view')){json(res,403,{ok:false,error:'permission_denied'});return true;}
     if(req.method!=='POST'){json(res,405,{ok:false,error:'method_not_allowed'});return true;}
     if(!sameOriginAllowed(req)||String(req.headers['x-versans-admin-push']||'')!=='1'){
       json(res,403,{ok:false,error:'push_ack_forbidden'});return true;
@@ -2566,7 +2566,7 @@ async function adminPushDeviceApi(req, res, pathname) {
   }
   if (pathname === '/api/admin/push/pending') {
     if (req.method !== 'GET') { json(res, 405, { ok: false, error: 'method_not_allowed' }); return true; }
-    const canSeeOrders=normalizeEmail(pushUser.email)===ADMIN_EMAIL || String(pushUser.role||'')==='admin';
+    const canSeeOrders=hasAdminPermission(pushUser,'orders.view');
     const rows = canSeeOrders ? await database.listPaidOrdersAfterId(Number(subscription.last_notified_order_id || 0), 20) : [];
     json(res, 200, { ok: true, orders: rows.map(adminPushOrderSummary) });
     return true;
@@ -5280,9 +5280,91 @@ async function adminApi(req, res, pathname, parsed) {
     json(res, 403, { ok: false, error: 'admin_required' });
     return true;
   }
-  if (admin && !adminCanAccess(admin, pathname, req.method)) {
+  if (admin && pathname !== '/api/admin/employees/me' && !adminCanAccess(admin, pathname, req.method)) {
     json(res, 403, { ok: false, error: 'permission_denied' });
     return true;
+  }
+  // Employee role and capability catalog: every edit is rechecked against the database.
+  if (pathname === '/api/admin/employees/me' && req.method === 'GET') {
+    json(res,200,{ok:true,id:Number(admin.id),name:admin.name,email:admin.email,role:admin.role,
+      isOwner:normalizeEmail(admin.email)===ADMIN_EMAIL,permissions:admin.role==='admin'?[...employeePolicy.KEYS]:admin.permissions,
+      pages:employeePolicy.PAGE_KEYS});return true;
+  }
+  if (pathname === '/api/admin/employees/catalog' && req.method === 'GET') {
+    json(res,200,{ok:true,groups:employeePolicy.GROUPS.map(([id,title,actions])=>({id,title,actions:actions.map(([action,label])=>({key:id+'.'+action,label}))}))});return true;
+  }
+  if (pathname === '/api/admin/employees' && req.method === 'GET') {
+    json(res,200,{ok:true,employees:await employeeAccess.staffList()});return true;
+  }
+  if (pathname === '/api/admin/employees' && req.method === 'POST') {
+    if(!sameOriginAllowed(req)){json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
+    const body=await readJsonBody(req,32768);
+    const email=normalizeEmail(body.email), name=String(body.name||'').trim().slice(0,120),password=String(body.password||'');
+    const keys=employeePolicy.withPagePermissions(body.permissions);
+    if(!validEmail(email)||!keys || !name){json(res,400,{ok:false,error:'invalid_employee'});return true;}
+    if(admin.role==='staff' && (keys.length>0 && !hasAdminPermission(admin,'employees.permissions') || keys.some(k=>!hasAdminPermission(admin,k)))){
+      json(res,403,{ok:false,error:'cannot_grant_unowned_permissions'});return true;
+    }
+    if(email===ADMIN_EMAIL){json(res,403,{ok:false,error:'cannot_change_owner'});return true;}
+    let target=await database.findUserByEmail(email);
+    if(target && (target.role!=='customer' || Number(target.is_blocked)===1)){
+      json(res,409,{ok:false,error:'account_not_eligible'});return true;
+    }
+    if(!target && (password.length<8||password.length>128)){
+      json(res,400,{ok:false,error:'password_min_8'});return true;
+    }
+    try {
+      if(!target){
+        const id=await database.insertUser(name,email,hashPassword(password),Date.now(),null,{role:'staff'});
+        target=await database.findUserById(id);
+      } else {
+        await database.setUserAccess(Number(target.id),'staff',false,'',Date.now());
+        await database.deleteSessionsForUser(Number(target.id));
+        target=await database.findUserById(Number(target.id));
+      }
+      await employeeAccess.write(Number(target.id),keys);
+      json(res,201,{ok:true,employee:{id:Number(target.id),name:target.name,email:target.email,permissions:keys}});
+    } catch(e) {
+      if(e.code==='23505' || /UNIQUE/i.test(String(e.message||'')))json(res,409,{ok:false,error:'email_exists'});
+      else throw e;
+    }
+    return true;
+  }
+  const employeeMatch=/^\/api\/admin\/employees\/(\d+)$/.exec(pathname);
+  if(employeeMatch && req.method==='PATCH') {
+    if(!sameOriginAllowed(req)){json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
+    const targetId=Number(employeeMatch[1]);
+    if(targetId===Number(admin.id)){json(res,403,{ok:false,error:'cannot_edit_yourself'});return true;}
+    const target=await database.findUserById(targetId);
+    if(!target || target.role!=='staff' || normalizeEmail(target.email)===ADMIN_EMAIL){json(res,404,{ok:false,error:'employee_not_found'});return true;}
+    const body=await readJsonBody(req,32768);
+    const editDetails=Object.hasOwn(body,'name')||Object.hasOwn(body,'blocked');
+    const editPermissions=Object.hasOwn(body,'permissions');
+    if(!editDetails&&!editPermissions){json(res,400,{ok:false,error:'nothing_to_update'});return true;}
+    if(editDetails&&!hasAdminPermission(admin,'employees.edit')){json(res,403,{ok:false,error:'permission_denied'});return true;}
+    if(editPermissions&&!hasAdminPermission(admin,'employees.permissions')){json(res,403,{ok:false,error:'permission_denied'});return true;}
+    const current=await employeeAccess.read(targetId);
+    let keys=current;
+    if(editPermissions){
+      keys=employeePolicy.withPagePermissions(body.permissions);
+      if(!keys){json(res,400,{ok:false,error:'invalid_permissions'});return true;}
+      if(admin.role==='staff' && [...new Set([...keys,...current])].some(k=>!hasAdminPermission(admin,k))){
+        json(res,403,{ok:false,error:'cannot_manage_unowned_permissions'});return true;
+      }
+    }
+    if(editDetails){
+      const name=Object.hasOwn(body,'name')?String(body.name||'').trim():target.name;
+      if(!name||name.length>120|| (Object.hasOwn(body,'blocked')&&typeof body.blocked!=='boolean')){
+        json(res,400,{ok:false,error:'invalid_employee'});return true;
+      }
+      if(name!==target.name){
+        if(database.backend==='postgres')await database._query('UPDATE users SET name=$1 WHERE id=$2',[name,targetId]);
+        else database.db.prepare('UPDATE users SET name=? WHERE id=?').run(name,targetId);
+      }
+      if(Object.hasOwn(body,'blocked'))await database.setUserAccess(targetId,'staff',body.blocked,'',Date.now());
+    }
+    if(editPermissions)await employeeAccess.write(targetId,keys);
+    json(res,200,{ok:true,employee:{id:targetId,permissions:keys}});return true;
   }
   // Rule-based order review. Flags are advisory; purchases and fulfillment stay untouched.
   if (pathname === '/api/admin/order-anomalies' && req.method === 'GET') {
@@ -5444,20 +5526,21 @@ async function adminApi(req, res, pathname, parsed) {
   }
   // Internal task board and on-demand reports; adminCanAccess was checked above.
   if (pathname === '/api/admin/internal-tasks/assignees' && req.method === 'GET') {
-    const isManager=normalizeEmail(admin.email)===ADMIN_EMAIL || String(admin.role)==='admin';
+    const isManager=hasAdminPermission(admin,'tasks.assign');
     if(!isManager){json(res,403,{ok:false,error:'permission_denied'});return true;}
     json(res,200,{ok:true,assignees:await adminTools.assignees()});return true;
   }
   if (pathname === '/api/admin/internal-tasks') {
     if (req.method === 'GET') {
-      const canManage=normalizeEmail(admin.email)===ADMIN_EMAIL || String(admin.role)==='admin';
+      const canManage=admin.role==='admin';
       const tasks=await adminTools.listTasks();
-      json(res,200,{ok:true,canManage,tasks:canManage?tasks:tasks.filter(x=>String(x.assignedTo||'').toLowerCase()===normalizeEmail(admin.email))});return true;
+      const maySeeAll=canManage||hasAdminPermission(admin,'tasks.edit')||hasAdminPermission(admin,'tasks.assign')||hasAdminPermission(admin,'tasks.delete')||hasAdminPermission(admin,'tasks.create');
+      json(res,200,{ok:true,canManage,canCreate:hasAdminPermission(admin,'tasks.create'),canEdit:hasAdminPermission(admin,'tasks.edit'),canAssign:hasAdminPermission(admin,'tasks.assign'),canDelete:hasAdminPermission(admin,'tasks.delete'),canChangeStatus:hasAdminPermission(admin,'tasks.status'),tasks:maySeeAll?tasks:tasks.filter(x=>String(x.assignedTo||'').toLowerCase()===normalizeEmail(admin.email))});return true;
     }
     if (req.method === 'POST') {
-      if(String(admin.role)==='staff'){json(res,403,{ok:false,error:'permission_denied'});return true;}
       if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'});return true; }
       const body = await readJsonBody(req, 12 * 1024);
+      if(body && body.assignedTo && !hasAdminPermission(admin,'tasks.assign')){json(res,403,{ok:false,error:'permission_denied'});return true;}
       try {
         const task=await adminTools.addTask(body||{},Number(admin.id));
         json(res,201,{ok:true,task});
@@ -5476,18 +5559,31 @@ async function adminApi(req, res, pathname, parsed) {
     if (!Number.isSafeInteger(taskId) || taskId<1) {json(res,400,{ok:false,error:'invalid_task_id'});return true;}
     const body=await readJsonBody(req,12*1024);
     try {
-      const isStaff=String(admin.role)==='staff' && normalizeEmail(admin.email)!==ADMIN_EMAIL;
-      if(isStaff){
-        if(req.method!=='PATCH'){json(res,403,{ok:false,error:'permission_denied'});return true;}
-        const previous=(await adminTools.listTasks()).find(x=>x.id===taskId);
-        if(!previous || String(previous.assignedTo||'').toLowerCase()!==normalizeEmail(admin.email)
-            || !['done','in_progress'].includes(String(body&&body.status))) {
-          json(res,403,{ok:false,error:'task_not_assigned_to_you'});return true;
+      const previous=(await adminTools.listTasks()).find(x=>x.id===taskId);
+      if(!previous){json(res,404,{ok:false,error:'task_not_found'});return true;}
+      if(req.method==='PATCH' && admin.role==='staff'){
+        const patch=body||{};
+        const status=String(patch.status||'');
+        const assignedTo=String(previous.assignedTo||'').toLowerCase();
+        const ownsTask=assignedTo===normalizeEmail(admin.email);
+        const canEdit=hasAdminPermission(admin,'tasks.edit');
+        const canAssign=hasAdminPermission(admin,'tasks.assign');
+        const canStatus=hasAdminPermission(admin,'tasks.status') && ownsTask;
+        const changedFields=['title','description','type','priority','dueDate'].some(k=>Object.hasOwn(patch,k)&&String(patch[k]||'')!==String(previous[k]||''));
+        const reassigned=Object.hasOwn(patch,'assignedTo')&&String(patch.assignedTo||'').toLowerCase()!==assignedTo;
+        if(!['open','in_progress','blocked','done'].includes(status) || (changedFields&&!canEdit) || (reassigned&&!canAssign)
+           || (!canEdit&&!canStatus && !(canAssign&&!changedFields))) {
+          json(res,403,{ok:false,error:'permission_denied'});return true;
         }
-        // Staff may only change the progress, never reassignment or other fields.
-        const patch={...previous,status:body.status,updatedAt:body.updatedAt};
-        const task=await adminTools.updateTask(taskId,patch,Number(admin.id));
-        json(res,200,{ok:true,task});return true;
+        // Construct the patch from server-side values; extra client fields are ignored.
+        const sanitized={...previous,status,updatedAt:patch.updatedAt};
+        if(canEdit)for(const key of ['title','description','type','priority','dueDate'])if(Object.hasOwn(patch,key))sanitized[key]=patch[key];
+        if(canAssign&&Object.hasOwn(patch,'assignedTo'))sanitized.assignedTo=patch.assignedTo;
+        if(status!==previous.status && !canStatus && !canEdit){json(res,403,{ok:false,error:'permission_denied'});return true;}
+        const task=await adminTools.updateTask(taskId,sanitized,Number(admin.id));
+        json(res,200,{ok:true,task});
+        if(reassigned)checkTaskPushSchedule().catch(e=>console.error('Task notification failed:',e));
+        return true;
       }
       if(req.method==='DELETE'){
         await adminTools.deleteTask(taskId, Number(body&&body.updatedAt));
@@ -5506,7 +5602,15 @@ async function adminApi(req, res, pathname, parsed) {
   if (pathname === '/api/admin/export-data') {
     if (req.method !== 'GET') {json(res,405,{ok:false,error:'method_not_allowed'});return true;}
     try {
+      const reportKind=String(parsed.searchParams.get('type')||'orders');
+      const requiredReportPerm={income:'income.view',expenses:'expenses.view',finance:'income.view',orders:'orders.view',sales:'sales.view',products:'products.view',customers:'customers.view',shipments:'orders.view',reviews:'reviews.view',visitors:'visitors.view',creators:'creators.view',tiktok:'creators.view',tasks:'tasks.view'};
+      if(admin.role==='staff' && (!requiredReportPerm[reportKind] || !hasAdminPermission(admin,requiredReportPerm[reportKind]) || (reportKind==='finance'&&!hasAdminPermission(admin,'expenses.view')))){json(res,403,{ok:false,error:'permission_denied'});return true;}
       const result=await adminTools.report(Object.fromEntries(parsed.searchParams.entries()));
+      if(admin.role==='staff' && reportKind==='tasks' && !['tasks.edit','tasks.assign','tasks.create','tasks.delete'].some(k=>hasAdminPermission(admin,k))){
+        result.rows=result.rows.filter(row=>String(row.assignedTo||'').toLowerCase()===normalizeEmail(admin.email));
+        result.totalCount=result.rows.length;
+        result.summary=[];
+      }
       res.setHeader('Cache-Control','no-store');
       json(res,200,{ok:true,...result});
     } catch(e){if(e.code===400)json(res,400,{ok:false,error:e.message});else throw e;}
@@ -6789,6 +6893,7 @@ async function adminApi(req, res, pathname, parsed) {
     if(normalizeEmail(target.email)===ADMIN_EMAIL){json(res,403,{ok:false,error:'cannot_change_owner'});return true;}
     // Blocking a user must never covertly grant or revoke admin permissions.
     if(role !== String(target.role||'customer')) {json(res,403,{ok:false,error:'use_owner_role_management'});return true;}
+    if(admin.role==='staff' && role!=='customer'){json(res,403,{ok:false,error:'cannot_manage_staff_here'});return true;}
     const changed=await database.setUserAccess(targetId,role,blocked,cleanCheckoutText(body.reason,300),Date.now()); json(res,changed?200:404,{ok:changed,error:changed?undefined:'user_not_found'}); return true;
   }
   if (pathname === '/api/admin/cancellation-requests' && req.method === 'GET') {
@@ -7496,8 +7601,13 @@ async function adminPage(req, res, pathname) {
     redirect(res, '/login', 302);
     return true;
   }
-  if (normalizeEmail(currentUser.email) !== ADMIN_EMAIL && String(currentUser.role||'') !== 'admin'
-      && !(String(currentUser.role||'')==='staff' && (slug==='tasks'||slug==='expenses'))) {
+  const adminUser = await getAdminUser(req);
+  const pageKey=employeePolicy.PAGE_KEYS[slug||'dashboard'];
+  if (adminUser && adminUser.role==='staff' && (isLegacy || slug==='' || slug==='dashboard') && !hasAdminPermission(adminUser,'dashboard.view')) {
+    const first=Object.keys(employeePolicy.PAGE_KEYS).find(page=>page!== 'dashboard' && hasAdminPermission(adminUser,employeePolicy.PAGE_KEYS[page]));
+    if(first){redirect(res,'/admin/'+first,302);return true;}
+  }
+  if (!adminUser || !pageKey || !hasAdminPermission(adminUser,pageKey)) {
     res.statusCode = 403;
     res.setHeader('Content-Type', 'text/plain; charset=utf-8');
     res.setHeader('Cache-Control', 'no-store');
