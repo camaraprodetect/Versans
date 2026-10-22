@@ -203,6 +203,7 @@
     offsets: { visitors: 0, orders: 0, orderWork: 0, products: 0, customers: 0 },
     selectedVisitorId: null,
     dashboardCompare: {aFrom:'',aTo:'',bFrom:'',bTo:''},
+    dashboardExpanded: Object.create(null),
     requestVersion: 0
   };
 
@@ -1924,6 +1925,32 @@
     return make('p','admin-dashboard-note',result && result.error?'לא ניתן לטעון כעת את הנתונים: '+result.error:'הנתונים עדיין לא זמינים.');
   }
 
+  // Small, accessible disclosure headers for the optional dashboard panels.
+  // Only the monthly target remains expanded by default. Remember toggles when
+  // a goal/payment/comparison action triggers an in-page data refresh.
+  function dashboardFold(id,title,preview,node) {
+    if(!node)return null;
+    var fold=make('details','admin-dashboard-fold');
+    fold.dataset.dashboardSection=id;
+    fold.open=!!state.dashboardExpanded[id];
+    var head=make('summary','admin-dashboard-fold__summary');
+    var titleNode=make('strong','admin-dashboard-fold__title',title);
+    var small=make('span','admin-dashboard-fold__preview',preview||'לחץ להצגת פרטים');
+    var arrow=make('span','admin-dashboard-fold__chevron','⌄');arrow.setAttribute('aria-hidden','true');
+    head.append(titleNode,small,arrow);
+    var inner=make('div','admin-dashboard-fold__body');
+    if(node.classList.contains('admin-card')) {
+      // Reuse existing card content and its submit handlers, without nesting
+      // a full second card (and duplicate heading) inside the disclosure.
+      var source=node.querySelector('.admin-card__body');
+      if(source){while(source.firstChild)inner.appendChild(source.firstChild);}
+      else inner.appendChild(node);
+    }else inner.appendChild(node);
+    fold.append(head,inner);
+    fold.addEventListener('toggle',function(){state.dashboardExpanded[id]=fold.open;});
+    return fold;
+  }
+
   function renderDashboardCharts(dailySales,range) {
     var selected=displayPrefs.charts||['revenue'];
     var wrapper=make('div','admin-dashboard-chart-list');
@@ -1975,28 +2002,52 @@
     var details=data.creators;
     if(!details)return null;
     var body=make('div','admin-dashboard-creators');
-    body.appendChild(make('strong','admin-dashboard-value',moneyAgorot(details.totalDueAgorot)));
-    body.appendChild(make('p','admin-dashboard-note','יתרה משוערת לתשלום = עמלות מכירות + תגמולי סרטונים שנקלטו במערכת - תשלומים שנרשמו כאן. תשלומים קודמים שלא נרשמו אינם מופחתים.'));
-    if(!details.videoRewardsAvailable)body.appendChild(make('p','admin-dashboard-note','הערה: מאגר תגמולי הסרטונים אינו פעיל כרגע, ולכן הסיכום מציג עמלות מכירות בלבד.')); 
+    body.appendChild(make('p','admin-dashboard-note','היתרה לתשלום כוללת עמלות מכירה ותגמולי סרטונים שנקלטו, פחות תשלומים שנרשמו במערכת. תשלומים שבוצעו בעבר ולא נרשמו אינם מופחתים.'));
+    if(!details.videoRewardsAvailable)body.appendChild(make('p','admin-dashboard-note','מאגר תגמולי הסרטונים אינו זמין כרגע; הסיכום מציג עמלות מכירה בלבד.'));
     if(!details.items.length){body.appendChild(make('p','admin-dashboard-note','אין יוצרי תוכן משויכים.'));return card('תשלומים ליוצרי תוכן','',body);}
+
+    var wrap=make('div','admin-dashboard-creators-scroll');
+    wrap.setAttribute('role','region');wrap.setAttribute('aria-label','טבלת יתרות יוצרי תוכן');wrap.tabIndex=0;
+    var table=make('table','admin-dashboard-creators-table');
+    var thead=make('thead'),headerRow=make('tr');
+    ['יוצר תוכן','עמלות מכירות','תגמולי סרטונים','תשלומים שנרשמו','יתרה לתשלום','רישום תשלום'].forEach(function(label){headerRow.appendChild(make('th','',label));});
+    thead.appendChild(headerRow);table.appendChild(thead);
+    var tbody=make('tbody');
+    var totals={commission:0,video:0,paid:0};
     details.items.forEach(function(creator){
-      var entry=make('div','admin-dashboard-creator-row');
-      var heading=make('div','admin-dashboard-inline');heading.append(make('strong','',creator.name||creator.code||'יוצר תוכן'),make('strong','',moneyAgorot(creator.dueAgorot)));entry.appendChild(heading);
-      entry.appendChild(make('small','admin-dashboard-muted','עמלות: '+moneyAgorot(creator.commissionAgorot)+' · סרטונים: '+moneyAgorot(creator.videoAgorot)+' · נרשמו כתשלום: '+moneyAgorot(creator.paidAgorot)));
+      var row=make('tr');
+      var creatorCell=make('th','admin-dashboard-creator-name');creatorCell.scope='row';
+      creatorCell.appendChild(make('strong','',creator.name||creator.code||'יוצר תוכן'));
+      if(creator.code)creatorCell.appendChild(make('small','',creator.code));
+      row.appendChild(creatorCell);
+      [['commissionAgorot','commission'],['videoAgorot','video'],['paidAgorot','paid']].forEach(function(pair){
+        var amount=Math.round(Number(creator[pair[0]])||0);totals[pair[1]]+=amount;
+        row.appendChild(make('td','admin-dashboard-money',moneyAgorot(amount)));
+      });
+      row.appendChild(make('td','admin-dashboard-money admin-dashboard-money--due',moneyAgorot(creator.dueAgorot)));
+      var action=make('td','admin-dashboard-creator-action');
       if(data.canRecordCreatorPayment && creator.dueAgorot>0){
         var form=make('form','admin-dashboard-payout-form');
-        var input=make('input');input.type='number';input.min='0.01';input.step='0.01';input.max=String((creator.dueAgorot/100).toFixed(2));input.value=String((creator.dueAgorot/100).toFixed(2));input.required=true;input.setAttribute('aria-label','סכום תשלום ליוצר בשקלים');
+        var input=make('input');input.type='number';input.min='0.01';input.step='0.01';input.max=String((creator.dueAgorot/100).toFixed(2));input.value=String((creator.dueAgorot/100).toFixed(2));input.required=true;input.setAttribute('aria-label','סכום תשלום ל'+(creator.name||'יוצר התוכן')+' בשקלים');
         var pay=make('button','admin-dashboard-btn','רשום תשלום');pay.type='submit';form.append(input,pay);
         form.addEventListener('submit',async function(e){e.preventDefault();var amount=Math.round(Number(input.value)*100);if(!Number.isSafeInteger(amount)||amount<1||amount>creator.dueAgorot){showToast('סכום תשלום לא תקין');return;}
           var approved=await adminConfirm({title:'רישום תשלום ליוצר',message:'לרשום תשלום שבוצע ל-'+(creator.name||'היוצר')+' בסך '+moneyAgorot(amount)+'? פעולה זו אינה מעבירה כסף בפועל.',confirmText:'אשר רישום',cancelText:'ביטול'});
           if(!approved)return;pay.disabled=true;
           try{await apiAction('/api/admin/dashboard/creator-payment','POST',{creatorId:Number(creator.id),amountAgorot:amount,requestId:window.crypto.randomUUID(),note:''});showToast('התשלום נרשם');await renderCurrentPage({keepContent:true});}
           catch(err){showToast('לא ניתן לרשום את התשלום: '+(err.code||'שגיאה'));pay.disabled=false;}
-        });entry.appendChild(form);
-      }
-      body.appendChild(entry);
+        });action.appendChild(form);
+      }else action.appendChild(make('span','admin-dashboard-muted',creator.dueAgorot>0?'לצפייה בלבד':'אין יתרה לתשלום'));
+      row.appendChild(action);tbody.appendChild(row);
     });
-    return card('תשלומים ליוצרי תוכן','יתרות מצטברות שטרם נרשמו כתשלום',body);
+    table.appendChild(tbody);
+    var foot=make('tfoot'),totalRow=make('tr');
+    totalRow.appendChild(make('th','','סה״כ לכל היוצרים'));
+    [totals.commission,totals.video,totals.paid,details.totalDueAgorot].forEach(function(value,index){
+      totalRow.appendChild(make('td','admin-dashboard-money'+(index===3?' admin-dashboard-money--due':''),moneyAgorot(value)));
+    });
+    totalRow.appendChild(make('td','admin-dashboard-muted',''));
+    foot.appendChild(totalRow);table.appendChild(foot);wrap.appendChild(table);body.appendChild(wrap);
+    return card('תשלומים ליוצרי תוכן','',body);
   }
 
   function dashboardActivityCard(data) {
@@ -2068,24 +2119,21 @@
       command: commandData?commandCenterPanel(commandData):null,
       system:systemHealthCard(data.system),
       kpis:displayPrefs.kpis.length?renderKpis(kpiRows.filter(function(row){return displayPrefs.kpis.indexOf(row.id)>=0;})):null,
-      sales:renderDashboardCharts(data.dailySales,range),
+      sales:dashboardFold('sales','גרפים בהתאמה אישית',numberFmt(displayPrefs.charts.length)+' גרפים נבחרו',renderDashboardCharts(data.dailySales,range)),
       goal:dashboardGoalCard(insights),
-      forecast:dashboardForecastCard(insights),
-      creatorsDue:hasCapability('creators.view')?dashboardCreatorCard(insights):null,
-      activity:dashboardActivityCard(insights),
-      comparison:dashboardComparisonCard(insights),
+      forecast:dashboardFold('forecast','תחזית לסיום החודש',insights&&!insights.error?'צפי: '+moneyAgorot(insights.forecast.predictedAgorot):'נתונים לא זמינים',dashboardForecastCard(insights)),
+      creatorsDue:hasCapability('creators.view')?dashboardFold('creatorsDue','תשלומים ליוצרי תוכן',insights&&!insights.error&&insights.creators?'סה״כ לתשלום: '+moneyAgorot(insights.creators.totalDueAgorot):'נתונים לא זמינים',dashboardCreatorCard(insights)):null,
+      activity:dashboardFold('activity','לוח פעילות אחרונה',insights&&!insights.error?numberFmt((insights.activities||[]).length)+' פעולות אחרונות':'נתונים לא זמינים',dashboardActivityCard(insights)),
+      comparison:dashboardFold('comparison','השוואה בין תקופות','בחר שני טווחי תאריכים',dashboardComparisonCard(insights)),
       links:card('קיצורי דרך','גישה מהירה לכל נתוני החנות',quickLinks()),
       top:topProductsTable((data.topProducts||[]).slice(0,5),'Top Products','המוצרים המובילים בטווח שנבחר'),
       orders:ordersTable(data.recentOrders||[],'הזמנות Paid אחרונות','הזמנות אחרונות בכל הזמנים')
     };
+    // Keep each section full width; the compact chart disclosure must not
+    // stretch to the height of the adjacent quick-links card.
     for(var i=0;i<displayPrefs.sections.length;i++){
       var id=displayPrefs.sections[i],node=sections[id];
-      if(!node)continue;
-      var nextId=displayPrefs.sections[i+1];
-      if((id==='sales'&&nextId==='links')||(id==='links'&&nextId==='sales')){
-        var grid=make('div','admin-grid-2 admin-display-grid');
-        grid.append(node,sections[nextId]);frag.appendChild(grid);i++;
-      }else frag.appendChild(node);
+      if(node)frag.appendChild(node);
     }
     if(!displayPrefs.sections.length)frag.appendChild(make('div','admin-empty','כל כרטיסי הדאשבורד הוסתרו. לחץ על „התאמה אישית” כדי להציג אותם מחדש.'));
     content.replaceChildren(frag);
@@ -4504,6 +4552,7 @@
   async function renderCurrentPage(options) {
     options = options || {};
     state.page = currentPage();
+    content.classList.toggle('admin-dashboard-page',state.page==='dashboard');
     var meta = pageMeta[state.page] || pageMeta.dashboard;
     setPageMeta(meta[0], meta[1]);
     Array.prototype.forEach.call(document.querySelectorAll('[data-admin-page]'), function (link) {
