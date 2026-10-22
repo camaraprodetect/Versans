@@ -97,7 +97,15 @@ const VERSANS_BOT_MAX_BODY_CHARS = 32000;
 
 const database = createDatabase({ root: ROOT, sqlitePath: DB_PATH });
 const creatorProgram = createCreatorProgram(database);
+const { createCreatorVideos } = require('./lib/creator-videos.js');
+const creatorVideosStore = createCreatorVideos(database,creatorProgram);
 const employeeAccess = employeePolicy.createEmployeeAccess(database);
+const { createAdminDashboard } = require('./lib/admin-dashboard.js');
+const adminDashboard = createAdminDashboard(database, creatorProgram);
+async function recordDashboardActivity(admin, area, action, subject) {
+  try { if (admin) await adminDashboard.log(admin,area,action,subject); }
+  catch (error) { console.error('Dashboard activity log failed:',error.message); }
+}
 // The public products script is regenerated whenever an admin saves an edit.
 // The browser must never receive the original on-disk catalog after a DB change.
 let liveCatalogScript = '';
@@ -5561,6 +5569,7 @@ async function adminApi(req, res, pathname, parsed) {
       json(res,400,{ok:false,error:'invalid_packaging_unit'}); return true;
     }
     await database.markPackagingUnit(order.id,itemIndex,unitNumber,body.received,null,Date.now());
+    await recordDashboardActivity(admin,'orders',body.received?'קליטת יחידה':'ביטול קליטת יחידה',order.order_ref+' · פריט '+(itemIndex+1));
     json(res,200,await packingOrderSummary(order));
     return true;
   }
@@ -5574,7 +5583,8 @@ async function adminApi(req, res, pathname, parsed) {
     if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'}); return true; }
     try {
       const body=await readJsonBody(req);
-      const creator=await creatorProgram.grantByEmail(body.email,body.code,body.discountPercent,body.commissionPercent);
+      const creator=await creatorProgram.grantByEmail(body.email,body.code,body.discountPercent,body.commissionPercent,body.tiktokUsername,body.viewRatePer1000Agorot);
+      await recordDashboardActivity(admin,'creators','הגדרת יוצר תוכן',creator.name||body.email);
       json(res,200,{ok:true,creator});
     } catch(err) { json(res,err.status||500,{ok:false,error:err.status?err.message:'creator_save_failed'}); }
     return true;
@@ -6666,6 +6676,7 @@ async function adminApi(req, res, pathname, parsed) {
 
     const now = Date.now();
     await database.setOrderWorkItemStatus(Number(order.id), itemIndex, body.completed, 'admin', now);
+    await recordDashboardActivity(admin,'orders',body.completed?'סיום טיפול בפריט':'פתיחת טיפול בפריט',order.order_ref+' · פריט '+(itemIndex+1));
 
     const latestStates = typeof database.listOrderWorkItems === 'function'
       ? await database.listOrderWorkItems(Number(order.id))
@@ -6713,6 +6724,7 @@ async function adminApi(req, res, pathname, parsed) {
     const itemCount = Array.isArray(payload.items) ? payload.items.length : 0;
     const now = Date.now();
     await database.setOrderWorkItemsStatus(Number(order.id), itemCount, body.completed, 'admin', now);
+    await recordDashboardActivity(admin,'orders',body.completed?'סיום טיפול בהזמנה':'פתיחת טיפול בהזמנה',order.order_ref);
     let sheetSynced = false;
     let sheetError = null;
     try {
@@ -6729,6 +6741,44 @@ async function adminApi(req, res, pathname, parsed) {
     return true;
   }
 
+  // Dashboard insights are derived from paid orders and store-wide targets.
+  if (pathname === '/api/admin/dashboard/insights' && req.method === 'GET') {
+    const canSeeCreators=hasAdminPermission(admin,'creators.view');
+    const permissions=admin.role==='admin'?['all']:[
+      ...(hasAdminPermission(admin,'products.view')?['products']:[]),
+      ...(hasAdminPermission(admin,'orders.view')?['orders']:[]),
+      ...(canSeeCreators?['creators']:[]),
+      'dashboard'
+    ];
+    try {
+      const insights=await adminDashboard.insights({
+        aFrom:parsed.searchParams.get('aFrom')||'',aTo:parsed.searchParams.get('aTo')||'',
+        bFrom:parsed.searchParams.get('bFrom')||'',bTo:parsed.searchParams.get('bTo')||'',
+        withCreators:canSeeCreators,permissions
+      });
+      json(res,200,{ok:true,...insights,canEditGoal:admin.role==='admin',canRecordCreatorPayment:normalizeEmail(admin.email)===ADMIN_EMAIL});
+    } catch(e){json(res,e.status||500,{ok:false,error:e.status?e.message:'dashboard_insights_failed'});}
+    return true;
+  }
+  if (pathname === '/api/admin/dashboard/goal' && req.method === 'POST') {
+    if(!sameOriginAllowed(req)){json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
+    if(admin.role!=='admin'){json(res,403,{ok:false,error:'permission_denied'});return true;}
+    const body=await readJsonBody(req,4096);
+    try{const goal=await adminDashboard.setGoal(body.month,body.goalAgorot,admin);json(res,200,{ok:true,...goal});}
+    catch(e){json(res,e.status||500,{ok:false,error:e.status?e.message:'goal_save_failed'});}
+    return true;
+  }
+  if (pathname === '/api/admin/dashboard/creator-payment' && req.method === 'POST') {
+    if(!sameOriginAllowed(req)){json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
+    if(normalizeEmail(admin.email)!==ADMIN_EMAIL){json(res,403,{ok:false,error:'owner_only'});return true;}
+    const body=await readJsonBody(req,4096);
+    try{
+      const result=await adminDashboard.payCreator(Number(body.creatorId),Number(body.amountAgorot),body.requestId,body.note||'',admin);
+      json(res,200,{ok:true,...result});
+    }catch(e){json(res,e.status||500,{ok:false,error:e.status?e.message:'creator_payment_failed'});}
+    return true;
+  }
+
   // Dashboard layout and appearance are private to the signed-in administrator.
   if (pathname === '/api/admin/display-preferences' && req.method === 'GET') {
     const prefs = await database.getAdminDisplayPreferences(Number(admin.id));
@@ -6738,9 +6788,10 @@ async function adminApi(req, res, pathname, parsed) {
   if (pathname === '/api/admin/display-preferences' && req.method === 'POST') {
     if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'}); return true; }
     const body=await readJsonBody(req,4096);
-    const allowedSections=['command','system','kpis','sales','links','top','orders'];
+    const allowedSections=['command','system','kpis','sales','links','top','orders','goal','creatorsDue','activity','comparison','forecast'];
     const allowedKpis=['revenue','paidOrders','aov','units','online','todayVisitors','lifetimeVisitors','users'];
     const allowedTiles=['waiting','partial','ready','today'];
+    const allowedCharts=['revenue','orders','units','aov'];
     function cleanIds(values, allowed) {
       if (!Array.isArray(values) || values.length>allowed.length || values.some(v=>typeof v!=='string'||!allowed.includes(v))) return null;
       return Array.from(new Set(values));
@@ -6749,10 +6800,11 @@ async function adminApi(req, res, pathname, parsed) {
     const sections=cleanIds(body && body.sections,allowedSections);
     const kpis=cleanIds(body && body.kpis,allowedKpis);
     const tiles=cleanIds(body && body.tiles,allowedTiles);
-    if (!['light','dark'].includes(theme)||!sections||!kpis||!tiles) {
+    const charts=cleanIds(body && body.charts,allowedCharts);
+    if (!['light','dark'].includes(theme)||!sections||!kpis||!tiles||!charts) {
       json(res,400,{ok:false,error:'invalid_display_preferences'});return true;
     }
-    const prefs={theme,sections,kpis,tiles};
+    const prefs={theme,sections,kpis,tiles,charts,dashboardVersion:2};
     await database.saveAdminDisplayPreferences(Number(admin.id),prefs);
     json(res,200,{ok:true,preferences:prefs});return true;
   }
@@ -6839,6 +6891,7 @@ async function adminApi(req, res, pathname, parsed) {
   if (pathname === '/api/admin/catalog/undo' && req.method === 'POST') {
     if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'}); return true; }
     const result=await catalogManager.undoLast(admin && admin.email);
+    await recordDashboardActivity(admin,'products','ביטול שינוי אחרון','קטלוג מוצרים');
     const sheetSync=result.slug ? await catalogManager.syncOne(result.slug) : undefined;
     json(res,200,{ok:true,...result,sheetSync});return true;
   }
@@ -6850,12 +6903,14 @@ async function adminApi(req, res, pathname, parsed) {
     if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'}); return true; }
     const body=await readJsonBody(req, 24 * 1024);
     const result=await catalogManager.bulkEdit(body,admin && admin.email);
+    await recordDashboardActivity(admin,'products','עריכה מרובה','מוצרים');
     json(res,200,{ok:true,...result}); return true;
   }
   if (pathname === '/api/admin/catalog/categories/visibility' && req.method === 'POST') {
     if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'}); return true; }
     const body = await readJsonBody(req, 4096);
     const result = await catalogManager.setCategoryHidden(String(body && body.category || ''), body && body.hidden, admin && admin.email);
+    await recordDashboardActivity(admin,'products','שינוי תצוגת קטגוריה',String(body && body.category || ''));
     json(res,200,{ok:true,...result}); return true;
   }
   const singleCatalogGet = /^\/api\/admin\/catalog\/(product-[a-z0-9-]+)$/.exec(pathname);
@@ -6872,6 +6927,7 @@ async function adminApi(req, res, pathname, parsed) {
     const result = displayRoute[2] === 'visibility'
       ? await catalogManager.setHidden(displayRoute[1],body.hidden, admin && admin.email)
       : await catalogManager.setPosition(displayRoute[1],String(body.category||''),Number(body.position), admin && admin.email);
+    await recordDashboardActivity(admin,'products',displayRoute[2]==='visibility'?'שינוי נראות מוצר':'שינוי סדר מוצר',displayRoute[1]);
     json(res,200,{ok:true,...result});return true;
   }
   if (pathname === '/api/admin/catalog/images' && req.method === 'POST') {
@@ -6884,14 +6940,21 @@ async function adminApi(req, res, pathname, parsed) {
     if (!sameOriginAllowed(req)) { json(res, 403, {ok:false,error:'origin_not_allowed'}); return true; }
     const body = await readJsonBody(req, 128 * 1024);
     const result = await catalogManager.write(body && body.product, undefined, false, admin && admin.email);
+    const productTitle = catalogManager.getAdminProduct(result.slug)?.title;
+    await recordDashboardActivity(admin,'products','יצירת מוצר',(productTitle && (productTitle.he||productTitle.en))||result.slug);
     const sheetSync = await catalogManager.syncOne(result.slug);
     json(res, 201, {ok:true,...result,sheetSync});return true;
   }
   const catalogItemRoute = /^\/api\/admin\/catalog\/(product-[a-z0-9-]+)$/.exec(pathname);
   if (catalogItemRoute && (req.method === 'PUT' || req.method === 'DELETE')) {
     if (!sameOriginAllowed(req)) { json(res, 403, {ok:false,error:'origin_not_allowed'}); return true; }
+    const beforeProduct = catalogManager.getAdminProduct(catalogItemRoute[1]);
     const result = req.method === 'DELETE' ? await catalogManager.write(null,catalogItemRoute[1],true, admin && admin.email)
       : await catalogManager.write((await readJsonBody(req,128*1024)).product,catalogItemRoute[1],false, admin && admin.email);
+    const changedProduct = catalogManager.getAdminProduct(catalogItemRoute[1]) || beforeProduct;
+    const changedTitle = changedProduct && changedProduct.title;
+    await recordDashboardActivity(admin,'products',req.method==='DELETE'?'מחיקת מוצר':'עריכת מוצר',
+      (typeof changedTitle==='object'?(changedTitle.he||changedTitle.en):changedTitle)||result.slug);
     const sheetSync = await catalogManager.syncOne(result.slug);
     json(res, 200, {ok:true,...result,sheetSync});return true;
   }
@@ -9143,6 +9206,8 @@ async function start() {
   await database.init();
   if (process.env.NODE_ENV !== 'test') await importOpeningExpenseLedger(database);
   await creatorProgram.init();
+  await creatorVideosStore.init();
+  await adminDashboard.init();
   await catalogManager.init();
   await adminTools.ensure();
   // Upgrade previously subscribed devices before creating fresh task events.

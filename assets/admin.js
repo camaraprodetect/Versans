@@ -37,21 +37,26 @@
   var pushRegistrationPromise = null;
 
   // Persisted independently per administrator in PostgreSQL / SQLite.
-  var DEFAULT_DISPLAY_SECTIONS = ['command','system','kpis','sales','links','top','orders'];
+  var DEFAULT_DISPLAY_SECTIONS = ['command','system','kpis','goal','forecast','sales','creatorsDue','activity','comparison','links','top','orders'];
   var DEFAULT_DISPLAY_KPIS = ['revenue','paidOrders','aov','units','online','todayVisitors','lifetimeVisitors','users'];
   var DEFAULT_DISPLAY_TILES = ['waiting','partial','ready','today'];
-  var displaySectionLabels = {command:'מרכז העבודה היומי',system:'בדיקת מערכת',kpis:'מדדי מכירות ומבקרים',sales:'מגמת מכירות',links:'קיצורי דרך',top:'מוצרים מובילים',orders:'הזמנות אחרונות'};
+  var DEFAULT_DISPLAY_CHARTS = ['revenue','orders','units','aov'];
+  var displayChartLabels = {revenue:'הכנסה יומית',orders:'מספר הזמנות ביום',units:'יחידות שנמכרו ביום',aov:'ממוצע להזמנה ביום'};
+  var displaySectionLabels = {command:'מרכז העבודה היומי',system:'בדיקת מערכת',kpis:'מדדי מכירות ומבקרים',sales:'גרפים בהתאמה אישית',links:'קיצורי דרך',top:'מוצרים מובילים',orders:'הזמנות אחרונות',goal:'יעד מכירות חודשי',creatorsDue:'תשלומים ליוצרי תוכן',activity:'פעילות אחרונה',comparison:'השוואת תקופות',forecast:'תחזית לסיום החודש'};
   var displayKpiLabels = {revenue:'הכנסות',paidOrders:'הזמנות ששולמו',aov:'ממוצע להזמנה',units:'יחידות שנמכרו',online:'מחוברים עכשיו',todayVisitors:'מבקרים היום',lifetimeVisitors:'כלל המבקרים',users:'משתמשים רשומים'};
   var displayTileLabels = {waiting:'ממתינות לפריטים',partial:'הגיעו חלקית',ready:'מוכנות לאריזה',today:'יחידות שנקלטו היום'};
-  function defaultDisplayPrefs() { return { theme:'light', sections:DEFAULT_DISPLAY_SECTIONS.slice(),kpis:DEFAULT_DISPLAY_KPIS.slice(),tiles:DEFAULT_DISPLAY_TILES.slice() }; }
+  function defaultDisplayPrefs() { return { theme:'light', sections:DEFAULT_DISPLAY_SECTIONS.slice(),kpis:DEFAULT_DISPLAY_KPIS.slice(),tiles:DEFAULT_DISPLAY_TILES.slice(),charts:['revenue'],dashboardVersion:2 }; }
   var displayPrefs=defaultDisplayPrefs();
   function normalizeDisplayPrefs(source) {
     var defaults=defaultDisplayPrefs();
     if (!source || typeof source !== 'object') return defaults;
-    ['sections','kpis','tiles'].forEach(function(key){
-      var allowed=defaults[key];
+    ['sections','kpis','tiles','charts'].forEach(function(key){
+      var allowed=key==='charts'?DEFAULT_DISPLAY_CHARTS:defaults[key];
       if(Array.isArray(source[key]))defaults[key]=Array.from(new Set(source[key].filter(function(x){return allowed.indexOf(x)>=0;})));
     });
+    if(source.dashboardVersion!==2 && Array.isArray(source.sections)){
+      ['goal','forecast','creatorsDue','activity','comparison'].forEach(function(id){if(defaults.sections.indexOf(id)<0)defaults.sections.push(id);});
+    }
     defaults.theme=source.theme==='dark'?'dark':'light';
     return defaults;
   }
@@ -120,6 +125,7 @@
       ids.forEach(function(id){var lab=make('label','admin-pref-check');var input=make('input');input.type='checkbox';input.dataset.prefKey=key;input.dataset.prefId=id;input.checked=next[key].indexOf(id)>=0;input.addEventListener('change',function(){if(input.checked){if(next[key].indexOf(id)<0)next[key].push(id);}else next[key]=next[key].filter(function(x){return x!==id;});});lab.append(input,make('span','',labels[id]));grid.appendChild(lab);});block.appendChild(grid);scroll.appendChild(block);
     }
     addCheckboxSection('מדדים בדאשבורד','בחר אילו נתוני מכירות ומבקרים יופיעו','kpis',DEFAULT_DISPLAY_KPIS,displayKpiLabels);
+    addCheckboxSection('גרפים בדאשבורד','בחר אילו גרפים יופיעו בכרטיס הגרפים','charts',DEFAULT_DISPLAY_CHARTS,displayChartLabels);
     addCheckboxSection('כרטיסי קליטת משלוחים','בחירת המדדים בתוך מרכז העבודה היומי','tiles',DEFAULT_DISPLAY_TILES,displayTileLabels);
     var foot=make('div','admin-pref-footer');var reset=make('button','admin-pref-reset','איפוס לברירת מחדל');reset.type='button';
     reset.addEventListener('click',function(){next=defaultDisplayPrefs();refreshModes();renderSections();Array.prototype.forEach.call(gridInputs(),function(input){input.checked=next[input.dataset.prefKey].indexOf(input.dataset.prefId)>=0;});});
@@ -196,6 +202,7 @@
     advancedOrderFilters: { customer:'',from:'',to:'',minAmount:'',maxAmount:'',tracking:'all' },
     offsets: { visitors: 0, orders: 0, orderWork: 0, products: 0, customers: 0 },
     selectedVisitorId: null,
+    dashboardCompare: {aFrom:'',aTo:'',bFrom:'',bTo:''},
     requestVersion: 0
   };
 
@@ -997,9 +1004,13 @@
     return rows;
   }
 
-  function renderSalesChart(dailySales, range) {
+  function renderSalesChart(dailySales, range, metric) {
+    metric=metric||'revenue';
+    var metricKey={revenue:'revenueAgorot',orders:'orders',units:'unitsSold',aov:'dailyAovAgorot'}[metric]||'revenueAgorot';
+    var formatMetric=function(value){return metric==='revenue'||metric==='aov'?moneyAgorot(value):numberFmt(value);};
     var wrap = make('div', 'admin-sales-chart');
     var rows = fillDailySales(dailySales, range);
+    rows.forEach(function(r){r.dailyAovAgorot=r.orders?Math.round(Number(r.revenueAgorot||0)/r.orders):0;});
     if (!rows.length) {
       wrap.appendChild(make('div', 'admin-chart-empty', 'אין מכירות ששולמו בטווח שנבחר.'));
       return wrap;
@@ -1013,7 +1024,7 @@
     var selectedDot = null;
 
     var toolbar = make('div', 'admin-sales-chart__toolbar');
-    var help = make('span', 'admin-sales-chart__help', 'נוגעים/לוחצים על התרשים כדי לראות הכנסה של יום. בוחרים יום ואז עושים זום.');
+    var help = make('span', 'admin-sales-chart__help', 'נוגעים/לוחצים על התרשים כדי לראות נתונים של יום. בוחרים יום ואז עושים זום.');
     var controls = make('div', 'admin-sales-chart__controls');
     var zoomOut = make('button', 'admin-sales-chart__button', '−');
     var zoomIn = make('button', 'admin-sales-chart__button', '+');
@@ -1032,7 +1043,7 @@
     var shell = make('div', 'admin-sales-chart__shell');
     shell.tabIndex = 0;
     shell.setAttribute('role', 'application');
-    shell.setAttribute('aria-label', 'תרשים הכנסות יומי אינטראקטיבי');
+    shell.setAttribute('aria-label', 'תרשים יומי אינטראקטיבי - '+displayChartLabels[metric]);
 
     var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.setAttribute('class', 'admin-sales-chart__svg');
@@ -1096,7 +1107,7 @@
       if (!row || !point) return;
       tooltip.replaceChildren();
       tooltip.appendChild(make('strong', '', formatSalesDate(row.date)));
-      tooltip.appendChild(make('span', 'admin-sales-chart__tooltip-value', moneyAgorot(row.revenueAgorot)));
+      tooltip.appendChild(make('span', 'admin-sales-chart__tooltip-value', formatMetric(row[metricKey])));
       tooltip.appendChild(make('small', '', numberFmt(row.orders) + ' הזמנות · ' + numberFmt(row.unitsSold) + ' יחידות'));
       tooltip.style.left = Math.max(10, Math.min(90, point.x / 10)) + '%';
       tooltip.hidden = false;
@@ -1106,7 +1117,7 @@
       svg.replaceChildren();
       geometry = [];
       var visibleRows = rows.slice(startIndex, endIndex + 1);
-      var maxRevenue = Math.max.apply(null, visibleRows.map(function (row) { return Number(row.revenueAgorot || 0); }).concat([1]));
+      var maxRevenue = Math.max.apply(null, visibleRows.map(function (row) { return Number(row[metricKey] || 0); }).concat([1]));
       var yMax = Math.max(1, Math.ceil(maxRevenue * 1.12));
 
       [0, 0.25, 0.5, 0.75, 1].forEach(function (ratio) {
@@ -1116,7 +1127,7 @@
 
       visibleRows.forEach(function (row, localIndex) {
         var x = visibleRows.length === 1 ? 500 : (localIndex / (visibleRows.length - 1)) * 1000;
-        var y = 270 - (Number(row.revenueAgorot || 0) / yMax) * 240;
+        var y = 270 - (Number(row[metricKey] || 0) / yMax) * 240;
         geometry.push({ x: x, y: y });
       });
 
@@ -1143,7 +1154,7 @@
       axisStart.textContent = formatSalesDate(rows[startIndex].date);
       axisMiddle.textContent = formatSalesDate(rows[middleIndex].date);
       axisEnd.textContent = formatSalesDate(rows[endIndex].date);
-      windowText.textContent = 'תצוגה: ' + formatSalesDate(rows[startIndex].date) + ' - ' + formatSalesDate(rows[endIndex].date) + ' · שיא בטווח: ' + moneyAgorot(maxRevenue);
+      windowText.textContent = 'תצוגה: ' + formatSalesDate(rows[startIndex].date) + ' - ' + formatSalesDate(rows[endIndex].date) + ' · שיא בטווח: ' + formatMetric(maxRevenue);
 
       zoomIn.disabled = visibleCount() <= 1;
       zoomOut.disabled = visibleCount() >= rows.length;
@@ -1909,11 +1920,134 @@
     return wrapper;
   }
 
+  function dashboardEmptyInsights(result) {
+    return make('p','admin-dashboard-note',result && result.error?'לא ניתן לטעון כעת את הנתונים: '+result.error:'הנתונים עדיין לא זמינים.');
+  }
+
+  function renderDashboardCharts(dailySales,range) {
+    var selected=displayPrefs.charts||['revenue'];
+    var wrapper=make('div','admin-dashboard-chart-list');
+    selected.forEach(function(id){
+      wrapper.appendChild(card(displayChartLabels[id],'מבוסס על הזמנות ששולמו בלבד',renderSalesChart(dailySales,range,id)));
+    });
+    if(!selected.length)wrapper.appendChild(make('p','admin-dashboard-note','לא נבחרו גרפים. אפשר להוסיף גרפים דרך התאמה אישית.'));
+    return wrapper;
+  }
+
+  function dashboardGoalCard(data) {
+    if(!data || data.error)return card('יעד מכירות חודשי','',dashboardEmptyInsights(data));
+    var body=make('div','admin-dashboard-goal');
+    var heading=make('div','admin-dashboard-inline');
+    heading.append(make('strong','admin-dashboard-value',moneyAgorot(data.monthlyRevenueAgorot)),make('span','admin-dashboard-muted',data.goalAgorot?'מתוך '+moneyAgorot(data.goalAgorot):'לא הוגדר יעד לחודש '+data.month));
+    body.appendChild(heading);
+    var track=make('div','admin-dashboard-progress');track.setAttribute('role','progressbar');track.setAttribute('aria-valuemin','0');track.setAttribute('aria-valuemax','100');
+    track.setAttribute('aria-valuenow',String(Math.round(data.progressPercent||0)));track.setAttribute('aria-label','התקדמות ליעד מכירות חודשי');
+    var fill=make('div','admin-dashboard-progress__fill');fill.style.width=String(Math.max(0,Math.min(100,data.progressPercent||0)))+'%';track.appendChild(fill);body.appendChild(track);
+    body.appendChild(make('p','admin-dashboard-note',data.goalAgorot
+      ?numberFmt(Math.round(data.monthlyRevenueAgorot/data.goalAgorot*100))+'% מהיעד · '+(data.monthlyRevenueAgorot>=data.goalAgorot?'היעד הושג':'נותרו '+moneyAgorot(data.goalAgorot-data.monthlyRevenueAgorot))
+      :'מכירות מהיום הראשון בחודש לפי שעון ישראל.'));
+    if(data.canEditGoal){
+      var form=make('form','admin-dashboard-goal-form');
+      var label=make('label','','יעד מכירות חודשי (₪)');var input=make('input');input.type='number';input.min='0';input.max='1000000000';input.step='0.01';input.required=true;input.value=String((data.goalAgorot/100).toFixed(2));input.setAttribute('aria-label','יעד חודשי בשקלים');label.appendChild(input);
+      var save=make('button','admin-dashboard-btn','שמור יעד');save.type='submit';form.append(label,save);
+      form.addEventListener('submit',async function(event){event.preventDefault();var amount=Math.round(Number(input.value)*100);if(!Number.isSafeInteger(amount)||amount<0){showToast('יש להזין יעד תקין');return;}save.disabled=true;
+        try{await apiAction('/api/admin/dashboard/goal','POST',{month:data.month,goalAgorot:amount});showToast('היעד החודשי נשמר');await renderCurrentPage({keepContent:true});}
+        catch(e){showToast('שמירת היעד נכשלה');save.disabled=false;}
+      });body.appendChild(form);
+    }
+    return card('יעד מכירות · '+data.month,'כל המכירות ששולמו מתחילת החודש',body);
+  }
+
+  function dashboardForecastCard(data) {
+    if(!data || data.error)return card('תחזית לסיום החודש','',dashboardEmptyInsights(data));
+    var f=data.forecast||{};var body=make('div','admin-dashboard-forecast');
+    body.appendChild(make('strong','admin-dashboard-value',moneyAgorot(f.predictedAgorot)));
+    body.appendChild(make('p','admin-dashboard-note','תחזית על בסיס ממוצע המכירות היומי · '+numberFmt(f.elapsedDays)+' מתוך '+numberFmt(f.totalDays)+' ימי החודש'));
+    if(f.lowerAgorot!==null && f.upperAgorot!==null) {
+      body.appendChild(make('div','admin-dashboard-forecast-range','טווח אי-ודאות סטטיסטי משוער (95%): '+moneyAgorot(f.lowerAgorot)+' - '+moneyAgorot(f.upperAgorot)));
+    } else body.appendChild(make('div','admin-dashboard-forecast-range','אין עדיין מספיק נתוני מכירות החודש לחישוב טווח אי-ודאות בעל משמעות.'));
+    body.appendChild(make('p','admin-dashboard-note','אומדן מתמטי בלבד, לא התחייבות לתוצאה. אינו מביא בחשבון מבצעים או עונתיות עתידית.'));
+    return card('תחזית לסיום החודש','מתעדכנת אוטומטית עם הזמנות Paid',body);
+  }
+
+  function dashboardCreatorCard(data) {
+    if(!data||data.error)return card('תשלומים ליוצרי תוכן','',dashboardEmptyInsights(data));
+    var details=data.creators;
+    if(!details)return null;
+    var body=make('div','admin-dashboard-creators');
+    body.appendChild(make('strong','admin-dashboard-value',moneyAgorot(details.totalDueAgorot)));
+    body.appendChild(make('p','admin-dashboard-note','יתרה משוערת לתשלום = עמלות מכירות + תגמולי סרטונים שנקלטו במערכת - תשלומים שנרשמו כאן. תשלומים קודמים שלא נרשמו אינם מופחתים.'));
+    if(!details.videoRewardsAvailable)body.appendChild(make('p','admin-dashboard-note','הערה: מאגר תגמולי הסרטונים אינו פעיל כרגע, ולכן הסיכום מציג עמלות מכירות בלבד.')); 
+    if(!details.items.length){body.appendChild(make('p','admin-dashboard-note','אין יוצרי תוכן משויכים.'));return card('תשלומים ליוצרי תוכן','',body);}
+    details.items.forEach(function(creator){
+      var entry=make('div','admin-dashboard-creator-row');
+      var heading=make('div','admin-dashboard-inline');heading.append(make('strong','',creator.name||creator.code||'יוצר תוכן'),make('strong','',moneyAgorot(creator.dueAgorot)));entry.appendChild(heading);
+      entry.appendChild(make('small','admin-dashboard-muted','עמלות: '+moneyAgorot(creator.commissionAgorot)+' · סרטונים: '+moneyAgorot(creator.videoAgorot)+' · נרשמו כתשלום: '+moneyAgorot(creator.paidAgorot)));
+      if(data.canRecordCreatorPayment && creator.dueAgorot>0){
+        var form=make('form','admin-dashboard-payout-form');
+        var input=make('input');input.type='number';input.min='0.01';input.step='0.01';input.max=String((creator.dueAgorot/100).toFixed(2));input.value=String((creator.dueAgorot/100).toFixed(2));input.required=true;input.setAttribute('aria-label','סכום תשלום ליוצר בשקלים');
+        var pay=make('button','admin-dashboard-btn','רשום תשלום');pay.type='submit';form.append(input,pay);
+        form.addEventListener('submit',async function(e){e.preventDefault();var amount=Math.round(Number(input.value)*100);if(!Number.isSafeInteger(amount)||amount<1||amount>creator.dueAgorot){showToast('סכום תשלום לא תקין');return;}
+          var approved=await adminConfirm({title:'רישום תשלום ליוצר',message:'לרשום תשלום שבוצע ל-'+(creator.name||'היוצר')+' בסך '+moneyAgorot(amount)+'? פעולה זו אינה מעבירה כסף בפועל.',confirmText:'אשר רישום',cancelText:'ביטול'});
+          if(!approved)return;pay.disabled=true;
+          try{await apiAction('/api/admin/dashboard/creator-payment','POST',{creatorId:Number(creator.id),amountAgorot:amount,requestId:window.crypto.randomUUID(),note:''});showToast('התשלום נרשם');await renderCurrentPage({keepContent:true});}
+          catch(err){showToast('לא ניתן לרשום את התשלום: '+(err.code||'שגיאה'));pay.disabled=false;}
+        });entry.appendChild(form);
+      }
+      body.appendChild(entry);
+    });
+    return card('תשלומים ליוצרי תוכן','יתרות מצטברות שטרם נרשמו כתשלום',body);
+  }
+
+  function dashboardActivityCard(data) {
+    if(!data||data.error)return card('לוח פעילות אחרונה','',dashboardEmptyInsights(data));
+    var body=make('div','admin-dashboard-activity');
+    if(!data.activities||!data.activities.length){body.appendChild(make('p','admin-dashboard-note','עדיין אין פעילות שנרשמה. פעולות חדשות יופיעו כאן החל מהעדכון.'));}
+    else data.activities.forEach(function(row){
+      var item=make('div','admin-dashboard-event');
+      item.appendChild(make('strong','',row.actor+' · '+row.action));
+      item.appendChild(make('span','admin-dashboard-muted',row.subject));
+      item.appendChild(make('time','admin-dashboard-date',dateTime(row.at)));
+      body.appendChild(item);
+    });
+    return card('לוח פעילות אחרונה','מי ביצע פעולה ובאיזה זמן · עד 35 פעולות אחרונות',body);
+  }
+
+  function dashboardComparisonCard(data) {
+    var body=make('div','admin-dashboard-comparison');var form=make('form','admin-dashboard-compare-form');
+    var inputs={};
+    [['aFrom','תקופה א - מיום'],['aTo','תקופה א - עד יום'],['bFrom','תקופה ב - מיום'],['bTo','תקופה ב - עד יום']].forEach(function(pair){
+      var label=make('label','',pair[1]);var input=make('input');input.type='date';input.required=true;input.value=state.dashboardCompare[pair[0]]||'';
+      inputs[pair[0]]=input;label.appendChild(input);form.appendChild(label);
+    });
+    var button=make('button','admin-dashboard-btn','השווה תקופות');button.type='submit';form.appendChild(button);
+    form.addEventListener('submit',function(e){e.preventDefault();var values={};Object.keys(inputs).forEach(function(k){values[k]=inputs[k].value;});
+      if(values.aFrom>values.aTo||values.bFrom>values.bTo){showToast('תאריך הסיום חייב להיות אחרי תאריך ההתחלה');return;}
+      state.dashboardCompare=values;renderCurrentPage({keepContent:true});
+    });body.appendChild(form);
+    if(data && data.error)body.appendChild(dashboardEmptyInsights(data));
+    if(data && data.comparison){
+      var c=data.comparison;
+      var table=make('div','admin-dashboard-comparison-results');
+      body.appendChild(make('p','admin-dashboard-note','תקופה א: '+numberFmt(c.a.days)+' ימים · תקופה ב: '+numberFmt(c.b.days)+' ימים'));
+      [['הכנסות','revenueAgorot',true],['מספר הזמנות','orderCount',false],['יחידות שנמכרו','unitsSold',false],['ממוצע להזמנה','averageOrderAgorot',true],['הכנסה יומית ממוצעת','dailyAverageAgorot',true]].forEach(function(entry){
+        var a=entry[1]==='dailyAverageAgorot'?Math.round(c.a.revenueAgorot/c.a.days):Number(c.a[entry[1]]||0),b=entry[1]==='dailyAverageAgorot'?Math.round(c.b.revenueAgorot/c.b.days):Number(c.b[entry[1]]||0),pct=b===0?(a===0?'0%':'-'):((a-b)/b*100).toFixed(1)+'%';
+        var row=make('div','admin-dashboard-comparison-row');row.append(make('span','',entry[0]),make('strong','',entry[2]?moneyAgorot(a):numberFmt(a)),make('span','',entry[2]?moneyAgorot(b):numberFmt(b)),make('em','',pct));table.appendChild(row);
+      });
+      body.append(make('p','admin-dashboard-note','עמודה 1: תקופה א · עמודה 2: תקופה ב · ההפרש באחוזים ביחס לתקופה ב'),table);
+    }
+    return card('השוואה בין שתי תקופות מותאמות','בחר תאריכי התחלה וסיום שונים לכל תקופה',body);
+  }
+
   async function renderDashboardPage() {
     var range=state.ranges.dashboard;
     var needsCommand=displayPrefs.sections.indexOf('command')>=0;
-    var results=await Promise.all([api('/api/admin/overview?range='+encodeURIComponent(range)),needsCommand?api('/api/admin/command-center').catch(function(){return null;}):Promise.resolve(null)]);
-    var data=results[0],commandData=results[1];
+    var needsInsights=['goal','creatorsDue','activity','comparison','forecast'].some(function(id){return displayPrefs.sections.indexOf(id)>=0;});
+    var compare=state.dashboardCompare;
+    var compareParams=(compare.aFrom&&compare.aTo&&compare.bFrom&&compare.bTo)
+      ?'&aFrom='+encodeURIComponent(compare.aFrom)+'&aTo='+encodeURIComponent(compare.aTo)+'&bFrom='+encodeURIComponent(compare.bFrom)+'&bTo='+encodeURIComponent(compare.bTo):'';
+    var results=await Promise.all([api('/api/admin/overview?range='+encodeURIComponent(range)),needsCommand?api('/api/admin/command-center').catch(function(){return null;}):Promise.resolve(null),needsInsights?api('/api/admin/dashboard/insights?'+compareParams.replace(/^&/,'')).catch(function(err){return {error:err.code||err.message};}):Promise.resolve(null)]);
+    var data=results[0],commandData=results[1],insights=results[2];
     var frag=document.createDocumentFragment();
     var toolbar=make('div','admin-toolbar');
     toolbar.appendChild(renderRangeFilter(range,rangeOptions,function(next){state.ranges.dashboard=next;renderCurrentPage();}));
@@ -1934,7 +2068,12 @@
       command: commandData?commandCenterPanel(commandData):null,
       system:systemHealthCard(data.system),
       kpis:displayPrefs.kpis.length?renderKpis(kpiRows.filter(function(row){return displayPrefs.kpis.indexOf(row.id)>=0;})):null,
-      sales:card('מגמת מכירות','הכנסה יומית מהזמנות Paid',renderSalesChart(data.dailySales,range)),
+      sales:renderDashboardCharts(data.dailySales,range),
+      goal:dashboardGoalCard(insights),
+      forecast:dashboardForecastCard(insights),
+      creatorsDue:hasCapability('creators.view')?dashboardCreatorCard(insights):null,
+      activity:dashboardActivityCard(insights),
+      comparison:dashboardComparisonCard(insights),
       links:card('קיצורי דרך','גישה מהירה לכל נתוני החנות',quickLinks()),
       top:topProductsTable((data.topProducts||[]).slice(0,5),'Top Products','המוצרים המובילים בטווח שנבחר'),
       orders:ordersTable(data.recentOrders||[],'הזמנות Paid אחרונות','הזמנות אחרונות בכל הזמנים')

@@ -1,0 +1,30 @@
+/* Dashboard-only additions: no storefront or other admin pages affected. */
+.admin-dashboard-chart-list{display:grid;gap:17px}
+.admin-dashboard-chart-list>.admin-card{margin:0}
+.admin-dashboard-goal,.admin-dashboard-forecast,.admin-dashboard-creators,.admin-dashboard-activity,.admin-dashboard-comparison{display:grid;gap:12px;min-width:0}
+.admin-dashboard-value{font-size:clamp(22px,3vw,32px);line-height:1.3;color:var(--admin-text);font-weight:850;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.admin-dashboard-muted{font-size:12px;color:var(--admin-muted);line-height:1.6;overflow-wrap:anywhere}
+.admin-dashboard-note{font-size:12px;line-height:1.65;color:var(--admin-muted);margin:0}
+.admin-dashboard-inline{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.admin-dashboard-progress{height:13px;border-radius:999px;background:var(--admin-bg);border:1px solid var(--admin-line);overflow:hidden}
+.admin-dashboard-progress__fill{height:100%;border-radius:inherit;background:linear-gradient(90deg,#294f75,#539cc7);transition:width .2s ease}
+.admin-dashboard-forecast-range{border-radius:10px;padding:12px 14px;background:var(--admin-bg);border:1px solid var(--admin-line);color:var(--admin-text);font-size:12px;line-height:1.7}
+.admin-dashboard-goal-form,.admin-dashboard-payout-form{display:flex;gap:10px;align-items:end;flex-wrap:wrap}
+.admin-dashboard-goal-form label,.admin-dashboard-compare-form label{display:grid;gap:5px;font-weight:700;font-size:12px;color:var(--admin-text)}
+.admin-dashboard-goal-form input,.admin-dashboard-payout-form input,.admin-dashboard-compare-form input{box-sizing:border-box;min-height:40px;width:180px;max-width:100%;border:1px solid var(--admin-line);border-radius:9px;padding:8px 10px;background:var(--admin-card);color:var(--admin-text);font:inherit;direction:ltr;text-align:center}
+.admin-dashboard-btn{min-height:40px;min-width:100px;border:0;border-radius:9px;background:#142e45;color:#fff;font-size:12px;font-weight:800;padding:9px 15px;cursor:pointer}
+.admin-dashboard-btn:hover:not(:disabled){background:#244e6d}.admin-dashboard-btn:disabled{opacity:.55;cursor:wait}
+.admin-dashboard-creator-row{display:grid;gap:8px;border-bottom:1px solid var(--admin-line);padding:12px 0}.admin-dashboard-creator-row:last-child{border:0}
+.admin-dashboard-creator-row .admin-dashboard-inline strong{font-size:13px;color:var(--admin-text)}
+.admin-dashboard-event{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 16px;padding:12px 0;border-bottom:1px solid var(--admin-line)}
+.admin-dashboard-event:last-child{border:0}.admin-dashboard-event>strong{color:var(--admin-text);font-size:13px;min-width:0;overflow-wrap:anywhere}
+.admin-dashboard-event>.admin-dashboard-muted{grid-column:1;grid-row:2}
+.admin-dashboard-date{font-size:11px;color:var(--admin-muted);direction:ltr;text-align:left;grid-column:2;grid-row:1/3}
+.admin-dashboard-compare-form{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));align-items:end;gap:12px}
+.admin-dashboard-compare-form input{width:100%;min-width:0}
+.admin-dashboard-compare-form button{grid-column:1/-1;justify-self:start}
+.admin-dashboard-comparison-results{display:grid;gap:2px;overflow:auto;max-width:100%}
+.admin-dashboard-comparison-row{display:grid;grid-template-columns:minmax(110px,1fr) repeat(3,minmax(85px,1fr));gap:8px;align-items:center;padding:12px 10px;font-size:12px;background:var(--admin-bg);border-radius:6px;min-width:470px}
+.admin-dashboard-comparison-row strong{font-size:12px;color:var(--admin-text)}.admin-dashboard-comparison-row em{font-size:12px;font-style:normal;color:var(--admin-muted)}
+@media(max-width:850px){.admin-dashboard-compare-form{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:550px){.admin-dashboard-compare-form{grid-template-columns:minmax(0,1fr)}.admin-dashboard-compare-form button{grid-column:1}.admin-dashboard-payout-form input{flex:1;width:110px}.admin-dashboard-event{grid-template-columns:minmax(0,1fr)}.admin-dashboard-date{grid-column:1;grid-row:3;text-align:right}}
