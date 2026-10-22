@@ -40,3 +40,21 @@ html[data-admin-theme="dark"] .admin-tools-btn.is-primary{background:#d5e5f1;bor
 @media(max-width:490px){.admin-report-schedule-form{grid-template-columns:1fr}.admin-report-schedule-item>*{min-width:0}}
 
 .admin-tools-page [hidden]{display:none!important}
+
+/* Flexible minute-level delivery schedules and authorized recipient selection. */
+.admin-report-schedule-form{grid-template-columns:repeat(2,minmax(0,1fr))}
+.admin-report-times,.admin-report-recipient-panel{display:grid;gap:10px;min-width:0}
+.admin-report-times>strong,.admin-report-recipient-panel>strong{font-size:14px}
+.admin-report-times-list{display:flex;gap:9px;flex-wrap:wrap}
+.admin-report-time-row{display:flex;gap:5px;align-items:center;padding:5px;border:1px solid var(--admin-border,#dce3ea);border-radius:10px;max-width:100%}
+.admin-report-time-row input{font:inherit;min-width:100px;max-width:144px;color:inherit;background:var(--admin-input,#fff);border:1px solid var(--admin-border,#dce3ea);border-radius:8px;padding:9px;direction:ltr}
+.admin-report-recipient-panel{border:1px solid var(--admin-border,#dce3ea);border-radius:12px;padding:14px}
+.admin-report-recipient-actions,.admin-report-schedule-controls,.admin-report-schedule-item-actions{display:flex;flex-wrap:wrap;gap:8px}
+.admin-report-recipient-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;max-height:240px;overflow:auto}
+.admin-report-recipient{display:flex;align-items:center;gap:8px;min-width:0;padding:10px;border:1px solid var(--admin-border,#dce3ea);border-radius:9px;overflow-wrap:anywhere;cursor:pointer;font-size:13px}
+.admin-report-recipient input{width:17px;height:17px;flex:none;accent-color:#142333}
+.admin-report-email-extra{max-width:600px}
+.admin-report-schedule-item{justify-content:space-between;align-items:flex-start}
+.admin-report-schedule-description{display:grid;gap:4px;min-width:0;flex:1}
+.admin-report-schedule-description span,.admin-report-schedule-description small{color:var(--admin-muted,#657789);overflow-wrap:anywhere;font-size:12px}
+@media(max-width:650px){.admin-report-recipient-list{grid-template-columns:1fr}.admin-report-schedule-form{grid-template-columns:1fr}.admin-report-schedule-item-actions{width:100%}.admin-report-schedule-item-actions .admin-tools-btn{flex:1}}

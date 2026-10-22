@@ -5628,6 +5628,24 @@ async function adminApi(req, res, pathname, parsed) {
       json(res,200,{ok:true,...await adminReporting.session(admin,action,ref)});return true;
     }catch(e){if(e.status)json(res,e.status,{ok:false,error:e.message});else throw e;return true;}
   }
+  if(pathname==='/api/admin/report-recipients' && req.method==='GET') {
+    if(!hasAdminPermission(admin,'reports.view')){json(res,403,{ok:false,error:'permission_denied'});return true;}
+    const canShare=hasAdminPermission(admin,'reports.share');
+    const directory=canShare?await adminReporting.recipientDirectory():[{id:Number(admin.id),name:admin.name,email:admin.email,role:admin.role}];
+    json(res,200,{ok:true,recipients:directory,canShare,canExternal:admin.role==='admin'});return true;
+  }
+  if(pathname==='/api/admin/report-send') {
+    if(req.method!=='POST'){json(res,405,{ok:false,error:'method_not_allowed'});return true;}
+    if(!hasAdminPermission(admin,'reports.share')||!hasAdminPermission(admin,'reports.export')){json(res,403,{ok:false,error:'permission_denied'});return true;}
+    if(!sameOriginAllowed(req)){json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
+    if(!isEmailConfigured()){json(res,409,{ok:false,error:'email_not_configured'});return true;}
+    try{
+      const body=await readJsonBody(req,6000);
+      if(!reportAllowed(String(body.type||''),'reports.export')){json(res,403,{ok:false,error:'permission_denied'});return true;}
+      json(res,200,{ok:true,...await adminReporting.sendNow(admin,body,true)});
+    }catch(e){if(e.status)json(res,e.status,{ok:false,error:e.message});else throw e;}
+    return true;
+  }
   if(pathname==='/api/admin/report-schedules'||/^\/api\/admin\/report-schedules\/\d+$/.test(pathname)) {
     if(!hasAdminPermission(admin,'reports.view')){json(res,403,{ok:false,error:'permission_denied'});return true;}
     try {
@@ -5640,7 +5658,7 @@ async function adminApi(req, res, pathname, parsed) {
         if(!isEmailConfigured()){json(res,409,{ok:false,error:'email_not_configured'});return true;}
         const body=await readJsonBody(req,5000);
         if(!reportAllowed(String(body.type||''),'reports.export')){json(res,403,{ok:false,error:'permission_denied'});return true;}
-        json(res,200,{ok:true,schedules:await adminReporting.saveSchedule(admin,body)});return true;
+        json(res,200,{ok:true,schedules:await adminReporting.saveSchedule(admin,body,hasAdminPermission(admin,'reports.share'))});return true;
       }
       const match=/^\/api\/admin\/report-schedules\/(\d+)$/.exec(pathname);
       if(match&&req.method==='DELETE'){
@@ -9357,10 +9375,10 @@ setInterval(async () => {
 
 setInterval(()=>{checkTaskPushSchedule().catch(e=>console.error('Task reminder scheduler failed:',e));},60*1000).unref();
 setInterval(()=>{financeLedger.generateRecurring().catch(e=>console.error('Monthly expense generator failed:',e));},6*60*60*1000).unref();
-setInterval(()=>{adminReporting.deliverScheduled(async(user,type)=>{
+setInterval(()=>{adminReporting.deliverScheduled(async(user,type,recipients)=>{
   const permissions=user.role==='staff'?await employeeAccess.read(Number(user.id)):[];
-  return user.role==='admin'||normalizeEmail(user.email)===ADMIN_EMAIL||(['reports.view','reports.export','reports.schedule',...(SOURCE_PERMISSIONS[type]||[]),...(SENSITIVE_TYPES.has(type)?['reports.sensitive']:[])].every(k=>permissions.includes(k)));
-}).catch(e=>console.error('Scheduled reports failed:',e));},5*60*1000).unref();
+  return user.role==='admin'||normalizeEmail(user.email)===ADMIN_EMAIL||(['reports.view','reports.export','reports.schedule',...(SOURCE_PERMISSIONS[type]||[]),...(SENSITIVE_TYPES.has(type)?['reports.sensitive']:[])].every(k=>permissions.includes(k)) && ((recipients||[]).every(r=>r.kind==='user'&&Number(r.id)===Number(user.id))||permissions.includes('reports.share')));
+}).catch(e=>console.error('Scheduled reports failed:',e));},30*1000).unref();
 
 async function start() {
   await database.init();
@@ -9379,9 +9397,9 @@ async function start() {
   }
   // Catch up missed schedule checks after a Render redeploy.
   checkTaskPushSchedule().catch(e=>console.error('Task reminder startup check failed:',e));
-  adminReporting.deliverScheduled(async(user,type)=>{
+  adminReporting.deliverScheduled(async(user,type,recipients)=>{
     const permissions=user.role==='staff'?await employeeAccess.read(Number(user.id)):[];
-    return user.role==='admin'||normalizeEmail(user.email)===ADMIN_EMAIL||(['reports.view','reports.export','reports.schedule',...(SOURCE_PERMISSIONS[type]||[]),...(SENSITIVE_TYPES.has(type)?['reports.sensitive']:[])].every(k=>permissions.includes(k)));
+    return user.role==='admin'||normalizeEmail(user.email)===ADMIN_EMAIL||(['reports.view','reports.export','reports.schedule',...(SOURCE_PERMISSIONS[type]||[]),...(SENSITIVE_TYPES.has(type)?['reports.sensitive']:[])].every(k=>permissions.includes(k)) && ((recipients||[]).every(r=>r.kind==='user'&&Number(r.id)===Number(user.id))||permissions.includes('reports.share')));
   }).catch(e=>console.error('Report scheduler startup failed:',e));
   seoCatalogSnapshot = seoSnapshot();
   seoCatalogInitialized = true;

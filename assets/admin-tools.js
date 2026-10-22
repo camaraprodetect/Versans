@@ -91,7 +91,7 @@
         if(task.description)card.append(el('p','admin-tools-task-description',task.description));
         card.append(el('p','admin-tools-task-meta',('נוצר: '+shortDate(task.createdAt))+(task.dueDate?' · יעד: '+task.dueDate:'')+(task.assignedTo?' · אחראי: '+task.assignedTo:'')));
         var actions=el('div','admin-tools-task-actions');
-        if(canEdit){actions.append(button('ערוך','is-secondary',function(){taskEditor(task,function(){return renderTasks(root);},canAssign);}));}
+        if(canEdit){if(maySchedule)actions.append(button('ערוך','is-secondary',function(){taskEditor(task,function(){return renderTasks(root);},canAssign);}));}
         if(canChangeStatus||canEdit){
           var change=pick('שנה סטטוס',STATUSES,task.status);change.wrap.classList.add('admin-tools-task-status');
           change.input.addEventListener('change',async function(){change.input.disabled=true;try{await save('internal-tasks/'+task.id,'PATCH',{updatedAt:task.updatedAt,status:change.input.value});selectedTaskTab=change.input.value;await renderTasks(root);}catch(err){change.input.value=task.status;change.input.disabled=false;showMessage(root,'לא ניתן לשנות סטטוס: '+err.message);}});
@@ -106,7 +106,7 @@
             });foot.append(button('ביטול','is-secondary',close),submit);modal.append(assign.wrap,foot);
           });
         }));
-        if(canDelete)actions.append(button('מחק','is-danger',function(){openModal('מחיקת משימה',function(modal,close){add(modal,el('p','admin-tools-confirm','למחוק את המשימה „'+task.title+'”? פעולה זו לא ניתנת לביטול.'));var footer=el('div','admin-tools-modal-actions');add(footer,button('ביטול','is-secondary',close),button('מחק משימה','is-danger',async function(){try{await save('internal-tasks/'+task.id,'DELETE',{updatedAt:task.updatedAt});close();await renderTasks(root);}catch(err){showMessage(modal,'מחיקה נכשלה: '+err.message);}}));modal.append(footer);});}));
+        if(canDelete)if(maySchedule)actions.append(button('מחק','is-danger',function(){openModal('מחיקת משימה',function(modal,close){add(modal,el('p','admin-tools-confirm','למחוק את המשימה „'+task.title+'”? פעולה זו לא ניתנת לביטול.'));var footer=el('div','admin-tools-modal-actions');add(footer,button('ביטול','is-secondary',close),button('מחק משימה','is-danger',async function(){try{await save('internal-tasks/'+task.id,'DELETE',{updatedAt:task.updatedAt});close();await renderTasks(root);}catch(err){showMessage(modal,'מחיקה נכשלה: '+err.message);}}));modal.append(footer);});}));
         if(actions.children.length)card.append(actions);list.append(card);
       });
     }
@@ -188,7 +188,7 @@
     var sourcePermissions={finance:['income.view','expenses.view'],income:['income.view'],expenses:['expenses.view'],orders:['orders.view'],sales:['sales.view'],products:['products.view'],customers:['customers.view'],shipments:['orders.view'],reviews:['reviews.view'],visitors:['visitors.view'],creators:['creators.view'],tiktok:['creators.view'],tasks:['tasks.view'],handling_hours:['orders.view'],employee_performance:['employees.view'],traffic_conversion:['visitors.view','sales.view'],period_comparison:['sales.view','expenses.view']};
     var sensitive=['orders','customers','shipments','visitors','creators'];
     var allowedReports=REPORT_TYPES.filter(function(pair){return (sourcePermissions[pair[0]]||[]).every(has)&&(!sensitive.includes(pair[0])||has('reports.sensitive'));});
-    var mayExport=has('reports.export'),maySchedule=has('reports.schedule')&&mayExport;
+    var mayExport=has('reports.export'),maySchedule=has('reports.schedule')&&mayExport,mayShare=has('reports.share')&&mayExport;
     if(!allowedReports.length){root.replaceChildren(el('div','admin-tools-empty','אין לך הרשאה להפקת סוגי הדוחות האלה.'));return;}
     var view=el('div','admin-tools-page');add(view,el('h2','','דוחות וייצוא'),el('p','admin-tools-lead','בחירת דוח, טווח תאריכים ועמודות; הורדה כ-PDF, CSV או Excel. הנתונים הרגישים מוגנים בהרשאה נוספת.'));
     if(!mayExport)view.append(el('p','admin-tools-message','יש לך הרשאת צפייה במסך הדוחות, אבל אין לך הרשאה להוריד נתונים. יש לפנות למנהל.'));
@@ -232,23 +232,79 @@
       finally{[pdf,csv,xlsx,print].forEach(function(b){b.disabled=!mayExport;});}
     }
     var scheduleBox=el('section','admin-report-schedules');view.append(scheduleBox);
-    async function loadSchedules(){scheduleBox.replaceChildren();scheduleBox.append(el('h3','','דוחות מתוזמנים למייל'));
-      if(!maySchedule){scheduleBox.append(el('p','admin-tools-export-note','יצירת תזמונים דורשת הרשאת תזמון וייצוא נפרדות.'));return;}
-      var data;try{data=await get('report-schedules');}catch(e){scheduleBox.append(el('p','admin-tools-export-note','לא ניתן לטעון תזמונים: '+e.message));return;}
+    async function loadSchedules(){
+      scheduleBox.replaceChildren();scheduleBox.append(el('h3','',maySchedule?'דוחות מתוזמנים למייל':'שליחת דוחות למייל'));
+      if(!maySchedule&&!mayShare){scheduleBox.append(el('p','admin-tools-export-note','יצירת תזמונים דורשת הרשאת תזמון וייצוא נפרדות.'));return;}
+      var data,directory;
+      try{[data,directory]=await Promise.all([get('report-schedules'),get('report-recipients')]);}
+      catch(e){scheduleBox.append(el('p','admin-tools-export-note','לא ניתן לטעון תזמונים או נמענים: '+e.message));return;}
       if(!data.configured){scheduleBox.append(el('p','admin-tools-message','שירות המייל עדיין לא מוגדר בשרת (RESEND_API_KEY ו-EMAIL_FROM).'));return;}
-      scheduleBox.append(el('p','admin-tools-export-note','הדוח יישלח לכתובת המייל של החשבון שלך בלבד. זמני שליחה לפי שעון ישראל; יומי - אתמול, שבועי - השבוע שהסתיים, חודשי - החודש שהסתיים.'));
-      var row=el('div','admin-report-schedule-form');var cadence=pick('תדירות',[['daily','מדי יום'],['weekly','מדי יום שני'],['monthly','ביום הראשון בכל חודש']],'weekly');var hour=pick('שעת שליחה (ישראל)',Array.from({length:24},function(_,i){return [String(i),String(i).padStart(2,'0')+':00'];}),'8');var fmt=pick('פורמט',[['xlsx','Excel'],['csv','CSV']],'xlsx');
-      add(row,cadence.wrap,hour.wrap,fmt.wrap);
-      row.append(button('הוסף תזמון לדוח הנבחר','is-primary',async function(){
-        try{await save('report-schedules','POST',{type:type.input.value,format:fmt.input.value,cadence:cadence.input.value,hour:Number(hour.input.value)});showMessage(view,'התזמון נשמר.',true);await loadSchedules();}
-        catch(e){showMessage(view,'שמירת התזמון נכשלה: '+e.message);}
-      }));scheduleBox.append(row);
-      var list=el('div','admin-report-schedule-list');scheduleBox.append(list);
-      (data.schedules||[]).forEach(function(s){var item=el('div','admin-report-schedule-item');var name=REPORT_TYPES.find(function(r){return r[0]===s.type;});
-        item.append(el('strong','',(name?name[1]:s.type)+' · '+s.format.toUpperCase()),el('span','',' · '+({daily:'יומי',weekly:'שבועי',monthly:'חודשי'}[s.cadence]||s.cadence)+' '+String(s.hour).padStart(2,'0')+':00 · '+(s.active?'פעיל':'מושהה')));
-        var toggle=button(s.active?'השהה':'הפעל','is-secondary',async function(){try{await save('report-schedules','POST',{id:s.id,type:s.type,format:s.format,cadence:s.cadence,hour:s.hour,active:!s.active});await loadSchedules();}catch(e){showMessage(view,e.message);}});
-        var remove=button('מחק','is-danger',async function(){if(!confirm('למחוק את התזמון?'))return;try{var r=await fetch(apiBase+'report-schedules/'+s.id,{method:'DELETE',credentials:'same-origin'});if(!r.ok)throw Error('delete_failed');await loadSchedules();}catch(e){showMessage(view,e.message);}});
-        item.append(toggle,remove);list.append(item);
+      scheduleBox.append(el('p','admin-tools-export-note','ניתן לבחור מספר נמענים ושעות מדויקות לפי שעון ישראל. דוח יומי מסכם את אתמול, שבועי את השבוע שהסתיים וחודשי את החודש שהסתיים. הרשאות הנמענים אינן מגבילות קבלת דוח ששותף במפורש על ידי בעל הרשאה.'));
+      var row=el('div','admin-report-schedule-form');
+      var cadence=pick('תדירות',[['daily','מדי יום'],['weekly','מדי יום שני'],['monthly','ביום הראשון בכל חודש']],'daily');
+      var fmt=pick('פורמט',[['xlsx','Excel'],['csv','CSV']],'xlsx');
+      var timesBox=el('div','admin-report-times'),timeTitle=el('strong','','שעות שליחה (ישראל)');
+      var timeRows=el('div','admin-report-times-list');
+      function addTime(value){
+        var line=el('div','admin-report-time-row'),inp=el('input');inp.type='time';inp.step=60;inp.value=value||'08:00';inp.setAttribute('aria-label','שעת שליחה');
+        var del=button('הסר','is-secondary',function(){line.remove();});del.setAttribute('aria-label','הסרת שעת שליחה');line.append(inp,del);timeRows.append(line);
+      }
+      addTime('08:00');timesBox.append(timeTitle,timeRows,button('+ הוסף שעת שליחה','is-secondary',function(){if(timeRows.children.length>=24){showMessage(view,'ניתן לקבוע עד 24 שעות בתזמון.');return;}addTime('12:00');}));
+      var recipientsWrap=el('div','admin-report-recipient-panel');recipientsWrap.append(el('strong','','למי לשלוח את הדוח?'));
+      var recipActions=el('div','admin-report-recipient-actions'),recipientsList=el('div','admin-report-recipient-list');
+      if(directory.canShare)recipActions.append(button('בחר את כל העובדים והאדמינים','is-secondary',function(){recipientsList.querySelectorAll('input[type="checkbox"]').forEach(function(i){i.checked=true;});}),button('נקה בחירה','is-secondary',function(){recipientsList.querySelectorAll('input[type="checkbox"]').forEach(function(i){i.checked=false;});}));
+      recipientsWrap.append(recipActions);
+      (directory.recipients||[]).forEach(function(u){var label=el('label','admin-report-recipient'),check=el('input');check.type='checkbox';check.value=String(u.id);check.checked=Number(u.id)===Number(me.id);
+        label.append(check,el('span','',u.name+' · '+u.email+(u.role==='admin'?' (אדמין)':' (עובד)')));recipientsList.append(label);
+      });
+      recipientsWrap.append(recipientsList);
+      var extra=null;
+      if(directory.canExternal){extra=field('כתובות מייל נוספות (לא חובה, להפריד בפסיק)','text','','name@example.com');extra.wrap.classList.add('admin-report-email-extra');recipientsWrap.append(extra.wrap);}
+      function recipients(){
+        var result=Array.from(recipientsList.querySelectorAll('input:checked')).map(function(ch){return {kind:'user',id:Number(ch.value)};});
+        if(extra&&extra.input.value.trim())extra.input.value.split(/[,;\n]/).forEach(function(addr){if(addr.trim())result.push({kind:'email',email:addr.trim()});});
+        if(!result.length)throw Error('צריך לבחור לפחות נמען אחד.');
+        if(result.length>25)throw Error('ניתן לבחור עד 25 נמענים בתזמון.');
+        return result;
+      }
+      function times(){var values=Array.from(timeRows.querySelectorAll('input[type="time"]')).map(function(i){return i.value;});if(!values.length||values.some(function(x){return !/^([01]\d|2[0-3]):[0-5]\d$/.test(x);}))throw Error('יש לבחור לפחות שעה אחת בפורמט תקין.');return Array.from(new Set(values)).sort();}
+      function applyRecipients(items){
+        recipientsList.querySelectorAll('input[type="checkbox"]').forEach(function(i){i.checked=false;});
+        var mails=[];
+        (items||[]).forEach(function(r){if(r.kind==='user'){var checkbox=Array.from(recipientsList.querySelectorAll('input')).find(function(i){return i.value===String(r.id);});if(checkbox)checkbox.checked=true;}else if(r.kind==='email')mails.push(r.email);});
+        if(extra)extra.input.value=mails.join(', ');
+      }
+      var editingId=null,editingLabel=el('p','admin-tools-export-note','');editingLabel.hidden=true;
+      var submit=button('הוסף תזמון לדוח הנבחר','is-primary',async function(){
+        try{var body={type:type.input.value,format:fmt.input.value,cadence:cadence.input.value,times:times(),recipients:recipients()};if(editingId)body.id=editingId;
+          await save('report-schedules','POST',body);showMessage(view,editingId?'התזמון עודכן.':'התזמון נשמר.',true);await loadSchedules();
+        }catch(e){showMessage(view,'שמירת התזמון נכשלה: '+e.message);}
+      });
+      var controls=el('div','admin-report-schedule-controls');if(maySchedule)controls.append(submit);
+      if(mayShare&&directory.canShare){controls.append(button('שלח את הדוח עכשיו במייל','is-secondary',async function(){
+        try{
+          var selectedRecipients=recipients();
+          if(!confirm('לשלוח עכשיו דוח '+labelOf(REPORT_TYPES,type.input.value)+' ל-'+selectedRecipients.length+' נמענים?'))return;
+          var result=await save('report-send','POST',{type:type.input.value,format:fmt.input.value,from:from.input.value,to:to.input.value,recipients:selectedRecipients});
+          showMessage(view,'נשלח ל-'+result.sent+' נמענים.'+(result.failed?' השליחה נכשלה ל-'+result.failed+' נמענים.':''),result.failed===0);
+        }catch(e){showMessage(view,'שליחת הדוח נכשלה: '+e.message);}
+      }));}
+      var resetEdit=button('ביטול עריכה','is-secondary',function(){loadSchedules();});resetEdit.hidden=true;controls.append(resetEdit);
+      add(row,cadence.wrap,fmt.wrap);if(!maySchedule){cadence.wrap.hidden=true;timesBox.hidden=true;}scheduleBox.append(row,timesBox,recipientsWrap,editingLabel,controls);
+      var list=el('div','admin-report-schedule-list');scheduleBox.append(el('h3','','תזמונים קיימים'),list);
+      (data.schedules||[]).forEach(function(s){var item=el('div','admin-report-schedule-item'),name=REPORT_TYPES.find(function(r){return r[0]===s.type;});
+        var details=el('div','admin-report-schedule-description');details.append(el('strong','',(name?name[1]:s.type)+' · '+s.format.toUpperCase()));
+        var addresses=(s.recipients||[]).map(function(r){if(r.kind==='email')return r.email;var u=(directory.recipients||[]).find(function(p){return Number(p.id)===Number(r.id);});return u?u.name:(r.id===Number(me.id)?me.name||me.email:'משתמש '+r.id);});
+        details.append(el('span','',' '+({daily:'יומי',weekly:'שבועי',monthly:'חודשי'}[s.cadence]||s.cadence)+' · '+(s.times||[String(s.hour).padStart(2,'0')+':00']).join(', ')+' · '+(s.active?'פעיל':'מושהה')));
+        details.append(el('small','','נמענים: '+(addresses.join(', ')||s.recipient||'לא הוגדרו')));item.append(details);
+        var actions=el('div','admin-report-schedule-item-actions');
+        if(maySchedule)actions.append(button('ערוך','is-secondary',function(){editingId=s.id;editingLabel.hidden=false;editingLabel.textContent='עריכת תזמון #'+s.id;submit.textContent='שמור שינויים בתזמון';resetEdit.hidden=false;
+          type.input.value=s.type;type.input.dispatchEvent(new Event('change'));fmt.input.value=s.format;cadence.input.value=s.cadence;
+          timeRows.replaceChildren();(s.times||[String(s.hour).padStart(2,'0')+':00']).forEach(addTime);applyRecipients(s.recipients||[{kind:'user',id:me.id}]);scheduleBox.scrollIntoView({behavior:'smooth',block:'start'});
+        }));
+        if(maySchedule)actions.append(button(s.active?'השהה':'הפעל','is-secondary',async function(){try{await save('report-schedules','POST',{id:s.id,type:s.type,format:s.format,cadence:s.cadence,times:s.times||[String(s.hour).padStart(2,'0')+':00'],recipients:s.recipients||[{kind:'user',id:me.id}],active:!s.active});await loadSchedules();}catch(e){showMessage(view,e.message);}}));
+        if(maySchedule)actions.append(button('מחק','is-danger',async function(){if(!confirm('למחוק את התזמון?'))return;try{var r=await fetch(apiBase+'report-schedules/'+s.id,{method:'DELETE',credentials:'same-origin'});if(!r.ok)throw Error('delete_failed');await loadSchedules();}catch(e){showMessage(view,e.message);}}));
+        item.append(actions);list.append(item);
       });
       if(!data.schedules||!data.schedules.length)list.append(el('p','admin-tools-export-note','אין דוחות מתוזמנים כרגע.'));
     }
