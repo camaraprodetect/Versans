@@ -17,6 +17,7 @@ const ROUTES = require('./assets/routes.js');
 const SEO = require('./lib/seo.js');
 const INDEXNOW = require('./lib/indexnow.js');
 const { normalizeAdminRange, normalizeStoredOrderItems, aggregatePaidOrders } = require('./lib/admin-analytics.js');
+const { classifyTrafficSource, visitorSource, buildAudienceSummary } = require('./lib/visitor-analytics.js');
 const { absoluteUrl, isEmailConfigured, orderConfirmationEmail, passwordResetEmail, productAnnouncementEmail, sendEmail, termsUpdateEmail, welcomeEmail } = require('./lib/email.js');
 const {
   buildPaidOrderPayload,
@@ -2295,6 +2296,8 @@ function adminRangeStart(range, now) {
 
 function presencePayload(body, visitorId, userId, now) {
   const kind = body && body.kind === 'pageview' ? 'pageview' : 'heartbeat';
+  const utmSource = compactText(body && body.utmSource, 120);
+  const referrer = safePresenceReferrer(body && body.referrer);
   return {
     visitorId,
     userId: userId == null ? null : Number(userId),
@@ -2302,8 +2305,9 @@ function presencePayload(body, visitorId, userId, now) {
     now,
     path: safePresencePath(body && body.path),
     title: compactText(body && body.title, 180),
-    referrer: safePresenceReferrer(body && body.referrer),
-    utmSource: compactText(body && body.utmSource, 120),
+    referrer,
+    utmSource,
+    trafficSource: classifyTrafficSource({ utmSource, referrer }),
     utmMedium: compactText(body && body.utmMedium, 120),
     utmCampaign: compactText(body && body.utmCampaign, 160),
     utmTerm: compactText(body && body.utmTerm, 160),
@@ -2339,6 +2343,9 @@ function visitorSummary(row, now) {
     entryPath: row.entry_path || '/',
     lastTitle: row.last_title || null,
     referrer: row.referrer || null,
+    trafficSource: visitorSource(row),
+    visitCount: Number(row.visit_count || 1),
+    visitorType: Number(row.visit_count || 1) > 1 ? 'returning' : 'new',
     utm: {
       source: row.utm_source || null,
       medium: row.utm_medium || null,
@@ -7435,14 +7442,16 @@ async function adminApi(req, res, pathname, parsed) {
     const normalized = visitorRange(range, now);
     if (!normalized) { json(res, 400, { ok: false, error: 'invalid_range' }); return true; }
     const { limit, offset } = adminPagination(parsed, 50);
-    const [count, rows, lifetimeCount] = await Promise.all([
+    const [count, rows, lifetimeCount, audienceRows] = await Promise.all([
       database.countPresenceVisitors(normalized.since),
       database.listPresenceVisitors(normalized.since, limit, offset),
-      database.countPresenceVisitors(null)
+      database.countPresenceVisitors(null),
+      // Collect across all matching visitors, not only the currently visible page.
+      database.listPresenceAudience(normalized.since)
     ]);
     json(res, 200, {
       ok: true, range, count, lifetimeCount, limit, offset, hasMore: offset + rows.length < count,
-      onlineWindowMs: ONLINE_WINDOW_MS, visitors: rows.map((row) => visitorSummary(row, now))
+      onlineWindowMs: ONLINE_WINDOW_MS, audience: buildAudienceSummary(audienceRows), visitors: rows.map((row) => visitorSummary(row, now))
     });
     return true;
   }

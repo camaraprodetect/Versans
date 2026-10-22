@@ -2294,6 +2294,61 @@
     });
   }
 
+  function visitorInsights(data) {
+    var audience = data.audience || {total:0,newVisitors:0,returningVisitors:0,returningPercent:0,sources:[]};
+    var summary = make('div', 'admin-visitor-insights');
+    var returnCard = make('section', 'admin-card admin-visitor-insight');
+    var returnHead = make('div', 'admin-visitor-insight__head');
+    returnHead.appendChild(make('h2', '', 'מבקרים חדשים וחוזרים'));
+    returnHead.appendChild(make('span', 'admin-visitor-insight__small', numberFmt(audience.total) + ' מבקרים ייחודיים'));
+    returnCard.appendChild(returnHead);
+    var figures = make('div', 'admin-visitor-types');
+    [['חדש', audience.newVisitors, 'new'],['חוזר', audience.returningVisitors, 'returning']].forEach(function (item) {
+      var stat = make('div', 'admin-visitor-type admin-visitor-type--' + item[2]);
+      stat.appendChild(make('span', 'admin-visitor-type__label', item[0]));
+      stat.appendChild(make('strong', 'admin-visitor-type__value', numberFmt(item[1])));
+      stat.appendChild(make('span', 'admin-visitor-type__percent', (audience.total ? (100 * item[1] / audience.total).toFixed(1) : '0') + '%'));
+      figures.appendChild(stat);
+    });
+    returnCard.appendChild(figures);
+    var bar = make('div', 'admin-visitor-return-bar');
+    bar.setAttribute('role', 'img');
+    bar.setAttribute('aria-label', 'מבקרים חוזרים: ' + numberFmt(audience.returningVisitors) + ' מתוך ' + numberFmt(audience.total));
+    var portion = make('span', 'admin-visitor-return-bar__returning');
+    portion.style.width = Math.max(0, Math.min(100, Number(audience.returningPercent) || 0)) + '%';
+    bar.appendChild(portion);
+    returnCard.appendChild(bar);
+    returnCard.appendChild(make('p', 'admin-visitor-insight__note', 'מבקר חוזר = אותו דפדפן חזר אחרי 30 דקות ללא פעילות. רענון עמוד או מעבר בין עמודים לא נחשבים לביקור חוזר.'));
+
+    var sourcesCard = make('section', 'admin-card admin-visitor-insight');
+    var sourcesHead = make('div', 'admin-visitor-insight__head');
+    sourcesHead.appendChild(make('h2', '', 'מאיפה הגיעו המבקרים?'));
+    sourcesHead.appendChild(make('span', 'admin-visitor-insight__small', 'מקור הגעה ראשון'));
+    sourcesCard.appendChild(sourcesHead);
+    var sources = make('div', 'admin-visitor-sources');
+    if (!audience.sources || !audience.sources.length) {
+      sources.appendChild(make('p', 'admin-empty', 'אין עדיין נתוני תנועה בטווח הזה.'));
+    } else {
+      audience.sources.forEach(function (source) {
+        var row = make('div', 'admin-visitor-source');
+        var labels = make('div', 'admin-visitor-source__labels');
+        labels.appendChild(make('strong', '', source.name));
+        labels.appendChild(make('span', '', numberFmt(source.count) + ' · ' + source.percent + '%'));
+        row.appendChild(labels);
+        var track = make('div', 'admin-visitor-source__track');
+        var fill = make('span', 'admin-visitor-source__fill');
+        fill.style.width = Math.max(0, Math.min(100, Number(source.percent) || 0)) + '%';
+        track.appendChild(fill);
+        row.appendChild(track);
+        sources.appendChild(row);
+      });
+    }
+    sourcesCard.appendChild(sources);
+    sourcesCard.appendChild(make('p', 'admin-visitor-insight__note', 'מבקר נספר פעם אחת, לפי מקור ההגעה הראשון שלו (UTM קודם ל-Referrer). קישורים ללא נתוני הפניה מזוהים כישירים; אפליקציות עשויות להסתיר את המקור.'));
+    summary.append(returnCard, sourcesCard);
+    return summary;
+  }
+
   function visitorsTable(data, onSelect) {
     var table = renderTable({
       title: 'רשימת מבקרים',
@@ -2309,6 +2364,7 @@
           return box;
         } },
         { label: 'טלפון', render: function (row) { return text(row.phone); } },
+        { label: 'מקור / ביקורים', render: function (row) { return cellPrimary(row.trafficSource || 'קישור ישיר', row.visitorType === 'returning' ? 'חוזר · ' + numberFmt(row.visitCount) + ' ביקורים' : 'חדש'); } },
         { label: 'עמוד נוכחי', render: function (row) { return cellPrimary(row.currentPath || '/', row.lastTitle || ''); } },
         { label: 'מכשיר', render: function (row) { return cellPrimary([row.browser, row.os].filter(Boolean).join(' · ') || 'לא ידוע', row.deviceType || ''); } },
         { label: 'נראה לאחרונה', render: function (row) { return cellPrimary(relative(row.lastSeen), numberFmt(row.pageViewCount) + ' צפיות'); } }
@@ -2366,16 +2422,16 @@
         ['שם', v.name], ['אימייל', v.email], ['טלפון', v.phone], ['סטטוס', v.isLoggedIn ? 'משתמש מחובר' : 'אורח']
       ]));
       panel.appendChild(detailSection('פעילות באתר', [
-        ['Online', v.online ? 'כן' : 'לא'], ['נראה לאחרונה', dateTime(v.lastSeen)], ['עמוד נוכחי', v.currentPath], ['עמוד כניסה', v.entryPath], ['כניסה ראשונה', dateTime(v.firstSeen)], ['סה״כ צפיות', numberFmt(v.pageViewCount)]
+        ['Online', v.online ? 'כן' : 'לא'], ['נראה לאחרונה', dateTime(v.lastSeen)], ['עמוד נוכחי', v.currentPath], ['עמוד כניסה', v.entryPath], ['כניסה ראשונה', dateTime(v.firstSeen)], ['סה״כ צפיות', numberFmt(v.pageViewCount)], ['סוג מבקר', v.visitorType === 'returning' ? 'חוזר' : 'חדש'], ['מספר ביקורים', numberFmt(v.visitCount)]
       ]));
       panel.appendChild(detailSection('מכשיר', [
         ['סוג מכשיר', v.deviceType], ['דפדפן', v.browser], ['מערכת הפעלה', v.os]
       ]));
-      if (v.referrer || (v.utm && (v.utm.source || v.utm.medium || v.utm.campaign))) {
-        panel.appendChild(detailSection('איך הגיע לאתר', [
-          ['Referrer', v.referrer], ['UTM Source', v.utm && v.utm.source], ['UTM Medium', v.utm && v.utm.medium], ['UTM Campaign', v.utm && v.utm.campaign]
-        ]));
-      }
+      panel.appendChild(detailSection('איך הגיע לאתר', [
+        ['מקור ההגעה הראשון', v.trafficSource || 'קישור ישיר'],
+        ['Referrer אחרון שנקלט', v.referrer],
+        ['UTM Source', v.utm && v.utm.source], ['UTM Medium', v.utm && v.utm.medium], ['UTM Campaign', v.utm && v.utm.campaign]
+      ]));
       if (v.account) {
         panel.appendChild(detailSection('רכישות', [
           ['הזמנות', numberFmt(v.account.orderCount)], ['הזמנות ששולמו', numberFmt(v.account.paidOrderCount)], ['הזמנה אחרונה', dateTime(v.account.lastOrderAt)], ['לקוח מאומת', v.account.verifiedCustomer ? 'כן' : 'לא']
@@ -2437,6 +2493,7 @@
       { label: 'בטווח שנבחר', value: numberFmt(data.count), hint: visitorRangeOptions.filter(function (item) { return item.value === range; })[0].label },
       { label: 'כל הזמנים', value: numberFmt(data.lifetimeCount), hint: 'Lifetime מרגע הפעלת השמירה' }
     ]));
+    frag.appendChild(visitorInsights(data));
     frag.appendChild(make('div', 'admin-privacy-note', 'פרטיות: מערכת המבקרים אינה שומרת כתובות IP. נשמרים רק Visitor ID ונתוני שימוש בסיסיים הדרושים לניתוח האתר.'));
 
     var grid = make('div', 'admin-visitor-grid');
