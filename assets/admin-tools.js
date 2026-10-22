@@ -91,7 +91,7 @@
         if(task.description)card.append(el('p','admin-tools-task-description',task.description));
         card.append(el('p','admin-tools-task-meta',('נוצר: '+shortDate(task.createdAt))+(task.dueDate?' · יעד: '+task.dueDate:'')+(task.assignedTo?' · אחראי: '+task.assignedTo:'')));
         var actions=el('div','admin-tools-task-actions');
-        if(canEdit){if(maySchedule)actions.append(button('ערוך','is-secondary',function(){taskEditor(task,function(){return renderTasks(root);},canAssign);}));}
+        if(canEdit)actions.append(button('ערוך','is-secondary',function(){taskEditor(task,function(){return renderTasks(root);},canAssign);}));
         if(canChangeStatus||canEdit){
           var change=pick('שנה סטטוס',STATUSES,task.status);change.wrap.classList.add('admin-tools-task-status');
           change.input.addEventListener('change',async function(){change.input.disabled=true;try{await save('internal-tasks/'+task.id,'PATCH',{updatedAt:task.updatedAt,status:change.input.value});selectedTaskTab=change.input.value;await renderTasks(root);}catch(err){change.input.value=task.status;change.input.disabled=false;showMessage(root,'לא ניתן לשנות סטטוס: '+err.message);}});
@@ -106,7 +106,7 @@
             });foot.append(button('ביטול','is-secondary',close),submit);modal.append(assign.wrap,foot);
           });
         }));
-        if(canDelete)if(maySchedule)actions.append(button('מחק','is-danger',function(){openModal('מחיקת משימה',function(modal,close){add(modal,el('p','admin-tools-confirm','למחוק את המשימה „'+task.title+'”? פעולה זו לא ניתנת לביטול.'));var footer=el('div','admin-tools-modal-actions');add(footer,button('ביטול','is-secondary',close),button('מחק משימה','is-danger',async function(){try{await save('internal-tasks/'+task.id,'DELETE',{updatedAt:task.updatedAt});close();await renderTasks(root);}catch(err){showMessage(modal,'מחיקה נכשלה: '+err.message);}}));modal.append(footer);});}));
+        if(canDelete)actions.append(button('מחק','is-danger',function(){openModal('מחיקת משימה',function(modal,close){add(modal,el('p','admin-tools-confirm','למחוק את המשימה „'+task.title+'”? פעולה זו לא ניתנת לביטול.'));var footer=el('div','admin-tools-modal-actions');add(footer,button('ביטול','is-secondary',close),button('מחק משימה','is-danger',async function(){try{await save('internal-tasks/'+task.id,'DELETE',{updatedAt:task.updatedAt});close();await renderTasks(root);}catch(err){showMessage(modal,'מחיקה נכשלה: '+err.message);}}));modal.append(footer);});}));
         if(actions.children.length)card.append(actions);list.append(card);
       });
     }
