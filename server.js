@@ -17,6 +17,7 @@ const { PRODUCTS, CATEGORIES } = require('./assets/products.js');
 const { createCatalogManager } = require('./lib/catalog-manager.js');
 const { createMarketingManager } = require('./lib/marketing-manager.js');
 const { createMarketingMedia } = require('./lib/marketing-media.js');
+const { mediaInventory, couponInventory } = require('./lib/marketing-legacy-inventory.js');
 const { createCreatorProgram } = require('./lib/creator-program.js');
 const ROUTES = require('./assets/routes.js');
 const SEO = require('./lib/seo.js');
@@ -5247,6 +5248,14 @@ async function adminApi(req, res, pathname, parsed) {
   if(pathname==='/api/admin/marketing'){
     if(req.method==='GET'){
       const info=await marketingManager.dashboard();
+      const legacyMedia=mediaInventory();
+      const existingCoupons=await couponInventory(database, {
+        page:parsed.searchParams.get('welcomePage'),
+        creatorPage:parsed.searchParams.get('creatorPage'),
+        query:parsed.searchParams.get('welcomeQuery'),
+        showCustomers:hasAdminPermission(admin,'customers.view'),
+        showCreators:hasAdminPermission(admin,'creators.view')
+      });
       let attribution={};
       try{
         const since=Date.now()-365*86400000;
@@ -5258,7 +5267,7 @@ async function adminApi(req, res, pathname, parsed) {
         const campaignByVisitor=new Map(visitors.map(v=>[String(v.visitor_id),String(v.utm_campaign||'')]));
         for(const o of orders){const utm=campaignByVisitor.get(String(o.guest_visitor_id||''));if(!utm)continue;const entry=attribution[utm]||{revenue:0,orders:0};entry.revenue+=Number(o.amount_agorot||0)/100;entry.orders++;attribution[utm]=entry;}
       }catch(error){console.error('Marketing campaign attribution:',error.message);}
-      json(res,200,{ok:true,...info,attribution});return true;
+      json(res,200,{ok:true,...info,attribution,legacy:legacyMedia,existingCoupons});return true;
     }
     if(req.method==='POST'){
       if(!sameOriginAllowed(req)){json(res,403,{ok:false,error:'origin_not_allowed'});return true;}

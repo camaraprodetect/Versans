@@ -1,7 +1,7 @@
 (function(){
   'use strict';
   var TABS=[['coupons','קופונים'],['bundles','מבצעי כמות'],['popups','פופ־אפים'],['banners','באנרים ו-Hero'],['campaigns','קמפיינים']];
-  var current='coupons',editing=null,store=null;
+  var current='coupons',editing=null,store=null,welcomePage=1,creatorPage=1,welcomeQuery='';
   function el(tag,cls,text){var a=document.createElement(tag);if(cls)a.className=cls;if(text!=null)a.textContent=text;return a;}
   function money(n){return (Number(n)||0).toLocaleString('he-IL',{minimumFractionDigits:2,maximumFractionDigits:2})+' ₪';}
   function datetime(ms){return ms?new Date(ms).toLocaleString('he-IL',{timeZone:'Asia/Jerusalem'}):'ללא הגבלה';}
@@ -72,13 +72,92 @@
       await refresh();
     }catch(e){alert('השמירה נכשלה: '+e.message);}
   }
-  async function refresh(){var r=await fetch('/api/admin/marketing',{credentials:'same-origin',cache:'no-store'});if(!r.ok)throw Error('loading_failed');store=await r.json();paint();}
+  async function refresh(){
+    var params=new URLSearchParams({welcomePage:String(welcomePage),creatorPage:String(creatorPage),welcomeQuery:welcomeQuery});
+    var r=await fetch('/api/admin/marketing?'+params.toString(),{credentials:'same-origin',cache:'no-store'});
+    if(!r.ok)throw Error('loading_failed');store=await r.json();paint();
+  }
+  function sectionHeading(title,description,count){
+    var wrap=el('div','vs-mkt-subheading'),labels=el('div');
+    labels.append(el('h3','',title),el('p','',description));
+    wrap.append(labels,el('span','vs-mkt-count',String(count)+' רשומות'));return wrap;
+  }
+  function legacyRow(item,kind){
+    var card=el('article','vs-mkt-row vs-mkt-legacy-row'),main=el('div','vs-mkt-row__main');
+    var top=el('div','vs-mkt-row__top');top.append(el('strong','',item.title),el('span','vs-mkt-pill','מוגדר באתר'));
+    main.append(top,el('small','',item.description||'תוכן קיים באתר'));
+    if(item.text)main.append(el('small','',item.text));
+    var actions=el('div','vs-mkt-actions');
+    if(item.mediaUrl){var a=el('a','vs-mkt-btn','הצג מדיה');a.href=item.mediaUrl;a.target='_blank';a.rel='noopener noreferrer';actions.appendChild(a);}
+    card.append(main,actions);return card;
+  }
+  function boxLegacy(section,items,description){
+    var area=el('div','vs-mkt-legacy');
+    area.append(sectionHeading(section==='popups'?'פופ־אפים קיימים באתר':'באנרים ו-Hero קיימים באתר',description,items.length));
+    var list=el('div','vs-mkt-list');items.forEach(function(item){list.appendChild(legacyRow(item,section));});area.append(list);
+    area.append(el('p','vs-mkt-note','רשומות אלו נמשכות מקוד האתר ומוצגות לקריאה בלבד. הן לא הועתקו או הופעלו מחדש כדי למנוע כפילות ושינוי בהתנהגות החנות.'));
+    return area;
+  }
+  function existingCouponRow(row,type){
+    var card=el('article','vs-mkt-row vs-mkt-existing-row'),main=el('div','vs-mkt-row__main'),top=el('div','vs-mkt-row__top');
+    var status=type==='creator'?(row.active?'פעיל':'לא פעיל'):
+      ({available:'בתוקף',used:'מומש',expired:'פג תוקף',disabled:'מבוטל'}[row.status]||'לא ידוע');
+    top.append(el('strong','',row.code),el('span','vs-mkt-pill '+(status==='פעיל'||status==='בתוקף'?'is-on':''),status));
+    var text=type==='creator'?'קופון יוצר תוכן':('קופון '+(row.kind==='welcome'?'הרשמה':'אישי'));
+    text+=' · '+row.discountPercent+'%';
+    if(type==='creator')text+=' · '+(row.name||row.email||'יוצר תוכן');
+    else text+=' · '+(row.customerName||row.customerEmail||'לקוח')+(row.customerEmail?' ('+row.customerEmail+')':'');
+    main.append(top,el('small','',text));
+    if(type!=='creator'){
+      main.append(el('small','', 'נוצר: '+datetime(row.createdAt)+' · תוקף: '+datetime(row.expiresAt)));
+      if(row.usedAt)main.append(el('small','', 'מומש: '+datetime(row.usedAt)+(row.usedOrderRef?' · הזמנה '+row.usedOrderRef:'')));
+    }
+    card.appendChild(main);return card;
+  }
+  function existingCouponSections(){
+    var data=store.existingCoupons||{},personal=data.personal||{total:0,items:[],restricted:true},creators=data.creators||{total:0,items:[],restricted:true};
+    var section=el('div','vs-mkt-legacy');
+    section.append(sectionHeading('קופונים אישיים שנוצרו בהרשמה','קודים אמיתיים מטבלת הקופונים המקורית. לא נוצרים כאן קופונים נוספים.',personal.total||0));
+    var stats=el('p','vs-mkt-existing-stats','בתוקף: '+(personal.usable||0)+' · מומשו: '+(personal.used||0)+' · פג תוקף/מבוטלים: '+Math.max(0,(personal.total||0)-(personal.usable||0)-(personal.used||0)));
+    section.append(stats);
+    if(personal.restricted){section.append(el('p','vs-mkt-note','צפייה בקודים אישיים ובפרטי לקוחות דורשת הרשאת צפייה בלקוחות. הנתונים עצמם נשמרים.'));}
+    else {
+      var search=el('form','vs-mkt-search'),input=el('input');input.type='search';input.placeholder='חיפוש לפי קוד, שם או מייל';input.value=welcomeQuery;input.setAttribute('aria-label','חיפוש בקופוני הרשמה');
+      var submit=el('button','vs-mkt-btn','חפש');submit.type='submit';search.append(input,submit);
+      search.onsubmit=function(e){e.preventDefault();welcomeQuery=input.value.trim();welcomePage=1;refresh().catch(function(err){alert(err.message);});};
+      section.appendChild(search);
+      if(!personal.items.length)section.append(el('p','vs-mkt-empty','לא נמצאו קופונים אישיים מתאימים.'));
+      else {var list=el('div','vs-mkt-list');personal.items.forEach(function(item){list.appendChild(existingCouponRow(item,'personal'));});section.appendChild(list);}
+      var pages=Math.max(1,Math.ceil((personal.matched||0)/(personal.pageSize||50)));
+      var nav=el('div','vs-mkt-pagination');nav.append(el('span','', 'עמוד '+personal.page+' מתוך '+pages+' · תוצאות '+(personal.matched||0)));
+      var back=el('button','vs-mkt-btn','הקודם');back.disabled=welcomePage<=1;back.onclick=function(){welcomePage--;refresh().catch(function(e){alert(e.message);});};
+      var next=el('button','vs-mkt-btn','הבא');next.disabled=welcomePage>=pages;next.onclick=function(){welcomePage++;refresh().catch(function(e){alert(e.message);});};nav.append(back,next);section.append(nav);
+    }
+    var creatorArea=el('div','vs-mkt-legacy');
+    creatorArea.append(sectionHeading('קופונים ליוצרי תוכן','קודים ממערכת יוצרי התוכן הקיימת. אפשר לנהל אותם בעמוד יוצרי תוכן.',creators.total||0));
+    if(creators.restricted)creatorArea.append(el('p','vs-mkt-note','כדי לראות את קודי היוצרים ושמותיהם נדרשת הרשאת צפייה ביוצרי תוכן.'));
+    else {
+      var list=el('div','vs-mkt-list');creators.items.forEach(function(item){list.appendChild(existingCouponRow(item,'creator'));});creatorArea.append(list);
+      var pages=Math.max(1,Math.ceil((creators.total||0)/(creators.pageSize||50)));
+      if(pages>1){
+        var nav=el('div','vs-mkt-pagination');nav.append(el('span','', 'עמוד '+creators.page+' מתוך '+pages));
+        var prev=el('button','vs-mkt-btn','הקודם');prev.disabled=creatorPage<=1;
+        prev.onclick=function(){creatorPage--;refresh().catch(function(e){alert(e.message);});};
+        var next=el('button','vs-mkt-btn','הבא');next.disabled=creatorPage>=pages;
+        next.onclick=function(){creatorPage++;refresh().catch(function(e){alert(e.message);});};
+        nav.append(prev,next);creatorArea.append(nav);
+      }
+      var link=el('a','vs-mkt-btn vs-mkt-manage-link','מעבר לניהול יוצרי תוכן');link.href='/admin/creators';creatorArea.append(link);
+    }
+    return [section,creatorArea];
+  }
   function paint(){
     if(!host)return;
     var page=el('div','vs-mkt-page'),tabs=el('nav','vs-mkt-tabs');tabs.setAttribute('aria-label','ניהול שיווק');
     TABS.forEach(function(t){var button=el('button','vs-mkt-tab'+(current===t[0]?' is-active':''),t[1]);button.type='button';button.onclick=function(){current=t[0];editing=null;paint();};tabs.appendChild(button);});
     var box=el('section','vs-mkt-panel'),bar=el('div','vs-mkt-panel__head'),labels=el('div');
-    labels.append(el('h2','',TABS.find(x=>x[0]===current)[1]),el('p','',String((store[current]||[]).length)+' רשומות · מתעדכן אוטומטית לפי תאריכי התחלה וסיום'));
+    var existingCount=current==='popups'||current==='banners' ? ((store.legacy||{})[current]||[]).length : current==='coupons' ? Number(((store.existingCoupons||{}).personal||{}).total||0)+Number(((store.existingCoupons||{}).creators||{}).total||0) : 0;
+    labels.append(el('h2','',TABS.find(x=>x[0]===current)[1]),el('p','',String((store[current]||[]).length+existingCount)+' רשומות בסה״כ · '+String((store[current]||[]).length)+' בניהול החדש, '+existingCount+' קיימות באתר'));
     bar.appendChild(labels);
     if(editable){var create=el('button','vs-mkt-primary','+ הוסף חדש');create.type='button';create.onclick=function(){editing={active:true};paint();};bar.appendChild(create);}
     box.appendChild(bar);
@@ -108,11 +187,20 @@
       box.appendChild(form);
     }
     var items=store[current]||[];
-    if(!items.length)box.appendChild(el('div','vs-mkt-empty','אין רשומות עדיין. אפשר להוסיף רשומה חדשה.'));
+    if(!items.length)box.appendChild(el('div','vs-mkt-empty','אין כרגע רשומות חדשות שנוצרו מתוך מסך השיווק. נתוני המערכת הקיימת מוצגים בהמשך.'));
     else {var list=el('div','vs-mkt-list');items.forEach(function(item){list.appendChild(row(item,current,editable,paint));});box.appendChild(list);}
-    if(current==='coupons')box.appendChild(el('p','vs-mkt-note','קופון של לקוחות מסוימים מחייב התחברות לחשבון המשויך למייל. שימוש נספר עם אישור התשלום.'));
+    if(current==='coupons'){
+      box.appendChild(el('p','vs-mkt-note','קופונים חדשים מנוהלים בחלק העליון. קופונים אישיים של לקוחות וקופונים של יוצרי תוכן מופיעים בנפרד בהמשך, ואינם ניתנים לשינוי מהמסך הזה.'));
+      existingCouponSections().forEach(function(section){box.appendChild(section);});
+    }
+    if(current==='popups'||current==='banners'){
+      var inventory=(store.legacy||{})[current]||[];
+      if(inventory.length)box.appendChild(boxLegacy(current,inventory,current==='popups'
+        ? 'פופ־אפים קיימים במנגנון הישן, המוצגים לפי מצב הסל, סוג המבקר וזמן ההצגה.'
+        : 'באנרים וסרטוני Hero קיימים בקוד האתר; חלקם מוצגים רק בקטגוריה או במכשיר המתאים.'));
+    }
     if(current==='campaigns')box.appendChild(el('p','vs-mkt-note','הכנסות משויכות ל-UTM Campaign של מבקר מזוהה, על בסיס הזמנות ששולמו ב-365 הימים האחרונים. ללא שיוך אמין ההכנסה לא תיחשב לקמפיין. הוצאות בפועל מוזנות ידנית.'));
-    if(current==='popups'||current==='banners')box.appendChild(el('p','vs-mkt-note','הזינו כתובת HTTPS או נתיב קובץ קיים באתר (למשל /assets/promo-videos/video.mp4). יש להעלות את הקובץ מראש לאחסון ציבורי.'));
+    if(current==='popups'||current==='banners')box.appendChild(el('p','vs-mkt-note','יצירת פרסום חדש אינה מחליפה אוטומטית את הפרסומים הקיימים שמוגדרים בקוד האתר.'));
     page.append(tabs,box);host.replaceChildren(page);
   }
   async function render(content,canEdit){host=content;editable=!!canEdit;host.replaceChildren(el('div','vs-mkt-loading','טוען נתוני שיווק…'));await refresh();}
