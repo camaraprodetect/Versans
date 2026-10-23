@@ -219,7 +219,7 @@
       return 'order-work';
     }
 
-    var match = /^\/admin\/(visitors|sales|income|expenses|order-work|anomalies|products|customers|reviews|creators|tasks|reports|employees)$/.exec(path);
+    var match = /^\/admin\/(visitors|sales|income|expenses|order-work|anomalies|products|marketing|customers|reviews|creators|tasks|reports|employees)$/.exec(path);
     return match ? match[1] : 'dashboard';
   }
 
