@@ -5,6 +5,7 @@
 })(typeof window !== 'undefined' ? window : (typeof globalThis !== 'undefined' ? globalThis : null), function () {
   'use strict';
 
+  var browserRules = null;
   var GLASSES_PAIR_PRICE = 249.90;
   var HATS_PAIR_PRICE = 239.90;
   var HATS_TRIPLE_PRICE = 299.90;
@@ -106,94 +107,46 @@
     var subtotalCents = units.reduce(function (sum, unit) { return sum + unit.priceCents; }, 0);
     var discountRows = [];
 
-    /* 1) Category bundle promotions always apply first. */
-    var glasses = sortedIndexes(units, function (unit) { return unit.isGlasses; });
-    var glassesPairs = Math.floor(glasses.length / 2);
-    var glassesDiscountCents = 0;
-    for (var gp = 0; gp < glassesPairs; gp += 1) {
-      glassesDiscountCents += distributeBundle(units, glasses.slice(gp * 2, gp * 2 + 2), toCents(GLASSES_PAIR_PRICE));
-    }
-    if (glassesDiscountCents > 0) {
-      discountRows.push({
-        type: 'glasses-bundle',
-        label: lang === 'he' ? 'מבצע משקפיים · 2 ב־249.90 ₪' : 'Sunglasses offer · 2 for ₪249.90',
-        amount: fromCents(glassesDiscountCents)
+    /* 1) Dynamic category promotions (the original offers are the initial defaults). */
+    var chosenRules=Array.isArray(options.bundleRules)?options.bundleRules:browserRules;
+    if (!Array.isArray(chosenRules)) chosenRules=[
+      {id:"glasses",kind:"fixed",category:"glasses",quantity:2,price:GLASSES_PAIR_PRICE},
+      {id:"hats3",kind:"fixed",category:"hats",quantity:3,price:HATS_TRIPLE_PRICE},
+      {id:"hats2",kind:"fixed",category:"hats",quantity:2,price:HATS_PAIR_PRICE},
+      {id:"jewelry",kind:"buy2get1",category:"jewelry"}
+    ];
+    var validRules = chosenRules.filter(function(rule){return rule && ['fixed','buy2get1'].indexOf(rule.kind)>=0;});
+    function matchesCategory(unit,category){return category==='hats'?unit.isHats:category==='glasses'?unit.isGlasses:unit.isBuy2Get1Eligible;}
+    var bundleDiscountCents=0, buy2Get1DiscountCents=0;
+    var hatTriples=0,hatsPairs=0,glassesPairs=0,buy2Get1Count=0;
+    var byCategory=['hats','glasses','jewelry'];
+    byCategory.forEach(function(category){
+      var used=Object.create(null);
+      // Higher quantities first, same-category offers cannot discount the same unit twice.
+      var rules=validRules.filter(function(r){return r.category===category;}).sort(function(a,b){return (Number(b.quantity)||3)-(Number(a.quantity)||3);});
+      rules.forEach(function(rule){
+        var qty=rule.kind==='buy2get1'?3:Math.max(2,Math.min(20,Math.floor(Number(rule.quantity)||2)));
+        var indexes=sortedIndexes(units,function(u){return matchesCategory(u,category) && !used[units.indexOf(u)];});
+        for(var cursor=0;cursor+qty<=indexes.length;cursor+=qty){
+          var group=indexes.slice(cursor,cursor+qty);
+          var original=group.reduce(function(sum,i){return sum+units[i].effectiveCents;},0);
+          var target=rule.kind==='buy2get1'?original-Math.min.apply(null,group.map(function(i){return units[i].effectiveCents;})):toCents(rule.price);
+          if(target>=original)continue;
+          var saving=distributeBundle(units,group,target);
+          group.forEach(function(i){used[i]=true;});
+          if(rule.kind==='buy2get1'){buy2Get1DiscountCents+=saving;buy2Get1Count++;}
+          else {bundleDiscountCents+=saving;if(category==='hats'){if(qty===3)hatTriples++;if(qty===2)hatsPairs++;}if(category==='glasses'&&qty===2)glassesPairs++;}
+          if(saving>0)discountRows.push({type:rule.kind==='buy2get1'?'buy-2-get-1':'quantity-bundle',label:rule.name||(rule.kind==='buy2get1'?'מבצע 2+1':qty+' פריטים במבצע'),amount:fromCents(saving)});
+        }
       });
-    }
-
-    var hats = sortedIndexes(units, function (unit) { return unit.isHats; });
-    var hatTriples = Math.floor(hats.length / 3);
-    var hatCursor = 0;
-    var hatsTripleDiscountCents = 0;
-    for (var ht = 0; ht < hatTriples; ht += 1) {
-      var tripleIndexes = hats.slice(hatCursor, hatCursor + 3);
-      tripleIndexes.forEach(function (index) { units[index].hatTripleApplied = true; });
-      hatsTripleDiscountCents += distributeBundle(units, tripleIndexes, toCents(HATS_TRIPLE_PRICE));
-      hatCursor += 3;
-    }
-    var hatsPairs = Math.floor((hats.length - hatCursor) / 2);
-    var hatsPairDiscountCents = 0;
-    for (var hp = 0; hp < hatsPairs; hp += 1) {
-      hatsPairDiscountCents += distributeBundle(units, hats.slice(hatCursor, hatCursor + 2), toCents(HATS_PAIR_PRICE));
-      hatCursor += 2;
-    }
-    var hatsDiscountCents = hatsTripleDiscountCents + hatsPairDiscountCents;
-    if (hatsDiscountCents > 0) {
-      var hatParts = [];
-      if (hatTriples > 0) hatParts.push(lang === 'he' ? '3 ב־299.90 ₪' : '3 for ₪299.90');
-      if (hatsPairs > 0) hatParts.push(lang === 'he' ? '2 ב־239.90 ₪' : '2 for ₪239.90');
-      discountRows.push({
-        type: 'hats-bundle',
-        label: (lang === 'he' ? 'מבצע כובעים · ' : 'Hats offer · ') + hatParts.join(' + '),
-        amount: fromCents(hatsDiscountCents)
-      });
-    }
-
-
-    /* 2) Buy 2 + get 1 free applies only to jewelry categories:
-       greeting jewelry, necklaces, bracelets, rings, photo jewelry and watches.
-       Hats, glasses and every other category never count toward a 2+1 group. */
-    var buy2Get1Indexes = units.map(function (_, index) { return index; }).filter(function (index) {
-      return units[index].isBuy2Get1Eligible;
-    }).sort(function (a, b) {
-      return units[b].priceCents - units[a].priceCents || a - b;
     });
-    var buy2Get1DiscountCents = 0;
-    var buy2Get1Count = 0;
-    var buy2Get1Details = [];
-    for (var si = 2; si < buy2Get1Indexes.length; si += 3) {
-      var discountedUnit = units[buy2Get1Indexes[si]];
-      var unitDiscount = discountedUnit.effectiveCents;
-      if (unitDiscount > 0) {
-        buy2Get1DiscountCents += unitDiscount;
-        buy2Get1Count += 1;
-        buy2Get1Details.push({
-          lineIndex: discountedUnit.lineIndex,
-          quantityIndex: discountedUnit.quantityIndex,
-          label: discountedUnit.label,
-          amount: fromCents(unitDiscount),
-          priceBefore: fromCents(discountedUnit.effectiveCents),
-          priceAfter: 0
-        });
-      }
-    }
-    if (buy2Get1DiscountCents > 0) {
-      discountRows.push({
-        type: 'buy-2-get-1',
-        label: lang === 'he' ? 'מבצע 2+1 על תכשיטים' : 'Buy 2 get 1 free on jewelry',
-        amount: fromCents(buy2Get1DiscountCents),
-        count: buy2Get1Count,
-        details: buy2Get1Details
-      });
-    }
-
-    var bundleDiscountCents = glassesDiscountCents + hatsDiscountCents;
-    var promotionDiscountCents = bundleDiscountCents + buy2Get1DiscountCents;
+    var promotionDiscountCents=bundleDiscountCents+buy2Get1DiscountCents;
 
     /* 3) Coupon is always applied after every other promotion. */
     var couponPercent = Math.max(0, Math.min(100, Number(options.couponPercent) || 0));
     var couponBaseCents = Math.max(0, subtotalCents - promotionDiscountCents);
-    var couponDiscountCents = couponPercent > 0 ? Math.round(couponBaseCents * couponPercent / 100) : 0;
+    var couponAmountCents=toCents(options.couponAmount||0);
+    var couponDiscountCents = Math.min(couponBaseCents, couponAmountCents>0 ? couponAmountCents : (couponPercent>0?Math.round(couponBaseCents * couponPercent / 100):0));
     var couponCode = couponDiscountCents > 0 ? String(options.couponCode || '').trim().toUpperCase() : '';
 
     var shippingCents = toCents(options.shipping || 0);
@@ -224,6 +177,7 @@
     HATS_PAIR_PRICE: HATS_PAIR_PRICE,
     HATS_TRIPLE_PRICE: HATS_TRIPLE_PRICE,
     BUY2_GET1_CATEGORIES: BUY2_GET1_CATEGORIES.slice(),
+    setBundleRules: function(rules){browserRules=Array.isArray(rules)?rules:null;},
     calculate: calculate
   };
 });

@@ -15,6 +15,8 @@ const orderAnomalies = require('./lib/admin-order-anomalies.js');
 const { createPaymentUrl, verifyPayment, priceOrder } = require('./api/_hyp.js');
 const { PRODUCTS, CATEGORIES } = require('./assets/products.js');
 const { createCatalogManager } = require('./lib/catalog-manager.js');
+const { createMarketingManager } = require('./lib/marketing-manager.js');
+const { createMarketingMedia } = require('./lib/marketing-media.js');
 const { createCreatorProgram } = require('./lib/creator-program.js');
 const ROUTES = require('./assets/routes.js');
 const SEO = require('./lib/seo.js');
@@ -74,7 +76,7 @@ const ADMIN_PUSH_DEVICE_TTL_MS = 365 * 24 * 60 * 60 * 1000;
 const ADMIN_PUSH_VAPID_PUBLIC_META_KEY = 'admin_push_vapid_public_v1';
 const ADMIN_PUSH_VAPID_PRIVATE_META_KEY = 'admin_push_vapid_private_jwk_v1';
 const ADMIN_PUSH_TIMEOUT_MS = 10 * 1000;
-const ADMIN_PAGES = new Set(['tasks', 'reports', 'expenses', 'income', '', 'dashboard', 'visitors', 'sales', 'orders', 'order-work', 'anomalies', 'products', 'customers', 'reviews', 'creators', 'employees']);
+const ADMIN_PAGES = new Set(['tasks', 'reports', 'expenses', 'income', '', 'dashboard', 'visitors', 'sales', 'orders', 'order-work', 'anomalies', 'products', 'customers', 'reviews', 'creators', 'employees', 'marketing']);
 const BODY_LIMIT = 48 * 1024 * 1024;
 const REVIEW_IMAGE_LIMIT = 2 * 1024 * 1024;
 const REVIEW_VIDEO_LIMIT = 20 * 1024 * 1024;
@@ -101,6 +103,8 @@ const VERSANS_BOT_MAX_BODY_CHARS = 32000;
 
 const database = createDatabase({ root: ROOT, sqlitePath: DB_PATH });
 const financeLedger = createFinanceLedger(database);
+const marketingManager=createMarketingManager(database);
+const marketingMedia=createMarketingMedia(database);
 const creatorProgram = createCreatorProgram(database);
 const { createCreatorVideos } = require('./lib/creator-videos.js');
 const creatorVideosStore = createCreatorVideos(database,creatorProgram);
@@ -334,9 +338,17 @@ function newDemoOrderRef() {
   return 'VS-DEMO-' + Date.now().toString(36).toUpperCase() + '-' + crypto.randomBytes(3).toString('hex').toUpperCase();
 }
 
+// Never silently charge a new promotion total while a customer has an older cart open.
+function requireCurrentCheckoutTotal(body,coupon,bundles){
+  if(body.expectedTotal===undefined||body.expectedTotal===null)return;
+  const expected=Number(body.expectedTotal);
+  if(!Number.isFinite(expected)||expected<0)throw Object.assign(new Error('invalid_order_total'),{status:400});
+  const actual=priceOrder(body.items,body.lang==='en'?'en':'he',coupon,bundles).total;
+  if(Math.abs(expected-actual)>0.011)throw Object.assign(new Error('price_changed'),{status:409});
+}
 function createDemoPaymentResult(body, options = {}) {
   const lang = body && body.lang === 'en' ? 'en' : 'he';
-  const priced = priceOrder(body && Array.isArray(body.items) ? body.items : [], lang, options.coupon || null);
+  const priced = priceOrder(body && Array.isArray(body.items) ? body.items : [], lang, options.coupon || null, options.bundleRules || null);
   const orderRef = newDemoOrderRef();
   const params = new URLSearchParams({
     Order: orderRef,
@@ -5226,6 +5238,47 @@ async function adminApi(req, res, pathname, parsed) {
     json(res, 403, { ok: false, error: 'permission_denied' });
     return true;
   }
+  if(pathname==='/api/admin/marketing/media'&&req.method==='POST'){
+    if(!sameOriginAllowed(req)){json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
+    const data=await readJsonBody(req,28*1024*1024);
+    const result=await marketingMedia.upload(String(data.mime||''),data.base64);
+    json(res,201,{ok:true,...result});return true;
+  }
+  if(pathname==='/api/admin/marketing'){
+    if(req.method==='GET'){
+      const info=await marketingManager.dashboard();
+      let attribution={};
+      try{
+        const since=Date.now()-365*86400000;
+        const pg=database.backend==='postgres';
+        const visitorSql=`SELECT visitor_id,utm_campaign FROM visitor_presence WHERE utm_campaign IS NOT NULL AND first_seen>=${pg?'$1':'?'} ORDER BY first_seen DESC LIMIT 20000`;
+        const orderSql=`SELECT guest_visitor_id,amount_agorot,order_ref FROM orders WHERE status='paid' AND order_ref NOT LIKE 'VS-DEMO-%' AND paid_at>=${pg?'$1':'?'} ORDER BY paid_at DESC LIMIT 20000`;
+        const visitors=pg?(await database._query(visitorSql,[since])).rows:database.db.prepare(visitorSql).all(since);
+        const orders=pg?(await database._query(orderSql,[since])).rows:database.db.prepare(orderSql).all(since);
+        const campaignByVisitor=new Map(visitors.map(v=>[String(v.visitor_id),String(v.utm_campaign||'')]));
+        for(const o of orders){const utm=campaignByVisitor.get(String(o.guest_visitor_id||''));if(!utm)continue;const entry=attribution[utm]||{revenue:0,orders:0};entry.revenue+=Number(o.amount_agorot||0)/100;entry.orders++;attribution[utm]=entry;}
+      }catch(error){console.error('Marketing campaign attribution:',error.message);}
+      json(res,200,{ok:true,...info,attribution});return true;
+    }
+    if(req.method==='POST'){
+      if(!sameOriginAllowed(req)){json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
+      const body=await readJsonBody(req,16384);
+      if(!['coupons','bundles','popups','banners','campaigns'].includes(body.section) || !['create','update','delete'].includes(body.action) || !body.item || typeof body.item!=='object'){
+        json(res,400,{ok:false,error:'invalid_request'});return true;
+      }
+      if(body.section==='coupons'&&body.action!=='delete'){
+        const code=String(body.item.code||'').trim().toUpperCase();
+        const creator=await creatorProgram.getActiveCode(code);
+        const pg=database.backend==='postgres';
+        const q=pg?await database._query('SELECT 1 FROM coupons WHERE UPPER(code)=$1 LIMIT 1',[code]):database.db.prepare('SELECT 1 FROM coupons WHERE UPPER(code)=? LIMIT 1').get(code);
+        if(creator || (pg?q.rows.length:q)){json(res,409,{ok:false,error:'coupon_code_taken'});return true;}
+      }
+      const data=await marketingManager.edit(body.section,body.action,body.item);
+      await recordDashboardActivity(admin,'marketing',body.action,body.section+' · '+String(body.item.code||body.item.name||body.item.title||body.item.id||''));
+      json(res,200,{ok:true,items:data[body.section]});return true;
+    }
+    json(res,405,{ok:false,error:'method_not_allowed'});return true;
+  }
   // Employee role and capability catalog: every edit is rechecked against the database.
   if (pathname === '/api/admin/employees/me' && req.method === 'GET') {
     json(res,200,{ok:true,id:Number(admin.id),name:admin.name,email:admin.email,role:admin.role,
@@ -5754,6 +5807,7 @@ async function adminApi(req, res, pathname, parsed) {
     if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'}); return true; }
     try {
       const body=await readJsonBody(req);
+      if((await marketingManager.read()).coupons.some(x=>x.code===normalizeCouponCode(body.code))) {json(res,409,{ok:false,error:'coupon_code_taken'});return true;}
       const creator=await creatorProgram.grantByEmail(body.email,body.code,body.discountPercent,body.commissionPercent,body.tiktokUsername,body.viewRatePer1000Agorot);
       await recordDashboardActivity(admin,'creators','הגדרת יוצר תוכן',creator.name||body.email);
       json(res,200,{ok:true,creator});
@@ -8959,6 +9013,18 @@ const server = http.createServer(async (req, res) => {
     if (await reviewsApi(req, res, pathname)) return;
     if (await versansBotApi(req, res, pathname)) return;
 
+    if(pathname.startsWith('/api/marketing/media/')&&req.method==='GET'){
+      const id=pathname.slice('/api/marketing/media/'.length);
+      const record=await marketingMedia.get(id);
+      if(!record){json(res,404,{ok:false,error:'media_not_found'});return;}
+      res.writeHead(200,{'Content-Type':record.mime,'Content-Length':record.buffer.length,'X-Content-Type-Options':'nosniff','Cache-Control':'public,max-age=3600','Content-Security-Policy':"default-src 'none'; sandbox"});
+      res.end(record.buffer);return;
+    }
+    if(pathname==='/api/marketing/public'&&req.method==='GET'){
+      const data=await marketingManager.publicConfig();
+      json(res,200,{ok:true,...data},{'Cache-Control':'no-store'});return;
+    }
+
     if (pathname === '/api/coupons/validate' && req.method === 'POST') {
       if (!sameOriginAllowed(req)) {
         json(res, 403, { ok: false, error: 'origin_not_allowed' });
@@ -8968,6 +9034,18 @@ const server = http.createServer(async (req, res) => {
       const body = await readJsonBody(req);
       const code = normalizeCouponCode(body && body.code);
       if (!code) { json(res,400,{ok:false,error:'invalid_coupon'}); return; }
+      const managed=await marketingManager.getCoupon(code,currentUser);
+      if(managed){
+        const rules=(await marketingManager.publicConfig()).bundles;
+        const priced=priceOrder(Array.isArray(body.items)?body.items:[],body.lang==='en'?'en':'he',{
+          code:managed.code,percent:managed.type==='percent'?managed.value:0,type:managed.type,value:managed.value
+        },rules);
+        json(res,200,{ok:true,coupon:{code:managed.code,percent:managed.type==='percent'?managed.value:0,kind:'managed',type:managed.type,amount:managed.type==='fixed'?managed.value:0,expiresAt:managed.endsAt,discount:priced.couponDiscount,total:priced.total}});return;
+      }
+      // Expired/disabled/fully-used managed codes must not fall through to personal coupons.
+      if((await marketingManager.read()).coupons.some(x=>x.code===code)){
+        json(res,400,{ok:false,error:'invalid_coupon'});return;
+      }
       const creatorCode = await creatorProgram.getActiveCode(code);
       if (creatorCode) {
         const priced=priceOrder(Array.isArray(body.items)?body.items:[],body.lang==='en'?'en':'he',{code:creatorCode.code,percent:Number(creatorCode.discount_percent)});
@@ -9007,10 +9085,15 @@ const server = http.createServer(async (req, res) => {
       const mode = checkoutMode();
       const requestedCouponCode = normalizeCouponCode(body && body.couponCode);
       const creatorCoupon = requestedCouponCode ? await creatorProgram.getActiveCode(requestedCouponCode) : null;
+      const managedCoupon = requestedCouponCode&&!creatorCoupon?await marketingManager.getCoupon(requestedCouponCode,currentUser):null;
+      const hasManagedCode=requestedCouponCode&&(await marketingManager.read()).coupons.some(x=>x.code===requestedCouponCode);
+      if(hasManagedCode&&!managedCoupon){json(res,400,{ok:false,error:'invalid_coupon'});return;}
+      const activeBundles=(await marketingManager.publicConfig()).bundles;
+      const managedPaymentCoupon=managedCoupon?{code:managedCoupon.code,percent:managedCoupon.type==='percent'?managedCoupon.value:0,type:managedCoupon.type,value:managedCoupon.value}:null;
 
       // Buying does not require an account. Personal welcome coupons still belong
       // to a specific account, so only coupon redemption requires authentication.
-      if (requestedCouponCode && !creatorCoupon && !currentUser) {
+      if (requestedCouponCode && !creatorCoupon && !managedCoupon && !currentUser) {
         json(res, 401, { ok: false, error: 'login_required' });
         return;
       }
@@ -9027,10 +9110,14 @@ const server = http.createServer(async (req, res) => {
       // real charge. A slow/locked database previously left the checkout button
       // waiting forever even though demo mode itself did not need the write.
       if (mode === 'demo') {
-        const demoCoupon = creatorCoupon
-          ? {code:creatorCoupon.code,percent:Number(creatorCoupon.discount_percent)}
-          : (requestedCouponCode ? { code: requestedCouponCode, percent: WELCOME_COUPON_PERCENT } : null);
-        const result = createDemoPaymentResult(paymentBody, { coupon: demoCoupon });
+        let demoWelcomeCoupon=null;
+        if(requestedCouponCode&&!creatorCoupon&&!managedCoupon){
+          demoWelcomeCoupon=await database.getCouponForUserByCode(currentUser.id,requestedCouponCode);
+          if(couponStatus(demoWelcomeCoupon)!=='ok'){json(res,400,{ok:false,error:'invalid_coupon'});return;}
+        }
+        const demoCoupon=creatorCoupon?{code:creatorCoupon.code,percent:Number(creatorCoupon.discount_percent)}:(managedPaymentCoupon|| (demoWelcomeCoupon?{code:demoWelcomeCoupon.code,percent:demoWelcomeCoupon.discount_percent}:null));
+        requireCurrentCheckoutTotal(paymentBody,demoCoupon,activeBundles);
+        const result = createDemoPaymentResult(paymentBody, { coupon: demoCoupon,bundleRules:activeBundles });
         const amountAgorot = amountToAgorot(result.total);
         if (amountAgorot === null) throw new Error('invalid_order_total');
         const now = Date.now();
@@ -9077,6 +9164,7 @@ const server = http.createServer(async (req, res) => {
             updatedAt: demoOrder.updated_at
           });
           persistedDemoOrder = await database.getOrderByRef(demoOrder.order_ref);
+          if(managedCoupon&&persistedDemoOrder)await database.transaction(async tx=>marketingManager.redeem(tx,managedCoupon.code,demoOrder.order_ref,now));
         } catch (dbErr) {
           console.error(`Demo order database save failed for ${demoOrder.order_ref}:`, dbErr);
         }
@@ -9132,7 +9220,7 @@ const server = http.createServer(async (req, res) => {
       }
 
       let coupon = null;
-      if (requestedCouponCode && !creatorCoupon) {
+      if (requestedCouponCode && !creatorCoupon && !managedCoupon) {
         coupon = await database.getCouponForUserByCode(currentUser.id, requestedCouponCode);
         const status = couponStatus(coupon);
         if (status !== 'ok') { json(res,400,{ok:false,error:status}); return; }
@@ -9140,8 +9228,10 @@ const server = http.createServer(async (req, res) => {
       const paymentOptions = {
         coupon: creatorCoupon
           ? { code:creatorCoupon.code,percent:Number(creatorCoupon.discount_percent) }
-          : (coupon ? { code: coupon.code, percent: Number(coupon.discount_percent || WELCOME_COUPON_PERCENT) } : null)
+          : (managedPaymentCoupon || (coupon ? { code: coupon.code, percent: Number(coupon.discount_percent || WELCOME_COUPON_PERCENT) } : null)),
+        bundleRules:activeBundles
       };
+      requireCurrentCheckoutTotal(paymentBody,paymentOptions.coupon,activeBundles);
       const result = await createPaymentUrl(paymentBody, paymentOptions);
       const customerEmail = customer.email;
       const customerPhone = customer.phone || null;
@@ -9151,7 +9241,9 @@ const server = http.createServer(async (req, res) => {
       const linkedUserId = currentUser ? Number(currentUser.id) : null;
 
       const now = Date.now();
-      await database.insertPendingOrder({
+      await database.transaction(async tx=>{
+        if(managedCoupon)await marketingManager.reserve(tx,managedCoupon,String(result.order||''),now);
+        await tx.insertPendingOrder({
         orderRef: String(result.order || ''),
         userId: linkedUserId,
         customerEmail: validEmail(customerEmail) ? customerEmail : null,
@@ -9163,10 +9255,11 @@ const server = http.createServer(async (req, res) => {
         currency: String(result.currency || 'ILS'),
         itemsJson: JSON.stringify(Array.isArray(body.items) ? body.items : []),
         couponId: coupon ? Number(coupon.id) : null,
-        couponCode: creatorCoupon ? String(creatorCoupon.code) : (coupon ? String(coupon.code) : null),
+        couponCode: creatorCoupon ? String(creatorCoupon.code) : (managedCoupon ? String(managedCoupon.code) : (coupon ? String(coupon.code) : null)),
         couponDiscountAgorot: amountToAgorot(result.couponDiscount || 0) || 0,
         createdAt: now,
         updatedAt: now
+        });
       });
       json(res, 200, { ...result, guest: guestIdentity ? { name: guestIdentity.username, isVerifiedCustomer: false } : null }, guestIdentity && guestIdentity.setCookie ? { 'Set-Cookie': guestIdentity.setCookie } : {});
       return;
@@ -9253,6 +9346,7 @@ const server = http.createServer(async (req, res) => {
                 const redeemed = await tx.markCouponUsed(order.coupon_id, order.user_id, order.order_ref, now);
                 if (!redeemed) console.error(`Coupon redemption warning for order ${order.order_ref}`);
               }
+              if(order.coupon_code)await marketingManager.redeem(tx,String(order.coupon_code),order.order_ref,now);
               if (order.user_id) {
                 await tx.markUserVerified(now, order.user_id);
                 verifiedCustomer = true;

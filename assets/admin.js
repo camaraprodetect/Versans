@@ -155,6 +155,7 @@
     'order-work': ['טיפול בהזמנות', 'טיפול, Tracking, Google Sheets ופרטי הזמנה במקום אחד'],
     anomalies: ['הזמנות חריגות', 'זיהוי הזמנות כפולות, סכומים לא סבירים וניסיונות תשלום חוזרים'],
     products: ['ניהול מוצרים', 'הוספה, עריכה, מחיקה וסנכרון קטלוג עם Google Sheets'],
+    marketing: ['שיווק ומבצעים','קופונים, מבצעי כמות, פופ־אפים, באנרים וקמפיינים'],
     creators: ['יוצרי תוכן', 'ניהול הרשאות, קודי יוצרים ומכירות'],
     customers: ['לקוחות', 'משתמשים רשומים, רכישות והוצאות מצטברות'],
     reviews: ['ביקורות', 'דירוגים, מוצרים מובילים וביקורות אחרונות'],
@@ -4748,6 +4749,7 @@
       else if (state.page === 'anomalies') await window.VersansAnomalies.render(content);
       else if (state.page === 'products') await renderProductsPage();
       else if (state.page === 'creators') await renderCreatorsPage();
+      else if (state.page === 'marketing') await window.VersansAdminMarketing.render(content,hasCapability('marketing.edit'));
       else if (state.page === 'customers') await renderCustomersPage();
       else if (state.page === 'reviews') await renderReviewsPage();
       else if (state.page === 'tasks') await window.VersansAdminTools.renderTasks(content);

@@ -124,7 +124,7 @@
   }
   function present(key,source) {
     var p=offers[key];
-    if (!p || modal || document.visibilityState==='hidden') return false;
+    if (!p || modal || (window.__versansManagedPopupActive || window.__versansLegacyPromosDisabled) || document.visibilityState==='hidden') return false;
     restoreFocus=document.activeElement;
     var backdrop=el('div','vs-video-promo-backdrop');
     backdrop.id='versans-video-promo';

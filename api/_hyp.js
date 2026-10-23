@@ -62,7 +62,7 @@ function localText(value, lang) {
   return value[lang] || value.he || value.en || '';
 }
 
-function priceOrder(items, lang, coupon = null) {
+function priceOrder(items, lang, coupon = null, bundleRules = null) {
   if (!Array.isArray(items) || !items.length) {
     const err = new Error('Cart is empty'); err.status = 400; throw err;
   }
@@ -270,6 +270,8 @@ function priceOrder(items, lang, coupon = null) {
   const priced = PRICING.calculate(lines, {
     lang,
     couponPercent,
+    couponAmount: coupon && coupon.type === 'fixed' ? Number(coupon.value) : 0,
+    bundleRules,
     couponCode: coupon && coupon.code ? clean(coupon.code, 40).toUpperCase() : '',
     shipping
   });
@@ -310,7 +312,7 @@ async function createPaymentUrl(body, options = {}) {
   const { Masof, KEY, PassP } = credentials();
   const lang = body.lang === 'en' ? 'en' : 'he';
   const customer = body.customer || {};
-  const order = priceOrder(body.items, lang, options.coupon || null);
+  const order = priceOrder(body.items, lang, options.coupon || null, options.bundleRules || null);
   const orderId = newOrderId();
   const hyp = STORE_CONFIG.hyp;
 
