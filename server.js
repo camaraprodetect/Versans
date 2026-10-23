@@ -5216,6 +5216,8 @@ async function packingOrderSummary(order, focusShipmentId = null) {
   };
 }
 
+const { createAdminCustomerProfile } = require('./lib/admin-customer-profile');
+const adminCustomerProfile = createAdminCustomerProfile(database);
 const adminTools = createAdminTools(database, catalogManager, financeLedger);
 const adminReporting = createAdminReporting(database, adminTools, ADMIN_EMAIL);
 async function adminApi(req, res, pathname, parsed) {
@@ -7657,6 +7659,22 @@ async function adminApi(req, res, pathname, parsed) {
     const { limit, offset } = adminPagination(parsed, 50);
     const products = sales.products.slice(offset, offset + limit).map((product) => ({ ...product, purchaseCount: Number(product.paidOrderCount || 0) }));
     json(res, 200, { ok: true, range, count: sales.products.length, limit, offset, hasMore: offset + products.length < sales.products.length, products });
+    return true;
+  }
+
+  const customerProfileRoute = /^\/api\/admin\/customers\/(\d+)\/profile$/.exec(pathname);
+  if (customerProfileRoute) {
+    if (req.method !== 'GET') { json(res, 405, { ok:false, error:'method_not_allowed' }); return true; }
+    const userId = Number(customerProfileRoute[1]);
+    if (!Number.isSafeInteger(userId) || userId < 1) { json(res,400,{ok:false,error:'invalid_customer_id'});return true; }
+    const { offset, limit } = adminPagination(parsed, 30);
+    const result = await adminCustomerProfile.profile(userId, {
+      orderOffset:offset, orderLimit:limit,
+      seeOrders:hasAdminPermission(admin,'orders.view'),
+      seeVisits:hasAdminPermission(admin,'visitors.view')
+    });
+    if (!result) { json(res,404,{ok:false,error:'customer_not_found'});return true; }
+    json(res,200,{ok:true,...result});
     return true;
   }
 

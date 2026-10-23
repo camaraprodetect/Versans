@@ -1,0 +1,32 @@
+/* Customer CRM profile — scoped to avoid changes elsewhere in Admin */
+.vs-crm-header{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;background:var(--admin-card,#fff);border:1px solid var(--admin-line,#dce3e8);padding:20px;border-radius:20px;margin-bottom:18px}
+.vs-crm-header h2{font-size:1.5rem;line-height:1.35;margin:3px 0 6px;color:var(--admin-text,#172333)}
+.vs-crm-header p{margin:0;overflow-wrap:anywhere;color:var(--admin-muted,#67768a)}
+.vs-crm-header small{color:var(--admin-muted,#67768a)}
+.vs-crm-badges{display:flex;flex-wrap:wrap;gap:8px}
+.vs-crm-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:18px}
+.vs-crm-metric{background:var(--admin-card,#fff);border:1px solid var(--admin-line,#dce3e8);border-radius:16px;padding:16px;min-width:0}
+.vs-crm-metric small{display:block;color:var(--admin-muted,#67768a);margin-bottom:7px}
+.vs-crm-metric strong{display:block;font-size:1.12rem;overflow-wrap:anywhere}
+.vs-crm-section{min-width:0;background:var(--admin-card,#fff);border:1px solid var(--admin-line,#dce3e8);border-radius:18px;padding:20px;margin-bottom:18px}
+.vs-crm-section h2{font-size:1.17rem;margin:0 0 8px}
+.vs-crm-subtitle{color:var(--admin-muted,#67768a);font-size:.88rem;margin:0 0 17px}
+.vs-crm-info-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.vs-crm-info-row{background:rgba(118,142,160,.065);padding:12px;border-radius:12px;min-width:0;overflow-wrap:anywhere}
+.vs-crm-info-row span{display:block;font-size:.78rem;color:var(--admin-muted,#67768a);margin-bottom:5px}
+.vs-crm-info-row strong{font-size:.91rem}
+.vs-crm-two-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.vs-crm-list-item{padding:11px 0;border-top:1px solid var(--admin-line,#e6ebf0);overflow-wrap:anywhere}
+.vs-crm-list-item strong{display:block;font-size:.9rem;margin-bottom:4px}
+.vs-crm-list-item small{color:var(--admin-muted,#67768a)}
+.vs-crm-list-item p{margin:7px 0 0;font-size:.88rem;white-space:pre-wrap}
+.vs-crm-timeline{max-height:560px;overflow:auto;display:grid;gap:10px}
+.vs-crm-event{border-right:3px solid #9eabb6;background:rgba(120,140,155,.06);border-radius:9px;padding:12px}
+.vs-crm-event-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.vs-crm-event-head time,.vs-crm-event-meta{font-size:.82rem;color:var(--admin-muted,#67768a);overflow-wrap:anywhere}
+.vs-crm-event-meta{margin-top:5px}
+.vs-crm-notice,.vs-crm-empty{color:var(--admin-muted,#67768a);font-size:.91rem}
+.vs-crm-section .admin-table-card{margin:12px 0 0;box-shadow:none}
+.vs-crm-section .admin-table-wrap{max-width:100%;overflow-x:auto}
+@media(max-width:860px){.vs-crm-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.vs-crm-info-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.vs-crm-two-columns{grid-template-columns:1fr}}
+@media(max-width:540px){.vs-crm-header,.vs-crm-section{padding:14px}.vs-crm-metrics{gap:8px}.vs-crm-metric{padding:12px}.vs-crm-metric strong{font-size:.96rem}.vs-crm-info-grid{grid-template-columns:1fr}.vs-crm-header h2{font-size:1.3rem}}

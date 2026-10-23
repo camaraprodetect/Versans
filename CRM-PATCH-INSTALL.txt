@@ -1,0 +1,21 @@
+VerSans — Customer CRM profile PATCH — 2026-10-23
+
+Install on top of the latest VerSans Admin build, including the previous Marketing patches.
+Copy the files from this archive to the same relative paths in the project, then deploy.
+No database files or images are included. No migration or data reset is required.
+
+New capability:
+- Admin > Customers > "פרופיל לקוח" on a registered user.
+- Direct navigation: /admin/customers?customer=<userId>
+- Account details and marketing-consent status.
+- All linked orders with pagination; paid/pending/failed, including guest purchases matched by email (explicitly labeled).
+- Coupon history, recorded reviews, cancellation/return requests, and recent recorded activity.
+- Visits and page views are visible only when the viewer also has visitors.view.
+- Order history is visible only when the viewer also has orders.view.
+- Staff users still need customers.view to open the profile at all.
+
+Notes:
+- Historical site actions that were never tracked cannot be reconstructed.
+- Recent activity and visits are capped to avoid slow database queries; orders are paginated so older orders remain accessible.
+- Changes are read-only. No customer record, order, coupon, or marketing entry is altered.
+- Browser automation could not run in this environment. Focused database and authorization tests passed.

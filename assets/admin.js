@@ -4470,7 +4470,122 @@
     revoke.addEventListener('click',function(){updateRole('customer')});
     form.append(email,grant,revoke);section.append(form,status);return section;
   }
+  function crmTextRow(label, value) {
+    var entry=make('div','vs-crm-info-row');
+    entry.append(make('span','',label),make('strong','',text(value)));
+    return entry;
+  }
+  function crmSection(title, subtitle) {
+    var section=make('section','vs-crm-section');
+    section.appendChild(make('h2','',title));
+    if(subtitle)section.appendChild(make('p','vs-crm-subtitle',subtitle));
+    return section;
+  }
+  function crmLinkOrder(ref) {
+    var button=make('button','admin-small-button',String(ref||''));
+    button.type='button';
+    if(hasCapability('orders.view'))button.addEventListener('click',function(){openOrderDetailsByRef(ref)});
+    else button.disabled=true;
+    return button;
+  }
+  function crmActivityTitle(a) {
+    var titles={registration:'נפתח חשבון',login:'התחברות מתועדת',coupon_created:'התקבל קופון',coupon_used:'מומש קופון',
+      review:'נכתבה ביקורת',request:'נשלחה בקשת ביטול / החזרה',page_view:'נצפה עמוד באתר',paid_order:'הזמנה שולמה',order:'נוצרה הזמנה'};
+    return titles[a.type]||'פעילות';
+  }
+  async function renderCustomerProfile(userId) {
+    var offset=state.customerProfileOffset||0;
+    var data=await api('/api/admin/customers/'+encodeURIComponent(userId)+'/profile?limit=30&offset='+offset);
+    var c=data.customer||{}, p=data.permissions||{}, s=data.summary||{};
+    setPageMeta('פרופיל לקוח',text(c.name||c.email)+' · CRM');
+    var frag=document.createDocumentFragment();
+    var header=make('section','vs-crm-header');
+    var back=make('button','admin-small-button','← חזרה לכל הלקוחות');back.type='button';
+    back.addEventListener('click',function(){state.customerProfileOffset=0;var url=new URL(window.location.href);url.searchParams.delete('customer');
+      window.history.pushState({},'',url.pathname+url.search);renderCurrentPage();});
+    var titles=make('div');titles.append(make('small','','פרופיל לקוח · #'+c.id),make('h2','',text(c.name||c.email)),
+      make('p','',text(c.email)+' · '+text(c.phone,'ללא מספר טלפון')));
+    header.append(back,titles);
+    var flags=make('div','vs-crm-badges');
+    flags.append(c.blocked?badge('חסום','failed'):badge('חשבון פעיל','verified'),
+      c.verified?badge('מאומת','verified'):badge('לא מאומת','neutral'));
+    header.appendChild(flags);frag.appendChild(header);
+    var overview=make('div','vs-crm-metrics');
+    var metrics=[
+      ['נרשם',dateOnly(c.registeredAt)],
+      ['הזמנות ששולמו',p.orders?numberFmt(s.paidOrderCount):'דורש הרשאת הזמנות'],
+      ['סה״כ רכישות',p.orders?moneyAgorot(s.paidSpendAgorot):'מוגבל בהרשאות'],
+      ['רכישה אחרונה',p.orders?dateTime(s.lastPaidAt):'מוגבל בהרשאות'],
+      ['קופונים',numberFmt(s.couponCount)],['ביקורות',numberFmt(s.reviewCount)]
+    ];
+    metrics.forEach(function(m){var card=make('div','vs-crm-metric');card.append(make('small','',m[0]),make('strong','',m[1]));overview.appendChild(card);});
+    frag.appendChild(overview);
+    var info=crmSection('פרטי חשבון והרשמה');
+    var infoRows=make('div','vs-crm-info-grid');
+    [['שם',c.name],['כתובת מייל',c.email],['טלפון',c.phone],['תאריך הרשמה',dateTime(c.registeredAt)],
+      ['דיוור במייל',c.marketing&&c.marketing.email?'מאושר':'לא מאושר'],['דיוור SMS',c.marketing&&c.marketing.sms?'מאושר':'לא מאושר'],
+      ['דיוור WhatsApp',c.marketing&&c.marketing.whatsapp?'מאושר':'לא מאושר'],['תפקיד במערכת',c.role],
+      ['סטטוס אימות',c.verified?'מאומת':'לא מאומת']].forEach(function(pair){infoRows.appendChild(crmTextRow(pair[0],pair[1]));});
+    if(c.blocked)infoRows.appendChild(crmTextRow('סיבת חסימה',c.blockedReason));
+    info.appendChild(infoRows);frag.appendChild(info);
+    var ordersSection=crmSection('כל ההזמנות','כולל הזמנות בתשלום, ממתינות ונכשלות. הזמנות אורח המזוהות לפי אותו מייל מסומנות בנפרד.');
+    if(!p.orders)ordersSection.appendChild(make('p','vs-crm-empty','הצגת היסטוריית הזמנות דורשת הרשאת צפייה בהזמנות.'));
+    else {
+      var orders=(data.orders&&data.orders.items)||[];
+      ordersSection.appendChild(renderTable({title:'היסטוריית הזמנות',
+        subtitle:numberFmt(data.orders.count)+' הזמנות · מעבר להזמנה בלחיצה על מספרה',
+        rows:orders,emptyText:'אין הזמנות מקושרות לחשבון הזה.',columns:[
+          {label:'הזמנה',render:function(o){return crmLinkOrder(o.orderRef)}},
+          {label:'תאריך',render:function(o){return dateTime(o.paidAt||o.createdAt)}},
+          {label:'סטטוס',render:function(o){return o.status==='paid'?badge('שולמה','verified'):o.status==='pending'?badge('ממתינה','neutral'):badge('נכשלה','failed')}},
+          {label:'סכום',render:function(o){return moneyAgorot(o.amountAgorot)}},
+          {label:'מוצרים',render:function(o){return (o.items||[]).map(function(x){return x.title+(x.quantity>1?' ×'+x.quantity:'')}).join(' · ')||'פרטי מוצר לא זמינים'}},
+          {label:'שיוך',render:function(o){return o.linkType==='account'?'חשבון רשום':'הזמנת אורח לפי מייל'}}
+        ]}));
+      ordersSection.appendChild(renderPagination({count:data.orders.count,limit:data.orders.limit,offset:data.orders.offset,
+        onChange:function(next){state.customerProfileOffset=next;renderCurrentPage();}}));
+    }
+    frag.appendChild(ordersSection);
+    var mid=make('div','vs-crm-two-columns');
+    var couponsSection=crmSection('קופונים','קופונים אישיים שנרשמו לחשבון');
+    var couponItems=(data.coupons||[]);
+    if(!couponItems.length)couponsSection.appendChild(make('p','vs-crm-empty','אין קופונים אישיים מתועדים.'));
+    else couponItems.forEach(function(coupon){var item=make('div','vs-crm-list-item');
+      var used=!!coupon.usedAt,expired=!used&&coupon.expiresAt&&coupon.expiresAt<Date.now();
+      item.append(make('strong','',coupon.code+' · '+coupon.percent+'%'),
+        make('small','',used?'מומש '+dateTime(coupon.usedAt):!coupon.active?'לא פעיל':expired?'פג תוקף':'פעיל עד '+dateTime(coupon.expiresAt)));
+      couponsSection.appendChild(item);});
+    mid.appendChild(couponsSection);
+    var reviewsSection=crmSection('ביקורות ובקשות','ביקורות שפורסמו או נשמרו, ובקשות שירות מהחשבון');
+    (data.reviews||[]).forEach(function(r){var item=make('div','vs-crm-list-item');
+      item.append(make('strong','',numberFmt(r.rating)+' ★ · '+text(r.product,'ביקורת מוצר')),make('small','',dateTime(r.createdAt)+' · '+text(r.status)));
+      if(r.body)item.appendChild(make('p','',r.body));reviewsSection.appendChild(item);});
+    (data.requests||[]).forEach(function(r){var item=make('div','vs-crm-list-item');
+      item.append(make('strong','',(r.type==='return'?'בקשת החזרה':'בקשת ביטול')+' · '+text(r.orderRef)),make('small','',dateTime(r.createdAt)+' · '+text(r.status)));reviewsSection.appendChild(item);});
+    if(!(data.reviews||[]).length&&!(data.requests||[]).length)reviewsSection.appendChild(make('p','vs-crm-empty','אין ביקורות או בקשות שירות מתועדות.'));
+    mid.appendChild(reviewsSection);frag.appendChild(mid);
+    var activity=crmSection('פעילות אחרונה','אירועים שנשמרו במערכת בלבד; פעולות שלא תועדו בעבר לא יופיעו. ההצגה מוגבלת לאירועים האחרונים.');
+    if(!p.visits)activity.appendChild(make('p','vs-crm-notice','צפיות בעמודים ומקורות תנועה זמינים רק עם הרשאת מבקרים.'));
+    var eventList=make('div','vs-crm-timeline');
+    (data.activity||[]).forEach(function(a){var item=make('div','vs-crm-event');
+      var heading=make('div','vs-crm-event-head');heading.append(make('strong','',crmActivityTitle(a)),make('time','',dateTime(a.at)));item.appendChild(heading);
+      if(a.orderRef){var orderRow=make('div','vs-crm-event-meta');orderRow.appendChild(crmLinkOrder(a.orderRef));item.appendChild(orderRow);}
+      else if(a.label)item.appendChild(make('div','vs-crm-event-meta',a.label));
+      eventList.appendChild(item);});
+    if(!(data.activity||[]).length)eventList.appendChild(make('p','vs-crm-empty','אין פעילות מתועדת.'));
+    activity.appendChild(eventList);frag.appendChild(activity);
+    if(p.visits){var visits=crmSection('ביקורים מקושרים','מבקרים שזוהו כמשויכים לחשבון הזה בלבד.');
+      (data.visits||[]).forEach(function(v){var item=make('div','vs-crm-list-item');item.append(make('strong','',text(v.source,'מקור לא ידוע')),
+        make('small','',numberFmt(v.visitCount)+' ביקורים · '+numberFmt(v.pageViews)+' צפיות · ביקור אחרון '+dateTime(v.lastSeenAt)));visits.appendChild(item);});
+      if(!(data.visits||[]).length)visits.appendChild(make('p','vs-crm-empty','אין ביקורים משויכים לחשבון.'));
+      frag.appendChild(visits);
+    }
+    content.replaceChildren(frag);
+  }
+
   async function renderCustomersPage() {
+    var customerId=Number(new URLSearchParams(window.location.search).get('customer'));
+    if(Number.isSafeInteger(customerId)&&customerId>0)return renderCustomerProfile(customerId);
     var access=await api('/api/admin/access/me').catch(function(){return {isOwner:false};});
     var isOwner=access.isOwner===true;
     var canEditCustomers=hasCapability('customers.edit');
@@ -4530,6 +4645,10 @@
               showToast(error && error.code === 'cannot_block_self' ? 'אי אפשר לחסום את חשבון האדמין שמחובר כרגע' : 'לא ניתן לעדכן את הגישה למשתמש');
             }
           });
+          var profileButton=make('button','admin-small-button vs-crm-open','פרופיל לקוח');profileButton.type='button';
+          profileButton.addEventListener('click',function(){state.customerProfileOffset=0;var url=new URL(window.location.href);
+            url.searchParams.set('customer',row.id);window.history.pushState({},'',url.pathname+url.search);renderCurrentPage();});
+          wrap.appendChild(profileButton);
           if(canEditCustomers)wrap.appendChild(button);
           if(isOwner && row.email){
             var accessBtn=make('button','admin-small-button',row.role==='admin'?'הסר אדמין':'תן אדמין');
@@ -4781,6 +4900,7 @@
   Array.prototype.forEach.call(document.querySelectorAll('.admin-nav a'), function (link) {
     link.addEventListener('click', closeSidebar);
   });
+  window.addEventListener('popstate',function(){if(currentPage()==='customers'){state.customerProfileOffset=0;renderCurrentPage();}});
   refreshButton.addEventListener('click', function () {
     renderCurrentPage({ keepContent: true }).then(function () { showToast('הנתונים עודכנו'); });
   });
