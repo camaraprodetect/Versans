@@ -3759,6 +3759,7 @@
   var catalogPageNumber = 0;
   var catalogItemsCache = [];
   var catalogPendingIds = [];
+  var catalogInsights = {};
   var catalogPageSize = 36;
   var catalogSelectedCategory = 'all';
   var catalogVisibilityFilter = 'all';
@@ -3938,6 +3939,14 @@
     [name,english,price,compareAt,category,categories,subtitle,description,sku,hover,gallery].forEach(function(x){fields.appendChild(x.wrapper)});
     fields.appendChild(upload);fields.appendChild(detailsEditor.section);fields.appendChild(advanced.wrapper);
     form.appendChild(fields);form.appendChild(advancedToggle);
+    var saveAsDraft=null;
+    if(!editing){
+      var draftField=make('label','catalog-draft-check');
+      saveAsDraft=make('input');saveAsDraft.type='checkbox';saveAsDraft.checked=true;
+      draftField.appendChild(saveAsDraft);
+      draftField.appendChild(make('span','','שמור כטיוטה מוסתרת (מומלץ). אחרי השמירה אפשר להגדיר תאריך פרסום בכרטיס המוצר.'));
+      form.appendChild(draftField);
+    }
     var message=make('div','admin-catalog-status');message.setAttribute('role','status');form.appendChild(message);
     var actions=make('div','admin-catalog-actions');var submit=make('button','admin-catalog-btn admin-catalog-primary',editing?'שמור שינויים':'צור מוצר');submit.type='submit';
     actions.appendChild(catalogButton('ביטול','',function(){backdrop.remove()}));actions.appendChild(submit);form.appendChild(actions);
@@ -3952,7 +3961,7 @@
         var extra=advanced.input.value.trim()?JSON.parse(advanced.input.value):{};
         if(extra && typeof extra==='object')Object.keys(extra).forEach(function(k){if(k!=='details' && extra[k]!==undefined)record[k]=extra[k]});
         var endpoint=editing?('/api/admin/catalog/'+encodeURIComponent(product.slug)):'/api/admin/catalog';
-        var out=await apiAction(endpoint,editing?'PUT':'POST',{product:record});
+        var out=await apiAction(endpoint,editing?'PUT':'POST',{product:record,saveAsDraft:saveAsDraft?saveAsDraft.checked:false});
         backdrop.remove();
         await renderProductsPage();
         if(out.sheetSync && !out.sheetSync.ok) {
@@ -3965,6 +3974,76 @@
     backdrop.addEventListener('click',function(e){if(e.target===backdrop)backdrop.remove()});
     var onKey=function(e){if(e.key==='Escape'){backdrop.remove();document.removeEventListener('keydown',onKey)}};
     document.addEventListener('keydown',onKey);name.input.focus();
+  }
+  function catalogJerusalemDisplay(ms){
+    if(!ms)return '';
+    var obj=new Date(Number(ms));if(!Number.isFinite(obj.getTime()))return '';
+    return new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Jerusalem',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(obj).replace(' ','T');
+  }
+  function catalogJerusalemParse(value){
+    if(!value)return null;
+    var base=Date.parse(value+':00Z');
+    if(!Number.isFinite(base))throw Error('תאריך או שעה לא תקינים');
+    for(var offset of [3,2]){var candidate=base-offset*3600000;if(catalogJerusalemDisplay(candidate)===value)return candidate;}
+    throw Error('שעת פרסום לא קיימת בשעון ישראל');
+  }
+  async function openCatalogControls(p){
+    var payload=await api('/api/admin/catalog/'+encodeURIComponent(p.slug)+'/controls');
+    var setting=payload.controls||{};
+    var overlay=make('div','admin-catalog-modal-backdrop');
+    var box=make('div','admin-catalog-modal');box.setAttribute('role','dialog');box.setAttribute('aria-modal','true');
+    var head=make('div','admin-catalog-modal-head');head.appendChild(make('h2','','פרסום ומחירים – '+catalogTitle(p)));
+    head.appendChild(catalogButton('✕','',function(){overlay.remove()}));box.appendChild(head);
+    var form=make('form','admin-catalog-form');
+    var note=make('p','admin-catalog-hint','כל השעות הן לפי שעון ישראל. פרסום מתוזמן מסתיר את המוצר עד למועד שבחרת. מבצע מתוזמן לא מוחק את המחיר הרגיל.');
+    form.appendChild(note);
+    var fields=make('div','admin-catalog-form-grid');
+    var publish=catalogTextField('פרסום אוטומטי בתאריך ובשעה (לא חובה)',catalogJerusalemDisplay(setting.publishAt),'datetime-local');
+    var unitCost=catalogTextField('עלות יחידה בש״ח (פרטית לאדמין, לחישוב רווח גולמי)',setting.unitCost==null?'':setting.unitCost,'number');unitCost.input.step='0.01';unitCost.input.min='0';
+    var salePrice=catalogTextField('מחיר מבצע בש״ח (לא חובה)',setting.sale?setting.sale.price:'','number');salePrice.input.step='0.01';salePrice.input.min='0.01';
+    var start=catalogTextField('תחילת המבצע',catalogJerusalemDisplay(setting.sale&&setting.sale.startAt),'datetime-local');
+    var end=catalogTextField('סיום המבצע',catalogJerusalemDisplay(setting.sale&&setting.sale.endAt),'datetime-local');
+    [publish,unitCost,salePrice,start,end].forEach(function(f){fields.appendChild(f.wrapper)});
+    form.appendChild(fields);
+    var history=make('section','catalog-price-history');history.appendChild(make('h3','','היסטוריית שינויים במחיר'));
+    if(!(payload.history||[]).length)history.appendChild(make('p','admin-catalog-hint','אין שינויים מתועדים בגרסה החדשה.'));
+    (payload.history||[]).forEach(function(entry){
+      var old=entry.previous&&entry.previous.price!=null?entry.previous.price+' ₪':'—';
+      var next=entry.next&&entry.next.price!=null?entry.next.price+' ₪':'—';
+      var line=make('div','catalog-price-history-row');
+      line.appendChild(make('strong','',old+' ← '+next));
+      line.appendChild(make('span','',entry.action||''));
+      line.appendChild(make('small','',new Date(entry.at).toLocaleString('he-IL',{timeZone:'Asia/Jerusalem'})+' · '+String(entry.actor||'לא ידוע')));
+      history.appendChild(line);
+    });
+    form.appendChild(history);
+    var status=make('p','admin-catalog-status');status.setAttribute('role','status');form.appendChild(status);
+    var actions=make('div','admin-catalog-actions');
+    actions.appendChild(catalogButton('ביטול','',function(){overlay.remove()}));
+    var submit=make('button','admin-catalog-btn admin-catalog-primary','שמור תזמון ועלות');submit.type='submit';actions.appendChild(submit);form.appendChild(actions);
+    form.addEventListener('submit',async function(e){
+      e.preventDefault();submit.disabled=true;
+      try{
+        var rawPrice=salePrice.input.value.trim(),v={publishAt:catalogJerusalemParse(publish.input.value),unitCost:unitCost.input.value.trim()===''?null:Number(unitCost.input.value),sale:null};
+        if(rawPrice||start.input.value||end.input.value){
+          if(!rawPrice||!start.input.value||!end.input.value)throw Error('למבצע יש למלא מחיר, התחלה וסיום');
+          v.sale={price:Number(rawPrice),startAt:catalogJerusalemParse(start.input.value),endAt:catalogJerusalemParse(end.input.value)};
+        }
+        await apiAction('/api/admin/catalog/'+encodeURIComponent(p.slug)+'/controls','POST',v);
+        overlay.remove();showToast('ההגדרות נשמרו');await renderProductsPage();
+      }catch(err){status.textContent='לא ניתן לשמור: '+(err.message||'שגיאה');}
+      finally{submit.disabled=false;}
+    });
+    box.appendChild(form);overlay.appendChild(box);document.body.appendChild(overlay);
+    overlay.addEventListener('click',function(e){if(e.target===overlay)overlay.remove()});
+  }
+  async function catalogDuplicateProduct(p){
+    if(!window.confirm('לשכפל את '+catalogTitle(p)+' כטיוטה מוסתרת?'))return;
+    try{
+      var response=await apiAction('/api/admin/catalog/'+encodeURIComponent(p.slug)+'/duplicate','POST',{});
+      catalogSelectedCategory='all';catalogVisibilityFilter='hidden';catalogSearchText='';catalogPageNumber=0;
+      await renderProductsPage();showToast('נוצר עותק מוסתר: '+response.slug+' – אפשר לערוך ולפרסם אותו');
+    }catch(err){showToast('השכפול נכשל: '+err.message)}
   }
   function filteredCatalogItems() {
     var normalized=catalogSearchText.trim().toLowerCase();
@@ -4006,13 +4085,25 @@
       var picture=make('img');picture.src=catalogPicture(p.image);picture.alt='';picture.loading='lazy';picture.onerror=function(){picture.style.visibility='hidden'};
       var meta=make('div','admin-catalog-product__text');meta.appendChild(make('strong','',catalogTitle(p)));
       meta.appendChild(make('small','',String(p.slug)+' · '+Number(p.price).toFixed(2)+' ₪'));
-      if(p.hidden)meta.appendChild(make('span','admin-catalog-hidden-label','מוסתר מהחנות'));
+      if(p.hidden)meta.appendChild(make('span','admin-catalog-hidden-label',p.scheduled&&p.scheduled.publishAt>Date.now()?'ממתין לפרסום אוטומטי':'מוסתר מהחנות'));
+      if(p.scheduled&&p.scheduled.sale){
+        var ss=p.scheduled.sale, now=Date.now();
+        meta.appendChild(make('small','catalog-sale-status',now<ss.startAt?'מבצע יתחיל: '+new Date(ss.startAt).toLocaleString('he-IL',{timeZone:'Asia/Jerusalem'}):now<ss.endAt?'מבצע פעיל – '+ss.price+' ₪':'מבצע הסתיים'));
+      }
+      var insight=catalogInsights[p.slug]||{};
+      var stats=make('div','catalog-insights');
+      [ ['צפיות',insight.views||0],['הוספות לסל',insight.cartAdds||0],['הזמנות',insight.orders||0],['הכנסות',moneyAgorot(insight.revenueAgorot||0)],['רווח גולמי משוער',insight.grossProfitEstimateAgorot==null?'יש להגדיר עלות':moneyAgorot(insight.grossProfitEstimateAgorot)]].forEach(function(pair){
+        var el=make('div','catalog-insight-cell');el.appendChild(make('small','',pair[0]));el.appendChild(make('strong','',String(pair[1])));stats.appendChild(el);
+      });
+      meta.appendChild(stats);
       if(catalogPendingIds.indexOf(p.slug)>=0)meta.appendChild(make('span','admin-catalog-pending','ממתין לסנכרון גיליון'));
       var tools=make('div','admin-catalog-product__actions');
       tools.appendChild(catalogButton('עריכה בעמוד המוצר','admin-catalog-primary',function(){window.location.href='/product.html?id='+encodeURIComponent(p.slug)+'&edit=1&admin_preview=1';}));
       var site=make('a','admin-catalog-btn', p.hidden?'תצוגת אדמין':'צפייה');
       site.href=p.hidden?('/product.html?id='+encodeURIComponent(p.slug)+'&admin_preview=1'):p.href;
       site.target='_blank';site.rel='noopener';tools.appendChild(site);
+      tools.appendChild(catalogButton('שכפל','admin-catalog-quiet',function(){catalogDuplicateProduct(p)}));
+      tools.appendChild(catalogButton('תזמון ומחירים','admin-catalog-quiet',function(){openCatalogControls(p).catch(function(err){showToast('לא ניתן לטעון: '+err.message)})}));
       tools.appendChild(catalogButton(p.hidden?'הצג בחנות':'הסתר',p.hidden?'admin-catalog-unhide':'admin-catalog-quiet',async function(){
         var wasHidden=Boolean(p.hidden);
         var approved=await adminConfirm({
@@ -4066,6 +4157,7 @@
   }
   async function renderCatalogSection() {
     var result = await api('/api/admin/catalog');
+    try{var analytics=await api('/api/admin/catalog/insights');catalogInsights=analytics.insights||{}}catch(e){catalogInsights={}}
     catalogItemsCache=result.products||[];catalogPendingIds=result.pendingSheetIds||[];
     catalogCategoryOrders=result.categoryOrders||{};
     var wrap=make('section','admin-catalog-section');
@@ -4114,6 +4206,7 @@
     [
       ['','בחר פעולה...'],['price_delta','הוסף / הפחת סכום מהמחיר'],['price_set','קבע מחיר אחיד'],
       ['stock_yes','סמן את כולם במלאי'],['stock_no','סמן את כולם כלא במלאי'],
+      ['description_set','החלף תיאור בעברית'],['subtitle_set','החלף כותרת משנה'],['details_set','החלף פרטי מוצר (שורה לכל פרט)'],['features_set','החלף מאפיינים מתקדמים'],['materials_set','שנה חומר מוצר'],
       ['category_add','הוסף לקטגוריה'],['category_remove','הסר מקטגוריה'],['category_replace','החלף את כל הקטגוריות'],
       ['visibility_hide','הסתר מהחנות'],['visibility_show','הצג בחנות']
     ].forEach(function(pair){var o=make('option','',pair[1]);o.value=pair[0];actionSelect.appendChild(o)});
@@ -4124,6 +4217,8 @@
     var categoryInput=make('select');categoryInput.setAttribute('aria-label','קטגוריה לעריכה מרובה');
     catalogCategories.forEach(function(pair){var o=make('option','',pair[1]);o.value=pair[0];categoryInput.appendChild(o)});
     categoryInput.value=catalogSelectedCategory!=='all'?catalogSelectedCategory:'necklaces';categoryField.appendChild(categoryInput);
+    var textField=make('label','admin-catalog-bulk-field admin-catalog-bulk-text');textField.appendChild(make('span','','טקסט חדש'));
+    var textInput=make('textarea');textInput.rows=3;textInput.placeholder='הטקסט שיחליף את הערך בכל המוצרים שנבחרו';textField.appendChild(textInput);
     var apply=catalogButton('החל שינויים על הנבחרים','admin-catalog-primary',async function(){
       var slugs=Array.from(catalogSelectedSlugs);var action=actionSelect.value;
       if(!slugs.length){showToast('יש לבחור לפחות מוצר אחד');return;}
@@ -4136,6 +4231,7 @@
       } else if(action==='stock_yes'||action==='stock_no'){body.action='stock_set';body.value=action==='stock_yes';}
       else if(action==='visibility_hide'||action==='visibility_show'){body.action='visibility_set';body.value=action==='visibility_hide';}
       else if(action.indexOf('category_')===0){body.category=categoryInput.value;}
+      else if(['description_set','subtitle_set','details_set','features_set','materials_set'].indexOf(action)>=0){body.value=textInput.value;}
       var description=actionSelect.options[actionSelect.selectedIndex].textContent;
       var message='הפעולה "'+description+'" תחול על '+slugs.length+' מוצרים שנבחרו. השינוי יתעדכן בחנות ויכול להשפיע על מחירים, מלאי או הצגת מוצרים.';
       if(action==='category_replace') message+=' כל שאר שיוכי הקטגוריות יוסרו מהמוצרים שנבחרו.';
@@ -4156,11 +4252,12 @@
       var action=actionSelect.value;
       amountField.hidden=action!=='price_set'&&action!=='price_delta';
       categoryField.hidden=action.indexOf('category_')!==0;
+      textField.hidden=['description_set','subtitle_set','details_set','features_set','materials_set'].indexOf(action)<0;
       amountInput.placeholder=action==='price_delta'?'לדוגמה: 10 או ‎-10':'מחיר אחיד בש״ח';
     }
     actionSelect.addEventListener('change',updateActionUI);updateActionUI();
-    bulkFields.append(actionField,amountField,categoryField,apply);
-    var footnote=make('p','admin-catalog-bulk-note','אפשר לסמן מוצרים גם מכמה עמודים. עד 60 מוצרים בפעולה. השינויים אינם נוגעים לצבעים, מידות או אפשרויות מיוחדות.');
+    bulkFields.append(actionField,amountField,categoryField,textField,apply);
+    var footnote=make('p','admin-catalog-bulk-note','אפשר לסמן מוצרים גם מכמה עמודים. עד 60 מוצרים בפעולה. שינויים בטקסט יחולו על השדה בעברית. שאר פרטי הוריאציות לא ישתנו.');
     bulk.append(bulkTop,bulkFields,footnote);
     catalogSelectionChanged=function(){
       var count=catalogSelectedSlugs.size;

@@ -31,6 +31,12 @@
   var pathSlug = '';
   try { pathSlug = decodeURIComponent(window.location.pathname.replace(/^\/+|\/+$/g, '')); } catch (e) {}
   var product = findProduct(pathSlug) || findProduct(id) || PRODUCTS[0];
+  function recordProductActivity(kind,p){
+    if(!p||!p.slug||!/^product-[a-z0-9-]+$/.test(p.slug))return;
+    fetch('/api/catalog/activity',{method:'POST',credentials:'same-origin',keepalive:true,
+      headers:{'Content-Type':'application/json'},body:JSON.stringify({kind:kind,slug:p.slug})}).catch(function(){});
+  }
+  if(product)recordProductActivity('view',product);
   if (product.defaultNecklaceId && findOption(product.necklaces, product.defaultNecklaceId)) {
     selectedNecklaceId = product.defaultNecklaceId;
   }
@@ -2070,6 +2076,7 @@ async function uploadProductPhoto(blob, meta) {
       });
       if (!bundleFound) bundleItems.push(bundleItem);
       save(LS.cart, JSON.stringify(bundleItems));
+      recordProductActivity('cart',product);
 
       /* Keep the completed bundle in the cart, but reset the temporary
          necklace selection on the product page immediately after adding. */
@@ -2163,6 +2170,7 @@ async function uploadProductPhoto(blob, meta) {
     }
 
     save(LS.cart, JSON.stringify(items));
+    recordProductActivity('cart',product);
     updateCartCount();
     showAddedOnProductButton();
   }

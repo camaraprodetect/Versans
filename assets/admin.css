@@ -1478,3 +1478,19 @@ button,input,textarea,select,a{font:inherit}.admin-app{display:grid;grid-templat
 .admin-visitor-source__fill{height:100%;display:block;border-radius:inherit;background:#335874;transition:width .2s ease}
 @media(max-width:1040px){.admin-visitor-insights{grid-template-columns:1fr}}
 @media(max-width:620px){.admin-visitor-insights{gap:14px}.admin-visitor-insight{padding:15px}.admin-visitor-insight__head{flex-wrap:wrap;gap:5px}.admin-visitor-insight__head h2{font-size:13px}.admin-visitor-type__value{font-size:21px}}
+
+/* Catalog operations and inline 30-day KPIs */
+.admin-catalog-product__text{gap:8px}
+.catalog-insights{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin-top:5px;direction:rtl}
+.catalog-insight-cell{min-width:0;padding:6px;background:#f1f5f7;border-radius:7px;display:flex;flex-direction:column;gap:2px}
+.catalog-insight-cell small{font-size:10px;color:#536575;line-height:1.3}
+.catalog-insight-cell strong{font-size:11px;font-weight:700;overflow-wrap:anywhere;color:#142333}
+.catalog-sale-status{background:#eaf4ef;color:#186b45;padding:5px 8px;border-radius:6px}
+.catalog-price-history{border-top:1px solid #d5dee5;padding-top:12px;display:grid;gap:8px}
+.catalog-price-history h3{margin:0;font-size:15px}
+.catalog-price-history-row{padding:9px;border:1px solid #e0e8ee;background:#f8fafb;border-radius:9px;display:flex;flex-wrap:wrap;gap:9px;align-items:center;font-size:12px}
+.catalog-price-history-row small{color:#637583}
+.admin-catalog-bulk-text textarea{width:100%;min-height:60px;border-radius:8px;border:1px solid #d5dce2;padding:9px;resize:vertical;font:inherit}
+@media(max-width:580px){.catalog-insights{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-catalog-product__actions .admin-catalog-btn{flex-basis:calc(50% - 8px)}}
+
+.catalog-draft-check{display:flex;align-items:flex-start;gap:9px;font-size:13px;font-weight:600;color:#243f50;padding:12px;border:1px solid #dce7ee;background:#f5f9fb;border-radius:10px}.catalog-draft-check input{width:18px;height:18px;flex-shrink:0}

@@ -7070,6 +7070,48 @@ async function adminApi(req, res, pathname, parsed) {
     json(res, 200, { ok: true, products: catalogManager.list(), categoryOrders:catalogManager.categoryOrders(), categoryHidden:catalogManager.hiddenCategories(), categoryHiddenFlags:catalogManager.categoryHiddenFlags(), pendingSheetIds: catalogManager.pendingSlugs(), sheetConfigured: Boolean(process.env.GOOGLE_PRODUCTS_WEBHOOK_URL && process.env.GOOGLE_PRODUCTS_WEBHOOK_SECRET) });
     return true;
   }
+  if(pathname==='/api/admin/catalog/insights' && req.method==='GET'){
+    const sales=await adminSalesData('30d');
+    const today=new Date(Date.now()-29*86400000);
+    const fromDay=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Jerusalem',year:'numeric',month:'2-digit',day:'2-digit'}).format(today);
+    const counts=await database.listCatalogProductActivity(fromDay);
+    const byActivity=new Map(counts.map(r=>[String(r.product_slug),r]));
+    const bySales=new Map((sales?.products||[]).map(p=>[String(p.id),p]));
+    const output={};
+    for(const p of catalogManager.list()){
+      const act=byActivity.get(p.slug)||{},sold=bySales.get(String(p.id))||{};
+      const cost=p.scheduled&&p.scheduled.unitCost!=null?Number(p.scheduled.unitCost):null;
+      const units=Number(sold.unitsSold||0),revenue=Number(sold.grossSalesAgorot||0);
+      output[p.slug]={views:Number(act.views||0),cartAdds:Number(act.cart_adds||0),orders:Number(sold.paidOrderCount||0),units,revenueAgorot:revenue,
+        grossProfitEstimateAgorot:cost==null?null:revenue-Math.round(units*cost*100),unitCost:cost};
+    }
+    json(res,200,{ok:true,range:'30d',insights:output});return true;
+  }
+  const cloneMatch=/^\/api\/admin\/catalog\/(product-[a-z0-9-]+)\/duplicate$/.exec(pathname);
+  if(cloneMatch&&req.method==='POST'){
+    if(!sameOriginAllowed(req)){json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
+    const item=await catalogManager.duplicate(cloneMatch[1],admin?.email);
+    await recordDashboardActivity(admin,'products','שכפול מוצר',item.slug);
+    const sheetSync=await catalogManager.syncOne(item.slug);
+    json(res,201,{ok:true,...item,sheetSync});return true;
+  }
+  const controlsMatch=/^\/api\/admin\/catalog\/(product-[a-z0-9-]+)\/controls$/.exec(pathname);
+  if(controlsMatch){
+    if(req.method==='GET'){
+      json(res,200,{ok:true,controls:catalogManager.controls(controlsMatch[1]),history:await catalogManager.priceHistory(controlsMatch[1])});return true;
+    }
+    if(req.method==='POST'){
+      if(!sameOriginAllowed(req)){json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
+      const body=await readJsonBody(req,4096);
+      const controls=await catalogManager.setControls(controlsMatch[1],body,admin?.email);
+      // Scheduled publication intentionally clears the manual hidden flag;
+      // the future date itself protects the product until publication.
+      if(controls.publishAt && controls.publishAt>Date.now() && catalogManager.list().some(p=>p.slug===controlsMatch[1]&&p.manualHidden))
+        await catalogManager.setHidden(controlsMatch[1],false,admin?.email);
+      await recordDashboardActivity(admin,'products','עדכון פרסום/מבצע מתוזמן',controlsMatch[1]);
+      json(res,200,{ok:true,controls});return true;
+    }
+  }
   if (pathname === '/api/admin/catalog/bulk' && req.method === 'POST') {
     if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'}); return true; }
     const body=await readJsonBody(req, 24 * 1024);
@@ -7111,6 +7153,8 @@ async function adminApi(req, res, pathname, parsed) {
     if (!sameOriginAllowed(req)) { json(res, 403, {ok:false,error:'origin_not_allowed'}); return true; }
     const body = await readJsonBody(req, 128 * 1024);
     const result = await catalogManager.write(body && body.product, undefined, false, admin && admin.email);
+    // New listings may be composed privately and made public later.
+    if(body && body.saveAsDraft === true)await catalogManager.setHidden(result.slug,true,admin && admin.email);
     const productTitle = catalogManager.getAdminProduct(result.slug)?.title;
     await recordDashboardActivity(admin,'products','יצירת מוצר',(productTitle && (productTitle.he||productTitle.en))||result.slug);
     const sheetSync = await catalogManager.syncOne(result.slug);
@@ -8754,6 +8798,34 @@ function serveStatic(req, res, pathname) {
   return true;
 }
 
+const productActivityThrottle = new Map();
+const ACTIVITY_TTL=10*60*1000;
+async function catalogActivityApi(req,res,pathname){
+  if(pathname!=='/api/catalog/activity')return false;
+  if(req.method!=='POST'){json(res,405,{ok:false,error:'method_not_allowed'});return true;}
+  if(!sameOriginAllowed(req)){json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
+  const body=await readJsonBody(req,1024);
+  const slug=String(body?.slug||''),kind=String(body?.kind||'');
+  if(!/^product-[a-z0-9-]{1,60}$/.test(slug)||!['view','cart'].includes(kind)){
+    json(res,400,{ok:false,error:'invalid_activity'});return true;
+  }
+  await catalogManager.refresh();
+  if(!catalogManager.getAdminProduct(slug)||catalogManager.isHidden(slug)){
+    json(res,404,{ok:false,error:'product_not_found'});return true;
+  }
+  // Best-effort debouncing per visitor browser; event counts are not verified sales.
+  const cookieId=getVisitorId(req);
+  const fingerprint=cookieId||String(req.socket.remoteAddress||'anonymous')+':'+String(req.headers['user-agent']||'').slice(0,80);
+  const key=crypto.createHash('sha256').update(fingerprint+'|'+slug+'|'+kind).digest('hex');
+  const now=Date.now(),windowMs=kind==='view'?10*60*1000:5000;
+  if((productActivityThrottle.get(key)||0)+windowMs<=now){
+    const day=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Jerusalem',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(now));
+    await database.recordCatalogProductActivity(slug,kind,day);
+    productActivityThrottle.set(key,now);
+  }
+  if(productActivityThrottle.size>25000){for(const [k,at] of productActivityThrottle)if(now-at>ACTIVITY_TTL)productActivityThrottle.delete(k);}
+  json(res,200,{ok:true});return true;
+}
 const server = http.createServer(async (req, res) => {
   req._sessionResponse = res;
   securityHeaders(res);
@@ -8776,7 +8848,7 @@ const server = http.createServer(async (req, res) => {
     // or product script so edits made in another worker appear immediately.
     // This is a cheap schema_meta read; refresh() only rebuilds on changes.
     if ((req.method === 'GET' || req.method === 'HEAD') && (
-      pathname === '/assets/products.js' || pathname === '/sitemap.xml' ||
+      pathname === '/assets/products.js' || pathname === '/sitemap.xml' || pathname === '/api/catalog/overrides.js' ||
       (!pathname.startsWith('/api/') && !pathname.startsWith('/assets/') &&
        !pathname.startsWith('/images/') && !pathname.startsWith('/admin') &&
        wantsHtmlDocument(req))
@@ -8879,6 +8951,7 @@ const server = http.createServer(async (req, res) => {
     if (await trackingWebhookApi(req, res, pathname)) return;
     if (await publicTrackingApi(req, res, pathname, parsed)) return;
     if (await presenceApi(req, res, pathname)) return;
+    if (await catalogActivityApi(req, res, pathname)) return;
     if (await adminPushDeviceApi(req, res, pathname)) return;
     if (await googleOrderStatusWebhookApi(req, res, pathname)) return;
     if (await adminApi(req, res, pathname, parsed)) return;

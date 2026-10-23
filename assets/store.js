@@ -2658,10 +2658,16 @@ function orderTotal() {
     });
     if (!found) state.cart.push(item);
     persist();
+    recordCatalogCart(product);
     showAddedButtonState(triggerButton);
     return true;
   }
 
+  function recordCatalogCart(p){
+    if(!p||!p.slug)return;
+    fetch('/api/catalog/activity',{method:'POST',keepalive:true,credentials:'same-origin',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({kind:'cart',slug:p.slug})}).catch(function(){});
+  }
   function addToCart(id, qty, triggerButton) {
     qty = qty || 1;
     var product = byId(id);
@@ -2677,6 +2683,7 @@ function orderTotal() {
     });
     if (!found) state.cart.push({ id: id, qty: qty, key: key });
     persist();
+    recordCatalogCart(product);
     showAddedButtonState(triggerButton);
     return true;
   }

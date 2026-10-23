@@ -1,0 +1,11 @@
+VerSans product catalog & analytics patch — 23 October 2026
+
+Install: extract these files into the root of the existing store; replace files with matching paths. This patch assumes the dashboard, visitors, finance, reports, report-mail and task-error patches were applied previously. Restart/redeploy the Node service after replacing files. Do not remove or reset the database. No new environment variables.
+
+The existing DATABASE_URL or persistent VERSANS_DB_PATH keeps catalog and analytics data across deployments. PostgreSQL/SQLite migration creates catalog_product_activity automatically on service start. Historical page views / cart adds cannot be backfilled. Price history starts with modifications after this patch.
+
+New products are saved hidden by default (checkbox); a scheduled publish date can be configured after saving via the product card. Duplicates are hidden drafts. Scheduled sale price does not overwrite the regular price. Scheduled visibility/prices are evaluated when storefront or checkout requests arrive; already-open browser tabs may require a reload.
+
+Gross profit estimate = paid-item revenue minus stored unit-cost multiplied by sold units, before payment fees, refunds, shipping, marketing, taxes etc. If cost not set, leave estimated gross profit unavailable.
+
+Files included are code/tests only, no images or .git. No deployment was performed by ChatGPT.
