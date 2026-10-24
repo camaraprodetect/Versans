@@ -2421,7 +2421,7 @@ async function getAdminUser(req) {
   if (!user) return null;
   if (normalizeEmail(user.email) === ADMIN_EMAIL) return { ...user, role: 'admin', permissions: [] };
   if (String(user.role || '') === 'admin') return { ...user, permissions: [] };
-  if (String(user.role || '') === 'staff') return { ...user, permissions: await employeeAccess.read(Number(user.id)) };
+  if (String(user.role || '') === 'staff') { if(await employeeAccess.isExpired(Number(user.id)))return null; return { ...user, permissions: await employeeAccess.readEffective(Number(user.id)) }; }
   return null;
 }
 
@@ -5274,9 +5274,44 @@ async function adminApi(req, res, pathname, parsed) {
     json(res, 403, { ok: false, error: 'admin_required' });
     return true;
   }
-  if (admin && pathname !== '/api/admin/employees/me' && !adminCanAccess(admin, pathname, req.method)) {
+  const scopedProductWrite=admin?.role==='staff' && req.method==='PUT' && /^\/api\/admin\/catalog\/product-[a-z0-9-]+$/.test(pathname) &&
+    (hasAdminPermission(admin,'products.description')||hasAdminPermission(admin,'products.price'));
+  const scopedBulkWrite=admin?.role==='staff'&&pathname==='/api/admin/catalog/bulk'&&req.method==='POST'&&
+    (hasAdminPermission(admin,'products.description')||hasAdminPermission(admin,'products.price'));
+  if (admin && pathname !== '/api/admin/employees/me' && !adminCanAccess(admin, pathname, req.method) && !scopedProductWrite && !scopedBulkWrite) {
     json(res, 403, { ok: false, error: 'permission_denied' });
     return true;
+  }
+  // Password step-up is bound to the currently authenticated HttpOnly session,
+  // not to the browser/client. A fresh password confirmation lasts five minutes.
+  if(admin && pathname==='/api/admin/employees/reauth' && req.method==='POST'){
+    if(!sameOriginAllowed(req)){json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
+    const body=await readJsonBody(req,4096);
+    const currentSessionHash=tokenHash(getSessionToken(req));
+    if(await employeeAccess.reauthLimited(currentSessionHash,Number(admin.id))){json(res,429,{ok:false,error:'reauth_rate_limited'});return true;}
+    const stored=await database.findUserById(Number(admin.id));
+    if(!stored||typeof body.password!=='string'||!verifyPassword(body.password,stored.password_hash)){
+      await employeeAccess.reauthFailure(currentSessionHash,Number(admin.id));
+      json(res,401,{ok:false,error:'reauth_failed'});return true;
+    }
+    await employeeAccess.grantReauth(currentSessionHash,Number(admin.id));
+    json(res,200,{ok:true,validForSeconds:300});return true;
+  }
+  const moneyChange=/^\/api\/admin\/finance\/(expenses|recurring|refunds)(?:\/\d+)?$/.test(pathname);
+  const employeeChange=/^\/api\/admin\/employees(?:\/\d+)?$/.test(pathname);
+  const sensitiveChange=(['POST','PUT','PATCH','DELETE'].includes(req.method)) && (
+    moneyChange || employeeChange || pathname==='/api/admin/dashboard/creator-payment' ||
+    pathname==='/api/admin/access/role' || /^\/api\/admin\/customers\/\d+\/access$/.test(pathname));
+  if(admin && sensitiveChange && !await employeeAccess.hasReauth(tokenHash(getSessionToken(req)),Number(admin.id))){
+    json(res,428,{ok:false,error:'reauth_required'});return true;
+  }
+  // Audit completed privileged mutations. Never store request bodies, cookies,
+  // passwords or customer contact data in this log.
+  if(admin && !['GET','HEAD','OPTIONS'].includes(req.method) && !pathname.includes('/reauth') && !pathname.startsWith('/api/admin/employees') && !pathname.startsWith('/api/admin/bot/')){
+    res.once('finish',()=>{if(res.statusCode>=200&&res.statusCode<300){
+      const cleaned=pathname.replace(/^\/api\/admin\//,'').replace(/\/\d+(?=\/|$)/g,'/:id');
+      employeeAccess.audit(admin,cleaned.split('/')[0]||'admin',req.method,cleaned).catch(e=>console.error('Audit write:',e.message));
+    }});
   }
   // Refresh last-seen timestamps without slowing admin requests or blocking them if monitoring fails.
   if(admin)adminSecurity.seenSession(admin,getSessionToken(req),parseCookies(req.headers.cookie)[ADMIN_DEVICE_COOKIE],req.headers['user-agent']).catch(e=>console.error('Admin device heartbeat:',e.message));
@@ -5425,7 +5460,21 @@ async function adminApi(req, res, pathname, parsed) {
       pages:employeePolicy.PAGE_KEYS});return true;
   }
   if (pathname === '/api/admin/employees/catalog' && req.method === 'GET') {
-    json(res,200,{ok:true,groups:employeePolicy.GROUPS.map(([id,title,actions])=>({id,title,actions:actions.map(([action,label])=>({key:id+'.'+action,label}))}))});return true;
+    json(res,200,{ok:true,groups:employeePolicy.GROUPS.map(([id,title,actions])=>({id,title,actions:actions.map(([action,label])=>({key:id+'.'+action,label}))})),presets:employeePolicy.PRESETS});return true;
+  }
+  if(pathname==='/api/admin/employees/audit' && req.method==='GET'){
+    const actorId=Number(parsed.searchParams.get('actorId'));
+    const page=Math.min(1000,Math.max(1,Number(parsed.searchParams.get('page'))||1));
+    json(res,200,{ok:true,items:await employeeAccess.auditList({limit:50,offset:(page-1)*50,actorId:actorId>0?actorId:null})});return true;
+  }
+  if(pathname==='/api/admin/employees/overview' && req.method==='GET'){
+    const employees=await employeeAccess.staffList();
+    const closedBy=await employeeAccess.completedByCounts();
+    await adminTools.ensure();
+    const statement="SELECT LOWER(assigned_to) AS email,COUNT(*) AS completed FROM admin_internal_tasks WHERE status='done' AND assigned_to<>'' GROUP BY LOWER(assigned_to)";
+    const result=database.backend==='postgres'?(await database._query(statement)).rows:database.db.prepare(statement).all();
+    const completion=new Map(result.map(r=>[normalizeEmail(r.email),Number(r.completed)||0]));
+    json(res,200,{ok:true,employees:employees.map(e=>({...e,completedTasks:completion.get(normalizeEmail(e.email))||0,completedBy:closedBy.get(e.id)||0}))});return true;
   }
   if (pathname === '/api/admin/employees' && req.method === 'GET') {
     json(res,200,{ok:true,employees:await employeeAccess.staffList()});return true;
@@ -5435,6 +5484,10 @@ async function adminApi(req, res, pathname, parsed) {
     const body=await readJsonBody(req,32768);
     const email=normalizeEmail(body.email), name=String(body.name||'').trim().slice(0,120),password=String(body.password||'');
     const keys=employeePolicy.withPagePermissions(body.permissions);
+    const preset=String(body.preset||'');
+    const expiresAt=body.expiresAt==null?null:Number(body.expiresAt);
+    if(preset&&!Object.hasOwn(employeePolicy.PRESETS,preset)){json(res,400,{ok:false,error:'invalid_preset'});return true;}
+    if(expiresAt!=null&&(!Number.isSafeInteger(expiresAt)||expiresAt<=Date.now()||expiresAt>Date.now()+366*86400000)){json(res,400,{ok:false,error:'invalid_expiry'});return true;}
     if(!validEmail(email)||!keys || !name){json(res,400,{ok:false,error:'invalid_employee'});return true;}
     if(admin.role==='staff' && (keys.length>0 && !hasAdminPermission(admin,'employees.permissions') || keys.some(k=>!hasAdminPermission(admin,k)))){
       json(res,403,{ok:false,error:'cannot_grant_unowned_permissions'});return true;
@@ -5457,6 +5510,8 @@ async function adminApi(req, res, pathname, parsed) {
         target=await database.findUserById(Number(target.id));
       }
       await employeeAccess.write(Number(target.id),keys);
+      await employeeAccess.setProfile(Number(target.id),{preset,expiresAt});
+      await employeeAccess.audit(admin,'employees','create','עובד חדש '+String(target.id),Number(target.id));
       json(res,201,{ok:true,employee:{id:Number(target.id),name:target.name,email:target.email,permissions:keys}});
     } catch(e) {
       if(e.code==='23505' || /UNIQUE/i.test(String(e.message||'')))json(res,409,{ok:false,error:'email_exists'});
@@ -5473,14 +5528,14 @@ async function adminApi(req, res, pathname, parsed) {
     if(!target || target.role!=='staff' || normalizeEmail(target.email)===ADMIN_EMAIL){json(res,404,{ok:false,error:'employee_not_found'});return true;}
     const body=await readJsonBody(req,32768);
     const editDetails=Object.hasOwn(body,'name')||Object.hasOwn(body,'blocked');
-    const editPermissions=Object.hasOwn(body,'permissions');
+    const editPermissions=Object.hasOwn(body,'permissions')||Object.hasOwn(body,'preset')||Object.hasOwn(body,'expiresAt');
     if(!editDetails&&!editPermissions){json(res,400,{ok:false,error:'nothing_to_update'});return true;}
     if(editDetails&&!hasAdminPermission(admin,'employees.edit')){json(res,403,{ok:false,error:'permission_denied'});return true;}
     if(editPermissions&&!hasAdminPermission(admin,'employees.permissions')){json(res,403,{ok:false,error:'permission_denied'});return true;}
     const current=await employeeAccess.read(targetId);
     let keys=current;
     if(editPermissions){
-      keys=employeePolicy.withPagePermissions(body.permissions);
+      keys=Object.hasOwn(body,'permissions')?employeePolicy.withPagePermissions(body.permissions):current;
       if(!keys){json(res,400,{ok:false,error:'invalid_permissions'});return true;}
       if(admin.role==='staff' && [...new Set([...keys,...current])].some(k=>!hasAdminPermission(admin,k))){
         json(res,403,{ok:false,error:'cannot_manage_unowned_permissions'});return true;
@@ -5497,7 +5552,20 @@ async function adminApi(req, res, pathname, parsed) {
       }
       if(Object.hasOwn(body,'blocked'))await database.setUserAccess(targetId,'staff',body.blocked,'',Date.now());
     }
-    if(editPermissions)await employeeAccess.write(targetId,keys);
+    if(editPermissions){
+      const existingProfile=await employeeAccess.profile(targetId);
+      const preset=Object.hasOwn(body,'preset')?String(body.preset||''):existingProfile.preset;
+      const expiresAt=Object.hasOwn(body,'expiresAt')?(body.expiresAt==null?null:Number(body.expiresAt)):existingProfile.expiresAt;
+      if(preset&&!Object.hasOwn(employeePolicy.PRESETS,preset)){json(res,400,{ok:false,error:'invalid_preset'});return true;}
+      if(expiresAt!=null&&(!Number.isSafeInteger(expiresAt)||expiresAt<=Date.now()||expiresAt>Date.now()+366*86400000)){json(res,400,{ok:false,error:'invalid_expiry'});return true;}
+      await employeeAccess.write(targetId,keys);
+      await employeeAccess.setProfile(targetId,{preset,expiresAt});
+      // Previously issued sessions must not retain any wider privileges.
+      if(JSON.stringify(keys)!==JSON.stringify(current))await database.deleteSessionsForUser(targetId);
+    }
+    const diff=editPermissions?`הרשאות: ${current.length} ← ${keys.length}`:'פרטי עובד';
+    const blockNote=Object.hasOwn(body,'blocked')?` · ${body.blocked?'נחסם (כל המכשירים נותקו)':'הופעל מחדש'}`:'';
+    await employeeAccess.audit(admin,'employees','update',`עובד #${targetId} · ${diff}${blockNote}`,targetId);
     json(res,200,{ok:true,employee:{id:targetId,permissions:keys}});return true;
   }
   // Rule-based order review. Flags are advisory; purchases and fulfillment stay untouched.
@@ -5782,6 +5850,7 @@ async function adminApi(req, res, pathname, parsed) {
         if(canAssign&&Object.hasOwn(patch,'assignedTo'))sanitized.assignedTo=patch.assignedTo;
         if(status!==previous.status && !canStatus && !canEdit){json(res,403,{ok:false,error:'permission_denied'});return true;}
         const task=await adminTools.updateTask(taskId,sanitized,Number(admin.id));
+        if(previous.status!=='done'&&task.status==='done')await employeeAccess.taskCompleted(admin,taskId);
         json(res,200,{ok:true,task});
         if(reassigned)checkTaskPushSchedule().catch(e=>console.error('Task notification failed:',e));
         return true;
@@ -5795,6 +5864,7 @@ async function adminApi(req, res, pathname, parsed) {
         const task=await adminTools.updateTask(taskId,body||{},Number(admin.id));
         if(!task)json(res,404,{ok:false,error:'task_not_found'});
         else {
+          if(previous.status!=='done'&&task.status==='done')await employeeAccess.taskCompleted(admin,taskId);
           json(res,200,{ok:true,task});
           checkTaskPushSchedule().catch(e=>console.error('Task reassignment notification failed:',e));
         }
@@ -7297,6 +7367,7 @@ async function adminApi(req, res, pathname, parsed) {
     }
     if(req.method==='POST'){
       if(!sameOriginAllowed(req)){json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
+      if(!await employeeAccess.hasReauth(tokenHash(getSessionToken(req)),Number(admin.id))){json(res,428,{ok:false,error:'reauth_required'});return true;}
       const body=await readJsonBody(req,4096);
       const controls=await catalogManager.setControls(controlsMatch[1],body,admin?.email);
       // Scheduled publication intentionally clears the manual hidden flag;
@@ -7310,6 +7381,15 @@ async function adminApi(req, res, pathname, parsed) {
   if (pathname === '/api/admin/catalog/bulk' && req.method === 'POST') {
     if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'}); return true; }
     const body=await readJsonBody(req, 24 * 1024);
+    if(['price_set','price_delta'].includes(body.action)&&!await employeeAccess.hasReauth(tokenHash(getSessionToken(req)),Number(admin.id))){
+      json(res,428,{ok:false,error:'reauth_required'});return true;
+    }
+    if(admin.role==='staff'&&!hasAdminPermission(admin,'products.edit')){
+      const descriptions=['description_set','subtitle_set','details_set','features_set','materials_set'];
+      const prices=['price_set','price_delta'];
+      if(!(descriptions.includes(body.action)&&hasAdminPermission(admin,'products.description'))&&
+         !(prices.includes(body.action)&&hasAdminPermission(admin,'products.price'))){json(res,403,{ok:false,error:'permission_denied'});return true;}
+    }
     const result=await catalogManager.bulkEdit(body,admin && admin.email);
     await recordDashboardActivity(admin,'products','עריכה מרובה','מוצרים');
     json(res,200,{ok:true,...result}); return true;
@@ -7363,8 +7443,37 @@ async function adminApi(req, res, pathname, parsed) {
     if(req.method==='DELETE'&&beforeProduct)trashRecord=await adminSecurity.recycle('product',catalogItemRoute[1],beforeProduct,Number(admin.id));
     if(beforeProduct)await adminSecurity.version('product',catalogItemRoute[1],beforeProduct,Number(admin.id));
     let result;
+    const requestProduct=req.method==='PUT'?(await readJsonBody(req,128*1024)).product:null;
+    if(req.method==='PUT'&&admin.role==='staff'&&!hasAdminPermission(admin,'products.edit')){
+      const editable=['title','subtitle','description','details','features','materials'];
+      const prices=['price','compareAt'];
+      const allowText=hasAdminPermission(admin,'products.description');
+      const allowPrices=hasAdminPermission(admin,'products.price');
+      if(!requestProduct||typeof requestProduct!=='object'||Array.isArray(requestProduct)){
+        json(res,400,{ok:false,error:'invalid_product'});return true;
+      }
+      const fields=Array.from(new Set([...Object.keys(beforeProduct||{}),...Object.keys(requestProduct)]));
+      // Compare all effective fields; an unchanged full editor payload is allowed,
+      // but staff cannot change hidden option addPrice or other pricing structures.
+      const changed=fields.filter(key=>Object.hasOwn(requestProduct,key)&&JSON.stringify(requestProduct[key])!==JSON.stringify(beforeProduct?.[key]));
+      if(changed.some(key=>!((editable.includes(key)&&allowText)||(prices.includes(key)&&allowPrices))) || !changed.length){
+        json(res,403,{ok:false,error:'permission_denied'});return true;
+      }
+      // Serialize a narrow patch even if the client tried adding extra fields.
+      for(const key of Object.keys(requestProduct))if(!changed.includes(key))delete requestProduct[key];
+      for(const key of ['title','subtitle','description','features','details','materials']){
+        if(Object.hasOwn(requestProduct,key) && requestProduct[key] && typeof requestProduct[key]==='object' && !Array.isArray(requestProduct[key]))
+          requestProduct[key]={...(beforeProduct?.[key]||{}),...requestProduct[key]};
+      }
+    }
+    if(req.method==='PUT' && requestProduct &&
+       (Object.hasOwn(requestProduct,'price')&&JSON.stringify(requestProduct.price)!==JSON.stringify(beforeProduct?.price) ||
+        Object.hasOwn(requestProduct,'compareAt')&&JSON.stringify(requestProduct.compareAt)!==JSON.stringify(beforeProduct?.compareAt)) &&
+       !await employeeAccess.hasReauth(tokenHash(getSessionToken(req)),Number(admin.id))){
+      json(res,428,{ok:false,error:'reauth_required'});return true;
+    }
     try{result = req.method === 'DELETE' ? await catalogManager.write(null,catalogItemRoute[1],true, admin && admin.email)
-      : await catalogManager.write((await readJsonBody(req,128*1024)).product,catalogItemRoute[1],false, admin && admin.email);
+      : await catalogManager.write(requestProduct,catalogItemRoute[1],false, admin && admin.email);
     }catch(error){if(trashRecord)await adminSecurity.removeRecycle(trashRecord);throw error;}
     const changedProduct = catalogManager.getAdminProduct(catalogItemRoute[1]) || beforeProduct;
     const changedTitle = changedProduct && changedProduct.title;

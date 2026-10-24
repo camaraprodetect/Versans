@@ -4275,6 +4275,39 @@
     return wrap;
   }
 
+  async function renderScopedProductSection(){
+    var rightsText=hasCapability('products.description'),rightsPrice=hasCapability('products.price');
+    var response=await api('/api/admin/catalog');
+    var products=response.products||[],area=make('section','admin-catalog-section'),title=make('h2','','עריכת מוצרים לפי הרשאה');
+    var hint=make('p','admin-catalog-hint','כאן אפשר לשנות רק את השדות שהמנהל התיר לך. שינויים אחרים נחסמים בשרת.');
+    var selector=make('select');selector.setAttribute('aria-label','בחירת מוצר');selector.style.maxWidth='100%';selector.style.padding='12px';
+    products.forEach(function(p){var o=make('option','',catalogTitle(p));o.value=p.slug;selector.appendChild(o)});
+    var inputs=make('div','admin-catalog-bulk-fields'),status=make('p','admin-catalog-hint');
+    var save=catalogButton('שמור שינויים','admin-catalog-primary',async function(){
+      var patch={};
+      if(rightsText){patch.description={he:desc.value};patch.subtitle={he:subtitle.value};}
+      if(rightsPrice){patch.price=Number(price.value);patch.compareAt=compare.value===''?null:Number(compare.value);}
+      save.disabled=true;status.textContent='שומר...';
+      try{await apiAction('/api/admin/catalog/'+selector.value,'PUT',{product:patch});status.textContent='המוצר עודכן בהצלחה';}
+      catch(e){status.textContent='השמירה נכשלה: '+e.message;}
+      finally{save.disabled=false;}
+    });
+    function input(label,kind){var wrap=make('label','admin-catalog-bulk-field');wrap.appendChild(make('span','',label));var i=make(kind==='textarea'?'textarea':'input');if(kind!=='textarea')i.type=kind||'text';wrap.appendChild(i);inputs.appendChild(wrap);return i;}
+    var desc,subtitle,price,compare;
+    if(rightsText){subtitle=input('כותרת משנה בעברית','textarea');desc=input('תיאור מלא בעברית','textarea');}
+    if(rightsPrice){price=input('מחיר רגיל (₪)','number');price.step='0.01';compare=input('מחיר לפני הנחה (₪)','number');compare.step='0.01';}
+    async function load(){
+      if(!selector.value)return;status.textContent='טוען מוצר...';
+      try{var x=(await api('/api/admin/catalog/'+encodeURIComponent(selector.value))).product;
+        if(desc)desc.value=typeof x.description==='object'?x.description.he||'':String(x.description||'');
+        if(subtitle)subtitle.value=typeof x.subtitle==='object'?x.subtitle.he||'':String(x.subtitle||'');
+        if(price)price.value=x.price||0;if(compare)compare.value=x.compareAt||'';
+        status.textContent='';
+      }catch(e){status.textContent=e.message;}
+    }
+    selector.onchange=load;area.append(title,hint,selector,inputs,save,status);if(products.length)await load();return area;
+  }
+
   async function renderProductsPage() {
     var range = state.ranges.products;
     var offset = state.offsets.products;
@@ -4284,6 +4317,7 @@
     toolbar.appendChild(renderRangeFilter(range, rangeOptions, function (next) { state.ranges.products = next; state.offsets.products = 0; renderCurrentPage(); }));
     toolbar.appendChild(make('span', 'admin-toolbar-note', 'טבלת המכירות למטה מציגה רק מוצרים שנמכרו בטווח'));
     if(hasCapability('products.edit'))frag.appendChild(await renderCatalogSection());
+    else if(hasCapability('products.description')||hasCapability('products.price'))frag.appendChild(await renderScopedProductSection());
     frag.appendChild(toolbar);
     frag.appendChild(renderKpis([
       { label: 'מוצרים שנמכרו', value: numberFmt(data.count), hint: 'מוצרים ייחודיים עם Paid', primary: true },
