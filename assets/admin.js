@@ -160,6 +160,7 @@
     customers: ['לקוחות', 'משתמשים רשומים, רכישות והוצאות מצטברות'],
     reviews: ['ביקורות', 'דירוגים, מוצרים מובילים וביקורות אחרונות'],
     tasks: ['משימות פנימיות', 'תקלות, שיפורים, משימות ועדיפויות לצוות'],
+    security: ['אבטחה ותחזוקה','מכשירים מחוברים, גיבויים, מחיקות, שחזור ומצב תחזוקה'],
     reports: ['דוחות וייצוא', 'דוחות פעילות, שעות, המרות והורדה כ-PDF, CSV או Excel'],
     employees: ['עובדים והרשאות', 'ניהול עובדים והגדרת הרשאה נפרדת לכל פעולה']
   };
@@ -203,6 +204,7 @@
     advancedOrderFilters: { customer:'',from:'',to:'',minAmount:'',maxAmount:'',tracking:'all' },
     offsets: { visitors: 0, orders: 0, orderWork: 0, products: 0, customers: 0 },
     selectedVisitorId: null,
+    customerSearch: '',
     dashboardCompare: {aFrom:'',aTo:'',bFrom:'',bTo:''},
     dashboardExpanded: Object.create(null),
     requestVersion: 0
@@ -219,7 +221,7 @@
       return 'order-work';
     }
 
-    var match = /^\/admin\/(visitors|sales|income|expenses|order-work|anomalies|products|marketing|customers|reviews|creators|tasks|reports|employees)$/.exec(path);
+    var match = /^\/admin\/(security|visitors|sales|income|expenses|order-work|anomalies|products|marketing|customers|reviews|creators|tasks|reports|employees)$/.exec(path);
     return match ? match[1] : 'dashboard';
   }
 
@@ -4590,7 +4592,7 @@
     var isOwner=access.isOwner===true;
     var canEditCustomers=hasCapability('customers.edit');
     var offset = state.offsets.customers;
-    var data = await api('/api/admin/customers?limit=50&offset=' + offset);
+    var data = await api('/api/admin/customers?limit=50&offset=' + offset + '&q=' + encodeURIComponent(state.customerSearch||''));
     var paying = (data.customers || []).filter(function (customer) { return customer.paidOrderCount > 0; }).length;
     var spendOnPage = (data.customers || []).reduce(function (sum, customer) { return sum + Number(customer.paidSpendAgorot || 0); }, 0);
     var frag = document.createDocumentFragment();
@@ -4600,6 +4602,12 @@
       { label: 'לקוחות משלמים בעמוד', value: numberFmt(paying), hint: 'לפחות הזמנת Paid אחת' },
       { label: 'Paid spend בעמוד', value: moneyAgorot(spendOnPage), hint: 'סכום הוצאות המשתמשים המוצגים' }
     ]));
+    var searchForm=make('form','admin-toolbar');
+    var searchInput=make('input','admin-input');searchInput.type='search';searchInput.placeholder='חיפוש לקוח בשרת לפי שם, מייל או טלפון';searchInput.value=state.customerSearch||'';searchInput.maxLength=100;searchInput.style.minWidth='240px';searchInput.style.flex='1';
+    var searchButton=make('button','admin-small-button','חפש');searchButton.type='submit';
+    var clearSearch=make('button','admin-small-button','נקה');clearSearch.type='button';clearSearch.onclick=function(){state.customerSearch='';state.offsets.customers=0;renderCurrentPage();};
+    searchForm.onsubmit=function(e){e.preventDefault();state.customerSearch=searchInput.value.trim();state.offsets.customers=0;renderCurrentPage();};
+    searchForm.append(searchInput,searchButton,clearSearch);frag.appendChild(searchForm);
     var table = renderTable({
       title: 'לקוחות ומשתמשים',
       subtitle: 'ממוינים לפי סכום הוצאות Paid · ניתן לחסום או לבטל חסימה ישירות מהאדמין',
@@ -4874,6 +4882,7 @@
       else if (state.page === 'tasks') await window.VersansAdminTools.renderTasks(content);
       else if (state.page === 'employees') await window.VersansAdminEmployees.render(content,staffIdentity);
       else if (state.page === 'reports') await window.VersansAdminTools.renderReports(content);
+      else if (state.page === 'security') await window.VersansAdminSecurity.render(content);
       if (version !== state.requestVersion) return;
     } catch (error) {
       if (version === state.requestVersion && error.message !== 'admin_required') setError(error);

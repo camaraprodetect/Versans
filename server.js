@@ -6,6 +6,7 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const { URL } = require('node:url');
 const { createDatabase, importOpeningExpenseLedger } = require('./lib/database');
+const { createAdminSecurity } = require('./lib/admin-security');
 const { createAdminTools } = require('./lib/admin-tools.js');
 const { createAdminReporting, SENSITIVE_TYPES, SOURCE_PERMISSIONS } = require('./lib/admin-reporting.js');
 const reportExport = require('./lib/report-export.js');
@@ -77,7 +78,7 @@ const ADMIN_PUSH_DEVICE_TTL_MS = 365 * 24 * 60 * 60 * 1000;
 const ADMIN_PUSH_VAPID_PUBLIC_META_KEY = 'admin_push_vapid_public_v1';
 const ADMIN_PUSH_VAPID_PRIVATE_META_KEY = 'admin_push_vapid_private_jwk_v1';
 const ADMIN_PUSH_TIMEOUT_MS = 10 * 1000;
-const ADMIN_PAGES = new Set(['tasks', 'reports', 'expenses', 'income', '', 'dashboard', 'visitors', 'sales', 'orders', 'order-work', 'anomalies', 'products', 'customers', 'reviews', 'creators', 'employees', 'marketing']);
+const ADMIN_PAGES = new Set(['security', 'tasks', 'reports', 'expenses', 'income', '', 'dashboard', 'visitors', 'sales', 'orders', 'order-work', 'anomalies', 'products', 'customers', 'reviews', 'creators', 'employees', 'marketing']);
 const BODY_LIMIT = 48 * 1024 * 1024;
 const REVIEW_IMAGE_LIMIT = 2 * 1024 * 1024;
 const REVIEW_VIDEO_LIMIT = 20 * 1024 * 1024;
@@ -104,6 +105,24 @@ const VERSANS_BOT_MAX_BODY_CHARS = 32000;
 
 const database = createDatabase({ root: ROOT, sqlitePath: DB_PATH });
 const financeLedger = createFinanceLedger(database);
+const adminSecurity=createAdminSecurity(database,{sqlitePath:DB_PATH,root:ROOT});
+async function reportSheetFailure(scope,detail){
+  try{
+    const key='sheet_alert_last_'+scope;
+    const now=Date.now(),last=Number(await database.getSchemaMeta(key)||0);
+    if(now-last<6*60*60*1000)return;
+    await database.setSchemaMeta(key,String(now));
+    const message=`Google Sheets · ${scope}: ${String(detail||'').slice(0,170)}`;
+    await adminSecurity.event('sheet_failure',null,message);
+    if(isEmailConfigured())setImmediate(()=>sendEmail({to:ADMIN_EMAIL,subject:'VerSans: בעיית סנכרון ל-Google Sheets',text:message+'\nבדוק את אזור אבטחה ותחזוקה באדמין.'}).catch(e=>console.error('Sheet failure alert failed:',e.message)));
+  }catch(e){console.error('Sheet failure logging failed:',e.message);}
+}
+async function syncProductWithAlert(slug){
+  const result=await catalogManager.syncOne(slug);
+  if(result&&result.ok===false)reportSheetFailure('products',slug+': '+String(result.error||'sync_failed')).catch(()=>{});
+  return result;
+}
+
 const marketingManager=createMarketingManager(database);
 const marketingMedia=createMarketingMedia(database);
 const creatorProgram = createCreatorProgram(database);
@@ -688,9 +707,26 @@ async function createSession(userId, req) {
   const privileged = user && (normalizeEmail(user.email) === ADMIN_EMAIL || ['admin','staff'].includes(String(user.role || 'customer')));
   const ttl = privileged ? ADMIN_SESSION_TTL_MS : SESSION_TTL_MS;
   await database.insertSession(userId, tokenHash(token), now, now + ttl);
+  req._newLoginSessionToken=token;
   return sessionCookie(token, req, ttl);
 }
 
+const ADMIN_DEVICE_COOKIE='versans_security_device';
+function adminDeviceCookie(id,req){const secure=process.env.NODE_ENV==='production'||String(req.headers['x-forwarded-proto']||'').split(',')[0].trim()==='https';return `${ADMIN_DEVICE_COOKIE}=${encodeURIComponent(id)}; Path=/; HttpOnly; SameSite=Lax; Max-Age=31536000${secure?'; Secure':''}`;}
+async function registerAdminLoginDevice(req,user){
+  if(!user||!req._newLoginSessionToken)return {cookie:null,suspicious:false};
+  const privileged=normalizeEmail(user.email)===ADMIN_EMAIL||['admin','staff'].includes(user.role);
+  if(!privileged)return {cookie:null,suspicious:false};
+  const existing=String(parseCookies(req.headers.cookie)[ADMIN_DEVICE_COOKIE]||'');
+  const device=/^[a-f0-9]{48}$/.test(existing)?existing:crypto.randomBytes(24).toString('hex');
+  const flagged=await adminSecurity.registerSession({user:{...user,role:normalizeEmail(user.email)===ADMIN_EMAIL?'admin':user.role},token:req._newLoginSessionToken,deviceToken:device,userAgent:req.headers['user-agent']});
+  return {cookie:device!==existing?adminDeviceCookie(device,req):null,suspicious:flagged};
+}
+function alertSuspiciousAdminLogin(user,req){
+  const agent=String(req.headers['user-agent']||'unknown').slice(0,115);
+  if(!isEmailConfigured())return;
+  setImmediate(()=>sendEmail({to:ADMIN_EMAIL,subject:'VerSans: התחברות ממכשיר חדש לאדמין',text:`החשבון ${user.email} התחבר מדפדפן שלא זוהה בעבר.\nדפדפן: ${agent}\nזמן: ${new Date().toISOString()}\nבדוק את אזור אבטחה ותחזוקה ונתק התחברויות לא מוכרות.`}).catch(e=>console.error('Admin security alert failed:',e.message)));
+}
 function safeUser(user) {
   return user ? {
     id: user.id,
@@ -4810,6 +4846,7 @@ async function sendPaidOrderToGoogleSheetOnce(order) {
   } catch (error) {
     /* A definite failure is retryable later. The atomic claim still prevents
        simultaneous duplicate submissions during the current payment flow. */
+    reportSheetFailure('orders',`הזמנה ${orderRef}: ${String(error.message||error).slice(0,150)}`).catch(()=>{});
     try { await database.releaseOrderGoogleSheetSync(orderRef); } catch (releaseErr) {
       console.error(`Google Sheet sync claim release failed for ${orderRef}:`, releaseErr && releaseErr.message ? releaseErr.message : releaseErr);
     }
@@ -5241,6 +5278,77 @@ async function adminApi(req, res, pathname, parsed) {
     json(res, 403, { ok: false, error: 'permission_denied' });
     return true;
   }
+  // Refresh last-seen timestamps without slowing admin requests or blocking them if monitoring fails.
+  if(admin)adminSecurity.seenSession(admin,getSessionToken(req),parseCookies(req.headers.cookie)[ADMIN_DEVICE_COOKIE],req.headers['user-agent']).catch(e=>console.error('Admin device heartbeat:',e.message));
+  if (pathname==='/api/admin/security/overview' && req.method==='GET') {
+    const hash=tokenHash(getSessionToken(req));
+    await adminSecurity.seenSession(admin,getSessionToken(req),parseCookies(req.headers.cookie)[ADMIN_DEVICE_COOKIE],req.headers['user-agent']);
+    const owner=normalizeEmail(admin.email)===ADMIN_EMAIL;
+    const [sessions,trash,versions,sheets,backups,events,maintenance]=await Promise.all([
+      owner?adminSecurity.allAdminSessions(hash):adminSecurity.sessions(Number(admin.id),hash),adminSecurity.recycleList(),adminSecurity.versions(),adminSecurity.sheetHealth(catalogManager.pendingSlugs()),adminSecurity.backupStatus(),adminSecurity.events(),adminSecurity.maintenance()
+    ]);
+    json(res,200,{ok:true,owner,devices:sessions,trash:owner?trash:[],versions:owner?versions:[],sheets:owner?sheets:{pendingProducts:[],pendingOrders:[],failedEvents:[]},backups:owner?backups:{configured:false,latest:null},events:owner?events:[],maintenance});return true;
+  }
+  if (pathname.startsWith('/api/admin/security/') && req.method==='POST') {
+    if(!sameOriginAllowed(req)){json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
+    const body=await readJsonBody(req,16384);
+    const owner=normalizeEmail(admin.email)===ADMIN_EMAIL;
+    if(pathname==='/api/admin/security/devices/revoke'){
+      const uid=owner&&Number.isSafeInteger(Number(body.userId))&&Number(body.userId)>0?Number(body.userId):Number(admin.id);
+      const result=await adminSecurity.revoke(uid,String(body.id||''),tokenHash(getSessionToken(req)));
+      if(!result){json(res,404,{ok:false,error:'session_not_found'});return true;}
+      if(result.current)res.setHeader('Set-Cookie',clearSessionCookie(req));
+      json(res,200,{ok:true,...result});return true;
+    }
+    if(!owner){json(res,403,{ok:false,error:'owner_only'});return true;}
+    if(pathname==='/api/admin/security/maintenance'){
+      if(typeof body.active!=='boolean'){json(res,400,{ok:false,error:'invalid_status'});return true;}
+      await adminSecurity.setMaintenance(body.active,Number(admin.id));json(res,200,{ok:true,active:body.active});return true;
+    }
+    if(pathname==='/api/admin/security/backup'){
+      try{json(res,200,{ok:true,backup:await adminSecurity.backup()});}catch(e){json(res,e.status||503,{ok:false,error:e.message});}return true;
+    }
+    if(pathname==='/api/admin/security/trash/restore'){
+      const item=await adminSecurity.readRecycle(String(body.id||''));
+      if(!item||!['product','task'].includes(item.kind)){json(res,404,{ok:false,error:'trash_not_found'});return true;}
+      if(item.kind==='task'){
+        const old=JSON.parse(item.payload);
+        const task=await adminTools.addTask({title:old.title,description:old.description,type:old.type,status:old.status,priority:old.priority,assignedTo:old.assignedTo,dueDate:old.dueDate},Number(admin.id));
+        await adminSecurity.markRestored(item.id,Number(admin.id));
+        await adminSecurity.event('restore_task',Number(admin.id),String(old.id));
+        json(res,200,{ok:true,task,restoredAsNewId:true});return true;
+      }
+      await catalogManager.refresh();
+      if(catalogManager.getAdminProduct(item.object_key)){json(res,409,{ok:false,error:'product_already_exists'});return true;}
+      await catalogManager.restoreDeleted(item.object_key,JSON.parse(item.payload),admin.email);
+      await syncProductWithAlert(item.object_key);
+      await adminSecurity.markRestored(item.id,Number(admin.id));
+      await adminSecurity.event('restore_product',Number(admin.id),item.object_key);
+      json(res,200,{ok:true,slug:item.object_key});return true;
+    }
+    if(pathname==='/api/admin/security/versions/restore'){
+      const item=await adminSecurity.readVersion(String(body.id||''));
+      if(!item){json(res,404,{ok:false,error:'version_not_found'});return true;}
+      const payload=JSON.parse(item.payload);
+      if(item.kind==='maintenance'){
+        await adminSecurity.setMaintenance(!!payload.active,Number(admin.id));
+      }else if(item.kind==='marketing'){
+        const current=await marketingManager.read(true);
+        await adminSecurity.version('marketing','settings',current,Number(admin.id));
+        await database.setSchemaMeta('admin_marketing_v1',JSON.stringify(payload));
+        await marketingManager.read(true);
+      }else if(item.kind==='product'){
+        await catalogManager.refresh();
+        const current=catalogManager.getAdminProduct(item.object_key);
+        await adminSecurity.version('product',item.object_key,current||null,Number(admin.id));
+        if(payload!==null && !current)await catalogManager.restoreDeleted(item.object_key,payload,admin.email);
+        else await catalogManager.write(payload,item.object_key,payload===null,admin.email);
+        await syncProductWithAlert(item.object_key);
+      }else{json(res,400,{ok:false,error:'unsupported_version_type'});return true;}
+      await adminSecurity.event('restore_version',Number(admin.id),item.kind+':'+item.object_key);
+      json(res,200,{ok:true});return true;
+    }
+  }
   if(pathname==='/api/admin/marketing/media'&&req.method==='POST'){
     if(!sameOriginAllowed(req)){json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
     const data=await readJsonBody(req,28*1024*1024);
@@ -5284,7 +5392,9 @@ async function adminApi(req, res, pathname, parsed) {
         const q=pg?await database._query('SELECT 1 FROM coupons WHERE UPPER(code)=$1 LIMIT 1',[code]):database.db.prepare('SELECT 1 FROM coupons WHERE UPPER(code)=? LIMIT 1').get(code);
         if(creator || (pg?q.rows.length:q)){json(res,409,{ok:false,error:'coupon_code_taken'});return true;}
       }
+      const previousMarketing=await marketingManager.read(true);
       const data=await marketingManager.edit(body.section,body.action,body.item);
+      await adminSecurity.version('marketing','settings',previousMarketing,Number(admin.id));
       await recordDashboardActivity(admin,'marketing',body.action,body.section+' · '+String(body.item.code||body.item.name||body.item.title||body.item.id||''));
       json(res,200,{ok:true,items:data[body.section]});return true;
     }
@@ -5659,7 +5769,9 @@ async function adminApi(req, res, pathname, parsed) {
         return true;
       }
       if(req.method==='DELETE'){
-        await adminTools.deleteTask(taskId, Number(body&&body.updatedAt));
+        const trashId=await adminSecurity.recycle('task',String(taskId),previous,Number(admin.id));
+        try{await adminTools.deleteTask(taskId, Number(body&&body.updatedAt));}
+        catch(error){await adminSecurity.removeRecycle(trashId);throw error;}
         json(res,200,{ok:true});
       }else{
         const task=await adminTools.updateTask(taskId,body||{},Number(admin.id));
@@ -7128,7 +7240,7 @@ async function adminApi(req, res, pathname, parsed) {
     if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'}); return true; }
     const result=await catalogManager.undoLast(admin && admin.email);
     await recordDashboardActivity(admin,'products','ביטול שינוי אחרון','קטלוג מוצרים');
-    const sheetSync=result.slug ? await catalogManager.syncOne(result.slug) : undefined;
+    const sheetSync=result.slug ? await syncProductWithAlert(result.slug) : undefined;
     json(res,200,{ok:true,...result,sheetSync});return true;
   }
   if (pathname === '/api/admin/catalog' && req.method === 'GET') {
@@ -7157,7 +7269,7 @@ async function adminApi(req, res, pathname, parsed) {
     if(!sameOriginAllowed(req)){json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
     const item=await catalogManager.duplicate(cloneMatch[1],admin?.email);
     await recordDashboardActivity(admin,'products','שכפול מוצר',item.slug);
-    const sheetSync=await catalogManager.syncOne(item.slug);
+    const sheetSync=await syncProductWithAlert(item.slug);
     json(res,201,{ok:true,...item,sheetSync});return true;
   }
   const controlsMatch=/^\/api\/admin\/catalog\/(product-[a-z0-9-]+)\/controls$/.exec(pathname);
@@ -7222,20 +7334,25 @@ async function adminApi(req, res, pathname, parsed) {
     if(body && body.saveAsDraft === true)await catalogManager.setHidden(result.slug,true,admin && admin.email);
     const productTitle = catalogManager.getAdminProduct(result.slug)?.title;
     await recordDashboardActivity(admin,'products','יצירת מוצר',(productTitle && (productTitle.he||productTitle.en))||result.slug);
-    const sheetSync = await catalogManager.syncOne(result.slug);
+    const sheetSync = await syncProductWithAlert(result.slug);
     json(res, 201, {ok:true,...result,sheetSync});return true;
   }
   const catalogItemRoute = /^\/api\/admin\/catalog\/(product-[a-z0-9-]+)$/.exec(pathname);
   if (catalogItemRoute && (req.method === 'PUT' || req.method === 'DELETE')) {
     if (!sameOriginAllowed(req)) { json(res, 403, {ok:false,error:'origin_not_allowed'}); return true; }
     const beforeProduct = catalogManager.getAdminProduct(catalogItemRoute[1]);
-    const result = req.method === 'DELETE' ? await catalogManager.write(null,catalogItemRoute[1],true, admin && admin.email)
+    let trashRecord=null;
+    if(req.method==='DELETE'&&beforeProduct)trashRecord=await adminSecurity.recycle('product',catalogItemRoute[1],beforeProduct,Number(admin.id));
+    if(beforeProduct)await adminSecurity.version('product',catalogItemRoute[1],beforeProduct,Number(admin.id));
+    let result;
+    try{result = req.method === 'DELETE' ? await catalogManager.write(null,catalogItemRoute[1],true, admin && admin.email)
       : await catalogManager.write((await readJsonBody(req,128*1024)).product,catalogItemRoute[1],false, admin && admin.email);
+    }catch(error){if(trashRecord)await adminSecurity.removeRecycle(trashRecord);throw error;}
     const changedProduct = catalogManager.getAdminProduct(catalogItemRoute[1]) || beforeProduct;
     const changedTitle = changedProduct && changedProduct.title;
     await recordDashboardActivity(admin,'products',req.method==='DELETE'?'מחיקת מוצר':'עריכת מוצר',
       (typeof changedTitle==='object'?(changedTitle.he||changedTitle.en):changedTitle)||result.slug);
-    const sheetSync = await catalogManager.syncOne(result.slug);
+    const sheetSync = await syncProductWithAlert(result.slug);
     json(res, 200, {ok:true,...result,sheetSync});return true;
   }
   if (pathname === '/api/admin/catalog/sync' && req.method === 'POST') {
@@ -7680,7 +7797,8 @@ async function adminApi(req, res, pathname, parsed) {
 
   if (pathname === '/api/admin/customers') {
     const { limit, offset } = adminPagination(parsed, 50);
-    const [count, rows] = await Promise.all([database.countAdminCustomers(), database.listAdminCustomers(limit, offset)]);
+    const query=String(parsed.searchParams.get('q')||'').trim().slice(0,100);
+    const [count, rows] = await Promise.all([database.countAdminCustomers(query), database.listAdminCustomers(limit, offset, query)]);
     const customers = rows.map((row) => ({
       id: Number(row.id), name: row.name, email: row.email, phone: row.known_phone || null,
       marketingOptIn: Number(row.marketing_email_opt_in != null ? row.marketing_email_opt_in : row.marketing_opt_in || 0) === 1,
@@ -8192,7 +8310,10 @@ async function authApi(req, res, pathname, parsed) {
     await inheritVerifiedGuestForUser(req, user.id);
     const refreshedUser = await database.findUserByEmail(email);
     const verifiedUser = await ensureVerifiedCustomer(refreshedUser || user);
-    json(res, 200, { ok: true, user: safeUser(verifiedUser) }, { 'Set-Cookie': cookie });
+    let loginDevice={cookie:null,suspicious:false};
+    try{loginDevice=await registerAdminLoginDevice(req,verifiedUser);}catch(error){console.error('Device tracking failed:',error.message);}
+    json(res, 200, { ok: true, user: safeUser(verifiedUser) }, { 'Set-Cookie': loginDevice.cookie?[cookie,loginDevice.cookie]:cookie });
+    if(loginDevice.suspicious)alertSuspiciousAdminLogin(verifiedUser,req);
     if (String(verifiedUser.terms_version || '') !== TERMS_VERSION) {
       setImmediate(() => sendTermsUpdateNoticeForUser(verifiedUser).catch((err) => console.error(`Terms update email failed for user ${verifiedUser.id}:`, err && err.message ? err.message : err)));
     }
@@ -9027,6 +9148,18 @@ const server = http.createServer(async (req, res) => {
       res.end(media.buffer);return;
     }
     if (await adminPage(req, res, pathname)) return;
+    const maintenancePublicPage=(req.method==='GET'||req.method==='HEAD') &&
+      !pathname.startsWith('/api/') && !pathname.startsWith('/assets/') && !pathname.startsWith('/images/')
+      && !pathname.startsWith('/admin') && !['/favicon.ico','/robots.txt','/sitemap.xml','/login','/login.html','/forgot-password','/forgot-password.html','/reset-password','/reset-password.html'].includes(pathname)
+      && (pathname==='/' || pathname.endsWith('.html') || wantsHtmlDocument(req));
+    const maintenanceNewCheckout=pathname==='/api/create-payment' && req.method==='POST';
+    if ((maintenancePublicPage || maintenanceNewCheckout) && await adminSecurity.maintenance()) {
+      const owner=await getAdminUser(req);
+      if(!owner||normalizeEmail(owner.email)!==ADMIN_EMAIL){
+        res.writeHead(503,{'Content-Type':pathname.startsWith('/api/')?'application/json; charset=utf-8':'text/html; charset=utf-8','Cache-Control':'no-store','Retry-After':'600'});
+        res.end(pathname.startsWith('/api/')?JSON.stringify({ok:false,error:'maintenance_mode'}):'<!doctype html><html lang="he" dir="rtl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>VerSans — תחזוקה</title><body style="font-family:Arial;text-align:center;padding:15vh 20px;color:#142333"><h1>VerSans</h1><h2>החנות מתעדכנת</h2><p>אנחנו מבצעים עבודות תחזוקה. האתר יחזור לפעילות בקרוב.</p></body></html>');return;
+      }
+    }
     if (await marketingUnsubscribePage(req, res, pathname, parsed)) return;
     if (await providerMessageWebhookApi(req, res, pathname)) return;
     if (await trackingWebhookApi(req, res, pathname)) return;
@@ -9550,7 +9683,7 @@ setInterval(async () => {
 }, 30 * 60 * 1000).unref();
 
 // Retry any queued product-sheet updates when Sheets is temporarily unavailable.
-setInterval(() => { catalogManager.syncPending().catch(err => console.error('Product-sheet sync retry:',err)); }, 5 * 60 * 1000).unref();
+setInterval(() => { catalogManager.syncPending().then(results=>{for(const [slug,r] of Object.entries(results||{}))if(r&&r.ok===false)reportSheetFailure('products',slug+': '+String(r.error||'sync_failed')).catch(()=>{});}).catch(err => console.error('Product-sheet sync retry:',err)); }, 5 * 60 * 1000).unref();
 
 // New-order WhatsApp is event-driven: the paid-order flow posts the webhook
 // immediately after the paid order is persisted. Google Sheets is independent.
@@ -9568,6 +9701,7 @@ setInterval(async () => {
 }, ORDER_NOTIFICATION_WEBHOOK_RETRY_MS).unref();
 
 setInterval(()=>{checkTaskPushSchedule().catch(e=>console.error('Task reminder scheduler failed:',e));},60*1000).unref();
+setInterval(()=>{adminSecurity.dailyBackup().catch(e=>console.error('Scheduled backup failed:',e.message));},60*60*1000).unref();
 setInterval(()=>{financeLedger.generateRecurring().catch(e=>console.error('Monthly expense generator failed:',e));},6*60*60*1000).unref();
 setInterval(()=>{adminReporting.deliverScheduled(async(user,type,recipients)=>{
   const permissions=user.role==='staff'?await employeeAccess.read(Number(user.id)):[];
@@ -9576,6 +9710,8 @@ setInterval(()=>{adminReporting.deliverScheduled(async(user,type,recipients)=>{
 
 async function start() {
   await database.init();
+  await adminSecurity.init();
+  adminSecurity.dailyBackup().catch(e=>console.error('Backup startup check failed:',e.message));
   await financeLedger.init();
   await financeLedger.generateRecurring();
   if (process.env.NODE_ENV !== 'test') await importOpeningExpenseLedger(database);
