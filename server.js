@@ -132,6 +132,8 @@ const creatorVideosStore = createCreatorVideos(database,creatorProgram);
 const employeeAccess = employeePolicy.createEmployeeAccess(database);
 const { createAdminDashboard } = require('./lib/admin-dashboard.js');
 const adminDashboard = createAdminDashboard(database, creatorProgram);
+const { createAdminCreatorCrm } = require('./lib/admin-creator-crm.js');
+const adminCreatorCrm = createAdminCreatorCrm(database);
 async function recordDashboardActivity(admin, area, action, subject) {
   try { if (admin) await adminDashboard.log(admin,area,action,subject); }
   catch (error) { console.error('Dashboard activity log failed:',error.message); }
@@ -5370,7 +5372,7 @@ async function adminApi(req, res, pathname, parsed) {
   const moneyChange=/^\/api\/admin\/finance\/(expenses|recurring|refunds)(?:\/\d+)?$/.test(pathname);
   const employeeChange=/^\/api\/admin\/employees(?:\/\d+)?$/.test(pathname);
   const sensitiveChange=(['POST','PUT','PATCH','DELETE'].includes(req.method)) && (
-    moneyChange || employeeChange || pathname==='/api/admin/dashboard/creator-payment' ||
+    moneyChange || employeeChange || pathname==='/api/admin/dashboard/creator-payment' || /^\/api\/admin\/creators\/profiles\/\d+\/payments\/\d+$/.test(pathname) ||
     pathname==='/api/admin/access/role' || /^\/api\/admin\/customers\/\d+\/access$/.test(pathname));
   if(admin && sensitiveChange && !await employeeAccess.hasReauth(tokenHash(getSessionToken(req)),Number(admin.id))){
     json(res,428,{ok:false,error:'reauth_required'});return true;
@@ -6172,6 +6174,42 @@ async function adminApi(req, res, pathname, parsed) {
     return true;
   }
 
+  // Creator CRM: all mutations are stored separately from historical orders/coupon data.
+  const creatorProfileMatch=/^\/api\/admin\/creators\/profiles\/(\d+)(?:\/(contacts|documents|costs|history|payments)(?:\/(\d+))?)?$/.exec(pathname);
+  if (pathname==='/api/admin/creators/profiles' && req.method==='GET') {
+    json(res,200,{ok:true,creators:await adminCreatorCrm.list()});return true;
+  }
+  if (pathname==='/api/admin/creators/profiles' && req.method==='POST'){
+    if(!sameOriginAllowed(req)){json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
+    try{const created=await adminCreatorCrm.createProfile(await readJsonBody(req),admin);
+      await recordDashboardActivity(admin,'creators','יצירת מועמד ליוצר',String(created.id));json(res,201,{ok:true,...created});}
+    catch(e){json(res,e.status||500,{ok:false,error:e.status?e.message:'creator_profile_failed'});}return true;
+  }
+  if (creatorProfileMatch) {
+    const id=Number(creatorProfileMatch[1]),part=creatorProfileMatch[2]||'',child=creatorProfileMatch[3];
+    if(req.method!=='GET'&&!sameOriginAllowed(req)){json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
+    try {
+      if(req.method==='GET'&&!part){json(res,200,{ok:true,...await adminCreatorCrm.detail(id)});return true;}
+      if(req.method==='PATCH'&&!part){json(res,200,{ok:true,...await adminCreatorCrm.updateProfile(id,await readJsonBody(req),admin)});return true;}
+      if(req.method==='POST'&&part==='contacts'&&!child){json(res,201,{ok:true,...await adminCreatorCrm.contact(id,await readJsonBody(req),admin)});return true;}
+      if(req.method==='PATCH'&&part==='contacts'&&child){json(res,200,{ok:true,...await adminCreatorCrm.updateContact(id,Number(child),await readJsonBody(req),admin)});return true;}
+      if(req.method==='POST'&&part==='costs'&&!child){json(res,201,{ok:true,...await adminCreatorCrm.addCost(id,await readJsonBody(req),admin)});return true;}
+      if(req.method==='DELETE'&&part==='costs'&&child){json(res,200,{ok:true,...await adminCreatorCrm.deleteCost(id,Number(child),admin)});return true;}
+      if(req.method==='POST'&&part==='documents'&&!child){json(res,201,{ok:true,...await adminCreatorCrm.addDocument(id,await readJsonBody(req),admin)});return true;}
+      if(req.method==='GET'&&part==='documents'&&child){
+        const file=await adminCreatorCrm.document(id,Number(child));
+        res.writeHead(200,{'Content-Type':file.mime,'Content-Length':file.buffer.length,
+          'Content-Disposition':`attachment; filename*=UTF-8''${encodeURIComponent(file.name)}`,
+          'Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff'});res.end(file.buffer);return true;
+      }
+      if(req.method==='PATCH'&&part==='payments'&&child){
+        if(normalizeEmail(admin.email)!==ADMIN_EMAIL){json(res,403,{ok:false,error:'owner_only'});return true;}
+        json(res,200,{ok:true,...await adminCreatorCrm.setPaymentReference(id,Number(child),(await readJsonBody(req)).reference,admin)});return true;
+      }
+      json(res,405,{ok:false,error:'method_not_allowed'});
+    }catch(e){json(res,e.status||500,{ok:false,error:e.status?e.message:'creator_crm_failed'});}
+    return true;
+  }
   // Only the owner can issue, change or revoke creator permissions/codes.
   if (pathname === '/api/admin/creators' && req.method === 'GET') {
     json(res, 200, { ok: true, creators: await creatorProgram.listCreators() });
@@ -6183,6 +6221,7 @@ async function adminApi(req, res, pathname, parsed) {
       const body=await readJsonBody(req);
       if((await marketingManager.read()).coupons.some(x=>x.code===normalizeCouponCode(body.code))) {json(res,409,{ok:false,error:'coupon_code_taken'});return true;}
       const creator=await creatorProgram.grantByEmail(body.email,body.code,body.discountPercent,body.commissionPercent,body.tiktokUsername,body.viewRatePer1000Agorot);
+      await adminCreatorCrm.touchUser(creator.id,'active');
       await recordDashboardActivity(admin,'creators','הגדרת יוצר תוכן',creator.name||body.email);
       json(res,200,{ok:true,creator});
     } catch(err) { json(res,err.status||500,{ok:false,error:err.status?err.message:'creator_save_failed'}); }
@@ -6192,6 +6231,7 @@ async function adminApi(req, res, pathname, parsed) {
   if (creatorRevokeMatch && req.method === 'POST') {
     if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'}); return true; }
     const removed=await creatorProgram.revoke(Number(creatorRevokeMatch[1]));
+    if(removed)await adminCreatorCrm.touchUser(Number(creatorRevokeMatch[1]),'ended');
     json(res,removed?200:404,{ok:removed,error:removed?undefined:'creator_not_found'});
     return true;
   }
@@ -7372,7 +7412,7 @@ async function adminApi(req, res, pathname, parsed) {
     if(normalizeEmail(admin.email)!==ADMIN_EMAIL){json(res,403,{ok:false,error:'owner_only'});return true;}
     const body=await readJsonBody(req,4096);
     try{
-      const result=await adminDashboard.payCreator(Number(body.creatorId),Number(body.amountAgorot),body.requestId,body.note||'',admin);
+      const result=await adminDashboard.payCreator(Number(body.creatorId),Number(body.amountAgorot),body.requestId,body.note||'',admin,body.reference||'');
       json(res,200,{ok:true,...result});
     }catch(e){json(res,e.status||500,{ok:false,error:e.status?e.message:'creator_payment_failed'});}
     return true;
@@ -10009,6 +10049,7 @@ async function start() {
   await creatorProgram.init();
   await creatorVideosStore.init();
   await adminDashboard.init();
+  await adminCreatorCrm.init();
   await catalogManager.init();
   await adminTools.ensure();
   await taskWorkflow.ensure();

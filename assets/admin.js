@@ -4336,6 +4336,7 @@
   async function renderCreatorsPage() {
     var data=await api('/api/admin/creators');
     var frag=document.createDocumentFragment();
+    await window.VersansCreatorsCRM.render(frag,{api:api,act:apiAction,refresh:renderCurrentPage,toast:showToast,canEdit:function(){return hasCapability('creators.edit');},isOwner:Boolean(staffIdentity&&staffIdentity.isOwner)});
     var creatorsWritable=hasCapability('creators.edit');
     var box=make('section','admin-card');
     var head=make('div','admin-card__head');
