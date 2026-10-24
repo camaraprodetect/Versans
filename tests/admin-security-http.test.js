@@ -60,7 +60,16 @@ test('admin security API, login cookies, maintenance owner preview and backup ar
   assert.equal((await request(port,'/login')).status,200);
   assert.equal((await request(port,'/','GET',undefined,cookies)).status,200);
   assert.notEqual((await request(port,'/api/verify-payment')).status,503);
-  r=await request(port,'/api/admin/security/backup','POST',{},cookies);assert.equal(r.status,200,await r.text());
+  // Automatic startup backup may already be available here.
+  r=await request(port,'/api/admin/security/backup','POST',{},cookies);const backupResponseText=await r.text();assert.equal(r.status,200,backupResponseText);
+  const backupCreated=JSON.parse(backupResponseText);assert.equal(backupCreated.backup.ok,true);
+  r=await request(port,'/api/admin/security/backup/download','GET',undefined,staffCookie);assert.equal(r.status,403,'staff must not download owner database backup');
+  r=await request(port,'/api/admin/security/backup/download','GET',undefined,cookies);assert.equal(r.status,200);
+  assert.match(r.headers.get('content-disposition')||'',/attachment; filename="versans-.*\.sqlite"/);
+  assert.equal(r.headers.get('cache-control'),'no-store, private');
+  const backupBytes=Buffer.from(await r.arrayBuffer());assert.equal(backupBytes.subarray(0,16).toString('utf8'),'SQLite format 3\0');
+  assert.equal(backupBytes.length,backupCreated.backup.bytes);
+
   r=await request(port,'/api/admin/security/maintenance','POST',{active:false},cookies);assert.equal(r.status,200,await r.text());
   assert.equal((await request(port,'/')).status,200);
   r=await request(port,'/api/admin/security/overview','GET',undefined,cookies);overview=await r.json();

@@ -7,7 +7,14 @@ function section(title,desc){var card=node('section','as-card');card.append(node
 function item(left,right,action){var r=node('div','as-item'),p=node('div');p.append(node('strong','',left));p.append(node('small','',right));r.append(p);if(action)r.append(action);return r;}
 function list(card,rows,empty,render){if(!rows.length)card.append(node('p','as-muted',empty));else rows.forEach(function(row){card.append(render(row));});}
 function badge(text){return node('span','as-badge',text);}
-function feedback(root,message,bad){var n=node('div','as-message'+(bad?' as-error':''),message);root.prepend(n);setTimeout(()=>n.remove(),6500);}
+function feedback(root,message,bad){var n=node('div','as-message'+(bad?' as-error':''),message);n.setAttribute('role',bad?'alert':'status');n.setAttribute('aria-live',bad?'assertive':'polite');root.prepend(n);if(!bad)setTimeout(function(){n.remove();},20000);}
+function backupError(error){var msg=String(error&&error.message||'');if(msg==='backup_directory_not_configured')return 'לא הוגדרה תיקיית גיבוי בשרת. הגדר VERSANS_BACKUP_DIR ב-Render ובצע Deploy.';
+if(msg==='backup_in_progress')return 'גיבוי כבר פועל כרגע. נסה שוב אחרי שיסתיים.';
+if(/pg_dump.*ENOENT|spawn pg_dump ENOENT/.test(msg))return 'השרת לא מוצא את pg_dump. יש להתקין PostgreSQL client בכלי הבנייה של Render.';
+if(/pg_restore.*ENOENT|spawn pg_restore ENOENT/.test(msg))return 'השרת לא מוצא את pg_restore. יש להתקין PostgreSQL client בכלי הבנייה של Render.';
+if(/EACCES|permission denied/i.test(msg))return 'אין הרשאת כתיבה לתיקיית הגיבויים. בדוק את הדיסק ואת VERSANS_BACKUP_DIR ב-Render.';
+if(/ENOSPC|no space left/i.test(msg))return 'אין מספיק מקום בדיסק הגיבויים. פנה מקום או הגדל את הדיסק.';
+return msg||'יצירת הגיבוי נכשלה. בדוק את יומן השרת ב-Render.';}
 async function render(root){root.replaceChildren(node('p','as-muted','טוען נתוני אבטחה...'));
 try{
 var d=await api('/api/admin/security/overview'),wrap=node('div','as-page');
@@ -23,9 +30,10 @@ list(sheet,os.slice(0,10),'לא נמצאו הזמנות ממתינות בטוו�
 list(sheet,d.sheets?.failedEvents||[],'לא תועדו שגיאות סנכרון חדשות',function(x){return item(x.detail,when(x.createdAt));});wrap.append(sheet);
 var backups=section('גיבויים אוטומטיים ובדיקת שחזור','גיבוי יומי יפעל רק אם הוגדרה תיקיית גיבוי מתמשכת בשרת. PostgreSQL מצריך pg_dump ו-pg_restore.');
 backups.append(item('מצב הגיבוי',d.backups?.configured?'תיקיית גיבוי הוגדרה':'גיבוי אוטומטי עדיין לא הוגדר'));
-if(d.backups?.latest){var bk=d.backups.latest;backups.append(item(bk.ok?'גיבוי אחרון תקין':'הגיבוי האחרון נכשל',when(bk.at)+' · '+(bk.verification||bk.error||'')));}
+if(d.backups?.latest){var bk=d.backups.latest;backups.append(item(bk.ok?'גיבוי אחרון תקין':'הגיבוי האחרון נכשל',when(bk.at)+' · '+(bk.verification||backupError({message:bk.error})||'')+(bk.bytes?' · '+(bk.bytes/1048576).toFixed(2)+' MB':'')));
+if(bk.ok&&d.owner){var download=node('a','as-button as-download','הורד את הגיבוי האחרון');download.href='/api/admin/security/backup/download';download.setAttribute('download',bk.filename||'versans-backup');download.setAttribute('aria-label','הורדת הגיבוי האחרון למחשב');backups.append(download);}}
 if(d.backups?.warning)backups.append(node('p','as-warning',d.backups.warning));
-if(d.owner)backups.append(btn('בצע גיבוי ובדיקת תקינות עכשיו',async function(){try{var r=await api('/api/admin/security/backup','POST',{});feedback(wrap,'הגיבוי נוצר: '+r.backup.filename);await render(root);}catch(e){feedback(wrap,e.message,true);}}));wrap.append(backups);
+if(d.owner)backups.append(btn('בצע גיבוי ובדיקת תקינות עכשיו',async function(){var button=this;button.disabled=true;button.textContent='יוצר גיבוי ובודק תקינות...';try{var r=await api('/api/admin/security/backup','POST',{});await render(root);feedback(root,'הגיבוי נוצר ונשמר בשרת בהצלחה: '+r.backup.filename+'. כדי לקבל עותק במחשב לחץ על ״הורד את הגיבוי האחרון״.');}catch(e){feedback(root,backupError(e),true);}finally{if(button.isConnected){button.disabled=false;button.textContent='בצע גיבוי ובדיקת תקינות עכשיו';}}}));wrap.append(backups);
 var maintenance=section('מצב תחזוקה','במצב תחזוקה הלקוחות רואים הודעה, אבל הבעלים המחובר יכול לראות ולבדוק את החנות. אפשר לכבות בכל רגע.');
 maintenance.append(item('סטטוס נוכחי',d.maintenance?'מצב תחזוקה פעיל':'החנות פעילה'));
 if(d.owner)maintenance.append(btn(d.maintenance?'כבה מצב תחזוקה':'הפעל מצב תחזוקה',async function(){if(!confirm(d.maintenance?'להחזיר את החנות לפעילות?':'להפעיל מצב תחזוקה ללקוחות?'))return;try{await api('/api/admin/security/maintenance','POST',{active:!d.maintenance});await render(root);}catch(e){feedback(wrap,e.message,true);}},!!d.maintenance));

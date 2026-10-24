@@ -5280,6 +5280,24 @@ async function adminApi(req, res, pathname, parsed) {
   }
   // Refresh last-seen timestamps without slowing admin requests or blocking them if monitoring fails.
   if(admin)adminSecurity.seenSession(admin,getSessionToken(req),parseCookies(req.headers.cookie)[ADMIN_DEVICE_COOKIE],req.headers['user-agent']).catch(e=>console.error('Admin device heartbeat:',e.message));
+  // Owner-only backup download. Never expose a backup through static file hosting.
+  if (pathname==='/api/admin/security/backup/download' && req.method==='GET') {
+    if(normalizeEmail(admin.email)!==ADMIN_EMAIL){json(res,403,{ok:false,error:'owner_only'});return true;}
+    try{
+      const backupFile=await adminSecurity.latestBackupFile();
+      res.writeHead(200,{
+        'Content-Type':'application/octet-stream',
+        'Content-Disposition':`attachment; filename="${backupFile.filename}"`,
+        'Content-Length':backupFile.bytes,
+        'Cache-Control':'no-store, private',
+        'X-Content-Type-Options':'nosniff'
+      });
+      const stream=fs.createReadStream(backupFile.filePath);
+      stream.on('error',()=>res.destroy());
+      stream.pipe(res);
+    }catch(e){json(res,e.status||503,{ok:false,error:e.message});}
+    return true;
+  }
   if (pathname==='/api/admin/security/overview' && req.method==='GET') {
     const hash=tokenHash(getSessionToken(req));
     await adminSecurity.seenSession(admin,getSessionToken(req),parseCookies(req.headers.cookie)[ADMIN_DEVICE_COOKIE],req.headers['user-agent']);
