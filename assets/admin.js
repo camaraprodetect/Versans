@@ -153,6 +153,7 @@
     expenses: ['מערכת הוצאות', 'עריכה וביטול מתועד, הוצאות חודשיות, קטגוריות וייצוא לרואה חשבון'],
     orders: ['טיפול בהזמנות', 'טיפול, Tracking, Google Sheets ופרטי הזמנה במקום אחד'],
     'order-work': ['טיפול בהזמנות', 'טיפול, Tracking, Google Sheets ופרטי הזמנה במקום אחד'],
+    arrivals: ['הגעת הזמנות', 'מה הגיע, מה חסר וקליטה לפי הסריקות הקיימות'],
     anomalies: ['הזמנות חריגות', 'זיהוי הזמנות כפולות, סכומים לא סבירים וניסיונות תשלום חוזרים'],
     products: ['ניהול מוצרים', 'הוספה, עריכה, מחיקה וסנכרון קטלוג עם Google Sheets'],
     marketing: ['שיווק ומבצעים','קופונים, מבצעי כמות, פופ־אפים, באנרים וקמפיינים'],
@@ -221,7 +222,7 @@
       return 'order-work';
     }
 
-    var match = /^\/admin\/(security|visitors|sales|income|expenses|order-work|anomalies|products|marketing|customers|reviews|creators|tasks|reports|employees)$/.exec(path);
+    var match = /^\/admin\/(security|visitors|sales|income|expenses|order-work|arrivals|anomalies|products|marketing|customers|reviews|creators|tasks|reports|employees)$/.exec(path);
     return match ? match[1] : 'dashboard';
   }
 
@@ -3707,6 +3708,9 @@
     Object.keys(advanced).forEach(function(key){if(advanced[key]&&advanced[key]!=='all')query.set(key,advanced[key]);});
     var data=await api('/api/admin/order-work?'+query.toString());
     var frag = document.createDocumentFragment();
+    var arrivalLink = make('a','vs-arrivals-link','📦 מה הגיע ומה חסר בכל הזמנה ←');
+    arrivalLink.href='/admin/arrivals';
+    frag.appendChild(arrivalLink);
 
     var filtersCard = make('section', 'admin-order-work-filters-card admin-order-work-filters-card--compact');
 
@@ -4907,6 +4911,7 @@
       else if (state.page === 'expenses') await window.VersansFinance.render(content,'expenses');
       else if (state.page === 'income') await window.VersansFinance.render(content,'income');
       else if (state.page === 'order-work') await renderOrderWorkPage();
+      else if (state.page === 'arrivals') await window.VersansAdminArrivals.render(content,{canEdit:hasCapability('orders.edit')});
       else if (state.page === 'anomalies') await window.VersansAnomalies.render(content);
       else if (state.page === 'products') await renderProductsPage();
       else if (state.page === 'creators') await renderCreatorsPage();

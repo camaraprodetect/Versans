@@ -78,7 +78,7 @@ const ADMIN_PUSH_DEVICE_TTL_MS = 365 * 24 * 60 * 60 * 1000;
 const ADMIN_PUSH_VAPID_PUBLIC_META_KEY = 'admin_push_vapid_public_v1';
 const ADMIN_PUSH_VAPID_PRIVATE_META_KEY = 'admin_push_vapid_private_jwk_v1';
 const ADMIN_PUSH_TIMEOUT_MS = 10 * 1000;
-const ADMIN_PAGES = new Set(['security', 'tasks', 'reports', 'expenses', 'income', '', 'dashboard', 'visitors', 'sales', 'orders', 'order-work', 'anomalies', 'products', 'customers', 'reviews', 'creators', 'employees', 'marketing']);
+const ADMIN_PAGES = new Set(['security', 'tasks', 'reports', 'expenses', 'income', '', 'dashboard', 'visitors', 'sales', 'orders', 'order-work', 'arrivals', 'anomalies', 'products', 'customers', 'reviews', 'creators', 'employees', 'marketing']);
 const BODY_LIMIT = 48 * 1024 * 1024;
 const REVIEW_IMAGE_LIMIT = 2 * 1024 * 1024;
 const REVIEW_VIDEO_LIMIT = 20 * 1024 * 1024;
@@ -5253,6 +5253,66 @@ async function packingOrderSummary(order, focusShipmentId = null) {
   };
 }
 
+// Read-only, cross-order physical arrival summary. Reuses the existing
+// order_packaging_units scans; carrier delivery status is not proof of receipt.
+async function adminArrivalOverview(params = {}) {
+  const status = ['all', 'waiting', 'partial', 'ready'].includes(params.status) ? params.status : 'all';
+  const period = params.period === 'all' ? 'all' : '90d';
+  const search = String(params.search || '').trim().toLowerCase().slice(0, 120);
+  const rawLimit = Number(params.limit), rawOffset = Number(params.offset);
+  const limit = Number.isFinite(rawLimit) && rawLimit > 0 ? Math.max(1, Math.min(50, Math.floor(rawLimit))) : 20;
+  const offset = Number.isFinite(rawOffset) && rawOffset > 0 ? Math.max(0, Math.min(100000, Math.floor(rawOffset))) : 0;
+  const since = period === 'all' ? null : Date.now() - 90 * 86400000;
+  const summary = { all: 0, waiting: 0, partial: 0, ready: 0, receivedUnits: 0, missingUnits: 0 };
+  const matched = [];
+  const chunkSize = 250;
+  const maxScanned = 20000; // Safety ceiling, explicitly reported in the UI.
+  let scanned = 0;
+  let truncated = false;
+  for (;;) {
+    const rows = await database.listAdminOrders({ status: 'paid', since, limit: chunkSize, offset: scanned });
+    if (!rows.length) break;
+    const receipts = await database.listAdminPackagingUnitsForOrders(rows.map(row => Number(row.id)));
+    const byOrder = new Map();
+    for (const receipt of receipts) {
+      if (Number(receipt.received) !== 1) continue;
+      const orderId = Number(receipt.order_id);
+      if (!byOrder.has(orderId)) byOrder.set(orderId, new Set());
+      byOrder.get(orderId).add(`${Number(receipt.item_index)}:${Number(receipt.unit_number)}`);
+    }
+    for (const order of rows) {
+      const customerName = order.user_name || order.guest_username || order.customer_email || 'לקוח';
+      if (search && ![order.order_ref, order.customer_email, order.customer_phone, customerName]
+        .some(value => String(value || '').toLowerCase().includes(search))) continue;
+      const keys = byOrder.get(Number(order.id)) || new Set();
+      let totalUnits = 0, receivedUnits = 0;
+      const items = normalizeStoredOrderItems(order.items_json, PRODUCTS).map((item, itemIndex) => {
+        const qty = Math.max(0, Math.min(999, Number(item.qty || 0)));
+        let receivedQty = 0;
+        for (let unit = 1; unit <= qty; unit++) if (keys.has(`${itemIndex}:${unit}`)) receivedQty++;
+        totalUnits += qty;
+        receivedUnits += receivedQty;
+        return {itemIndex, name: item.name || item.id || `מוצר ${itemIndex + 1}`,
+          qty, receivedQty, missingQty: qty - receivedQty};
+      });
+      if (!totalUnits) continue;
+      const arrivalStatus = receivedUnits >= totalUnits ? 'ready' : receivedUnits ? 'partial' : 'waiting';
+      summary.all++;
+      summary[arrivalStatus]++;
+      summary.receivedUnits += receivedUnits;
+      summary.missingUnits += totalUnits - receivedUnits;
+      if (status !== 'all' && status !== arrivalStatus) continue;
+      matched.push({orderRef:order.order_ref,customerName,paidAt:Number(order.paid_at || order.created_at || 0),
+        status:arrivalStatus,totalUnits,receivedUnits,missingUnits:totalUnits-receivedUnits,items});
+    }
+    scanned += rows.length;
+    if (rows.length < chunkSize) break;
+    if (scanned >= maxScanned) {truncated = true; break;}
+  }
+  return {ok:true,status,period,search,summary,count:matched.length,limit,offset,truncated,
+    orders:matched.slice(offset,offset + limit)};
+}
+
 const { createAdminCustomerProfile } = require('./lib/admin-customer-profile');
 const adminCustomerProfile = createAdminCustomerProfile(database);
 const adminTools = createAdminTools(database, catalogManager, financeLedger);
@@ -5954,6 +6014,11 @@ async function adminApi(req, res, pathname, parsed) {
       }
       json(res,200,{ok:true,...result});return true;
     }catch(e){if(e.code===400||e.status===400)json(res,400,{ok:false,error:e.message});else throw e;return true;}
+  }
+  if (pathname === '/api/admin/packaging/overview' && req.method === 'GET') {
+    res.setHeader('Cache-Control', 'private, no-store');
+    json(res, 200, await adminArrivalOverview(Object.fromEntries(parsed.searchParams.entries())));
+    return true;
   }
   // Admin-only parcel reception workflow; doesn't change tracking or send WhatsApp.
   if (pathname === '/api/admin/packaging/lookup' && req.method === 'GET') {
