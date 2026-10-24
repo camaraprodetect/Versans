@@ -32,83 +32,123 @@
     cachedAssignees=Array.isArray(result.assignees)?result.assignees:[];
     return cachedAssignees;
   }
+  function fileSize(bytes){return (bytes/1024/1024).toFixed(1)+' MB';}
+  function taskLink(task){if(!task.linkType||!task.linkRef)return null;
+    var labels={order:'הזמנה',product:'מוצר',customer:'לקוח'};
+    var href=task.linkType==='order'?'/admin/order-work?order='+encodeURIComponent(task.linkRef):
+      task.linkType==='product'?'/admin/products?search='+encodeURIComponent(task.linkRef):'/admin/customers?search='+encodeURIComponent(task.linkRef);
+    var link=el('a','admin-task-link',labels[task.linkType]+' · '+task.linkRef+' ↗');link.href=href;link.target='_blank';link.rel='noopener';return link;
+  }
+  async function uploadTaskFiles(id,input){var files=Array.from(input.files||[]);if(files.length>8)throw Error('אפשר לצרף עד 8 קבצים לכל משימה');
+    for(var f of files){if(f.size>2*1024*1024)throw Error('הקובץ '+f.name+' גדול מ־2MB');
+      if(!['image/jpeg','image/png','image/webp','application/pdf'].includes(f.type))throw Error('מותר להעלות תמונות או PDF בלבד');
+      var raw=await new Promise(function(resolve,reject){var r=new FileReader();r.onload=function(){resolve(String(r.result||'').split(',')[1]||'');};r.onerror=function(){reject(Error('לא ניתן לקרוא קובץ'));};r.readAsDataURL(f);});
+      await save('internal-tasks/'+id+'/files','POST',{name:f.name,mime:f.type,data:raw});
+    }
+  }
   function taskEditor(current,onSaved,canAssign){
     openModal(current?'עריכת משימה':'משימה חדשה',function(panel,close){
       var title=field('שם המשימה *','text',current&&current.title,'מה צריך לעשות?');title.input.maxLength=180;
-      var desc=field('תיאור ופרטים','textarea',current&&current.description,'מה הבעיה, איך לשחזר ומה צריך להוסיף?');desc.input.rows=5;
+      var desc=field('תיאור ופרטים','textarea',current&&current.description,'מה צריך לעשות?');desc.input.rows=4;
       var kind=pick('סוג',TYPES,current&&current.type),priority=pick('עדיפות',PRIORITIES,current&&current.priority),status=pick('סטטוס',STATUSES,current&&current.status);
-      var assign=pick('שיוך לעובד (התראות Push)',[['','ללא אחראי']],'');
-      assign.input.disabled=true;
-      var existing=String(current&&current.assignedTo||'').trim().toLowerCase();
-      if(canAssign)loadAssignees().then(function(list){
-        list.forEach(function(a){var opt=el('option','',a.name+' ('+a.email+')');opt.value=a.email.toLowerCase();assign.input.append(opt);});
-        if(existing && !list.some(function(a){return a.email.toLowerCase()===existing;})){
-          var legacy=el('option','',existing+' (לא חשבון עובד פעיל)');legacy.value=existing;assign.input.append(legacy);
-        }
-        assign.input.value=existing;
-        assign.input.disabled=false;
-      }).catch(function(err){assign.wrap.append(el('small','admin-tools-inline-error','לא ניתן לטעון עובדים: '+err.message));});
-      else {assign.input.disabled=true;assign.input.value=existing;assign.wrap.hidden=true;}
-      var due=field('תאריך יעד','date',current&&current.dueDate);var grid=el('div','admin-tools-form-grid');add(grid,kind.wrap,priority.wrap,status.wrap,assign.wrap,due.wrap);
-      var form=el('form','admin-tools-form');add(form,title.wrap,desc.wrap,grid);var error=el('p','admin-tools-inline-error');var foot=el('div','admin-tools-modal-actions');var cancel=button('ביטול','is-secondary',close),submit=button(current?'שמור שינויים':'הוסף משימה','is-primary');submit.type='submit';foot.append(cancel,submit);add(form,error,foot);panel.append(form);
-      form.addEventListener('submit',async function(e){e.preventDefault();if(!title.input.value.trim()){error.textContent='חובה להזין שם משימה';title.input.focus();return;}
-        var payload={title:title.input.value.trim(),description:desc.input.value.trim(),type:kind.input.value,status:status.input.value,priority:priority.input.value,assignedTo:assign.input.value.trim(),dueDate:due.input.value};
-        if(canAssign && assign.input.disabled){error.textContent='יש להמתין לטעינת רשימת העובדים';return;}if(current)payload.updatedAt=current.updatedAt;submit.disabled=true;submit.textContent='שומר…';
-        try{await save('internal-tasks'+(current?'/'+current.id:''),current?'PATCH':'POST',payload);close();await onSaved();}
-        catch(err){error.textContent=err.message==='task_changed'?'המשימה שונתה בינתיים על ידי משתמש אחר. רענן את הרשימה ונסה שוב.':'לא ניתן לשמור את המשימה: '+err.message;submit.disabled=false;submit.textContent=current?'שמור שינויים':'הוסף משימה';}
+      var due=field('תאריך יעד','date',current&&current.dueDate);
+      var recurrence=pick('משימה חוזרת',[['none','לא חוזרת'],['daily','כל יום'],['weekly','כל שבוע'],['monthly','כל חודש']],current&&current.repeatRule);
+      var reminder=pick('תזכורת לפני היעד',[['1','יום אחד'],['2','יומיים'],['3','3 ימים'],['7','שבוע'],['0','ללא תזכורת']],String(current ? (current.remindDays??1) : 1));
+      var linkType=pick('קישור לישות',[['','ללא קישור'],['order','הזמנה'],['product','מוצר'],['customer','לקוח']],current&&current.linkType);
+      var linkRef=field('מספר הזמנה / מזהה מוצר / מספר לקוח','text',current&&current.linkRef,'לדוגמה: product-10');linkRef.input.maxLength=120;
+      var assignees=el('div','admin-task-assignees'),chosen=new Set(current?(current.assignees|| (current.assignedTo?[current.assignedTo]:[])):[]);
+      var assigneesBlock=el('div','admin-task-assignees-panel');add(assigneesBlock,el('strong','','אחראים למשימה'),assignees);
+      if(canAssign){assignees.append(el('small','','טוען עובדים…'));loadAssignees().then(function(list){
+        assignees.replaceChildren();list.forEach(function(person){var email=String(person.email).toLowerCase(),label=el('label','admin-task-assignee-chip');var box=el('input');box.type='checkbox';box.value=email;box.checked=chosen.has(email);label.append(box,el('span','',person.name+' · '+person.email));box.addEventListener('change',function(){if(box.checked)chosen.add(email);else chosen.delete(email);});assignees.append(label);});
+        if(!list.length)assignees.append(el('small','','אין עובדים פעילים'));}).catch(function(e){assignees.replaceChildren(el('small','','שגיאה בטעינת עובדים: '+e.message));});
+      }else{assigneesBlock.hidden=true;}
+      var uploads=field('צירוף תמונות או PDF (עד 2MB לקובץ)','file','');uploads.input.multiple=true;uploads.input.accept='image/png,image/jpeg,image/webp,application/pdf';
+      var grid=el('div','admin-tools-form-grid');add(grid,kind.wrap,priority.wrap,status.wrap,due.wrap,recurrence.wrap,reminder.wrap,linkType.wrap,linkRef.wrap);
+      var form=el('form','admin-tools-form');add(form,title.wrap,desc.wrap,grid,assigneesBlock,uploads.wrap);
+      var error=el('p','admin-tools-inline-error'),foot=el('div','admin-tools-modal-actions');var submit=button(current?'שמור שינויים':'הוסף משימה','is-primary');submit.type='submit';add(foot,button('ביטול','is-secondary',close),submit);add(form,error,foot);panel.append(form);
+      form.addEventListener('submit',async function(e){e.preventDefault();error.textContent='';if(!title.input.value.trim()){error.textContent='חובה להזין שם משימה';return;}
+        if(recurrence.input.value!=='none'&&!due.input.value){error.textContent='למשימה חוזרת חובה להגדיר תאריך יעד ראשון';return;}
+        var selected=Array.from(chosen);
+        var payload={title:title.input.value.trim(),description:desc.input.value.trim(),type:kind.input.value,status:status.input.value,priority:priority.input.value,dueDate:due.input.value,
+          repeatRule:recurrence.input.value,remindDays:Number(reminder.input.value),linkType:linkType.input.value,linkRef:linkType.input.value?linkRef.input.value.trim():''};
+        if(canAssign){payload.assignees=selected;payload.assignedTo=selected[0]||'';}if(current)payload.updatedAt=current.updatedAt;
+        submit.disabled=true;submit.textContent='שומר…';
+        try{var response=await save('internal-tasks'+(current?'/'+current.id:''),current?'PATCH':'POST',payload);
+          var taskId=current?current.id:response.task.id;
+          if(uploads.input.files.length)await uploadTaskFiles(taskId,uploads.input);
+          close();await onSaved();
+        }catch(err){error.textContent='לא ניתן להשלים: '+err.message+(current?'':' — אם המשימה נשמרה, היא תופיע לאחר רענון');submit.disabled=false;submit.textContent=current?'שמור שינויים':'הוסף משימה';}
       });
     });
   }
-  var selectedTaskTab='open';
+  function taskAssignEditor(task,onSaved){openModal('שיוך אחראים למשימה',function(panel,close){
+    var chosen=new Set(task.assignees||[]),wrap=el('div','admin-task-assignees');panel.append(wrap);
+    loadAssignees().then(function(list){list.forEach(function(user){var email=user.email.toLowerCase(),label=el('label','admin-task-assignee-chip'),checkbox=el('input');checkbox.type='checkbox';checkbox.checked=chosen.has(email);label.append(checkbox,el('span','',user.name+' · '+email));checkbox.addEventListener('change',function(){if(checkbox.checked)chosen.add(email);else chosen.delete(email);});wrap.append(label);});}).catch(function(e){showMessage(panel,e.message);});
+    var submit=button('שמור אחראים','is-primary',async function(){try{submit.disabled=true;var emails=Array.from(chosen);await save('internal-tasks/'+task.id,'PATCH',{updatedAt:task.updatedAt,status:task.status,assignedTo:emails[0]||'',assignees:emails});close();await onSaved();}catch(e){submit.disabled=false;showMessage(panel,e.message);}});
+    panel.append(submit);
+  });}
+  function taskDetails(task,onSaved,canEdit){openModal('פעילות וקבצים · '+task.title,async function(panel,close){
+    var files=el('section','admin-task-details-area'),history=el('section','admin-task-details-area');add(panel,files,history);
+    async function load(){files.replaceChildren(el('h4','','קבצים וצילומי מסך'));history.replaceChildren(el('h4','','היסטוריית שינויים'));
+      try{var pair=await Promise.all([get('internal-tasks/'+task.id+'/files'),get('internal-tasks/'+task.id+'/history')]);
+        if(!pair[0].files.length)files.append(el('p','','אין קבצים מצורפים'));
+        pair[0].files.forEach(function(f){var row=el('div','admin-task-file-row');var a=el('a','',f.name+' · '+fileSize(f.bytes));a.href=apiBase+'internal-tasks/files/'+f.id;a.download=f.name;a.target='_blank';add(row,a);
+          if(canEdit)row.append(button('הסר','is-danger',async function(){if(!confirm('להסיר את הקובץ?'))return;try{var r=await fetch(apiBase+'internal-tasks/files/'+f.id,{method:'DELETE',credentials:'same-origin'});if(!r.ok)throw Error('delete_failed');await load();}catch(e){showMessage(panel,'מחיקת הקובץ נכשלה: '+e.message);}}));files.append(row);});
+        var events=pair[1].history||[];if(!events.length)history.append(el('p','','אין שינויים מתועדים עדיין'));
+        events.forEach(function(h){var line=el('div','admin-task-history-entry');var label={created:'נוצרה',updated:'עודכנה',deleted:'נמחקה',file_added:'נוסף קובץ',file_removed:'הוסר קובץ',recurring_created:'נוצרה אוטומטית'}[h.action]||h.action;add(line,el('strong','',label+' · '+h.actor),el('small','',new Date(h.at).toLocaleString('he-IL')));
+          Object.entries(h.changes||{}).forEach(function(pair){var value=pair[1],v=typeof value==='object'&&value!==null&&Object.hasOwn(value,'to')?String(value.from||'')+' ← '+String(value.to||''):String(typeof value==='object'?JSON.stringify(value):value);line.append(el('span','',pair[0]+': '+v));});history.append(line);});
+      }catch(e){showMessage(panel,'טעינת המידע נכשלה: '+e.message);}}
+    if(canEdit){var file=field('העלה קבצים נוספים','file','');file.input.multiple=true;file.input.accept='image/png,image/jpeg,image/webp,application/pdf';var upload=button('העלה','is-secondary',async function(){try{upload.disabled=true;await uploadTaskFiles(task.id,file.input);file.input.value='';await load();}catch(e){showMessage(panel,e.message);}finally{upload.disabled=false;}});panel.insertBefore(file.wrap,history);panel.insertBefore(upload,history);}
+    await load();
+  });}
+  function taskTemplateManager(onSaved,canCreate,canEdit){openModal('תבניות משימות',async function(panel,close){
+    var list=el('div','admin-task-template-list');panel.append(list);
+    async function refresh(){list.replaceChildren();try{var data=await get('task-templates');if(!data.templates.length)list.append(el('p','','עדיין אין תבניות'));
+      data.templates.forEach(function(t){var row=el('div','admin-task-template-row');add(row,el('strong','',t.title),el('small','',(t.repeatRule!=='none'?'חוזרת · ':'')+'יעד: בעוד '+t.dueOffsetDays+' ימים'));
+        if(canCreate)row.append(button('צור משימה','is-primary',async function(){try{await save('task-templates/'+t.id,'POST',{});close();await onSaved();}catch(e){showMessage(panel,e.message);}}));
+        if(canEdit)row.append(button('מחק תבנית','is-danger',async function(){if(!confirm('למחוק את התבנית בלבד?'))return;try{var r=await fetch(apiBase+'task-templates/'+t.id,{method:'DELETE',credentials:'same-origin'});if(!r.ok)throw Error('delete_failed');await refresh();}catch(e){showMessage(panel,e.message);}}));list.append(row);});
+    }catch(e){showMessage(panel,e.message);}}
+    if(canCreate){var name=field('שם התבנית','text',''),desc=field('תיאור','textarea',''),offset=field('תאריך יעד: בעוד כמה ימים','number','0');offset.input.min='0';offset.input.max='365';var repeat=pick('תדירות',[['none','ללא חזרה'],['daily','כל יום'],['weekly','כל שבוע'],['monthly','כל חודש']],'none');
+      var submit=button('שמור תבנית','is-primary',async function(){try{await save('task-templates','POST',{title:name.input.value,description:desc.input.value,dueOffsetDays:Number(offset.input.value),repeatRule:repeat.input.value});name.input.value='';desc.input.value='';await refresh();}catch(e){showMessage(panel,e.message);}});
+      var form=el('div','admin-task-template-form');add(form,name.wrap,desc.wrap,offset.wrap,repeat.wrap,submit);panel.prepend(form);}
+    await refresh();
+  });}
+  var selectedTaskTab='open',calendarMode=false,calendarMonth=new Date().toISOString().slice(0,7);
   async function renderTasks(root){
-    var tasks=[],canManage=false,canCreate=false,canEdit=false,canAssign=false,canDelete=false,canChangeStatus=false;
-    try{
-      var data=await get('internal-tasks');tasks=data.tasks||[];
-      canManage=data.canManage===true;canCreate=data.canCreate===true;canEdit=data.canEdit===true;
-      canAssign=data.canAssign===true;canDelete=data.canDelete===true;canChangeStatus=data.canChangeStatus===true;
-    }catch(err){root.replaceChildren(el('div','admin-tools-error','לא ניתן לטעון משימות: '+err.message));return;}
-    var view=el('div','admin-tools-page');var top=el('div','admin-tools-title-row');
-    add(top,add(el('div'),el('h2','','ניהול משימות פנימי'),el('p','','המשימות מחולקות לפי סטטוס. בחר את הלשונית הרצויה.')));
-    if(canCreate)top.append(button('+ משימה חדשה','is-primary',function(){taskEditor(null,function(){return renderTasks(root);},canAssign);}));
-    view.append(top);
-    var tabs=el('div','admin-tools-status-tabs');tabs.setAttribute('role','tablist');tabs.setAttribute('aria-label','סינון משימות לפי סטטוס');
-    var search=field('חיפוש משימות','search','','חיפוש לפי כותרת, תיאור או אחראי');
-    var controls=el('div','admin-tools-controls');var type=pick('סוג',[['all','כל הסוגים']].concat(TYPES),'all');var priority=pick('עדיפות',[['all','כל העדיפויות']].concat(PRIORITIES),'all');
-    add(controls,search.wrap,type.wrap,priority.wrap);view.append(tabs,controls);
-    var summary=el('div','admin-tools-summary');view.append(summary);var list=el('div','admin-tools-task-list');view.append(list);
-    function changeTab(next){selectedTaskTab=next;draw();}
-    function draw(){
-      tabs.replaceChildren();
-      STATUSES.forEach(function(pair){var count=tasks.filter(function(t){return t.status===pair[0];}).length;var tab=button(pair[1]+' ('+count+')',selectedTaskTab===pair[0]?'is-active':'',function(){changeTab(pair[0]);});tab.setAttribute('role','tab');tab.setAttribute('aria-selected',String(selectedTaskTab===pair[0]));tabs.append(tab);});
-      list.replaceChildren();var q=search.input.value.trim().toLowerCase();
-      var filtered=tasks.filter(function(t){return t.status===selectedTaskTab&&(type.input.value==='all'||t.type===type.input.value)&&(priority.input.value==='all'||t.priority===priority.input.value)&&(!q||[t.title,t.description,t.assignedTo].join(' ').toLowerCase().includes(q));});
-      summary.textContent='סה״כ '+tasks.length+' משימות · '+filtered.length+' בתצוגה';
-      if(!filtered.length){list.append(el('div','admin-tools-empty','אין משימות בסטטוס הזה המתאימות לסינון.'));return;}
-      filtered.forEach(function(task){
-        var card=el('article','admin-tools-task '+(task.status==='done'?'is-done':''));var head=el('div','admin-tools-task-heading');var label=el('div','admin-tools-task-title');add(label,el('h3','',task.title));
-        var badges=el('div','admin-tools-task-badges');add(badges,pill(labelOf(PRIORITIES,task.priority),'priority-'+task.priority),pill(labelOf(TYPES,task.type)));
-        head.append(label,badges);card.append(head);
-        if(task.description)card.append(el('p','admin-tools-task-description',task.description));
-        card.append(el('p','admin-tools-task-meta',('נוצר: '+shortDate(task.createdAt))+(task.dueDate?' · יעד: '+task.dueDate:'')+(task.assignedTo?' · אחראי: '+task.assignedTo:'')));
-        var actions=el('div','admin-tools-task-actions');
-        if(canEdit)actions.append(button('ערוך','is-secondary',function(){taskEditor(task,function(){return renderTasks(root);},canAssign);}));
-        if(canChangeStatus||canEdit){
-          var change=pick('שנה סטטוס',STATUSES,task.status);change.wrap.classList.add('admin-tools-task-status');
-          change.input.addEventListener('change',async function(){change.input.disabled=true;try{await save('internal-tasks/'+task.id,'PATCH',{updatedAt:task.updatedAt,status:change.input.value});selectedTaskTab=change.input.value;await renderTasks(root);}catch(err){change.input.value=task.status;change.input.disabled=false;showMessage(root,'לא ניתן לשנות סטטוס: '+err.message);}});
-          actions.append(change.wrap);
-        }
-        if(canAssign)actions.append(button('שייך לעובד','is-secondary',function(){
-          openModal('שיוך משימה',function(modal,close){
-            var assign=pick('אחראי חדש',[['','ללא אחראי']],'');assign.input.disabled=true;
-            loadAssignees().then(function(list){list.forEach(function(a){var option=el('option','',a.name+' ('+a.email+')');option.value=a.email;assign.input.append(option);});assign.input.value=task.assignedTo||'';assign.input.disabled=false;}).catch(function(){showMessage(modal,'לא ניתן לטעון עובדים');});
-            var foot=el('div','admin-tools-modal-actions'),submit=button('עדכן שיוך','is-primary',async function(){
-              submit.disabled=true;try{await save('internal-tasks/'+task.id,'PATCH',{status:task.status,assignedTo:assign.input.value,updatedAt:task.updatedAt});close();await renderTasks(root);}catch(e){showMessage(modal,'לא ניתן לשייך: '+e.message);submit.disabled=false;}
-            });foot.append(button('ביטול','is-secondary',close),submit);modal.append(assign.wrap,foot);
-          });
-        }));
-        if(canDelete)actions.append(button('מחק','is-danger',function(){openModal('מחיקת משימה',function(modal,close){add(modal,el('p','admin-tools-confirm','למחוק את המשימה „'+task.title+'”? פעולה זו לא ניתנת לביטול.'));var footer=el('div','admin-tools-modal-actions');add(footer,button('ביטול','is-secondary',close),button('מחק משימה','is-danger',async function(){try{await save('internal-tasks/'+task.id,'DELETE',{updatedAt:task.updatedAt});close();await renderTasks(root);}catch(err){showMessage(modal,'מחיקה נכשלה: '+err.message);}}));modal.append(footer);});}));
-        if(actions.children.length)card.append(actions);list.append(card);
-      });
+    var data;
+    try{data=await get('internal-tasks');}catch(e){root.replaceChildren(el('div','admin-tools-error','לא ניתן לטעון משימות: '+e.message));return;}
+    var tasks=data.tasks||[],canCreate=data.canCreate===true,canEdit=data.canEdit===true,canAssign=data.canAssign===true,canDelete=data.canDelete===true,canStatus=data.canChangeStatus===true;
+    var view=el('div','admin-tools-page'),top=el('div','admin-tools-title-row');add(top,add(el('div'),el('h2','','משימות פנימיות'),el('p','','מעקב משימות, תאריכי יעד וקבצים מצורפים')));
+    var topButtons=el('div','admin-task-toolbar');if(canCreate)topButtons.append(button('+ משימה חדשה','is-primary',function(){taskEditor(null,function(){return renderTasks(root);},canAssign);}));
+    topButtons.append(button('לוח שנה','is-secondary',function(){calendarMode=!calendarMode;draw();}));
+    topButtons.append(button('תבניות משימות','is-secondary',function(){taskTemplateManager(function(){return renderTasks(root);},canCreate,canEdit);}));top.append(topButtons);view.append(top);
+    var now=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Jerusalem',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+    var overdue=tasks.filter(function(t){return t.status!=='done'&&t.dueDate&&t.dueDate<now;}).length;
+    if(overdue)view.append(el('div','admin-task-overdue-alert','⚠ '+overdue+' משימות עברו את תאריך היעד שלהן'));
+    var tabs=el('div','admin-tools-status-tabs');tabs.setAttribute('role','tablist');var search=field('חיפוש','search','','כותרת, תיאור או אחראי');var type=pick('סוג',[['all','כל הסוגים']].concat(TYPES),'all'),priority=pick('עדיפות',[['all','כל העדיפויות']].concat(PRIORITIES),'all');
+    var controls=el('div','admin-tools-controls');add(controls,search.wrap,type.wrap,priority.wrap);view.append(tabs,controls);
+    var summary=el('div','admin-tools-summary'),list=el('div','admin-tools-task-list');view.append(summary,list);
+    function drawCalendar(){var month=calendarMonth;var first=new Date(month+'-01T12:00:00Z'),start=first.getUTCDay(),days=new Date(Date.UTC(first.getUTCFullYear(),first.getUTCMonth()+1,0)).getUTCDate();
+      var container=el('div','admin-task-calendar');var header=el('div','admin-task-calendar-nav');var previous=button('→','is-secondary',function(){first.setUTCMonth(first.getUTCMonth()-1);calendarMonth=first.toISOString().slice(0,7);draw();});var next=button('←','is-secondary',function(){first.setUTCMonth(first.getUTCMonth()+1);calendarMonth=first.toISOString().slice(0,7);draw();});add(header,previous,el('strong','',first.toLocaleDateString('he-IL',{month:'long',year:'numeric',timeZone:'UTC'})),next);container.append(header);
+      var grid=el('div','admin-task-calendar-grid');['א','ב','ג','ד','ה','ו','ש'].forEach(function(n){grid.append(el('strong','admin-task-day-head',n));});for(var i=0;i<start;i++)grid.append(el('div','admin-task-day-blank'));
+      for(var day=1;day<=days;day++){var date=month+'-'+String(day).padStart(2,'0'),related=tasks.filter(function(t){return t.dueDate===date;}),cell=button(String(day)+(related.length?' · '+related.length:''),'admin-task-day'+(date===now?' is-today':''),function(selected,items){return function(){Array.from(list.children).forEach(function(node){if(!node.classList.contains('admin-task-calendar'))node.remove();});summary.textContent='משימות ל־'+selected;items.forEach(renderCard);if(!items.length)list.append(el('p','','אין משימות ליום הזה'));};}(date,related));grid.append(cell);}container.append(grid);list.append(container);}
+    function renderCard(task){var card=el('article','admin-tools-task '+(task.status==='done'?'is-done':''));var head=el('div','admin-tools-task-heading'),label=el('div','admin-tools-task-title');label.append(el('h3','',task.title));var badges=el('div','admin-tools-task-badges');add(badges,pill(labelOf(PRIORITIES,task.priority),'priority-'+task.priority),pill(labelOf(TYPES,task.type)),pill(labelOf(STATUSES,task.status),'status-'+task.status));head.append(label,badges);card.append(head);
+      if(task.description)card.append(el('p','admin-tools-task-description',task.description));
+      if(task.dueDate&&task.dueDate<now&&task.status!=='done')card.append(el('span','admin-task-overdue-label','באיחור · יעד '+task.dueDate));
+      var line=el('div','admin-tools-task-meta');line.textContent='נוצר: '+shortDate(task.createdAt)+(task.dueDate?' · יעד: '+task.dueDate:'')+(task.repeatRule!=='none'?' · חוזרת '+({'daily':'יומית','weekly':'שבועית','monthly':'חודשית'}[task.repeatRule]||''):'');
+      card.append(line);if(task.assignees?.length)card.append(el('div','admin-task-people','אחראים: '+task.assignees.join(' · ')));else if(task.assignedTo)card.append(el('div','admin-task-people','אחראי: '+task.assignedTo));
+      var link=taskLink(task);if(link)card.append(link);
+      var actions=el('div','admin-tools-task-actions');actions.append(button('פעילות וקבצים','is-secondary',function(){taskDetails(task,function(){return renderTasks(root);},canEdit);}));
+      if(canEdit)actions.append(button('ערוך','is-secondary',function(){taskEditor(task,function(){return renderTasks(root);},canAssign);}));
+      if(canStatus||canEdit){var change=pick('שנה סטטוס',STATUSES,task.status);change.wrap.classList.add('admin-tools-task-status');change.input.addEventListener('change',async function(){change.input.disabled=true;try{await save('internal-tasks/'+task.id,'PATCH',{updatedAt:task.updatedAt,status:change.input.value});selectedTaskTab=change.input.value;await renderTasks(root);}catch(e){change.input.value=task.status;change.input.disabled=false;showMessage(root,'עדכון נכשל: '+e.message);}});actions.append(change.wrap);}
+      if(canAssign)actions.append(button('אחראים','is-secondary',function(){taskEditor(task,function(){return renderTasks(root);},canAssign);}));
+      if(canDelete)actions.append(button('מחק','is-danger',async function(){if(!confirm('למחוק את המשימה?'))return;try{await save('internal-tasks/'+task.id,'DELETE',{updatedAt:task.updatedAt});await renderTasks(root);}catch(e){showMessage(root,e.message);}}));
+      card.append(actions);list.append(card);
+    }
+    function draw(){tabs.replaceChildren();STATUSES.forEach(function(st){var count=tasks.filter(function(t){return t.status===st[0];}).length;var buttonTab=button(st[1]+' ('+count+')',selectedTaskTab===st[0]?'is-active':'',function(){selectedTaskTab=st[0];draw();});buttonTab.setAttribute('role','tab');buttonTab.setAttribute('aria-selected',String(selectedTaskTab===st[0]));tabs.append(buttonTab);});tabs.hidden=calendarMode;controls.hidden=calendarMode;
+      list.replaceChildren();if(calendarMode){summary.textContent='לוח משימות לפי תאריך יעד';drawCalendar();return;}
+      var q=search.input.value.trim().toLowerCase();var filtered=tasks.filter(function(t){return t.status===selectedTaskTab&&(type.input.value==='all'||t.type===type.input.value)&&(priority.input.value==='all'||t.priority===priority.input.value)&&(!q||[t.title,t.description,t.assignedTo,...(t.assignees||[])].join(' ').toLowerCase().includes(q));});
+      summary.textContent='סה״כ '+tasks.length+' משימות · '+filtered.length+' בתצוגה';if(!filtered.length)list.append(el('div','admin-tools-empty','אין משימות התואמות לסינון.'));filtered.forEach(renderCard);
     }
     [search.input,type.input,priority.input].forEach(function(input){input.addEventListener('input',draw);input.addEventListener('change',draw);});draw();root.replaceChildren(view);
   }

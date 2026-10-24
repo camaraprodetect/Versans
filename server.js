@@ -8,6 +8,7 @@ const { URL } = require('node:url');
 const { createDatabase, importOpeningExpenseLedger } = require('./lib/database');
 const { createAdminSecurity } = require('./lib/admin-security');
 const { createAdminTools } = require('./lib/admin-tools.js');
+const { createTaskWorkflow } = require('./lib/task-workflow.js');
 const { createAdminReporting, SENSITIVE_TYPES, SOURCE_PERMISSIONS } = require('./lib/admin-reporting.js');
 const reportExport = require('./lib/report-export.js');
 const { createFinanceLedger } = require('./lib/finance-ledger.js');
@@ -5316,6 +5317,15 @@ async function adminArrivalOverview(params = {}) {
 const { createAdminCustomerProfile } = require('./lib/admin-customer-profile');
 const adminCustomerProfile = createAdminCustomerProfile(database);
 const adminTools = createAdminTools(database, catalogManager, financeLedger);
+const taskWorkflow = createTaskWorkflow(database, adminTools, sendEmail, isEmailConfigured);
+adminTools.setTaskObserver(async (action,id,actor,before,after)=>{
+  const changes={};
+  if(action==='updated')for(const key of ['title','description','type','status','priority','assignedTo','dueDate']){
+    if(before?.[key]!==after?.[key])changes[key]={from:before?.[key]??'',to:after?.[key]??''};
+  }
+  else changes[action==='created'?'created':'deleted']=action==='created'?{title:after.title}:true;
+  if(Object.keys(changes).length)await taskWorkflow.history(id,actor,action,changes);
+});
 const adminReporting = createAdminReporting(database, adminTools, ADMIN_EMAIL);
 async function adminApi(req, res, pathname, parsed) {
   if (!pathname.startsWith('/api/admin/')) return false;
@@ -5853,6 +5863,65 @@ async function adminApi(req, res, pathname, parsed) {
     json(res,200,{ok:true,...result,limit,offset});return true;
   }
 
+  // Task workflow extensions: stored in the same persistent DB as legacy tasks.
+  const taskFilesItem=/^\/api\/admin\/internal-tasks\/files\/(\d+)$/.exec(pathname);
+  const taskExt=/^\/api\/admin\/internal-tasks\/(\d+)\/(history|files)$/.exec(pathname);
+  if(pathname==='/api/admin/task-templates' || /^\/api\/admin\/task-templates\/\d+$/.test(pathname)){
+    if(req.method!=='GET'&&!sameOriginAllowed(req)){json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
+    try{
+      if(pathname==='/api/admin/task-templates'&&req.method==='GET'){json(res,200,{ok:true,templates:await taskWorkflow.templates()});return true;}
+      if(pathname==='/api/admin/task-templates'&&req.method==='POST'){
+        if(!hasAdminPermission(admin,'tasks.create')){json(res,403,{ok:false,error:'permission_denied'});return true;}
+        const data=await readJsonBody(req,12000);const id=await taskWorkflow.createTemplate(data||{},Number(admin.id));json(res,201,{ok:true,id});return true;
+      }
+      const m=/^\/api\/admin\/task-templates\/(\d+)$/.exec(pathname);
+      if(m&&req.method==='POST'){
+        if(!hasAdminPermission(admin,'tasks.create')){json(res,403,{ok:false,error:'permission_denied'});return true;}
+        const task=await taskWorkflow.createFromTemplate(Number(m[1]),Number(admin.id));json(res,201,{ok:true,task});return true;
+      }
+      if(m&&req.method==='DELETE'){
+        if(!hasAdminPermission(admin,'tasks.edit')){json(res,403,{ok:false,error:'permission_denied'});return true;}
+        json(res,200,{ok:true,deleted:await taskWorkflow.deleteTemplate(Number(m[1]))});return true;
+      }
+      json(res,405,{ok:false,error:'method_not_allowed'});
+    }catch(e){if(e.code)json(res,e.code,{ok:false,error:e.message});else throw e;}
+    return true;
+  }
+  if(taskFilesItem){
+    const id=Number(taskFilesItem[1]);
+    if(req.method!=='GET' && !sameOriginAllowed(req)){json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
+    const file=await taskWorkflow.file(id);
+    if(!file){json(res,404,{ok:false,error:'file_not_found'});return true;}
+    const tasks=await taskWorkflow.enriched(await adminTools.listTasks());const task=tasks.find(x=>x.id===Number(file.task_id));
+    const manager=admin.role==='admin'||['tasks.create','tasks.assign','tasks.edit','tasks.delete'].some(p=>hasAdminPermission(admin,p));
+    if(!task||(!manager&&!task.assignees.includes(normalizeEmail(admin.email)))){json(res,403,{ok:false,error:'permission_denied'});return true;}
+    if(req.method==='GET'){
+      const safeName=String(file.name||'attachment').replace(/["\\\r\n]/g,'_');
+      res.writeHead(200,{'Content-Type':'application/octet-stream','Content-Disposition':`attachment; filename="attachment-${id}"; filename*=UTF-8''${encodeURIComponent(safeName)}`,'Content-Length':file.data.length,'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});
+      res.end(file.data);return true;
+    }
+    if(req.method==='DELETE'){
+      if(!hasAdminPermission(admin,'tasks.edit')){json(res,403,{ok:false,error:'permission_denied'});return true;}
+      json(res,200,{ok:true,deleted:await taskWorkflow.deleteFile(id,Number(admin.id))});return true;
+    }
+    json(res,405,{ok:false,error:'method_not_allowed'});return true;
+  }
+  if(taskExt){
+    const taskId=Number(taskExt[1]),kind=taskExt[2];
+    if(req.method!=='GET' && !sameOriginAllowed(req)){json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
+    const task=(await taskWorkflow.enriched(await adminTools.listTasks())).find(x=>x.id===taskId);
+    if(!task){json(res,404,{ok:false,error:'task_not_found'});return true;}
+    const manager=admin.role==='admin'||['tasks.create','tasks.assign','tasks.edit','tasks.delete'].some(p=>hasAdminPermission(admin,p));
+    if(!manager&&!task.assignees.includes(normalizeEmail(admin.email))){json(res,403,{ok:false,error:'permission_denied'});return true;}
+    if(kind==='history'&&req.method==='GET'){json(res,200,{ok:true,history:await taskWorkflow.readHistory(taskId)});return true;}
+    if(kind==='files'&&req.method==='GET'){json(res,200,{ok:true,files:await taskWorkflow.filesFor(taskId)});return true;}
+    if(kind==='files'&&req.method==='POST'){
+      if(!hasAdminPermission(admin,'tasks.edit')){json(res,403,{ok:false,error:'permission_denied'});return true;}
+      try{const data=await readJsonBody(req,3*1024*1024);const id=await taskWorkflow.upload(taskId,Number(admin.id),data||{});json(res,201,{ok:true,id});}
+      catch(e){if(e.code)json(res,e.code,{ok:false,error:e.message});else throw e;}return true;
+    }
+    json(res,405,{ok:false,error:'method_not_allowed'});return true;
+  }
   // Internal task board and on-demand reports; adminCanAccess was checked above.
   if (pathname === '/api/admin/internal-tasks/assignees' && req.method === 'GET') {
     const isManager=hasAdminPermission(admin,'tasks.assign');
@@ -5862,16 +5931,27 @@ async function adminApi(req, res, pathname, parsed) {
   if (pathname === '/api/admin/internal-tasks') {
     if (req.method === 'GET') {
       const canManage=admin.role==='admin';
-      const tasks=await adminTools.listTasks();
+      const tasks=await taskWorkflow.enriched(await adminTools.listTasks());
       const maySeeAll=canManage||hasAdminPermission(admin,'tasks.edit')||hasAdminPermission(admin,'tasks.assign')||hasAdminPermission(admin,'tasks.delete')||hasAdminPermission(admin,'tasks.create');
-      json(res,200,{ok:true,canManage,canCreate:hasAdminPermission(admin,'tasks.create'),canEdit:hasAdminPermission(admin,'tasks.edit'),canAssign:hasAdminPermission(admin,'tasks.assign'),canDelete:hasAdminPermission(admin,'tasks.delete'),canChangeStatus:hasAdminPermission(admin,'tasks.status'),tasks:maySeeAll?tasks:tasks.filter(x=>String(x.assignedTo||'').toLowerCase()===normalizeEmail(admin.email))});return true;
+      json(res,200,{ok:true,canManage,canCreate:hasAdminPermission(admin,'tasks.create'),canEdit:hasAdminPermission(admin,'tasks.edit'),canAssign:hasAdminPermission(admin,'tasks.assign'),canDelete:hasAdminPermission(admin,'tasks.delete'),canChangeStatus:hasAdminPermission(admin,'tasks.status'),tasks:maySeeAll?tasks:tasks.filter(x=>x.assignees.includes(normalizeEmail(admin.email)))});return true;
     }
     if (req.method === 'POST') {
       if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'});return true; }
       const body = await readJsonBody(req, 12 * 1024);
+      if(!hasAdminPermission(admin,'tasks.create')){json(res,403,{ok:false,error:'permission_denied'});return true;}
+      const advanced=body && ['assignees','repeatRule','remindDays','linkType','linkRef'].some(k=>Object.hasOwn(body,k));
+      if(advanced){
+        try{const options=taskWorkflow.validateExtra(body||{});
+          if(options.assignees.length&&!hasAdminPermission(admin,'tasks.assign')){json(res,403,{ok:false,error:'permission_denied'});return true;}
+          if(!body.dueDate && options.repeatRule!=='none'){json(res,400,{ok:false,error:'recurrence_requires_due_date'});return true;}
+          await taskWorkflow.validateAssignees(options.assignees);await taskWorkflow.validateLink(options);
+          if(options.assignees.length)body.assignedTo=options.assignees[0];
+        }catch(e){json(res,e.code||400,{ok:false,error:e.message});return true;}
+      }
       if(body && body.assignedTo && !hasAdminPermission(admin,'tasks.assign')){json(res,403,{ok:false,error:'permission_denied'});return true;}
       try {
         const task=await adminTools.addTask(body||{},Number(admin.id));
+        if(advanced)await taskWorkflow.saveExtra(task.id,body,null,Number(admin.id));
         json(res,201,{ok:true,task});
         checkTaskPushSchedule().catch(e=>console.error('Task assignment notification failed:',e));
       }
@@ -5888,13 +5968,14 @@ async function adminApi(req, res, pathname, parsed) {
     if (!Number.isSafeInteger(taskId) || taskId<1) {json(res,400,{ok:false,error:'invalid_task_id'});return true;}
     const body=await readJsonBody(req,12*1024);
     try {
-      const previous=(await adminTools.listTasks()).find(x=>x.id===taskId);
+      const previous=(await taskWorkflow.enriched(await adminTools.listTasks())).find(x=>x.id===taskId);
       if(!previous){json(res,404,{ok:false,error:'task_not_found'});return true;}
       if(req.method==='PATCH' && admin.role==='staff'){
         const patch=body||{};
+        if(['repeatRule','remindDays','linkType','linkRef'].some(k=>Object.hasOwn(patch,k)) && !hasAdminPermission(admin,'tasks.edit') || (Object.hasOwn(patch,'assignees')&&!hasAdminPermission(admin,'tasks.assign'))){json(res,403,{ok:false,error:'permission_denied'});return true;}
         const status=String(patch.status||'');
         const assignedTo=String(previous.assignedTo||'').toLowerCase();
-        const ownsTask=assignedTo===normalizeEmail(admin.email);
+        const ownsTask=previous.assignees.includes(normalizeEmail(admin.email));
         const canEdit=hasAdminPermission(admin,'tasks.edit');
         const canAssign=hasAdminPermission(admin,'tasks.assign');
         const canStatus=hasAdminPermission(admin,'tasks.status') && ownsTask;
@@ -5909,7 +5990,15 @@ async function adminApi(req, res, pathname, parsed) {
         if(canEdit)for(const key of ['title','description','type','priority','dueDate'])if(Object.hasOwn(patch,key))sanitized[key]=patch[key];
         if(canAssign&&Object.hasOwn(patch,'assignedTo'))sanitized.assignedTo=patch.assignedTo;
         if(status!==previous.status && !canStatus && !canEdit){json(res,403,{ok:false,error:'permission_denied'});return true;}
+        if(['assignees','repeatRule','remindDays','linkType','linkRef'].some(k=>Object.hasOwn(patch,k))){
+          const updated=taskWorkflow.validateExtra(patch,previous);
+          if((JSON.stringify(updated.assignees)!==JSON.stringify(previous.assignees))&&!canAssign){json(res,403,{ok:false,error:'permission_denied'});return true;}
+          if(updated.repeatRule!=='none' && !(sanitized.dueDate||previous.dueDate)){json(res,400,{ok:false,error:'recurrence_requires_due_date'});return true;}
+          await taskWorkflow.validateAssignees(updated.assignees);await taskWorkflow.validateLink(updated);
+          if(canAssign)sanitized.assignedTo=updated.assignees[0]||'';
+        }
         const task=await adminTools.updateTask(taskId,sanitized,Number(admin.id));
+        if(['assignees','repeatRule','remindDays','linkType','linkRef'].some(k=>Object.hasOwn(patch,k)))await taskWorkflow.saveExtra(taskId,taskWorkflow.validateExtra(patch,previous),null,Number(admin.id));
         if(previous.status!=='done'&&task.status==='done')await employeeAccess.taskCompleted(admin,taskId);
         json(res,200,{ok:true,task});
         if(reassigned)checkTaskPushSchedule().catch(e=>console.error('Task notification failed:',e));
@@ -5921,7 +6010,16 @@ async function adminApi(req, res, pathname, parsed) {
         catch(error){await adminSecurity.removeRecycle(trashId);throw error;}
         json(res,200,{ok:true});
       }else{
+        const hasExtras=body&&['assignees','repeatRule','remindDays','linkType','linkRef'].some(k=>Object.hasOwn(body,k));
+        if(hasExtras){
+          const updated=taskWorkflow.validateExtra(body,previous);
+          if(JSON.stringify(updated.assignees)!==JSON.stringify(previous.assignees)&&!hasAdminPermission(admin,'tasks.assign')){json(res,403,{ok:false,error:'permission_denied'});return true;}
+          if(updated.repeatRule!=='none' && !(body.dueDate??previous.dueDate)){json(res,400,{ok:false,error:'recurrence_requires_due_date'});return true;}
+          await taskWorkflow.validateAssignees(updated.assignees);await taskWorkflow.validateLink(updated);
+          if(updated.assignees.length && hasAdminPermission(admin,'tasks.assign'))body.assignedTo=updated.assignees[0];
+        }
         const task=await adminTools.updateTask(taskId,body||{},Number(admin.id));
+        if(hasExtras&&task)await taskWorkflow.saveExtra(taskId,taskWorkflow.validateExtra(body,previous),null,Number(admin.id));
         if(!task)json(res,404,{ok:false,error:'task_not_found'});
         else {
           if(previous.status!=='done'&&task.status==='done')await employeeAccess.taskCompleted(admin,taskId);
@@ -9893,6 +9991,7 @@ setInterval(async () => {
 }, ORDER_NOTIFICATION_WEBHOOK_RETRY_MS).unref();
 
 setInterval(()=>{checkTaskPushSchedule().catch(e=>console.error('Task reminder scheduler failed:',e));},60*1000).unref();
+setInterval(()=>{taskWorkflow.processDue().catch(e=>console.error('Task deadline scheduler failed:',e));},5*60*1000).unref();
 setInterval(()=>{adminSecurity.dailyBackup().catch(e=>console.error('Scheduled backup failed:',e.message));},60*60*1000).unref();
 setInterval(()=>{financeLedger.generateRecurring().catch(e=>console.error('Monthly expense generator failed:',e));},6*60*60*1000).unref();
 setInterval(()=>{adminReporting.deliverScheduled(async(user,type,recipients)=>{
@@ -9912,6 +10011,7 @@ async function start() {
   await adminDashboard.init();
   await catalogManager.init();
   await adminTools.ensure();
+  await taskWorkflow.ensure();
   await adminReporting.init();
   // Upgrade previously subscribed devices before creating fresh task events.
   for(const subscription of await database.listAdminPushSubscriptions()) {
@@ -9919,6 +10019,7 @@ async function start() {
   }
   // Catch up missed schedule checks after a Render redeploy.
   checkTaskPushSchedule().catch(e=>console.error('Task reminder startup check failed:',e));
+  taskWorkflow.processDue().catch(e=>console.error('Task due startup check failed:',e));
   adminReporting.deliverScheduled(async(user,type,recipients)=>{
     const permissions=user.role==='staff'?await employeeAccess.read(Number(user.id)):[];
     return user.role==='admin'||normalizeEmail(user.email)===ADMIN_EMAIL||(['reports.view','reports.export','reports.schedule',...(SOURCE_PERMISSIONS[type]||[]),...(SENSITIVE_TYPES.has(type)?['reports.sensitive']:[])].every(k=>permissions.includes(k)) && ((recipients||[]).every(r=>r.kind==='user'&&Number(r.id)===Number(user.id))||permissions.includes('reports.share')));
