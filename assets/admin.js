@@ -2529,6 +2529,13 @@
       { label: 'יחידות שנמכרו', value: numberFmt(data.unitsSold), hint: 'סה״כ פריטים' }
     ]));
     frag.appendChild(card('תרשים מכירות', 'הכנסה יומית. גע/לחץ על יום כדי לראות סכום מדויק ולהתמקד בו.', renderSalesChart(data.dailySales, range)));
+    if(window.VersansSalesAdvanced&&typeof window.VersansSalesAdvanced.render==='function'){
+      var advanced=make('div','admin-sales-advanced-container');
+      frag.appendChild(advanced);
+      // Advanced analytics is an independent request: failure does not hide the
+      // existing sales chart, top-products table, or recent paid orders.
+      window.VersansSalesAdvanced.render(advanced,{range:range,api:api,formatMoney:moneyAgorot,formatNumber:numberFmt});
+    }
     frag.appendChild(topProductsTable(data.topProducts || [], 'המוצרים הנמכרים ביותר', 'מדורג לפי מספר יחידות שנמכרו'));
     frag.appendChild(ordersTable(data.recentOrders || [], 'הזמנות אחרונות', 'Paid בטווח שנבחר'));
     content.replaceChildren(frag);

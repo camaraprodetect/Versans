@@ -7,6 +7,7 @@ const crypto = require('node:crypto');
 const { URL } = require('node:url');
 const { createDatabase, importOpeningExpenseLedger } = require('./lib/database');
 const { createAdminSecurity } = require('./lib/admin-security');
+const { createSalesAdvanced } = require('./lib/admin-sales-advanced.js');
 const { createAdminTools } = require('./lib/admin-tools.js');
 const { createTaskWorkflow } = require('./lib/task-workflow.js');
 const { createAdminReporting, SENSITIVE_TYPES, SOURCE_PERMISSIONS } = require('./lib/admin-reporting.js');
@@ -106,6 +107,7 @@ const VERSANS_BOT_MAX_BODY_CHARS = 32000;
 
 const database = createDatabase({ root: ROOT, sqlitePath: DB_PATH });
 const financeLedger = createFinanceLedger(database);
+const adminSalesAdvanced = createSalesAdvanced(database);
 const adminSecurity=createAdminSecurity(database,{sqlitePath:DB_PATH,root:ROOT});
 async function reportSheetFailure(scope,detail){
   try{
@@ -7924,6 +7926,15 @@ async function adminApi(req, res, pathname, parsed) {
     return true;
   }
 
+  if (pathname === '/api/admin/sales/advanced' && req.method === 'GET') {
+    try {
+      json(res, 200, {ok:true,...await adminSalesAdvanced.load(String(parsed.searchParams.get('range') || '30d'), PRODUCTS)});
+    } catch (error) {
+      json(res,error.status||500,{ok:false,error:error.message||'sales_analytics_failed'});
+    }
+    return true;
+  }
+
   if (pathname === '/api/admin/sales') {
     const range = String(parsed.searchParams.get('range') || '30d');
     const sales = await adminSalesData(range);
@@ -9690,6 +9701,10 @@ const server = http.createServer(async (req, res) => {
             updatedAt: demoOrder.updated_at
           });
           persistedDemoOrder = await database.getOrderByRef(demoOrder.order_ref);
+          if(persistedDemoOrder){
+            try { await adminSalesAdvanced.capture(demoOrder.order_ref,priceOrder(paymentBody.items,paymentBody.lang==='en'?'en':'he',demoCoupon,activeBundles)); }
+            catch(error){console.error('Sales promotion analytics capture failed:',error.message);}
+          }
           if(managedCoupon&&persistedDemoOrder)await database.transaction(async tx=>marketingManager.redeem(tx,managedCoupon.code,demoOrder.order_ref,now));
         } catch (dbErr) {
           console.error(`Demo order database save failed for ${demoOrder.order_ref}:`, dbErr);
@@ -9787,6 +9802,10 @@ const server = http.createServer(async (req, res) => {
         updatedAt: now
         });
       });
+      // Immutable pricing snapshot from the server checkout rules. This does not
+      // touch payment status, and analytics failures never fail a checkout.
+      try { await adminSalesAdvanced.capture(String(result.order || ''),priceOrder(paymentBody.items,paymentBody.lang==='en'?'en':'he',paymentOptions.coupon,activeBundles)); }
+      catch(error){console.error('Sales promotion analytics capture failed:',error.message);}
       json(res, 200, { ...result, guest: guestIdentity ? { name: guestIdentity.username, isVerifiedCustomer: false } : null }, guestIdentity && guestIdentity.setCookie ? { 'Set-Cookie': guestIdentity.setCookie } : {});
       return;
     }
@@ -10095,6 +10114,7 @@ async function start() {
   await adminTools.ensure();
   await taskWorkflow.ensure();
   await adminReporting.init();
+  await adminSalesAdvanced.init();
   // Upgrade previously subscribed devices before creating fresh task events.
   for(const subscription of await database.listAdminPushSubscriptions()) {
     if(subscription.user_id) await adminTools.initializeTaskPushCursor(subscription.device_token,Number(subscription.user_id));
