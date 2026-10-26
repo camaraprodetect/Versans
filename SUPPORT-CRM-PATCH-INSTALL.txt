@@ -1,0 +1,36 @@
+VerSans — Customer Service & Warranty (26 October 2026)
+======================================================
+Installation
+1) Make a current database backup before deployment.
+2) Apply this PATCH on top of the most recent Versans-Sales-Advanced-Analytics-PATCH version; preserve root-relative paths.
+3) Do not remove existing images, customer data, orders, or the PostgreSQL database.
+4) Deploy to Render and open /admin/support.
+5) In Employees & Permissions, grant support.view and the appropriate specific actions to existing staff. Owners/admins can use this area immediately.
+
+Contains source changes only; it does not include images, .git or any live database.
+
+What is new
+- Ticket statuses: open, in progress, waiting, closed.
+- Assignment to staff explicitly permitted to view support tickets.
+- Link a case to a real order and/or customer; incorrect account/order pairs are rejected.
+- WhatsApp and email response templates. Opening a composer does not send a message automatically.
+  After sending externally, explicitly log a sent response to update first-response metrics.
+- Damaged-item replacement statuses, tracking reference and notes. This does not
+  automatically generate an order or label.
+- 24-hour unanswered-message alerts by default, customizable 1 to 720 hours per ticket;
+  admin reminders run every 15 minutes and require configured email delivery.
+- Average time to first logged employee response and reason breakdown.
+- Ticket activity history and customer-profile links.
+- Existing cancellation/return requests remain untouched and are visible in this
+  area via one-time-per-request linked records, without sending retroactive reminders.
+
+Safety and limitations
+- No automatic two-way WhatsApp / Gmail inbox ingestion. New contacts must be logged
+  manually, except for the existing cancellation/return requests imported for viewing.
+- Logged outbound replies represent staff confirmation; opening a WhatsApp/mailto
+  draft is never treated as delivered.
+- Historical average response time begins when replies are logged in the CRM.
+- The email alert uses the configured store email provider. This test suite used mocks;
+  no live emails were sent as part of development.
+- Server/API tests passed in isolated SQLite. Validate PostgreSQL in staging.
+- The visual Chromium smoke run was not completed due to sandbox browser timeout.

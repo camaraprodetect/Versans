@@ -160,6 +160,7 @@
     creators: ['יוצרי תוכן', 'ניהול הרשאות, קודי יוצרים ומכירות'],
     customers: ['לקוחות', 'משתמשים רשומים, רכישות והוצאות מצטברות'],
     reviews: ['ביקורות', 'דירוגים, מוצרים מובילים וביקורות אחרונות'],
+    support: ['שירות לקוחות ואחריות', 'פניות, אחריות, עובדים, זמני תגובה ותבניות'],
     tasks: ['משימות פנימיות', 'תקלות, שיפורים, משימות ועדיפויות לצוות'],
     security: ['אבטחה ותחזוקה','מכשירים מחוברים, גיבויים, מחיקות, שחזור ומצב תחזוקה'],
     reports: ['דוחות וייצוא', 'דוחות פעילות, שעות, המרות והורדה כ-PDF, CSV או Excel'],
@@ -222,7 +223,7 @@
       return 'order-work';
     }
 
-    var match = /^\/admin\/(security|visitors|sales|income|expenses|order-work|arrivals|anomalies|products|marketing|customers|reviews|creators|tasks|reports|employees)$/.exec(path);
+    var match = /^\/admin\/(security|visitors|sales|income|expenses|order-work|arrivals|anomalies|products|marketing|customers|reviews|creators|support|tasks|reports|employees)$/.exec(path);
     return match ? match[1] : 'dashboard';
   }
 
@@ -4612,6 +4613,17 @@
       item.append(make('strong','',(r.type==='return'?'בקשת החזרה':'בקשת ביטול')+' · '+text(r.orderRef)),make('small','',dateTime(r.createdAt)+' · '+text(r.status)));reviewsSection.appendChild(item);});
     if(!(data.reviews||[]).length&&!(data.requests||[]).length)reviewsSection.appendChild(make('p','vs-crm-empty','אין ביקורות או בקשות שירות מתועדות.'));
     mid.appendChild(reviewsSection);frag.appendChild(mid);
+    if(hasCapability('support.view')){
+      var supportBox=crmSection('פניות שירות ואחריות','פניות שמקושרות לחשבון הלקוח במרכז השירות.');
+      try{var linked=await api('/api/admin/support/customer/'+encodeURIComponent(userId));
+        (linked.tickets||[]).forEach(function(ticket){var item=make('div','vs-crm-list-item');
+          var a=make('a','','#'+ticket.id+' · '+ticket.subject);a.href='/admin/support?ticket='+ticket.id;
+          item.append(a,make('small','',dateTime(ticket.openedAt)+' · '+(ticket.status==='closed'?'נסגרה':ticket.status==='waiting'?'ממתינה':ticket.status==='in_progress'?'בטיפול':'פתוחה')));supportBox.append(item);
+        });
+        if(!(linked.tickets||[]).length)supportBox.append(make('p','vs-crm-empty','אין פניות שירות מקושרות ללקוח.'));
+      }catch(_){supportBox.append(make('p','vs-crm-empty','לא ניתן לטעון כרגע את היסטוריית השירות.'));}
+      frag.append(supportBox);
+    }
     var activity=crmSection('פעילות אחרונה','אירועים שנשמרו במערכת בלבד; פעולות שלא תועדו בעבר לא יופיעו. ההצגה מוגבלת לאירועים האחרונים.');
     if(!p.visits)activity.appendChild(make('p','vs-crm-notice','צפיות בעמודים ומקורות תנועה זמינים רק עם הרשאת מבקרים.'));
     var eventList=make('div','vs-crm-timeline');
@@ -4926,6 +4938,7 @@
       else if (state.page === 'marketing') await window.VersansAdminMarketing.render(content,hasCapability('marketing.edit'));
       else if (state.page === 'customers') await renderCustomersPage();
       else if (state.page === 'reviews') await renderReviewsPage();
+      else if (state.page === 'support') await window.VersansSupport.render(content,{edit:hasCapability('support.edit'),assign:hasCapability('support.assign'),templates:hasCapability('support.templates'),replacement:hasCapability('support.replacement')});
       else if (state.page === 'tasks') await window.VersansAdminTools.renderTasks(content);
       else if (state.page === 'employees') await window.VersansAdminEmployees.render(content,staffIdentity);
       else if (state.page === 'reports') await window.VersansAdminTools.renderReports(content);

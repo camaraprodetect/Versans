@@ -7,6 +7,7 @@ const crypto = require('node:crypto');
 const { URL } = require('node:url');
 const { createDatabase, importOpeningExpenseLedger } = require('./lib/database');
 const { createAdminSecurity } = require('./lib/admin-security');
+const { createSupportCenter } = require('./lib/admin-support-center');
 const { createSalesAdvanced } = require('./lib/admin-sales-advanced.js');
 const { createAdminTools } = require('./lib/admin-tools.js');
 const { createTaskWorkflow } = require('./lib/task-workflow.js');
@@ -80,7 +81,7 @@ const ADMIN_PUSH_DEVICE_TTL_MS = 365 * 24 * 60 * 60 * 1000;
 const ADMIN_PUSH_VAPID_PUBLIC_META_KEY = 'admin_push_vapid_public_v1';
 const ADMIN_PUSH_VAPID_PRIVATE_META_KEY = 'admin_push_vapid_private_jwk_v1';
 const ADMIN_PUSH_TIMEOUT_MS = 10 * 1000;
-const ADMIN_PAGES = new Set(['security', 'tasks', 'reports', 'expenses', 'income', '', 'dashboard', 'visitors', 'sales', 'orders', 'order-work', 'arrivals', 'anomalies', 'products', 'customers', 'reviews', 'creators', 'employees', 'marketing']);
+const ADMIN_PAGES = new Set(['security', 'tasks', 'reports', 'expenses', 'income', '', 'dashboard', 'visitors', 'sales', 'orders', 'order-work', 'arrivals', 'anomalies', 'products', 'customers', 'reviews', 'creators', 'employees', 'marketing', 'support']);
 const BODY_LIMIT = 48 * 1024 * 1024;
 const REVIEW_IMAGE_LIMIT = 2 * 1024 * 1024;
 const REVIEW_VIDEO_LIMIT = 20 * 1024 * 1024;
@@ -132,6 +133,7 @@ const creatorProgram = createCreatorProgram(database);
 const { createCreatorVideos } = require('./lib/creator-videos.js');
 const creatorVideosStore = createCreatorVideos(database,creatorProgram);
 const employeeAccess = employeePolicy.createEmployeeAccess(database);
+const supportCenter = createSupportCenter(database,{sendEmail,isEmailConfigured,ownerEmail:ADMIN_EMAIL,staffCanView:async id=>(await employeeAccess.readEffective(id)).includes('support.view')});
 const { createAdminDashboard } = require('./lib/admin-dashboard.js');
 const adminDashboard = createAdminDashboard(database, creatorProgram);
 const { createAdminCreatorCrm } = require('./lib/admin-creator-crm.js');
@@ -5389,6 +5391,63 @@ async function adminApi(req, res, pathname, parsed) {
   }
   // Refresh last-seen timestamps without slowing admin requests or blocking them if monitoring fails.
   if(admin)adminSecurity.seenSession(admin,getSessionToken(req),parseCookies(req.headers.cookie)[ADMIN_DEVICE_COOKIE],req.headers['user-agent']).catch(e=>console.error('Admin device heartbeat:',e.message));
+  // Customer-service CRM: every mutation is authorized above at the API boundary.
+  if (pathname==='/api/admin/support/overview' && req.method==='GET') {
+    json(res,200,{ok:true,overview:await supportCenter.overview()});return true;
+  }
+  if (pathname==='/api/admin/support/assignees' && req.method==='GET') {
+    const staff=await employeeAccess.staffList();
+    json(res,200,{ok:true,assignees:staff.filter(u=>!u.blocked && (!u.expiresAt || u.expiresAt>Date.now()) && u.permissions.includes('support.view')).map(u=>({id:u.id,name:u.name,email:u.email})),owner:{id:Number(admin.id),name:admin.role==='admin'?admin.name:null}});return true;
+  }
+  if (pathname==='/api/admin/support/templates') {
+    if(req.method==='GET'){json(res,200,{ok:true,templates:await supportCenter.templates()});return true;}
+    if(req.method==='POST'){
+      if(!sameOriginAllowed(req)){json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
+      try{json(res,200,{ok:true,templates:await supportCenter.saveTemplate(await readJsonBody(req,8000),admin)});}
+      catch(e){json(res,e.status||400,{ok:false,error:e.message});}return true;
+    }
+  }
+  const supportTemplate=/^\/api\/admin\/support\/templates\/(\d+)$/.exec(pathname);
+  if(supportTemplate && ['PUT','DELETE'].includes(req.method)){
+    if(!sameOriginAllowed(req)){json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
+    try{const templates=req.method==='DELETE'?await supportCenter.removeTemplate(supportTemplate[1]):await supportCenter.saveTemplate(await readJsonBody(req,8000),admin,supportTemplate[1]);
+      json(res,200,{ok:true,templates});}catch(e){json(res,e.status||400,{ok:false,error:e.message});}return true;
+  }
+  const supportCustomer=/^\/api\/admin\/support\/customer\/(\d+)$/.exec(pathname);
+  if(supportCustomer && req.method==='GET'){
+    json(res,200,{ok:true,tickets:await supportCenter.customerHistory(supportCustomer[1])});return true;
+  }
+  if(pathname==='/api/admin/support/tickets'){
+    if(req.method==='GET'){
+      try{json(res,200,{ok:true,...await supportCenter.list({status:parsed.searchParams.get('status')||'all',reason:parsed.searchParams.get('reason')||'all',assignee:parsed.searchParams.get('assignee')||'all',search:parsed.searchParams.get('q')||'',limit:parsed.searchParams.get('limit'),offset:parsed.searchParams.get('offset')})});}
+      catch(e){json(res,e.status||400,{ok:false,error:e.message});}return true;
+    }
+    if(req.method==='POST'){
+      if(!sameOriginAllowed(req)){json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
+      try{const input=await readJsonBody(req,10000);
+        if(input.assigneeId&&!hasAdminPermission(admin,'support.assign')){json(res,403,{ok:false,error:'permission_denied'});return true;}
+        json(res,201,{ok:true,...await supportCenter.create(input,admin)});
+      }catch(e){json(res,e.status||400,{ok:false,error:e.message});}return true;
+    }
+  }
+  const supportTicket=/^\/api\/admin\/support\/tickets\/(\d+)(?:\/(messages|replacement))?$/.exec(pathname);
+  if(supportTicket){
+    const id=supportTicket[1],kind=supportTicket[2]||'';
+    if(req.method==='GET'&&!kind){try{json(res,200,{ok:true,...await supportCenter.detail(id)});}catch(e){json(res,e.status||400,{ok:false,error:e.message});}return true;}
+    if(['PATCH','POST'].includes(req.method)){
+      if(!sameOriginAllowed(req)){json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
+      try{
+        const input=await readJsonBody(req,12000);let result;
+        if(req.method==='PATCH'&&!kind){
+          if(Object.hasOwn(input,'assigneeId')&&!hasAdminPermission(admin,'support.assign')){json(res,403,{ok:false,error:'permission_denied'});return true;}
+          result=await supportCenter.update(id,input,admin,{mayAssign:hasAdminPermission(admin,'support.assign')});
+        }else if(req.method==='POST'&&kind==='messages')result=await supportCenter.message(id,input,admin);
+        else if(req.method==='POST'&&kind==='replacement')result=await supportCenter.replacement(id,input,admin);
+        else{json(res,405,{ok:false,error:'method_not_allowed'});return true;}
+        json(res,200,{ok:true,...result});
+      }catch(e){json(res,e.status||400,{ok:false,error:e.message});}return true;
+    }
+  }
   // Owner-only backup download. Never expose a backup through static file hosting.
   if (pathname==='/api/admin/security/backup/download' && req.method==='GET') {
     if(normalizeEmail(admin.email)!==ADMIN_EMAIL){json(res,403,{ok:false,error:'owner_only'});return true;}
@@ -10092,6 +10151,7 @@ setInterval(async () => {
 
 setInterval(()=>{checkTaskPushSchedule().catch(e=>console.error('Task reminder scheduler failed:',e));},60*1000).unref();
 setInterval(()=>{taskWorkflow.processDue().catch(e=>console.error('Task deadline scheduler failed:',e));},5*60*1000).unref();
+setInterval(()=>{supportCenter.reminders().catch(e=>console.error('Support ticket reminders:',e.message));},15*60*1000).unref();
 setInterval(()=>{adminSecurity.dailyBackup().catch(e=>console.error('Scheduled backup failed:',e.message));},60*60*1000).unref();
 setInterval(()=>{financeLedger.generateRecurring().catch(e=>console.error('Monthly expense generator failed:',e));},6*60*60*1000).unref();
 setInterval(()=>{adminReporting.deliverScheduled(async(user,type,recipients)=>{
@@ -10115,6 +10175,7 @@ async function start() {
   await taskWorkflow.ensure();
   await adminReporting.init();
   await adminSalesAdvanced.init();
+  await supportCenter.init();
   // Upgrade previously subscribed devices before creating fresh task events.
   for(const subscription of await database.listAdminPushSubscriptions()) {
     if(subscription.user_id) await adminTools.initializeTaskPushCursor(subscription.device_token,Number(subscription.user_id));
