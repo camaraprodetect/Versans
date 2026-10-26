@@ -8,6 +8,7 @@ const { URL } = require('node:url');
 const { createDatabase, importOpeningExpenseLedger } = require('./lib/database');
 const { createAdminSecurity } = require('./lib/admin-security');
 const { createSupportCenter } = require('./lib/admin-support-center');
+const { createAdminOrderOperations } = require('./lib/admin-order-operations');
 const { createSalesAdvanced } = require('./lib/admin-sales-advanced.js');
 const { createAdminTools } = require('./lib/admin-tools.js');
 const { createTaskWorkflow } = require('./lib/task-workflow.js');
@@ -134,6 +135,7 @@ const { createCreatorVideos } = require('./lib/creator-videos.js');
 const creatorVideosStore = createCreatorVideos(database,creatorProgram);
 const employeeAccess = employeePolicy.createEmployeeAccess(database);
 const supportCenter = createSupportCenter(database,{sendEmail,isEmailConfigured,ownerEmail:ADMIN_EMAIL,staffCanView:async id=>(await employeeAccess.readEffective(id)).includes('support.view')});
+const orderOps=createAdminOrderOperations(database,{products:PRODUCTS,shipmentsForOrder:listOrderShipmentsPayload,sendEmail,isEmailConfigured,ownerEmail:ADMIN_EMAIL});
 const { createAdminDashboard } = require('./lib/admin-dashboard.js');
 const adminDashboard = createAdminDashboard(database, creatorProgram);
 const { createAdminCreatorCrm } = require('./lib/admin-creator-crm.js');
@@ -5391,6 +5393,38 @@ async function adminApi(req, res, pathname, parsed) {
   }
   // Refresh last-seen timestamps without slowing admin requests or blocking them if monitoring fails.
   if(admin)adminSecurity.seenSession(admin,getSessionToken(req),parseCookies(req.headers.cookie)[ADMIN_DEVICE_COOKIE],req.headers['user-agent']).catch(e=>console.error('Admin device heartbeat:',e.message));
+  // Private operations for the order workbench, separate from customer order status.
+  const workflowRoute=/^\/api\/admin\/orders\/([^/]+)\/workflow(?:\/(lock|notes|stage|units|verify))?$/.exec(pathname);
+  if(workflowRoute){
+    if(req.method!=='GET'&&!sameOriginAllowed(req)){json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
+    let ref;try{ref=decodeURIComponent(workflowRoute[1]);}catch(_){json(res,400,{ok:false,error:'invalid_order_ref'});return true;}
+    try{
+      const order=await orderOps.readOrder(ref);
+      if(req.method==='GET'&&!workflowRoute[2]){
+        // Compare only nearby orders; suspicion is a review flag, never a payment block.
+        const nearby=await database.listAdminOrders({status:'all',since:Math.max(0,Number(order.created_at)-30*60000),limit:250,offset:0}).catch(()=>[]);
+        json(res,200,{ok:true,workflow:await orderOps.inspect(order,{nearbyOrders:nearby})});return true;
+      }
+      if(req.method!=='POST'){json(res,405,{ok:false,error:'method_not_allowed'});return true;}
+      const part=workflowRoute[2];const body=await readJsonBody(req,8192);
+      const token=tokenHash(getSessionToken(req));
+      if(part==='lock'){
+        if(!hasAdminPermission(admin,'orders.edit')){json(res,403,{ok:false,error:'permission_denied'});return true;}
+        const result=await orderOps.lock(order,admin,token,body.action);
+        json(res,200,{ok:true,...result});return true;
+      }
+      if(!hasAdminPermission(admin,'orders.edit')){json(res,403,{ok:false,error:'permission_denied'});return true;}
+      if(order.status!=='paid'){json(res,409,{ok:false,error:'paid_order_required'});return true;}
+      let result;
+      if(part==='notes')result={notes:await orderOps.addNote(order,admin,token,body.body)};
+      else if(part==='stage')result=await orderOps.setStage(order,admin,token,body.stage,body.proof);
+      else if(part==='units')result=await orderOps.checkUnit(order,admin,token,body);
+      else if(part==='verify')result=await orderOps.verifyPacking(order,admin,token);
+      else{json(res,404,{ok:false,error:'unknown_workflow_action'});return true;}
+      json(res,200,{ok:true,...result});return true;
+    }catch(e){json(res,e.status||500,{ok:false,error:e.status?e.message:'workflow_failed'});return true;}
+  }
+
   // Customer-service CRM: every mutation is authorized above at the API boundary.
   if (pathname==='/api/admin/support/overview' && req.method==='GET') {
     json(res,200,{ok:true,overview:await supportCenter.overview()});return true;
@@ -6244,6 +6278,7 @@ async function adminApi(req, res, pathname, parsed) {
     }
     if (!units.length) { json(res,409,{ok:false,error:'shipment_has_no_assigned_items',orderRef:order.order_ref}); return true; }
     const added=await database.receivePackagingShipmentUnits(order.id,shipment.id,units,Date.now());
+    if(added)await orderOps.activity(order,admin,'warehouse_scan','סריקת קליטה · '+shipment.tracking_number+' · '+added+' יחידות');
     json(res,200,{...(await packingOrderSummary(order,shipment.id)), scanned:true, newlyReceived:added, shipmentUnitCount:units.length});
     return true;
   }
@@ -6267,6 +6302,7 @@ async function adminApi(req, res, pathname, parsed) {
     }
     await database.markPackagingUnit(order.id,itemIndex,unitNumber,body.received,null,Date.now());
     await recordDashboardActivity(admin,'orders',body.received?'קליטת יחידה':'ביטול קליטת יחידה',order.order_ref+' · פריט '+(itemIndex+1));
+    await orderOps.activity(order,admin,body.received?'unit_received':'unit_unreceived','פריט '+(itemIndex+1)+' · יחידה '+unitNumber);
     json(res,200,await packingOrderSummary(order));
     return true;
   }
@@ -6608,6 +6644,7 @@ async function adminApi(req, res, pathname, parsed) {
     const order = await database.getOrderByRef(orderRef);
     if (!order) { json(res, 404, { ok: false, error: 'order_not_found' }); return true; }
     const orderItems = normalizeStoredOrderItems(order.items_json, PRODUCTS);
+    if(req.method==='POST'){try{await orderOps.assertUnlocked(order,admin,tokenHash(getSessionToken(req)));}catch(e){json(res,e.status||409,{ok:false,error:e.message});return true;}}
 
     if (req.method === 'GET') {
       let shipments = await listOrderShipmentsPayload(order.id);
@@ -6872,6 +6909,7 @@ async function adminApi(req, res, pathname, parsed) {
     const itemIndex = Number(shipmentItemDeleteMatch[2]);
     const order = await database.getOrderByRef(orderRef);
     if (!order) { json(res, 404, { ok: false, error: 'order_not_found' }); return true; }
+    try{await orderOps.assertUnlocked(order,admin,tokenHash(getSessionToken(req)));}catch(e){json(res,e.status||409,{ok:false,error:e.message});return true;}
     const orderItems = normalizeStoredOrderItems(order.items_json, PRODUCTS);
     if (!Number.isInteger(itemIndex) || itemIndex < 0 || itemIndex >= orderItems.length) {
       json(res, 400, { ok: false, error: 'invalid_order_item' });
@@ -7403,6 +7441,8 @@ async function adminApi(req, res, pathname, parsed) {
     try { orderRef = decodeURIComponent(orderWorkItemMatch[1]); } catch (_) { orderRef = orderWorkItemMatch[1]; }
     const itemIndex = Number(orderWorkItemMatch[2]);
     const body = await readJsonBody(req, 64 * 1024);
+    const existingOrder=await database.getOrderByRef(orderRef);
+    if(existingOrder){try{await orderOps.assertUnlocked(existingOrder,admin,tokenHash(getSessionToken(req)));}catch(e){json(res,e.status||409,{ok:false,error:e.message});return true;}}
     if (typeof body.completed !== 'boolean') { json(res, 400, { ok: false, error: 'completed_required' }); return true; }
     const order = await database.getOrderByRef(orderRef);
     if (!order) { json(res, 404, { ok: false, error: 'order_not_found' }); return true; }
@@ -7413,6 +7453,7 @@ async function adminApi(req, res, pathname, parsed) {
     const now = Date.now();
     await database.setOrderWorkItemStatus(Number(order.id), itemIndex, body.completed, 'admin', now);
     await recordDashboardActivity(admin,'orders',body.completed?'סיום טיפול בפריט':'פתיחת טיפול בפריט',order.order_ref+' · פריט '+(itemIndex+1));
+    await orderOps.activity(order,admin,body.completed?'work_item_done':'work_item_reopened','פריט '+(itemIndex+1)).catch(e=>console.error('Order audit:',e.message));
 
     const latestStates = typeof database.listOrderWorkItems === 'function'
       ? await database.listOrderWorkItems(Number(order.id))
@@ -7453,6 +7494,8 @@ async function adminApi(req, res, pathname, parsed) {
     let orderRef;
     try { orderRef = decodeURIComponent(orderWorkMatch[1]); } catch (_) { orderRef = orderWorkMatch[1]; }
     const body = await readJsonBody(req, 64 * 1024);
+    const orderForLock=await database.getOrderByRef(orderRef);
+    if(orderForLock){try{await orderOps.assertUnlocked(orderForLock,admin,tokenHash(getSessionToken(req)));}catch(e){json(res,e.status||409,{ok:false,error:e.message});return true;}}
     if (typeof body.completed !== 'boolean') { json(res, 400, { ok: false, error: 'completed_required' }); return true; }
     const order = await database.getOrderByRef(orderRef);
     if (!order) { json(res, 404, { ok: false, error: 'order_not_found' }); return true; }
@@ -7461,6 +7504,7 @@ async function adminApi(req, res, pathname, parsed) {
     const now = Date.now();
     await database.setOrderWorkItemsStatus(Number(order.id), itemCount, body.completed, 'admin', now);
     await recordDashboardActivity(admin,'orders',body.completed?'סיום טיפול בהזמנה':'פתיחת טיפול בהזמנה',order.order_ref);
+    await orderOps.activity(order,admin,body.completed?'work_completed':'work_reopened','עדכון מצב הטיפול בהזמנה');
     let sheetSynced = false;
     let sheetError = null;
     try {
@@ -10152,6 +10196,7 @@ setInterval(async () => {
 setInterval(()=>{checkTaskPushSchedule().catch(e=>console.error('Task reminder scheduler failed:',e));},60*1000).unref();
 setInterval(()=>{taskWorkflow.processDue().catch(e=>console.error('Task deadline scheduler failed:',e));},5*60*1000).unref();
 setInterval(()=>{supportCenter.reminders().catch(e=>console.error('Support ticket reminders:',e.message));},15*60*1000).unref();
+setInterval(()=>{orderOps.reminders().catch(e=>console.error('Order progression reminders:',e.message));},30*60*1000).unref();
 setInterval(()=>{adminSecurity.dailyBackup().catch(e=>console.error('Scheduled backup failed:',e.message));},60*60*1000).unref();
 setInterval(()=>{financeLedger.generateRecurring().catch(e=>console.error('Monthly expense generator failed:',e));},6*60*60*1000).unref();
 setInterval(()=>{adminReporting.deliverScheduled(async(user,type,recipients)=>{

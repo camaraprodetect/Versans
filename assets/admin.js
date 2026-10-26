@@ -1531,7 +1531,10 @@
       }
 
       var actions = make('div', 'admin-order-detail-actions');
-      var shippingButton = make('button', 'admin-shipment-submit', 'ניהול משלוחים'); shippingButton.type = 'button'; shippingButton.disabled = order.status !== 'paid';
+      var workflowButton=make('button','admin-shipment-submit','ניהול תפעולי · ציר זמן ואריזה');
+    workflowButton.type='button';workflowButton.onclick=function(){closeShippingModal();if(window.VersansOrderWorkflow)window.VersansOrderWorkflow.open(orderRef,hasCapability('orders.edit'));};
+    actions.appendChild(workflowButton);
+        var shippingButton = make('button', 'admin-shipment-submit', 'ניהול משלוחים'); shippingButton.type = 'button'; shippingButton.disabled = order.status !== 'paid';
       shippingButton.addEventListener('click', function () { closeShippingModal(); openShipmentManager(order); });
       var done = make('button', 'admin-order-detail-close-button', 'סגור'); done.type = 'button'; done.addEventListener('click', closeShippingModal);
       actions.append(shippingButton, done); panel.appendChild(actions);
@@ -3308,7 +3311,8 @@
       });
       actions.appendChild(workTimer);
     }
-    actions.appendChild(orderWorkTrackLink(order));
+    actions.appendChild(orderWorkActionButton('ניהול תפעולי', '', function(){if(window.VersansOrderWorkflow)window.VersansOrderWorkflow.open(order.orderRef,hasCapability('orders.edit'));}));
+        actions.appendChild(orderWorkTrackLink(order));
     actions.appendChild(orderWorkActionButton('פרטי הזמנה', '', function () {
       openOrderDetailsByRef(order.orderRef);
     }));

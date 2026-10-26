@@ -1,0 +1,28 @@
+VerSans — Order Workbench / Fulfillment Workflow PATCH — October 26, 2026
+=========================================================================
+INSTALLATION
+1. Verify the service has recovered from any prior Render 502 error and inspect its logs. This patch does not repair unrelated startup failures.
+2. Back up the live database and test deployment in staging first.
+3. Apply this patch over Versans-Customer-Service-Warranty-PATCH, preserving the folder structure; do not delete unchanged files or images.
+4. Deploy once. Open /admin/order-work and click "ניהול תפעולי" on an order.
+5. Confirm the server started and the browser loads /assets/admin-order-operations.js.
+
+FUNCTIONALITY
+- Per-order timeline, current operational stage and approximate elapsed time based on recorded events (not fake historical stage dates).
+- Internal notes, time-stamped audit history, staff lock with a 15-minute lease; a different logged-in session cannot overwrite a locked order.
+- Explicit per-unit packing checklist reconciled against existing physical warehouse receipt scans. Staff cannot mark unreceived units as packed or certify an incomplete packing list.
+- Conservative advisory duplicate detection for same contacts/amount within 30 minutes. It does not cancel legitimate orders.
+- Warehouse status derived from existing scans and shipment tracking; manual stage confirmation for order placement and packing.
+- Outbound shipping to the customer and final delivery require staff proof/confirmation; supplier pickup/delivery is not assumed to be customer delivery.
+- Daily digest for orders stalled >24 hours, if outgoing store email is configured. Runs every 30 minutes but only sends once per day.
+- From the order modal, create a support ticket for cancellation/return; create a pending documented refund via the existing finance system, subject to per-action permissions/reauth. Refund entry alone never transfers funds or initiates an HYP refund.
+- Existing statuses, paid orders, shipments, packing scans, Google Sheets connections and customer-facing data remain unchanged.
+
+LIMITATIONS
+- Stage history begins with the deployment; older payments/tracking/receipt timestamps are shown where available. Historical employee changes that were not recorded cannot be reconstructed.
+- Stage elapsed times are based on available timestamps and should not be treated as work hours. Existing explicit work-session timers still measure active staff work separately.
+- Duplicate flagging is suggestive; no automatic fraud decision.
+- This patch does not alter external HYP refund execution, send packages or synchronize external shipping labels.
+- The operations modal is internal. It requires orders.view to see details and orders.edit to mutate, plus separate finance/support permissions for those workflows.
+- Tests executed with isolated SQLite (including HTTP API), not the live PostgreSQL database or the live checkout provider.
+- A graphical browser screenshot test was attempted but timed out; do not treat it as verified.
