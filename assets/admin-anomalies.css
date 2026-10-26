@@ -17,3 +17,16 @@
 .vs-anomaly-reasons{margin:0;padding-inline-start:20px;display:grid;gap:6px;font-size:12px;line-height:1.7}.vs-anomaly-reasons li{margin:0}.vs-anomaly-review-meta{margin:0;color:var(--admin-muted,#687584);font-size:10px;overflow-wrap:anywhere}.vs-anomaly-status{font-size:11px;color:#a23a3a}
 .vs-anomaly-pagination{display:flex;gap:10px;align-items:center;justify-content:center;margin:8px auto;font-size:11px}.vs-anomaly-empty,.vs-anomaly-error{border:1px dashed var(--admin-line,#d9e0e7);padding:32px 14px;text-align:center;background:var(--admin-card,#fff);border-radius:12px;font-size:12px;color:var(--admin-muted,#657480)}
 @media(max-width:760px){.vs-anomaly-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.vs-anomaly-stat{padding:12px}.vs-anomaly-stat strong{font-size:21px}.vs-anomaly-controls{padding:11px;gap:10px}.vs-anomaly-field{flex:1 1 42%}.vs-anomaly-card{padding:12px}.vs-anomaly-card-head{align-items:start}.vs-anomaly-order-ref{font-size:12px}.vs-anomaly-amount{font-size:14px}}
+/* Rule management, manual classification and assignment. */
+.vs-anomaly-stats{grid-template-columns:repeat(5,minmax(0,1fr))}
+.vs-anomaly-rules{background:var(--admin-card,#fff);border:1px solid var(--admin-line,#e0e5ea);border-radius:13px;padding:16px}
+.vs-anomaly-rules summary{cursor:pointer;font-weight:800;font-size:14px;color:var(--admin-navy,#142333);list-style:revert}
+.vs-anomaly-rules[open]{display:grid;gap:14px}
+.vs-anomaly-rules-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:center}
+.vs-anomaly-rule-toggle{display:flex;gap:8px;align-items:center;font-size:12px;font-weight:700;min-width:0}
+.vs-anomaly-rule-toggle input{accent-color:#142333}
+.vs-anomaly-history{padding:12px;border:1px dashed #d7e0e8;border-radius:9px;background:var(--admin-card,#fff);font-size:11px}
+.vs-anomaly-history p{margin:8px 0;line-height:1.6}
+.vs-anomaly-actions .vs-anomaly-field{flex:1 1 175px}
+@media(max-width:850px){.vs-anomaly-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.vs-anomaly-rules-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){.vs-anomaly-rules-grid{grid-template-columns:1fr}.vs-anomaly-actions .vs-anomaly-field{flex-basis:100%}.vs-anomaly-actions .vs-anomaly-field .vs-anomaly-search{width:100%}}

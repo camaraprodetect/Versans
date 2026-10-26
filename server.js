@@ -5640,7 +5640,21 @@ async function adminApi(req, res, pathname, parsed) {
     await employeeAccess.audit(admin,'employees','update',`עובד #${targetId} · ${diff}${blockNote}`,targetId);
     json(res,200,{ok:true,employee:{id:targetId,permissions:keys}});return true;
   }
-  // Rule-based order review. Flags are advisory; purchases and fulfillment stay untouched.
+  // Advisory anomaly review; never block orders or alter payment/fulfillment state.
+  if (pathname === '/api/admin/order-anomalies/settings' && req.method === 'GET') {
+    const staff=(await employeeAccess.staffList()).filter(e=>!e.blocked && (!e.expiresAt || e.expiresAt>Date.now()) && e.permissions.includes('anomalies.view'));
+    json(res,200,{ok:true,rules:await orderAnomalies.getRules(database),canEditRules:admin.role==='admin',canReview:hasAdminPermission(admin,'anomalies.edit'),staff:staff.map(e=>({id:e.id,name:e.name,email:e.email}))});return true;
+  }
+  if (pathname === '/api/admin/order-anomalies/settings' && req.method === 'PUT') {
+    if(admin.role!=='admin'){json(res,403,{ok:false,error:'admin_only'});return true;}
+    if(!sameOriginAllowed(req)){json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
+    const body=await readJsonBody(req,4096);
+    const rules=orderAnomalies.validateRules(body);
+    if(!rules){json(res,400,{ok:false,error:'invalid_anomaly_rules'});return true;}
+    const actor=String(admin.name||admin.email||'admin').slice(0,120);
+    await orderAnomalies.saveRules(database,rules,actor);
+    json(res,200,{ok:true,rules});return true;
+  }
   if (pathname === '/api/admin/order-anomalies' && req.method === 'GET') {
     const range = String(parsed.searchParams.get('range') || '30d');
     const ranges = { '7d': 7, '30d': 30, '90d': 90, all: null };
@@ -5648,57 +5662,79 @@ async function adminApi(req, res, pathname, parsed) {
     const reviewState = String(parsed.searchParams.get('reviewState') || 'open');
     const kind = String(parsed.searchParams.get('kind') || 'all');
     const query = String(parsed.searchParams.get('q') || '').trim().slice(0,120).toLowerCase();
-    if (!Object.prototype.hasOwnProperty.call(ranges,range) ||
+    if (!Object.hasOwn(ranges,range) ||
         !['all','high','medium','low'].includes(severity) ||
-        !['all','open','reviewed','dismissed'].includes(reviewState) ||
-        !['all','duplicate','price','payment'].includes(kind)) {
+        !['all','open','reviewed','dismissed','confirmed','false_positive'].includes(reviewState) ||
+        !['all','duplicate','price','payment','address','gateway','custom'].includes(kind)) {
       json(res,400,{ok:false,error:'invalid_anomaly_filters'});return true;
     }
     const {limit,offset} = adminPagination(parsed,30);
     const now = Date.now();
-    const since = ranges[range] == null ? null : now-(ranges[range]*86400000+3600000);
+    // Bring a short lookback margin to detect a sequence spanning the filter boundary.
+    const since = ranges[range] == null ? null : now-(ranges[range]*86400000+72*3600000);
     const rows = await database.listAdminOrders({status:'all',since,limit:5000,offset:0});
-    const flags = orderAnomalies.computeSignals(rows, PRODUCTS);
-    const reviews = await orderAnomalies.getReviews(database);
+    const rules=await orderAnomalies.getRules(database);
+    const flags = orderAnomalies.computeSignals(rows,PRODUCTS,{rules,gatewayEvidence:await orderAnomalies.getGatewayEvidence(database)});
+    const [legacy,cases]=await Promise.all([orderAnomalies.getReviews(database),orderAnomalies.getCases(database)]);
+    const reviewFor=ref=>cases.get(ref)||legacy.get(ref)||{state:'open',note:'',assignedUserId:null,updatedAt:null,updatedBy:''};
     const dayCutoff = ranges[range] == null ? null : now-ranges[range]*86400000;
-    const kindPrefixes = {duplicate:['duplicate_'],price:['invalid_total','unusually_high_total','empty_paid_order','high_price_mismatch','low_price_mismatch'],payment:['repeated_failed_payments','paid_after_failures']};
-    const filtered = flags.filter(flag => {
-      if (dayCutoff !== null && flag.createdAt < dayCutoff) return false;
-      const review = reviews.get(flag.orderRef);
-      const current = review ? review.state : 'open';
-      if (reviewState !== 'all' && current !== reviewState) return false;
-      if (severity !== 'all' && flag.severity !== severity) return false;
-      if (query && !(flag.orderRef+' '+flag.customerName).toLowerCase().includes(query)) return false;
-      if (kind !== 'all' && !flag.reasons.some(reason => kindPrefixes[kind].some(prefix => reason.code.startsWith(prefix)))) return false;
+    const kindPrefixes = {
+      duplicate:['duplicate_'],price:['invalid_total','empty_paid_order','high_price_mismatch','low_price_mismatch','unusually_high_total','custom_low_unit_price','custom_high_unit_price','custom_high_order'],
+      payment:['repeated_failed_payments','paid_after_failures'],address:['shared_shipping_address'],gateway:['gateway_amount_mismatch'],custom:['custom_']
+    };
+    const scoped=flags.filter(flag=>dayCutoff===null||flag.createdAt>=dayCutoff);
+    const filtered=scoped.filter(flag=>{
+      const current=reviewFor(flag.orderRef).state;
+      if(reviewState!=='all'&&current!==reviewState)return false;
+      if(severity!=='all'&&flag.severity!==severity)return false;
+      if(query && !(flag.orderRef+' '+flag.customerName).toLowerCase().includes(query))return false;
+      if(kind!=='all'&&!flag.reasons.some(reason=>kindPrefixes[kind].some(prefix=>reason.code.startsWith(prefix))))return false;
       return true;
     });
-    const summary = {all:0,open:0,reviewed:0,dismissed:0,high:0,medium:0,low:0};
-    for(const flag of flags){
-      if(dayCutoff !== null && flag.createdAt < dayCutoff) continue;
-      const state = (reviews.get(flag.orderRef)||{}).state || 'open';
-      summary.all++;summary[state]++;summary[flag.severity]++;
+    const summary={all:scoped.length,open:0,reviewed:0,dismissed:0,confirmed:0,false_positive:0,high:0,medium:0,low:0,classified:0,falsePositiveRate:null};
+    for(const flag of scoped){
+      const state=reviewFor(flag.orderRef).state;
+      if(Object.hasOwn(summary,state))summary[state]++;
+      summary[flag.severity]++;
     }
-    json(res,200,{ok:true,summary,range,limit,offset,count:filtered.length,
+    // Reviewed means checked but not yet classified. Only explicit classifications
+    // count toward true/false-positive stats (legacy dismissed is a false alert).
+    const falseTotal=summary.false_positive+summary.dismissed;
+    summary.classified=summary.confirmed+falseTotal;
+    summary.falsePositiveRate=summary.classified?Math.round(falseTotal*10000/summary.classified)/100:null;
+    json(res,200,{ok:true,summary,rules,range,limit,offset,count:filtered.length,
       hasMore:offset+limit<filtered.length,truncated:rows.length===5000,
-      orders:filtered.slice(offset,offset+limit).map(flag => ({...flag,
-        review:reviews.get(flag.orderRef)||{state:'open',note:'',updatedAt:null,updatedBy:''}}))});
+      orders:filtered.slice(offset,offset+limit).map(flag=>({...flag,review:reviewFor(flag.orderRef)}))});
     return true;
   }
   if (pathname === '/api/admin/order-anomalies/review' && req.method === 'POST') {
-    if (!sameOriginAllowed(req)) {json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
-    const body = await readJsonBody(req, 2048);
-    const ref = String(body && body.orderRef || '').trim();
-    const reviewState = String(body && body.state || '');
-    const note = String(body && body.note || '').trim();
-    if(!ref || ref.length > 150 || !['open','reviewed','dismissed'].includes(reviewState) || note.length > 300){
+    if(!sameOriginAllowed(req)){json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
+    const body=await readJsonBody(req,2048);
+    const ref=String(body?.orderRef||'').trim();
+    const state=String(body?.state||'');
+    const note=String(body?.note||'').trim();
+    const assignee=body?.assignedUserId==null||body.assignedUserId===''?null:Number(body.assignedUserId);
+    if(!ref||ref.length>150||!['open','reviewed','dismissed','confirmed','false_positive'].includes(state)||note.length>300||
+      (assignee!==null&&(!Number.isSafeInteger(assignee)||assignee<=0))){
       json(res,400,{ok:false,error:'invalid_anomaly_review'});return true;
     }
-    // Only known flagged orders may be changed; do not create reviews for arbitrary refs.
-    const order = await database.getOrderByRef(ref);
+    const order=await database.getOrderByRef(ref);
     if(!order){json(res,404,{ok:false,error:'order_not_found'});return true;}
-    await orderAnomalies.saveReview(database,ref,reviewState,note,String(admin.name || admin.email || 'admin').slice(0,120));
-    json(res,200,{ok:true,orderRef:ref,state:reviewState});
-    return true;
+    if(assignee!==null){
+      const staff=(await employeeAccess.staffList()).find(e=>e.id===assignee);
+      if(!staff||staff.blocked||(staff.expiresAt&&staff.expiresAt<=Date.now())||!staff.permissions.includes('anomalies.view')){
+        json(res,400,{ok:false,error:'invalid_anomaly_assignee'});return true;
+      }
+    }
+    await orderAnomalies.saveCase(database,ref,state,note,assignee,String(admin.name||admin.email||'admin').slice(0,120));
+    json(res,200,{ok:true,orderRef:ref,state,assignedUserId:assignee});return true;
+  }
+  if(pathname==='/api/admin/order-anomalies/history'&&req.method==='GET'){
+    const ref=String(parsed.searchParams.get('orderRef')||'').trim();
+    if(!ref||ref.length>150){json(res,400,{ok:false,error:'invalid_order_ref'});return true;}
+    const order=await database.getOrderByRef(ref);
+    if(!order){json(res,404,{ok:false,error:'order_not_found'});return true;}
+    json(res,200,{ok:true,history:await orderAnomalies.caseHistory(database,ref)});return true;
   }
 
   // Immutable finance audit, recurring templates and manually reconciled refunds.
@@ -9827,6 +9863,11 @@ const server = http.createServer(async (req, res) => {
         if (result.ok) {
           const returnedAmount = result.amount == null || result.amount === '' ? null : amountToAgorot(result.amount);
           const amountMatches = returnedAmount === null || returnedAmount === Number(order.amount_agorot);
+          if (!amountMatches && returnedAmount !== null) {
+            // Only the server-verified provider response is trusted, never the checkout input.
+            try { await orderAnomalies.recordGatewayMismatch(database,order.order_ref,returnedAmount,Number(order.amount_agorot)); }
+            catch (auditError) { console.error('Payment mismatch audit:',auditError.message); }
+          }
           if (amountMatches) {
             paymentAccepted = true;
             const now = Date.now();
