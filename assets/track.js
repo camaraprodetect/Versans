@@ -54,6 +54,33 @@
     summary.appendChild(progress);
     result.appendChild(summary);
 
+    // Carrier delivery to a depot is NOT sufficient. Ask the customer to confirm
+    // physical receipt, with the same order-phone check used for pickup details.
+    if (!data.itemSpecific) {
+      var receipt=el('section','track-receipt-confirm');
+      receipt.appendChild(el('h3','','קיבלת את כל הפריטים בהזמנה?'));
+      if(data.receiptConfirmedAt){
+        receipt.appendChild(el('p','','אישרת שקיבלת את ההזמנה בתאריך '+fmtDate(data.receiptConfirmedAt)+'. תודה!'));
+      }else{
+        receipt.appendChild(el('p','','רק לאחר שהחבילה נמצאת בידיך, ניתן לאשר קבלה. לא לאשר רק כי המשלוח הגיע לנקודת איסוף.'));
+        var box=el('div','track-receipt-confirm__row');
+        var phone=el('input');phone.type='tel';phone.placeholder='מספר הטלפון של ההזמנה';phone.autocomplete='tel';phone.setAttribute('aria-label','טלפון לאימות קבלת המשלוח');
+        var confirm=el('button','','אישור קבלת ההזמנה');confirm.type='button';
+        var feedback=el('p','track-receipt-confirm__feedback','');feedback.hidden=true;
+        confirm.addEventListener('click',async function(){
+          if(!String(phone.value||'').trim()){feedback.hidden=false;feedback.textContent='צריך להזין מספר טלפון תואם להזמנה.';return;}
+          var approved=window.confirm('אני מאשר/ת שכל הפריטים בהזמנה נמצאים אצלי. האם להמשיך?');if(!approved)return;
+          confirm.disabled=true;feedback.hidden=false;feedback.textContent='מאמתים את פרטי ההזמנה…';
+          try{var response=await fetch('/api/tracking/confirm-receipt',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({orderRef:data.parentOrderRef||data.orderRef,phone:phone.value})});
+            var body=await response.json();if(!response.ok||!body.ok)throw new Error(response.status===403?'מספר הטלפון אינו תואם להזמנה.':'לא ניתן לשמור את האישור כרגע.');
+            data.receiptConfirmedAt=body.confirmedAt;render(data);
+          }catch(err){feedback.textContent=err.message||'לא ניתן לאשר קבלה.';}finally{confirm.disabled=false;}
+        });
+        box.append(phone,confirm);receipt.append(box,feedback);
+      }
+      result.appendChild(receipt);
+    }
+
     var shipments=Array.isArray(data.shipments)?data.shipments:[];
     if(shipments.length){
       var parcels=el('section','track-parcels');

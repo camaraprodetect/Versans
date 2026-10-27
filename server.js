@@ -9,6 +9,7 @@ const { createDatabase, importOpeningExpenseLedger } = require('./lib/database')
 const { createAdminSecurity } = require('./lib/admin-security');
 const { createSupportCenter } = require('./lib/admin-support-center');
 const { createAdminOrderOperations } = require('./lib/admin-order-operations');
+const { createReviewWorkflow } = require('./lib/admin-review-workflow');
 const { createSalesAdvanced } = require('./lib/admin-sales-advanced.js');
 const { createAdminTools } = require('./lib/admin-tools.js');
 const { createTaskWorkflow } = require('./lib/task-workflow.js');
@@ -136,6 +137,7 @@ const creatorVideosStore = createCreatorVideos(database,creatorProgram);
 const employeeAccess = employeePolicy.createEmployeeAccess(database);
 const supportCenter = createSupportCenter(database,{sendEmail,isEmailConfigured,ownerEmail:ADMIN_EMAIL,staffCanView:async id=>(await employeeAccess.readEffective(id)).includes('support.view')});
 const orderOps=createAdminOrderOperations(database,{products:PRODUCTS,shipmentsForOrder:listOrderShipmentsPayload,sendEmail,isEmailConfigured,ownerEmail:ADMIN_EMAIL});
+const reviewWorkflow=createReviewWorkflow(database,PRODUCTS);
 const { createAdminDashboard } = require('./lib/admin-dashboard.js');
 const adminDashboard = createAdminDashboard(database, creatorProgram);
 const { createAdminCreatorCrm } = require('./lib/admin-creator-crm.js');
@@ -629,7 +631,9 @@ async function publicReview(row) {
     .filter((entry) => entry && entry.product_id)
     .map((entry, index) => reviewProductPayload(entry.product_id, entry.product_variant, row.id + index));
   const primaryProduct = products[0] || reviewProductPayload(row.review_product_id, row.review_product_variant, row.id);
+  const reviewMeta=(await reviewWorkflow.metadata([Number(row.id)]))[Number(row.id)] || {};
   return {
+    officialReply:reviewMeta.reply || null,
     id: row.id,
     name: reviewDisplayName(row),
     verified: true,
@@ -4981,6 +4985,25 @@ function protectCustomerPickupItems(items, phoneVerified) {
 }
 
 async function publicTrackingApi(req, res, pathname, parsed) {
+  // Customer explicitly confirms receipt after the same order-phone verification as Track pickup details.
+  if(pathname==='/api/tracking/confirm-receipt'){
+    if(req.method!=='POST'){json(res,405,{ok:false,error:'method_not_allowed'});return true;}
+    if(!sameOriginAllowed(req)){json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
+    const body=await readJsonBody(req,1500);
+    const orderRef=String(body.orderRef||'').trim().slice(0,160);
+    const phone=normalizePhone(body.phone);
+    if(!orderRef||!phone){json(res,400,{ok:false,error:'missing_order_or_phone'});return true;}
+    if(rateLimited(req,'receipt-confirm:'+orderRef.replace(/[^a-zA-Z0-9-]/g,'').slice(0,70),7,15*60000)){
+      json(res,429,{ok:false,error:'too_many_attempts'});return true;
+    }
+    let order=await database.getOrderByRef(orderRef);
+    if(!order){const part=parseOrderItemRef(orderRef);if(part)order=await database.getOrderByRef(part.orderRef);}
+    if(!order||order.status!=='paid'||!(await trackingVerificationPhones(order)).has(phone)){
+      json(res,403,{ok:false,error:'phone_verification_failed'});return true;
+    }
+    const confirmedAt=await reviewWorkflow.receipt(order);
+    json(res,200,{ok:true,confirmedAt});return true;
+  }
   if (pathname !== '/api/tracking') return false;
   if (!['GET', 'POST'].includes(req.method)) { json(res, 405, { ok: false, error: 'method_not_allowed' }); return true; }
 
@@ -5066,6 +5089,7 @@ async function publicTrackingApi(req, res, pathname, parsed) {
     updatedAt: state.updatedAt,
     pickupVerificationRequired: protectedPayload.verificationRequired,
     phoneVerified,
+    receiptConfirmedAt: await reviewWorkflow.receiptAt(order.id),
     shipments: customerItems
   });
   return true;
@@ -7640,23 +7664,42 @@ async function adminApi(req, res, pathname, parsed) {
     return true;
   }
 
-  const adminReviewDeleteMatch = /^\/api\/admin\/reviews\/(\d+)$/.exec(pathname);
-  if (adminReviewDeleteMatch && req.method === 'DELETE') {
-    if (!sameOriginAllowed(req)) { json(res, 403, { ok: false, error: 'origin_not_allowed' }); return true; }
-    const reviewId = Number(adminReviewDeleteMatch[1]);
-    if (!Number.isInteger(reviewId) || reviewId <= 0) {
-      json(res, 400, { ok: false, error: 'invalid_review_id' });
-      return true;
-    }
-    const deleted = typeof database.deleteReviewById === 'function'
-      ? await database.deleteReviewById(reviewId)
-      : false;
-    if (!deleted) {
-      json(res, 404, { ok: false, error: 'review_not_found' });
-      return true;
-    }
-    json(res, 200, { ok: true, deletedReviewId: reviewId });
+  // Moderation is soft-delete; the original review and its media stay intact.
+  const moderationMatch=/^\/api\/admin\/reviews\/(\d+)$/.exec(pathname);
+  if (moderationMatch && ['POST','PATCH','DELETE'].includes(req.method)) {
+    if (!sameOriginAllowed(req)) { json(res,403,{ok:false,error:'origin_not_allowed'});return true; }
+    if(!hasAdminPermission(admin,'reviews.edit')){json(res,403,{ok:false,error:'permission_denied'});return true;}
+    const id=Number(moderationMatch[1]);
+    try{
+      const body=await readJsonBody(req,4000);
+      // DELETE requires an explicit reason; unlike the old irreversible delete.
+      const payload=req.method==='DELETE'?{action:'hide',reason:body.reason}:body;
+      json(res,200,{ok:true,result:await reviewWorkflow.patch(id,admin,payload)});
+    }catch(e){json(res,e.status||400,{ok:false,error:e.message||'review_update_failed'});}
     return true;
+  }
+  const adminReviewHistory=/^\/api\/admin\/reviews\/(\d+)\/history$/.exec(pathname);
+  if(adminReviewHistory && req.method==='GET') {
+    try{json(res,200,{ok:true,events:await reviewWorkflow.history(Number(adminReviewHistory[1]))});}
+    catch(e){json(res,e.status||500,{ok:false,error:e.message||'review_history_failed'});}
+    return true;
+  }
+  if(pathname==='/api/admin/reviews/requests' && req.method==='GET'){
+    try{await orderOps.init();json(res,200,{ok:true,requests:await reviewWorkflow.requests({limit:200})});}
+    catch(e){console.error('Review request queue:',e.message);json(res,500,{ok:false,error:'review_requests_unavailable'});}
+    return true;
+  }
+  const requestReviewAction=/^\/api\/admin\/reviews\/requests\/(\d+)$/.exec(pathname);
+  if(requestReviewAction && req.method==='POST'){
+    if(!sameOriginAllowed(req)){json(res,403,{ok:false,error:'origin_not_allowed'});return true;}
+    if(!hasAdminPermission(admin,'reviews.edit')){json(res,403,{ok:false,error:'permission_denied'});return true;}
+    try{const body=await readJsonBody(req,3000);json(res,200,{ok:true,result:await reviewWorkflow.updateRequest(Number(requestReviewAction[1]),admin,body.status)});}
+    catch(e){json(res,e.status||400,{ok:false,error:e.message||'request_update_failed'});}
+    return true;
+  }
+  if(pathname==='/api/admin/reviews/hidden'&&req.method==='GET'){
+    try{json(res,200,{ok:true,reviews:await reviewWorkflow.hidden()});}
+    catch(e){json(res,500,{ok:false,error:'hidden_reviews_unavailable'});}return true;
   }
 
   // Product catalog management - owner/admin access only (staff has no write permission).
@@ -7993,6 +8036,12 @@ async function adminApi(req, res, pathname, parsed) {
     }
     for(const row of failedMessages)add('notice-failed:'+row.order_ref,'issues','danger','הודעת הזמנה לא נשלחה',`יש לבדוק את מנגנון ההודעות להזמנה ${row.order_ref}.`,row.order_ref,row.updated_at);
     for(const row of failedPayments)add('payment-failed:'+row.order_ref,'payment','danger','תשלום הזמנה נכשל',`הזמנה ${row.order_ref} לא שולמה. בדוק לפני טיפול במוצרים.`,row.order_ref,row.updated_at);
+    // Notify staff about 1–3 star reviews; never expose customer contact data here.
+    if(hasAdminPermission(admin,'reviews.view')){
+      const lowReviews=await reviewWorkflow.lowRating(now-30*86400000);
+      for(const review of lowReviews)add('review-low:'+review.id,'reviews','warning','ביקורת חדשה של '+review.rating+' כוכבים',
+        'ביקורת #'+review.id+' מצריכה בדיקה ושירות לקוחות.',null,review.at);
+    }
     alerts.sort((a,b)=>b.at-a.at);
     const trimmed=alerts.slice(0,150);
     const read=new Set(await database.listAdminNotificationReads(Number(admin.id)));
@@ -8310,15 +8359,20 @@ async function adminApi(req, res, pathname, parsed) {
     const data = await database.adminReviewSummary(normalized.since, limit);
     const summary = data.summary || {};
     const topProducts = data.topProducts.map((row) => ({ ...adminProductInfo(row.product_id), count: Number(row.count || 0), average: Number(row.average || 0) }));
+    const [reviewMeta,reviewStats,hiddenReviews,lowRatingAlerts,reviewActivity] = await Promise.all([
+      reviewWorkflow.metadata(data.recent.map(r=>r.id)), reviewWorkflow.stats(PRODUCTS,normalized.since), reviewWorkflow.hidden(), reviewWorkflow.lowRating(normalized.since), reviewWorkflow.activity()
+    ]);
     json(res, 200, {
       ok: true, range,
+      reviewStats, hiddenCount:hiddenReviews.length,lowRatingAlerts,reviewActivity,
+
       summary: {
         count: Number(summary.count || 0), average: Number(summary.average || 0),
         rating5: Number(summary.rating_5 || 0), rating4: Number(summary.rating_4 || 0), rating3: Number(summary.rating_3 || 0),
         rating2: Number(summary.rating_2 || 0), rating1: Number(summary.rating_1 || 0)
       },
       topProducts,
-      recent: data.recent.map(adminReviewPayload)
+      recent: data.recent.map(row=>({...adminReviewPayload(row), moderation:reviewMeta[Number(row.id)] || {}}))
     });
     return true;
   }
@@ -8942,6 +8996,7 @@ async function reviewsApi(req, res, pathname) {
     const deleted = Number.isInteger(reviewId) && reviewId > 0 && typeof database.deleteReviewForUser === 'function'
       ? await database.deleteReviewForUser(reviewId, user.id)
       : false;
+    if(deleted)reviewWorkflow.customerDeleted(reviewId,user).catch(err=>console.error('Customer review deletion audit failed:',err.message));
     if (!deleted) {
       json(res, 404, { ok: false, error: 'review_not_found' });
       return true;
@@ -9181,6 +9236,10 @@ async function reviewsApi(req, res, pathname) {
         await tx.insertReviewMedia(id, index, entry.buffer, entry.mime, entry.kind, now);
       }
     });
+
+    // Link the published review to the latest PAID order containing its actual product.
+    // This is an auditable linkage, not a guess based on names or telephone numbers.
+    await reviewWorkflow.autoLink(id,user.id,primaryProduct.id).catch(err=>console.error('Review automatic order linking:',err.message));
 
     const mediaPayload = media.map((entry, index) => ({
       kind: entry.kind,

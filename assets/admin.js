@@ -4773,145 +4773,99 @@
   }
 
   async function renderReviewsPage() {
-    var range = state.ranges.reviews;
-    var data = await api('/api/admin/reviews?range=' + encodeURIComponent(range) + '&limit=20');
-    var summary = data.summary || {};
-    var reviews = data.recent || [];
-    var frag = document.createDocumentFragment();
-    var toolbar = make('div', 'admin-toolbar');
-    toolbar.appendChild(renderRangeFilter(range, rangeOptions, function (next) { state.ranges.reviews = next; renderCurrentPage(); }));
+    var range=state.ranges.reviews;
+    var results=await Promise.all([
+      api('/api/admin/reviews?range='+encodeURIComponent(range)+'&limit=100'),
+      api('/api/admin/reviews/requests').catch(function(e){return {requests:[],error:e.message};}),
+      api('/api/admin/reviews/hidden').catch(function(e){return {reviews:[],error:e.message};})
+    ]);
+    var data=results[0],queue=results[1].requests||[],hidden=results[2].reviews||[];
+    var reviews=data.recent||[],summary=data.summary||{},stats=data.reviewStats||{};
+    var editable=hasCapability('reviews.edit');
+    var frag=document.createDocumentFragment();
+    var toolbar=make('div','admin-toolbar');
+    toolbar.appendChild(renderRangeFilter(range,rangeOptions,function(next){state.ranges.reviews=next;renderCurrentPage();}));
     frag.appendChild(toolbar);
     frag.appendChild(renderKpis([
-      { label: 'ביקורות', value: numberFmt(summary.count), hint: 'Published בטווח', primary: true },
-      { label: 'דירוג ממוצע', value: Number(summary.average || 0).toFixed(2), hint: 'מתוך 5' },
-      { label: '5 כוכבים', value: numberFmt(summary.rating5), hint: 'ביקורות מצוינות', tone: 'green' },
-      { label: '1-2 כוכבים', value: numberFmt(Number(summary.rating1 || 0) + Number(summary.rating2 || 0)), hint: 'דורש תשומת לב', tone: 'amber' }
+      {label:'ביקורות',value:numberFmt(summary.count),hint:'בתקופה שנבחרה',primary:true},
+      {label:'דירוג ממוצע',value:Number(summary.average||0).toFixed(2),hint:'מתוך 5'},
+      {label:'ביקורות 1–3 כוכבים',value:numberFmt(Number(summary.rating1||0)+Number(summary.rating2||0)+Number(summary.rating3||0)),hint:'דורשות תשומת לב',tone:'amber'},
+      {label:'שיעור רוכשים שכתבו ביקורת',value:stats.rate==null?'—':stats.rate+'%',hint:'לקוח רשום ששילם וכתב ביקורת'}
     ]));
-    var grid = make('div', 'admin-grid-even');
-    grid.appendChild(card('חלוקת דירוגים', '1-5 כוכבים', ratingDistribution(summary)));
-    var topBody = make('div', 'admin-stat-list');
-    if (!(data.topProducts || []).length) topBody.appendChild(make('div', 'admin-empty', 'אין נתונים.'));
-    (data.topProducts || []).forEach(function (product) {
-      var row = make('div', 'admin-stat-row');
-      var label = make('div', 'admin-stat-row__label');
-      label.appendChild(make('strong', '', product.name));
-      label.appendChild(make('small', '', Number(product.average || 0).toFixed(2) + ' ★'));
-      row.append(label, make('div', 'admin-stat-row__value', numberFmt(product.count)));
-      topBody.appendChild(row);
+    function section(title,subtitle){var node=make('section','vs-review-block');var h=make('div','vs-review-block__head');
+      h.append(make('h3','',title),make('span','',subtitle||''));node.appendChild(h);return node;}
+    function btn(label,onclick,kind){var b=make('button','admin-small-button'+(kind==='danger'?' admin-small-button--danger':''),label);
+      b.type='button';b.addEventListener('click',async function(){b.disabled=true;try{await onclick();}catch(err){showToast('הפעולה נכשלה: '+(err.message||'שגיאה'));}finally{b.disabled=false;}});return b;}
+    function empty(node,label){node.appendChild(make('p','vs-review-empty',label));}
+    function line(parent,label,value){var div=make('div','vs-review-line');div.append(make('strong','',label),make('span','',value||'—'));parent.appendChild(div);}
+    // Low-rating alert is visible as well as in the global notification centre.
+    var low=(data.lowRatingAlerts||[]).slice(0,12);
+    if(low.length){var alert=section('ביקורות שדורשות התייחסות','ביקורות של 1–3 כוכבים');
+      low.forEach(function(item){var l=make('div','vs-review-alert');l.append(make('strong','','★'.repeat(item.rating)+' · ביקורת #'+item.id),make('span','',dateTime(item.at)));
+        alert.appendChild(l);});frag.appendChild(alert);}
+    var grid=make('div','admin-grid-even');grid.appendChild(card('חלוקת דירוגים','1–5 כוכבים',ratingDistribution(summary)));
+    var topBody=make('div','admin-stat-list');(data.topProducts||[]).forEach(function(p){var row=make('div','admin-stat-row');row.append(make('strong','',p.name),make('span','',numberFmt(p.count)+' · '+Number(p.average||0).toFixed(2)+' ★'));topBody.appendChild(row);});
+    if(!(data.topProducts||[]).length)empty(topBody,'אין עדיין נתונים');grid.appendChild(card('מוצרים מובילים','כמות ודירוג ממוצע',topBody));frag.appendChild(grid);
+    var cats=section('דירוג לפי קטגוריה','הדירוג מחושב מביקורות משויכות למוצרים');
+    if(!(stats.categories||[]).length)empty(cats,'אין עדיין ביקורות עם שיוך לקטגוריות.');
+    else (stats.categories||[]).forEach(function(c){line(cats,c.category,numberFmt(c.count)+' ביקורות · '+Number(c.average).toFixed(2)+' ★');});
+    frag.appendChild(cats);
+    var perProduct=section('דירוג לכל מוצר','כל המוצרים שיש להם ביקורות מאומתות');
+    var productsFold=make('details','vs-review-completed');productsFold.appendChild(make('summary','','פתיחת '+numberFmt((stats.products||[]).length)+' מוצרים'));
+    (stats.products||[]).forEach(function(p){line(productsFold,p.name,numberFmt(p.count)+' ביקורות · '+Number(p.average).toFixed(2)+' ★');});
+    if(!(stats.products||[]).length)empty(productsFold,'אין עדיין ביקורות משויכות למוצרים.');
+    perProduct.appendChild(productsFold);frag.appendChild(perProduct);
+    var reqSection=section('בקשות ביקורת לאחר מסירה','הזמנה מופיעה כאן יומיים אחרי אישור קבלה ב־Track או אישור מסירה ללקוח באדמין. הפנייה נשלחת ידנית בלבד.');
+    var pending=queue.filter(function(q){return q.status==='pending';});
+    if(results[1].error)empty(reqSection,'שגיאה בטעינת בקשות ביקורת: '+results[1].error);
+    else if(!pending.length)empty(reqSection,'אין בקשות ממתינות כרגע.');
+    pending.forEach(function(q){var row=make('div','vs-review-request');var title=make('div','vs-review-request__title');
+      title.append(make('strong','',q.orderRef),make('small','',q.isDue?'מוכנה לשליחה':'אפשר לשלוח מ־'+dateTime(q.dueAt)));
+      row.appendChild(title);
+      var controls=make('div','vs-review-buttons');
+      if(q.whatsappUrl&&q.isDue){var a=make('a','admin-small-button','פתיחת WhatsApp Web');a.href=q.whatsappUrl;a.target='_blank';a.rel='noopener noreferrer';controls.appendChild(a);}
+      else controls.appendChild(make('small','',''+(!q.whatsappUrl?'מספר WhatsApp לא זמין':'עדיין לא עברו יומיים')));
+      if(editable&&q.isDue){controls.append(btn('סמן שנשלח',async function(){await apiAction('/api/admin/reviews/requests/'+q.orderId,'POST',{status:'sent'});showToast('סומן שנשלח');await renderCurrentPage();}));}
+      if(editable)controls.append(btn('דלג',async function(){await apiAction('/api/admin/reviews/requests/'+q.orderId,'POST',{status:'dismissed'});await renderCurrentPage();}));
+      row.appendChild(controls);reqSection.appendChild(row);
     });
-    grid.appendChild(card('מוצרים עם הכי הרבה ביקורות', 'Published בטווח', topBody));
-    frag.appendChild(grid);
-
-    var selected = new Set();
-    var checkboxEntries = [];
-    var actions = make('div');
-    actions.style.display = 'flex';
-    actions.style.gap = '7px';
-    actions.style.alignItems = 'center';
-    actions.style.flexWrap = 'wrap';
-    var selectAllButton = make('button', 'admin-small-button', 'בחר הכל');
-    selectAllButton.type = 'button';
-    var deleteSelectedButton = make('button', 'admin-small-button admin-small-button--danger', 'מחק מסומנות');
-    deleteSelectedButton.type = 'button';
-    deleteSelectedButton.disabled = true;
-    actions.append(selectAllButton, deleteSelectedButton);
-
-    function syncSelectionUi() {
-      deleteSelectedButton.disabled = selected.size === 0;
-      deleteSelectedButton.textContent = selected.size ? 'מחק מסומנות (' + numberFmt(selected.size) + ')' : 'מחק מסומנות';
-      selectAllButton.textContent = reviews.length && selected.size === reviews.length ? 'בטל בחירה' : 'בחר הכל';
-    }
-
-    selectAllButton.addEventListener('click', function () {
-      var shouldSelect = selected.size !== reviews.length;
-      selected.clear();
-      checkboxEntries.forEach(function (entry) {
-        entry.input.checked = shouldSelect;
-        if (shouldSelect) selected.add(entry.id);
-      });
-      syncSelectionUi();
-    });
-
-    deleteSelectedButton.addEventListener('click', async function () {
-      var ids = Array.from(selected);
-      if (!ids.length) return;
-      var approved = await adminConfirm({
-        title: ids.length === 1 ? 'מחיקת ביקורת' : 'מחיקת ביקורות',
-        message: ids.length === 1
-          ? 'הביקורת שסימנת תימחק לצמיתות ולא יהיה ניתן לשחזר אותה.'
-          : numberFmt(ids.length) + ' הביקורות שסימנת יימחקו לצמיתות ולא יהיה ניתן לשחזר אותן.',
-        confirmText: ids.length === 1 ? 'מחק ביקורת' : 'מחק ' + numberFmt(ids.length) + ' ביקורות',
-        cancelText: 'ביטול',
-        danger: true
-      });
-      if (!approved) return;
-      deleteSelectedButton.disabled = true;
-      selectAllButton.disabled = true;
-      try {
-        for (var i = 0; i < ids.length; i += 1) {
-          await apiAction('/api/admin/reviews/' + encodeURIComponent(ids[i]), 'DELETE');
-        }
-        showToast(ids.length === 1 ? 'הביקורת נמחקה' : numberFmt(ids.length) + ' ביקורות נמחקו');
-        await renderCurrentPage();
-      } catch (error) {
-        deleteSelectedButton.disabled = false;
-        selectAllButton.disabled = false;
-        showToast('לא ניתן למחוק את כל הביקורות שסומנו');
+    var completed=queue.filter(function(q){return q.status!=='pending';});
+    if(completed.length){var details=make('details','vs-review-completed');details.appendChild(make('summary','',completed.length+' בקשות שנשלחו / דולגו'));
+      completed.slice(0,40).forEach(function(q){var row=make('div','vs-review-line');row.append(make('span','',q.orderRef),make('small','',(q.status==='sent'?'נשלחה':'דולגה')+' · '+dateTime(q.actedAt)));details.appendChild(row);});reqSection.appendChild(details);}
+    frag.appendChild(reqSection);
+    var reviewsBlock=section('ניהול ביקורות','תגובה רשמית, טיפול שירותי, שיוך להזמנה והיסטוריה');
+    if(!reviews.length)empty(reviewsBlock,'אין ביקורות בתקופה שנבחרה.');
+    reviews.forEach(function(rv){var meta=rv.moderation||{};var wrap=make('article','vs-review-item');
+      var head=make('div','vs-review-item__head');var identity=make('div');identity.append(make('strong','',rv.name+' · '+rv.rating+' ★'),make('small','',rv.productName+' · '+dateTime(rv.reviewDate)));
+      head.appendChild(identity);
+      if(meta.needsService)head.appendChild(badge('דורשת טיפול','danger'));else if(rv.rating<=3)head.appendChild(badge('דירוג נמוך','warning'));
+      wrap.appendChild(head);wrap.appendChild(make('p','vs-review-item__body',rv.body));
+      line(wrap,'הזמנה מאומתת',meta.orderRef || (rv.verifiedPurchase?'הרכישה אומתה, טרם נבחרה הזמנה':'טרם אומתה הזמנה'));
+      if(meta.reply)line(wrap,'תגובה רשמית של VerSans',meta.reply);
+      if(editable){var actions=make('div','vs-review-buttons');
+        actions.append(btn(meta.reply?'עריכת תגובה':'תגובה רשמית',async function(){var v=window.prompt('תגובה רשמית מטעם VerSans (השאר ריק להסרה):',meta.reply||'');if(v===null)return;await apiAction('/api/admin/reviews/'+rv.id,'PATCH',{action:'reply',text:v});showToast('התגובה נשמרה');await renderCurrentPage();}));
+        actions.append(btn(meta.needsService?'הסר סימון טיפול':'סמן לטיפול',async function(){await apiAction('/api/admin/reviews/'+rv.id,'PATCH',{action:'service',required:!meta.needsService});await renderCurrentPage();}));
+        actions.append(btn('קשר להזמנה',async function(){var v=window.prompt('מספר הזמנה ששולמה ושייכת לאותו לקוח:',meta.orderRef||'');if(v===null)return;await apiAction('/api/admin/reviews/'+rv.id,'PATCH',{action:'link',orderRef:v});showToast('השיוך נשמר');await renderCurrentPage();}));
+        actions.append(btn('הסתר ביקורת',async function(){var reason=window.prompt('סיבת הסתרה (חובה לתיעוד):','');if(reason===null)return;await apiAction('/api/admin/reviews/'+rv.id,'DELETE',{reason:reason});showToast('הביקורת הוסתרה, ניתן לשחזר');await renderCurrentPage();},'danger'));
+        wrap.appendChild(actions);
       }
-    });
-
-    var reviewsTable = renderTable({
-      title: 'ביקורות אחרונות',
-      subtitle: 'עד 20 ביקורות אחרונות בטווח · אפשר למחוק ביקורת אחת או כמה ביקורות יחד',
-      action: hasCapability('reviews.edit')?actions:null,
-      rows: reviews,
-      emptyText: 'אין ביקורות בטווח שנבחר.',
-      columns: [
-        { label: 'סימון', render: function (row) {
-          var input = document.createElement('input');
-          input.type = 'checkbox';
-          input.setAttribute('aria-label', 'סימון ביקורת #' + row.id);
-          input.addEventListener('change', function () {
-            if (input.checked) selected.add(Number(row.id));
-            else selected.delete(Number(row.id));
-            syncSelectionUi();
-          });
-          checkboxEntries.push({ id: Number(row.id), input: input });
-          return input;
-        } },
-        { label: 'לקוח', render: function (row) { return cellPrimary(row.name, row.email || ''); } },
-        { label: 'מוצר', render: function (row) { return productCell({ id: row.productId, name: row.productName, image: row.productImage, href: row.productHref }); } },
-        { label: 'דירוג', render: function (row) { return stars(row.rating); } },
-        { label: 'ביקורת', render: function (row) { return make('span', 'admin-review-body', text(row.body)); } },
-        { label: 'רכישה', render: function (row) { return row.verifiedPurchase ? badge('מאומתת', 'verified') : badge('לא מאומתת', 'neutral'); } },
-        { label: 'תאריך', render: function (row) { return dateTime(row.reviewDate); } },
-        { label: 'פעולות', render: function (row) {
-          var button = make('button', 'admin-small-button admin-small-button--danger', 'מחק');
-          button.type = 'button';
-          button.addEventListener('click', async function () {
-            var approved = await adminConfirm({
-              title: 'מחיקת ביקורת',
-              message: 'למחוק את הביקורת של ' + (row.name || 'לקוח') + '? הביקורת תימחק לצמיתות.',
-              confirmText: 'מחק ביקורת',
-              cancelText: 'ביטול',
-              danger: true
-            });
-            if (!approved) return;
-            button.disabled = true;
-            try {
-              await apiAction('/api/admin/reviews/' + encodeURIComponent(row.id), 'DELETE');
-              showToast('הביקורת נמחקה');
-              await renderCurrentPage();
-            } catch (error) {
-              button.disabled = false;
-              showToast('לא ניתן למחוק את הביקורת');
-            }
-          });
-          return button;
-        } }
-      ].filter(function(c){return hasCapability('reviews.edit') || (c.label!=='סימון' && c.label!=='פעולות');})
-    });
-    frag.appendChild(reviewsTable);
+      var history=make('details','vs-review-history');history.appendChild(make('summary','','היסטוריית פעולות'));
+      history.addEventListener('toggle',async function(){if(!history.open||history.dataset.loaded)return;history.dataset.loaded='1';
+        try{var info=await api('/api/admin/reviews/'+rv.id+'/history');(info.events||[]).forEach(function(e){line(history,e.actor+' · '+dateTime(e.at),e.details);});
+          if(!(info.events||[]).length)empty(history,'אין פעולות מתועדות עד כה.');}catch(e){empty(history,'טעינת ההיסטוריה נכשלה');}});
+      wrap.appendChild(history);reviewsBlock.appendChild(wrap);
+    });frag.appendChild(reviewsBlock);
+    var hiddenBlock=section('ביקורות שהוסתרו','נשמרות עם סיבת הסתרה וניתנות לשחזור');
+    if(results[2].error)empty(hiddenBlock,'שגיאה בטעינת הביקורות המוסתרות: '+results[2].error);
+    else if(!hidden.length)empty(hiddenBlock,'אין ביקורות מוסתרות.');
+    hidden.forEach(function(rv){var row=make('div','vs-review-request');var info=make('div','vs-review-request__title');info.append(make('strong','',rv.review_name+' · '+rv.rating+' ★'),make('small','',rv.hidden_reason+' · '+rv.hidden_by+' · '+dateTime(rv.hidden_at)));
+      row.appendChild(info);if(editable)row.appendChild(btn('שחזר ביקורת',async function(){await apiAction('/api/admin/reviews/'+rv.id,'PATCH',{action:'restore'});showToast('הביקורת שוחזרה');await renderCurrentPage();}));hiddenBlock.appendChild(row);});frag.appendChild(hiddenBlock);
+    var auditBlock=section('יומן פעולות ביקורות','כולל הסתרה, שחזור, תגובות ומחיקה שבוצעה על ידי לקוחות');
+    var auditDetails=make('details','vs-review-completed');auditDetails.appendChild(make('summary','','צפייה בפעולות האחרונות'));
+    var acts=data.reviewActivity||[];
+    if(!acts.length)empty(auditDetails,'אין פעולות חדשות מתועדות.');
+    acts.forEach(function(ev){line(auditDetails,'ביקורת #'+ev.reviewId+' · '+ev.actor+' · '+dateTime(ev.at),ev.details||ev.action);});
+    auditBlock.appendChild(auditDetails);frag.appendChild(auditBlock);
     content.replaceChildren(frag);
   }
 

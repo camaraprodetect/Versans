@@ -118,6 +118,12 @@
     text.className = 'product-review-slide__text';
     text.dir = 'auto';
     text.textContent = review.text || '';
+    if(review.officialReply){
+      var official=document.createElement('div');official.className='review-official-reply';
+      var h=document.createElement('strong');h.textContent='תגובה רשמית · VerSans';
+      var note=document.createElement('p');note.textContent=review.officialReply;
+      official.append(h,note);
+    }
 
     var footer = document.createElement('div');
     footer.className = 'product-review-slide__footer';
@@ -137,6 +143,7 @@
 
     article.appendChild(top);
     article.appendChild(text);
+    if(review.officialReply)article.appendChild(official);
     article.appendChild(footer);
 
     article.addEventListener('click', function () { openReview(review); });
@@ -380,6 +387,12 @@
     modalStars.textContent = stars(review.rating);
     modalScore.textContent = review.rating + ' / 5';
     modalText.textContent = review.text || '';
+    var previous=modalText.parentNode.querySelector('.review-official-reply');if(previous)previous.remove();
+    if(review.officialReply){var official=document.createElement('div');official.className='review-official-reply';
+      var h=document.createElement('strong');h.textContent='תגובה רשמית · VerSans';
+      var note=document.createElement('p');note.textContent=review.officialReply;
+      official.append(h,note);modalText.insertAdjacentElement('afterend',official);}
+
     renderModalMedia();
     modal.hidden = false;
     document.body.classList.add('product-review-detail-open');

@@ -1,0 +1,14 @@
+
+.vs-review-block{margin:20px 0 0;padding:20px;background:var(--admin-card);border:1px solid var(--admin-line);border-radius:16px;min-width:0}
+.vs-review-block__head{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:10px;padding-bottom:14px;border-bottom:1px solid var(--admin-line)}
+.vs-review-block__head h3{font-size:16px;font-weight:800;margin:0}.vs-review-block__head span{font-size:11px;color:var(--admin-muted)}
+.vs-review-empty{color:var(--admin-muted);text-align:center;padding:16px 8px;font-size:12px}.vs-review-line,.vs-review-alert{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--admin-line);font-size:12px;overflow-wrap:anywhere}
+.vs-review-line strong{flex:0 0 auto}.vs-review-line span{white-space:pre-wrap}.vs-review-alert{justify-content:flex-start;color:var(--admin-red)}.vs-review-alert span{color:var(--admin-muted)}
+.vs-review-request{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:14px 0;border-bottom:1px solid var(--admin-line)}
+.vs-review-request__title{display:flex;flex-direction:column;gap:4px;min-width:0;overflow-wrap:anywhere;font-size:12px}.vs-review-request__title small{font-size:10px;color:var(--admin-muted)}
+.vs-review-buttons{display:flex;gap:7px;flex-wrap:wrap;align-items:center}.vs-review-buttons a{text-decoration:none;display:inline-flex;align-items:center}
+.vs-review-item{padding:16px;margin-top:14px;background:var(--admin-bg);border-radius:12px;min-width:0;overflow-wrap:anywhere}
+.vs-review-item__head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.vs-review-item__head>div{display:flex;flex-direction:column;gap:6px}.vs-review-item__head strong{font-size:12px}.vs-review-item__head small{font-size:10px;color:var(--admin-muted)}
+.vs-review-item__body{font-size:12px;line-height:1.7;white-space:pre-wrap}.vs-review-item .vs-review-line{font-size:11px}
+.vs-review-history,.vs-review-completed{margin-top:12px;font-size:11px;color:var(--admin-muted)}.vs-review-history summary,.vs-review-completed summary{cursor:pointer;font-weight:700;color:var(--admin-navy)}
+@media(max-width:640px){.vs-review-block{padding:13px}.vs-review-request{align-items:flex-start}.vs-review-line{flex-direction:column;gap:4px}.vs-review-line strong{flex:auto}}

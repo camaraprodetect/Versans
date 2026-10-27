@@ -248,6 +248,12 @@
     stars.textContent = starsText(review.rating);
     score.textContent = review.rating + ' / 5';
     card.querySelector('.review-card__text').textContent = review.text;
+    if(review.officialReply){
+      var official=document.createElement('div');official.className='review-official-reply';
+      var h=document.createElement('strong');h.textContent='תגובה רשמית · VerSans';
+      var p=document.createElement('p');p.textContent=review.officialReply;
+      official.append(h,p);card.appendChild(official);
+    }
     name.textContent = displayReviewName(review);
     if (verified) verified.hidden = false;
     date.textContent = reviewDate(review.createdAt);
@@ -812,6 +818,12 @@
     detailStars.textContent = starsText(review.rating);
     detailScore.textContent = review.rating + ' / 5';
     detailText.textContent = review.text;
+    var previous=detailText.parentNode.querySelector('.review-official-reply');if(previous)previous.remove();
+    if(review.officialReply){var official=document.createElement('div');official.className='review-official-reply';
+      var h=document.createElement('strong');h.textContent='תגובה רשמית · VerSans';
+      var p=document.createElement('p');p.textContent=review.officialReply;
+      official.append(h,p);detailText.insertAdjacentElement('afterend',official);
+    }
     renderDetailProduct(review);
     renderDetailMedia();
     detailModal.hidden = false;
