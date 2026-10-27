@@ -622,6 +622,29 @@ html, body {
 }
 </style>
 
+<style id="versans-desktop-giveaway-hero-20261027">
+/* The artwork contains its own text and lower trust strip: never crop or overlay it. */
+@media (min-width: 701px) {
+  .home-page .hero.hero--full .hero__visual[data-hero-slider] {
+    aspect-ratio: auto !important;
+  }
+  .home-page .hero.hero--full .hero__visual[data-hero-slider] .versans-desktop-giveaway-hero {
+    display: block !important;
+    position: relative !important;
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 1600 / 633 !important;
+    object-fit: contain !important;
+    object-position: center top !important;
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .home-page .hero.hero--full .hero__visual[data-hero-slider]:hover .versans-desktop-giveaway-hero {
+    transform: none !important;
+  }
+}
+</style>
 <style id="versans-mobile-hero-primary-color-v1">
 @media (max-width: 767px) {
   .home-page .mobile-entry-banner__cta--primary {
@@ -924,13 +947,11 @@ html, body {
 <!-- הירו -->
 <section class="hero hero--full" id="top" aria-label="באנר VerSans">
   <div class="hero__visual" data-hero-slider aria-live="off">
-    <video class="hero__image hero__video hero__slide is-active" width="1986" height="780" autoplay muted loop playsinline webkit-playsinline preload="none" data-poster="images/hero-desktop-poster.jpg" aria-hidden="true" data-hero-slide data-versans-hero-video controlslist="nodownload noplaybackrate nofullscreen" disablepictureinpicture disableremoteplayback x-webkit-airplay="deny" tabindex="-1">
-      <source data-src="images/hero-desktop.mp4" type="video/mp4">
-    </video>
-    <div class="desktop-hero-actions" aria-label="קישורים מהירים">
-      <a class="desktop-hero-cta desktop-hero-cta--primary" href="#shopTitle">לגלות את הקולקציה</a>
-      <a class="desktop-hero-cta desktop-hero-cta--secondary" href="#reviews">לביקורות הלקוחות</a>
-    </div>
+    <img class="hero__image versans-desktop-giveaway-hero"
+         src="/images/hero-hagrala-desktop.png"
+         width="1600" height="633"
+         alt="הגרלה בכל קנייה ב-VerSans – כל קנייה באתר מכניסה אוטומטית להגרלה על 2,000 ש״ח"
+         fetchpriority="high" decoding="async">
   </div>
 </section>
 
