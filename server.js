@@ -23,6 +23,7 @@ const { PRODUCTS, CATEGORIES } = require('./assets/products.js');
 const { createCatalogManager } = require('./lib/catalog-manager.js');
 const { createMarketingManager } = require('./lib/marketing-manager.js');
 const { createMarketingMedia } = require('./lib/marketing-media.js');
+const { createPrizeWheel } = require('./lib/prize-wheel.js');
 const { mediaInventory, couponInventory } = require('./lib/marketing-legacy-inventory.js');
 const { createCreatorProgram } = require('./lib/creator-program.js');
 const ROUTES = require('./assets/routes.js');
@@ -131,6 +132,8 @@ async function syncProductWithAlert(slug){
 
 const marketingManager=createMarketingManager(database);
 const marketingMedia=createMarketingMedia(database);
+const globalPrizeAttempts=new Map();
+const prizeWheel=createPrizeWheel(database,{sendEmail,isEmailConfigured,ownerEmail:ADMIN_EMAIL});
 const creatorProgram = createCreatorProgram(database);
 const { createCreatorVideos } = require('./lib/creator-videos.js');
 const creatorVideosStore = createCreatorVideos(database,creatorProgram);
@@ -9310,6 +9313,8 @@ function prettyRouteFile(pathname) {
     '/my-orders': 'my-orders.html',
     '/my-orders/': 'my-orders.html',
     '/track': 'track.html',
+    '/prizes': 'prizes.html',
+    '/prizes/': 'prizes.html',
     '/forgot-password': 'forgot-password.html',
     '/reset-password': 'reset-password.html',
     '/cancel-order': 'cancel-order.html',
@@ -9699,6 +9704,26 @@ const server = http.createServer(async (req, res) => {
         res.end(pathname.startsWith('/api/')?JSON.stringify({ok:false,error:'maintenance_mode'}):'<!doctype html><html lang="he" dir="rtl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>VerSans — תחזוקה</title><body style="font-family:Arial;text-align:center;padding:15vh 20px;color:#142333"><h1>VerSans</h1><h2>החנות מתעדכנת</h2><p>אנחנו מבצעים עבודות תחזוקה. האתר יחזור לפעילות בקרוב.</p></body></html>');return;
       }
     }
+    // One-time order-linked prize wheel. Shared QR always points to /prizes.
+    if ((pathname==='/api/prizes/check'||pathname==='/api/prizes/spin') && req.method==='POST') {
+      if(!sameOriginAllowed(req)){json(res,403,{ok:false,error:'origin_not_allowed'});return;}
+      const ip=String(req.headers['cf-connecting-ip']||req.socket.remoteAddress||'unknown').slice(0,80);
+      const now=Date.now();
+      if(!globalPrizeAttempts.has(ip))globalPrizeAttempts.set(ip,[]);
+      const recent=globalPrizeAttempts.get(ip).filter(at=>now-at<15*60*1000);
+      if(recent.length>=20){json(res,429,{ok:false,error:'rate_limited'});return;}
+      recent.push(now);globalPrizeAttempts.set(ip,recent);
+      if(globalPrizeAttempts.size>4000){for(const [key,at] of globalPrizeAttempts){if(!at.length||now-at[at.length-1]>20*60*1000)globalPrizeAttempts.delete(key);}}
+      const body=await readJsonBody(req);
+      try{
+        if(pathname.endsWith('/check')){const result=await prizeWheel.status(body.orderRef,body.phone4);json(res,200,{ok:true,...result});}
+        else{const result=await prizeWheel.draw(body.orderRef,body.phone4);json(res,200,{ok:true,prize:result,emailSent:result.emailSent});}
+      }catch(error){
+        if(error.status===404||error.status===400){json(res,error.status,{ok:false,error:error.message});return;}
+        throw error;
+      }
+      return;
+    }
     if (await marketingUnsubscribePage(req, res, pathname, parsed)) return;
     if (await providerMessageWebhookApi(req, res, pathname)) return;
     if (await trackingWebhookApi(req, res, pathname)) return;
@@ -9751,6 +9776,12 @@ const server = http.createServer(async (req, res) => {
         json(res,200,{ok:true,coupon:{code:creatorCode.code,percent:Number(creatorCode.discount_percent),kind:'creator',discount:priced.couponDiscount,total:priced.total}});
         return;
       }
+      if(/^VSW-[A-F0-9]{18}$/.test(code)){
+        const prize=await prizeWheel.coupon(code,(body&&body.customerEmail)||(currentUser&&currentUser.email),Date.now(),true);
+        if(!prize){json(res,400,{ok:false,error:'invalid_coupon'});return;}
+        const priced=priceOrder(Array.isArray(body.items)?body.items:[],body.lang==='en'?'en':'he',{code:prize.code,percent:prize.percent});
+        json(res,200,{ok:true,coupon:{code:prize.code,percent:prize.percent,kind:'prize',expiresAt:prize.expiresAt,discount:priced.couponDiscount,total:priced.total}});return;
+      }
       if (!currentUser) { json(res,401,{ok:false,error:'login_required'}); return; }
       const coupon = await database.getCouponForUserByCode(currentUser.id, code);
       const status = couponStatus(coupon);
@@ -9787,12 +9818,13 @@ const server = http.createServer(async (req, res) => {
       const managedCoupon = requestedCouponCode&&!creatorCoupon?await marketingManager.getCoupon(requestedCouponCode,currentUser):null;
       const hasManagedCode=requestedCouponCode&&(await marketingManager.read()).coupons.some(x=>x.code===requestedCouponCode);
       if(hasManagedCode&&!managedCoupon){json(res,400,{ok:false,error:'invalid_coupon'});return;}
+      const isPrizeCouponCode=/^VSW-[A-F0-9]{18}$/.test(requestedCouponCode);
       const activeBundles=(await marketingManager.publicConfig()).bundles;
       const managedPaymentCoupon=managedCoupon?{code:managedCoupon.code,percent:managedCoupon.type==='percent'?managedCoupon.value:0,type:managedCoupon.type,value:managedCoupon.value}:null;
 
       // Buying does not require an account. Personal welcome coupons still belong
       // to a specific account, so only coupon redemption requires authentication.
-      if (requestedCouponCode && !creatorCoupon && !managedCoupon && !currentUser) {
+      if (requestedCouponCode && !creatorCoupon && !managedCoupon && !isPrizeCouponCode && !currentUser) {
         json(res, 401, { ok: false, error: 'login_required' });
         return;
       }
@@ -9802,6 +9834,8 @@ const server = http.createServer(async (req, res) => {
         customer.guestVisitorId = guestIdentity.visitorId;
         customer.guestUsername = guestIdentity.username;
       }
+      const prizeCoupon=isPrizeCouponCode?await prizeWheel.coupon(requestedCouponCode,customer.email):null;
+      if(isPrizeCouponCode&&!prizeCoupon){json(res,400,{ok:false,error:'invalid_prize_coupon_or_email'});return;}
       const paymentBody = { ...body, customer };
 
       // Demo checkout must never wait for HYP or the orders database. Its purpose is
@@ -9810,11 +9844,11 @@ const server = http.createServer(async (req, res) => {
       // waiting forever even though demo mode itself did not need the write.
       if (mode === 'demo') {
         let demoWelcomeCoupon=null;
-        if(requestedCouponCode&&!creatorCoupon&&!managedCoupon){
+        if(requestedCouponCode&&!creatorCoupon&&!managedCoupon&&!prizeCoupon){
           demoWelcomeCoupon=await database.getCouponForUserByCode(currentUser.id,requestedCouponCode);
           if(couponStatus(demoWelcomeCoupon)!=='ok'){json(res,400,{ok:false,error:'invalid_coupon'});return;}
         }
-        const demoCoupon=creatorCoupon?{code:creatorCoupon.code,percent:Number(creatorCoupon.discount_percent)}:(managedPaymentCoupon|| (demoWelcomeCoupon?{code:demoWelcomeCoupon.code,percent:demoWelcomeCoupon.discount_percent}:null));
+        const demoCoupon=creatorCoupon?{code:creatorCoupon.code,percent:Number(creatorCoupon.discount_percent)}:(managedPaymentCoupon || (prizeCoupon?{code:prizeCoupon.code,percent:prizeCoupon.percent}:null) || (demoWelcomeCoupon?{code:demoWelcomeCoupon.code,percent:demoWelcomeCoupon.discount_percent}:null));
         requireCurrentCheckoutTotal(paymentBody,demoCoupon,activeBundles);
         const result = createDemoPaymentResult(paymentBody, { coupon: demoCoupon,bundleRules:activeBundles });
         const amountAgorot = amountToAgorot(result.total);
@@ -9923,7 +9957,7 @@ const server = http.createServer(async (req, res) => {
       }
 
       let coupon = null;
-      if (requestedCouponCode && !creatorCoupon && !managedCoupon) {
+      if (requestedCouponCode && !creatorCoupon && !managedCoupon && !prizeCoupon) {
         coupon = await database.getCouponForUserByCode(currentUser.id, requestedCouponCode);
         const status = couponStatus(coupon);
         if (status !== 'ok') { json(res,400,{ok:false,error:status}); return; }
@@ -9931,7 +9965,7 @@ const server = http.createServer(async (req, res) => {
       const paymentOptions = {
         coupon: creatorCoupon
           ? { code:creatorCoupon.code,percent:Number(creatorCoupon.discount_percent) }
-          : (managedPaymentCoupon || (coupon ? { code: coupon.code, percent: Number(coupon.discount_percent || WELCOME_COUPON_PERCENT) } : null)),
+          : (managedPaymentCoupon || (prizeCoupon?{code:prizeCoupon.code,percent:prizeCoupon.percent}:null) || (coupon ? { code: coupon.code, percent: Number(coupon.discount_percent || WELCOME_COUPON_PERCENT) } : null)),
         bundleRules:activeBundles
       };
       requireCurrentCheckoutTotal(paymentBody,paymentOptions.coupon,activeBundles);
@@ -9946,6 +9980,7 @@ const server = http.createServer(async (req, res) => {
       const now = Date.now();
       await database.transaction(async tx=>{
         if(managedCoupon)await marketingManager.reserve(tx,managedCoupon,String(result.order||''),now);
+        if(prizeCoupon)await prizeWheel.reserve(tx,prizeCoupon.code,customer.email,String(result.order||''),now);
         await tx.insertPendingOrder({
         orderRef: String(result.order || ''),
         userId: linkedUserId,
@@ -9958,7 +9993,7 @@ const server = http.createServer(async (req, res) => {
         currency: String(result.currency || 'ILS'),
         itemsJson: JSON.stringify(Array.isArray(body.items) ? body.items : []),
         couponId: coupon ? Number(coupon.id) : null,
-        couponCode: creatorCoupon ? String(creatorCoupon.code) : (managedCoupon ? String(managedCoupon.code) : (coupon ? String(coupon.code) : null)),
+        couponCode: creatorCoupon ? String(creatorCoupon.code) : (managedCoupon ? String(managedCoupon.code) : (prizeCoupon?String(prizeCoupon.code):(coupon ? String(coupon.code) : null))),
         couponDiscountAgorot: amountToAgorot(result.couponDiscount || 0) || 0,
         createdAt: now,
         updatedAt: now
@@ -10059,6 +10094,7 @@ const server = http.createServer(async (req, res) => {
                 if (!redeemed) console.error(`Coupon redemption warning for order ${order.order_ref}`);
               }
               if(order.coupon_code)await marketingManager.redeem(tx,String(order.coupon_code),order.order_ref,now);
+              if(/^VSW-[A-F0-9]{18}$/.test(String(order.coupon_code||'')))await prizeWheel.redeem(tx,String(order.coupon_code),order.order_ref,now);
               if (order.user_id) {
                 await tx.markUserVerified(now, order.user_id);
                 verifiedCustomer = true;

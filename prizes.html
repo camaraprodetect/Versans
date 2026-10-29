@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#111111"><meta name="robots" content="noindex,follow">
+<title>גלגל ההפתעות | VerSans</title><meta name="description" content="רכשתם ב-VerSans? הכניסו מספר הזמנה וסובבו את גלגל ההפתעות שלכם.">
+<link rel="stylesheet" href="/assets/prizes.css">
+</head>
+<body>
+<header><a class="brand" href="/">VerSans<span>®</span></a><a class="back" href="/">חזרה לחנות ‹</a></header>
+<main>
+  <div class="eyebrow">VERSANS EXCLUSIVE REWARDS</div>
+  <h1>ההזמנה שלך. <em>ההפתעה שלך.</em></h1>
+  <p class="lead">בתוך החבילה מצאת קוד QR? מזינים את מספר ההזמנה, מאמתים את פרטי ההזמנה ומגלים במה זכית.</p>
+  <div class="layout">
+    <section class="panel details" id="accessPanel">
+      <div class="pill">מתנה אחת לכל הזמנה ששולמה</div>
+      <h2>כניסה לגלגל המזל</h2>
+      <p class="dim">מספר ההזמנה הוא המספר הראשי. לדוגמה, אם על החבילה כתוב <strong>VS12345-P01</strong> או <strong>VS12345-P02</strong>, יש להזין <strong>VS12345</strong> בלי הסיומת.</p>
+      <form id="verifyForm" autocomplete="off">
+        <label for="orderRef">מספר הזמנה</label>
+        <input id="orderRef" name="orderRef" placeholder="מספר ההזמנה ללא P01 / P02" maxlength="90" required dir="ltr" inputmode="text">
+        <label for="phone4">4 הספרות האחרונות בטלפון מההזמנה</label>
+        <input id="phone4" name="phone4" placeholder="1234" maxlength="4" minlength="4" pattern="[0-9]{4}" required dir="ltr" inputmode="numeric" autocomplete="off">
+        <small>האימות נועד למנוע מאדם אחר להשתמש במספר ההזמנה שלך. לא נציג כאן את פרטיך האישיים.</small>
+        <button id="verifyButton" type="submit">אימות ההזמנה והמשך</button>
+      </form>
+      <div id="accessMessage" role="status" aria-live="polite"></div>
+    </section>
+    <section class="panel wheel-panel" id="wheelPanel" aria-label="גלגל ההפתעות">
+      <div class="pointer" aria-hidden="true"></div>
+      <div class="wheel-frame"><div class="wheel" id="wheel" aria-hidden="true"></div><div class="hub">VS</div></div>
+      <button type="button" id="spinButton" disabled>קודם מאמתים הזמנה</button>
+      <div id="wheelMessage" role="status" aria-live="polite"></div>
+    </section>
+  </div>
+  <section class="rules">
+    <h2>מה אפשר לזכות?</h2>
+    <p>הגלגל הוא המחשה חזותית — הסיכויים אינם שווים. ההגרלה מתבצעת באופן אקראי ומאובטח בשרת לפי הסיכויים המפורטים כאן:</p>
+    <div class="odds" id="prizeOdds">
+      <div><span>15% הנחה בקנייה הבאה</span><b>70%</b></div>
+      <div><span>10% הנחה בקנייה הבאה</span><b>25%</b></div>
+      <div><span>20% הנחה בקנייה הבאה</span><b>3%</b></div>
+      <div><span>25% הנחה בקנייה הבאה</span><b>1%</b></div>
+      <div><span>צמיד טניס במתנה</span><b>0.6%</b></div>
+      <div><span>שרשרת טניס במתנה</span><b>0.3%</b></div>
+      <div><span>2 זוגות משקפי שמש במתנה</span><b>0.1%</b></div>
+    </div>
+    <p class="smallprint">ההשתתפות מותנית בהזמנה ששולמה ובאימות הטלפון שלה. סיבוב אחד בלבד לכל הזמנה, גם אם החבילה כוללת כמה פריטים. קופונים אישיים תקפים ל־30 יום, לשימוש חד־פעמי בקנייה הבאה עם כתובת המייל של ההזמנה המקורית, ללא כפל קופונים. פרסים פיזיים ניתנים ללא רכישה נוספת וצוות VerSans יתאם את המסירה מול הלקוח. קבלת הפרס אינה מותנית בדירוג או בביקורת.</p>
+  </section>
+</main>
+<footer>VerSans — MORE THAN STYLE <span>© VerSans</span></footer>
+<script defer src="/assets/prizes.js"></script>
+</body>
+</html>
