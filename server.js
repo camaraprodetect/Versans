@@ -9716,10 +9716,13 @@ const server = http.createServer(async (req, res) => {
       if(globalPrizeAttempts.size>4000){for(const [key,at] of globalPrizeAttempts){if(!at.length||now-at[at.length-1]>20*60*1000)globalPrizeAttempts.delete(key);}}
       const body=await readJsonBody(req);
       try{
-        if(pathname.endsWith('/check')){const result=await prizeWheel.status(body.orderRef,body.phone4);json(res,200,{ok:true,...result});}
-        else{const result=await prizeWheel.draw(body.orderRef,body.phone4);json(res,200,{ok:true,prize:result,emailSent:result.emailSent});}
+        const admin=await getAdminUser(req);
+        const allowDemoPreview=!!admin && normalizeEmail(admin.email)===ADMIN_EMAIL;
+        const options={allowDemoPreview};
+        if(pathname.endsWith('/check')){const result=await prizeWheel.status(body.orderRef,body.phone4,options);json(res,200,{ok:true,...result});}
+        else{const result=await prizeWheel.draw(body.orderRef,body.phone4,options);json(res,200,{ok:true,prize:result,emailSent:result.emailSent});}
       }catch(error){
-        if(error.status===404||error.status===400){json(res,error.status,{ok:false,error:error.message});return;}
+        if(error.status===404||error.status===400||error.status===403){json(res,error.status,{ok:false,error:error.message});return;}
         throw error;
       }
       return;

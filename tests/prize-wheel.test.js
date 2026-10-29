@@ -28,7 +28,35 @@ test('a historic ring award remains readable but can never be drawn again',async
   assert.equal(PRIZES.some(p=>p.key==='RING'),false);
 }));
 test('suffix from parcel ref is stripped, normal order number unchanged',()=>{assert.equal(orderRef(' kw-test-123-p01 '),'KW-TEST-123');assert.equal(orderRef('KW-TEST-123-P02'),'KW-TEST-123');assert.equal(orderRef('KW-TEST-123'),'KW-TEST-123');});
-test('paid orders only; phone verification; no demo entry',async()=>fixture(async db=>{const w=createPrizeWheel(db);await paidOrder(db);await assert.rejects(w.status('KW-TEST-123','9999'),/order_not_verified/);await assert.rejects(w.status('KW-OTHER','4567'),/order_not_verified/);assert.equal((await w.status('KW-TEST-123-P01','4567')).eligible,true);await paidOrder(db,'VS-DEMO-123');await assert.rejects(w.status('VS-DEMO-123','4567'),/order_not_verified/);}));
+test('paid orders only; phone verification; demo is owner-preview only',async()=>fixture(async db=>{
+  const w=createPrizeWheel(db);await paidOrder(db);
+  await assert.rejects(w.status('KW-TEST-123','9999'),/order_not_verified/);
+  await assert.rejects(w.status('KW-OTHER','4567'),/order_not_verified/);
+  assert.equal((await w.status('KW-TEST-123-P01','4567')).eligible,true);
+  await paidOrder(db,'VS-DEMO-123');
+  await assert.rejects(w.status('VS-DEMO-123','4567'),/demo_order_test_only/);
+  await assert.rejects(w.draw('VS-DEMO-123','4567'),/demo_order_test_only/);
+  await assert.rejects(w.status('VS-DEMO-123','9999',{allowDemoPreview:true}),/order_not_verified/);
+  assert.deepEqual(await w.status('VS-DEMO-123','4567',{allowDemoPreview:true}),{eligible:true,alreadyPlayed:false,preview:true});
+}));
+test('owner demo preview never writes a prize or sends email, even after repeat spins',async()=>fixture(async db=>{
+  await paidOrder(db,'VS-DEMO-123');let sent=0;
+  const w=createPrizeWheel(db,{isEmailConfigured:()=>true,sendEmail:async()=>{sent++;}});
+  for(let i=0;i<5;i++){
+    const r=await w.draw('VS-DEMO-123','4567',{allowDemoPreview:true});
+    assert.equal(r.preview,true);assert.equal(r.couponCode,null);assert.equal(r.emailSent,false);
+    assert.equal(PRIZES.some(p=>p.key===r.key),true);
+  }
+  assert.equal(sent,0);
+  assert.equal(db.db.prepare('SELECT COUNT(*) AS n FROM prize_wheel_claims').get().n,0);
+}));
+test('old paid orders with phone inside customer_json are eligible',async()=>fixture(async db=>{
+  await paidOrder(db,'KW-OLD-123');
+  db.db.prepare('UPDATE orders SET customer_phone=NULL,customer_json=? WHERE order_ref=?').run(JSON.stringify({phone:'+972501234567'}),'KW-OLD-123');
+  const w=createPrizeWheel(db);
+  assert.equal((await w.status('KW-OLD-123','4567')).eligible,true);
+  assert.equal((await w.status('KW-OLD-123','4567')).preview,false);
+}));
 test('one stable draw and personal prize email to purchase address',async()=>fixture(async db=>{await paidOrder(db);const sent=[];const w=createPrizeWheel(db,{sendEmail:async obj=>{sent.push(obj);return {id:'test'};},isEmailConfigured:()=>true,ownerEmail:null});const first=await w.draw('KW-TEST-123','4567');const second=await w.draw('KW-TEST-123-P02','4567');assert.equal(first.key,second.key);assert.equal((await w.status('KW-TEST-123','4567')).alreadyPlayed,true);assert.equal(sent[0].to,'buyer@example.test');assert.equal(sent.length,1);if(first.percent){assert.match(first.couponCode,/^VSW-[A-F0-9]{18}$/);assert.ok(await w.coupon(first.couponCode,'buyer@example.test'));assert.equal(await w.coupon(first.couponCode,'other@example.test'),null);}else{assert.equal(first.couponCode,null);}}));
 test('a coupon is for the original email, one use only, with atomic reservation',async()=>fixture(async db=>{await paidOrder(db);const w=createPrizeWheel(db);let result;for(let i=0;i<10;i++){await paidOrder(db,'KW-TEST-'+i);result=await w.draw('KW-TEST-'+i,'4567');if(result.couponCode)break;}assert.ok(result.couponCode);const code=result.couponCode;assert.equal(await w.coupon(code,'different@example.test'),null);await db.transaction(tx=>w.reserve(tx,code,'buyer@example.test','NEW-ORDER',Date.now()));assert.equal(await w.coupon(code,'buyer@example.test'),null);await assert.rejects(db.transaction(tx=>w.reserve(tx,code,'buyer@example.test','OTHER-ORDER',Date.now())),/prize_coupon_unavailable/);await db.transaction(tx=>w.redeem(tx,code,'NEW-ORDER',Date.now()));assert.equal(await w.coupon(code,'buyer@example.test'),null);}));
 test('email delivery failure leaves the prize intact and retry is idempotent',async()=>fixture(async db=>{await paidOrder(db);let calls=0;const w=createPrizeWheel(db,{isEmailConfigured:()=>true,sendEmail:async()=>{calls++;if(calls===1)throw new Error('simulated failure');return {id:'ok'};}});const a=await w.draw('KW-TEST-123','4567');assert.equal(a.emailSent,false);const b=await w.draw('KW-TEST-123','4567');assert.equal(b.emailSent,true);assert.equal(a.key,b.key);assert.equal(calls,2);}));
