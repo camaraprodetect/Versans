@@ -4,7 +4,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#111111"><meta name="robots" content="noindex,follow">
 <title>גלגל ההפתעות | VerSans</title><meta name="description" content="רכשתם ב-VerSans? הכניסו מספר הזמנה וסובבו את גלגל ההפתעות שלכם.">
-<link rel="stylesheet" href="/assets/prizes.css">
+<link rel="stylesheet" href="/assets/prizes.css?v=20261029-compact-disclosure">
 </head>
 <body>
 <header><a class="brand" href="/">VerSans<span>®</span></a><a class="back" href="/">חזרה לחנות ‹</a></header>
@@ -14,9 +14,9 @@
   <p class="lead">בתוך החבילה מצאת קוד QR? מזינים את מספר ההזמנה, מאמתים את פרטי ההזמנה ומגלים במה זכית.</p>
   <div class="layout">
     <section class="panel details" id="accessPanel">
-      <div class="pill">מתנה אחת לכל הזמנה ששולמה בפועל</div>
+      <div class="pill">מתנה אחת לכל הזמנה מאומתת</div>
       <h2>כניסה לגלגל המזל</h2>
-      <p class="dim">מספר ההזמנה הוא המספר הראשי. לדוגמה, אם על החבילה כתוב <strong>VS12345-P01</strong> או <strong>VS12345-P02</strong>, יש להזין <strong>VS12345</strong> בלי הסיומת. הזמנות בדיקה שמתחילות ב־<strong>VS-DEMO-</strong> אינן מזכות בפרסים אמיתיים. בעל החנות יכול לבדוק אותן במצב הדגמה כשהוא מחובר לאדמין.</p>
+      <p class="dim">מספר ההזמנה הוא המספר הראשי. לדוגמה, אם על החבילה כתוב <strong>VS12345-P01</strong> או <strong>VS12345-P02</strong>, יש להזין <strong>VS12345</strong> בלי הסיומת.</p>
       <form id="verifyForm" autocomplete="off">
         <label for="orderRef">מספר הזמנה</label>
         <input id="orderRef" name="orderRef" placeholder="מספר ההזמנה ללא P01 / P02" maxlength="90" required dir="ltr" inputmode="text">
@@ -34,22 +34,24 @@
       <div id="wheelMessage" role="status" aria-live="polite"></div>
     </section>
   </div>
-  <section class="rules">
-    <h2>מה אפשר לזכות?</h2>
-    <p>הגלגל הוא המחשה חזותית — הסיכויים אינם שווים. ההגרלה מתבצעת באופן אקראי ומאובטח בשרת לפי הסיכויים המפורטים כאן:</p>
-    <div class="odds" id="prizeOdds">
-      <div><span>15% הנחה בקנייה הבאה</span><b>70%</b></div>
-      <div><span>10% הנחה בקנייה הבאה</span><b>25%</b></div>
-      <div><span>20% הנחה בקנייה הבאה</span><b>3%</b></div>
-      <div><span>25% הנחה בקנייה הבאה</span><b>1%</b></div>
-      <div><span>צמיד טניס במתנה</span><b>0.6%</b></div>
-      <div><span>שרשרת טניס במתנה</span><b>0.3%</b></div>
-      <div><span>2 זוגות משקפי שמש במתנה</span><b>0.1%</b></div>
+  <details class="prize-disclosure">
+    <summary>תנאי השתתפות וסיכויי זכייה</summary>
+    <div class="prize-disclosure-content">
+      <p>הגלגל הוא המחשה חזותית בלבד. הסיכויים אינם שווים בין הפרסים, וההגרלה מתבצעת בשרת לפי ההסתברויות הבאות:</p>
+      <ul>
+        <li>15% הנחה בקנייה הבאה — 70%</li>
+        <li>10% הנחה בקנייה הבאה — 25%</li>
+        <li>20% הנחה בקנייה הבאה — 3%</li>
+        <li>25% הנחה בקנייה הבאה — 1%</li>
+        <li>צמיד טניס במתנה — 0.6%</li>
+        <li>שרשרת טניס במתנה — 0.3%</li>
+        <li>2 זוגות משקפי שמש במתנה — 0.1%</li>
+      </ul>
+      <p>ההשתתפות מחייבת הזמנה זכאית ואימות ארבע הספרות האחרונות של הטלפון. סיבוב אחד להזמנה, גם אם התקבלו כמה חבילות. קופונים אישיים תקפים ל־30 יום, חד־פעמיים, ולשימוש עם המייל של ההזמנה המקורית, ללא כפל קופונים. פרסים פיזיים ניתנים ללא רכישה נוספת וצוות VerSans יתאם מסירה. הזכייה אינה מותנית בביקורת או בדירוג.</p>
     </div>
-    <p class="smallprint">ההשתתפות מותנית בהזמנה ששולמה ובאימות הטלפון שלה. סיבוב אחד בלבד לכל הזמנה, גם אם החבילה כוללת כמה פריטים. קופונים אישיים תקפים ל־30 יום, לשימוש חד־פעמי בקנייה הבאה עם כתובת המייל של ההזמנה המקורית, ללא כפל קופונים. פרסים פיזיים ניתנים ללא רכישה נוספת וצוות VerSans יתאם את המסירה מול הלקוח. קבלת הפרס אינה מותנית בדירוג או בביקורת.</p>
-  </section>
+  </details>
 </main>
 <footer>VerSans — MORE THAN STYLE <span>© VerSans</span></footer>
-<script defer src="/assets/prizes.js?v=20261029-demo-fix"></script>
+<script defer src="/assets/prizes.js?v=20261029-demo-real"></script>
 </body>
 </html>

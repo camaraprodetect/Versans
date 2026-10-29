@@ -2,7 +2,7 @@
 (function(){
   const labels=['15%','10%','20%','25%','צמיד טניס','שרשרת טניס','2 זוגות משקפי שמש'];
   const wheel=document.getElementById('wheel'),spin=document.getElementById('spinButton'),form=document.getElementById('verifyForm'),vmsg=document.getElementById('accessMessage'),wmsg=document.getElementById('wheelMessage');
-  let verified=false,played=false,preview=false,rotation=0;
+  let verified=false,played=false,rotation=0;
   function setMessage(el,message,error){el.textContent=message;el.className=error?'error':'';}
   for(let i=0;i<labels.length;i++){
     // The wheel segments are visual only. Actual odds are clearly disclosed below.
@@ -19,14 +19,14 @@
     const data=await r.json().catch(()=>({}));if(!r.ok||!data.ok)throw new Error(data.error||'request_failed');return data;
   }
   function payload(){return {orderRef:document.getElementById('orderRef').value.trim(),phone4:document.getElementById('phone4').value.trim()};}
-  const errors={order_not_verified:'לא הצלחנו לאמת את הפרטים. ודאו שהמספר הוא מספר ההזמנה הראשי ושהטלפון תואם.',demo_order_test_only:'זוהי הזמנת דמו ללא חיוב אמיתי. רק בעל החנות, כשהוא מחובר לאדמין, יכול לבדוק באמצעותה את הגלגל במצב הדגמה.',invalid_phone_verification:'יש להזין ארבע ספרות אחרונות של הטלפון.',invalid_order_number:'בדקו שמספר ההזמנה תקין.',rate_limited:'בוצעו יותר מדי ניסיונות. נסו שוב מאוחר יותר.',service_unavailable:'השירות אינו זמין כרגע. נסו שוב מאוחר יותר.'};
+  const errors={order_not_verified:'לא הצלחנו לאמת את הפרטים. ודאו שהמספר הוא מספר ההזמנה הראשי ושהטלפון תואם.',invalid_phone_verification:'יש להזין ארבע ספרות אחרונות של הטלפון.',invalid_order_number:'בדקו שמספר ההזמנה תקין.',rate_limited:'בוצעו יותר מדי ניסיונות. נסו שוב מאוחר יותר.',service_unavailable:'השירות אינו זמין כרגע. נסו שוב מאוחר יותר.'};
   form.addEventListener('submit',async e=>{
     e.preventDefault();verified=false;spin.disabled=true;const button=document.getElementById('verifyButton');button.disabled=true;setMessage(vmsg,'בודקים את ההזמנה...',false);
     try{
-      const data=await post('/api/prizes/check',payload());verified=true;preview=!!data.preview;played=false;
+      const data=await post('/api/prizes/check',payload());verified=true;played=false;
       spin.disabled=false;
-      spin.textContent=preview?'סיבוב הדגמה — ללא פרס אמיתי':(data.alreadyPlayed?'הצגת הזכייה הקיימת':'סובבו את גלגל המזל');
-      setMessage(vmsg,preview?'מצב הדגמה לבעל החנות: אפשר לבדוק את הסיבוב, אבל לא ייווצר קופון, לא תישלח הודעה ולא תחולק מתנה.':(data.alreadyPlayed?'כבר סובבתם בעבר — נציג את הפרס שכבר הוקצה להזמנה.':'ההזמנה אומתה! אפשר לסובב את הגלגל.'),false);
+      spin.textContent=data.alreadyPlayed?'הצגת הזכייה הקיימת':'סובבו את גלגל המזל';
+      setMessage(vmsg,data.alreadyPlayed?'כבר סובבתם בעבר — נציג את הפרס שכבר הוקצה להזמנה.':'ההזמנה אומתה! אפשר לסובב את הגלגל.',false);
     }
     catch(err){setMessage(vmsg,errors[err.message]||'הבדיקה נכשלה. נסו שוב.',true);}
     finally{button.disabled=false;}
@@ -46,12 +46,11 @@
       }
       window.setTimeout(()=>{
         wmsg.className='result';wmsg.textContent='';
-        const isDemo=!!data.prize.preview;
-        const headline=document.createElement('strong');headline.textContent=isDemo?('הדגמה בלבד: הגלגל עצר על '+data.prize.label):('מזל טוב! '+data.prize.label);wmsg.appendChild(headline);
+        const headline=document.createElement('strong');headline.textContent='מזל טוב! '+data.prize.label;wmsg.appendChild(headline);
         if(data.prize.couponCode){wmsg.appendChild(document.createElement('br'));const code=document.createElement('span');code.className='code';code.textContent=data.prize.couponCode;wmsg.appendChild(code);}
-        const note=document.createElement('p');note.textContent=isDemo?'סיבוב הדגמה לצורכי בדיקה בלבד. לא הוקצה פרס אמיתי, לא נוצר קופון ולא נשלח מייל.':(data.emailSent?'שלחנו גם את פרטי הזכייה למייל ההזמנה.':'הפרס נשמר. אם המייל עדיין לא נשלח, תוכלו לנסות שוב עם אותם פרטים.');wmsg.appendChild(note);
+        const note=document.createElement('p');note.textContent=data.emailSent?'שלחנו גם את פרטי הזכייה למייל ההזמנה.':'הפרס נשמר. אם המייל עדיין לא נשלח, תוכלו לנסות שוב עם אותם פרטים.';wmsg.appendChild(note);
       },onCurrentWheel?5100:0);
-      spin.textContent=data.prize.preview?'הסיבוב הסתיים — מצב הדגמה':'הזכייה נשמרה — סיבוב אחד להזמנה';
+      spin.textContent='הזכייה נשמרה — סיבוב אחד להזמנה';
     }catch(err){played=false;spin.disabled=false;setMessage(wmsg,errors[err.message]||'הפעולה נכשלה. אפשר לנסות שוב.',true);}
   });
 })();

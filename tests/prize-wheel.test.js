@@ -28,27 +28,42 @@ test('a historic ring award remains readable but can never be drawn again',async
   assert.equal(PRIZES.some(p=>p.key==='RING'),false);
 }));
 test('suffix from parcel ref is stripped, normal order number unchanged',()=>{assert.equal(orderRef(' kw-test-123-p01 '),'KW-TEST-123');assert.equal(orderRef('KW-TEST-123-P02'),'KW-TEST-123');assert.equal(orderRef('KW-TEST-123'),'KW-TEST-123');});
-test('paid orders only; phone verification; demo is owner-preview only',async()=>fixture(async db=>{
+test('paid orders including historic VS-DEMO orders require matching phone',async()=>fixture(async db=>{
   const w=createPrizeWheel(db);await paidOrder(db);
   await assert.rejects(w.status('KW-TEST-123','9999'),/order_not_verified/);
   await assert.rejects(w.status('KW-OTHER','4567'),/order_not_verified/);
   assert.equal((await w.status('KW-TEST-123-P01','4567')).eligible,true);
   await paidOrder(db,'VS-DEMO-123');
-  await assert.rejects(w.status('VS-DEMO-123','4567'),/demo_order_test_only/);
-  await assert.rejects(w.draw('VS-DEMO-123','4567'),/demo_order_test_only/);
-  await assert.rejects(w.status('VS-DEMO-123','9999',{allowDemoPreview:true}),/order_not_verified/);
-  assert.deepEqual(await w.status('VS-DEMO-123','4567',{allowDemoPreview:true}),{eligible:true,alreadyPlayed:false,preview:true});
+  await assert.rejects(w.status('VS-DEMO-123','9999'),/order_not_verified/);
+  assert.deepEqual(await w.status('VS-DEMO-123-P01','4567'),{eligible:true,alreadyPlayed:false,preview:false});
 }));
-test('owner demo preview never writes a prize or sends email, even after repeat spins',async()=>fixture(async db=>{
-  await paidOrder(db,'VS-DEMO-123');let sent=0;
-  const w=createPrizeWheel(db,{isEmailConfigured:()=>true,sendEmail:async()=>{sent++;}});
-  for(let i=0;i<5;i++){
-    const r=await w.draw('VS-DEMO-123','4567',{allowDemoPreview:true});
-    assert.equal(r.preview,true);assert.equal(r.couponCode,null);assert.equal(r.emailSent,false);
-    assert.equal(PRIZES.some(p=>p.key===r.key),true);
+test('a historic VS-DEMO order draws a real, persistent prize and emails its order address',async()=>fixture(async db=>{
+  await paidOrder(db,'VS-DEMO-123');const deliveries=[];
+  const w=createPrizeWheel(db,{isEmailConfigured:()=>true,sendEmail:async info=>{deliveries.push(info);return {id:'sent'};}});
+  const first=await w.draw('VS-DEMO-123-P02','4567');
+  assert.equal(first.preview,false);
+  assert.equal(first.emailSent,true);
+  assert.equal(deliveries.length,1);
+  assert.equal(deliveries[0].to,'buyer@example.test');
+  assert.equal(deliveries[0].subject,'VerSans | הפרס שלך מגלגל המזל');
+  const stored=db.db.prepare('SELECT * FROM prize_wheel_claims WHERE order_ref=?').get('VS-DEMO-123');
+  assert.ok(stored && stored.email_sent_at);
+  assert.equal(stored.prize_key,first.key);
+  if(first.percent){
+    assert.match(first.couponCode,/^VSW-[A-F0-9]{18}$/);
+    assert.equal(stored.coupon_code,first.couponCode);
+    assert.ok(await w.coupon(first.couponCode,'buyer@example.test'));
+    assert.match(deliveries[0].text,new RegExp(first.couponCode));
+  }else{
+    assert.equal(first.couponCode,null);
+    assert.match(deliveries[0].text,/תיאום/);
   }
-  assert.equal(sent,0);
-  assert.equal(db.db.prepare('SELECT COUNT(*) AS n FROM prize_wheel_claims').get().n,0);
+  const second=await w.draw('VS-DEMO-123','4567');
+  assert.equal(second.key,first.key);
+  assert.equal(second.couponCode,first.couponCode);
+  assert.equal(deliveries.length,1);
+  assert.equal((await w.status('VS-DEMO-123','4567')).alreadyPlayed,true);
+  assert.equal(db.db.prepare('SELECT COUNT(*) AS n FROM prize_wheel_claims').get().n,1);
 }));
 test('old paid orders with phone inside customer_json are eligible',async()=>fixture(async db=>{
   await paidOrder(db,'KW-OLD-123');
