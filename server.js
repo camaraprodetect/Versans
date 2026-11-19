@@ -7648,15 +7648,37 @@ async function adminApi(req, res, pathname, parsed) {
     const role = String(body && body.role || '');
     if (!validEmail(email) || !['customer','admin'].includes(role)) {json(res,400,{ok:false,error:'invalid_role_or_email'});return true;}
     if (email === ADMIN_EMAIL) {json(res,400,{ok:false,error:'cannot_change_owner'});return true;}
-    const target = await database.findUserByEmail(email);
-    if (!target) {json(res,404,{ok:false,error:'registered_user_not_found'});return true;}
-    if (Number(target.is_blocked) === 1 && role === 'admin') {json(res,400,{ok:false,error:'blocked_user'});return true;}
-    if (!['customer','admin'].includes(String(target.role||'customer')) && role === 'customer') {
-      json(res,409,{ok:false,error:'existing_special_role'});return true;
+    // Update the role and invalidate old sessions atomically. Do not run the
+    // account-blocking updater for a plain role grant/revocation.
+    try {
+      const result = await database.transaction(async (tx) => {
+        const target = await tx.findUserByEmail(email);
+        if (!target) throw Object.assign(new Error('registered_user_not_found'), {status:404});
+        if (Number(target.is_blocked) === 1) throw Object.assign(new Error('blocked_user'), {status:400});
+        const previousRole = String(target.role || 'customer');
+        if (role === 'customer' && !['customer','admin'].includes(previousRole)) {
+          throw Object.assign(new Error('existing_special_role'), {status:409});
+        }
+        if (role === 'admin' && !['customer','staff','admin'].includes(previousRole)) {
+          throw Object.assign(new Error('existing_special_role'), {status:409});
+        }
+        if (previousRole !== role) {
+          const changed = await tx.setUserRole(Number(target.id),role);
+          if (!changed) throw Object.assign(new Error('role_target_not_updated'), {status:409});
+          await tx.deleteSessionsForUser(Number(target.id));
+        }
+        return {id:Number(target.id),name:target.name,email:target.email,role};
+      });
+      json(res,200,{ok:true,user:result});
+    } catch(err) {
+      if (err.status && ['registered_user_not_found','blocked_user','existing_special_role','role_target_not_updated'].includes(err.message)) {
+        json(res,err.status,{ok:false,error:err.message});
+      } else {
+        console.error('Admin role update failed:',{code:err.code||null,message:err.message,stack:err.stack});
+        json(res,500,{ok:false,error:'role_update_failed'});
+      }
     }
-    await database.setUserAccess(Number(target.id),role,Number(target.is_blocked)===1,target.blocked_reason||'',Date.now());
-    if (String(target.role||'customer') !== role) await database.deleteSessionsForUser(Number(target.id));
-    json(res,200,{ok:true,user:{id:Number(target.id),name:target.name,email:target.email,role}});return true;
+    return true;
   }
   const accessMatch = /^\/api\/admin\/customers\/(\d+)\/access$/.exec(pathname);
   if (accessMatch && req.method === 'POST') {

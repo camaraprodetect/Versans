@@ -314,7 +314,8 @@
       options.body = JSON.stringify(body);
     }
     var response = await fetch(url, options);
-    if (response.status === 401) {
+    // Incorrect step-up password is a 401, but it is not a lost login session.
+    if (response.status === 401 && url !== '/api/admin/employees/reauth') {
       window.location.href = '/login?next=' + encodeURIComponent(window.location.pathname + window.location.search);
       throw new Error('admin_required');
     }
@@ -4587,22 +4588,51 @@
     var grant=make('button','admin-catalog-btn admin-catalog-primary','הענק אדמין');grant.type='submit';
     var revoke=make('button','admin-catalog-btn','בטל אדמין');revoke.type='button';
     var status=make('p','admin-catalog-status');status.setAttribute('role','status');
-    async function updateRole(role){
-      if(!email.reportValidity())return;
-      var action=role==='admin'?'לתת':'לבטל';
-      if(!window.confirm(action+' הרשאת אדמין ל-'+email.value.trim()+'?'))return;
+    // Role changes require fresh password confirmation, tied to the owner session.
+    var reauth=make('form','admin-role-form');reauth.hidden=true;
+    var reauthHint=make('p','admin-catalog-hint','לאישור השינוי יש להזין את סיסמת האדמין. האימות תקף לחמש דקות.');
+    var reauthPassword=make('input');reauthPassword.type='password';reauthPassword.required=true;reauthPassword.autocomplete='current-password';reauthPassword.placeholder='סיסמת האדמין';reauthPassword.setAttribute('aria-label','סיסמת האדמין לאימות הרשאות');
+    var reauthButton=make('button','admin-catalog-btn admin-catalog-primary','אמת והמשך');reauthButton.type='submit';
+    var pendingRole=null,pendingEmail='';
+    async function updateRole(role,verifiedEmail){
+      if(!verifiedEmail&&!email.reportValidity())return;
+      var targetEmail=verifiedEmail||email.value.trim();
+      if(!verifiedEmail){
+        var action=role==='admin'?'לתת':'לבטל';
+        if(!window.confirm(action+' הרשאת אדמין ל-'+targetEmail+'?'))return;
+      }
       grant.disabled=true;revoke.disabled=true;
       try{
-        var updated=await apiAction('/api/admin/access/role','POST',{email:email.value.trim(),role:role});
+        var updated=await apiAction('/api/admin/access/role','POST',{email:targetEmail,role:role});
         status.textContent='ההרשאה עודכנה בהצלחה עבור '+updated.user.email;
+        pendingRole=null;pendingEmail='';reauthPassword.value='';reauth.hidden=true;
         showToast('הרשאות המשתמש עודכנו');
-      }catch(e){status.textContent=e.code==='registered_user_not_found'?'המשתמש עדיין לא רשום באתר':'עדכון הרשאה נכשל: '+e.message}
-      finally{grant.disabled=false;revoke.disabled=false}
+      }catch(e){
+        var roleErrors={registered_user_not_found:'המשתמש עדיין לא רשום באתר',blocked_user:'החשבון חסום. יש לבטל את החסימה לפני הענקת הרשאה',existing_special_role:'לא ניתן לשנות תפקיד מיוחד דרך המסך הזה',cannot_change_owner:'אי אפשר לשנות הרשאות לבעל החנות',owner_only:'רק בעל החנות יכול לשנות הרשאות אדמין',role_target_not_updated:'החשבון השתנה בזמן הפעולה. יש לרענן ולנסות שוב',role_update_failed:'עדכון ההרשאה נכשל בשרת. בדוק את הודעת Admin role update failed בלוגים של Render'};
+        if(e.code==='reauth_required'){
+          pendingRole=role;pendingEmail=targetEmail;reauth.hidden=false;
+          status.textContent='יש לאמת את סיסמת האדמין כדי לשנות הרשאות.';
+          reauthPassword.focus();
+        }else status.textContent=roleErrors[e.code]||'עדכון הרשאה נכשל: '+e.message;
+      }finally{grant.disabled=false;revoke.disabled=false;}
     }
-    form.addEventListener('submit',function(e){e.preventDefault();updateRole('admin')});
-    revoke.addEventListener('click',function(){updateRole('customer')});
-    form.append(email,grant,revoke);section.append(form,status);return section;
+    reauth.addEventListener('submit',async function(e){
+      e.preventDefault();if(!pendingRole||!pendingEmail)return;
+      reauthButton.disabled=true;
+      try{
+        await apiAction('/api/admin/employees/reauth','POST',{password:reauthPassword.value});
+        reauthPassword.value='';reauth.hidden=true;
+        await updateRole(pendingRole,pendingEmail);
+      }catch(err){
+        status.textContent=err.code==='reauth_failed'?'סיסמת האדמין שגויה. נסה שוב.':err.code==='reauth_rate_limited'?'יותר מדי ניסיונות. נסה מאוחר יותר.':'אימות הסיסמה נכשל: '+err.message;
+      }finally{reauthPassword.value='';reauthButton.disabled=false;}
+    });
+    form.addEventListener('submit',function(e){e.preventDefault();updateRole('admin');});
+    revoke.addEventListener('click',function(){updateRole('customer');});
+    form.append(email,grant,revoke);reauth.append(reauthHint,reauthPassword,reauthButton);
+    section.append(form,reauth,status);return section;
   }
+
   function crmTextRow(label, value) {
     var entry=make('div','vs-crm-info-row');
     entry.append(make('span','',label),make('strong','',text(value)));
