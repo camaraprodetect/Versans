@@ -4476,21 +4476,95 @@
     var hint=make('p','admin-catalog-hint','כאן אפשר לשנות רק את השדות שהמנהל התיר לך. שינויים אחרים נחסמים בשרת.');
     var selector=make('select');selector.setAttribute('aria-label','בחירת מוצר');selector.style.maxWidth='100%';selector.style.padding='12px';
     products.forEach(function(p){var o=make('option','',catalogTitle(p));o.value=p.slug;selector.appendChild(o)});
-    var inputs=make('div','admin-catalog-bulk-fields'),status=make('p','admin-catalog-hint');
+    var inputs=make('div','admin-catalog-bulk-fields'),status=make('p','admin-catalog-hint');status.setAttribute('role','status');
+    // Unlike a global floating modal, this password confirmation stays within
+    // the editor and works even if other scripts intercept fetch or overlays.
+    // The server's HTTP 428 is authoritative: never bypass its check.
+    var verification=make('form','admin-catalog-inline-reauth');
+    verification.hidden=true;
+    verification.setAttribute('aria-label','אימות סיסמה לשמירת מוצר');
+    var verificationTitle=make('strong','','נדרש אימות סיסמה');
+    var verificationHint=make('p','','כדי לשמור שינוי במחיר, הזן את הסיסמה של החשבון המחובר במחשב הזה.');
+    var verificationPassword=make('input');verificationPassword.type='password';verificationPassword.required=true;
+    verificationPassword.autocomplete='current-password';verificationPassword.placeholder='סיסמת העובד';
+    verificationPassword.setAttribute('aria-label','סיסמת העובד לאישור שמירה');
+    var verificationActions=make('div','admin-catalog-inline-reauth-actions');
+    var verificationSubmit=make('button','admin-catalog-btn admin-catalog-primary','אמת ושמור');verificationSubmit.type='submit';
+    var verificationCancel=make('button','admin-catalog-btn','ביטול אימות');verificationCancel.type='button';
+    verificationActions.append(verificationSubmit,verificationCancel);
+    verification.append(verificationTitle,verificationHint,verificationPassword,verificationActions);
+    var pendingProduct=null;
+    function clearVerification(){
+      pendingProduct=null;verificationPassword.value='';verification.hidden=true;
+    }
+    function readableError(code,defaultMessage){
+      var messages={reauth_failed:'הסיסמה שגויה. יש להזין את הסיסמה של העובד שמחובר כרגע.',
+        reauth_rate_limited:'בוצעו יותר מדי ניסיונות. נסה מאוחר יותר.',
+        permission_denied:'אין לעובד הרשאה לבצע את השינוי הזה.',
+        origin_not_allowed:'הבקשה נחסמה על ידי בדיקת האבטחה. יש להיכנס מהכתובת הרגילה של האתר.',
+        admin_required:'ההתחברות פגה. יש להתנתק ולהתחבר מחדש.'};
+      return messages[code]||defaultMessage||'השמירה נכשלה. נסה שוב.';
+    }
+    // Return the response rather than calling apiAction: the scoped editor must
+    // handle its own 428 inline, without global popup/retry logic swallowing it.
+    async function writeScopedProduct(snapshot){
+      var result=await fetch('/api/admin/catalog/'+encodeURIComponent(snapshot.slug),{
+        method:'PUT',credentials:'same-origin',cache:'no-store',
+        headers:{Accept:'application/json','Content-Type':'application/json','X-Versans-Admin-Reauth':'managed'},
+        body:JSON.stringify({product:snapshot.patch})
+      });
+      var data=await result.json().catch(function(){return {};});
+      return {status:result.status,ok:result.ok,data:data};
+    }
     var save=catalogButton('שמור שינויים','admin-catalog-primary',async function(){
+      if(!selector.value)return;
       var patch={};
       if(rightsText){patch.description={he:desc.value};patch.subtitle={he:subtitle.value};}
       if(rightsPrice){patch.price=Number(price.value);patch.compareAt=compare.value===''?null:Number(compare.value);}
-      save.disabled=true;status.textContent='שומר...';
-      try{await apiAction('/api/admin/catalog/'+selector.value,'PUT',{product:patch});status.textContent='המוצר עודכן בהצלחה';}
-      catch(e){status.textContent='השמירה נכשלה: '+e.message;}
-      finally{save.disabled=false;}
+      var snapshot={slug:selector.value,patch:patch};
+      clearVerification();
+      save.disabled=true;selector.disabled=true;status.textContent='שומר...';
+      try{
+        var result=await writeScopedProduct(snapshot);
+        if(result.status===428&&result.data.error==='reauth_required'){
+          pendingProduct=snapshot;verification.hidden=false;
+          status.textContent='כדי לשמור את שינוי המחיר, יש להזין את סיסמת החשבון בשדה שמופיע כאן מתחת.';
+          verificationPassword.focus();
+        }else if(!result.ok){status.textContent='השמירה נכשלה: '+readableError(result.data.error,result.data.message||result.data.error);}
+        else{status.textContent='המוצר עודכן בהצלחה';clearVerification();}
+      }catch(error){status.textContent='שגיאת תקשורת בשמירה: '+(error.message||'נסה שוב');}
+      finally{save.disabled=false;selector.disabled=false;}
     });
+    verification.addEventListener('submit',async function(e){
+      e.preventDefault();
+      if(!pendingProduct)return;
+      var snapshot=pendingProduct;
+      verificationSubmit.disabled=true;verificationCancel.disabled=true;save.disabled=true;selector.disabled=true;status.textContent='מאמת סיסמה...';
+      try{
+        var verified=await fetch('/api/admin/employees/reauth',{
+          method:'POST',credentials:'same-origin',cache:'no-store',
+          headers:{Accept:'application/json','Content-Type':'application/json','X-Versans-Admin-Reauth':'managed'},
+          body:JSON.stringify({password:verificationPassword.value})
+        });
+        var authPayload=await verified.json().catch(function(){return {};});
+        verificationPassword.value='';
+        if(!verified.ok){status.textContent=readableError(authPayload.error,'אימות הסיסמה נכשל. נסה שוב.');return;}
+        status.textContent='האימות הצליח. שומר את המוצר...';
+        var saved=await writeScopedProduct(snapshot);
+        if(saved.status===428&&saved.data.error==='reauth_required'){
+          status.textContent='האימות הצליח, אך השרת עדיין דורש אימות. יש להתחבר מחדש באותו דפדפן ולנסות שוב.';
+        }else if(!saved.ok){status.textContent='השמירה נכשלה: '+readableError(saved.data.error,saved.data.message||saved.data.error);}
+        else{clearVerification();status.textContent='המוצר עודכן בהצלחה';}
+      }catch(error){status.textContent='שגיאת תקשורת באימות: '+(error.message||'נסה שוב');}
+      finally{verificationPassword.value='';verificationSubmit.disabled=false;verificationCancel.disabled=false;save.disabled=false;selector.disabled=false;}
+    });
+    verificationCancel.addEventListener('click',function(){clearVerification();status.textContent='האימות בוטל. השינוי לא נשמר.';});
     function input(label,kind){var wrap=make('label','admin-catalog-bulk-field');wrap.appendChild(make('span','',label));var i=make(kind==='textarea'?'textarea':'input');if(kind!=='textarea')i.type=kind||'text';wrap.appendChild(i);inputs.appendChild(wrap);return i;}
     var desc,subtitle,price,compare;
     if(rightsText){subtitle=input('כותרת משנה בעברית','textarea');desc=input('תיאור מלא בעברית','textarea');}
     if(rightsPrice){price=input('מחיר רגיל (₪)','number');price.step='0.01';compare=input('מחיר לפני הנחה (₪)','number');compare.step='0.01';}
     async function load(){
+      clearVerification();
       if(!selector.value)return;status.textContent='טוען מוצר...';
       try{var x=(await api('/api/admin/catalog/'+encodeURIComponent(selector.value))).product;
         if(desc)desc.value=typeof x.description==='object'?x.description.he||'':String(x.description||'');
@@ -4499,7 +4573,7 @@
         status.textContent='';
       }catch(e){status.textContent=e.message;}
     }
-    selector.onchange=load;area.append(title,hint,selector,inputs,save,status);if(products.length)await load();return area;
+    selector.onchange=load;area.append(title,hint,selector,inputs,save,verification,status);if(products.length)await load();return area;
   }
 
   async function renderProductsPage() {

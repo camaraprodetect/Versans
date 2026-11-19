@@ -1497,3 +1497,10 @@ button,input,textarea,select,a{font:inherit}.admin-app{display:grid;grid-templat
 @media(max-width:580px){.catalog-insights{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-catalog-product__actions .admin-catalog-btn{flex-basis:calc(50% - 8px)}}
 
 .catalog-draft-check{display:flex;align-items:flex-start;gap:9px;font-size:13px;font-weight:600;color:#243f50;padding:12px;border:1px solid #dce7ee;background:#f5f9fb;border-radius:10px}.catalog-draft-check input{width:18px;height:18px;flex-shrink:0}
+
+/* Scoped employee price edits: in-page password verification, not an overlay. */
+.admin-catalog-inline-reauth{display:grid;gap:10px;padding:16px;margin:14px 0;border:1px solid #dfb96a;border-radius:12px;background:#fffaf0;color:#243346;max-width:620px}
+.admin-catalog-inline-reauth[hidden]{display:none!important}
+.admin-catalog-inline-reauth p{margin:0;font-size:13px;line-height:1.7}
+.admin-catalog-inline-reauth input{width:100%;max-width:430px;box-sizing:border-box;border:1px solid #bccbd5;border-radius:9px;padding:12px;font:inherit;background:#fff;color:#142333}
+.admin-catalog-inline-reauth-actions{display:flex;gap:10px;flex-wrap:wrap}
