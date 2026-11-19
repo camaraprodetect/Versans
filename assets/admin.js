@@ -307,13 +307,110 @@
     return response.json();
   }
 
+  // Product-price edits and other sensitive changes must be reauthenticated per
+  // browser session. Keep the server-side 428 guard; do not bypass it.
+  var adminStepupPending = null;
+  function requestAdminStepup() {
+    if (adminStepupPending) return adminStepupPending;
+    adminStepupPending = new Promise(function (resolve) {
+      var overlay = document.createElement('div');
+      overlay.className = 'vs-reauth-overlay';
+      var form = document.createElement('form');
+      form.className = 'vs-reauth-modal';
+      form.setAttribute('role', 'dialog');
+      form.setAttribute('aria-modal', 'true');
+      form.setAttribute('aria-label', 'אימות סיסמה לפני שמירת שינויים');
+      var heading = document.createElement('h2');
+      heading.textContent = 'אימות סיסמה לשמירת השינוי';
+      var hint = document.createElement('p');
+      hint.textContent = 'שינוי מחיר או פעולה רגישה דורשים את סיסמת החשבון שלך. האימות תקף ל־5 דקות.';
+      var password = document.createElement('input');
+      password.type = 'password';
+      password.required = true;
+      password.autocomplete = 'current-password';
+      password.setAttribute('aria-label', 'סיסמת החשבון שלך');
+      var error = document.createElement('p');
+      error.className = 'vs-reauth-error';
+      error.setAttribute('role', 'alert');
+      var buttons = document.createElement('div');
+      buttons.className = 'vs-reauth-actions';
+      var cancel = document.createElement('button');
+      cancel.type = 'button';
+      cancel.textContent = 'ביטול';
+      var confirm = document.createElement('button');
+      confirm.type = 'submit';
+      confirm.textContent = 'אמת ושמור';
+      function finish(approved) {
+        overlay.remove();
+        password.value = '';
+        adminStepupPending = null;
+        resolve(approved);
+      }
+      cancel.addEventListener('click', function () { finish(false); });
+      overlay.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') { event.preventDefault(); finish(false); }
+      });
+      form.addEventListener('submit', async function (event) {
+        event.preventDefault();
+        confirm.disabled = true;
+        error.textContent = '';
+        try {
+          var result = await fetch('/api/admin/employees/reauth', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password: password.value })
+          });
+          if (!result.ok) {
+            var responseBody = await result.json().catch(function () { return {}; });
+            var messages = {
+              reauth_failed: 'הסיסמה שגויה. נסה שוב.',
+              reauth_rate_limited: 'יותר מדי ניסיונות. נסה שוב מאוחר יותר.',
+              admin_required: 'ההתחברות פגה. התנתק והתחבר מחדש.',
+              permission_denied: 'אין הרשאה לבצע פעולה זו.'
+            };
+            throw new Error(messages[responseBody.error] || 'האימות נכשל. נסה להתחבר מחדש.');
+          }
+          finish(true);
+        } catch (err) {
+          error.textContent = err.message || 'האימות נכשל.';
+          password.value = '';
+          password.focus();
+          confirm.disabled = false;
+        }
+      });
+      buttons.append(cancel, confirm);
+      form.append(heading, hint, password, error, buttons);
+      overlay.appendChild(form);
+      document.body.appendChild(overlay);
+      password.focus();
+    });
+    return adminStepupPending;
+  }
+
   async function apiAction(url, method, body) {
     var options = { method: method || 'POST', credentials: 'same-origin', headers: { Accept: 'application/json' } };
     if (body !== undefined) {
       options.headers['Content-Type'] = 'application/json';
       options.body = JSON.stringify(body);
     }
+    // This action handles its own password challenge, so the global fetch wrapper
+    // must not open a second dialog (and the user can safely retry the exact body).
+    options.headers['X-Versans-Admin-Reauth'] = 'managed';
     var response = await fetch(url, options);
+    if (response.status === 428) {
+      var requirement = await response.clone().json().catch(function () { return {}; });
+      if (requirement.error === 'reauth_required') {
+        if (!await requestAdminStepup()) {
+          var cancelled = new Error('האימות בוטל. השינוי לא נשמר.');
+          cancelled.code = 'reauth_cancelled';
+          throw cancelled;
+        }
+        // The same request is retried just once after successful password
+        // verification. Repeated 428s remain visible rather than looping.
+        response = await fetch(url, options);
+      }
+    }
     // Incorrect step-up password is a 401, but it is not a lost login session.
     if (response.status === 401 && url !== '/api/admin/employees/reauth') {
       window.location.href = '/login?next=' + encodeURIComponent(window.location.pathname + window.location.search);

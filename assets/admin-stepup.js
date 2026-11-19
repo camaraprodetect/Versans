@@ -29,6 +29,8 @@
     var request;
     try{request=new Request(input,init);}catch(_){return nativeFetch(input,init);}
     var url=new URL(request.url,location.href);
+    // apiAction() manages its own masked-password dialog and one safe retry.
+    if(request.headers.get('X-Versans-Admin-Reauth')==='managed')return nativeFetch(request);
     if(url.origin!==location.origin||!url.pathname.startsWith('/api/admin/'))return nativeFetch(request);
     var response=await nativeFetch(request.clone());
     if(response.status!==428||['GET','HEAD'].includes(request.method)||url.pathname==='/api/admin/employees/reauth')return response;
