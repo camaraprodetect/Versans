@@ -4174,6 +4174,85 @@
     pager.appendChild(catalogButton('הבא','',function(){catalogPageNumber=Math.min(totalPages-1,catalogPageNumber+1);parent.replaceChildren();renderCatalogGrid(parent)}));
     parent.appendChild(pager);
   }
+  // A category is hidden as a storefront collection, not deleted and not hidden
+  // as an individual product. The admin always keeps the full catalog available.
+  function renderCategoryVisibilityManager(data) {
+    var directlyHidden=Object.assign({},data.categoryHiddenFlags||{});
+    var effectivelyHidden=Object.assign({},data.categoryHidden||{});
+    // These are actual public collection routes; internal product labels such as
+    // "men"/"women" are intentionally excluded from the visibility controls.
+    var publicCategories=catalogCategories.filter(function(pair){
+      return ['greeting','greeting-mom','greeting-partner','greeting-daughter','greeting-sister',
+        'necklaces','bracelets','bracelets-men','bracelets-women','bracelets-fashion',
+        'rings','photo-bracelets','watches','watches-men','watches-women',
+        'glasses','glasses-men','glasses-women','glasses-unisex','hats'].indexOf(pair[0])>=0;
+    });
+    var parents={
+      'greeting-mom':'greeting','greeting-partner':'greeting','greeting-daughter':'greeting','greeting-sister':'greeting',
+      'bracelets-men':'bracelets','bracelets-women':'bracelets','bracelets-fashion':'bracelets',
+      'watches-men':'watches','watches-women':'watches',
+      'glasses-men':'glasses','glasses-women':'glasses','glasses-unisex':'glasses'
+    };
+    var labels={};publicCategories.forEach(function(pair){labels[pair[0]]=pair[1];});
+    var section=make('details','admin-category-visibility');
+    var heading=make('summary','admin-category-visibility__head');
+    heading.appendChild(make('strong','','ניהול קטגוריות — הסתרה והצגה'));
+    var counter=make('span','admin-category-visibility__count');heading.appendChild(counter);
+    section.appendChild(heading);
+    section.appendChild(make('p','admin-category-visibility__hint',
+      'הסתרת קטגוריה מסירה אותה מהניווט ומהעמוד הציבורי, אבל לא מוחקת אותה או את המוצרים שלה. אפשר להחזיר אותה בכל רגע. הסתרת קטגוריית אב מסתירה גם את תתי-הקטגוריות שלה.'));
+    var grid=make('div','admin-category-visibility__grid');section.appendChild(grid);
+    function draw() {
+      grid.replaceChildren();
+      var count=publicCategories.filter(function(pair){return !!effectivelyHidden[pair[0]];}).length;
+      counter.textContent=count+' מוסתרות מתוך '+publicCategories.length;
+      publicCategories.forEach(function(pair){
+        var key=pair[0],parent=parents[key],hidden=!!effectivelyHidden[key];
+        var parentHidden=!!(parent && effectivelyHidden[parent]);
+        var row=make('div','admin-category-visibility__item'+(hidden?' is-hidden':''));
+        var details=make('div','admin-category-visibility__details');
+        details.appendChild(make('strong','',pair[1]+(parent?' · '+labels[parent]:'')));
+        details.appendChild(make('span','admin-category-visibility__status',
+          parentHidden?(directlyHidden[key]?'מוסתרת גם בנפרד וגם דרך קטגוריית האם':'מוסתרת כי קטגוריית האם מוסתרת'):hidden?'מוסתרת מהחנות':'מוצגת בחנות'));
+        var button=catalogButton(hidden?'הצג קטגוריה':'הסתר קטגוריה',hidden?'admin-catalog-unhide':'admin-catalog-quiet',async function(){
+          if(button.disabled)return;
+          var nextHidden=!hidden;
+          var hasChildren=publicCategories.some(function(other){return parents[other[0]]===key;});
+          var approved=await adminConfirm({
+            catalogVisibility:true,danger:nextHidden,icon:nextHidden?'!':'↺',
+            title:nextHidden?'להסתיר את הקטגוריה '+pair[1]+'?':'להציג מחדש את הקטגוריה '+pair[1]+'?',
+            message:nextHidden
+              ? 'הקטגוריה לא תופיע בחנות או בתפריט, והקישור הישיר שלה לא יהיה זמין.'+
+                (hasChildren?' גם תתי-הקטגוריות יוסתרו.':'')+
+                ' המוצרים והשיוכים שלהם יישארו שמורים וזמינים באדמין ובקטגוריות אחרות.'
+              : 'הקטגוריה תחזור להופיע באתר. המוצרים לא ישתנו.'+
+                (hasChildren?' תתי-קטגוריות שהוסתרו בנפרד יישארו מוסתרות.':''),
+            cancelText:'ביטול',confirmText:nextHidden?'כן, הסתר קטגוריה':'כן, הצג קטגוריה'
+          });
+          if(!approved)return;
+          button.disabled=true;button.textContent='שומר...';
+          try {
+            var updated=await apiAction('/api/admin/catalog/categories/visibility','POST',{category:key,hidden:nextHidden});
+            directlyHidden[key]=nextHidden;
+            effectivelyHidden=updated.categoriesHidden||{};
+            draw();
+            showToast(nextHidden?'הקטגוריה הוסתרה מהחנות':'הקטגוריה הוחזרה לחנות');
+          } catch(err) {
+            button.disabled=false;button.textContent=hidden?'הצג קטגוריה':'הסתר קטגוריה';
+            showToast('עדכון הקטגוריה נכשל: '+(err.message||'שגיאה'));
+          }
+        });
+        if(parentHidden){
+          button.disabled=true;
+          button.title='כדי להציג את הקטגוריה יש להציג תחילה את '+labels[parent];
+        }
+        row.append(details,button);grid.appendChild(row);
+      });
+    }
+    draw();
+    return section;
+  }
+
   async function renderCatalogSection() {
     var result = await api('/api/admin/catalog');
     try{var analytics=await api('/api/admin/catalog/insights');catalogInsights=analytics.insights||{}}catch(e){catalogInsights={}}
@@ -4186,6 +4265,7 @@
     var sync=catalogButton('סנכרן לגיליון','',async function(){sync.disabled=true;try{var res=await apiAction('/api/admin/catalog/sync','POST',{});await renderProductsPage();if((res.pendingSheetIds||[]).length)alert('יש עדיין '+res.pendingSheetIds.length+' מוצרים הממתינים לסנכרון. יש לבדוק את הגדרת Webhook.');}catch(err){alert(err.message)}finally{sync.disabled=false}});
     buttons.appendChild(sync);head.append(title,buttons);wrap.appendChild(head);
     var info=make('p','admin-catalog-hint', result.sheetConfigured?'שינויים נשמרים במסד הנתונים ונשלחים לגיליון "קישורי מוצרים".':'שינויים בחנות נשמרים. כדי לעדכן גם את Google Sheets, יש להגדיר GOOGLE_PRODUCTS_WEBHOOK_URL ו-GOOGLE_PRODUCTS_WEBHOOK_SECRET ב-Render.');wrap.appendChild(info);
+    wrap.appendChild(renderCategoryVisibilityManager(result));
     var search=make('input','admin-catalog-search');search.type='search';search.placeholder='חיפוש לפי שם מוצר, מזהה, מק"ט או קטגוריה';search.value=catalogSearchText;search.setAttribute('aria-label','חיפוש מוצרים');
     var gridHolder=make('div');
     var filters=make('div','admin-catalog-filter-row');
