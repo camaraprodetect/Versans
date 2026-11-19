@@ -5695,21 +5695,42 @@ async function adminApi(req, res, pathname, parsed) {
       json(res,400,{ok:false,error:'password_min_8'});return true;
     }
     try {
-      if(!target){
-        const id=await database.insertUser(name,email,hashPassword(password),Date.now(),null,{role:'staff'});
-        target=await database.findUserById(id);
-      } else {
-        await database.setUserAccess(Number(target.id),'staff',false,'',Date.now());
-        await database.deleteSessionsForUser(Number(target.id));
-        target=await database.findUserById(Number(target.id));
-      }
-      await employeeAccess.write(Number(target.id),keys);
-      await employeeAccess.setProfile(Number(target.id),{preset,expiresAt});
-      await employeeAccess.audit(admin,'employees','create','עובד חדש '+String(target.id),Number(target.id));
+      // Create the permission/profile tables before entering the transaction.
+      // An employee is either fully created or not created at all.
+      await employeeAccess.init();
+      await employeeAccess.profile(Number(admin.id));
+      target = await database.transaction(async(tx)=>{
+        const access = employeePolicy.createEmployeeAccess(tx);
+        let account = await tx.findUserByEmail(email);
+        // Recheck eligibility inside the transaction to avoid concurrent promotion.
+        if(account && (account.role!=='customer' || Number(account.is_blocked)===1)) {
+          throw Object.assign(new Error('account_not_eligible'),{status:409});
+        }
+        if(!account){
+          const id = await tx.insertUser(name,email,hashPassword(password),Date.now(),null,{role:'staff'});
+          account = await tx.findUserById(id);
+        } else {
+          await tx.setUserAccess(Number(account.id),'staff',false,'',Date.now());
+          await tx.deleteSessionsForUser(Number(account.id));
+          account = await tx.findUserById(Number(account.id));
+        }
+        if(!account || !Number.isSafeInteger(Number(account.id))) throw new Error('employee_account_missing');
+        await access.write(Number(account.id),keys);
+        await access.setProfile(Number(account.id),{preset,expiresAt});
+        await access.audit(admin,'employees','create','עובד חדש '+String(account.id),Number(account.id));
+        return account;
+      });
       json(res,201,{ok:true,employee:{id:Number(target.id),name:target.name,email:target.email,permissions:keys}});
     } catch(e) {
-      if(e.code==='23505' || /UNIQUE/i.test(String(e.message||'')))json(res,409,{ok:false,error:'email_exists'});
-      else throw e;
+      if(e.code==='23505' || /UNIQUE/i.test(String(e.message||''))) {
+        json(res,409,{ok:false,error:'email_exists'});
+      } else if(e.status===409 && e.message==='account_not_eligible') {
+        json(res,409,{ok:false,error:'account_not_eligible'});
+      } else {
+        // No private data, passwords, or DB details are returned to the browser.
+        console.error('Employee creation failed:',e);
+        json(res,500,{ok:false,error:'employee_creation_failed'});
+      }
     }
     return true;
   }
