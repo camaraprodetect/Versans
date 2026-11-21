@@ -522,7 +522,15 @@
     }).filter(function (entry) { return !!entry.src; });
   }
   function hasMessageCard() {
-    return !product.hideMessageCard;
+    // ICE NEW YORK is sold without a greeting card. Keep gift messages
+    // available for the other products that use them.
+    var identifiers = [product.id, product.slug, product.urlSlug];
+    var isIceNewYork = identifiers.some(function (value) {
+      return value === 'product-294' ||
+        value === 'ice-new-york-cz-necklace-294' ||
+        value === 'ice-new-york-cz-necklace';
+    });
+    return !product.hideMessageCard && !isIceNewYork;
   }
   function supportsCustomGreeting() {
     return hasMessageCard() && /^product-[1-9]$/.test(String(product.slug || ''));

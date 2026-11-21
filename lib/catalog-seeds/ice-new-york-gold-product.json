@@ -1,0 +1,65 @@
+{
+  "id": "ice-new-york-gold-cz-necklace-295",
+  "slug": "product-295",
+  "urlSlug": "ice-new-york-gold-cz-necklace",
+  "sku": "VS-NK-295",
+  "category": "necklaces",
+  "categories": ["necklaces", "men"],
+  "title": {
+    "he": "שרשרת - ICE NEW YORK - משובץ אבני CZ - זהב",
+    "en": "ICE NEW YORK Gold CZ Iced Chain Necklace"
+  },
+  "subtitle": {
+    "he": "שרשרת ICE NEW-YORK בגוון זהב, בעובי 8 או 14 מילימטר, משובצת אבני CZ, באורכים 45, 50, 55 או 60 ס״מ לבחירה.",
+    "en": "ICE NEW YORK gold-tone chain with CZ stones, available in 8 mm or 14 mm widths and 45, 50, 55 or 60 cm lengths."
+  },
+  "description": {
+    "he": "שרשרת ICE NEW-YORK לגברים במראה אייס בולט, עם חוליות משובצות אבני זירקוניה CZ בגוון זהב. ניתן לבחור רוחב 8 או 14 מ״מ ואורך 45, 50, 55 או 60 ס״מ.",
+    "en": "ICE NEW YORK men's iced chain with sparkling cubic zirconia stones in a gold-tone finish. Choose 8 or 14 mm width and 45, 50, 55 or 60 cm length."
+  },
+  "price": 389,
+  "compareAt": 499,
+  "images": [
+    "images/products/product-295/product-295-1.png",
+    "images/products/product-295/product-295-2.png",
+    "images/products/product-295/product-295-3.png",
+    "images/products/product-295/product-295-4.png",
+    "images/products/product-295/product-295-5.png",
+    "images/products/product-295/product-295-6.png"
+  ],
+  "hoverImage": "images/products/product-295/product-295-2.png",
+  "cardImage": "images/products/product-295/product-295-1.png",
+  "sizes": [
+    { "id": "45cm", "label": { "he": "45 ס״מ", "en": "45 cm" }, "addPrice": 0 },
+    { "id": "50cm", "label": { "he": "50 ס״מ", "en": "50 cm" }, "addPrice": 0 },
+    { "id": "55cm", "label": { "he": "55 ס״מ", "en": "55 cm" }, "addPrice": 0 },
+    { "id": "60cm", "label": { "he": "60 ס״מ", "en": "60 cm" }, "addPrice": 0 }
+  ],
+  "colors": [
+    { "id": "8mm", "label": { "he": "8 מ״מ", "en": "8 mm" }, "addPrice": 0 },
+    { "id": "14mm", "label": { "he": "14 מ״מ", "en": "14 mm" }, "addPrice": 0 }
+  ],
+  "sizeHeading": { "he": "בחרו אורך", "en": "Choose length" },
+  "colorHeading": { "he": "בחרו עובי", "en": "Choose width" },
+  "details": {
+    "he": [
+      "שרשרת ICE NEW-YORK לגברים",
+      "גוון התכשיט: זהב",
+      "שיבוץ: אבני זירקוניה קובית (CZ)",
+      "אורכים לבחירה: 45, 50, 55 או 60 ס״מ",
+      "עובי לבחירה: 8 מ״מ או 14 מ״מ",
+      "עיצוב חוליות משובץ בסגנון ICE"
+    ],
+    "en": [
+      "ICE NEW YORK chain for men",
+      "Jewelry finish: gold-tone",
+      "Stones: Cubic Zirconia (CZ)",
+      "Available lengths: 45, 50, 55 or 60 cm",
+      "Available widths: 8 mm or 14 mm",
+      "Iced link design"
+    ]
+  },
+  "gender": "men",
+  "inStock": true,
+  "hideMessageCard": true
+}
