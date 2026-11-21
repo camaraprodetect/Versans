@@ -2501,6 +2501,20 @@ async function uploadProductPhoto(blob, meta) {
     if (e.target.closest('#navScrim, [data-nav-close]') || e.target.closest('.nav__menu a')) { setMenu(false); }
   });
 
+  // The gallery image is for viewing and swiping, not for opening a zoom
+  // viewer or triggering native image drag / Safari gesture magnification.
+  // Keep normal pinch zoom available elsewhere on the page for accessibility.
+  (function disableProductGalleryZoom() {
+    var image = $('#productMainImage');
+    if (!image) return;
+    image.draggable = false;
+    image.addEventListener('dragstart', function (event) { event.preventDefault(); });
+    image.addEventListener('dblclick', function (event) { event.preventDefault(); });
+    ['gesturestart', 'gesturechange'].forEach(function (eventName) {
+      image.addEventListener(eventName, function (event) { event.preventDefault(); }, { passive: false });
+    });
+  })();
+
   // Mobile gallery swipe: allow switching photos directly on the main image.
   // A swipe is accepted only when horizontal movement clearly exceeds vertical
   // movement, so normal page scrolling is unaffected.

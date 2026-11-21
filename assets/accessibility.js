@@ -482,7 +482,7 @@
     }
     if (!document.querySelector('script[data-versans-bot-script]')) {
       var script = document.createElement('script');
-      script.src = '/assets/versans-bot.js?v=20261013-bot-welcome-hyphen-v13';
+      script.src = '/assets/versans-bot.js?v=20261121-hidden-category-promos-v1';
       script.async = true;
       script.setAttribute('data-versans-bot-script', '1');
       document.body.appendChild(script);

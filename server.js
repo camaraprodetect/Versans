@@ -195,6 +195,7 @@ function handleSeoCatalogUpdate() {
     if (seoIndexNowTimer.unref) seoIndexNowTimer.unref();
   }
 }
+const { isProductInHiddenCategory, filterPublicMarketingConfig, filterPublicPolicyHtml } = require('./lib/storefront-category-visibility.js');
 const catalogManager = createCatalogManager(database, () => {
   liveCatalogScript = '';
   liveCatalogVersion = '';
@@ -1525,7 +1526,7 @@ function versansBotContext(raw) {
     relevantSiteInfo,
     storeFacts: {
       jewelryPromotion: versansBotText(facts.jewelryPromotion, 300),
-      hatsPromotion: versansBotText(facts.hatsPromotion, 300),
+      hatsPromotion: catalogManager.isCategoryHidden('hats') ? '' : versansBotText(facts.hatsPromotion, 300),
       glassesPromotion: versansBotText(facts.glassesPromotion, 300),
       welcomeCoupon: versansBotText(facts.welcomeCoupon, 300),
       warranty: versansBotText(facts.warranty, 300)
@@ -9453,6 +9454,15 @@ function injectStorefrontRouting(html, bootRoute, previewProduct) {
     const links = url ? [`a[href=\"${url}\"]`, `a[href^=\"${url}#\"]`, `a[href^=\"${url}?\"]`] : [];
     return [`[data-cat=\"${attr}\"]`, `[data-nav-group=\"${attr}\"]`, `[data-nav-cat=\"${attr}\"]`, `[data-nav-subcat=\"${attr}\"]`, ...links];
   });
+  if (catalogManager.isCategoryHidden('photo-bracelets')) {
+    // Legacy marquee links do not have a data-cat attribute.
+    hideSelectors.push('.promo-marquee__item--projection',
+      '.promo-marquee__sep:has(+ .promo-marquee__item--projection)',
+      'a[href^="/photo-projection-bracelet"]', '#photoJewelryCollectionBanner');
+  }
+  if (catalogManager.isCategoryHidden('hats')) hideSelectors.push('#hatsCollectionBanner');
+  if (catalogManager.isCategoryHidden('rings')) hideSelectors.push('#ringsCollectionBanner',
+    'a[href^="/ring-size-guide"]', '#ringSizeGuideLink');
   const categoryCss = hideSelectors.length ? '<style data-versans-category-visibility>' + hideSelectors.join(',') + '{display:none!important}</style>' : '';
   const early = categoryCss + `<script>window.__VERSANS_HIDDEN_CATEGORIES__=${JSON.stringify(catalogManager.hiddenCategories()).replace(/</g,'\\u003c')};window.__VERSANS_BOOT_ROUTE__=${safeInlineJson(bootRoute)};</script><script src="/assets/route-state.js?v=20260924-home-no-refresh-v8"></script>`;
   const late = '<script src="/assets/url-mask.js?v=20260924-home-reviews-anchor-v4"></script>' +
@@ -9461,12 +9471,15 @@ function injectStorefrontRouting(html, bootRoute, previewProduct) {
   out = out
     .replace(/(\/?assets\/config\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261001-product-help-v1')
     .replace(/(\/?assets\/styles\.css)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261001-product-help-v1')
-    .replace(/(\/?assets\/store\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261020-categories-visibility-v1')
+    .replace(/(\/?assets\/store\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261121-hidden-category-promos-v1')
     .replace(/(\/?assets\/products\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=live-' + currentCatalogVersion())
     .replace(/(\/?assets\/product\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261003-all-color-identity-v48')
     .replace(/(\/?assets\/cart-drawer\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261004-cart-checkout-fix-v64')
     .replace(/(\/?assets\/cart-state\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261003-all-color-identity-v48')
-    .replace(/(\/?assets\/site-header\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20260922-favorites-sync-v1')
+    .replace(/(\/?assets\/site-header\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261121-hidden-category-promos-v1')
+    .replace(/(\/?assets\/promo-popups\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261121-hidden-category-promos-v1')
+    .replace(/(\/?assets\/marketing-storefront\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261121-hidden-category-promos-v1')
+    .replace(/(\/?assets\/accessibility\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261121-hidden-category-promos-v1')
     .replace(/(\/?assets\/auth-nav\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261003-guest-orders-v37')
     .replace(/(\/?assets\/presence\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20260922-urlmask-v2');
   // Preserve the source script's load order: the inline patches run only
@@ -9495,7 +9508,9 @@ function serveStorefrontHtml(req, res, filePath, bootRoute, previewProduct) {
   const isAuthDocument = /<body[^>]+class=["'][^"']*auth-page/.test(source);
   // Auth pages keep their real pathname. Password-reset secrets are held only in an HttpOnly cookie, never in the page URL.
   // The storefront URL masker intentionally hides catalog/product routes, but must not run here.
-  let body = isAuthDocument ? source : injectStorefrontRouting(source, bootRoute || htmlBootRoute(req, '/'), previewProduct);
+  const publicSource = path.basename(filePath) === 'policies.html'
+    ? filterPublicPolicyHtml(source, catalogManager.hiddenCategories()) : source;
+  let body = isAuthDocument ? publicSource : injectStorefrontRouting(publicSource, bootRoute || htmlBootRoute(req, '/'), previewProduct);
   if (!isAuthDocument) {
     try { body = SEO.renderSeoHtml(body, bootRoute || htmlBootRoute(req, '/'), PRODUCTS, ROUTES, previewProduct); }
     catch (error) { console.warn('SEO HTML enhancement skipped:', error.message); }
@@ -9656,6 +9671,27 @@ const server = http.createServer(async (req, res) => {
       if (routeCategory && catalogManager.isCategoryHidden(routeCategory)) {
         json(res,404,{ok:false,error:'category_not_found'}); return;
       }
+      if ((catalogManager.isCategoryHidden('hats') && pathname === '/hats-index.html') ||
+          (catalogManager.isCategoryHidden('rings') && (pathname === '/ring-size-guide' || pathname === '/ring-size-guide.html'))) {
+        json(res,404,{ok:false,error:'category_not_found'}); return;
+      }
+      // A hidden category also hides its individual product pages, including
+      // bookmarked /product.html?id=... and named /product-url-slug links.
+      const isProductQuery = pathname === '/product.html' && parsed.searchParams.has('id');
+      const productReference = isProductQuery ? String(parsed.searchParams.get('id') || '') : '';
+      const publicSlug = pathname.startsWith('/') ? pathname.slice(1) : '';
+      if (isProductQuery || (/^[a-z0-9][a-z0-9-]*$/.test(publicSlug) && !ROUTES.COLLECTION_PATHS[publicSlug])) {
+        const item = catalogManager.list().find(p => isProductQuery
+          ? String(p.slug) === productReference || String(p.id) === productReference
+          : String(p.urlSlug || '') === publicSlug);
+        if (item && isProductInHiddenCategory(item, catalogManager.hiddenCategories())) {
+          const admin = parsed.searchParams.get('admin_preview') === '1' && isProductQuery ? await getAdminUser(req) : null;
+          if (admin && adminCanAccess(admin, '/api/admin/catalog', 'GET')) {
+            serveStorefrontHtml(req,res,path.join(ROOT,'product.html'),htmlBootRoute(req,pathname),catalogManager.getAdminProduct(item.slug));
+          } else json(res,404,{ok:false,error:'product_not_found'});
+          return;
+        }
+      }
     }
     // Backward-compatible cleanup for reset links issued before the hidden-token flow.
     // Convert the URL token into an HttpOnly cookie and immediately redirect to a clean URL.
@@ -9788,7 +9824,8 @@ const server = http.createServer(async (req, res) => {
       res.end(record.buffer);return;
     }
     if(pathname==='/api/marketing/public'&&req.method==='GET'){
-      const data=await marketingManager.publicConfig();
+      await catalogManager.refresh();
+      const data=filterPublicMarketingConfig(await marketingManager.publicConfig(), catalogManager.hiddenCategories());
       json(res,200,{ok:true,...data},{'Cache-Control':'no-store'});return;
     }
 

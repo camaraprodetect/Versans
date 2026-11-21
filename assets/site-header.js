@@ -57,8 +57,13 @@
       if (!Array.isArray(stored)) stored = [];
 
       var ids = [];
+      var retained = [];
       stored.forEach(function(value){
-        var id = canonicalFavoriteId(value);
+        var original = String(value || '').trim();
+        if (!original) return;
+        var id = canonicalFavoriteId(original);
+        var storedId = id || original; // Preserve temporarily hidden products for later.
+        if (retained.indexOf(storedId) === -1) retained.push(storedId);
         if (id && ids.indexOf(id) === -1) ids.push(id);
       });
 
@@ -68,10 +73,10 @@
          leave a ghost badge count. Keep storage canonical and count only real
          catalog products so the badge and panel can never disagree. */
       var normalizedStored = stored.map(function(value){ return String(value || ''); }).filter(Boolean);
-      var changed = normalizedStored.length !== ids.length || normalizedStored.some(function(value, index){
-        return value !== ids[index];
+      var changed = normalizedStored.length !== retained.length || normalizedStored.some(function(value, index){
+        return value !== retained[index];
       });
-      if (changed) localStorage.setItem(FAVORITES_KEY, JSON.stringify(ids));
+      if (changed) localStorage.setItem(FAVORITES_KEY, JSON.stringify(retained));
       return ids;
     } catch (err) {
       return [];
@@ -84,7 +89,16 @@
       var id = canonicalFavoriteId(value);
       if (id && clean.indexOf(id) === -1) clean.push(id);
     });
-    try { localStorage.setItem(FAVORITES_KEY, JSON.stringify(clean)); } catch (err) {}
+    // A visitor can edit their visible favorites while other favorites are hidden.
+    // Do not discard those invisible entries until the admin restores the category.
+    try {
+      var existing = JSON.parse(localStorage.getItem(FAVORITES_KEY) || '[]');
+      if (Array.isArray(existing)) existing.forEach(function(value){
+        var id = String(value || '').trim();
+        if (id && !canonicalFavoriteId(id) && clean.indexOf(id) === -1) clean.push(id);
+      });
+      localStorage.setItem(FAVORITES_KEY, JSON.stringify(clean));
+    } catch (err) {}
     updateFavoriteUi();
   }
 

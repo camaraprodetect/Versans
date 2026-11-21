@@ -45,7 +45,7 @@
         'glasses', 'glasses-men', 'glasses-women', 'glasses-unisex',
         'hats'
       ];
-      if (requestedCategory && validCategories.indexOf(requestedCategory) !== -1) {
+      if (requestedCategory && validCategories.indexOf(requestedCategory) !== -1 && !isCategoryHidden(requestedCategory)) {
         state.filter = requestedCategory;
       }
     } catch (e) {}

@@ -78,8 +78,12 @@
     if (auth==='guest') result.splice(1,0,'signup');
     return result;
   }
+  function offerAllowed(key) {
+    var hidden = window.__VERSANS_HIDDEN_CATEGORIES__ || {};
+    return !(hidden.hats && (key === 'hatsTwo' || key === 'hatsThree'));
+  }
   function chooseAutomatic() {
-    var list=candidates(), previous=history.slice(-2);
+    var list=candidates().filter(offerAllowed), previous=history.slice(-2);
     var unshown=list.filter(function(k){return previous.indexOf(k)<0;});
     if (!unshown.length) unshown=list.filter(function(k){return k!==history[history.length-1];});
     if (!unshown.length) unshown=list;
@@ -89,8 +93,8 @@
     var c=counts();
     if (auth==='guest') return 'signup';
     if (c.jewelry===2) return 'jewelryThird';
-    if (c.hats===2) return 'hatsThree';
-    if (c.hats===1) return 'hatsTwo';
+    if (c.hats===2 && offerAllowed('hatsThree')) return 'hatsThree';
+    if (c.hats===1 && offerAllowed('hatsTwo')) return 'hatsTwo';
     if (c.glasses===1) return 'glasses';
     return 'jewelry';
   }
@@ -124,7 +128,7 @@
   }
   function present(key,source) {
     var p=offers[key];
-    if (!p || modal || (window.__versansManagedPopupActive || window.__versansLegacyPromosDisabled) || document.visibilityState==='hidden') return false;
+    if (!p || !offerAllowed(key) || modal || (window.__versansManagedPopupActive || window.__versansLegacyPromosDisabled) || document.visibilityState==='hidden') return false;
     restoreFocus=document.activeElement;
     var backdrop=el('div','vs-video-promo-backdrop');
     backdrop.id='versans-video-promo';

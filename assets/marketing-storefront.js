@@ -68,7 +68,7 @@
  function refresh(){fetch('/api/marketing/public',{credentials:'same-origin',cache:'no-store'}).then(function(r){if(!r.ok)throw Error('config');return r.json();}).then(function(data){
    var rules=JSON.stringify(data.bundles||[]),banners=JSON.stringify(data.banners||[]),popups=JSON.stringify(data.popups||[]);
    var standardOffers=[['standard-jewelry','buy2get1','jewelry',3,0],['standard-glasses','fixed','glasses',2,249.9],['standard-hats-2','fixed','hats',2,239.9],['standard-hats-3','fixed','hats',3,299.9]];
-   window.__versansLegacyPromosDisabled=!standardOffers.every(function(required){return (data.bundles||[]).some(function(offer){return offer.id===required[0]&&offer.kind===required[1]&&offer.category===required[2]&&(offer.kind==='buy2get1'||(Number(offer.quantity)===required[3]&&Math.abs(Number(offer.price)-required[4])<0.001));});});
+   window.__versansLegacyPromosDisabled=!standardOffers.filter(function(offer){return !(window.__VERSANS_HIDDEN_CATEGORIES__||{})[offer[2]];}).every(function(required){return (data.bundles||[]).some(function(offer){return offer.id===required[0]&&offer.kind===required[1]&&offer.category===required[2]&&(offer.kind==='buy2get1'||(Number(offer.quantity)===required[3]&&Math.abs(Number(offer.price)-required[4])<0.001));});});
    if(rules!==lastRulesSignature){lastRulesSignature=rules;
      if(window.VERSANS_PRICING&&window.VERSANS_PRICING.setBundleRules){window.VERSANS_PRICING.setBundleRules(data.bundles||[]);window.dispatchEvent(new Event('versans:cart-changed'));}}
    if(banners!==lastBannerSignature){lastBannerSignature=banners;renderBanners(data.banners||[]);}
