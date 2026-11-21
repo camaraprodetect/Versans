@@ -119,6 +119,7 @@
   function photoSection(){
     var sec=block('גלריית תמונות','התמונה הראשונה היא הראשית. ניתן לשנות סדר, להוסיף או להסיר.','images');
     var grid=el('div','versans-editor__images');sec.appendChild(grid);
+    var hoverInput;
     function redraw(){grid.replaceChildren();(draft.images||[]).forEach(function(src,index){
       var card=el('div','versans-editor__image');
       var image=el('img');image.src=picture(src);image.alt='תמונת מוצר '+(index+1);image.loading='lazy';
@@ -127,7 +128,12 @@
       var controls=el('div','versans-editor__image-actions');
       var up=btn('→',function(){if(index<1)return;var a=draft.images;[a[index-1],a[index]]=[a[index],a[index-1]];redraw();preview();touch();});up.title='העבר תמונה אחורה';up.disabled=index===0;
       var down=btn('←',function(){var a=draft.images;if(index>=a.length-1)return;[a[index+1],a[index]]=[a[index],a[index+1]];redraw();preview();touch();});down.title='העבר תמונה קדימה';down.disabled=index===draft.images.length-1;
-      var remove=btn('מחק',function(){if(draft.images.length===1){note('חייבת להישאר לפחות תמונה אחת למוצר','is-error');return;}draft.images.splice(index,1);redraw();preview();touch();},'is-danger');
+      var remove=btn('מחק',function(){
+        if(draft.images.length===1){note('חייבת להישאר לפחות תמונה אחת למוצר','is-error');return;}
+        var removed=draft.images.splice(index,1)[0];
+        if(draft.hoverImage===removed){draft.hoverImage='';if(hoverInput)hoverInput.value='';}
+        redraw();preview();touch();
+      },'is-danger');
       put(controls,up,down,remove);card.appendChild(controls);grid.appendChild(card);
     });}
     redraw();
@@ -147,8 +153,8 @@
         redraw();preview();touch();note('התמונות עלו. לחץ על שמירת שינויים כדי לעדכן את המוצר.','is-success');
       }catch(e){note(e.message,'is-error');}finally{upload.value='';upload.disabled=false;}
     });
-    var hover=block('תמונת מעבר עכבר','אפשר להזין כתובת של תמונת Hover.','images');
-    entry(hover,'כתובת תמונת Hover',draft.hoverImage||'',function(v){draft.hoverImage=v;});
+    var hover=block('תמונת מעבר עכבר','משמשת לכרטיס המוצר; במשקפיים היא מופיעה גם בגלריה.','images');
+    hoverInput=entry(hover,'כתובת תמונת Hover',draft.hoverImage||'',function(v){draft.hoverImage=v;});
   }
   function optionSection(key,title,list){
     if(!Array.isArray(list))return;

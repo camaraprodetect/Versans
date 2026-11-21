@@ -482,14 +482,37 @@
     var combinationReady = !unavailableCombination(selectedSizeId, selectedColorId);
     return product.inStock !== false && necklaceReady && boxReady && sizeReady && colorReady && combinationReady && [selectedNecklace(),selectedBox(),selectedSize(),selectedColor(),selectedPackaging()].every(function(o){return !o || o.inStock !== false}) && customNameReady() && customPhotoReady() && companionReady();
   }
+  // For jewelry, only admin-saved gallery images belong in the rail.
+  // Preserve the existing glasses-only hover preview behavior; a hover image
+  // must never create an extra necklace/bracelet thumbnail after deletion.
+  var failedGalleryImageUrls = Object.create(null);
+  function galleryImageKey(src) {
+    try { return new URL(String(src || ''), document.baseURI).href; }
+    catch (e) { return String(src || ''); }
+  }
   function galleryImages() {
     var images = Array.isArray(product.images) ? product.images.slice() : [];
-    if (product.hoverImage && images.indexOf(product.hoverImage) === -1) {
+    if (isGlassesProduct(product) && product.hoverImage && images.indexOf(product.hoverImage) === -1) {
       images.push(product.hoverImage);
     }
     return images.filter(function (src, index, list) {
-      return !!src && list.indexOf(src) === index;
+      return !!src && list.indexOf(src) === index && !failedGalleryImageUrls[galleryImageKey(src)];
     });
+  }
+  function skipUnavailableGalleryImage(src) {
+    var key = galleryImageKey(src);
+    if (!key || failedGalleryImageUrls[key]) return;
+    failedGalleryImageUrls[key] = true;
+    var images = galleryImages();
+    var main = $('#productMainImage');
+    activeImageIndex = Math.max(0, Math.min(activeImageIndex, Math.max(0, images.length - 1)));
+    // A missing gallery photo, an old static URL or a removed variation image
+    // should never leave its broken alt text covering the main stage.
+    if (main && galleryImageKey(main.getAttribute('src')) === key) {
+      if (images.length) setMainImage(images[activeImageIndex], L(product.title));
+      else { main.hidden = true; main.removeAttribute('src'); }
+    }
+    renderStaticGallery();
   }
   function galleryVideos() {
     if (!Array.isArray(product.videos)) return [];
@@ -621,6 +644,12 @@
     var main = $('#productMainImage');
     var video = $('#productMainVideo');
     if (!main || !src) return;
+    // Do not reselect an image that has already failed to load during this visit.
+    if (failedGalleryImageUrls[galleryImageKey(src)]) {
+      var available = galleryImages();
+      if (!available.length) { main.hidden = true; main.removeAttribute('src'); return; }
+      src = available[0];
+    }
     if (video) {
       try { video.pause(); } catch (e) {}
       video.hidden = true;
@@ -836,7 +865,8 @@
       warmCurrentProductGallery();
     }
     if (hint) {
-      hint.textContent = videos.length
+      if (!imgs.length && !videos.length) hint.textContent = lang === 'he' ? 'תמונת המוצר אינה זמינה כרגע' : 'Product image temporarily unavailable';
+      else hint.textContent = videos.length
         ? (lang === 'he' ? 'תמונות ווידאו של המוצר' : 'Product photos and video')
         : (imgs.length > 1 ? (lang === 'he' ? 'לצפייה בעוד תמונות' : 'View more photos') : (lang === 'he' ? 'תמונת מוצר' : 'Product image'));
     }
@@ -2616,6 +2646,21 @@ async function uploadProductPhoto(blob, meta) {
   window.addEventListener('scroll', function () {
     $('#nav').classList.toggle('is-stuck', window.scrollY > 10);
   }, { passive: true });
+
+  // Missing files should disappear from the visible gallery automatically.
+  // This is a display fallback only: never silently delete catalog data.
+  var galleryMainImage = $('#productMainImage');
+  if (galleryMainImage) galleryMainImage.addEventListener('error', function () {
+    var src = galleryMainImage.getAttribute('src');
+    if (src) skipUnavailableGalleryImage(src);
+  });
+  var galleryRail = $('#productThumbs');
+  if (galleryRail) galleryRail.addEventListener('error', function (event) {
+    var target = event.target;
+    if (target && target.tagName === 'IMG' && target.closest('[data-gallery-index]')) {
+      skipUnavailableGalleryImage(target.getAttribute('src'));
+    }
+  }, true);
 
   window.addEventListener('resize', scheduleGalleryThumbRailSync);
   window.addEventListener('orientationchange', scheduleGalleryThumbRailSync);

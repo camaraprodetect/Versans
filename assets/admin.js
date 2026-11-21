@@ -4025,7 +4025,7 @@
     var subtitle=catalogTextField('תיאור קצר',product && product.subtitle && (product.subtitle.he||product.subtitle),'textarea');
     var description=catalogTextField('תיאור מוצר',product && product.description && (product.description.he||product.description),'textarea');
     var sku=catalogTextField('מק"ט',product && product.sku);
-    var hover=catalogTextField('תמונת Hover (כתובת)',product && product.hoverImage);
+    var hover=catalogTextField('תמונת Hover לכרטיס המוצר (במשקפיים גם בגלריה)',product && product.hoverImage);
     var gallery=catalogTextField('תמונות מוצר - כל שורה כתובת של תמונה *',product && product.images && product.images.join('\n'),'textarea');
     gallery.input.rows=4;gallery.wrapper.classList.add('admin-catalog-full');
     var upload = make('label','admin-catalog-field admin-catalog-full');upload.appendChild(make('span','','העלאת תמונות מהמחשב (עד 6MB לתמונה)'));
