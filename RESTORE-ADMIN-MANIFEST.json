@@ -1,0 +1,234 @@
+{
+  "baselineArchive": "VERSANS-Category-Visibility.zip",
+  "appliedPatchesInOrder": [
+    "VERSANS-Employee-Creation-Fix-PATCH.zip",
+    "VERSANS-Admin-Role-Fix-PATCH.zip",
+    "VERSANS-Product-Reauth-Fix-PATCH.zip",
+    "VERSANS-Product-Save-Employee-Reauth-PATCH-v2.zip",
+    "VERSANS-Product-FullWidth-NoZoom-PATCH.zip",
+    "VERSANS-Mobile-Larger-Thumbnails-PATCH.zip",
+    "VERSANS-Mobile-Smaller-Thumbnails-PATCH.zip",
+    "VERSANS-Hidden-Categories-Promos-PATCH.zip",
+    "VERSANS-Mobile-Hidden-Categories-FIX-PATCH.zip",
+    "VERSANS-Product-Images-6MB-PATCH.zip",
+    "VERSANS-Gallery-Ghost-Image-FIX-PATCH.zip"
+  ],
+  "restoredFiles": {
+    "admin-manifest.webmanifest": {
+      "sha256": "5f4435094585eca2411b062f4f490c44e94c5044d74a425475124c91e1c160e5",
+      "source": "VERSANS-Category-Visibility.zip"
+    },
+    "admin-sw.js": {
+      "sha256": "462e437ce0e2bdb447eb35c7faf1be06838947d99a35f4ba4058b1924b6573d8",
+      "source": "VERSANS-Category-Visibility.zip"
+    },
+    "admin.html": {
+      "sha256": "c4c3ba9b01cc47fcd423bf4eba9671f93084bf6428a52077090b5a8b1ff740ac",
+      "source": "VERSANS-Gallery-Ghost-Image-FIX-PATCH.zip"
+    },
+    "assets/admin-ai.css": {
+      "sha256": "d1cd994333b8e2750e812954ae01d4c9f712b1fb6700c5e16e7c9d6b36b08dcc",
+      "source": "VERSANS-Category-Visibility.zip"
+    },
+    "assets/admin-ai.js": {
+      "sha256": "fe20afbdaaa9304112befface55d266c725d701cd73f832374f18e205fa6888d",
+      "source": "VERSANS-Category-Visibility.zip"
+    },
+    "assets/admin-anomalies.css": {
+      "sha256": "9a230a6e3e087ce00fc50b3c6ad8aba9a9dff043633005e9715401d61d2e53f1",
+      "source": "VERSANS-Category-Visibility.zip"
+    },
+    "assets/admin-anomalies.js": {
+      "sha256": "63dc61b75edda060a25481260739a52513f4d498b91cf99b21f85d9476cf4f76",
+      "source": "VERSANS-Category-Visibility.zip"
+    },
+    "assets/admin-arrivals.css": {
+      "sha256": "a08de10cf494e079ab9534b86f87e32029aa367d9fd75bc95d62ffa1ceabe7e5",
+      "source": "VERSANS-Category-Visibility.zip"
+    },
+    "assets/admin-arrivals.js": {
+      "sha256": "5701f245c2e3cda4ae3216bbdfea02b9be01aacfce5812dbc41ecd83c329d293",
+      "source": "VERSANS-Category-Visibility.zip"
+    },
+    "assets/admin-creators-crm.css": {
+      "sha256": "b8ab8b7289a436fd1a47511d8abc68ba373edd8a97c554ac452d040f05a9648c",
+      "source": "VERSANS-Category-Visibility.zip"
+    },
+    "assets/admin-creators-crm.js": {
+      "sha256": "f966ce799826f699fd4e6586946b6ef6fa64d692cd49a3a09d82e3a1b6fdf0f4",
+      "source": "VERSANS-Category-Visibility.zip"
+    },
+    "assets/admin-customers.css": {
+      "sha256": "ae8aed7d4a1fc13ba828abe51cc41fb8aa48e58c7cfa528e82794d8a967b1e36",
+      "source": "VERSANS-Category-Visibility.zip"
+    },
+    "assets/admin-dashboard.css": {
+      "sha256": "b446a1923eef198f02cff7b9918ce999d2c947869f4e6fbd1d5537fbff6047de",
+      "source": "VERSANS-Category-Visibility.zip"
+    },
+    "assets/admin-employees.css": {
+      "sha256": "0e128c02360ce7a56e538187c43236b60479932f92dc556854f0af1345f216b7",
+      "source": "VERSANS-Category-Visibility.zip"
+    },
+    "assets/admin-employees.js": {
+      "sha256": "cb24692da6bed1235ea0f3f0117d38eff1f2c1a8d6ee76943c69b1d0c832d39f",
+      "source": "VERSANS-Employee-Creation-Fix-PATCH.zip"
+    },
+    "assets/admin-finance.css": {
+      "sha256": "1b1a999a54cd0981d45eb0217f517020e1cc0373158de196c251be5f009f8f7e",
+      "source": "VERSANS-Category-Visibility.zip"
+    },
+    "assets/admin-finance.js": {
+      "sha256": "903567eaad9fc617808ab4b9fc01b17374646a375774e541662b7ef8878dcd7d",
+      "source": "VERSANS-Category-Visibility.zip"
+    },
+    "assets/admin-header-compact.css": {
+      "sha256": "721a7ae8385d8282287a0ef20bcfd67a4430a451161c48a43de2f2b8234a60ba",
+      "source": "VERSANS-Category-Visibility.zip"
+    },
+    "assets/admin-header-compact.js": {
+      "sha256": "a35bb3a8cdfa894eba863b10f63e262fd9c184a7ad3ddd019f91e081963c4dc6",
+      "source": "VERSANS-Category-Visibility.zip"
+    },
+    "assets/admin-marketing.css": {
+      "sha256": "cde00627de8a76f4b3f3e592a13656b697b978a3a3b4630a740a38bc54d9b5ef",
+      "source": "VERSANS-Category-Visibility.zip"
+    },
+    "assets/admin-marketing.js": {
+      "sha256": "75ac2b98430edaddee9b55c0ff901d7d46356a16837ea571221b540fd9b99285",
+      "source": "VERSANS-Category-Visibility.zip"
+    },
+    "assets/admin-order-operations.css": {
+      "sha256": "77a3e3d3976da0cac2faad986956305664506d623fe7dcb43e3d6d2e8001445e",
+      "source": "VERSANS-Category-Visibility.zip"
+    },
+    "assets/admin-order-operations.js": {
+      "sha256": "5a7d0c772118d88fa1102846689428ec1f94a599bbf0ab0b85821a13cf434637",
+      "source": "VERSANS-Category-Visibility.zip"
+    },
+    "assets/admin-pdf.js": {
+      "sha256": "6c21739bad98e541987e382d0fce4d9519ef9c348b1dba49bd0af636fb015147",
+      "source": "VERSANS-Category-Visibility.zip"
+    },
+    "assets/admin-preferences.css": {
+      "sha256": "b2e30f14c0f3ba87c22ca30ab85bf4af90352982e54e020db5d76ca24e0b4a0f",
+      "source": "VERSANS-Category-Visibility.zip"
+    },
+    "assets/admin-reviews-upgrade.css": {
+      "sha256": "4619555171f72817b5ca7394be030103755d514ec553bc4f12105c62110d1dae",
+      "source": "VERSANS-Category-Visibility.zip"
+    },
+    "assets/admin-sales-advanced.css": {
+      "sha256": "65898902bff8d4d396fc0e1846714d9bc8943d334675656dd61803f6600c7a9a",
+      "source": "VERSANS-Category-Visibility.zip"
+    },
+    "assets/admin-sales-advanced.js": {
+      "sha256": "333039e0cd4a470a6834cfca23f27234173b94525d16683b48f566c89c1223bb",
+      "source": "VERSANS-Category-Visibility.zip"
+    },
+    "assets/admin-security.css": {
+      "sha256": "7ff93edfdccc851274219589d2d3d80b9a0d7c1351b1f86289291e540e1f1a07",
+      "source": "VERSANS-Category-Visibility.zip"
+    },
+    "assets/admin-security.js": {
+      "sha256": "751033be43bd88a6ee6ea90e02de7c759af9eb6c66f703d0a027e2317c216567",
+      "source": "VERSANS-Category-Visibility.zip"
+    },
+    "assets/admin-stepup.js": {
+      "sha256": "ba85d7680c0bb97cc02f94d10dfb5972121f66e2d51d0e15acb0764065e06c10",
+      "source": "VERSANS-Product-Reauth-Fix-PATCH.zip"
+    },
+    "assets/admin-support.css": {
+      "sha256": "ae729517340397e795901ef6b966200acdba27a77511bdd85778d288ee128259",
+      "source": "VERSANS-Category-Visibility.zip"
+    },
+    "assets/admin-support.js": {
+      "sha256": "1a85152b0dd74c8f90a0c9d3e16f443d56ecf878e238efcf60b2b6792ac327cf",
+      "source": "VERSANS-Category-Visibility.zip"
+    },
+    "assets/admin-tools.css": {
+      "sha256": "0906f3e1d469049b49225c82e1de7b901369e3d345a3ccef807435d9c143c04f",
+      "source": "VERSANS-Category-Visibility.zip"
+    },
+    "assets/admin-tools.js": {
+      "sha256": "9ec8e1a2867d75dd6ac916a12060bb42b46198606143920276eeb158db5682a4",
+      "source": "VERSANS-Category-Visibility.zip"
+    },
+    "assets/admin.css": {
+      "sha256": "899507e2149e180321df6d9ea4999833892694a01a1e35c3c0d6cf7d13ecc002",
+      "source": "VERSANS-Product-Save-Employee-Reauth-PATCH-v2.zip"
+    },
+    "assets/admin.js": {
+      "sha256": "ae4dc16e7c52d632682942a4de113b25d8746bae8660c64535145ddeba035532",
+      "source": "VERSANS-Gallery-Ghost-Image-FIX-PATCH.zip"
+    },
+    "assets/fonts.css": {
+      "sha256": "5794164981dee852f27435a2bab405388c496872ee6d4e56ac333267cf6926d6",
+      "source": "VERSANS-Category-Visibility.zip"
+    },
+    "assets/product-editor.css": {
+      "sha256": "672c9952f941e301c650314ffbe656a19043faf2d4ad285cf6276349c4fa82bd",
+      "source": "VERSANS-Category-Visibility.zip"
+    },
+    "assets/product-editor.js": {
+      "sha256": "879c42325cd5ab8a84f1b66c3e74a0ef196439da1c9a2581aa373963e472dbe5",
+      "source": "VERSANS-Gallery-Ghost-Image-FIX-PATCH.zip"
+    },
+    "assets/product.js": {
+      "sha256": "b6d594a32fcc32af579ba57e1769262bc91a62300d8b26fc5b70c345acea8c77",
+      "source": "VERSANS-Gallery-Ghost-Image-FIX-PATCH.zip"
+    },
+    "assets/routes.js": {
+      "sha256": "0c25795b360836f45d0b107c18852c67dad46b2546c9d42201d9eb652b3bf98d",
+      "source": "VERSANS-Category-Visibility.zip"
+    },
+    "lib/catalog-manager.js": {
+      "sha256": "05c08debf93c12ca7546633700df4595528b50f7959b979dfd0c7191f2b4953b",
+      "source": "VERSANS-Gallery-Ghost-Image-FIX-PATCH.zip"
+    },
+    "lib/catalog-product-tools.js": {
+      "sha256": "14e56528acd231c9050f776a97174b5d0207eaca05e1a3cbc583088795c6dab5",
+      "source": "VERSANS-Category-Visibility.zip"
+    },
+    "product.html": {
+      "sha256": "f74c31ec4a176daa3247224ef6342c7e8910f42c85b39410047fccdbc0cef9fb",
+      "source": "VERSANS-Gallery-Ghost-Image-FIX-PATCH.zip"
+    },
+    "server.js": {
+      "sha256": "59a95d494be65fa1c9c11a7566aa735b70f0ddfeca381391308b4b9ac05b8b91",
+      "source": "VERSANS-Product-Images-6MB-PATCH.zip"
+    }
+  },
+  "comparedToEmergency": {
+    "admin.html": {
+      "before": "c4c3ba9b01cc",
+      "emergency": "c4c3ba9b01cc",
+      "changed": false
+    },
+    "assets/admin.js": {
+      "before": "ae4dc16e7c52",
+      "emergency": "ae4dc16e7c52",
+      "changed": false
+    },
+    "product.html": {
+      "before": "f74c31ec4a17",
+      "emergency": "f74c31ec4a17",
+      "changed": false
+    },
+    "assets/routes.js": {
+      "before": "0c25795b3608",
+      "emergency": "99f52a16dedf",
+      "changed": true
+    },
+    "server.js": {
+      "before": "59a95d494be6",
+      "emergency": "fc564915a86f",
+      "changed": true
+    },
+    "lib/catalog-manager.js": {
+      "before": "05c08debf93c",
+      "emergency": "d8250ce1681e",
+      "changed": true
+    }
+  }
+}

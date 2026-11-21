@@ -70,12 +70,6 @@
   function productPath(product) {
     if (!product) return '/';
     var stableSlug = String(product.slug || '');
-    // Dedicated canonical URL for the newly imported ICE NEW YORK necklace.
-    // This product may have a different database id and public slug, so use
-    // its public urlSlug while preserving the existing rules for all others.
-    if (stableSlug === 'product-294' && String(product.urlSlug || '') === 'ice-new-york-cz-necklace') {
-      return '/ice-new-york-cz-necklace';
-    }
     if (/^product-(?:9[4-9]|[1-9]\d{2,})$/.test(stableSlug)) {
       return '/product.html?id=' + encodeURIComponent(stableSlug);
     }
