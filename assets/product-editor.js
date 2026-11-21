@@ -132,13 +132,13 @@
     });}
     redraw();
     var upload=el('input');upload.type='file';upload.accept='image/png,image/jpeg,image/webp';upload.multiple=true;
-    var uploadField=el('label','versans-editor__upload');put(uploadField,el('span','versans-editor__upload-icon','＋'),el('strong','','הוספת תמונות'),el('small','','PNG, JPG, WebP · עד 2MB לכל תמונה'),upload);
+    var uploadField=el('label','versans-editor__upload');put(uploadField,el('span','versans-editor__upload-icon','＋'),el('strong','','הוספת תמונות'),el('small','','PNG, JPG, WebP · עד 6MB לכל תמונה'),upload);
     sec.appendChild(uploadField);
     upload.addEventListener('change',async function(){
       upload.disabled=true;
       try{
         for(var file of upload.files){
-          if(file.size>2*1024*1024)throw Error('תמונה גדולה מ־2MB: '+file.name);
+          if(file.size>6*1024*1024)throw Error('תמונה גדולה מ־6MB: '+file.name);
           if(!/^image\/(png|jpeg|webp)$/.test(file.type))throw Error('פורמט לא נתמך: '+file.name);
           note('מעלה '+file.name+'…');
           var encoded=await new Promise(function(resolve,reject){var reader=new FileReader();reader.onload=function(){resolve(reader.result);};reader.onerror=function(){reject(Error('קריאת הקובץ נכשלה'));};reader.readAsDataURL(file);});

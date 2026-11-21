@@ -7854,7 +7854,12 @@ async function adminApi(req, res, pathname, parsed) {
   }
   if (pathname === '/api/admin/catalog/images' && req.method === 'POST') {
     if (!sameOriginAllowed(req)) { json(res, 403, {ok:false,error:'origin_not_allowed'}); return true; }
-    const body = await readJsonBody(req, 3 * 1024 * 1024);
+    // Base64 expands a 6 MiB image to about 8 MiB inside JSON.
+    // Bound only this upload endpoint without changing other request limits.
+    const raw = await readRawBody(req, 9 * 1024 * 1024);
+    let body;
+    try { body = raw ? JSON.parse(raw) : {}; }
+    catch { throw Object.assign(new Error('Invalid JSON'), {status: 400}); }
     const url = await catalogManager.uploadImage(body && body.image);
     json(res, 201, {ok:true,url}); return true;
   }

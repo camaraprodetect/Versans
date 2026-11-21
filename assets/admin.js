@@ -3996,7 +3996,7 @@
   }
   async function catalogUploadImage(file) {
     if (!/^image\/(jpeg|png|webp)$/.test(file.type)) throw Error('יש להעלות תמונת JPG, PNG או WebP בלבד');
-    if (file.size > 2 * 1024 * 1024) throw Error('התמונה גדולה מדי. יש להעלות תמונה עד 2MB');
+    if (file.size > 6 * 1024 * 1024) throw Error('התמונה גדולה מדי. יש להעלות תמונה עד 6MB');
     var url = await new Promise(function(resolve,reject){ var reader=new FileReader();reader.onload=function(){resolve(reader.result)};reader.onerror=function(){reject(Error('לא ניתן לקרוא את התמונה'))};reader.readAsDataURL(file); });
     var result = await apiAction('/api/admin/catalog/images','POST',{image:url});
     return result.url;
@@ -4028,7 +4028,7 @@
     var hover=catalogTextField('תמונת Hover (כתובת)',product && product.hoverImage);
     var gallery=catalogTextField('תמונות מוצר - כל שורה כתובת של תמונה *',product && product.images && product.images.join('\n'),'textarea');
     gallery.input.rows=4;gallery.wrapper.classList.add('admin-catalog-full');
-    var upload = make('label','admin-catalog-field admin-catalog-full');upload.appendChild(make('span','','העלאת תמונות מהמחשב (עד 2MB לתמונה)'));
+    var upload = make('label','admin-catalog-field admin-catalog-full');upload.appendChild(make('span','','העלאת תמונות מהמחשב (עד 6MB לתמונה)'));
     var fileInput=make('input');fileInput.type='file';fileInput.accept='image/png,image/jpeg,image/webp';fileInput.multiple=true;
     upload.appendChild(fileInput);
     var progress=make('div','admin-catalog-hint','הקובץ יישמר במסד הנתונים, לא בתיקיית התמונות המקומית.');upload.appendChild(progress);
