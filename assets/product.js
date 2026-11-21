@@ -1,0 +1,2693 @@
+/* ============================================================================
+   דף מוצר מלא - בחירת שרשרת + בחירת קופסה + מחיר דינמי
+   ============================================================================ */
+(function () {
+  'use strict';
+
+  var CFG = window.STORE_CONFIG;
+  var ROUTES = window.VERSANS_ROUTES || null;
+  var LS = { lang: 'kw_lang', cart: 'kw_cart' };
+  var PENDING_BUNDLE_KEY = 'kw_pending_love_forever_bundle';
+  var GREETING_SELECTION_STATE_PREFIX = 'kw_greeting_product_selection_';
+  var lang = 'he';
+  var qty = 1;
+  var selectedNecklaceId = null;
+  var selectedBoxId = null;
+  var selectedSizeId = null;
+  var selectedColorId = null;
+  var unavailableNoticeTimer = null;
+  var selectedPackagingId = null;
+  var customNameValue = '';
+  var customPhotoValue = null;
+  var customPhotoUploading = false;
+  var customPhotoPreviewUrl = '';
+  var activeImageIndex = 0;
+  var CUSTOM_GREETING_BASE_PRICE = 20;
+  var CUSTOM_GREETING_UPGRADE_PRICE = 15;
+  var greetingPreviewObjectUrl = '';
+
+  var params = new URLSearchParams(window.location.search);
+  var id = params.get('id');
+  var pathSlug = '';
+  try { pathSlug = decodeURIComponent(window.location.pathname.replace(/^\/+|\/+$/g, '')); } catch (e) {}
+  var product = findProduct(pathSlug) || findProduct(id) || PRODUCTS[0];
+  function recordProductActivity(kind,p){
+    if(!p||!p.slug||!/^product-[a-z0-9-]+$/.test(p.slug))return;
+    fetch('/api/catalog/activity',{method:'POST',credentials:'same-origin',keepalive:true,
+      headers:{'Content-Type':'application/json'},body:JSON.stringify({kind:kind,slug:p.slug})}).catch(function(){});
+  }
+  if(product)recordProductActivity('view',product);
+  if (product.defaultNecklaceId && findOption(product.necklaces, product.defaultNecklaceId)) {
+    selectedNecklaceId = product.defaultNecklaceId;
+  }
+  var initialColorParam = params.get('color');
+  if (initialColorParam && findOption(product.colors, initialColorParam)) {
+    selectedColorId = initialColorParam;
+  } else if (product.defaultColorId && findOption(product.colors, product.defaultColorId)) {
+    selectedColorId = product.defaultColorId;
+  }
+
+  function $(s) { return document.querySelector(s); }
+  function $$(s) { return Array.prototype.slice.call(document.querySelectorAll(s)); }
+  function read(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function save(k, v) {
+    try {
+      if (k === LS.cart && window.VERSANS_CART_STATE) {
+        var parsed = JSON.parse(v || '[]');
+        window.VERSANS_CART_STATE.write(Array.isArray(parsed) ? parsed : []);
+        return;
+      }
+      localStorage.setItem(k, v);
+    } catch (e) {}
+  }
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function L(obj) { return obj ? (obj.he || '') : ''; }
+  function productPath(productValue) {
+    if (ROUTES && ROUTES.productPath) return ROUTES.productPath(productValue);
+    return productValue && productValue.urlSlug ? '/' + encodeURIComponent(productValue.urlSlug) : '/';
+  }
+  function setSeoMeta(selector, content) {
+    var el = document.querySelector(selector);
+    if (el && content) el.setAttribute('content', content);
+  }
+  function updateProductSeo() {
+    var title = (L(product.title) || 'מוצר') + ' | VerSans';
+    var description = L(product.title) + ' מבית VerSans. פרטים מלאים, מחיר, תמונות ואפשרויות בחירה בעמוד המוצר.';
+    var canonicalUrl = 'https://versans.com' + productPath(product);
+    var imagePath = product.cardImage || (Array.isArray(product.images) && product.images[0]) || product.hoverImage || 'images/VerSansLogoBlackJewlery.png';
+    var imageUrl = /^https?:\/\//i.test(String(imagePath)) ? String(imagePath) : 'https://versans.com/' + String(imagePath).replace(/^\//, '');
+    document.title = title;
+    setSeoMeta('meta[name="description"]', description);
+    setSeoMeta('meta[property="og:title"]', title);
+    setSeoMeta('meta[property="og:description"]', description);
+    setSeoMeta('meta[property="og:url"]', canonicalUrl);
+    setSeoMeta('meta[property="og:image"]', imageUrl);
+    var canonical = document.querySelector('link[rel="canonical"]');
+    if (canonical) canonical.setAttribute('href', canonicalUrl);
+    var ld = document.getElementById('productStructuredData');
+    if (!ld) {
+      ld = document.createElement('script');
+      ld.type = 'application/ld+json';
+      ld.id = 'productStructuredData';
+      document.head.appendChild(ld);
+    }
+    ld.textContent = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Product',
+      name: L(product.title),
+      image: [imageUrl],
+      description: description,
+      sku: product.sku || product.id,
+      brand: { '@type': 'Brand', name: 'VerSans' },
+      offers: {
+        '@type': 'Offer', url: canonicalUrl,
+        priceCurrency: (CFG.currency && CFG.currency.code) || 'ILS',
+        price: Number(product.price || 0).toFixed(2),
+        availability: product.inStock === false ? 'https://schema.org/OutOfStock' : 'https://schema.org/InStock'
+      }
+    });
+  }
+  function money(n) {
+    var v = (Math.round(Number(n || 0) * 100) / 100).toFixed(2).replace(/\.00$/, '');
+    return CFG.currency.code === 'ILS' ? v + ' ' + CFG.currency.symbol : CFG.currency.symbol + v;
+  }
+  function findProduct(productId) {
+    for (var i = 0; i < PRODUCTS.length; i++) {
+      if (PRODUCTS[i].id === productId || PRODUCTS[i].slug === productId || PRODUCTS[i].urlSlug === productId) return PRODUCTS[i];
+    }
+    return null;
+  }
+  function isGlassesProduct(p) {
+    var collections = p && Array.isArray(p.categories) && p.categories.length ? p.categories : [p && p.category];
+    return collections.indexOf('glasses') !== -1;
+  }
+  function glassesPurchaseTotal(unitPriceValue, quantity) {
+    if (!isGlassesProduct(product)) return Math.round(Number(unitPriceValue || 0) * Math.max(1, quantity || 1) * 100) / 100;
+    if (window.VERSANS_GLASSES_PRICING) return window.VERSANS_GLASSES_PRICING.totalForQty(unitPriceValue, quantity);
+    var q = Math.max(1, parseInt(quantity, 10) || 1);
+    return Math.round((Math.floor(q / 2) * 249.9 + (q % 2) * Number(unitPriceValue || 0)) * 100) / 100;
+  }
+  function glassesPriceDisplay(unitPriceValue, quantity) {
+    var total = glassesPurchaseTotal(unitPriceValue, quantity);
+    if (isGlassesProduct(product) && quantity === 2) {
+      return money(total) + (lang === 'he' ? ' (2 משקפיים ב־249.90 ₪)' : ' (2 sunglasses for ₪249.90)');
+    }
+    return money(total);
+  }
+
+  function isHatsProduct(p) {
+    var collections = p && Array.isArray(p.categories) && p.categories.length ? p.categories : [p && p.category];
+    return collections.indexOf('hats') !== -1;
+  }
+
+  function hatsPurchaseTotal(unitPriceValue, quantity) {
+    if (!isHatsProduct(product)) {
+      return Math.round(Number(unitPriceValue || 0) * Math.max(1, quantity || 1) * 100) / 100;
+    }
+    var q = Math.max(1, parseInt(quantity, 10) || 1);
+    var singlePrice = Number(unitPriceValue || 0);
+    var best = Number.POSITIVE_INFINITY;
+    for (var triples = 0; triples <= Math.floor(q / 3); triples += 1) {
+      var remainingAfterTriples = q - (triples * 3);
+      for (var pairs = 0; pairs <= Math.floor(remainingAfterTriples / 2); pairs += 1) {
+        var singles = remainingAfterTriples - (pairs * 2);
+        var total = (triples * 299.9) + (pairs * 239.9) + (singles * singlePrice);
+        if (total < best) best = total;
+      }
+    }
+    if (!Number.isFinite(best)) best = singlePrice * q;
+    return Math.round(best * 100) / 100;
+  }
+
+  function hatsPriceDisplay(unitPriceValue, quantity) {
+    var q = Math.max(1, parseInt(quantity, 10) || 1);
+    var total = hatsPurchaseTotal(unitPriceValue, q);
+    return money(total);
+  }
+
+  function hatsOfferMarkup() {
+    if (lang === 'he') {
+      return '2 ב־239.90 ₪ <span style="opacity:.45; margin:0 .32rem;">|</span> 3 ב־299.90 ₪';
+    }
+    return '2 for ₪239.90 <span style="opacity:.45; margin:0 .32rem;">|</span> 3 for ₪299.90';
+  }
+  function findOption(list, optionId) {
+    if (!Array.isArray(list)) return null;
+    for (var i = 0; i < list.length; i++) if (list[i].id === optionId && list[i].hidden !== true) return list[i];
+    return null;
+  }
+  function cart() {
+    if (window.VERSANS_CART_STATE) return window.VERSANS_CART_STATE.read();
+    try { return JSON.parse(read(LS.cart) || '[]'); } catch (e) { return []; }
+  }
+  function readPendingBundle() {
+    try {
+      var value = JSON.parse(read(PENDING_BUNDLE_KEY) || 'null');
+      return value && value.item && value.returnTo ? value : null;
+    } catch (e) { return null; }
+  }
+  function savePendingBundle(item, returnTo, packageColor) {
+    save(PENDING_BUNDLE_KEY, JSON.stringify({
+      returnTo: returnTo,
+      packageColor: packageColor || '',
+      item: item,
+      selectedAt: Date.now()
+    }));
+  }
+  function clearPendingBundle() {
+    try { localStorage.removeItem(PENDING_BUNDLE_KEY); } catch (e) {}
+  }
+  function refreshCompanionSelectionUi() {
+    if (!requiresCompanion()) return;
+    renderRequiredCompanion();
+    updatePriceAndPurchase();
+  }
+  function cartItemKey(item) {
+    return item.key || (item.id + '|' + (item.necklace || '') + '|' + (item.box || '') + '|' + (item.size || '') + '|' + (item.color || '') + '|pack:' + (item.packaging || '') + '|' + (item.customName || '') + '|p:' + (item.customPhoto && item.customPhoto.assetId || '') + '|g:' + (item.greeting ? greetingFingerprint(item.greeting) : ''));
+  }
+  function cartCount(items) {
+    if (window.VERSANS_CART_STATE) return window.VERSANS_CART_STATE.count(items);
+    return items.reduce(function (sum, item) { return sum + (parseInt(item.qty, 10) || 0); }, 0);
+  }
+  function updateCartCount() {
+    if (window.VERSANS_CART_STATE) { window.VERSANS_CART_STATE.syncBadge(); return; }
+    var el = $('#cartCount');
+    if (!el) return;
+    var n = cartCount(cart());
+    el.textContent = n;
+    el.hidden = n === 0;
+  }
+  function selectedNecklace() { return findOption(product.necklaces, selectedNecklaceId); }
+  function selectedBox() { return findOption(product.boxes, selectedBoxId); }
+  function hasNecklaceOptions() { return Array.isArray(product.necklaces) && product.necklaces.length; }
+  function hasBoxOptions() { return Array.isArray(product.boxes) && product.boxes.length; }
+  function selectedSize() { return findOption(product.sizes, selectedSizeId); }
+  function selectedColor() { return findOption(product.colors, selectedColorId); }
+  function isRealColorSelection(productValue, colorValue) {
+    var p = productValue || product || {};
+    var color = colorValue || selectedColor();
+    if (!color) return false;
+    if (color.image) return true;
+    var heading = [
+      p.colorHeading && (p.colorHeading.he || p.colorHeading.en) || '',
+      p.colorRequiredText && (p.colorRequiredText.he || p.colorRequiredText.en) || ''
+    ].join(' ');
+    if (/צבע|color/i.test(heading)) return true;
+    return p.colorDisplay === 'image-choice' || p.colorDisplay === 'swatch';
+  }
+  function normalizedColorTokens(value) {
+    return String(value || '')
+      .toLowerCase()
+      .replace(/\bcolor\b/gi, ' ')
+      .replace(/צבע/g, ' ')
+      .replace(/[\/|,+()_\-–—]+/g, ' ')
+      .split(/\s+/)
+      .map(function (token) { return token.trim(); })
+      .filter(Boolean)
+      .map(function (token) { return /^ו[\u0590-\u05FF]{2,}$/.test(token) ? token.slice(1) : token; })
+      .sort()
+      .join('|');
+  }
+  function titleSuffixMatchesColor(suffix) {
+    var target = normalizedColorTokens(suffix);
+    if (!target) return false;
+    return (product.colors || []).some(function (entry) {
+      return normalizedColorTokens(L(entry.label)) === target;
+    });
+  }
+  function selectedDisplayTitle() {
+    var color = selectedColor();
+    var original = L(product.title);
+    if (!color || !isRealColorSelection(product, color)) return original;
+
+    var label = L(color.label) || color.id || '';
+    if (!label) return original;
+
+    var base = String(original || '').trim();
+    if (lang === 'he') base = base.replace(/\s*-\s*צבע\s+.+$/u, '').trim();
+    else base = base.replace(/\s*-\s*color\s+.+$/i, '').trim();
+
+    if (base === String(original || '').trim()) {
+      var match = base.match(/^(.*)\s+-\s+([^-\n]+)$/u);
+      if (match && titleSuffixMatchesColor(match[2])) base = match[1].trim();
+    }
+
+    return lang === 'he' ? base + ' - צבע ' + label : base + ' - ' + label;
+  }
+  function selectedVariantImageFromSelections() {
+    if (!product.variantImages || typeof product.variantImages !== 'object') return '';
+    var keys = [
+      [selectedSizeId, selectedNecklaceId, selectedColorId].filter(Boolean).join('|'),
+      [selectedSizeId, selectedNecklaceId].filter(Boolean).join('|'),
+      [selectedNecklaceId, selectedColorId].filter(Boolean).join('|'),
+      [selectedSizeId, selectedColorId].filter(Boolean).join('|'),
+      selectedColorId || ''
+    ].filter(Boolean);
+    for (var i = 0; i < keys.length; i += 1) {
+      if (product.variantImages[keys[i]]) return product.variantImages[keys[i]];
+    }
+    return '';
+  }
+  function selectedDisplayImage() {
+    var color = selectedColor();
+    if (color && isRealColorSelection(product, color) && color.image) return color.image;
+    var variantImage = selectedVariantImageFromSelections();
+    if (variantImage) return variantImage;
+    return product.cardImage || (Array.isArray(product.images) && product.images[0]) || product.hoverImage || '';
+  }
+  function updateSelectedProductIdentity() {
+    var title = selectedDisplayTitle();
+    var titleEl = $('#productTitle');
+    if (titleEl) titleEl.textContent = title;
+    var crumb = $('#crumbCurrent');
+    if (crumb) crumb.textContent = title;
+    // Keep the browser tab branded while the visible product title follows the selected color.
+    document.title = 'VerSans';
+  }
+  function hasSizeOptions() { return Array.isArray(product.sizes) && product.sizes.length; }
+  function hasColorOptions() { return Array.isArray(product.colors) && product.colors.length; }
+  function greetingSelectionStateKey() { return GREETING_SELECTION_STATE_PREFIX + product.id; }
+  function saveGreetingSelectionState() {
+    var value = {
+      productId: product.id,
+      necklace: selectedNecklaceId || '',
+      box: selectedBoxId || '',
+      size: selectedSizeId || '',
+      color: selectedColorId || '',
+      packaging: selectedPackagingId || '',
+      customName: customNameValue || '',
+      qty: Math.max(1, parseInt(qty, 10) || 1),
+      savedAt: Date.now()
+    };
+    try { sessionStorage.setItem(greetingSelectionStateKey(), JSON.stringify(value)); } catch (e) {}
+  }
+  function clearGreetingSelectionState() {
+    try { sessionStorage.removeItem(greetingSelectionStateKey()); } catch (e) {}
+  }
+  function restoreGreetingSelectionState() {
+    var raw = null;
+    try { raw = sessionStorage.getItem(greetingSelectionStateKey()); } catch (e) {}
+    if (!raw) return false;
+    var value = null;
+    try { value = JSON.parse(raw); } catch (e) { clearGreetingSelectionState(); return false; }
+    if (!value || value.productId !== product.id) { clearGreetingSelectionState(); return false; }
+    if (value.savedAt && Date.now() - Number(value.savedAt) > (2 * 60 * 60 * 1000)) {
+      clearGreetingSelectionState();
+      return false;
+    }
+
+    if (value.necklace && findOption(product.necklaces, value.necklace)) selectedNecklaceId = value.necklace;
+    if (value.box && findOption(product.boxes, value.box)) selectedBoxId = value.box;
+    if (value.size && findOption(product.sizes, value.size)) selectedSizeId = value.size;
+    if (value.color && findOption(product.colors, value.color)) selectedColorId = value.color;
+    if (value.packaging && product.giftPackaging && findOption(product.giftPackaging.options, value.packaging)) selectedPackagingId = value.packaging;
+    if (typeof value.customName === 'string') customNameValue = cleanCustomName(value.customName);
+    qty = Math.max(1, parseInt(value.qty, 10) || 1);
+
+    clearGreetingSelectionState();
+    return true;
+  }
+  function unavailableCombination(sizeId, colorId) {
+    if (!sizeId || !colorId || !Array.isArray(product.unavailableCombinations)) return null;
+    for (var i = 0; i < product.unavailableCombinations.length; i += 1) {
+      var combo = product.unavailableCombinations[i] || {};
+      if (combo.size === sizeId && combo.color === colorId) return combo;
+    }
+    return null;
+  }
+  function showUnavailableCombination(combo) {
+    var message = L(combo && combo.message) || (lang === 'he' ? 'השילוב הזה אינו במלאי כרגע.' : 'This combination is currently out of stock.');
+    var sizeStatus = $('#sizeStatus');
+    var colorStatus = $('#colorStatus');
+    [sizeStatus, colorStatus].forEach(function (status) {
+      if (!status) return;
+      status.textContent = message;
+      status.classList.remove('is-done');
+      status.style.color = '#b42318';
+      status.style.fontWeight = '700';
+    });
+    if (unavailableNoticeTimer) clearTimeout(unavailableNoticeTimer);
+    unavailableNoticeTimer = setTimeout(function () {
+      [sizeStatus, colorStatus].forEach(function (status) {
+        if (!status) return;
+        status.style.color = '';
+        status.style.fontWeight = '';
+      });
+      renderSizeOptions();
+      renderColorOptions();
+    }, 4200);
+  }
+  function hasGiftPackaging() { return !!(product.giftPackaging && Array.isArray(product.giftPackaging.options) && product.giftPackaging.options.length); }
+  function selectedPackaging() { return hasGiftPackaging() ? findOption(product.giftPackaging.options, selectedPackagingId) : null; }
+  function requiresCompanion() { return !!(product.requiresCompanion && product.requiresCompanion.required && Array.isArray(product.requiresCompanion.productIds) && product.requiresCompanion.productIds.length); }
+  function pendingCompanion() {
+    if (!requiresCompanion()) return null;
+    var pending = readPendingBundle();
+    if (!pending || pending.returnTo !== product.id || !pending.item) return null;
+    if (product.requiresCompanion.productIds.indexOf(pending.item.id) === -1) return null;
+    if (product.id === 'love-forever-rose-gift-box-01' && selectedColorId && pending.packageColor && pending.packageColor !== selectedColorId) return null;
+    return pending;
+  }
+  function companionReady() {
+    if (!requiresCompanion()) return true;
+    return !!pendingCompanion();
+  }
+  function isCompanionPickerFlow() {
+    var returnTo = params.get('returnTo');
+    var returnProduct = returnTo ? findProduct(returnTo) : null;
+    return !!(returnProduct && returnProduct.requiresCompanion && Array.isArray(returnProduct.requiresCompanion.productIds) && returnProduct.requiresCompanion.productIds.indexOf(product.id) !== -1);
+  }
+  function companionPackageColor() {
+    if (!isCompanionPickerFlow() || !hasGiftPackaging()) return '';
+    var packageColor = params.get('packageColor') || '';
+    return findOption(product.giftPackaging.options, packageColor) ? packageColor : '';
+  }
+  function hasCustomName() { return !!(product.customName && product.customName.required); }
+  function hasCustomPhoto() { return !!(product.customPhoto && product.customPhoto.required); }
+  function customPhotoReady() { return !hasCustomPhoto() || (!!customPhotoValue && !!customPhotoValue.assetId && !customPhotoUploading); }
+  function greetingAddPrice(greeting) {
+    if (!greeting || typeof greeting !== 'object') return 0;
+    var hasUpgrade = greeting.template !== 'template-1' || (greeting.template === 'template-1' && greeting.hasCustomBackground === true);
+    return CUSTOM_GREETING_BASE_PRICE + (hasUpgrade ? CUSTOM_GREETING_UPGRADE_PRICE : 0);
+  }
+  function customNameMax() { return Math.max(1, Number(product.customName && product.customName.maxLength) || 20); }
+  function cleanCustomName(value) {
+    var raw = String(value == null ? '' : value);
+    if (product.customName && product.customName.lettersOnly) {
+      raw = raw.toUpperCase().replace(/[^A-Z]/g, '');
+      return raw.slice(0, customNameMax());
+    }
+    return raw.replace(/[|\r\n\t]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, customNameMax());
+  }
+  function customNameReady() { return !hasCustomName() || cleanCustomName(customNameValue).length > 0; }
+  function isConfigurable() {
+    return !!(
+      hasNecklaceOptions() ||
+      hasBoxOptions() ||
+      hasSizeOptions() ||
+      hasColorOptions() ||
+      hasGiftPackaging() ||
+      hasCustomName() ||
+      hasCustomPhoto() ||
+      requiresCompanion()
+    );
+  }
+  function pendingCompanionUnitPrice() {
+    var pending = pendingCompanion();
+    if (!pending || !pending.item) return Number(product.price || 0);
+    var item = pending.item;
+    var necklaceProduct = findProduct(item.id);
+    if (!necklaceProduct) return Number(product.price || 0);
+    var total = Number(necklaceProduct.price || 0);
+    var box = findOption(necklaceProduct.boxes, item.box);
+    var size = findOption(necklaceProduct.sizes, item.size);
+    var color = findOption(necklaceProduct.colors, item.color);
+    var packaging = necklaceProduct.giftPackaging ? findOption(necklaceProduct.giftPackaging.options, selectedColorId || item.packaging) : null;
+    if (box) total += Number(box.addPrice || 0);
+    if (size) total += Number(size.addPrice || 0);
+    if (color) total += Number(color.addPrice || 0);
+    if (packaging) total += Number(packaging.addPrice || 0);
+    if (item.greeting) total += greetingAddPrice(item.greeting);
+    return total;
+  }
+  function unitPrice() {
+    if (requiresCompanion() && companionReady()) return pendingCompanionUnitPrice();
+    var necklace = selectedNecklace();
+    var box = selectedBox();
+    var size = selectedSize();
+    var color = selectedColor();
+    var packaging = selectedPackaging();
+    var greetingExtra = greetingAddPrice(savedGreeting());
+    return Number(product.price) +
+      (necklace ? Number(necklace.addPrice || 0) : 0) +
+      (box ? Number(box.addPrice || 0) : 0) +
+      (size ? Number(size.addPrice || 0) : 0) +
+      (color ? Number(color.addPrice || 0) : 0) +
+      (packaging ? Number(packaging.addPrice || 0) : 0) +
+      greetingExtra;
+  }
+  function variantKey() {
+    var greeting = savedGreeting();
+    return product.id + '|' + (selectedNecklaceId || '') + '|' + (selectedBoxId || '') + '|' + (selectedSizeId || '') + '|' + (selectedColorId || '') + '|pack:' + (selectedPackagingId || '') + '|' + cleanCustomName(customNameValue) + '|p:' + (customPhotoValue && customPhotoValue.assetId || '') + '|g:' + greetingFingerprint(greeting);
+  }
+  function isReadyToBuy() {
+    var necklaceReady = !hasNecklaceOptions() || !!selectedNecklace();
+    var boxReady = !hasBoxOptions() || !!selectedBox();
+    var sizeReady = !hasSizeOptions() || !!selectedSize();
+    var colorReady = !hasColorOptions() || !!selectedColor();
+    var combinationReady = !unavailableCombination(selectedSizeId, selectedColorId);
+    return product.inStock !== false && necklaceReady && boxReady && sizeReady && colorReady && combinationReady && [selectedNecklace(),selectedBox(),selectedSize(),selectedColor(),selectedPackaging()].every(function(o){return !o || o.inStock !== false}) && customNameReady() && customPhotoReady() && companionReady();
+  }
+  // For jewelry, only admin-saved gallery images belong in the rail.
+  // Preserve the existing glasses-only hover preview behavior; a hover image
+  // must never create an extra necklace/bracelet thumbnail after deletion.
+  var failedGalleryImageUrls = Object.create(null);
+  function galleryImageKey(src) {
+    try { return new URL(String(src || ''), document.baseURI).href; }
+    catch (e) { return String(src || ''); }
+  }
+  function galleryImages() {
+    var images = Array.isArray(product.images) ? product.images.slice() : [];
+    if (isGlassesProduct(product) && product.hoverImage && images.indexOf(product.hoverImage) === -1) {
+      images.push(product.hoverImage);
+    }
+    return images.filter(function (src, index, list) {
+      return !!src && list.indexOf(src) === index && !failedGalleryImageUrls[galleryImageKey(src)];
+    });
+  }
+  function skipUnavailableGalleryImage(src) {
+    var key = galleryImageKey(src);
+    if (!key || failedGalleryImageUrls[key]) return;
+    failedGalleryImageUrls[key] = true;
+    var images = galleryImages();
+    var main = $('#productMainImage');
+    activeImageIndex = Math.max(0, Math.min(activeImageIndex, Math.max(0, images.length - 1)));
+    // A missing gallery photo, an old static URL or a removed variation image
+    // should never leave its broken alt text covering the main stage.
+    if (main && galleryImageKey(main.getAttribute('src')) === key) {
+      if (images.length) setMainImage(images[activeImageIndex], L(product.title));
+      else { main.hidden = true; main.removeAttribute('src'); }
+    }
+    renderStaticGallery();
+  }
+  function galleryVideos() {
+    if (!Array.isArray(product.videos)) return [];
+    return product.videos.map(function (entry) {
+      if (typeof entry === 'string') return { src: entry, label: { he: 'וידאו מוצר', en: 'Product video' } };
+      return entry || {};
+    }).filter(function (entry) { return !!entry.src; });
+  }
+  function hasMessageCard() {
+    return !product.hideMessageCard;
+  }
+  function supportsCustomGreeting() {
+    return hasMessageCard() && /^product-[1-9]$/.test(String(product.slug || ''));
+  }
+  function greetingStorageKey() {
+    return 'kw_greeting_' + product.id;
+  }
+  function greetingOptInKey() {
+    return 'kw_greeting_optin_' + product.id;
+  }
+  function hasGreetingOptIn() {
+    return read(greetingOptInKey()) === '1';
+  }
+  function normalizeGreeting(value) {
+    if (!value || typeof value !== 'object') return null;
+    var validTemplates = {'template-1':1,'template-2':1,'template-4':1,'template-5':1,'template-6':1,'template-7':1,'template-8':1,'template-9':1,'template-10':1,'template-11':1,'template-12':1,'template-13':1,'template-15':1,'template-17':1};
+    var template = validTemplates[value.template] ? value.template : 'template-1';
+    var signatureMax = template === 'template-1' ? 30 : 28;
+    var title = String(value.title || '').replace(/[\r\n\t]+/g, ' ').trim().slice(0, 15);
+    var message = String(value.message || '').replace(/[\r\n\t]+/g, ' ').trim().slice(0, 170);
+    var signature = String(value.signature || '').replace(/[\r\n\t]+/g, ' ').trim().slice(0, signatureMax);
+    if (!title || !message || !signature) return null;
+    var backgroundColor = /^#[0-9a-fA-F]{6}$/.test(String(value.backgroundColor || '')) ? String(value.backgroundColor).toLowerCase() : '#f7f4ed';
+    var textColor = /^#[0-9a-fA-F]{6}$/.test(String(value.textColor || '')) ? String(value.textColor).toLowerCase() : '#111111';
+    var allowedFonts = {'noto-serif':1,'frank-ruhl':1,'david':1,'heebo':1,'assistant':1,'rubik':1,'alef':1,'varela':1,'miriam':1,'secular':1};
+    var fontKey = allowedFonts[value.fontKey] ? value.fontKey : 'noto-serif';
+    return { template: template, title: title, message: message, signature: signature, eyebrow: '', subtitle: '', backgroundColor: backgroundColor, textColor: textColor, fontKey: fontKey, hasCustomBackground: template === 'template-1' && value.hasCustomBackground === true, assetId: String(value.assetId || '').slice(0,80), pngUrl: String(value.pngUrl || '').slice(0,600), pngFileName: String(value.pngFileName || '').slice(0,120) };
+  }
+  function savedGreeting() {
+    if (!supportsCustomGreeting() || !hasGreetingOptIn()) return null;
+    try { return normalizeGreeting(JSON.parse(read(greetingStorageKey()) || 'null')); } catch (e) { return null; }
+  }
+  function greetingFingerprint(greeting) {
+    if (!greeting) return '';
+    var value = [greeting.template, greeting.backgroundColor || '', greeting.textColor || '', greeting.fontKey || '', greeting.hasCustomBackground ? 'custom-bg' : '', greeting.eyebrow || '', greeting.title, greeting.subtitle || '', greeting.message, greeting.signature, greeting.assetId || ''].join('\u241f');
+    var hash = 2166136261;
+    for (var i = 0; i < value.length; i++) {
+      hash ^= value.charCodeAt(i);
+      hash = Math.imul(hash, 16777619);
+    }
+    return (hash >>> 0).toString(36);
+  }
+
+  function openGreetingAssetDb() {
+    return new Promise(function (resolve, reject) {
+      if (!window.indexedDB) { reject(new Error('IndexedDB unavailable')); return; }
+      var req = indexedDB.open('kw_greeting_assets', 2);
+      req.onupgradeneeded = function () {
+        var db = req.result;
+        if (!db.objectStoreNames.contains('pngs')) db.createObjectStore('pngs', { keyPath: 'productId' });
+        if (!db.objectStoreNames.contains('backgrounds')) db.createObjectStore('backgrounds', { keyPath: 'productId' });
+      };
+      req.onsuccess = function () { resolve(req.result); };
+      req.onerror = function () { reject(req.error || new Error('DB open failed')); };
+    });
+  }
+  async function loadGreetingAsset() {
+    try {
+      var db = await openGreetingAssetDb();
+      var row = await new Promise(function (resolve, reject) {
+        var req = db.transaction('pngs', 'readonly').objectStore('pngs').get(product.id);
+        req.onsuccess = function () { resolve(req.result || null); };
+        req.onerror = function () { reject(req.error); };
+      });
+      db.close();
+      return row;
+    } catch (e) { return null; }
+  }
+  async function deleteGreetingAsset() {
+    try {
+      var db = await openGreetingAssetDb();
+      await new Promise(function (resolve, reject) {
+        var tx = db.transaction('pngs', 'readwrite');
+        tx.objectStore('pngs').delete(product.id);
+        tx.oncomplete = resolve;
+        tx.onerror = function () { reject(tx.error); };
+      });
+      db.close();
+    } catch (e) {}
+  }
+  async function renderGreetingPngPreview(greeting) {
+    var block = $('#greetingPreviewBlock');
+    var img = $('#greetingPreviewImage');
+    if (!block || !img) return;
+    if (greetingPreviewObjectUrl) { try { URL.revokeObjectURL(greetingPreviewObjectUrl); } catch (e) {} greetingPreviewObjectUrl = ''; }
+    if (!greeting) { block.hidden = true; img.removeAttribute('src'); return; }
+    block.hidden = false;
+    block.classList.add('is-loading');
+    var row = await loadGreetingAsset();
+    if (!row || !row.blob || (greeting.assetId && row.assetId && greeting.assetId !== row.assetId)) {
+      block.hidden = true;
+      block.classList.remove('is-loading');
+      return;
+    }
+    greetingPreviewObjectUrl = URL.createObjectURL(row.blob);
+    img.onload = function () { block.classList.remove('is-loading'); };
+    img.onerror = function () { block.classList.remove('is-loading'); };
+    img.src = greetingPreviewObjectUrl;
+    img.alt = lang === 'he' ? 'תצוגה של הברכה האישית שנשמרה' : 'Preview of your saved custom greeting';
+  }
+  async function removeCustomGreeting() {
+    try { localStorage.removeItem(greetingStorageKey()); localStorage.removeItem(greetingOptInKey()); localStorage.removeItem('kw_greeting_price_approval_' + product.id); } catch (e) {}
+    await deleteGreetingAsset();
+    renderProduct();
+    updatePriceAndPurchase();
+    toast(lang === 'he' ? 'חזרנו לברכה המקורית' : 'Original greeting restored');
+  }
+
+  function toast(msg) {
+    var el = $('#toast');
+    if (!el) return;
+    el.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 12.5l5 5L20 6.5"/></svg><span>' + esc(msg) + '</span>';
+    el.classList.add('is-on');
+    clearTimeout(toast.timer);
+    toast.timer = setTimeout(function () { el.classList.remove('is-on'); }, 2200);
+  }
+
+  function setMainImage(src, alt) {
+    var main = $('#productMainImage');
+    var video = $('#productMainVideo');
+    if (!main || !src) return;
+    // Do not reselect an image that has already failed to load during this visit.
+    if (failedGalleryImageUrls[galleryImageKey(src)]) {
+      var available = galleryImages();
+      if (!available.length) { main.hidden = true; main.removeAttribute('src'); return; }
+      src = available[0];
+    }
+    if (video) {
+      try { video.pause(); } catch (e) {}
+      video.hidden = true;
+    }
+    main.hidden = false;
+    main.src = src;
+    main.alt = alt || (L(product.title) + ' - VerSans');
+  }
+
+  function clearGalleryActiveThumbs() {
+    Array.prototype.slice.call(document.querySelectorAll('[data-gallery-index],[data-gallery-video-index]')).forEach(function (btn) {
+      btn.classList.remove('is-active');
+    });
+  }
+
+  function showGalleryImage(index) {
+    var imgs = galleryImages();
+    if (!imgs.length) return;
+    activeImageIndex = Math.max(0, Math.min(index, imgs.length - 1));
+    setMainImage(imgs[activeImageIndex], L(product.title));
+    clearGalleryActiveThumbs();
+    var active = document.querySelector('[data-gallery-index="' + activeImageIndex + '"]');
+    if (active) active.classList.add('is-active');
+  }
+
+  function showGalleryVideo(index) {
+    var videos = galleryVideos();
+    var entry = videos[index];
+    var main = $('#productMainImage');
+    var video = $('#productMainVideo');
+    if (!entry || !video) return;
+    clearGalleryActiveThumbs();
+    var active = document.querySelector('[data-gallery-video-index="' + index + '"]');
+    if (active) active.classList.add('is-active');
+    if (main) main.hidden = true;
+    video.hidden = false;
+    if (entry.poster) video.setAttribute('poster', entry.poster); else video.removeAttribute('poster');
+    if (video.getAttribute('src') !== entry.src) {
+      video.src = entry.src;
+      video.load();
+    }
+  }
+
+  var PRODUCT_LAZY_PIXEL = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+  var productImageObserver = null;
+
+  function loadDeferredProductImage(img) {
+    if (!img) return;
+    var src = img.getAttribute('data-product-src');
+    if (!src) return;
+    img.removeAttribute('data-product-src');
+    img.setAttribute('loading', 'eager');
+    img.setAttribute('decoding', 'async');
+    img.setAttribute('src', src);
+  }
+
+  function observeDeferredProductImages(scope) {
+    if (!scope) return;
+    var images = Array.prototype.slice.call(scope.querySelectorAll('img[data-product-src]'));
+    if (!images.length) return;
+    if (!('IntersectionObserver' in window)) {
+      images.forEach(loadDeferredProductImage);
+      return;
+    }
+    if (!productImageObserver) {
+      productImageObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          loadDeferredProductImage(entry.target);
+          productImageObserver.unobserve(entry.target);
+        });
+      }, {
+        root: null,
+        rootMargin: window.matchMedia('(max-width: 700px)').matches ? '2250px 1260px' : '2850px 1800px',
+        threshold: 0.01
+      });
+    }
+    images.forEach(function (img) { productImageObserver.observe(img); });
+  }
+
+
+  /* Product-page gallery warmer V34.
+     Gallery thumbnails can stay visually lazy, but their image files are
+     fetched/decoded quietly after the main product has loaded so the shopper
+     does not see each photo begin loading only after reaching/tapping it. */
+  var PRODUCT_BACKGROUND_WARMED = Object.create(null);
+  var PRODUCT_BACKGROUND_QUEUE = [];
+  var PRODUCT_BACKGROUND_ACTIVE = 0;
+
+  function productWarmKey(src) {
+    if (!src || typeof src !== 'string' || src.indexOf('data:') === 0) return '';
+    try { return new URL(src, document.baseURI).href; }
+    catch (e) { return String(src); }
+  }
+
+  function productWarmLimit() {
+    var connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection || null;
+    var type = connection && String(connection.effectiveType || '').toLowerCase();
+    if (type === 'slow-2g' || type === '2g') return 2;
+    return window.matchMedia('(max-width: 700px)').matches ? 2 : 3;
+  }
+
+  function productPumpBackgroundWarmup() {
+    while (PRODUCT_BACKGROUND_ACTIVE < productWarmLimit() && PRODUCT_BACKGROUND_QUEUE.length) {
+      var src = PRODUCT_BACKGROUND_QUEUE.shift();
+      var key = productWarmKey(src);
+      if (!key || PRODUCT_BACKGROUND_WARMED[key]) continue;
+
+      PRODUCT_BACKGROUND_WARMED[key] = 'loading';
+      PRODUCT_BACKGROUND_ACTIVE += 1;
+
+      (function (url, cacheKey) {
+        var img = new Image();
+        var settled = false;
+        var timer = 0;
+
+        try {
+          img.decoding = 'async';
+          if ('fetchPriority' in img) img.fetchPriority = 'low';
+        } catch (e) {}
+
+        function finish() {
+          if (settled) return;
+          settled = true;
+          window.clearTimeout(timer);
+
+          function complete() {
+            PRODUCT_BACKGROUND_WARMED[cacheKey] = 'done';
+            PRODUCT_BACKGROUND_ACTIVE = Math.max(0, PRODUCT_BACKGROUND_ACTIVE - 1);
+            window.setTimeout(productPumpBackgroundWarmup, 18);
+          }
+
+          if (img.decode && img.complete && img.naturalWidth) {
+            try {
+              var decoded = img.decode();
+              if (decoded && typeof decoded.then === 'function') {
+                decoded.catch(function () {}).then(complete);
+                return;
+              }
+            } catch (e) {}
+          }
+          complete();
+        }
+
+        img.onload = finish;
+        img.onerror = finish;
+        timer = window.setTimeout(finish, 18000);
+        img.src = url;
+        if (img.complete && img.naturalWidth) window.setTimeout(finish, 0);
+      })(src, key);
+    }
+  }
+
+  function queueProductBackgroundImage(src) {
+    var key = productWarmKey(src);
+    if (!key || PRODUCT_BACKGROUND_WARMED[key]) return;
+    PRODUCT_BACKGROUND_WARMED[key] = 'queued';
+    PRODUCT_BACKGROUND_QUEUE.push(src);
+    productPumpBackgroundWarmup();
+  }
+
+  function warmCurrentProductGallery() {
+    var urls = galleryImages();
+    urls.forEach(queueProductBackgroundImage);
+
+    galleryVideos().forEach(function (entry) {
+      if (entry && entry.poster) queueProductBackgroundImage(entry.poster);
+    });
+
+    /* Color/variant images are useful to have ready before the selection is
+       changed, but only queue actual image URLs; concurrency remains low. */
+    if (product && Array.isArray(product.colors)) {
+      product.colors.forEach(function (option) {
+        if (option && option.image) queueProductBackgroundImage(option.image);
+      });
+    }
+    if (product && product.variantImages && typeof product.variantImages === 'object') {
+      Object.keys(product.variantImages).forEach(function (key) {
+        queueProductBackgroundImage(product.variantImages[key]);
+      });
+    }
+  }
+
+  function renderStaticGallery() {
+    var wrap = $('#productThumbs');
+    var hint = $('#galleryHint');
+    var imgs = galleryImages();
+    var videos = galleryVideos();
+    if (!wrap) return;
+    if (imgs.length > 1 || videos.length) {
+      wrap.hidden = false;
+      var imageButtons = imgs.map(function (src, i) {
+        return '<button type="button" class="product-thumb' + (i === activeImageIndex ? ' is-active' : '') + '" data-gallery-index="' + i + '" aria-label="' + (lang === 'he' ? 'תמונה ' : 'Image ') + (i + 1) + '">' +
+          '<img src="' + PRODUCT_LAZY_PIXEL + '" data-product-src="' + esc(src) + '" alt="' + esc(L(product.title) + ' - תמונה ' + (i + 1)) + '" loading="lazy" decoding="async">' +
+        '</button>';
+      }).join('');
+      var videoButtons = videos.map(function (entry, i) {
+        var label = entry.label ? L(entry.label) : (lang === 'he' ? 'וידאו מוצר' : 'Product video');
+        var preview = entry.poster
+          ? '<img class="product-thumb__video-preview" src="' + PRODUCT_LAZY_PIXEL + '" data-product-src="' + esc(entry.poster) + '" alt="" loading="lazy" decoding="async">'
+          : '';
+        return '<button type="button" class="product-thumb product-thumb--video" data-gallery-video-index="' + i + '" aria-label="' + esc(label) + '">' +
+          preview +
+          '<span class="product-thumb__video-icon" aria-hidden="true">▶</span>' +
+        '</button>';
+      }).join('');
+      wrap.innerHTML = imageButtons + videoButtons;
+      observeDeferredProductImages(wrap);
+      warmCurrentProductGallery();
+    } else {
+      wrap.hidden = true;
+      wrap.innerHTML = '';
+      warmCurrentProductGallery();
+    }
+    if (hint) {
+      if (!imgs.length && !videos.length) hint.textContent = lang === 'he' ? 'תמונת המוצר אינה זמינה כרגע' : 'Product image temporarily unavailable';
+      else hint.textContent = videos.length
+        ? (lang === 'he' ? 'תמונות ווידאו של המוצר' : 'Product photos and video')
+        : (imgs.length > 1 ? (lang === 'he' ? 'לצפייה בעוד תמונות' : 'View more photos') : (lang === 'he' ? 'תמונת מוצר' : 'Product image'));
+    }
+    scheduleGalleryThumbRailSync();
+  }
+
+
+  function syncGalleryThumbRailHeight() {
+    var rail = $('#productThumbs');
+    var stage = document.querySelector('.product-gallery__stage');
+    if (!rail || !stage) return;
+
+    if (!window.matchMedia('(min-width: 1201px)').matches || rail.hidden) {
+      rail.style.height = '';
+      rail.style.maxHeight = '';
+      return;
+    }
+
+    var stageHeight = Math.round(stage.getBoundingClientRect().height || stage.offsetHeight || 0);
+    if (!stageHeight) return;
+
+    rail.style.height = stageHeight + 'px';
+    rail.style.maxHeight = stageHeight + 'px';
+  }
+
+  function scheduleGalleryThumbRailSync() {
+    window.requestAnimationFrame(function () {
+      syncGalleryThumbRailHeight();
+      window.requestAnimationFrame(syncGalleryThumbRailHeight);
+    });
+  }
+
+  function renderNecklaceOptions() {
+    var block = $('#necklaceBlock');
+    var wrap = $('#necklaceOptions');
+    if (!wrap) return;
+    var list = product.necklaces || [];
+    if (!list.length) {
+      if (block) { block.hidden = true; block.style.display = 'none'; }
+      wrap.innerHTML = '';
+      return;
+    }
+    if (block) { block.hidden = false; block.style.display = ''; }
+    wrap.innerHTML = list.map(function (option, index) {
+      var selected = option.id === selectedNecklaceId;
+      return '' +
+        '<button type="button" class="product-choice product-choice--necklace' + (selected ? ' is-selected' : '') + '" ' +
+          'data-necklace="' + esc(option.id) + '" aria-pressed="' + selected + '">' +
+          '<span class="product-choice__image"><img src="' + esc(option.image) + '" alt="' + esc(L(option.label)) + '" loading="lazy" decoding="async"></span>' +
+          '<span class="product-choice__footer">' +
+            '<strong>' + esc(L(option.label) || ((lang === 'he' ? 'דגם ' : 'Style ') + (index + 1))) + '</strong>' +
+            '<span class="product-choice__check" aria-hidden="true">✓</span>' +
+          '</span>' +
+        '</button>';
+    }).join('');
+  }
+
+  function renderBoxOptions() {
+    var block = $('#boxBlock');
+    var wrap = $('#boxOptions');
+    if (!wrap) return;
+    var list = product.boxes || [];
+    if (!list.length) {
+      if (block) { block.hidden = true; block.style.display = 'none'; }
+      wrap.innerHTML = '';
+      return;
+    }
+    if (block) { block.hidden = false; block.style.display = ''; }
+    wrap.innerHTML = list.map(function (option) {
+      var selected = option.id === selectedBoxId;
+      var add = Number(option.addPrice || 0);
+      var priceText = L(option.priceLabel) || (add ? '+' + money(add) : (lang === 'he' ? 'כלולה במחיר' : 'Included'));
+      return '' +
+        '<button type="button" class="product-choice product-choice--box' + (selected ? ' is-selected' : '') + '" ' +
+          'data-box="' + esc(option.id) + '" aria-pressed="' + selected + '">' +
+          '<span class="product-choice__image"><img src="' + esc(option.image) + '" alt="' + esc(L(option.label)) + '" loading="lazy" decoding="async"></span>' +
+          '<span class="product-choice__footer">' +
+            '<span><strong>' + esc(L(option.label)) + '</strong><small>' + esc(priceText) + '</small></span>' +
+            '<span class="product-choice__check" aria-hidden="true">✓</span>' +
+          '</span>' +
+        '</button>';
+    }).join('');
+  }
+
+  function decorateSoldOutOptions() {
+    [['data-size',product.sizes],['data-color',product.colors],['data-necklace',product.necklaces],['data-box',product.boxes],['data-packaging',product.giftPackaging && product.giftPackaging.options]].forEach(function(group) {
+      (group[1]||[]).forEach(function(option) {
+        if (option.inStock !== false) return;
+        $$('['+group[0]+']').forEach(function(node) {
+          if (node.getAttribute(group[0]) !== option.id) return;
+          node.classList.add('versans-option-sold-out');
+          node.setAttribute('aria-disabled','true');
+          node.setAttribute('title','אזל מהמלאי');
+          if (node.tagName === 'BUTTON') node.disabled=true;
+          if (node.tagName === 'TR') node.setAttribute('tabindex','-1');
+        });
+      });
+    });
+  }
+  function renderSizeOptions() {
+    var block = $('#sizeBlock');
+    var wrap = $('#sizeOptions');
+    var status = $('#sizeStatus');
+    if (!block || !wrap) return;
+
+    if (!hasSizeOptions()) {
+      block.hidden = true;
+      block.style.display = 'none';
+      wrap.innerHTML = '';
+      return;
+    }
+
+    block.hidden = false;
+    block.style.display = '';
+    var list = product.sizes || [];
+    // Display the three-drop Moissanite carat choices as a compact selectable
+    // table. Keep the existing option IDs, addPrice values and cart logic.
+    var useCaratTable = product.sizeDisplay === 'carat-table' ||
+      /^product-(289|290|291)$/.test(String(product.slug || ''));
+    wrap.classList.toggle('product-carat-size-wrap', useCaratTable);
+    if (useCaratTable) {
+      var headings = lang === 'he'
+        ? ['בחירה', 'אבן 1', 'אבן 2', 'אבן 3', 'מחיר']
+        : ['Select', 'Stone 1', 'Stone 2', 'Stone 3', 'Price'];
+      var tableHead = '<thead><tr>' + headings.map(function (heading, index) {
+        return '<th scope="col"' + (index === 0 ? ' class="product-carat-table__pick-head"' : '') + '>' + esc(heading) + '</th>';
+      }).join('') + '</tr></thead>';
+      var tableRows = list.map(function (option) {
+        var selected = option.id === selectedSizeId;
+        var weights = String(option.id || '').split('-');
+        if (weights.length !== 3 || weights.some(function (part) { return !/^\d+(?:\.\d+)?$/.test(part); })) {
+          var matches = (L(option.label) || '').match(/\d+(?:\.\d+)?/g) || [];
+          weights = matches.slice(-3);
+        }
+        var sizePrice = money(Number(product.price) + Number(option.addPrice || 0));
+        var optionLabel = (L(option.label) || option.id) + ' - ' + sizePrice;
+        return '<tr class="product-carat-table__row' + (selected ? ' is-selected' : '') + '"' +
+          ' data-size="' + esc(option.id) + '" tabindex="0"' +
+          ' aria-selected="' + String(selected) + '" aria-label="' + esc(optionLabel) + '">' +
+          '<td class="product-carat-table__pick"><span class="product-carat-table__radio" aria-hidden="true"></span></td>' +
+          weights.map(function (weight) { return '<td class="product-carat-table__weight" dir="ltr">' + esc(weight || '–') + '</td>'; }).join('') +
+          '<td class="product-carat-table__price" dir="ltr">' + esc(sizePrice) + '</td>' +
+        '</tr>';
+      }).join('');
+      wrap.innerHTML = '<table class="product-carat-table"><caption class="product-carat-table__caption">' +
+        esc(lang === 'he' ? 'בחרו שורה לפי משקל האבנים והמחיר' : 'Select a row by stone weights and price') +
+        '</caption>' + tableHead + '<tbody>' + tableRows + '</tbody></table>';
+      if (status) {
+        status.textContent = selectedSize() ? (lang === 'he' ? 'נבחר' : 'Selected') : (lang === 'he' ? 'בחרו שורה' : 'Select a row');
+        status.classList.toggle('is-done', !!selectedSize());
+      }
+      return;
+    }
+    var sizeSwatches = product.sizeDisplay === 'swatch';
+    var sizeColorRows = product.sizeDisplay === 'color-row';
+    wrap.classList.toggle('product-swatch-grid', !!sizeSwatches);
+    wrap.classList.toggle('product-color-row-grid', !!sizeColorRows);
+    wrap.innerHTML = list.map(function (option) {
+      var selected = option.id === selectedSizeId;
+      var label = L(option.label) || option.id;
+      if (sizeSwatches) {
+        var swatchClass = 'product-big-swatch' + (option.swatchPattern ? ' product-big-swatch--' + esc(option.swatchPattern) : '');
+        var swatchStyle = option.swatch ? ' style="background:' + esc(option.swatch) + '"' : '';
+        return '<button type="button" class="product-size-choice product-swatch-choice' + (selected ? ' is-selected' : '') + '" data-size="' + esc(option.id) + '" aria-label="' + esc(label) + '" title="' + esc(label) + '" aria-pressed="' + selected + '">' +
+          '<span class="' + swatchClass + '"' + swatchStyle + '></span>' +
+          '<span class="product-size-choice__check" aria-hidden="true">✓</span>' +
+        '</button>';
+      }
+      if (sizeColorRows) {
+        var rowSwatchClass = 'product-color-swatch' + (option.swatchPattern ? ' product-color-swatch--' + esc(option.swatchPattern) : '');
+        var rowSwatchStyle = option.swatch ? ' style="background:' + esc(option.swatch) + '"' : '';
+        return '<button type="button" class="product-size-choice product-color-row-choice' + (selected ? ' is-selected' : '') + '" data-size="' + esc(option.id) + '" aria-pressed="' + selected + '">' +
+          '<span class="product-size-choice__label product-color-choice__label"><span class="' + rowSwatchClass + '"' + rowSwatchStyle + '></span><strong>' + esc(label) + '</strong></span>' +
+          '<span class="product-size-choice__check" aria-hidden="true">✓</span>' +
+        '</button>';
+      }
+      var sizePrice = L(option.priceLabel) || money(Number(product.price) + Number(option.addPrice || 0));
+      var priceHtml = product.hideSizePrice ? '' : '<small>' + esc(sizePrice) + '</small>';
+      return '<button type="button" class="product-size-choice' + (selected ? ' is-selected' : '') + '" data-size="' + esc(option.id) + '" aria-pressed="' + selected + '">' +
+        '<span class="product-size-choice__label">' + esc(label) + priceHtml + '</span>' +
+        '<span class="product-size-choice__check" aria-hidden="true">✓</span>' +
+      '</button>';
+    }).join('');
+
+    if (status) {
+      status.textContent = selectedSize() ? (lang === 'he' ? 'נבחר ✓' : 'Selected ✓') : (lang === 'he' ? 'נא לבחור' : 'Choose one');
+      status.classList.toggle('is-done', !!selectedSize());
+    }
+  }
+
+  function renderColorOptions() {
+    var block = $('#colorBlock');
+    var wrap = $('#colorOptions');
+    var status = $('#colorStatus');
+    if (!block || !wrap) return;
+
+    if (!hasColorOptions()) {
+      block.hidden = true;
+      block.style.display = 'none';
+      wrap.innerHTML = '';
+      return;
+    }
+
+    block.hidden = false;
+    block.style.display = '';
+    var list = product.colors || [];
+    var colorSwatches = product.colorDisplay === 'swatch';
+    var colorRows = product.colorDisplay === 'color-row';
+    var colorImageChoices = product.colorDisplay === 'image-choice';
+    wrap.classList.toggle('product-swatch-grid', !!colorSwatches);
+    wrap.classList.toggle('product-color-row-grid', !!colorRows);
+    wrap.classList.toggle('product-option-grid', !!colorImageChoices);
+    wrap.classList.toggle('product-option-grid--colors', !!colorImageChoices);
+    wrap.innerHTML = list.map(function (option) {
+      var selected = option.id === selectedColorId;
+      var label = L(option.label) || option.id;
+      if (colorImageChoices) {
+        var optionImage = option.image || ((product.images && product.images[0]) || '');
+        return '<button type="button" class="product-choice product-choice--color' + (selected ? ' is-selected' : '') + '" data-color="' + esc(option.id) + '" aria-pressed="' + selected + '">' +
+          '<span class="product-choice__image product-choice__image--color"><img src="' + PRODUCT_LAZY_PIXEL + '" data-product-src="' + esc(optionImage) + '" alt="' + esc(label) + '" loading="lazy" decoding="async"></span>' +
+          '<span class="product-choice__footer">' +
+            '<span><strong>' + esc(label) + '</strong></span>' +
+            '<span class="product-choice__check" aria-hidden="true">✓</span>' +
+          '</span>' +
+        '</button>';
+      }
+      if (colorSwatches) {
+        var bigSwatchClass = 'product-big-swatch' + (option.swatchPattern ? ' product-big-swatch--' + esc(option.swatchPattern) : '');
+        var bigSwatchStyle = option.swatch ? ' style="background:' + esc(option.swatch) + '"' : '';
+        return '<button type="button" class="product-size-choice product-color-choice product-swatch-choice' + (selected ? ' is-selected' : '') + '" data-color="' + esc(option.id) + '" aria-label="' + esc(label) + '" title="' + esc(label) + '" aria-pressed="' + selected + '">' +
+          '<span class="' + bigSwatchClass + '"' + bigSwatchStyle + '></span>' +
+          '<span class="product-size-choice__check" aria-hidden="true">✓</span>' +
+        '</button>';
+      }
+      var swatchClass = 'product-color-swatch' + (option.swatchPattern ? ' product-color-swatch--' + esc(option.swatchPattern) : '');
+      var swatchStyle = option.swatch ? ' style="background:' + esc(option.swatch) + '"' : '';
+      var swatch = option.swatch ? '<span class="' + swatchClass + '"' + swatchStyle + '></span>' : '';
+      var colorPriceText = L(option.priceLabel) || (Number(option.addPrice || 0) ? '+' + money(Number(option.addPrice || 0)) : '');
+      var colorPriceHtml = colorPriceText ? '<small>' + esc(colorPriceText) + '</small>' : '';
+      return '<button type="button" class="product-size-choice product-color-choice' + (colorRows ? ' product-color-row-choice' : '') + (selected ? ' is-selected' : '') + '" data-color="' + esc(option.id) + '" aria-pressed="' + selected + '">' +
+        '<span class="product-size-choice__label product-color-choice__label">' + swatch + '<strong>' + esc(label) + '</strong>' + colorPriceHtml + '</span>' +
+        '<span class="product-size-choice__check" aria-hidden="true">✓</span>' +
+      '</button>';
+    }).join('');
+    observeDeferredProductImages(wrap);
+
+    if (status) {
+      status.textContent = selectedColor() ? (lang === 'he' ? 'נבחר ✓' : 'Selected ✓') : (lang === 'he' ? 'נא לבחור' : 'Choose one');
+      status.classList.toggle('is-done', !!selectedColor());
+    }
+  }
+
+  function arrangeProduct10CompactOptions() {
+    if (!product || product.slug !== 'product-10') return;
+
+    var sizeBlock = $('#sizeBlock');
+    var colorBlock = $('#colorBlock');
+    var sizeOptions = $('#sizeOptions');
+    var colorOptions = $('#colorOptions');
+    if (!sizeBlock || !colorBlock || !sizeOptions || !colorOptions) return;
+
+    sizeBlock.classList.add('product10-combined-options');
+    colorBlock.classList.add('product10-width-group');
+    sizeOptions.classList.add('product10-length-grid');
+    colorOptions.classList.add('product10-width-grid');
+
+    if (colorBlock.parentNode !== sizeBlock) sizeBlock.appendChild(colorBlock);
+
+    if (!document.getElementById('product10CompactOptionsStyle')) {
+      var style = document.createElement('style');
+      style.id = 'product10CompactOptionsStyle';
+      style.textContent = [
+        'body[data-product-slug="product-10"] #sizeBlock.product10-combined-options{padding:.85rem!important;gap:.65rem!important;margin-bottom:1rem!important;background:#eef9ff!important;border:1px solid #d7edf8!important;border-radius:18px!important}',
+        'body[data-product-slug="product-10"] #sizeBlock.product10-combined-options>.product-option-head{margin:0 0 .15rem!important}',
+        'body[data-product-slug="product-10"] #sizeBlock.product10-combined-options .product-option-step{width:26px!important;height:26px!important;border-radius:8px!important;font-size:.75rem!important}',
+        'body[data-product-slug="product-10"] #sizeBlock.product10-combined-options .product-option-head h2{font-size:1rem!important;margin:0!important}',
+        'body[data-product-slug="product-10"] #sizeBlock.product10-combined-options .product-option-status{font-size:.78rem!important}',
+        'body[data-product-slug="product-10"] #sizeOptions.product10-length-grid{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:.45rem!important}',
+        'body[data-product-slug="product-10"] #sizeOptions.product10-length-grid .product-size-choice{min-height:54px!important;padding:.48rem .58rem!important;border-radius:11px!important;gap:.35rem!important}',
+        'body[data-product-slug="product-10"] #sizeOptions.product10-length-grid .product-size-choice__label{gap:.12rem!important;font-size:.82rem!important;line-height:1.25!important}',
+        'body[data-product-slug="product-10"] #sizeOptions.product10-length-grid .product-size-choice__label small{font-size:.69rem!important}',
+        'body[data-product-slug="product-10"] #sizeOptions.product10-length-grid .product-size-choice__check{width:18px!important;height:18px!important;font-size:.65rem!important}',
+        'body[data-product-slug="product-10"] #colorBlock.product10-width-group{display:grid!important;gap:.5rem!important;margin:0!important;padding:.7rem 0 0!important;border:0!important;border-top:1px solid #d7edf8!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}',
+        'body[data-product-slug="product-10"] #colorBlock.product10-width-group>.product-option-head{margin:0!important}',
+        'body[data-product-slug="product-10"] #colorBlock.product10-width-group .product-option-step{background:#d9f2ff!important;color:#236d91!important}',
+        'body[data-product-slug="product-10"] #colorOptions.product10-width-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:.45rem!important}',
+        'body[data-product-slug="product-10"] #colorOptions.product10-width-grid .product-size-choice{min-height:50px!important;padding:.45rem .65rem!important;border-radius:11px!important}',
+        'body[data-product-slug="product-10"] #colorOptions.product10-width-grid .product-size-choice__label{flex-direction:row!important;align-items:center!important;gap:.35rem!important;font-size:.84rem!important}',
+        'body[data-product-slug="product-10"] #colorOptions.product10-width-grid .product-size-choice__label small{font-size:.7rem!important;margin-inline-start:auto!important}',
+        'body[data-product-slug="product-10"] #colorOptions.product10-width-grid .product-size-choice__check{width:18px!important;height:18px!important;font-size:.65rem!important}',
+        '@media(max-width:760px){body[data-product-slug="product-10"] #sizeOptions.product10-length-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}body[data-product-slug="product-10"] #colorOptions.product10-width-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}}',
+        '@media(max-width:430px){body[data-product-slug="product-10"] #sizeBlock.product10-combined-options{padding:.7rem!important}body[data-product-slug="product-10"] #sizeOptions.product10-length-grid .product-size-choice{min-height:50px!important;padding:.42rem .5rem!important}body[data-product-slug="product-10"] #colorOptions.product10-width-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}body[data-product-slug="product-10"] #colorOptions.product10-width-grid .product-size-choice{padding:.42rem!important}}'
+      ].join('');
+      document.head.appendChild(style);
+    }
+  }
+
+
+function arrangeProduct18CompactOptions() {
+    if (!product || product.slug !== 'product-18') return;
+
+    var sizeBlock = $('#sizeBlock');
+    var colorBlock = $('#colorBlock');
+    var sizeOptions = $('#sizeOptions');
+    var colorOptions = $('#colorOptions');
+    if (!sizeBlock || !colorBlock || !sizeOptions || !colorOptions) return;
+
+    sizeBlock.classList.add('product10-combined-options');
+    colorBlock.classList.add('product10-width-group');
+    sizeOptions.classList.add('product10-length-grid');
+    colorOptions.classList.add('product10-width-grid');
+
+    if (colorBlock.parentNode !== sizeBlock) sizeBlock.appendChild(colorBlock);
+
+    if (!document.getElementById('product18CompactOptionsStyle')) {
+      var style = document.createElement('style');
+      style.id = 'product18CompactOptionsStyle';
+      style.textContent = [
+        'body[data-product-slug="product-18"] #sizeBlock.product10-combined-options{padding:.85rem!important;gap:.65rem!important;margin-bottom:1rem!important;background:#eef9ff!important;border:1px solid #d7edf8!important;border-radius:18px!important}',
+        'body[data-product-slug="product-18"] #sizeBlock.product10-combined-options>.product-option-head{margin:0 0 .15rem!important}',
+        'body[data-product-slug="product-18"] #sizeBlock.product10-combined-options .product-option-step{width:26px!important;height:26px!important;border-radius:8px!important;font-size:.75rem!important}',
+        'body[data-product-slug="product-18"] #sizeBlock.product10-combined-options .product-option-head h2{font-size:1rem!important;margin:0!important}',
+        'body[data-product-slug="product-18"] #sizeBlock.product10-combined-options .product-option-status{font-size:.78rem!important}',
+        'body[data-product-slug="product-18"] #sizeOptions.product10-length-grid{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:.45rem!important}',
+        'body[data-product-slug="product-18"] #sizeOptions.product10-length-grid .product-size-choice{min-height:54px!important;padding:.48rem .58rem!important;border-radius:11px!important;gap:.35rem!important}',
+        'body[data-product-slug="product-18"] #sizeOptions.product10-length-grid .product-size-choice__label{gap:.12rem!important;font-size:.82rem!important;line-height:1.25!important}',
+        'body[data-product-slug="product-18"] #sizeOptions.product10-length-grid .product-size-choice__label small{font-size:.69rem!important}',
+        'body[data-product-slug="product-18"] #sizeOptions.product10-length-grid .product-size-choice__check{width:18px!important;height:18px!important;font-size:.65rem!important}',
+        'body[data-product-slug="product-18"] #colorBlock.product10-width-group{display:grid!important;gap:.5rem!important;margin:0!important;padding:.7rem 0 0!important;border:0!important;border-top:1px solid #d7edf8!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}',
+        'body[data-product-slug="product-18"] #colorBlock.product10-width-group>.product-option-head{margin:0!important}',
+        'body[data-product-slug="product-18"] #colorBlock.product10-width-group .product-option-step{background:#d9f2ff!important;color:#236d91!important}',
+        'body[data-product-slug="product-18"] #colorOptions.product10-width-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:.45rem!important}',
+        'body[data-product-slug="product-18"] #colorOptions.product10-width-grid .product-size-choice{min-height:50px!important;padding:.45rem .65rem!important;border-radius:11px!important}',
+        'body[data-product-slug="product-18"] #colorOptions.product10-width-grid .product-size-choice__label{flex-direction:row!important;align-items:center!important;gap:.35rem!important;font-size:.84rem!important}',
+        'body[data-product-slug="product-18"] #colorOptions.product10-width-grid .product-size-choice__label small{font-size:.7rem!important;margin-inline-start:auto!important}',
+        'body[data-product-slug="product-18"] #colorOptions.product10-width-grid .product-size-choice__check{width:18px!important;height:18px!important;font-size:.65rem!important}',
+        '@media(max-width:760px){body[data-product-slug="product-18"] #sizeOptions.product10-length-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}body[data-product-slug="product-18"] #colorOptions.product10-width-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}}',
+        '@media(max-width:430px){body[data-product-slug="product-18"] #sizeBlock.product10-combined-options{padding:.7rem!important}body[data-product-slug="product-18"] #sizeOptions.product10-length-grid .product-size-choice{min-height:50px!important;padding:.42rem .5rem!important}body[data-product-slug="product-18"] #colorOptions.product10-width-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}body[data-product-slug="product-18"] #colorOptions.product10-width-grid .product-size-choice{padding:.42rem!important}}'
+      ].join('');
+      document.head.appendChild(style);
+    }
+  }
+  function arrangeCloverBraceletCompactColors() {
+    if (!product || !/^product-(?:9[4-9])$/.test(String(product.slug || ''))) return;
+
+    var colorBlock = $('#colorBlock');
+    var colorOptions = $('#colorOptions');
+    if (!colorBlock || !colorOptions) return;
+
+    colorBlock.classList.add('clover-compact-color-block');
+    colorOptions.classList.add('clover-compact-color-grid');
+
+    if (!document.getElementById('cloverCompactColorStyle')) {
+      var style = document.createElement('style');
+      style.id = 'cloverCompactColorStyle';
+      style.textContent = [
+        'body[data-product-slug^="product-9"] #colorBlock.clover-compact-color-block{padding:.7rem!important;gap:.5rem!important;margin-bottom:.8rem!important;border-radius:16px!important}',
+        'body[data-product-slug^="product-9"] #colorBlock.clover-compact-color-block>.product-option-head{margin:0 0 .15rem!important}',
+        'body[data-product-slug^="product-9"] #colorBlock.clover-compact-color-block .product-option-step{width:24px!important;height:24px!important;border-radius:7px!important;font-size:.7rem!important}',
+        'body[data-product-slug^="product-9"] #colorBlock.clover-compact-color-block .product-option-head h2{font-size:.95rem!important;margin:0!important}',
+        'body[data-product-slug^="product-9"] #colorBlock.clover-compact-color-block .product-option-status{font-size:.72rem!important}',
+        'body[data-product-slug^="product-9"] #colorOptions.clover-compact-color-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:.45rem!important}',
+        'body[data-product-slug^="product-9"] #colorOptions.clover-compact-color-grid .product-size-choice{min-height:48px!important;padding:.42rem .55rem!important;border-radius:10px!important;gap:.35rem!important}',
+        'body[data-product-slug^="product-9"] #colorOptions.clover-compact-color-grid .product-size-choice__label{flex-direction:row!important;align-items:center!important;gap:.35rem!important;font-size:.8rem!important;line-height:1.15!important}',
+        'body[data-product-slug^="product-9"] #colorOptions.clover-compact-color-grid .product-size-choice__label strong{font-size:.8rem!important;font-weight:600!important}',
+        'body[data-product-slug^="product-9"] #colorOptions.clover-compact-color-grid .product-size-choice__label small{font-size:.66rem!important;margin-inline-start:auto!important}',
+        'body[data-product-slug^="product-9"] #colorOptions.clover-compact-color-grid .product-size-choice__check{width:17px!important;height:17px!important;font-size:.6rem!important;flex:0 0 17px!important}',
+        'body[data-product-slug^="product-9"] #colorOptions.clover-compact-color-grid .product-color-swatch{width:24px!important;height:24px!important;min-width:24px!important}',
+        '@media(max-width:760px){body[data-product-slug^="product-9"] #colorOptions.clover-compact-color-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:.35rem!important}body[data-product-slug^="product-9"] #colorOptions.clover-compact-color-grid .product-size-choice{min-height:44px!important;padding:.34rem .42rem!important}body[data-product-slug^="product-9"] #colorOptions.clover-compact-color-grid .product-size-choice__label{font-size:.74rem!important}body[data-product-slug^="product-9"] #colorOptions.clover-compact-color-grid .product-color-swatch{width:21px!important;height:21px!important;min-width:21px!important}}',
+        '@media(max-width:430px){body[data-product-slug^="product-9"] #colorBlock.clover-compact-color-block{padding:.6rem!important}body[data-product-slug^="product-9"] #colorOptions.clover-compact-color-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}body[data-product-slug^="product-9"] #colorOptions.clover-compact-color-grid .product-size-choice{min-height:42px!important;padding:.32rem .4rem!important}}'
+      ].join('');
+      document.head.appendChild(style);
+    }
+  }
+
+
+  function arrangeProduct14CompactOptions() {
+    if (!product || product.slug !== 'product-14') return;
+
+    var sizeBlock = $('#sizeBlock');
+    var colorBlock = $('#colorBlock');
+    var sizeOptions = $('#sizeOptions');
+    var colorOptions = $('#colorOptions');
+    if (!sizeBlock || !colorBlock || !sizeOptions || !colorOptions) return;
+
+    sizeBlock.classList.add('product14-combined-options');
+    colorBlock.classList.add('product14-width-group');
+    sizeOptions.classList.add('product14-length-grid');
+    colorOptions.classList.add('product14-width-grid');
+
+    if (colorBlock.parentNode !== sizeBlock) sizeBlock.appendChild(colorBlock);
+
+    if (!document.getElementById('product14CompactOptionsStyle')) {
+      var style = document.createElement('style');
+      style.id = 'product14CompactOptionsStyle';
+      style.textContent = [
+        'body[data-product-slug="product-14"] #sizeBlock.product14-combined-options{padding:.68rem!important;gap:.48rem!important;margin-bottom:.8rem!important;background:#eef9ff!important;border:1px solid #d7edf8!important;border-radius:16px!important}',
+        'body[data-product-slug="product-14"] #sizeBlock.product14-combined-options>.product-option-head{margin:0!important}',
+        'body[data-product-slug="product-14"] #sizeBlock.product14-combined-options .product-option-step{width:24px!important;height:24px!important;border-radius:7px!important;font-size:.72rem!important}',
+        'body[data-product-slug="product-14"] #sizeBlock.product14-combined-options .product-option-head h2{font-size:.95rem!important;margin:0!important}',
+        'body[data-product-slug="product-14"] #sizeBlock.product14-combined-options .product-option-status{font-size:.72rem!important}',
+        'body[data-product-slug="product-14"] #sizeOptions.product14-length-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:.38rem!important}',
+        'body[data-product-slug="product-14"] #sizeOptions.product14-length-grid .product-size-choice{min-height:43px!important;padding:.34rem .48rem!important;border-radius:10px!important;gap:.3rem!important}',
+        'body[data-product-slug="product-14"] #sizeOptions.product14-length-grid .product-size-choice__label{gap:.08rem!important;font-size:.79rem!important;line-height:1.16!important}',
+        'body[data-product-slug="product-14"] #sizeOptions.product14-length-grid .product-size-choice__label small{font-size:.66rem!important}',
+        'body[data-product-slug="product-14"] #sizeOptions.product14-length-grid .product-size-choice__check{width:17px!important;height:17px!important;font-size:.62rem!important}',
+        'body[data-product-slug="product-14"] #colorBlock.product14-width-group{display:grid!important;gap:.4rem!important;margin:0!important;padding:.5rem 0 0!important;border:0!important;border-top:1px solid #d7edf8!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}',
+        'body[data-product-slug="product-14"] #colorBlock.product14-width-group>.product-option-head{margin:0!important}',
+        'body[data-product-slug="product-14"] #colorBlock.product14-width-group .product-option-step{background:#d9f2ff!important;color:#236d91!important}',
+        'body[data-product-slug="product-14"] #colorOptions.product14-width-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:.38rem!important}',
+        'body[data-product-slug="product-14"] #colorOptions.product14-width-grid .product-size-choice{min-height:41px!important;padding:.32rem .48rem!important;border-radius:10px!important}',
+        'body[data-product-slug="product-14"] #colorOptions.product14-width-grid .product-size-choice__label{flex-direction:row!important;align-items:center!important;gap:.3rem!important;font-size:.8rem!important}',
+        'body[data-product-slug="product-14"] #colorOptions.product14-width-grid .product-size-choice__label small{font-size:.66rem!important;margin-inline-start:auto!important}',
+        'body[data-product-slug="product-14"] #colorOptions.product14-width-grid .product-size-choice__check{width:17px!important;height:17px!important;font-size:.62rem!important}',
+        '@media(max-width:430px){body[data-product-slug="product-14"] #sizeBlock.product14-combined-options{padding:.58rem!important}body[data-product-slug="product-14"] #sizeOptions.product14-length-grid .product-size-choice,body[data-product-slug="product-14"] #colorOptions.product14-width-grid .product-size-choice{min-height:39px!important;padding:.28rem .4rem!important}}'
+      ].join('');
+      document.head.appendChild(style);
+    }
+  }
+
+
+function arrangeProduct20CompactOptions() {
+    if (!product || product.slug !== 'product-20') return;
+
+    var sizeBlock = $('#sizeBlock');
+    var colorBlock = $('#colorBlock');
+    var sizeOptions = $('#sizeOptions');
+    var colorOptions = $('#colorOptions');
+    if (!sizeBlock || !colorBlock || !sizeOptions || !colorOptions) return;
+
+    sizeBlock.classList.add('product20-combined-options');
+    colorBlock.classList.add('product20-width-group');
+    sizeOptions.classList.add('product20-length-grid');
+    colorOptions.classList.add('product20-width-grid');
+
+    if (colorBlock.parentNode !== sizeBlock) sizeBlock.appendChild(colorBlock);
+
+    if (!document.getElementById('product20CompactOptionsStyle')) {
+      var style = document.createElement('style');
+      style.id = 'product20CompactOptionsStyle';
+      style.textContent = [
+        'body[data-product-slug="product-20"] #sizeBlock.product20-combined-options{padding:.68rem!important;gap:.48rem!important;margin-bottom:.8rem!important;background:#eef9ff!important;border:1px solid #d7edf8!important;border-radius:16px!important}',
+        'body[data-product-slug="product-20"] #sizeBlock.product20-combined-options>.product-option-head{margin:0!important}',
+        'body[data-product-slug="product-20"] #sizeBlock.product20-combined-options .product-option-step{width:24px!important;height:24px!important;border-radius:7px!important;font-size:.72rem!important}',
+        'body[data-product-slug="product-20"] #sizeBlock.product20-combined-options .product-option-head h2{font-size:.95rem!important;margin:0!important}',
+        'body[data-product-slug="product-20"] #sizeBlock.product20-combined-options .product-option-status{font-size:.72rem!important}',
+        'body[data-product-slug="product-20"] #sizeOptions.product20-length-grid{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:.38rem!important}',
+        'body[data-product-slug="product-20"] #sizeOptions.product20-length-grid .product-size-choice{min-height:43px!important;padding:.34rem .48rem!important;border-radius:10px!important;gap:.3rem!important}',
+        'body[data-product-slug="product-20"] #sizeOptions.product20-length-grid .product-size-choice__label{gap:.08rem!important;font-size:.79rem!important;line-height:1.16!important}',
+        'body[data-product-slug="product-20"] #sizeOptions.product20-length-grid .product-size-choice__label small{font-size:.66rem!important}',
+        'body[data-product-slug="product-20"] #sizeOptions.product20-length-grid .product-size-choice__check{width:17px!important;height:17px!important;font-size:.62rem!important}',
+        'body[data-product-slug="product-20"] #colorBlock.product20-width-group{display:grid!important;gap:.4rem!important;margin:0!important;padding:.5rem 0 0!important;border:0!important;border-top:1px solid #d7edf8!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}',
+        'body[data-product-slug="product-20"] #colorBlock.product20-width-group>.product-option-head{margin:0!important}',
+        'body[data-product-slug="product-20"] #colorBlock.product20-width-group .product-option-step{background:#d9f2ff!important;color:#236d91!important}',
+        'body[data-product-slug="product-20"] #colorOptions.product20-width-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:.38rem!important}',
+        'body[data-product-slug="product-20"] #colorOptions.product20-width-grid .product-size-choice{min-height:41px!important;padding:.32rem .48rem!important;border-radius:10px!important}',
+        'body[data-product-slug="product-20"] #colorOptions.product20-width-grid .product-size-choice__label{flex-direction:row!important;align-items:center!important;gap:.3rem!important;font-size:.8rem!important}',
+        'body[data-product-slug="product-20"] #colorOptions.product20-width-grid .product-size-choice__label small{font-size:.66rem!important;margin-inline-start:auto!important}',
+        'body[data-product-slug="product-20"] #colorOptions.product20-width-grid .product-size-choice__check{width:17px!important;height:17px!important;font-size:.62rem!important}',
+        '@media(max-width:760px){body[data-product-slug="product-20"] #sizeOptions.product20-length-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}@media(max-width:430px){body[data-product-slug="product-20"] #sizeBlock.product20-combined-options{padding:.58rem!important}body[data-product-slug="product-20"] #sizeOptions.product20-length-grid .product-size-choice,body[data-product-slug="product-20"] #colorOptions.product20-width-grid .product-size-choice{min-height:39px!important;padding:.28rem .4rem!important}}'
+      ].join('');
+      document.head.appendChild(style);
+    }
+  }
+  function arrangeProduct15CompactOptions() {
+    if (!product || (product.slug !== 'product-15' && product.slug !== 'product-16' && product.slug !== 'product-17')) return;
+
+    var sizeBlock = $('#sizeBlock');
+    var sizeOptions = $('#sizeOptions');
+    if (!sizeBlock || !sizeOptions) return;
+
+    sizeBlock.classList.add('product15-compact-options');
+    sizeOptions.classList.add('product15-length-grid');
+
+    if (!document.getElementById('product15CompactOptionsStyle')) {
+      var style = document.createElement('style');
+      style.id = 'product15CompactOptionsStyle';
+      style.textContent = [
+        'body[data-product-slug="product-15"] #sizeBlock.product15-compact-options,body[data-product-slug="product-16"] #sizeBlock.product15-compact-options,body[data-product-slug="product-17"] #sizeBlock.product15-compact-options{padding:.62rem!important;gap:.42rem!important;margin-bottom:.8rem!important;background:#eef9ff!important;border:1px solid #d7edf8!important;border-radius:15px!important}',
+        'body[data-product-slug="product-15"] #sizeBlock.product15-compact-options>.product-option-head,body[data-product-slug="product-16"] #sizeBlock.product15-compact-options>.product-option-head,body[data-product-slug="product-17"] #sizeBlock.product15-compact-options>.product-option-head{margin:0!important}',
+        'body[data-product-slug="product-15"] #sizeBlock.product15-compact-options .product-option-step,body[data-product-slug="product-16"] #sizeBlock.product15-compact-options .product-option-step,body[data-product-slug="product-17"] #sizeBlock.product15-compact-options .product-option-step{width:23px!important;height:23px!important;border-radius:7px!important;font-size:.7rem!important}',
+        'body[data-product-slug="product-15"] #sizeBlock.product15-compact-options .product-option-head h2,body[data-product-slug="product-16"] #sizeBlock.product15-compact-options .product-option-head h2,body[data-product-slug="product-17"] #sizeBlock.product15-compact-options .product-option-head h2{font-size:.94rem!important;margin:0!important}',
+        'body[data-product-slug="product-15"] #sizeBlock.product15-compact-options .product-option-status,body[data-product-slug="product-16"] #sizeBlock.product15-compact-options .product-option-status,body[data-product-slug="product-17"] #sizeBlock.product15-compact-options .product-option-status{font-size:.7rem!important}',
+        'body[data-product-slug="product-15"] #sizeOptions.product15-length-grid,body[data-product-slug="product-16"] #sizeOptions.product15-length-grid,body[data-product-slug="product-17"] #sizeOptions.product15-length-grid{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:.34rem!important}',
+        'body[data-product-slug="product-15"] #sizeOptions.product15-length-grid .product-size-choice,body[data-product-slug="product-16"] #sizeOptions.product15-length-grid .product-size-choice,body[data-product-slug="product-17"] #sizeOptions.product15-length-grid .product-size-choice{min-height:41px!important;padding:.3rem .38rem!important;border-radius:9px!important;gap:.24rem!important}',
+        'body[data-product-slug="product-15"] #sizeOptions.product15-length-grid .product-size-choice__label,body[data-product-slug="product-16"] #sizeOptions.product15-length-grid .product-size-choice__label,body[data-product-slug="product-17"] #sizeOptions.product15-length-grid .product-size-choice__label{gap:.05rem!important;font-size:.76rem!important;line-height:1.12!important}',
+        'body[data-product-slug="product-15"] #sizeOptions.product15-length-grid .product-size-choice__label strong,body[data-product-slug="product-16"] #sizeOptions.product15-length-grid .product-size-choice__label strong,body[data-product-slug="product-17"] #sizeOptions.product15-length-grid .product-size-choice__label strong{font-size:.76rem!important}',
+        'body[data-product-slug="product-15"] #sizeOptions.product15-length-grid .product-size-choice__label small,body[data-product-slug="product-16"] #sizeOptions.product15-length-grid .product-size-choice__label small,body[data-product-slug="product-17"] #sizeOptions.product15-length-grid .product-size-choice__label small{font-size:.63rem!important}',
+        'body[data-product-slug="product-15"] #sizeOptions.product15-length-grid .product-size-choice__check,body[data-product-slug="product-16"] #sizeOptions.product15-length-grid .product-size-choice__check,body[data-product-slug="product-17"] #sizeOptions.product15-length-grid .product-size-choice__check{width:16px!important;height:16px!important;font-size:.58rem!important}',
+        '@media(max-width:760px){body[data-product-slug="product-15"] #sizeOptions.product15-length-grid,body[data-product-slug="product-16"] #sizeOptions.product15-length-grid,body[data-product-slug="product-17"] #sizeOptions.product15-length-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}}',
+        '@media(max-width:430px){body[data-product-slug="product-15"] #sizeBlock.product15-compact-options,body[data-product-slug="product-16"] #sizeBlock.product15-compact-options,body[data-product-slug="product-17"] #sizeBlock.product15-compact-options{padding:.52rem!important}body[data-product-slug="product-15"] #sizeOptions.product15-length-grid,body[data-product-slug="product-16"] #sizeOptions.product15-length-grid,body[data-product-slug="product-17"] #sizeOptions.product15-length-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}body[data-product-slug="product-15"] #sizeOptions.product15-length-grid .product-size-choice,body[data-product-slug="product-16"] #sizeOptions.product15-length-grid .product-size-choice,body[data-product-slug="product-17"] #sizeOptions.product15-length-grid .product-size-choice{min-height:38px!important;padding:.25rem .34rem!important}}'
+      ].join('');
+      document.head.appendChild(style);
+    }
+  }
+
+  function renderCustomName() {
+    var block = $('#customNameBlock');
+    var input = $('#customNameInput');
+    var label = $('#customNameLabel');
+    var status = $('#customNameStatus');
+    var help = $('#customNameHelp');
+    var count = $('#customNameCount');
+    if (!block || !input) return;
+
+    if (!hasCustomName()) {
+      block.hidden = true;
+      block.style.display = 'none';
+      return;
+    }
+
+    var max = customNameMax();
+    block.hidden = false;
+    block.style.display = '';
+    input.maxLength = max;
+    var lettersOnly = !!product.customName.lettersOnly;
+    if (lettersOnly) {
+      input.setAttribute('pattern', '[A-Za-z]');
+      input.setAttribute('inputmode', 'text');
+      input.setAttribute('autocapitalize', 'characters');
+      input.setAttribute('spellcheck', 'false');
+      input.setAttribute('dir', 'ltr');
+      input.classList.add('is-uppercase-initial');
+    } else {
+      input.removeAttribute('pattern');
+      input.removeAttribute('autocapitalize');
+      input.removeAttribute('spellcheck');
+      input.setAttribute('dir', 'auto');
+      input.classList.remove('is-uppercase-initial');
+    }
+    customNameValue = cleanCustomName(customNameValue);
+    if (input.value !== customNameValue) input.value = customNameValue;
+    if (label) label.textContent = L(product.customName.label) || (lang === 'he' ? 'השם שיופיע על השרשרת' : 'Name on the necklace');
+    input.placeholder = L(product.customName.placeholder) || (lang === 'he' ? 'לדוגמה: Audrey' : 'Example: Audrey');
+    if (help) help.textContent = L(product.customName.help) || (lang === 'he' ? 'השם ייוצר בדיוק כפי שהוקלד. בדקו איות לפני ההוספה לסל.' : 'The name will be made exactly as entered. Check spelling before adding to cart.');
+    if (count) count.textContent = String(customNameValue.length) + '/' + max;
+    var ready = customNameReady();
+    if (status) {
+      status.textContent = ready ? (lang === 'he' ? 'מוכן ✓' : 'Ready ✓') : (lang === 'he' ? 'נא למלא' : 'Required');
+      status.classList.toggle('is-done', ready);
+    }
+  }
+
+  function productPhotoStorageKey() {
+    return 'kw_product_photo_' + product.id;
+  }
+
+  function makePhotoAssetId() {
+    return 'photo-' + product.id + '-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8);
+  }
+
+  function openProductPhotoDb() {
+    return new Promise(function (resolve, reject) {
+      if (!window.indexedDB) { reject(new Error('IndexedDB unavailable')); return; }
+      var req = indexedDB.open('kw_product_photos', 1);
+      req.onupgradeneeded = function () {
+        var db = req.result;
+        if (!db.objectStoreNames.contains('photos')) db.createObjectStore('photos', { keyPath: 'productId' });
+      };
+      req.onsuccess = function () { resolve(req.result); };
+      req.onerror = function () { reject(req.error || new Error('DB open failed')); };
+    });
+  }
+
+  async function saveProductPhotoLocally(blob, meta) {
+    try {
+      var db = await openProductPhotoDb();
+      await new Promise(function (resolve, reject) {
+        var tx = db.transaction('photos', 'readwrite');
+        tx.objectStore('photos').put({ productId: product.id, blob: blob, assetId: meta.assetId, fileName: meta.fileName, savedAt: Date.now() });
+        tx.oncomplete = resolve;
+        tx.onerror = function () { reject(tx.error || new Error('DB write failed')); };
+      });
+      db.close();
+    } catch (e) {}
+  }
+
+  async function deleteProductPhotoLocally() {
+    try {
+      var db = await openProductPhotoDb();
+      await new Promise(function (resolve, reject) {
+        var tx = db.transaction('photos', 'readwrite');
+        tx.objectStore('photos').delete(product.id);
+        tx.oncomplete = resolve;
+        tx.onerror = function () { reject(tx.error); };
+      });
+      db.close();
+    } catch (e) {}
+  }
+
+  function blobToDataUrl(blob) {
+    return new Promise(function (resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function () { resolve(String(reader.result || '')); };
+      reader.onerror = function () { reject(reader.error || new Error('File read failed')); };
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  function resizePhotoToPng(file) {
+    return new Promise(function (resolve, reject) {
+      var url = URL.createObjectURL(file);
+      var img = new Image();
+      img.onload = function () {
+        try {
+          var maxSide = 1400;
+          var scale = Math.min(1, maxSide / Math.max(img.naturalWidth || 1, img.naturalHeight || 1));
+          var w = Math.max(1, Math.round(img.naturalWidth * scale));
+          var h = Math.max(1, Math.round(img.naturalHeight * scale));
+          var canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          var ctx = canvas.getContext('2d');
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, w, h);
+          ctx.drawImage(img, 0, 0, w, h);
+          canvas.toBlob(function (blob) {
+            URL.revokeObjectURL(url);
+            if (blob) resolve(blob); else reject(new Error('Photo conversion failed'));
+          }, 'image/png', 0.94);
+        } catch (err) { URL.revokeObjectURL(url); reject(err); }
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('Invalid image')); };
+      img.src = url;
+    });
+  }
+
+  
+async function uploadProductPhoto(blob, meta) {
+  return { ok: true, provider: 'pending-order-sync', assetId: meta.assetId, fileName: meta.fileName };
+}
+
+
+  function renderCustomPhoto() {
+    var block = $('#customPhotoBlock');
+    var status = $('#customPhotoStatus');
+    var label = $('#customPhotoLabel');
+    var help = $('#customPhotoHelp');
+    var previewWrap = $('#customPhotoPreviewWrap');
+    var preview = $('#customPhotoPreview');
+    var removeBtn = $('#customPhotoRemove');
+    if (!block) return;
+
+    if (!hasCustomPhoto()) {
+      block.hidden = true;
+      block.style.display = 'none';
+      return;
+    }
+
+    block.hidden = false;
+    block.style.display = '';
+    if (label) label.textContent = L(product.customPhoto.label) || (lang === 'he' ? 'בחרו תמונה מהמכשיר' : 'Choose a photo from your device');
+    if (help) help.textContent = L(product.customPhoto.help) || (lang === 'he' ? 'התמונה תישמר להזמנה.' : 'The photo is saved with your order.');
+    if (status) {
+      status.textContent = customPhotoUploading
+        ? (lang === 'he' ? 'מעלה…' : 'Uploading…')
+        : (customPhotoReady() ? (lang === 'he' ? 'נשמרה ✓' : 'Saved ✓') : (lang === 'he' ? 'נא להעלות' : 'Required'));
+      status.classList.toggle('is-done', customPhotoReady());
+    }
+    if (previewWrap) previewWrap.hidden = !customPhotoValue;
+    if (removeBtn) removeBtn.hidden = !customPhotoValue;
+    if (preview && customPhotoPreviewUrl) preview.src = customPhotoPreviewUrl;
+  }
+
+  async function handleProductPhotoFile(file) {
+    if (!file || !hasCustomPhoto()) return;
+    if (!/^image\//i.test(file.type || '')) {
+      toast(lang === 'he' ? 'יש לבחור קובץ תמונה' : 'Please choose an image file');
+      return;
+    }
+    if (file.size > 15 * 1024 * 1024) {
+      toast(lang === 'he' ? 'התמונה גדולה מדי. המקסימום הוא 15MB' : 'The image is too large. Maximum 15MB');
+      return;
+    }
+
+    customPhotoUploading = true;
+    customPhotoValue = null;
+    renderCustomPhoto();
+    updatePriceAndPurchase();
+    try {
+      var blob = await resizePhotoToPng(file);
+      var assetId = makePhotoAssetId();
+      var fileName = assetId + '.png';
+      var meta = { assetId: assetId, fileName: fileName };
+      await saveProductPhotoLocally(blob, meta);
+      await uploadProductPhoto(blob, meta);
+      if (customPhotoPreviewUrl) { try { URL.revokeObjectURL(customPhotoPreviewUrl); } catch (e) {} }
+      customPhotoPreviewUrl = URL.createObjectURL(blob);
+      customPhotoValue = { assetId: assetId, fileName: fileName, provider: 'pending-order-sync' };
+      try { localStorage.setItem(productPhotoStorageKey(), JSON.stringify(customPhotoValue)); } catch (e) {}
+      toast(lang === 'he' ? 'התמונה נשמרה ותישלח אחרי השלמת ההזמנה ✓' : 'Photo saved and will be sent after the order is completed ✓');
+    } catch (err) {
+      customPhotoValue = null;
+      toast(lang === 'he' ? 'לא הצלחנו לשמור את התמונה. נסו שוב.' : 'Could not save the photo. Please try again.');
+    } finally {
+      customPhotoUploading = false;
+      renderCustomPhoto();
+      updatePriceAndPurchase();
+    }
+  }
+
+  async function removeProductPhoto() {
+    customPhotoValue = null;
+    customPhotoUploading = false;
+    if (customPhotoPreviewUrl) { try { URL.revokeObjectURL(customPhotoPreviewUrl); } catch (e) {} customPhotoPreviewUrl = ''; }
+    try { localStorage.removeItem(productPhotoStorageKey()); } catch (e) {}
+    await deleteProductPhotoLocally();
+    var input = $('#customPhotoInput'); if (input) input.value = '';
+    renderCustomPhoto();
+    updatePriceAndPurchase();
+  }
+
+  function updateVariantImageFromSelections() {
+    if (!product.variantImages) return;
+
+    // Keep the big product image in sync with the choices immediately.
+    // If only one of the visual options was chosen, use the first option as a
+    // temporary visual fallback without marking it as selected.
+    var outerId = selectedSizeId || (product.sizes && product.sizes[0] && product.sizes[0].id) || '';
+    var shapeId = selectedNecklaceId || (product.necklaces && product.necklaces[0] && product.necklaces[0].id) || '';
+    var centerColorId = selectedColorId || (product.colors && product.colors[0] && product.colors[0].id) || '';
+
+    var keys = [
+      outerId + '|' + shapeId + '|' + centerColorId,
+      outerId + '|' + shapeId
+    ];
+    var src = '';
+    for (var i = 0; i < keys.length; i++) {
+      if (product.variantImages[keys[i]]) { src = product.variantImages[keys[i]]; break; }
+    }
+    if (!src) return;
+
+    var idx = galleryImages().indexOf(src);
+    if (idx >= 0) showGalleryImage(idx);
+    else setMainImage(src, L(product.title));
+  }
+
+  function updateOptionSteps() {
+    var ids = ['necklaceBlock', 'boxBlock', 'sizeBlock', 'colorBlock', 'customNameBlock', 'customPhotoBlock', 'giftPackagingBlock', 'requiredCompanionBlock'];
+    var step = 1;
+    ids.forEach(function (id) {
+      var block = $('#' + id);
+      if (!block || block.hidden || block.style.display === 'none') return;
+      var badge = block.querySelector('.product-option-step');
+      if (badge) badge.textContent = String(step++);
+    });
+  }
+
+  async function restoreCustomPhoto() {
+    if (!hasCustomPhoto() || customPhotoValue) return;
+    try {
+      var stored = JSON.parse(read(productPhotoStorageKey()) || 'null');
+      if (stored && stored.assetId) customPhotoValue = { assetId: String(stored.assetId), fileName: String(stored.fileName || ''), provider: String(stored.provider || 'pending-order-sync') };
+    } catch (e) {}
+    if (!customPhotoValue) { renderCustomPhoto(); updatePriceAndPurchase(); return; }
+    try {
+      var db = await openProductPhotoDb();
+      var row = await new Promise(function (resolve, reject) {
+        var req = db.transaction('photos', 'readonly').objectStore('photos').get(product.id);
+        req.onsuccess = function () { resolve(req.result || null); };
+        req.onerror = function () { reject(req.error); };
+      });
+      db.close();
+      if (row && row.blob && row.assetId === customPhotoValue.assetId) {
+        if (customPhotoPreviewUrl) { try { URL.revokeObjectURL(customPhotoPreviewUrl); } catch (e) {} }
+        customPhotoPreviewUrl = URL.createObjectURL(row.blob);
+      }
+    } catch (e) {}
+    renderCustomPhoto();
+    updatePriceAndPurchase();
+  }
+
+  function renderGiftPackaging() {
+    var block = $('#giftPackagingBlock');
+    var grid = $('#giftPackagingOptions');
+    var none = $('#giftPackagingNone');
+    var status = $('#giftPackagingStatus');
+    var heading = $('#giftPackagingHeading');
+    var description = $('#giftPackagingDescription');
+    if (!block) return;
+
+    if (!hasGiftPackaging() || isCompanionPickerFlow()) {
+      block.hidden = true;
+      block.style.display = 'none';
+      return;
+    }
+
+    block.hidden = false;
+    block.style.display = '';
+    if (heading) heading.textContent = L(product.giftPackaging.heading) || (lang === 'he' ? 'הוספת אריזה' : 'Add gift packaging');
+    if (description) description.textContent = L(product.giftPackaging.description) || '';
+    if (none) {
+      none.textContent = lang === 'he' ? 'ללא אריזה נוספת' : 'No extra packaging';
+      none.classList.toggle('is-selected', !selectedPackagingId);
+    }
+    if (status) {
+      var selected = selectedPackaging();
+      status.textContent = selected ? (lang === 'he' ? 'נוסף ✓' : 'Added ✓') : (lang === 'he' ? 'ללא אריזה' : 'No packaging');
+      status.classList.toggle('is-done', !!selected);
+    }
+    if (grid) {
+      grid.innerHTML = product.giftPackaging.options.map(function (option) {
+        var selected = selectedPackagingId === option.id;
+        return '<button class="product-packaging-choice' + (selected ? ' is-selected' : '') + '" type="button" data-packaging="' + esc(option.id) + '">' +
+          '<span class="product-packaging-choice__image"><img src="' + esc(option.image || '') + '" alt="' + esc(L(option.label)) + '"></span>' +
+          '<span class="product-packaging-choice__body"><strong>' + esc(L(option.label)) + '</strong><small>+' + esc(money(Number(option.addPrice || 0))) + '</small></span>' +
+          '<span class="product-choice__check">✓</span>' +
+        '</button>';
+      }).join('');
+    }
+  }
+
+  function selectPackaging(optionId) {
+    if (!hasGiftPackaging()) return;
+    if (!optionId) selectedPackagingId = null;
+    else if (findOption(product.giftPackaging.options, optionId)) selectedPackagingId = optionId;
+    renderGiftPackaging();
+    updatePriceAndPurchase();
+  }
+
+  function renderRequiredCompanion() {
+    var block = $('#requiredCompanionBlock');
+    var status = $('#requiredCompanionStatus');
+    var heading = $('#requiredCompanionHeading');
+    var description = $('#requiredCompanionDescription');
+    var button = $('#requiredCompanionButton');
+    var readyNote = $('#requiredCompanionReady');
+    if (!block) return;
+
+    if (!requiresCompanion()) {
+      block.hidden = true;
+      block.style.display = 'none';
+      return;
+    }
+
+    var colorReady = !hasColorOptions() || !!selectedColor();
+    var ready = colorReady && companionReady();
+    block.hidden = false;
+    block.style.display = '';
+    if (heading) heading.textContent = L(product.requiresCompanion.heading) || (lang === 'he' ? 'הוסף שרשרת - חובה' : 'Add a necklace - required');
+    if (description) description.textContent = L(product.requiresCompanion.description) || '';
+    if (status) {
+      status.textContent = ready ? (lang === 'he' ? 'נוספה למארז ✓' : 'Added to packaging ✓') : (colorReady ? (lang === 'he' ? 'חובה' : 'Required') : (lang === 'he' ? 'בחרו צבע קודם' : 'Choose a color first'));
+      status.classList.toggle('is-done', ready);
+    }
+    if (button) {
+      var picker = product.requiresCompanion.pickerUrl || '/choose-necklace';
+      if (!colorReady) {
+        button.href = '#';
+        button.setAttribute('aria-disabled', 'true');
+        button.style.pointerEvents = 'none';
+        button.style.opacity = '.55';
+        button.textContent = lang === 'he' ? 'בחרו צבע למארז קודם' : 'Choose packaging color first';
+      } else {
+        button.removeAttribute('aria-disabled');
+        button.style.pointerEvents = '';
+        button.style.opacity = '';
+        button.href = picker + '?returnTo=' + encodeURIComponent(product.id) + '&packageColor=' + encodeURIComponent(selectedColorId);
+        button.textContent = ready ? (lang === 'he' ? 'החלפת שרשרת' : 'Change necklace') : (lang === 'he' ? 'הוסף שרשרת' : 'Add a necklace');
+      }
+    }
+    if (readyNote) {
+      readyNote.hidden = !ready;
+      readyNote.textContent = lang === 'he' ? 'השרשרת נבחרה למארז ✓ עכשיו אפשר להוסיף לסל' : 'The necklace is selected for this packaging ✓ You can now add it to the cart';
+    }
+  }
+
+  function renderSelectionSummary() {
+    var necklace = selectedNecklace();
+    var box = selectedBox();
+    var nValue = $('#summaryNecklaceValue');
+    var bValue = $('#summaryBoxValue');
+    var nRow = $('#summaryNecklaceRow');
+    var bRow = $('#summaryBoxRow');
+    if (nRow) nRow.hidden = !hasNecklaceOptions();
+    if (bRow) bRow.hidden = !hasBoxOptions();
+    if (nValue) nValue.textContent = necklace ? L(necklace.label) : (lang === 'he' ? 'טרם נבחרה' : 'Not selected');
+    if (bValue) bValue.textContent = box ? L(box.label) : (lang === 'he' ? 'טרם נבחרה' : 'Not selected');
+
+    var nStatus = $('#necklaceStatus');
+    var bStatus = $('#boxStatus');
+    if (nStatus) {
+      nStatus.textContent = necklace ? (lang === 'he' ? 'נבחר ✓' : 'Selected ✓') : (lang === 'he' ? 'נא לבחור' : 'Choose one');
+      nStatus.classList.toggle('is-done', !!necklace);
+    }
+    if (bStatus) {
+      bStatus.textContent = box ? (lang === 'he' ? 'נבחר ✓' : 'Selected ✓') : (lang === 'he' ? 'נא לבחור' : 'Choose one');
+      bStatus.classList.toggle('is-done', !!box);
+    }
+
+    var hint = $('#galleryHint');
+    if (hint) {
+      if (hasNecklaceOptions() && !necklace) hint.textContent = L(product.necklaceHeading) || (lang === 'he' ? 'בחרו אפשרות' : 'Choose an option');
+      else if (hasBoxOptions() && !box) hint.textContent = L(product.boxHeading) || (lang === 'he' ? 'בחרו אפשרות נוספת' : 'Choose another option');
+      else if ((hasSizeOptions() && !selectedSize()) || (hasColorOptions() && !selectedColor())) hint.textContent = lang === 'he' ? 'השלימו את אפשרויות המוצר' : 'Complete the product options';
+      else hint.textContent = lang === 'he' ? 'הבחירה שלכם מוכנה' : 'Your selection is ready';
+    }
+  }
+
+  function updatePriceAndPurchase() {
+    decorateSoldOutOptions();
+    var box = selectedBox();
+    var currentUnitPrice = unitPrice();
+    var price = $('#productPrice');
+    var compare = $('#productCompare');
+    var addBtn = $('#addToCart');
+    var promoLine = $('#productPromoLine');
+    var minusBtn = $('#qtyMinus');
+    var plusBtn = $('#qtyPlus');
+
+    if (price) {
+      if (isCompanionPickerFlow()) {
+        /* This page is choosing the necklace that will be added to an already
+           selected LOVE FOREVER package, so show only the necklace surcharge. */
+        if (product.startingPrice || (hasBoxOptions() && !box)) {
+          var pickerBasePrice = hasBoxOptions() && !box
+            ? Number(product.price) + greetingAddPrice(savedGreeting())
+            : currentUnitPrice;
+          price.textContent = '+' + (lang === 'he' ? 'החל מ־' : 'From ') + money(pickerBasePrice);
+        } else {
+          price.textContent = '+' + money(currentUnitPrice);
+        }
+      } else if (product.startingPrice && !(requiresCompanion() && companionReady())) {
+        price.textContent = (lang === 'he' ? 'החל מ־' : 'From ') + money(currentUnitPrice);
+      } else if (hasBoxOptions() && !box) {
+        price.textContent = (lang === 'he' ? 'החל מ־' : 'From ') + money(Number(product.price) + greetingAddPrice(savedGreeting()));
+      } else if (isGlassesProduct(product)) {
+        price.textContent = glassesPriceDisplay(currentUnitPrice, qty);
+      } else if (isHatsProduct(product)) {
+        price.textContent = hatsPriceDisplay(currentUnitPrice, qty);
+      } else {
+        price.textContent = money(currentUnitPrice);
+      }
+    }
+
+    if (promoLine) {
+      if (isHatsProduct(product)) {
+        promoLine.hidden = false;
+        promoLine.innerHTML = hatsOfferMarkup();
+        promoLine.style.display = 'inline-block';
+        promoLine.style.padding = '6px 10px';
+        promoLine.style.margin = '0 0 10px';
+        promoLine.style.borderRadius = '10px';
+        promoLine.style.background = '#ffffff';
+        promoLine.style.border = '1px solid #e5e9ef';
+        promoLine.style.color = '#17324d';
+        promoLine.style.fontSize = window.innerWidth <= 768 ? '13px' : '14px';
+        promoLine.style.fontWeight = '600';
+        promoLine.style.lineHeight = '1.35';
+        promoLine.style.whiteSpace = 'nowrap';
+      } else {
+        promoLine.hidden = true;
+        promoLine.innerHTML = '';
+      }
+    }
+
+    var salePill = $('#productSalePill');
+    var saveAmount = $('#productSaveAmount');
+    if (compare) {
+      if (product.compareAt) {
+        compare.hidden = false;
+        var packaging = selectedPackaging();
+        var selectedSizeOption = selectedSize();
+        var selectedColorOption = selectedColor();
+        var comparePrice = Number(product.compareAt) + (box ? Number(box.addPrice || 0) : 0) + (selectedSizeOption ? Number(selectedSizeOption.addPrice || 0) : 0) + (selectedColorOption ? Number(selectedColorOption.addPrice || 0) : 0) + (packaging ? Number(packaging.addPrice || 0) : 0) + greetingAddPrice(savedGreeting());
+        compare.textContent = money(comparePrice);
+
+        var discountPercent = Math.max(0, Math.round((1 - (Number(product.price) / Number(product.compareAt))) * 100));
+        if (salePill) {
+          salePill.hidden = discountPercent <= 0;
+          salePill.textContent = discountPercent > 0 ? (lang === 'he' ? discountPercent + '% הנחה' : discountPercent + '% off') : '';
+        }
+        if (saveAmount) {
+          var saved = Math.max(0, comparePrice - currentUnitPrice);
+          saveAmount.hidden = saved < 1;
+          saveAmount.textContent = saved >= 1 ? (lang === 'he' ? 'חיסכון ' + money(saved) : 'Save ' + money(saved)) : '';
+        }
+      } else {
+        compare.hidden = true;
+        if (salePill) salePill.hidden = true;
+        if (saveAmount) saveAmount.hidden = true;
+      }
+    }
+
+    var ready = isReadyToBuy();
+    if (addBtn) {
+      addBtn.disabled = product.inStock === false;
+      addBtn.setAttribute('aria-disabled', String(!ready));
+      addBtn.classList.toggle('is-not-ready', !ready);
+      if (product.inStock === false || [selectedNecklace(),selectedBox(),selectedSize(),selectedColor(),selectedPackaging()].some(function(o){return o && o.inStock === false})) {
+        addBtn.textContent = 'אזל מהמלאי';
+      } else if (hasNecklaceOptions() && !selectedNecklace()) {
+        addBtn.textContent = L(product.necklaceRequiredText) || (lang === 'he' ? 'נא לבחור אפשרות' : 'Please choose an option');
+      } else if (hasBoxOptions() && !selectedBox()) {
+        addBtn.textContent = L(product.boxRequiredText) || (lang === 'he' ? 'נא לבחור אפשרות' : 'Please choose an option');
+      } else if (hasSizeOptions() && !selectedSize()) {
+        addBtn.textContent = L(product.sizeRequiredText) || (lang === 'he' ? 'נא לבחור אפשרות' : 'Please choose an option');
+      } else if (hasColorOptions() && !selectedColor()) {
+        addBtn.textContent = L(product.colorRequiredText) || (lang === 'he' ? 'נא לבחור צבע' : 'Please choose a color');
+      } else if (hasCustomName() && !customNameReady()) {
+        addBtn.textContent = lang === 'he' ? 'נא להקליד שם' : 'Please enter a name';
+      } else if (hasCustomPhoto() && !customPhotoReady()) {
+        addBtn.textContent = customPhotoUploading ? (lang === 'he' ? 'שומרים את התמונה…' : 'Saving photo…') : (lang === 'he' ? 'נא להעלות תמונה' : 'Please upload a photo');
+      } else if (requiresCompanion() && !companionReady()) {
+        addBtn.textContent = lang === 'he' ? 'נא להוסיף שרשרת למארז' : 'Please add a necklace to the packaging';
+      } else if (requiresCompanion() && companionReady()) {
+        addBtn.textContent = (lang === 'he' ? 'הוספה לסל - ' : 'Add to cart - ') + money(currentUnitPrice * qty);
+      } else if (isCompanionPickerFlow()) {
+        addBtn.textContent = (lang === 'he' ? 'הוסף שרשרת למארז - ' : 'Add necklace to packaging - ') + money(currentUnitPrice * qty);
+      } else if (isGlassesProduct(product)) {
+        addBtn.textContent = (lang === 'he' ? 'הוספה לסל - ' : 'Add to cart - ') + glassesPriceDisplay(currentUnitPrice, qty);
+      } else if (isHatsProduct(product)) {
+        addBtn.textContent = (lang === 'he' ? 'הוספה לסל - ' : 'Add to cart - ') + hatsPriceDisplay(currentUnitPrice, qty);
+      } else {
+        addBtn.textContent = (lang === 'he' ? 'הוספה לסל - ' : 'Add to cart - ') + money(currentUnitPrice * qty);
+      }
+    }
+    if (minusBtn) minusBtn.disabled = !ready;
+    if (plusBtn) plusBtn.disabled = !ready;
+  }
+
+  function renderOptions() {
+    var optionsSection = $('.product-options');
+    var summary = $('#selectionSummary');
+    renderSizeOptions();
+    renderColorOptions();
+    arrangeProduct10CompactOptions();
+    arrangeCloverBraceletCompactColors();
+    arrangeProduct18CompactOptions();
+    arrangeProduct14CompactOptions();
+    arrangeProduct20CompactOptions();
+    arrangeProduct15CompactOptions();
+    renderCustomName();
+    renderCustomPhoto();
+    renderGiftPackaging();
+    renderRequiredCompanion();
+
+    // Always build the image/video selector when the product has more than one
+    // media item. Previously configurable products needed showAllGalleryThumbs,
+    // which left many product pages with no way to switch images.
+    renderStaticGallery();
+
+    if (!isConfigurable()) {
+      if (optionsSection) {
+        optionsSection.hidden = true;
+        optionsSection.style.display = 'none';
+      }
+      if (summary) {
+        summary.hidden = true;
+        summary.style.display = 'none';
+      }
+      activeImageIndex = Math.max(0, Math.min(activeImageIndex, Math.max(0, galleryImages().length - 1)));
+      var img = galleryImages()[activeImageIndex] || (product.images && product.images[0]);
+      if (img) setMainImage(img, L(product.title));
+      updateOptionSteps();
+      updatePriceAndPurchase();
+      return;
+    }
+
+    if (optionsSection) optionsSection.style.display = '';
+    if (summary) summary.style.display = '';
+
+    if (optionsSection) optionsSection.hidden = false;
+    if (summary) summary.hidden = false;
+    renderNecklaceOptions();
+    renderBoxOptions();
+    renderSelectionSummary();
+    updateOptionSteps();
+    updatePriceAndPurchase();
+  }
+
+  function selectNecklace(optionId) {
+    var option = findOption(product.necklaces, optionId);
+    if (option && option.inStock === false) { toast('האפשרות הזאת אזלה מהמלאי'); return; }
+    if (!option) return;
+
+    // This Star of David pair represents two separate catalog items. Swap the
+    // in-memory product rather than navigating so the name, gallery, details,
+    // price and cart SKU all stay in sync with the selected metal color.
+    if (product.slug === 'product-276' || product.slug === 'product-277') {
+      var pairedSlug = option.id === 'silver' ? 'product-276' : (option.id === 'gold' ? 'product-277' : '');
+      var pairedProduct = pairedSlug && findProduct(pairedSlug);
+      if (pairedProduct && pairedProduct.id !== product.id) {
+        product = pairedProduct;
+        selectedNecklaceId = option.id;
+        activeImageIndex = 0;
+        renderProduct();
+        updateSelectedProductIdentity();
+        return;
+      }
+    }
+
+    selectedNecklaceId = option.id;
+    updateVariantImageFromSelections();
+    if (!product.variantImages && option.image) setMainImage(option.image, L(option.label));
+    renderOptions();
+  }
+
+  function selectBox(optionId) {
+    var option = findOption(product.boxes, optionId);
+    if (option && option.inStock === false) { toast('האפשרות הזאת אזלה מהמלאי'); return; }
+    if (!option) return;
+    selectedBoxId = option.id;
+    setMainImage(option.image, L(option.label));
+    renderOptions();
+  }
+
+  function selectSize(optionId) {
+    var option = findOption(product.sizes, optionId);
+    if (option && option.inStock === false) { toast('האפשרות הזאת אזלה מהמלאי'); return; }
+    if (!option) return;
+    var unavailable = unavailableCombination(option.id, selectedColorId);
+    if (unavailable) { showUnavailableCombination(unavailable); return; }
+    selectedSizeId = option.id;
+    updateVariantImageFromSelections();
+    renderSizeOptions();
+    renderSelectionSummary();
+    updatePriceAndPurchase();
+  }
+
+  function selectColor(optionId) {
+    var option = findOption(product.colors, optionId);
+    if (option && option.inStock === false) { toast('האפשרות הזאת אזלה מהמלאי'); return; }
+    if (!option) return;
+    var unavailable = unavailableCombination(selectedSizeId, option.id);
+    if (unavailable) { showUnavailableCombination(unavailable); return; }
+
+    // The three Moissanite drop necklaces are three real SKUs. Switch the
+    // active product in memory without a page reload, keeping the selected
+    // carat sizes (and using the right SKU for the cart/order).
+    if (/^product-(289|290|291)$/.test(String(product.slug || ''))) {
+      var threeDropSlugs = { silver: 'product-289', gold: 'product-290', 'rose-gold': 'product-291' };
+      var nextDrop = findProduct(threeDropSlugs[option.id] || '');
+      if (nextDrop && nextDrop.id !== product.id) {
+        product = nextDrop;
+        selectedColorId = option.id;
+        activeImageIndex = 0;
+        try { window.history.replaceState(window.history.state, '', productPath(product)); } catch (e) {}
+        renderProduct();
+        updateSelectedProductIdentity();
+        return;
+      }
+    }
+    // Silver and gold are separate Cuban bracelet products. Switch the
+    // active SKU, full gallery and details without navigating or resetting
+    // the selected length (which remains valid for both colors).
+    if (/^product-(292|293)$/.test(String(product.slug || ''))) {
+      var cubanSlug = option.id === 'silver' ? 'product-292' : (option.id === 'gold' ? 'product-293' : '');
+      var nextCuban = cubanSlug && findProduct(cubanSlug);
+      if (nextCuban && nextCuban.id !== product.id) {
+        product = nextCuban;
+        selectedColorId = option.id;
+        activeImageIndex = 0;
+        try { window.history.replaceState(window.history.state, '', productPath(product)); } catch (e) {}
+        renderProduct();
+        updateSelectedProductIdentity();
+        return;
+      }
+    }
+    selectedColorId = option.id;
+    if (requiresCompanion()) {
+      var pending = readPendingBundle();
+      if (pending && pending.returnTo === product.id && pending.item && product.requiresCompanion.productIds.indexOf(pending.item.id) !== -1) {
+        pending.packageColor = option.id;
+        pending.item.packaging = option.id;
+        pending.item.key = '';
+        save(PENDING_BUNDLE_KEY, JSON.stringify(pending));
+      }
+    }
+    updateVariantImageFromSelections();
+    if (!product.variantImages && option.image) {
+      var colorImageIndex = galleryImages().indexOf(option.image);
+      if (colorImageIndex >= 0) showGalleryImage(colorImageIndex);
+      else setMainImage(option.image, L(option.label));
+    }
+    renderColorOptions();
+    updateSelectedProductIdentity();
+    renderRequiredCompanion();
+    updatePriceAndPurchase();
+  }
+
+
+
+  var addButtonSuccessTimer = null;
+  function showAddedOnProductButton() {
+    var button = $('#addToCart');
+    if (!button) return;
+    if (addButtonSuccessTimer) clearTimeout(addButtonSuccessTimer);
+    button.textContent = lang === 'he' ? 'נוסף לסל ✓' : 'Added to cart ✓';
+    addButtonSuccessTimer = setTimeout(function () {
+      addButtonSuccessTimer = null;
+      updatePriceAndPurchase();
+    }, 1200);
+  }
+
+  function addToCart() {
+    if (product.inStock === false || [selectedNecklace(),selectedBox(),selectedSize(),selectedColor(),selectedPackaging()].some(function(o){return o && o.inStock === false})) { toast('המוצר או האפשרות שנבחרה אזלו מהמלאי'); return; }
+    if (hasNecklaceOptions() && !selectedNecklace()) {
+      toast(L(product.necklaceRequiredText) || (lang === 'he' ? 'נא לבחור אפשרות' : 'Please choose an option'));
+      return;
+    }
+    if (hasBoxOptions() && !selectedBox()) {
+      toast(L(product.boxRequiredText) || (lang === 'he' ? 'נא לבחור אפשרות' : 'Please choose an option'));
+      return;
+    }
+    if (hasSizeOptions() && !selectedSize()) {
+      toast(L(product.sizeRequiredText) || (lang === 'he' ? 'נא לבחור אפשרות' : 'Please choose an option'));
+      var sizeBlock = $('#sizeBlock');
+      if (sizeBlock && sizeBlock.scrollIntoView) sizeBlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    if (hasColorOptions() && !selectedColor()) {
+      toast(L(product.colorRequiredText) || (lang === 'he' ? 'נא לבחור אפשרות' : 'Please choose an option'));
+      var colorBlock = $('#colorBlock');
+      if (colorBlock && colorBlock.scrollIntoView) colorBlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    if (requiresCompanion()) {
+      var pendingBundle = pendingCompanion();
+      if (!pendingBundle || !pendingBundle.item) {
+        toast(lang === 'he' ? 'בחרו שרשרת למארז לפני ההוספה לסל.' : 'Choose a necklace for the packaging before adding it to the cart.');
+        return;
+      }
+      var bundleItem = pendingBundle.item;
+      bundleItem.qty = qty;
+      bundleItem.packaging = selectedColorId || pendingBundle.packageColor || bundleItem.packaging;
+      bundleItem.key = '';
+      var bundleKey = cartItemKey(bundleItem);
+      bundleItem.key = bundleKey;
+      var bundleItems = cart();
+      var bundleFound = false;
+      bundleItems.forEach(function (item) {
+        if (cartItemKey(item) === bundleKey) {
+          item.qty = (parseInt(item.qty, 10) || 0) + qty;
+          item.key = bundleKey;
+          bundleFound = true;
+        }
+      });
+      if (!bundleFound) bundleItems.push(bundleItem);
+      save(LS.cart, JSON.stringify(bundleItems));
+      recordProductActivity('cart',product);
+
+      /* Keep the completed bundle in the cart, but reset the temporary
+         necklace selection on the product page immediately after adding. */
+      clearPendingBundle();
+      qty = 1;
+      updateCartCount();
+      renderRequiredCompanion();
+      updatePriceAndPurchase();
+      showAddedOnProductButton();
+      return;
+    }
+    if (hasCustomName() && !customNameReady()) {
+      toast(lang === 'he' ? 'נא להקליד את השם שיופיע על השרשרת' : 'Please enter the name for the necklace');
+      var input = $('#customNameInput');
+      if (input) input.focus();
+      return;
+    }
+    if (hasCustomPhoto() && !customPhotoReady()) {
+      toast(customPhotoUploading ? (lang === 'he' ? 'התמונה עדיין נשמרת' : 'The photo is still saving') : (lang === 'he' ? 'נא להעלות תמונה אישית' : 'Please upload a custom photo'));
+      return;
+    }
+
+    customNameValue = cleanCustomName(customNameValue);
+
+    if (isCompanionPickerFlow()) {
+      var returnTo = params.get('returnTo');
+      var packageColor = companionPackageColor();
+      var pendingItem = {
+        id: product.id,
+        qty: 1,
+        necklace: selectedNecklaceId,
+        box: selectedBoxId,
+        size: selectedSizeId,
+        color: selectedColorId,
+        packaging: packageColor,
+        customName: hasCustomName() ? customNameValue : null,
+        customPhoto: hasCustomPhoto() ? customPhotoValue : null,
+        greeting: savedGreeting(),
+        selectedName: selectedDisplayTitle(),
+        selectedImage: selectedDisplayImage()
+      };
+      pendingItem.key = cartItemKey(pendingItem);
+      savePendingBundle(pendingItem, returnTo, packageColor);
+      toast(lang === 'he' ? 'השרשרת נבחרה למארז' : 'Necklace selected for packaging');
+      window.setTimeout(function () {
+        var returnProduct = findProduct(returnTo);
+        window.location.href = productPath(returnProduct) + '?bundleSelected=1' + (packageColor ? '&color=' + encodeURIComponent(packageColor) : '');
+      }, 220);
+      return;
+    }
+
+    var items = cart();
+    var pendingQty = 0;
+    items = items.filter(function (item) {
+      var isPendingSameProduct = item && item.id === product.id && Array.isArray(item.quickAddPending) && item.quickAddPending.length;
+      if (isPendingSameProduct) pendingQty += Math.max(1, parseInt(item.qty, 10) || 1);
+      return !isPendingSameProduct;
+    });
+    if (pendingQty > 0) qty = Math.max(qty, pendingQty);
+
+    var key = variantKey();
+    var found = false;
+
+    items.forEach(function (item) {
+      var existingKey = item.key || (item.id + '|' + (item.necklace || '') + '|' + (item.box || '') + '|' + (item.size || '') + '|' + (item.color || '') + '|pack:' + (item.packaging || '') + '|' + (item.customName || '') + '|p:' + (item.customPhoto && item.customPhoto.assetId || ''));
+      if (existingKey === key) {
+        item.qty = (parseInt(item.qty, 10) || 0) + qty;
+        item.key = key;
+        item.selectedName = selectedDisplayTitle();
+        item.selectedImage = selectedDisplayImage();
+        found = true;
+      }
+    });
+
+    if (!found) {
+      items.push({
+        id: product.id,
+        qty: qty,
+        necklace: selectedNecklaceId,
+        box: selectedBoxId,
+        size: selectedSizeId,
+        color: selectedColorId,
+        packaging: selectedPackagingId,
+        customName: hasCustomName() ? customNameValue : null,
+        customPhoto: hasCustomPhoto() ? customPhotoValue : null,
+        greeting: savedGreeting(),
+        selectedName: selectedDisplayTitle(),
+        selectedImage: selectedDisplayImage(),
+        key: key
+      });
+    }
+
+    save(LS.cart, JSON.stringify(items));
+    recordProductActivity('cart',product);
+    updateCartCount();
+    showAddedOnProductButton();
+  }
+
+  // Size guides should reflect an actual selection on the product page.
+  // Color/metal and width/thickness controls alone do not require length guidance.
+  function productHasLengthChoices(value) {
+    var options = value && Array.isArray(value.sizes) ? value.sizes : [];
+    if (options.length < 2) return false;
+    var heading = value.sizeHeading || {};
+    var headingText = String(typeof heading === 'string' ? heading : ((heading.he || '') + ' ' + (heading.en || ''))).toLowerCase();
+    if (/רוחב|עובי|קוטר|width|thickness|diameter/i.test(headingText)) return false;
+    var headingIsLength = /אורך|length/i.test(headingText);
+    var lengthCount = 0;
+    for (var i = 0; i < options.length; i++) {
+      var option = options[i] || {};
+      var label = option.label || {};
+      var labelText = String(typeof label === 'string' ? label : ((label.he || '') + ' ' + (label.en || ''))).toLowerCase();
+      var idText = String(option.id || '').toLowerCase();
+      // A millimeter measurement denotes width/thickness here, not chain length.
+      if (/מ[״"׳']?מ|\bmm\b/i.test(labelText)) continue;
+      if (/ס[״"׳']?מ|\bcm\b|\binch(?:es)?\b|אינץ/i.test(labelText) ||
+          /(?:^|\d)in$/.test(idText) || headingIsLength) lengthCount++;
+    }
+    return lengthCount >= 2;
+  }
+
+  function productHasRingSizeChoices(value) {
+    var options = value && Array.isArray(value.sizes) ? value.sizes : [];
+    if (options.length < 2) return false;
+    var heading = value.sizeHeading || {};
+    var headingText = String(typeof heading === 'string' ? heading : ((heading.he || '') + ' ' + (heading.en || ''))).toLowerCase();
+    return !/רוחב|עובי|width|thickness/i.test(headingText);
+  }
+
+  function renderProduct() {
+    /* In the LOVE FOREVER necklace-picker flow the package is already chosen
+       on the package product. Keep it on the pending bundle only; do not mark
+       it as this necklace's optional packaging, otherwise the 54.90 ₪ gets
+       added to the necklace price a second time on this page. */
+    if (isCompanionPickerFlow()) selectedPackagingId = null;
+    if (!product) {
+      window.location.href = '/shop#shop';
+      return;
+    }
+
+    document.documentElement.lang = 'he';
+    document.documentElement.dir = 'rtl';
+    document.body.dataset.productSlug = String(product.slug || product.id || '');
+    updateProductSeo();
+
+    $('#brandName').textContent = L(CFG.brand.name);
+    $('#footBrand').textContent = L(CFG.brand.name);
+    $('#footBrandBottom').textContent = L(CFG.brand.name);
+
+    var navShop = $('#navShop');
+    var navHow = $('#navHow');
+    var navFaq = $('#navFaq');
+    var navContact = $('#navContact');
+    if (navShop) navShop.textContent = lang === 'he' ? 'החנות' : 'Shop';
+    if (navHow) navHow.textContent = lang === 'he' ? 'איך זה עובד' : 'How it works';
+    if (navFaq) navFaq.textContent = lang === 'he' ? 'שאלות נפוצות' : 'FAQ';
+    if (navContact) navContact.textContent = lang === 'he' ? 'צרו קשר' : 'Contact';
+
+    var crumbCurrent = $('#crumbCurrent');
+    if (crumbCurrent) crumbCurrent.textContent = selectedDisplayTitle();
+    $('#productTitle').textContent = selectedDisplayTitle();
+    $('#productSubtitle').textContent = L(product.subtitle);
+
+    var standalone = !(isConfigurable() || hasSizeOptions() || hasColorOptions() || hasCustomName() || hasCustomPhoto() || hasGiftPackaging() || requiresCompanion());
+    document.body.classList.toggle('is-standalone-product', standalone);
+    var divider = document.querySelector('.product-info__divider');
+    if (divider) divider.hidden = standalone;
+
+    var badge = L(product.badge);
+    $('#productBadge').hidden = !badge;
+    $('#productBadge').textContent = badge;
+
+    var productTitleForGuide = L(product.title) || '';
+    var guideCategories = Array.isArray(product.categories) ? product.categories.map(function (value) { return String(value || '').toLowerCase(); }) : [];
+    var guideCategory = String(product.category || '').toLowerCase();
+    var isGreetingJewelryForGuide = guideCategory === 'greeting' || guideCategory === 'message-jewelry' || guideCategories.indexOf('greeting') !== -1 || guideCategories.indexOf('message-jewelry') !== -1 || /תכשיט\s*עם\s*ברכה|ברכה\s*אישית/.test(productTitleForGuide);
+    var isPhotoJewelryForGuide = guideCategory === 'photo-bracelets' || guideCategory === 'photo-jewelry' || guideCategory === 'photo-jewellery' || guideCategory === 'projection-jewelry' || guideCategory === 'projection-jewellery' || guideCategory === 'photo' || guideCategories.indexOf('photo-bracelets') !== -1 || guideCategories.indexOf('photo-jewelry') !== -1 || guideCategories.indexOf('photo-jewellery') !== -1 || guideCategories.indexOf('projection-jewelry') !== -1 || guideCategories.indexOf('projection-jewellery') !== -1 || guideCategories.indexOf('photo') !== -1 || /תכשיט\s*עם\s*תמונה|תמונה\s*מוקרנת|תכשיטי\s*תמונה/.test(productTitleForGuide);
+    var isFashionBraceletForGuide = guideCategory === 'bracelets-fashion' || guideCategories.indexOf('bracelets-fashion') !== -1;
+    var suppressAllSizeGuides = isGreetingJewelryForGuide || isPhotoJewelryForGuide || isFashionBraceletForGuide;
+
+    var isBraceletProduct = !suppressAllSizeGuides && (product.category === 'bracelets' || (Array.isArray(product.categories) && product.categories.indexOf('bracelets') !== -1));
+    var braceletSizeGuideLink = $('#braceletSizeGuideLink');
+    if (braceletSizeGuideLink) braceletSizeGuideLink.hidden = !(isBraceletProduct && productHasLengthChoices(product));
+
+    var isRingProduct = !suppressAllSizeGuides && (product.category === 'rings' || (Array.isArray(product.categories) && product.categories.indexOf('rings') !== -1));
+    var ringSizeGuideLink = $('#ringSizeGuideLink');
+    if (ringSizeGuideLink) ringSizeGuideLink.hidden = !(isRingProduct && productHasRingSizeChoices(product));
+
+    var isNecklaceProduct = !suppressAllSizeGuides && (product.category === 'necklaces' || (Array.isArray(product.categories) && product.categories.indexOf('necklaces') !== -1) || /שרשרת/.test(productTitleForGuide) || /necklace/i.test(productTitleForGuide));
+    var necklaceSizeGuideLink = $('#necklaceSizeGuideLink');
+    if (necklaceSizeGuideLink) necklaceSizeGuideLink.hidden = !(isNecklaceProduct && productHasLengthChoices(product));
+    $('#necklaceHeading').textContent = L(product.necklaceHeading) || (isBraceletProduct ? (lang === 'he' ? 'בחרו צבע' : 'Choose color') : (lang === 'he' ? 'בחרו שרשרת' : 'Choose a necklace'));
+    $('#boxHeading').textContent = L(product.boxHeading) || (lang === 'he' ? 'בחרו קופסה' : 'Choose a box');
+    $('#summaryNecklaceLabel').textContent = L(product.necklaceSummaryLabel) || (isBraceletProduct ? (lang === 'he' ? 'צמיד' : 'Bracelet') : (lang === 'he' ? 'שרשרת' : 'Necklace'));
+    $('#summaryBoxLabel').textContent = L(product.boxSummaryLabel) || (lang === 'he' ? 'קופסה' : 'Box');
+    var sizeHeading = $('#sizeHeading'); if (sizeHeading) sizeHeading.textContent = L(product.sizeHeading) || (lang === 'he' ? 'בחרו אורך' : 'Choose a length');
+    var colorHeading = $('#colorHeading'); if (colorHeading) colorHeading.textContent = L(product.colorHeading) || (lang === 'he' ? 'בחרו צבע' : 'Choose a color');
+    var photoHeading = $('#customPhotoHeading'); if (photoHeading) photoHeading.textContent = (product.customPhoto && L(product.customPhoto.heading)) || (lang === 'he' ? 'העלו תמונה' : 'Upload a photo');
+    var customHeading = $('#customNameHeading'); if (customHeading) customHeading.textContent = (product.customName && L(product.customName.heading)) || (lang === 'he' ? 'הקלידו את השם שלכם' : 'Enter your name');
+
+    var messageCard = document.querySelector('.message-card');
+    var greetingCustomizer = $('#greetingCustomizer');
+    var greeting = savedGreeting();
+    if (supportsCustomGreeting()) {
+      if (greetingCustomizer) {
+        greetingCustomizer.hidden = false;
+        $('#greetingDesignBtn').href = '/greeting-editor?id=' + encodeURIComponent(product.slug || product.id);
+        $('#greetingDesignBtn').textContent = greeting
+          ? (lang === 'he' ? 'עריכת הברכה האישית' : 'Edit custom greeting')
+          : (lang === 'he' ? 'עיצוב ברכה אישית' : 'Design a custom greeting');
+        $('#greetingCustomizerEyebrow').textContent = lang === 'he' ? 'ברכה אישית' : 'Custom greeting';
+        $('#greetingCustomizerTitle').textContent = lang === 'he' ? 'רוצים לכתוב את המילים שלכם?' : 'Want to use your own words?';
+        var greetingPrice = greetingAddPrice(greeting);
+        $('#greetingCustomizerStatus').textContent = greeting
+          ? (lang === 'he' ? 'הברכה האישית נשמרה ונוספה להזמנה בתוספת ' + greetingPrice + ' ₪ ✓' : 'Your custom greeting is saved and adds ₪' + greetingPrice + ' to this item ✓')
+          : (lang === 'he' ? 'עצבו ברכה אישית בדיוק כמו שאתם רוצים.' : 'Design a personal greeting exactly the way you want.');
+        var removeBtn = $('#greetingRemoveBtn');
+        if (removeBtn) { removeBtn.hidden = !greeting; removeBtn.textContent = lang === 'he' ? 'חזרה לברכה המקורית' : 'Use original greeting'; }
+      }
+      var previewEyebrow = $('#greetingPreviewEyebrow'); if (previewEyebrow) previewEyebrow.textContent = lang === 'he' ? 'העיצוב שבחרתם' : 'Your selected design';
+      var previewTitle = $('#greetingPreviewTitle'); if (previewTitle) previewTitle.textContent = lang === 'he' ? 'הברכה האישית שלכם' : 'Your custom greeting';
+      var previewPrice = $('#greetingPreviewPrice'); if (previewPrice) previewPrice.textContent = lang === 'he' ? '+' + greetingAddPrice(greeting) + ' ₪' : '+₪' + greetingAddPrice(greeting);
+      renderGreetingPngPreview(greeting);
+    } else if (greetingCustomizer) {
+      greetingCustomizer.hidden = true;
+      var greetingPreviewBlock = $('#greetingPreviewBlock'); if (greetingPreviewBlock) greetingPreviewBlock.hidden = true;
+    }
+
+    if (hasMessageCard() && !greeting) {
+      if (messageCard) messageCard.hidden = false;
+      $('#messageHeading').textContent = lang === 'he' ? 'המסר שמצורף למתנה' : 'The message included with the gift';
+      $('#cardTitle').textContent = L(product.cardTitle);
+      $('#cardMessage').textContent = L(product.cardMessage);
+      $('#cardSignature').textContent = L(product.signature);
+    } else if (messageCard) {
+      // When a custom greeting is selected, show its exact saved PNG above
+      // instead of a second plain-text approximation of the design.
+      messageCard.hidden = true;
+    }
+
+    // Keep the product detail strings in the exact order provided by product data/admin.
+    // Presentation only: no icons, numbering or duplicated metadata.
+    var details = product.details && product.details.he || [];
+    var detailsTitle = $('#productDetailsSummaryTitle');
+    if (detailsTitle) detailsTitle.textContent = lang === 'he' ? 'פרטים' : 'Details';
+    $('#productDetails').innerHTML = details.map(function (detail) {
+      return '<div class="product-detail-row">' + esc(detail) + '</div>';
+    }).join('');
+
+    $('#qtyValue').textContent = qty;
+    var assureShip = $('#assureShip');
+    var assureSecure = $('#assureSecure');
+    var assureReturn = $('#assureReturn');
+    if (assureShip) assureShip.textContent = lang === 'he' ? 'משלוח עד הבית' : 'Door delivery';
+    if (assureSecure) assureSecure.textContent = lang === 'he' ? 'תשלום מאובטח' : 'Secure payment';
+    if (assureReturn) assureReturn.textContent = lang === 'he' ? '30 יום להחזרה' : '30-day returns';
+    $('#footAbout').textContent = lang === 'he' ? 'שרשראות מתנה שמגיעות עם המילים שנשארות.' : 'Gift necklaces that arrive with words that stay.';
+    $('#footShopTitle').textContent = lang === 'he' ? 'קניות' : 'Shop';
+    $('#footShopLink').textContent = lang === 'he' ? 'החנות' : 'Shop';
+    $('#footHowLink').textContent = lang === 'he' ? 'איך זה עובד' : 'How it works';
+    $('#footFaqLink').textContent = lang === 'he' ? 'שאלות נפוצות' : 'FAQ';
+    $('#footInfoTitle').textContent = lang === 'he' ? 'מידע' : 'Information';
+    $('#footContactTitle').textContent = lang === 'he' ? 'יצירת קשר' : 'Contact';
+    var productAfterText = $('#productAfterText');
+    if (productAfterText) {
+      productAfterText.textContent = product.afterText
+        ? L(product.afterText)
+        : (lang === 'he'
+          ? 'השרשרת שתבחרו, הקופסה שתבחרו וכרטיס המסר מגיעים יחד - בלי שתצטרכו להרכיב, להדפיס או לארוז שום דבר.'
+          : 'Your chosen necklace, chosen gift box and printed message card arrive together - ready to give.');
+    }
+
+    renderFooterContact();
+
+    var initialImage = (product.images && product.images[0]) || (product.boxes && product.boxes[0] && product.boxes[0].image) || (product.necklaces && product.necklaces[0] && product.necklaces[0].image);
+    if (initialImage && !selectedNecklaceId && !selectedBoxId) setMainImage(initialImage, L(product.title));
+    if (selectedNecklaceId && selectedNecklace() && selectedNecklace().image) {
+      var restoredNecklaceIndex = galleryImages().indexOf(selectedNecklace().image);
+      if (restoredNecklaceIndex >= 0) showGalleryImage(restoredNecklaceIndex);
+      else setMainImage(selectedNecklace().image, L(selectedNecklace().label));
+    } else if (selectedColor() && selectedColor().image) {
+      var restoredColorIndex = galleryImages().indexOf(selectedColor().image);
+      if (restoredColorIndex >= 0) showGalleryImage(restoredColorIndex);
+      else setMainImage(selectedColor().image, L(selectedColor().label));
+    }
+
+    renderOptions();
+    // The same stock badges and disabled controls apply to every category's
+    // option renderer (including the 3-stone table and swatch layouts).
+    [['data-size',product.sizes],['data-color',product.colors],['data-necklace',product.necklaces],['data-box',product.boxes]].forEach(function(group) {
+      (group[1] || []).forEach(function(option) {
+        if (option.inStock !== false) return;
+        $$('['+group[0]+']').forEach(function(node) {
+          if (node.getAttribute(group[0]) !== option.id) return;
+          node.classList.add('versans-option-sold-out');
+          node.setAttribute('aria-disabled','true');
+          node.setAttribute('title','אזל מהמלאי');
+          if (node.tagName === 'BUTTON') node.disabled = true;
+        });
+      });
+    });
+    restoreCustomPhoto();
+  }
+
+  function renderFooterContact() {
+    var c = CFG.contact;
+    var out = [];
+    if (c.email) out.push('<li><a href="mailto:' + esc(c.email) + '">' + esc(c.email) + '</a></li>');
+    if (c.phone) out.push('<li><a href="tel:' + esc(c.phone.replace(/\s|-/g, '')) + '">' + esc(c.phone) + '</a></li>');
+    $('#productFootContact').innerHTML = out.join('');
+  }
+
+  function changeQty(delta) {
+    var ready = isReadyToBuy();
+    if (!ready) return;
+    qty = Math.max(1, qty + delta);
+    $('#qtyValue').textContent = qty;
+    updatePriceAndPurchase();
+  }
+
+  function resetProductNavMenuScroll(navmenu) {
+    if (!navmenu) return;
+    navmenu.scrollTop = 0;
+    navmenu.scrollLeft = 0;
+    if (typeof navmenu.scrollTo === 'function') navmenu.scrollTo(0, 0);
+  }
+
+  function setMenu(open) {
+    var navmenu = $('#navmenu');
+    resetProductNavMenuScroll(navmenu);
+    navmenu.classList.toggle('is-open', open);
+    $('#navScrim').hidden = !open;
+    $('#burger').setAttribute('aria-expanded', String(open));
+    if (open) {
+      requestAnimationFrame(function () { resetProductNavMenuScroll(navmenu); });
+    }
+    if (!open) {
+      $$('.nav__submenu.is-open').forEach(function (menu) { menu.classList.remove('is-open'); });
+      $$('[data-nav-parent-toggle]').forEach(function (link) { link.setAttribute('aria-expanded', 'false'); });
+    }
+    document.body.classList.toggle('is-locked', open);
+  }
+
+
+  /* Product page mobile drawer must behave like a real touch menu, not a
+     desktop hover menu. Keep vertical drawer scrolling available while
+     removing double-tap delays/gesture ambiguity on the actual controls. */
+  (function prepareProductMobileNavTouch() {
+    var navmenu = $('#navmenu');
+    if (!navmenu) return;
+    navmenu.style.touchAction = 'pan-y';
+    navmenu.style.webkitOverflowScrolling = 'touch';
+    $$('#navmenu a, #navmenu button').forEach(function (control) {
+      control.style.touchAction = 'manipulation';
+      control.style.pointerEvents = 'auto';
+    });
+  })();
+
+
+  document.addEventListener('click', function (e) {
+    var necklaceButton = e.target.closest('[data-necklace]');
+    if (necklaceButton) { selectNecklace(necklaceButton.getAttribute('data-necklace')); return; }
+
+    var boxButton = e.target.closest('[data-box]');
+    if (boxButton) { selectBox(boxButton.getAttribute('data-box')); return; }
+
+    var packagingButton = e.target.closest('[data-packaging]');
+    if (packagingButton) { selectPackaging(packagingButton.getAttribute('data-packaging')); return; }
+
+    var galleryButton = e.target.closest('[data-gallery-index]');
+    if (galleryButton) { showGalleryImage(parseInt(galleryButton.getAttribute('data-gallery-index'), 10) || 0); return; }
+
+    var galleryVideoButton = e.target.closest('[data-gallery-video-index]');
+    if (galleryVideoButton) { showGalleryVideo(parseInt(galleryVideoButton.getAttribute('data-gallery-video-index'), 10) || 0); return; }
+
+    var sizeButton = e.target.closest('[data-size]');
+    if (sizeButton) { selectSize(sizeButton.getAttribute('data-size')); return; }
+
+    var colorButton = e.target.closest('[data-color]');
+    if (colorButton) { selectColor(colorButton.getAttribute('data-color')); return; }
+
+    if (e.target.closest('#qtyMinus')) { changeQty(-1); return; }
+    if (e.target.closest('#qtyPlus')) { changeQty(1); return; }
+    if (e.target.closest('#addToCart')) { addToCart(); return; }
+    var greetingDesignTarget = e.target.closest('#greetingDesignBtn');
+    if (greetingDesignTarget && supportsCustomGreeting()) {
+      /* Preserve the customer's product selections while the greeting editor is open. */
+      saveGreetingSelectionState();
+      /* Price approval happens only when the greeting is saved in the editor. */
+    }
+    if (e.target.closest('#greetingRemoveBtn')) { removeCustomGreeting(); return; }
+
+    var navParentToggle = e.target.closest('[data-nav-parent-toggle]');
+    if (navParentToggle && window.matchMedia('(max-width: 980px)').matches) {
+      var navItem = navParentToggle.closest('.nav__item--has-submenu');
+      var navSubmenu = navItem && navItem.querySelector('.nav__submenu');
+      if (navSubmenu) {
+        /* First tap opens the sub-category list. A second tap on the same
+           parent goes to the parent category itself. This keeps every
+           category reachable with touch on product pages. */
+        if (!navSubmenu.classList.contains('is-open')) {
+          e.preventDefault();
+          $$('.nav__submenu.is-open').forEach(function (menu) {
+            if (menu !== navSubmenu) menu.classList.remove('is-open');
+          });
+          $$('[data-nav-parent-toggle][aria-expanded="true"]').forEach(function (link) {
+            if (link !== navParentToggle) link.setAttribute('aria-expanded', 'false');
+          });
+          navSubmenu.classList.add('is-open');
+          navParentToggle.setAttribute('aria-expanded', 'true');
+          return;
+        }
+
+        /* Already open: do not prevent the link. Close the drawer and let
+           the browser follow the href to the category page. */
+        setMenu(false);
+        return;
+      }
+    }
+
+    if (e.target.closest('#burger')) { setMenu(!$('#navmenu').classList.contains('is-open')); return; }
+    if (e.target.closest('#navScrim, [data-nav-close]') || e.target.closest('.nav__menu a')) { setMenu(false); }
+  });
+
+  // The gallery image is for viewing and swiping, not for opening a zoom
+  // viewer or triggering native image drag / Safari gesture magnification.
+  // Keep normal pinch zoom available elsewhere on the page for accessibility.
+  (function disableProductGalleryZoom() {
+    var image = $('#productMainImage');
+    if (!image) return;
+    image.draggable = false;
+    image.addEventListener('dragstart', function (event) { event.preventDefault(); });
+    image.addEventListener('dblclick', function (event) { event.preventDefault(); });
+    ['gesturestart', 'gesturechange'].forEach(function (eventName) {
+      image.addEventListener(eventName, function (event) { event.preventDefault(); }, { passive: false });
+    });
+  })();
+
+  // Mobile gallery swipe: allow switching photos directly on the main image.
+  // A swipe is accepted only when horizontal movement clearly exceeds vertical
+  // movement, so normal page scrolling is unaffected.
+  (function bindProductGallerySwipe() {
+    var stage = document.querySelector('.product-gallery__stage');
+    if (!stage) return;
+    var startX = 0;
+    var startY = 0;
+    var tracking = false;
+
+    stage.addEventListener('touchstart', function (event) {
+      if (!event.touches || event.touches.length !== 1) return;
+      startX = event.touches[0].clientX;
+      startY = event.touches[0].clientY;
+      tracking = true;
+    }, { passive: true });
+
+    stage.addEventListener('touchend', function (event) {
+      if (!tracking || !event.changedTouches || !event.changedTouches.length) return;
+      tracking = false;
+
+      var dx = event.changedTouches[0].clientX - startX;
+      var dy = event.changedTouches[0].clientY - startY;
+      if (Math.abs(dx) < 45 || Math.abs(dx) <= Math.abs(dy) * 1.2) return;
+
+      var imgs = galleryImages();
+      if (imgs.length < 2) return;
+
+      // In RTL a left swipe moves forward through the image list.
+      var nextIndex = dx < 0 ? activeImageIndex + 1 : activeImageIndex - 1;
+      if (nextIndex < 0) nextIndex = imgs.length - 1;
+      if (nextIndex >= imgs.length) nextIndex = 0;
+      showGalleryImage(nextIndex);
+    }, { passive: true });
+  })();
+
+  var customPhotoInput = $('#customPhotoInput');
+  if (customPhotoInput) {
+    customPhotoInput.addEventListener('change', function () {
+      var file = customPhotoInput.files && customPhotoInput.files[0];
+      if (file) handleProductPhotoFile(file);
+    });
+  }
+  var customPhotoRemove = $('#customPhotoRemove');
+  if (customPhotoRemove) customPhotoRemove.addEventListener('click', function () { removeProductPhoto(); });
+
+  var customInput = $('#customNameInput');
+  if (customInput) {
+    customInput.addEventListener('input', function () {
+      customNameValue = cleanCustomName(customInput.value || '');
+      customInput.value = customNameValue;
+      renderCustomName();
+      updatePriceAndPurchase();
+    });
+    customInput.addEventListener('blur', function () {
+      customNameValue = cleanCustomName(customInput.value);
+      customInput.value = customNameValue;
+      renderCustomName();
+      updatePriceAndPurchase();
+    });
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') setMenu(false);
+    // Click and keyboard navigation select the same whole table row.
+    if (e.key === 'Enter' || e.key === ' ') {
+      var caratRow = e.target.closest && e.target.closest('.product-carat-table__row[data-size]');
+      if (caratRow) {
+        e.preventDefault();
+        selectSize(caratRow.getAttribute('data-size'));
+        // Restoring focus keeps keyboard users on the newly rendered table.
+        var activeRow = Array.prototype.slice.call(document.querySelectorAll('.product-carat-table__row')).find(function (row) {
+          return row.getAttribute('data-size') === caratRow.getAttribute('data-size');
+        });
+        if (activeRow) activeRow.focus();
+      }
+    }
+  });
+
+  window.addEventListener('storage', function (event) {
+    if (event && event.key === LS.cart) {
+      updateCartCount();
+      renderRequiredCompanion();
+      updatePriceAndPurchase();
+    }
+  });
+  window.addEventListener('pageshow', function (event) {
+    updateCartCount();
+    /* A bfcache return already preserved the in-memory selections, so the saved copy is no longer needed. */
+    if (event && event.persisted) clearGreetingSelectionState();
+  });
+  window.addEventListener('focus', function () { updateCartCount(); });
+  window.addEventListener('versans:cart-changed', function () {
+    updateCartCount();
+    renderRequiredCompanion();
+    updatePriceAndPurchase();
+  });
+
+  window.addEventListener('scroll', function () {
+    $('#nav').classList.toggle('is-stuck', window.scrollY > 10);
+  }, { passive: true });
+
+  // Missing files should disappear from the visible gallery automatically.
+  // This is a display fallback only: never silently delete catalog data.
+  var galleryMainImage = $('#productMainImage');
+  if (galleryMainImage) galleryMainImage.addEventListener('error', function () {
+    var src = galleryMainImage.getAttribute('src');
+    if (src) skipUnavailableGalleryImage(src);
+  });
+  var galleryRail = $('#productThumbs');
+  if (galleryRail) galleryRail.addEventListener('error', function (event) {
+    var target = event.target;
+    if (target && target.tagName === 'IMG' && target.closest('[data-gallery-index]')) {
+      skipUnavailableGalleryImage(target.getAttribute('src'));
+    }
+  }, true);
+
+  window.addEventListener('resize', scheduleGalleryThumbRailSync);
+  window.addEventListener('orientationchange', scheduleGalleryThumbRailSync);
+  if (typeof ResizeObserver !== 'undefined') {
+    var galleryStageObserver = new ResizeObserver(scheduleGalleryThumbRailSync);
+    var galleryStage = document.querySelector('.product-gallery__stage');
+    if (galleryStage) galleryStageObserver.observe(galleryStage);
+  }
+
+  /* The selected necklace for a LOVE FOREVER package is temporary.
+     If the customer leaves or reloads this package product page, clear that
+     selection. Items already added to the cart are stored separately and stay
+     untouched. Also refresh bfcache-restored pages so stale UI cannot return. */
+  if (requiresCompanion()) {
+    window.addEventListener('pagehide', function () {
+      clearPendingBundle();
+    });
+    window.addEventListener('pageshow', function (event) {
+      if (!event.persisted) return;
+      clearPendingBundle();
+      refreshCompanionSelectionUi();
+    });
+  }
+
+  $('#year').textContent = new Date().getFullYear();
+  updateCartCount();
+  restoreGreetingSelectionState();
+  renderProduct();
+  scheduleGalleryThumbRailSync();
+})();

@@ -546,7 +546,15 @@ function parseReviewMedia(value) {
 }
 
 function productById(id) {
-  return PRODUCTS.find((product) => String(product.id) === String(id)) || null;
+  // Product links use the stable product-### slug, while some admin-created
+  // products have a different internal id. Resolve both without changing
+  // stored orders, cart references, or the PostgreSQL product record.
+  const value = String(id == null ? '' : id);
+  return PRODUCTS.find(product =>
+    String(product.id) === value ||
+    String(product.slug) === value ||
+    (product.urlSlug && String(product.urlSlug) === value)
+  ) || null;
 }
 
 function productTitle(product) {
