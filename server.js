@@ -9452,7 +9452,10 @@ function injectStorefrontRouting(html, bootRoute, previewProduct) {
     const attr = key.replace(/[^a-z0-9-]/g, '');
     const url = ROUTES.COLLECTION_PATHS[key];
     const links = url ? [`a[href=\"${url}\"]`, `a[href^=\"${url}#\"]`, `a[href^=\"${url}?\"]`] : [];
-    return [`[data-cat=\"${attr}\"]`, `[data-nav-group=\"${attr}\"]`, `[data-nav-cat=\"${attr}\"]`, `[data-nav-subcat=\"${attr}\"]`, ...links];
+    // Mobile tiles have `display:block!important` in styles.css with higher
+    // specificity than [data-cat]. Ensure admin visibility wins on phones.
+    const mobileTile = `body.home-page .mobile-collection-picker__track > .mobile-collection-picker__item[data-cat=\"${attr}\"]`;
+    return [`[data-cat=\"${attr}\"]`, mobileTile, `[data-nav-group=\"${attr}\"]`, `[data-nav-cat=\"${attr}\"]`, `[data-nav-subcat=\"${attr}\"]`, ...links];
   });
   if (catalogManager.isCategoryHidden('photo-bracelets')) {
     // Legacy marquee links do not have a data-cat attribute.
