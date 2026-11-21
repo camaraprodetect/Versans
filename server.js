@@ -19,6 +19,7 @@ const { createFinanceLedger } = require('./lib/finance-ledger.js');
 const employeePolicy = require('./lib/employee-access.js');
 const orderAnomalies = require('./lib/admin-order-anomalies.js');
 const { createPaymentUrl, verifyPayment, priceOrder } = require('./api/_hyp.js');
+const { assessVerifiedPayment, hasUniquePaymentReturnFields } = require('./lib/payment-verification.js');
 const { PRODUCTS, CATEGORIES } = require('./assets/products.js');
 const { createCatalogManager } = require('./lib/catalog-manager.js');
 const { createMarketingManager } = require('./lib/marketing-manager.js');
@@ -10154,6 +10155,11 @@ const server = http.createServer(async (req, res) => {
         json(res, 200, { ...result, verifiedCustomer: false });
         return;
       } else {
+        if (!hasUniquePaymentReturnFields(parsed.searchParams)) {
+          // Never guess which of several Order/Amount/CCode values was signed.
+          json(res, 400, { ok: false, error: 'ambiguous_payment_callback' });
+          return;
+        }
         result = await verifyPayment(query);
         orderRef = String(result.order || query.Order || '').trim();
         order = orderRef ? await database.getOrderByRef(orderRef) : null;
@@ -10165,14 +10171,22 @@ const server = http.createServer(async (req, res) => {
 
       if (order) {
         if (result.ok) {
-          const returnedAmount = result.amount == null || result.amount === '' ? null : amountToAgorot(result.amount);
-          const amountMatches = returnedAmount === null || returnedAmount === Number(order.amount_agorot);
-          if (!amountMatches && returnedAmount !== null) {
-            // Only the server-verified provider response is trusted, never the checkout input.
-            try { await orderAnomalies.recordGatewayMismatch(database,order.order_ref,returnedAmount,Number(order.amount_agorot)); }
-            catch (auditError) { console.error('Payment mismatch audit:',auditError.message); }
+          // HYP VERIFY validates the signed callback; the amount is still
+          // required and must equal the immutable amount saved at checkout.
+          // A missing/invalid Amount must NEVER count as a successful match.
+          const integrity = assessVerifiedPayment(result, order);
+          if (!integrity.ok) {
+            console.warn('Payment integrity check blocked order confirmation:', integrity.reason, order.order_ref);
+            if (integrity.reason === 'amount_mismatch') {
+              try { await orderAnomalies.recordGatewayMismatch(database, order.order_ref, integrity.amountAgorot, Number(order.amount_agorot)); }
+              catch (auditError) { console.error('Payment mismatch audit:', auditError.message); }
+            }
+            // The card may have been charged. Keep order pending; the thank-you
+            // page will show "verification pending", not urge a second charge.
+            json(res, 409, { ok: false, error: 'payment_confirmation_requires_review' });
+            return;
           }
-          if (amountMatches) {
+          if (integrity.ok) {
             paymentAccepted = true;
             const now = Date.now();
             await database.transaction(async (tx) => {
@@ -10221,7 +10235,16 @@ const server = http.createServer(async (req, res) => {
             }
           }
         } else {
-          await database.markOrderFailed(Date.now(), order.id);
+          if (result.ccode === '0' && query.CCode === '0') {
+            // HYP verified a callback but required fields were missing or
+            // inconsistent. A charge may exist: do not tell the shopper to retry.
+            json(res, 409, { ok: false, error: 'payment_confirmation_requires_review' });
+            return;
+          }
+          // A failed/unverified browser redirect cannot safely change order
+          // status. The attacker could supply someone else's order reference.
+          // Leave the order pending for an authenticated gateway callback or review.
+          console.warn('Unverified payment callback rejected for existing order:', order.order_ref);
         }
       }
 

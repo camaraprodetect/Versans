@@ -16,6 +16,7 @@ const { STORE_CONFIG } = require('../assets/config.js');
 const { PRODUCTS } = require('../assets/products.js');
 const { isRealColorSelector, selectedColorProductName } = require('../lib/product-variant-identity.js');
 const PRICING = require('../assets/pricing.js');
+const { strictAmountAgorot } = require('../lib/payment-verification.js');
 
 const HYP_ENDPOINT = 'https://icom.yaad.net/p/';
 
@@ -341,6 +342,7 @@ async function createPaymentUrl(body, options = {}) {
     Postpone: 'False',
     J5: 'False',
     MoreData: 'True',
+    Sign: 'True', // Ask HYP to sign the payment result for VERIFY.
     sendemail: hyp.sendCustomerEmail ? 'True' : 'False',
     PageLang: hyp.pageLang[lang] || 'HEB',
     tmp: String(hyp.template || '1'),
@@ -387,19 +389,29 @@ async function verifyPayment(query) {
   params.set('Masof', Masof);
 
   Object.keys(query || {}).forEach((k) => {
-    if (['action', 'What', 'KEY', 'PassP'].indexOf(k) === -1) params.set(k, query[k]);
+    // These must ALWAYS come from server secrets, never from the browser.
+    if (!['action', 'what', 'key', 'passp', 'masof'].includes(k.toLowerCase())) params.set(k, query[k]);
   });
 
   const response = await fetch(HYP_ENDPOINT + '?' + params.toString(), { method: 'GET' });
+  if (!response.ok) throw Object.assign(new Error('hyp_verification_unavailable'), { status: 502 });
   const text = (await response.text()).trim();
   const result = Object.fromEntries(new URLSearchParams(text));
+  const callbackAmount = strictAmountAgorot(query && query.Amount);
+  const verifiedResponseAmount = result.Amount == null ? callbackAmount : strictAmountAgorot(result.Amount);
+  const orderMatches = !result.Order || result.Order === (query && query.Order);
+  const amountMatches = callbackAmount !== null && verifiedResponseAmount === callbackAmount;
+  const approved = result.CCode === '0' && query && query.CCode === '0' &&
+    !!String(query.Order || '').trim() && orderMatches && amountMatches;
 
   return {
-    ok: result.CCode === '0',
+    ok: !!approved,
     ccode: result.CCode || null,
-    order: query.Order || null,
-    amount: query.Amount || null,
-    raw: text.slice(0, 400)
+    // Callback values are only trusted *after* HYP verifies the signed return.
+    order: approved ? query.Order : null,
+    amount: approved ? query.Amount : null,
+    // Never return HYP's raw verification body to a public browser.
+    raw: approved ? 'verified' : 'not_verified'
   };
 }
 
