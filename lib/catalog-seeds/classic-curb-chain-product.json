@@ -1,0 +1,126 @@
+{
+  "id": "classic-curb-chain-296",
+  "slug": "product-296",
+  "urlSlug": "classic-curb-chain",
+  "sku": "VS-NK-296",
+  "category": "necklaces",
+  "categories": [
+    "necklaces",
+    "men"
+  ],
+  "title": {
+    "he": "שרשרת גורמט קלאסית",
+    "en": "Classic Cuban Curb Chain"
+  },
+  "subtitle": {
+    "he": "שרשרת גורמט קלאסית בגוון כסף, עשויה Premium Stainless Steel. בחירת אורך 45–60 ס״מ ועובי 3.5, 5 או 7 מ״מ.",
+    "en": "A classic silver-tone Cuban curb chain in Premium Stainless Steel. Choose a length from 45–60 cm and a width of 3.5, 5 or 7 mm."
+  },
+  "description": {
+    "he": "שרשרת גורמט קלאסית לגברים במראה נקי ועל־זמני, עם חוליות משתלבות בגימור מבריק. עשויה Premium Stainless Steel בגוון כסף, ובעלת מגוון אורכים ועוביים לבחירה.",
+    "en": "A classic Cuban curb chain with polished interlocking links in silver-tone Premium Stainless Steel. A timeless design with multiple widths and lengths to choose from."
+  },
+  "price": 179.9,
+  "compareAt": 229.9,
+  "images": [
+    "images/products/product-296/product-296-1.png",
+    "images/products/product-296/product-296-2.png",
+    "images/products/product-296/product-296-3.png",
+    "images/products/product-296/product-296-4.png",
+    "images/products/product-296/product-296-5.png",
+    "images/products/product-296/product-296-6.png"
+  ],
+  "cardImage": "images/products/product-296/product-296-1.png",
+  "hoverImage": "images/products/product-296/product-296-3.png",
+  "sizes": [
+    {
+      "id": "45cm",
+      "label": {
+        "he": "45 ס״מ",
+        "en": "45 cm"
+      },
+      "addPrice": 0
+    },
+    {
+      "id": "50cm",
+      "label": {
+        "he": "50 ס״מ",
+        "en": "50 cm"
+      },
+      "addPrice": 0
+    },
+    {
+      "id": "55cm",
+      "label": {
+        "he": "55 ס״מ",
+        "en": "55 cm"
+      },
+      "addPrice": 0
+    },
+    {
+      "id": "60cm",
+      "label": {
+        "he": "60 ס״מ",
+        "en": "60 cm"
+      },
+      "addPrice": 0
+    }
+  ],
+  "colors": [
+    {
+      "id": "3.5mm",
+      "label": {
+        "he": "3.5 מ״מ",
+        "en": "3.5 mm"
+      },
+      "addPrice": 0
+    },
+    {
+      "id": "5mm",
+      "label": {
+        "he": "5 מ״מ",
+        "en": "5 mm"
+      },
+      "addPrice": 0
+    },
+    {
+      "id": "7mm",
+      "label": {
+        "he": "7 מ״מ",
+        "en": "7 mm"
+      },
+      "addPrice": 0
+    }
+  ],
+  "sizeHeading": {
+    "he": "בחרו אורך",
+    "en": "Choose length"
+  },
+  "colorHeading": {
+    "he": "בחרו עובי",
+    "en": "Choose width"
+  },
+  "details": {
+    "he": [
+      "סוג מתכת: Premium Stainless Steel",
+      "גוון התכשיט: כסף",
+      "אורכים לבחירה: 45, 50, 55 או 60 ס״מ",
+      "עובי לבחירה: 3.5, 5 או 7 מ״מ",
+      "סוג חוליות: גורמט קובניות (Cuban Curb Link)",
+      "גימור: חלק ומבריק",
+      "עיצוב קלאסי מתאים לשימוש יומיומי"
+    ],
+    "en": [
+      "Metal: Premium Stainless Steel",
+      "Jewelry finish: silver-tone",
+      "Available lengths: 45, 50, 55 or 60 cm",
+      "Available widths: 3.5, 5 or 7 mm",
+      "Link style: Cuban curb link",
+      "Finish: smooth and polished",
+      "Classic everyday design"
+    ]
+  },
+  "gender": "men",
+  "inStock": true,
+  "hideMessageCard": true
+}
