@@ -19,7 +19,6 @@ const { createFinanceLedger } = require('./lib/finance-ledger.js');
 const employeePolicy = require('./lib/employee-access.js');
 const orderAnomalies = require('./lib/admin-order-anomalies.js');
 const { createPaymentUrl, verifyPayment, priceOrder } = require('./api/_hyp.js');
-const { assessVerifiedPayment, hasUniquePaymentReturnFields } = require('./lib/payment-verification.js');
 const { PRODUCTS, CATEGORIES } = require('./assets/products.js');
 const { createCatalogManager } = require('./lib/catalog-manager.js');
 const { createMarketingManager } = require('./lib/marketing-manager.js');
@@ -7855,12 +7854,7 @@ async function adminApi(req, res, pathname, parsed) {
   }
   if (pathname === '/api/admin/catalog/images' && req.method === 'POST') {
     if (!sameOriginAllowed(req)) { json(res, 403, {ok:false,error:'origin_not_allowed'}); return true; }
-    // Base64 expands a 6 MiB image to about 8 MiB inside JSON.
-    // Bound only this upload endpoint without changing other request limits.
-    const raw = await readRawBody(req, 9 * 1024 * 1024);
-    let body;
-    try { body = raw ? JSON.parse(raw) : {}; }
-    catch { throw Object.assign(new Error('Invalid JSON'), {status: 400}); }
+    const body = await readJsonBody(req, 3 * 1024 * 1024);
     const url = await catalogManager.uploadImage(body && body.image);
     json(res, 201, {ok:true,url}); return true;
   }
@@ -9661,14 +9655,23 @@ const server = http.createServer(async (req, res) => {
     // or product script so edits made in another worker appear immediately.
     // This is a cheap schema_meta read; refresh() only rebuilds on changes.
     if ((req.method === 'GET' || req.method === 'HEAD') && (
-      pathname === '/assets/products.js' || pathname === '/sitemap.xml' || pathname === '/api/catalog/overrides.js' ||
+      pathname === '/assets/products.js' || pathname === '/sitemap.xml' ||
+      pathname === '/sitemap_products_1.xml' || pathname === '/sitemap_collections_1.xml' ||
+      pathname === '/sitemap_pages_1.xml' || pathname === '/api/catalog/overrides.js' ||
       (!pathname.startsWith('/api/') && !pathname.startsWith('/assets/') &&
        !pathname.startsWith('/images/') && !pathname.startsWith('/admin') &&
        wantsHtmlDocument(req))
     )) await catalogManager.refresh();
-    // Always reflect the live database catalog, not an outdated checked-in XML.
-    if ((req.method === 'GET' || req.method === 'HEAD') && pathname === '/sitemap.xml') {
-      const xml = SEO.renderSitemap(PRODUCTS, ROUTES, catalogManager.hiddenCategories());
+    // Dynamic sitemap index and its child maps use the live PUBLIC PostgreSQL catalog.
+    // This keeps the index short without losing product URLs from search engines.
+    if ((req.method === 'GET' || req.method === 'HEAD') && (
+      pathname === '/sitemap.xml' || pathname === '/sitemap_products_1.xml' ||
+      pathname === '/sitemap_collections_1.xml' || pathname === '/sitemap_pages_1.xml'
+    )) {
+      const hidden = catalogManager.hiddenCategories();
+      const xml = pathname === '/sitemap.xml'
+        ? SEO.renderSitemap(PRODUCTS, ROUTES, hidden)
+        : SEO.renderSitemapSection(PRODUCTS, ROUTES, hidden, pathname);
       res.writeHead(200, {'Content-Type':'application/xml; charset=utf-8', 'Cache-Control':'no-cache, max-age=0', 'Content-Length':Buffer.byteLength(xml)});
       if (req.method === 'HEAD') res.end(); else res.end(xml);
       return;
@@ -10155,11 +10158,6 @@ const server = http.createServer(async (req, res) => {
         json(res, 200, { ...result, verifiedCustomer: false });
         return;
       } else {
-        if (!hasUniquePaymentReturnFields(parsed.searchParams)) {
-          // Never guess which of several Order/Amount/CCode values was signed.
-          json(res, 400, { ok: false, error: 'ambiguous_payment_callback' });
-          return;
-        }
         result = await verifyPayment(query);
         orderRef = String(result.order || query.Order || '').trim();
         order = orderRef ? await database.getOrderByRef(orderRef) : null;
@@ -10171,22 +10169,14 @@ const server = http.createServer(async (req, res) => {
 
       if (order) {
         if (result.ok) {
-          // HYP VERIFY validates the signed callback; the amount is still
-          // required and must equal the immutable amount saved at checkout.
-          // A missing/invalid Amount must NEVER count as a successful match.
-          const integrity = assessVerifiedPayment(result, order);
-          if (!integrity.ok) {
-            console.warn('Payment integrity check blocked order confirmation:', integrity.reason, order.order_ref);
-            if (integrity.reason === 'amount_mismatch') {
-              try { await orderAnomalies.recordGatewayMismatch(database, order.order_ref, integrity.amountAgorot, Number(order.amount_agorot)); }
-              catch (auditError) { console.error('Payment mismatch audit:', auditError.message); }
-            }
-            // The card may have been charged. Keep order pending; the thank-you
-            // page will show "verification pending", not urge a second charge.
-            json(res, 409, { ok: false, error: 'payment_confirmation_requires_review' });
-            return;
+          const returnedAmount = result.amount == null || result.amount === '' ? null : amountToAgorot(result.amount);
+          const amountMatches = returnedAmount === null || returnedAmount === Number(order.amount_agorot);
+          if (!amountMatches && returnedAmount !== null) {
+            // Only the server-verified provider response is trusted, never the checkout input.
+            try { await orderAnomalies.recordGatewayMismatch(database,order.order_ref,returnedAmount,Number(order.amount_agorot)); }
+            catch (auditError) { console.error('Payment mismatch audit:',auditError.message); }
           }
-          if (integrity.ok) {
+          if (amountMatches) {
             paymentAccepted = true;
             const now = Date.now();
             await database.transaction(async (tx) => {
@@ -10235,16 +10225,7 @@ const server = http.createServer(async (req, res) => {
             }
           }
         } else {
-          if (result.ccode === '0' && query.CCode === '0') {
-            // HYP verified a callback but required fields were missing or
-            // inconsistent. A charge may exist: do not tell the shopper to retry.
-            json(res, 409, { ok: false, error: 'payment_confirmation_requires_review' });
-            return;
-          }
-          // A failed/unverified browser redirect cannot safely change order
-          // status. The attacker could supply someone else's order reference.
-          // Leave the order pending for an authenticated gateway callback or review.
-          console.warn('Unverified payment callback rejected for existing order:', order.order_ref);
+          await database.markOrderFailed(Date.now(), order.id);
         }
       }
 

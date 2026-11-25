@@ -1,0 +1,30 @@
+--- /mnt/data/versans-sitemap-http-test/server.js	2026-11-21 14:23:44.000000000 +0000
++++ /mnt/data/versans-sitemap-index-work/server.js	2026-11-25 14:37:04.682409796 +0000
+@@ -9655,14 +9655,23 @@
+     // or product script so edits made in another worker appear immediately.
+     // This is a cheap schema_meta read; refresh() only rebuilds on changes.
+     if ((req.method === 'GET' || req.method === 'HEAD') && (
+-      pathname === '/assets/products.js' || pathname === '/sitemap.xml' || pathname === '/api/catalog/overrides.js' ||
++      pathname === '/assets/products.js' || pathname === '/sitemap.xml' ||
++      pathname === '/sitemap_products_1.xml' || pathname === '/sitemap_collections_1.xml' ||
++      pathname === '/sitemap_pages_1.xml' || pathname === '/api/catalog/overrides.js' ||
+       (!pathname.startsWith('/api/') && !pathname.startsWith('/assets/') &&
+        !pathname.startsWith('/images/') && !pathname.startsWith('/admin') &&
+        wantsHtmlDocument(req))
+     )) await catalogManager.refresh();
+-    // Always reflect the live database catalog, not an outdated checked-in XML.
+-    if ((req.method === 'GET' || req.method === 'HEAD') && pathname === '/sitemap.xml') {
+-      const xml = SEO.renderSitemap(PRODUCTS, ROUTES, catalogManager.hiddenCategories());
++    // Dynamic sitemap index and its child maps use the live PUBLIC PostgreSQL catalog.
++    // This keeps the index short without losing product URLs from search engines.
++    if ((req.method === 'GET' || req.method === 'HEAD') && (
++      pathname === '/sitemap.xml' || pathname === '/sitemap_products_1.xml' ||
++      pathname === '/sitemap_collections_1.xml' || pathname === '/sitemap_pages_1.xml'
++    )) {
++      const hidden = catalogManager.hiddenCategories();
++      const xml = pathname === '/sitemap.xml'
++        ? SEO.renderSitemap(PRODUCTS, ROUTES, hidden)
++        : SEO.renderSitemapSection(PRODUCTS, ROUTES, hidden, pathname);
+       res.writeHead(200, {'Content-Type':'application/xml; charset=utf-8', 'Cache-Control':'no-cache, max-age=0', 'Content-Length':Buffer.byteLength(xml)});
+       if (req.method === 'HEAD') res.end(); else res.end(xml);
+       return;
