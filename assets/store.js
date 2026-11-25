@@ -1344,14 +1344,16 @@
     '</article>';
   }
 
+  // Homepage section order only. Keep optional/hidden categories at the end;
+  // admin category visibility still decides which sections are shown.
   var ALL_COLLECTION_GROUPS = [
-    { key: 'greeting', title: 'תכשיט עם ברכה', allLabel: 'לכל מוצרי תכשיט עם ברכה' },
     { key: 'necklaces', title: 'שרשראות', allLabel: 'לכל השרשראות' },
     { key: 'bracelets', title: 'צמידים', allLabel: 'לכל הצמידים' },
+    { key: 'watches', title: 'שעונים', allLabel: 'לכל השעונים' },
+    { key: 'greeting', title: 'תכשיט עם ברכה', allLabel: 'לכל מוצרי תכשיט עם ברכה' },
+    { key: 'glasses', title: 'משקפיים', allLabel: 'לכל המשקפיים' },
     { key: 'rings', title: 'טבעות', allLabel: 'לכל הטבעות' },
     { key: 'photo-bracelets', title: 'תכשיטי תמונה', allLabel: 'לכל תכשיטי התמונה' },
-    { key: 'watches', title: 'שעונים', allLabel: 'לכל השעונים' },
-    { key: 'glasses', title: 'משקפיים', allLabel: 'לכל המשקפיים' },
     { key: 'hats', title: 'כובעים', allLabel: 'לכל הכובעים' }
   ];
 
