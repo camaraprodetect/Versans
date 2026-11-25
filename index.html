@@ -827,6 +827,24 @@ html, body {
 }
 </style>
 
+<!-- VerSans: compact only the home collection promo on desktop; mobile stays unchanged. -->
+<style id="versans-home-collection-desktop-compact-v1">
+@media (min-width: 768px) {
+  .home-page #homeCollectionBanner {
+    width: 100% !important;
+    max-width: 960px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  .home-page #homeCollectionBanner .home-collection-banner__picture,
+  .home-page #homeCollectionBanner .home-collection-banner__picture img {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+  }
+}
+</style>
+
 <link rel="stylesheet" href="/assets/marketing-storefront.css?v=20261023-marketing-v1">
 <link rel="stylesheet" href="/assets/promo-popups.css?v=20261013-video-minimal-v4">
 <link rel="stylesheet" href="/assets/review-official-reply.css?v=20261027-v1">
