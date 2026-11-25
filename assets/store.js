@@ -1254,6 +1254,20 @@
     return '<div class="prod__variant-hint"><div class="prod__variant-swatches" aria-hidden="true">' + items + extra + '</div><span class="prod__variant-text">' + esc(text) + '</span></div>';
   }
 
+  /* A card can outlive an image that was removed in admin. If its dedicated
+     hover photo is missing (or is the same as the cover), use another real
+     gallery photo rather than leaving a dead hover in the catalog. */
+  function productCardHoverCandidates(p, mainImage, preferredImage) {
+    var candidates = [];
+    function add(src) {
+      if (typeof src !== 'string' || !src || src === mainImage || candidates.indexOf(src) !== -1) return;
+      candidates.push(src);
+    }
+    add(preferredImage);
+    if (Array.isArray(p.images)) p.images.forEach(add);
+    return candidates;
+  }
+
   function mediaHTML(p, big) {
     var img = p.cardImage || ((p.images && p.images.length) ? p.images[0] : '');
     var hoverImg = p.hoverImage || '';
@@ -1282,8 +1296,13 @@
       /* Desktop keeps the existing hover image exactly as before. On mobile,
          secondary product images stay as URL strings in data-mobile-images and
          are not requested until the shopper presses an image arrow. */
-      if (!isMobileCatalogViewport && hoverImg && hoverImg !== img) {
-        html += '<img class="prod__img prod__img--hover" src="' + esc(hoverImg) + '" alt="" loading="lazy" decoding="async" aria-hidden="true">';
+      if (!isMobileCatalogViewport) {
+        var hoverCandidates = productCardHoverCandidates(p, img, hoverImg);
+        if (hoverCandidates.length) {
+          html += '<img class="prod__img prod__img--hover" src="' + esc(hoverCandidates[0]) + '"' +
+            ' data-hover-candidates="' + esc(encodeURIComponent(JSON.stringify(hoverCandidates))) + '"' +
+            ' data-hover-next="1" alt="" loading="lazy" decoding="async" aria-hidden="true">';
+        }
       }
       if (!big && mobileImages.length > 1) {
         var prevLabel = state.lang === 'he' ? 'לתמונה הקודמת' : 'Previous image';
@@ -1297,6 +1316,48 @@
     if (!big && msg.length > 110) msg = msg.slice(0, 110).replace(/\s\S*$/, '') + '…';
     return '<div class="prod__ph"><span class="prod__ph-title">' + esc(L(p.cardTitle)) +
            '</span><span class="prod__ph-text">' + esc(msg) + '</span></div>';
+  }
+
+  /* The CSS hover transition is only enabled for successfully loaded images.
+     Capture load/error events because native image events do not bubble. */
+  function handleCardHoverImageEvent(event) {
+    var element = event.target;
+    if (!element || !element.classList || !element.classList.contains('prod__img--hover')) return;
+    var media = element.closest('.prod__media');
+    if (!media) return;
+    if (event.type === 'load') {
+      // Home-page deferred images begin as a transparent 1px placeholder.
+      if (element.hasAttribute('data-home-hover-src') ||
+          (element.currentSrc || element.src || '').indexOf('data:image/') === 0 ||
+          !element.naturalWidth) return;
+      media.classList.add('prod__media--hover-ready');
+      return;
+    }
+    media.classList.remove('prod__media--hover-ready');
+    var candidates = [];
+    try { candidates = JSON.parse(decodeURIComponent(element.getAttribute('data-hover-candidates') || '')); }
+    catch (e) {}
+    var next = Number(element.getAttribute('data-hover-next') || '0');
+    if (Array.isArray(candidates) && next >= 0 && next < candidates.length) {
+      element.setAttribute('data-hover-next', String(next + 1));
+      element.src = candidates[next];
+    } else {
+      // No valid alternate available: leave the original product cover visible.
+      element.remove();
+    }
+  }
+  document.addEventListener('load', handleCardHoverImageEvent, true);
+  document.addEventListener('error', handleCardHoverImageEvent, true);
+
+  function syncCachedCardHoverImages(root) {
+    if (!root) return;
+    root.querySelectorAll('.prod__media .prod__img--hover').forEach(function (element) {
+      if (element.complete && element.naturalWidth && !element.hasAttribute('data-home-hover-src') &&
+          (element.currentSrc || element.src || '').indexOf('data:image/') !== 0) {
+        var media = element.closest('.prod__media');
+        if (media) media.classList.add('prod__media--hover-ready');
+      }
+    });
   }
 
   function renderProductCardHTML(p) {
@@ -1850,6 +1911,7 @@
     grid.classList.add('grid--collection-groups');
     grid.innerHTML = sections.join('');
     initHomeDeferredImages(grid);
+    syncCachedCardHoverImages(grid);
     initHomeCollectionCarousels(grid);
     renderCatalogLoadMore(grid, 0, 0);
   }
@@ -2160,6 +2222,7 @@
       : catalogVisibleCount(grid, catalogBatchesShown);
     var visibleList = list.slice(0, visibleCount);
     grid.innerHTML = visibleList.map(renderProductCardHTML).join('');
+    syncCachedCardHoverImages(grid);
 
     renderCatalogLoadMore(grid, list.length, visibleList.length);
   }

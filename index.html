@@ -41,6 +41,14 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&amp;family=Frank+Ruhl+Libre:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/styles.css?v=20261009-catalog-cart-hover-border-v4">
+<!-- Keep a product's cover visible while a hover image is loading or broken. -->
+<style>
+@media (hover: hover) and (pointer: fine) {
+  .prod:hover .prod__media:not(.prod__media--hover-ready) .prod__img--main { opacity: 1 !important; }
+  .prod:hover .prod__media:not(.prod__media--hover-ready) .prod__img--hover { opacity: 0 !important; }
+}
+</style>
+
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="96x96" href="/images/favicon-96.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
@@ -827,12 +835,13 @@ html, body {
 }
 </style>
 
-<!-- VerSans: compact only the home collection promo on desktop; mobile stays unchanged. -->
-<style id="versans-home-collection-desktop-compact-v1">
+<!-- VerSans: align home collection promo to the same desktop content width as product grid; mobile stays unchanged. -->
+<style id="versans-home-collection-desktop-align-v2">
 @media (min-width: 768px) {
   .home-page #homeCollectionBanner {
     width: 100% !important;
-    max-width: 960px !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
     margin-left: auto !important;
     margin-right: auto !important;
   }
@@ -1057,47 +1066,46 @@ html, body {
         <img data-src="images/glasses-collection-banner.png" loading="lazy" decoding="async" width="1235" height="338" alt="קולקציית משקפי שמש VerSans - שני זוגות ב־249.90 ₪">
       </picture>
     </div>
-    <div class="watches-collection-banner" id="watchesCollectionBanner" hidden aria-label="מבצע קולקציית שעונים">
+    <div class="watches-collection-banner" id="watchesCollectionBanner" hidden aria-label="מבצע 2+1 על כל התכשיטים">
       <picture class="watches-collection-banner__picture">
-        <source media="(min-width: 768px)" data-srcset="/images/watch-collection-banner-desktop.png">
-        <img data-src="/images/watch-collection-banner-mobile.png" loading="lazy" decoding="async" width="1600" height="594" alt="קולקציית השעונים של VerSans - קנה 2 קבל 1 בחינם על כל השעונים">
+        <source media="(min-width: 768px)" data-srcset="/images/home-collection-banner-2plus1-desktop-20261125.png" width="2048" height="236">
+        <img data-src="/images/home-collection-banner-2plus1-mobile-20261125.png" loading="lazy" decoding="async" width="1206" height="310" alt="VerSans - מבצע 2+1 על כל התכשיטים, כולל כפל מבצעים">
       </picture>
     </div>
-    <div class="greeting-custom-collection-banner" id="greetingCustomCollectionBanner" hidden aria-label="מבצע קולקציית תכשיט עם ברכה ועיצוב אישי">
+    <div class="greeting-custom-collection-banner" id="greetingCustomCollectionBanner" hidden aria-label="מבצע 2+1 על כל התכשיטים">
       <picture class="greeting-custom-collection-banner__picture">
-        <source media="(min-width: 768px)" data-srcset="/images/greeting-custom-collection-banner-desktop.png">
-        <img data-src="/images/greeting-custom-collection-banner-mobile.png" loading="lazy" decoding="async" width="1471" height="559" alt="תכשיט עם ברכה אישית של VerSans - קנה 2 קבל 1 בחינם על מתנה מרגשת למישהו שחשוב לכם">
+        <source media="(min-width: 768px)" data-srcset="/images/home-collection-banner-2plus1-desktop-20261125.png" width="2048" height="236">
+        <img data-src="/images/home-collection-banner-2plus1-mobile-20261125.png" loading="lazy" decoding="async" width="1206" height="310" alt="VerSans - מבצע 2+1 על כל התכשיטים, כולל כפל מבצעים">
       </picture>
     </div>
-    <div class="hats-collection-banner" id="hatsCollectionBanner" hidden aria-label="מבצע קולקציית הכובעים">
+    <div class="hats-collection-banner" id="hatsCollectionBanner" hidden aria-label="מבצע 2+1 על כל התכשיטים">
       <picture class="hats-collection-banner__picture">
-        <source media="(min-width: 1440px)" data-srcset="/images/hats-collection-banner-wide.png">
-        <source media="(min-width: 768px)" data-srcset="/images/hats-collection-banner-medium.png">
-        <img data-src="/images/hats-collection-banner.png" loading="lazy" decoding="async" width="1600" height="600" alt="מבצע כובעים של VerSans - 1 ב־139.90 ₪, 2 ב־239.90 ₪, 3 ב־299.90 ₪">
+        <source media="(min-width: 768px)" data-srcset="/images/home-collection-banner-2plus1-desktop-20261125.png" width="2048" height="236">
+        <img data-src="/images/home-collection-banner-2plus1-mobile-20261125.png" loading="lazy" decoding="async" width="1206" height="310" alt="VerSans - מבצע 2+1 על כל התכשיטים, כולל כפל מבצעים">
       </picture>
     </div>
-    <div class="photo-jewelry-collection-banner" id="photoJewelryCollectionBanner" hidden aria-label="מבצע קולקציית תכשיטי תמונה">
+    <div class="photo-jewelry-collection-banner" id="photoJewelryCollectionBanner" hidden aria-label="מבצע 2+1 על כל התכשיטים">
       <picture class="photo-jewelry-collection-banner__picture">
-        <source media="(min-width: 768px)" data-srcset="/images/photo-jewelry-collection-banner-desktop.png">
-        <img data-src="/images/photo-jewelry-collection-banner.png" loading="lazy" decoding="async" width="960" height="320" alt="תכשיטי תמונה VerSans - עד 40% הנחה על כל הקולקציה">
+        <source media="(min-width: 768px)" data-srcset="/images/home-collection-banner-2plus1-desktop-20261125.png" width="2048" height="236">
+        <img data-src="/images/home-collection-banner-2plus1-mobile-20261125.png" loading="lazy" decoding="async" width="1206" height="310" alt="VerSans - מבצע 2+1 על כל התכשיטים, כולל כפל מבצעים">
       </picture>
     </div>
-    <div class="rings-collection-banner" id="ringsCollectionBanner" hidden aria-label="מבצע קולקציית הטבעות">
+    <div class="rings-collection-banner" id="ringsCollectionBanner" hidden aria-label="מבצע 2+1 על כל התכשיטים">
       <picture class="rings-collection-banner__picture">
-        <source media="(min-width: 768px)" data-srcset="/images/rings-collection-banner-desktop.png">
-        <img data-src="/images/rings-collection-banner-mobile.png" loading="lazy" decoding="async" alt="קולקציית הטבעות VerSans - עד 40% הנחה על כל קולקציית הטבעות">
+        <source media="(min-width: 768px)" data-srcset="/images/home-collection-banner-2plus1-desktop-20261125.png" width="2048" height="236">
+        <img data-src="/images/home-collection-banner-2plus1-mobile-20261125.png" loading="lazy" decoding="async" width="1206" height="310" alt="VerSans - מבצע 2+1 על כל התכשיטים, כולל כפל מבצעים">
       </picture>
     </div>
-    <div class="bracelets-collection-banner" id="braceletsCollectionBanner" hidden aria-label="מבצע קולקציית הצמידים">
+    <div class="bracelets-collection-banner" id="braceletsCollectionBanner" hidden aria-label="מבצע 2+1 על כל התכשיטים">
       <picture class="bracelets-collection-banner__picture">
-        <source media="(min-width: 768px)" data-srcset="/images/bracelets-collection-banner-desktop.png">
-        <img data-src="/images/bracelets-collection-banner-mobile.png" loading="lazy" decoding="async" alt="קולקציית הצמידים VerSans - עד 40% הנחה על כל קולקציית הצמידים">
+        <source media="(min-width: 768px)" data-srcset="/images/home-collection-banner-2plus1-desktop-20261125.png" width="2048" height="236">
+        <img data-src="/images/home-collection-banner-2plus1-mobile-20261125.png" loading="lazy" decoding="async" width="1206" height="310" alt="VerSans - מבצע 2+1 על כל התכשיטים, כולל כפל מבצעים">
       </picture>
     </div>
-    <div class="necklaces-collection-banner" id="necklacesCollectionBanner" hidden aria-label="מבצע קולקציית השרשראות">
+    <div class="necklaces-collection-banner" id="necklacesCollectionBanner" hidden aria-label="מבצע 2+1 על כל התכשיטים">
       <picture class="necklaces-collection-banner__picture">
-        <source media="(min-width: 768px)" data-srcset="/images/necklaces-collection-banner-desktop.png">
-        <img data-src="/images/necklaces-collection-banner-mobile.png" loading="lazy" decoding="async" alt="קולקציית השרשראות VerSans - עד 40% הנחה על כל קולקציית השרשראות">
+        <source media="(min-width: 768px)" data-srcset="/images/home-collection-banner-2plus1-desktop-20261125.png" width="2048" height="236">
+        <img data-src="/images/home-collection-banner-2plus1-mobile-20261125.png" loading="lazy" decoding="async" width="1206" height="310" alt="VerSans - מבצע 2+1 על כל התכשיטים, כולל כפל מבצעים">
       </picture>
     </div>
     <div class="home-collection-banner" id="homeCollectionBanner" hidden aria-label="מבצע הקולקציה בעמוד הבית">
@@ -1466,7 +1474,7 @@ html, body {
 <script src="assets/i18n.js?v=20260922-full-address-v1"></script>
 <script src="assets/reviews.js?v=20261027-official-v1"></script>
 <script src="assets/home.js?v=20260921-watch-subcats-v1"></script>
-<script src="assets/store.js?v=20261125-home-category-order-v1"></script>
+<script src="assets/store.js?v=20261125-hover-image-recovery-v1"></script>
 <script src="assets/auth-nav.js?v=20260914-pretty-urls-v1"></script>
   <script src="/assets/presence.js?v=20260915-presence-v1"></script>
   <script src="/assets/customer-service.js?v=20260926-support-label-v3"></script>
