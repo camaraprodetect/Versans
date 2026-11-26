@@ -200,3 +200,67 @@
   .hot-footer__links{gap:11px 15px}
   .hot-footer .hot-footer__links a{font-size:.77rem}
 }
+
+
+/* Nov 2026: understated shop link beneath best-sellers — no promotional card. */
+.hot-bottom {
+  background:transparent;
+  padding:0 20px 44px;
+  text-align:right;
+}
+.hot-bottom__inner {
+  width:min(1320px,100%);
+  margin-inline:auto;
+  padding:19px 0 0;
+  border:0;
+  border-top:1px solid #e1e3e5;
+  border-radius:0;
+  background:transparent;
+  display:flex;
+  flex-direction:row;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+}
+.hot-bottom h2 {
+  margin:0;
+  color:#626971;
+  font-size:clamp(.91rem,1.3vw,1.05rem);
+  line-height:1.5;
+  font-weight:500;
+}
+.hot-bottom a.hot-bottom__cta {
+  width:auto;
+  min-height:0;
+  padding:4px 0 4px 6px;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+  color:#17202a;
+  font-size:.92rem;
+  font-weight:600;
+  text-decoration:none;
+  transform:none;
+  flex:0 0 auto;
+  gap:9px;
+}
+.hot-bottom a.hot-bottom__cta:hover {
+  background:transparent;
+  border-color:transparent;
+  color:#000;
+  text-decoration:underline;
+  text-underline-offset:4px;
+  transform:none;
+}
+.hot-bottom a.hot-bottom__cta:focus-visible {
+  outline:2px solid #17202a;
+  outline-offset:4px;
+}
+.hot-bottom__cta span {font-size:1rem;line-height:1}
+@media(max-width:700px) {
+  .hot-bottom{padding:0 14px 30px}
+  .hot-bottom__inner{padding:16px 0 0;gap:10px;flex-direction:row;align-items:center}
+  .hot-bottom h2{font-size:.88rem}
+  .hot-bottom a.hot-bottom__cta{width:auto;min-height:0;font-size:.87rem;justify-content:flex-start}
+}
