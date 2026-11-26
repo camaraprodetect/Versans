@@ -34,7 +34,7 @@
   function supportLink(className, iconClass, showHours){
     var url = whatsappUrl();
     if (!url) return '';
-    var hours = showHours === false ? '' : ' <small class="versans-support-hours">08:00–22:00 · כל יום</small>';
+    var hours = showHours === false ? '' : ' <small class="versans-support-hours" style="display:block;direction:rtl;line-height:1.5">ראשון–חמישי: <bdi dir="ltr">08:00–22:00</bdi><br>שישי: <bdi dir="ltr">08:00–14:00</bdi></small>';
     return '<a class="' + className + '" href="' + url + '" target="_blank" rel="noopener noreferrer" aria-label="שירות לקוחות ב-WhatsApp">' +
       whatsappIcon(iconClass) + '<span>שירות לקוחות' + hours + '</span></a>';
   }

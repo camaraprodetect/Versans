@@ -234,16 +234,6 @@
     return num.toFixed(2).replace(/\.00$/, '') + ' ₪';
   }
 
-  function categoryLinkVisible(item) {
-    if (!item || !item.url) return false;
-    var hidden=window.__VERSANS_HIDDEN_CATEGORIES__||{};
-    var path=String(item.url).split(/[?#]/)[0];
-    if (hidden.hats && path === '/hats') return false;
-    if (hidden.rings && (path === '/rings' || path === '/ring-size-guide')) return false;
-    if (hidden['photo-bracelets'] && (path === '/photo-bracelets' || path === '/photo-projection-bracelet')) return false;
-    return true;
-  }
-
   function getProducts() {
     if (Array.isArray(window.PRODUCTS)) return window.PRODUCTS;
     return [];
@@ -523,7 +513,7 @@
 
   function loadKnowledge() {
     if (knowledgePromise) return knowledgePromise;
-    knowledgePromise = Promise.all(DOCS.filter(categoryLinkVisible).map(function (doc) {
+    knowledgePromise = Promise.all(DOCS.map(function (doc) {
       return fetch(doc.url, { credentials: 'same-origin', headers: { 'Accept': 'text/html' } })
         .then(function (response) { return response.ok ? response.text() : ''; })
         .then(function (html) { return html ? extractBlocks(doc, html) : []; })
@@ -562,13 +552,10 @@
 
   function policyFallback(query) {
     if (containsAny(query, ['משלוח','אספקה','כמה זמן מגיע'])) {
-      return { text: (window.__VERSANS_HIDDEN_CATEGORIES__ || {}).hats
-        ? 'לפי התקנון, זמן האספקה המשוער למוצרים הוא 9–14 ימי עסקים, החל מאישור התשלום.'
-        : 'לפי התקנון, זמן האספקה המשוער למוצרים רגילים הוא 9-14 ימי עסקים, ולכובעים 9-20 ימי עסקים. מניין הזמן מתחיל לאחר אישור התשלום.', links: [QUICK_LINKS.policies] };
+      return { text: 'לפי התקנון, זמן האספקה המשוער למוצרים רגילים הוא 9-14 ימי עסקים, ולכובעים 9-20 ימי עסקים. מניין הזמן מתחיל לאחר אישור התשלום.', links: [QUICK_LINKS.policies] };
     }
     if (containsAny(query, ['מבצע','הנחה','2+1'])) {
-      return { text: 'מבצע 2+1 חל על קולקציית התכשיטים הזכאית, והפריט הזול בשלישייה מתקבל בהטבה לפי חישוב הסל. ' +
-        ((window.__VERSANS_HIDDEN_CATEGORIES__ || {}).hats ? 'למשקפיים יש מבצע כמות נפרד.' : 'לכובעים ולמשקפיים יש מבצעי כמות נפרדים.'), links: [QUICK_LINKS.policies] };
+      return { text: 'מבצע 2+1 חל על קולקציית התכשיטים הזכאית, והפריט הזול בשלישייה מתקבל בהטבה לפי חישוב הסל. לכובעים ולמשקפיים יש מבצעי כמות נפרדים.', links: [QUICK_LINKS.policies] };
     }
     if (containsAny(query, ['אחריות','פגם','נשבר','תקלה'])) {
       return { text: 'מוצרי VerSans כוללים 6 חודשי אחריות לפגמי ייצור או הרכבה, בכפוף לתנאים. נזק ממכה, משיכה, שחיקה או חשיפה לא מתאימה אינו נחשב פגם ייצור.', links: [QUICK_LINKS.warranty] };
@@ -627,7 +614,7 @@
 
   function answerSizeGuideIntent(query) {
     var n = normalize(query);
-    if (!((window.__VERSANS_HIDDEN_CATEGORIES__ || {}).rings) && /מיד.*טבעת|טבעת.*מיד|קוטר.*טבעת|אצבע/.test(n)) {
+    if (/מיד.*טבעת|טבעת.*מיד|קוטר.*טבעת|אצבע/.test(n)) {
       return { text: 'לטבעת: מקיפים את בסיס האצבע בחוט או רצועת נייר, מסמנים את נקודת המפגש ומודדים במילימטרים. אם אתם בדיוק בין שתי מידות, מומלץ לבחור במידה הגדולה יותר.', links: [QUICK_LINKS.ringSize, QUICK_LINKS.rings] };
     }
     if (/מיד.*צמיד|צמיד.*מיד|פרק|שורש כף/.test(n)) {
@@ -637,8 +624,7 @@
       return { text: 'לשרשרת: מניחים חוט סביב הצוואר בגובה הרצוי, מסמנים את נקודת המפגש ואז מודדים את כל האורך עם סרט מדידה או מטר.', links: [QUICK_LINKS.necklaceSize, QUICK_LINKS.necklaces] };
     }
     if (/איך.*מיד|בחירת.*מיד|מדריך.*מיד/.test(n)) {
-      var hasRings = !((window.__VERSANS_HIDDEN_CATEGORIES__ || {}).rings);
-      return { text: hasRings ? 'יש לנו מדריכי מדידה נפרדים לטבעות, צמידים ושרשראות. בחרו את הסוג הרצוי.' : 'יש לנו מדריכי מדידה לצמידים ולשרשראות.', links: (hasRings ? [QUICK_LINKS.ringSize] : []).concat([QUICK_LINKS.braceletSize, QUICK_LINKS.necklaceSize]) };
+      return { text: 'יש לנו מדריכי מדידה נפרדים לטבעות, צמידים ושרשראות. בחרו את הסוג הרצוי.', links: [QUICK_LINKS.ringSize, QUICK_LINKS.braceletSize, QUICK_LINKS.necklaceSize] };
     }
     return null;
   }
@@ -652,7 +638,7 @@
     if (/הרשמ|פתיחת חשבון/.test(n)) return { text: 'אפשר לפתוח חשבון VerSans כאן.', links: [QUICK_LINKS.register] };
     if (/קישור|תביא.*עמוד|תפתח|לקטגור/.test(n)) {
       var category = categoryLinkFromQuery(query);
-      if (category && categoryLinkVisible(category)) return { text: 'בטח. הנה הקישור שביקשת.', links: [category] };
+      if (category) return { text: 'בטח. הנה הקישור שביקשת.', links: [category] };
     }
     return null;
   }
@@ -660,17 +646,15 @@
   function answerPromoIntent(query) {
     var n = normalize(query);
     if (!/מבצע|הנחה|2\+1|כובע|כובעים|משקפיים/.test(n)) return null;
-    if (/כובע|כובעים/.test(n)) return (window.__VERSANS_HIDDEN_CATEGORIES__ || {}).hats
-      ? { text: 'הקטגוריה הזאת אינה זמינה כרגע באתר.', links: [QUICK_LINKS.home] }
-      : { text: 'בכובעים: כובע אחד 139.90 ₪, שני כובעים 239.90 ₪, ושלושה כובעים 299.90 ₪.', links: [QUICK_LINKS.hats] };
+    if (/כובע|כובעים/.test(n)) return { text: 'בכובעים: כובע אחד 139.90 ₪, שני כובעים 239.90 ₪, ושלושה כובעים 299.90 ₪.', links: [QUICK_LINKS.hats] };
     if (/משקפיים|משקף/.test(n)) return { text: 'במשקפיים: דגם אחד 139.90 ₪, ושני דגמים ב-249.90 ₪.', links: [QUICK_LINKS.glasses] };
-    return { text: 'בתכשיטים הזכאים יש מבצע 2+1, ובנוסף קיים מבצע כמות למשקפיים. החיסכון מחושב ומוצג בסל.'.replace('ובנוסף קיים מבצע כמות למשקפיים', (window.__VERSANS_HIDDEN_CATEGORIES__ || {}).hats ? 'ובנוסף קיים מבצע כמות למשקפיים' : 'ובנוסף קיימים מבצעי כמות נפרדים לכובעים ולמשקפיים'), links: [QUICK_LINKS.home, QUICK_LINKS.policies] };
+    return { text: 'בתכשיטים הזכאים יש מבצע 2+1, ובנוסף קיימים מבצעי כמות נפרדים לכובעים ולמשקפיים. החיסכון מחושב ומוצג בסל.', links: [QUICK_LINKS.home, QUICK_LINKS.policies] };
   }
 
   function answerContactIntent(query) {
     if (!containsAny(query, ['שירות לקוחות','צור קשר','טלפון','וואטסאפ','אימייל','מייל'])) return null;
     return {
-      text: 'שירות הלקוחות של VerSans זמין בכל יום בין 08:00-22:00. טלפון / WhatsApp: 055-302-6389. אימייל: versanssupport@gmail.com.',
+      text: 'שירות הלקוחות של VerSans זמין בימים ראשון עד חמישי בין 08:00 ל־22:00, ובימי שישי בין 08:00 ל־14:00. טלפון / WhatsApp: 055-302-6389. אימייל: versanssupport@gmail.com.',
       links: [{ label: 'WhatsApp שירות לקוחות', url: 'https://wa.me/972553026389', external: true }]
     };
   }
@@ -734,13 +718,13 @@
       if (guide) options.unshift(guide);
     }
     var category = categoryLinkFromQuery(query);
-    if (category && categoryLinkVisible(category)) options.unshift(category);
+    if (category) options.unshift(category);
     (productMatches || []).slice(0, 5).forEach(function (item) {
       options.unshift({ label: productTitle(item.product), url: productPath(item.product) });
     });
     var seen = new Set();
     return options.filter(function (item) {
-      if (!item || !item.url || !item.label || seen.has(item.url) || !categoryLinkVisible(item)) return false;
+      if (!item || !item.url || !item.label || seen.has(item.url)) return false;
       seen.add(item.url);
       return true;
     }).slice(0, 22);
@@ -774,7 +758,7 @@
       links: aiLinkOptions(query, currentProduct, productMatches),
       storeFacts: {
         jewelryPromotion: 'בקולקציות התכשיטים המשתתפות: קנה 2 קבל 1 בחינם, הזול מבין שלושת הפריטים הוא החינם.',
-        hatsPromotion: (window.__VERSANS_HIDDEN_CATEGORIES__ || {}).hats ? '' : 'כובעים: 1 ב-139.90 ₪, 2 ב-239.90 ₪, 3 ב-299.90 ₪.',
+        hatsPromotion: 'כובעים: 1 ב-139.90 ₪, 2 ב-239.90 ₪, 3 ב-299.90 ₪.',
         glassesPromotion: 'משקפיים: 1 ב-139.90 ₪, 2 ב-249.90 ₪.',
         welcomeCoupon: 'בהרשמה נשלח למייל קופון 3% חד-פעמי, בתוקף ל-14 ימים.',
         warranty: 'האחריות היא לחצי שנה, לפי תנאי האחריות והתקנון באתר.'
@@ -867,7 +851,7 @@
     }
 
     var category = categoryLinkFromQuery(trimmed);
-    if (category && categoryLinkVisible(category)) return { text: 'מצאתי את הקטגוריה המתאימה. אפשר לפתוח אותה כאן.', links: [category] };
+    if (category) return { text: 'מצאתי את הקטגוריה המתאימה. אפשר לפתוח אותה כאן.', links: [category] };
 
     return {
       text: 'לא מצאתי תשובה מספיק מדויקת במידע של החנות. נסו לשאול אותי על מוצר, חומרים, מידה, משלוח, אחריות, החזרה, מבצע או לבקש קישור לעמוד מסוים.',
