@@ -172,7 +172,7 @@ html[dir=rtl] .nav__item--has-submenu:hover .nav__submenu,html[dir=rtl] .nav__it
 .prod__sub{color:var(--muted);font-size:.875rem;line-height:1.7;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;min-height:3rem}
 .prod__variant-hint{display:flex;align-items:center;gap:.6rem;min-height:1.35rem;flex-wrap:wrap}.prod__variant-swatches{display:flex;align-items:center;gap:.35rem}.prod__variant-swatch{display:inline-block;width:14px;height:14px;border-radius:50%;border:1px solid #b5bec7;box-shadow:inset 0 0 0 1px rgba(255,255,255,.72)}.prod__variant-more{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 .28rem;border-radius:999px;background:#eef2f5;color:#51606c;font-size:.68rem;font-weight:700;line-height:1}.prod__variant-text{font-size:.8rem;color:#66727d;font-weight:500}
 .prod__price{display:flex;align-items:baseline;flex-wrap:wrap;gap:.7rem;font-size:1.0625rem;font-weight:500;line-height:1.5;font-variant-numeric:tabular-nums}
-.prod__was{color:#7f8992;font-size:.74rem;font-weight:400;line-height:1.2;text-decoration:line-through;text-decoration-thickness:1.35px;text-decoration-color:#7f8992;opacity:.92}
+.prod__was{color:#515c66;font-size:1rem;font-weight:500;line-height:1.4;text-decoration:line-through;text-decoration-thickness:1.4px;text-decoration-color:#66717b;opacity:1;white-space:nowrap}
 .prod__actions{display:grid;grid-template-columns:1fr;gap:.15rem;margin-top:auto;padding-top:1rem}
 .prod__actions .btn{min-height:45px;font-size:.875rem;padding:.65rem .6rem}
 .prod__actions .btn--primary{background:#fff;color:var(--ink);border-color:#b3bcc4}
@@ -514,7 +514,7 @@ html[dir=ltr] .ov--side .ov__panel{--slide:1}
  .shop__head{display:block}.shop__head h2{font-size:2.6rem}.shop__head .lede{margin-top:.8rem;font-size:.9375rem;max-width:none}.shop__head .eyebrow{font-size:.75rem}
  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:2rem .85rem}.chip{min-height:44px;font-size:.875rem;padding:.55rem .9rem}
  .prod__badge{top:7px;inset-inline-start:7px;max-width:calc(100% - 14px);font-size:.6875rem;padding:.25rem .45rem}
- .prod__body{padding-top:.8rem;gap:.45rem}.prod__name{font-size:.9375rem;line-height:1.55;min-height:2.9rem}.prod__sub{font-size:.8125rem;line-height:1.65;min-height:2.7rem}.prod__price{font-size:1rem;gap:.35rem .55rem}.prod__was{font-size:.7rem}
+ .prod__body{padding-top:.8rem;gap:.45rem}.prod__name{font-size:.9375rem;line-height:1.55;min-height:2.9rem}.prod__sub{font-size:.8125rem;line-height:1.65;min-height:2.7rem}.prod__price{font-size:1rem;gap:.35rem .55rem}.prod__was{font-size:.94rem}
  .prod__variant-hint{gap:.45rem}.prod__variant-swatch{width:13px;height:13px}.prod__variant-text{font-size:.76rem}
  .prod__actions .btn{font-size:.8125rem;min-height:44px;padding:.6rem .3rem;gap:.3rem}.prod__actions .btn--ghost{font-size:.75rem}.prod__actions{padding-top:.6rem}
  .gift-story{grid-template-columns:1fr}.gift-story__visual{min-height:0;aspect-ratio:1.4}.gift-story__visual img{object-position:18% center}.gift-story__copy{padding:2.2rem var(--gut) 2.5rem}.gift-story h2{font-size:3rem;max-width:14ch}
@@ -4847,86 +4847,4 @@ body[data-product-slug="product-275"] #colorOptions.product-option-grid--colors{
   .product-page-body .versans-free-shipping__text strong{font-size:.98rem}
   .product-page-body .versans-free-shipping__text span{font-size:.74rem}
   .product-page-body .versans-free-shipping__details{font-size:.73rem}
-}
-
-/* Product gallery: mobile edge-to-edge media + no image zoom (2026-11-21).
-   Keep the underlying images uncropped, gallery swipes working, and page zoom
-   available outside the image area for accessibility. */
-.product-page-body .product-gallery__stage,
-.product-page-body .product-gallery__stage > img{
-  touch-action:pan-y;
-  -webkit-touch-callout:none;
-}
-.product-page-body .product-gallery__stage > img{
-  -webkit-user-select:none;
-  user-select:none;
-  -webkit-user-drag:none;
-  cursor:default;
-}
-@media (max-width:700px){
-  .product-page-body .product-gallery{
-    width:100vw!important;
-    max-width:none!important;
-    min-width:0!important;
-    margin-inline:calc(50% - 50vw)!important;
-    padding:0!important;
-    border:0!important;
-    border-radius:0!important;
-    background:transparent!important;
-    box-shadow:none!important;
-  }
-  .product-page-body .product-gallery__stage{
-    width:100%!important;
-    aspect-ratio:1;
-    margin:0!important;
-    border:0!important;
-    border-radius:0!important;
-    background:#fff!important;
-    box-shadow:none!important;
-  }
-  .product-page-body .product-gallery__stage > img,
-  .product-page-body .product-gallery__stage > video{
-    width:100%!important;
-    height:100%!important;
-    padding:0!important;
-    border-radius:0!important;
-    object-fit:contain!important;
-    background:#fff!important;
-  }
-  /* Thumbnails and optional selection info keep normal page gutters. */
-  .product-page-body .product-gallery__thumbs,
-  .product-page-body .product-gallery__selection-summary{
-    width:calc(100% - 1.44rem)!important;
-    max-width:calc(100% - 1.44rem)!important;
-    margin-inline:.72rem!important;
-    box-sizing:border-box;
-  }
-}
-
-/* Product thumbnails: larger, easier-to-tap cards on phones (2026-11-21).
-   Mobile only. Keep the full-width main image and the no-zoom behavior intact. */
-@media (max-width:700px){
-  .product-page-body .product-gallery__thumbs:not([hidden]){
-    gap:8px!important;
-    padding-block:10px 12px!important;
-    scroll-snap-type:x proximity;
-    align-items:center;
-  }
-  .product-page-body .product-gallery__thumbs .product-thumb{
-    --mobile-product-thumb-size:clamp(72px,22vw,92px);
-    flex:0 0 var(--mobile-product-thumb-size)!important;
-    width:var(--mobile-product-thumb-size)!important;
-    height:var(--mobile-product-thumb-size)!important;
-    min-width:var(--mobile-product-thumb-size)!important;
-    min-height:var(--mobile-product-thumb-size)!important;
-    box-sizing:border-box;
-    padding:2px!important;
-    border-radius:12px!important;
-  }
-  .product-page-body .product-gallery__thumbs .product-thumb img,
-  .product-page-body .product-gallery__thumbs .product-thumb__video-preview{
-    width:100%!important;
-    height:100%!important;
-    object-fit:contain;
-  }
 }
