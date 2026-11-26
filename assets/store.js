@@ -2917,7 +2917,7 @@ function orderTotal() {
     var info = shippingInfo();
     var title = document.getElementById('versansHomeShippingTitle');
     var note = document.getElementById('versansHomeShippingNote');
-    if (title) title.textContent = info.homeFree ? 'משלוח עד הבית — חינם' : 'משלוח עד הבית — 19.90 ₪';
+    if (title) title.textContent = info.homeFree ? 'משלוח עד הבית - חינם' : 'משלוח עד הבית - 19.90 ₪';
     if (note) note.textContent = info.homeFree
       ? 'ההטבה פעילה: יש לפחות 2 תכשיטים בסל'
       : 'בקניית 2 תכשיטים ומעלה המשלוח עד הבית חינם';
