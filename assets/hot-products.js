@@ -16,10 +16,23 @@
   scrim.addEventListener('click', function () { setMenu(false); });
   document.addEventListener('keydown', function (event) { if (event.key === 'Escape') setMenu(false); });
 
+  // Keep the exact same hidden categories and subcategories as the main menu.
   var hidden = window.__VERSANS_HIDDEN_CATEGORIES__ || {};
-  Array.prototype.forEach.call(document.querySelectorAll('[data-nav-cat]'), function (el) {
-    if (hidden[el.getAttribute('data-nav-cat')]) el.style.display = 'none';
+  Array.prototype.forEach.call(menu.querySelectorAll('[data-nav-cat], [data-nav-subcat], [data-nav-group]'), function (el) {
+    var key = el.getAttribute('data-nav-group') || el.getAttribute('data-nav-subcat') || el.getAttribute('data-nav-cat');
+    if (hidden[key] === true) el.style.setProperty('display', 'none', 'important');
   });
+  var braceletsParent = document.getElementById('hotBraceletsParent');
+  var braceletsSubmenu = document.getElementById('hotBraceletsSubmenu');
+  if (braceletsParent && braceletsSubmenu) {
+    braceletsParent.addEventListener('click', function (event) {
+      if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      var expanded = braceletsParent.getAttribute('aria-expanded') === 'true';
+      braceletsParent.setAttribute('aria-expanded', String(!expanded));
+      braceletsSubmenu.hidden = expanded;
+    });
+  }
   var catalog = Array.isArray(window.PRODUCTS) ? window.PRODUCTS : [];
   var routes = window.VERSANS_ROUTES;
   // Curated product slugs, never guessed from a product's array position.
