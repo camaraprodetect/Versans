@@ -227,6 +227,13 @@ html[dir=ltr] .gift-story__copy{direction:ltr}
 .ov{position:fixed;inset:0;z-index:100;display:none}
 .ov.is-open{display:block}
 .ov__scrim{position:absolute;inset:0;background:#0b1721a1;backdrop-filter:blur(5px)}
+/* Keep the checkout scrim covering the viewport while the form scrolls. */
+#coOverlay > .ov__scrim{position:fixed;inset:0;-webkit-backdrop-filter:blur(5px)}
+/* Only the checkout panel scrolls; lock the storefront even over the scrim. */
+html:has(#coOverlay.is-open),body:has(#coOverlay.is-open){overflow:hidden!important;overscroll-behavior:none}
+#coOverlay{overflow:hidden;overscroll-behavior:none}
+#coOverlay > .ov__scrim{touch-action:none}
+#coOverlay > .ov__panel{max-height:100%;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 .ov__panel{position:relative;background:#fff;box-shadow:var(--shadow-lift)}
 .ov__close{position:absolute;top:1rem;inset-inline-end:1rem;z-index:5;display:grid;place-items:center;width:44px;height:44px;border:1px solid var(--line);background:#fff;border-radius:50%}
 .ov__close:hover{background:var(--blush)}

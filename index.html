@@ -40,7 +40,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&amp;family=Frank+Ruhl+Libre:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/styles.css?v=20261009-catalog-cart-hover-border-v4">
+<link rel="stylesheet" href="assets/styles.css?v=20261126-checkout-scroll-v2">
 <!-- Keep a product's cover visible while a hover image is loading or broken. -->
 <style>
 @media (hover: hover) and (pointer: fine) {
@@ -1471,7 +1471,7 @@ html, body {
             <div class="field"><label for="f_apartment" data-i18n="co.apartment">דירה</label><input id="f_apartment" name="apartment" inputmode="text" required><span class="field__err"></span></div>
             <div class="field field--full versans-no-apartment"><label><input type="checkbox" id="f_no_apartment" name="noApartment" value="yes"> אין דירה — בית פרטי / כתובת ללא מספר דירה</label></div>
             <div class="field"><label for="f_entrance" data-i18n="co.entrance">כניסה</label><input id="f_entrance" name="entrance" inputmode="text"><span class="field__err"></span></div>
-            <div class="field"><label for="f_floor" data-i18n="co.floor">קומה</label><input id="f_floor" name="floor" inputmode="text"><span class="field__err"></span></div>
+            <div class="field"><label for="f_floor" data-i18n="co.floor">קומה</label><input id="f_floor" name="floor" inputmode="text" required><span class="field__err"></span></div>
             <div class="field"><label for="f_zip" data-i18n="co.zip">מיקוד</label><input id="f_zip" name="zip" autocomplete="postal-code" inputmode="numeric" required><span class="field__err"></span></div>
             <div class="field field--full"><label for="f_notes" data-i18n="co.notes">הערה להזמנה</label><textarea id="f_notes" name="notes"></textarea><span class="field__err"></span></div>
           </div>
@@ -1509,11 +1509,11 @@ html, body {
 <script src="assets/site-header.js?v=20260922-hide-zero-favorites-v1"></script>
 <script src="assets/glasses-pricing.js?v=20260912-glasses-v9"></script>
 <script src="assets/pricing.js?v=20261023-marketing-v1"></script>
-<script src="assets/i18n.js?v=20260922-full-address-v1"></script>
+<script src="assets/i18n.js?v=20261126-required-address-v1"></script>
 <script src="assets/reviews.js?v=20261027-official-v1"></script>
 <script src="assets/home.js?v=20261126-shipping-meta-v1"></script>
 <script src="assets/shipping-rates.js?v=20261126-v1"></script>
-<script src="assets/store.js?v=20261126-shipping-dash-v2"></script>
+<script src="assets/store.js?v=20261126-checkout-wheel-v1"></script>
 <script src="assets/auth-nav.js?v=20260914-pretty-urls-v1"></script>
   <script src="/assets/presence.js?v=20260915-presence-v1"></script>
   <script src="/assets/customer-service.js?v=20260926-support-label-v3"></script>

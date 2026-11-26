@@ -3079,6 +3079,22 @@ function orderTotal() {
    */
   window.VERSANS_OPEN_CHECKOUT = openCheckout;
 
+  /* Route wheel gestures over the checkout backdrop to the scrollable panel. */
+  document.addEventListener('wheel', function (event) {
+    var overlay = document.getElementById('coOverlay');
+    if (!overlay || !overlay.classList.contains('is-open') || event.ctrlKey) return;
+    var panel = overlay.querySelector('.ov__panel');
+    if (!panel || panel.contains(event.target)) return;
+    if (event.cancelable) event.preventDefault();
+    var delta = event.deltaY;
+    if (event.deltaMode === 1) {
+      delta *= 16;
+    } else if (event.deltaMode === 2) {
+      delta *= panel.clientHeight;
+    }
+    panel.scrollTop += delta;
+  }, { capture: true, passive: false });
+
   function fieldError(input, msg) {
     var f = input && input.closest ? input.closest('.field') : null;
     if (!f) return !msg;

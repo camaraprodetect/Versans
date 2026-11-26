@@ -340,7 +340,7 @@ function normalizeShippingCustomer(raw) {
     shippingMethod: source.shippingMethod === 'home' ? 'home' : source.shippingMethod === 'pickup' ? 'pickup' : '',
     noApartment: source.noApartment === 'yes' || source.noApartment === true
   };
-  const required = ['firstName','lastName','email','phone','country','city','street','houseNumber','zip','shippingMethod'];
+  const required = ['firstName','lastName','email','phone','country','city','street','houseNumber','floor','zip','shippingMethod'];
   if (required.some((key) => !customer[key]) || !validEmail(customer.email)
       || !/^\d{7}$/.test(customer.zip) || !/^\d+[\p{L}\d\/\-]*$/u.test(customer.houseNumber)
       || (!customer.noApartment && !customer.apartment)) {
