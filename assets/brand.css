@@ -37,3 +37,45 @@
   .foot .foot__brand .brand__logo{position:relative!important;display:block!important;width:200px!important;max-width:min(62vw,200px)!important;overflow:visible!important;line-height:0!important}
   .foot .foot__brand .brand__logo img{position:static!important;display:block!important;width:100%!important;max-width:100%!important;height:auto!important;max-height:none!important;aspect-ratio:auto!important;object-fit:contain!important;filter:none!important}
 }
+
+
+/* VerSans footer: black storefront styling, all standard footers. */
+.foot,
+.home-page .home-footer {
+  background: #000 !important;
+  color: #d1d1d1;
+}
+.foot .foot__about,
+.home-page .home-footer .foot__about {
+  color: #c6c6c6 !important;
+}
+.foot .foot__bottom,
+.home-page .home-footer .foot__bottom {
+  border-top-color: #282828 !important;
+  color: #a9a9a9 !important;
+}
+.home-page .home-footer .foot__contact {
+  background: #101010 !important;
+  border-color: #303030 !important;
+}
+.home-page .home-footer .foot__contact-note {
+  color: #bcbcbc;
+}
+.home-page .home-footer #footContact a {
+  color: #e8e8e8;
+}
+
+/* Center the footer wordmark on mobile, without changing link columns. */
+@media (max-width: 760px) {
+  .foot .foot__brand .brand__footer-link {
+    display: flex !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    justify-content: center;
+    align-items: center;
+    margin-inline: auto !important;
+  }
+  .foot .foot__brand .brand__logo {
+    margin-inline: auto !important;
+  }
+}

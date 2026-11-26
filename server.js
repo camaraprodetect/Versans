@@ -19,6 +19,7 @@ const { createFinanceLedger } = require('./lib/finance-ledger.js');
 const employeePolicy = require('./lib/employee-access.js');
 const orderAnomalies = require('./lib/admin-order-anomalies.js');
 const { createPaymentUrl, verifyPayment, priceOrder } = require('./api/_hyp.js');
+const { assessVerifiedPayment, hasUniquePaymentReturnFields } = require('./lib/payment-verification.js');
 const { PRODUCTS, CATEGORIES } = require('./assets/products.js');
 const { createCatalogManager } = require('./lib/catalog-manager.js');
 const { createMarketingManager } = require('./lib/marketing-manager.js');
@@ -335,10 +336,14 @@ function normalizeShippingCustomer(raw) {
     entrance: cleanCheckoutText(source.entrance, 20),
     floor: cleanCheckoutText(source.floor, 20),
     zip: cleanCheckoutText(source.zip, 20),
-    notes: cleanCheckoutText(source.notes, 500)
+    notes: cleanCheckoutText(source.notes, 500),
+    shippingMethod: source.shippingMethod === 'home' ? 'home' : source.shippingMethod === 'pickup' ? 'pickup' : '',
+    noApartment: source.noApartment === 'yes' || source.noApartment === true
   };
-  const required = ['firstName','lastName','email','phone','country','city','street','houseNumber','zip'];
-  if (required.some((key) => !customer[key]) || !validEmail(customer.email)) {
+  const required = ['firstName','lastName','email','phone','country','city','street','houseNumber','zip','shippingMethod'];
+  if (required.some((key) => !customer[key]) || !validEmail(customer.email)
+      || !/^\d{7}$/.test(customer.zip) || !/^\d+[\p{L}\d\/\-]*$/u.test(customer.houseNumber)
+      || (!customer.noApartment && !customer.apartment)) {
     const err = new Error('missing_shipping_details');
     err.status = 400;
     throw err;
@@ -350,6 +355,7 @@ function normalizeShippingCustomer(raw) {
     throw err;
   }
   customer.country = 'ישראל';
+  if (customer.noApartment) customer.apartment = '';
   return customer;
 }
 
@@ -378,12 +384,12 @@ function requireCurrentCheckoutTotal(body,coupon,bundles){
   if(body.expectedTotal===undefined||body.expectedTotal===null)return;
   const expected=Number(body.expectedTotal);
   if(!Number.isFinite(expected)||expected<0)throw Object.assign(new Error('invalid_order_total'),{status:400});
-  const actual=priceOrder(body.items,body.lang==='en'?'en':'he',coupon,bundles).total;
+  const actual=priceOrder(body.items,body.lang==='en'?'en':'he',coupon,bundles,body.shippingMethod).total;
   if(Math.abs(expected-actual)>0.011)throw Object.assign(new Error('price_changed'),{status:409});
 }
 function createDemoPaymentResult(body, options = {}) {
   const lang = body && body.lang === 'en' ? 'en' : 'he';
-  const priced = priceOrder(body && Array.isArray(body.items) ? body.items : [], lang, options.coupon || null, options.bundleRules || null);
+  const priced = priceOrder(body && Array.isArray(body.items) ? body.items : [], lang, options.coupon || null, options.bundleRules || null, body && body.shippingMethod);
   const orderRef = newDemoOrderRef();
   const params = new URLSearchParams({
     Order: orderRef,
@@ -2992,7 +2998,11 @@ async function adminOrderDetailPayload(row) {
       entrance: customer.entrance || null,
       floor: customer.floor || null,
       zip: customer.zip || null,
-      notes: customer.notes || null
+      shippingMethod: customer.shippingMethod || null,
+      noApartment: customer.noApartment === true,
+      // Show selected delivery mode in the EXISTING admin shipping section
+      // without replacing or modifying admin.js.
+      notes: [customer.shippingMethod === 'home' ? 'שיטת משלוח: עד הבית' : (customer.shippingMethod === 'pickup' ? 'שיטת משלוח: נקודת איסוף' : ''), customer.notes].filter(Boolean).join(' · ') || null
     }
   };
 }
@@ -7854,7 +7864,12 @@ async function adminApi(req, res, pathname, parsed) {
   }
   if (pathname === '/api/admin/catalog/images' && req.method === 'POST') {
     if (!sameOriginAllowed(req)) { json(res, 403, {ok:false,error:'origin_not_allowed'}); return true; }
-    const body = await readJsonBody(req, 3 * 1024 * 1024);
+    // Base64 expands a 6 MiB image to about 8 MiB inside JSON.
+    // Bound only this upload endpoint without changing other request limits.
+    const raw = await readRawBody(req, 9 * 1024 * 1024);
+    let body;
+    try { body = raw ? JSON.parse(raw) : {}; }
+    catch { throw Object.assign(new Error('Invalid JSON'), {status: 400}); }
     const url = await catalogManager.uploadImage(body && body.image);
     json(res, 201, {ok:true,url}); return true;
   }
@@ -9928,7 +9943,7 @@ const server = http.createServer(async (req, res) => {
       }
       const prizeCoupon=isPrizeCouponCode?await prizeWheel.coupon(requestedCouponCode,customer.email):null;
       if(isPrizeCouponCode&&!prizeCoupon){json(res,400,{ok:false,error:'invalid_prize_coupon_or_email'});return;}
-      const paymentBody = { ...body, customer };
+      const paymentBody = { ...body, customer, shippingMethod:customer.shippingMethod };
 
       // Demo checkout must never wait for HYP or the orders database. Its purpose is
       // to exercise the real storefront -> thank-you -> Google Sheet flow without a
@@ -9990,7 +10005,7 @@ const server = http.createServer(async (req, res) => {
           });
           persistedDemoOrder = await database.getOrderByRef(demoOrder.order_ref);
           if(persistedDemoOrder){
-            try { await adminSalesAdvanced.capture(demoOrder.order_ref,priceOrder(paymentBody.items,paymentBody.lang==='en'?'en':'he',demoCoupon,activeBundles)); }
+            try { await adminSalesAdvanced.capture(demoOrder.order_ref,priceOrder(paymentBody.items,paymentBody.lang==='en'?'en':'he',demoCoupon,activeBundles,paymentBody.shippingMethod)); }
             catch(error){console.error('Sales promotion analytics capture failed:',error.message);}
           }
           if(managedCoupon&&persistedDemoOrder)await database.transaction(async tx=>marketingManager.redeem(tx,managedCoupon.code,demoOrder.order_ref,now));
@@ -10093,7 +10108,7 @@ const server = http.createServer(async (req, res) => {
       });
       // Immutable pricing snapshot from the server checkout rules. This does not
       // touch payment status, and analytics failures never fail a checkout.
-      try { await adminSalesAdvanced.capture(String(result.order || ''),priceOrder(paymentBody.items,paymentBody.lang==='en'?'en':'he',paymentOptions.coupon,activeBundles)); }
+      try { await adminSalesAdvanced.capture(String(result.order || ''),priceOrder(paymentBody.items,paymentBody.lang==='en'?'en':'he',paymentOptions.coupon,activeBundles,paymentBody.shippingMethod)); }
       catch(error){console.error('Sales promotion analytics capture failed:',error.message);}
       json(res, 200, { ...result, guest: guestIdentity ? { name: guestIdentity.username, isVerifiedCustomer: false } : null }, guestIdentity && guestIdentity.setCookie ? { 'Set-Cookie': guestIdentity.setCookie } : {});
       return;
@@ -10158,6 +10173,11 @@ const server = http.createServer(async (req, res) => {
         json(res, 200, { ...result, verifiedCustomer: false });
         return;
       } else {
+        if (!hasUniquePaymentReturnFields(parsed.searchParams)) {
+          // Never guess which of several Order/Amount/CCode values was signed.
+          json(res, 400, { ok: false, error: 'ambiguous_payment_callback' });
+          return;
+        }
         result = await verifyPayment(query);
         orderRef = String(result.order || query.Order || '').trim();
         order = orderRef ? await database.getOrderByRef(orderRef) : null;
@@ -10169,14 +10189,22 @@ const server = http.createServer(async (req, res) => {
 
       if (order) {
         if (result.ok) {
-          const returnedAmount = result.amount == null || result.amount === '' ? null : amountToAgorot(result.amount);
-          const amountMatches = returnedAmount === null || returnedAmount === Number(order.amount_agorot);
-          if (!amountMatches && returnedAmount !== null) {
-            // Only the server-verified provider response is trusted, never the checkout input.
-            try { await orderAnomalies.recordGatewayMismatch(database,order.order_ref,returnedAmount,Number(order.amount_agorot)); }
-            catch (auditError) { console.error('Payment mismatch audit:',auditError.message); }
+          // HYP VERIFY validates the signed callback; the amount is still
+          // required and must equal the immutable amount saved at checkout.
+          // A missing/invalid Amount must NEVER count as a successful match.
+          const integrity = assessVerifiedPayment(result, order);
+          if (!integrity.ok) {
+            console.warn('Payment integrity check blocked order confirmation:', integrity.reason, order.order_ref);
+            if (integrity.reason === 'amount_mismatch') {
+              try { await orderAnomalies.recordGatewayMismatch(database, order.order_ref, integrity.amountAgorot, Number(order.amount_agorot)); }
+              catch (auditError) { console.error('Payment mismatch audit:', auditError.message); }
+            }
+            // The card may have been charged. Keep order pending; the thank-you
+            // page will show "verification pending", not urge a second charge.
+            json(res, 409, { ok: false, error: 'payment_confirmation_requires_review' });
+            return;
           }
-          if (amountMatches) {
+          if (integrity.ok) {
             paymentAccepted = true;
             const now = Date.now();
             await database.transaction(async (tx) => {
@@ -10225,7 +10253,16 @@ const server = http.createServer(async (req, res) => {
             }
           }
         } else {
-          await database.markOrderFailed(Date.now(), order.id);
+          if (result.ccode === '0' && query.CCode === '0') {
+            // HYP verified a callback but required fields were missing or
+            // inconsistent. A charge may exist: do not tell the shopper to retry.
+            json(res, 409, { ok: false, error: 'payment_confirmation_requires_review' });
+            return;
+          }
+          // A failed/unverified browser redirect cannot safely change order
+          // status. The attacker could supply someone else's order reference.
+          // Leave the order pending for an authenticated gateway callback or review.
+          console.warn('Unverified payment callback rejected for existing order:', order.order_ref);
         }
       }
 

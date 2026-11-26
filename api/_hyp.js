@@ -16,6 +16,7 @@ const { STORE_CONFIG } = require('../assets/config.js');
 const { PRODUCTS } = require('../assets/products.js');
 const { isRealColorSelector, selectedColorProductName } = require('../lib/product-variant-identity.js');
 const PRICING = require('../assets/pricing.js');
+const SHIPPING = require('../assets/shipping-rates.js');
 const { strictAmountAgorot } = require('../lib/payment-verification.js');
 
 const HYP_ENDPOINT = 'https://icom.yaad.net/p/';
@@ -63,7 +64,7 @@ function localText(value, lang) {
   return value[lang] || value.he || value.en || '';
 }
 
-function priceOrder(items, lang, coupon = null, bundleRules = null) {
+function priceOrder(items, lang, coupon = null, bundleRules = null, shippingMethod = null) {
   if (!Array.isArray(items) || !items.length) {
     const err = new Error('Cart is empty'); err.status = 400; throw err;
   }
@@ -263,8 +264,8 @@ function priceOrder(items, lang, coupon = null, bundleRules = null) {
   if (!lines.length) { const err = new Error('No valid items'); err.status = 400; throw err; }
 
   const subtotal = Number(lines.reduce((sum, l) => sum + l.total, 0).toFixed(2));
-  const freeOver = STORE_CONFIG.shipping.freeOver;
-  const shipping = (freeOver && subtotal >= freeOver) ? 0 : Number(STORE_CONFIG.shipping.flat);
+  const delivery = SHIPPING.calculate(lines, shippingMethod);
+  const shipping = delivery.price;
   const couponPercent = coupon && Number(coupon.percent) > 0
     ? Math.min(100, Math.max(0, Number(coupon.percent)))
     : 0;
@@ -290,6 +291,8 @@ function priceOrder(items, lang, coupon = null, bundleRules = null) {
     couponPercent: priced.couponPercent,
     couponCode: priced.couponCode,
     shipping: priced.shipping,
+    shippingMethod: delivery.method,
+    jewelryCount: delivery.jewelryCount,
     total: priced.total,
     totalSavings: priced.totalSavings
   };
@@ -313,7 +316,7 @@ async function createPaymentUrl(body, options = {}) {
   const { Masof, KEY, PassP } = credentials();
   const lang = body.lang === 'en' ? 'en' : 'he';
   const customer = body.customer || {};
-  const order = priceOrder(body.items, lang, options.coupon || null, options.bundleRules || null);
+  const order = priceOrder(body.items, lang, options.coupon || null, options.bundleRules || null, body.shippingMethod);
   const orderId = newOrderId();
   const hyp = STORE_CONFIG.hyp;
 
@@ -327,7 +330,7 @@ async function createPaymentUrl(body, options = {}) {
     Amount: order.total.toFixed(2),
     Coin: String(STORE_CONFIG.currency.hypCoin),
     Order: orderId,
-    Info: clean((STORE_CONFIG.brand.name[lang] || 'Order') + ' ' + orderId, 60),
+    Info: clean((STORE_CONFIG.brand.name[lang] || 'Order') + ' ' + orderId + ' / ' + (order.shippingMethod === 'home' ? 'Home delivery' : 'Pickup point'), 60),
 
     ClientName: clean(customer.firstName, 40),
     ClientLName: clean(customer.lastName, 40),

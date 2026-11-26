@@ -116,8 +116,8 @@
     return '<div class="cart-pricing-card cart-pricing-card--compact">' +
       '<div class="sum cart-summary-subtotal"><span>' + (lang === 'he' ? 'סכום ביניים' : 'Subtotal') + '</span><span>' + money(summary.subtotal) + '</span></div>' +
       savingsResizableHtml(summary) +
-      '<div class="sum cart-summary-shipping"><span>' + (lang === 'he' ? 'משלוח' : 'Shipping') + '</span><span>' + (summary.shipping ? money(summary.shipping) : (lang === 'he' ? 'חינם' : 'Free')) + '</span></div>' +
-      '<div class="sum sum--payable"><span>' + (lang === 'he' ? 'לתשלום' : 'To pay') + '</span><strong>' + money(summary.total) + '</strong></div>' +
+      '<div class="sum cart-summary-shipping"><span>' + (lang === 'he' ? 'משלוח' : 'Shipping') + '</span><span>' + (lang === 'he' ? 'לבחירה בקופה' : 'Choose at checkout') + '</span></div>' +
+      '<div class="sum sum--payable"><span>' + (lang === 'he' ? 'לפני בחירת משלוח' : 'Before shipping') + '</span><strong>' + money(summary.total) + '</strong></div>' +
     '</div>';
   }
 

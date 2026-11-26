@@ -1364,6 +1364,11 @@
     var outOfStock = p.inStock === false;
     var isGreetingEditorEntry = !!p.greetingEditorEntry;
     var cardPrice = catalogPrice(p);
+    var comparePrice = Number(p.compareAt);
+    // Display an old price only for a real discount. Never use this display
+    // value for the cart or checkout calculation, which remains server-side.
+    var hasComparePrice = p.compareAt != null && p.compareAt !== '' &&
+      Number.isFinite(comparePrice) && Math.round(comparePrice * 100) > Math.round(cardPrice * 100);
     var cardHref = productPath(p);
     var isHat = ((Array.isArray(p.categories) ? p.categories : [p.category]).indexOf('hats') !== -1);
     var priority = priorityInfo(p);
@@ -1383,7 +1388,9 @@
         '<h3 class="prod__name"><a class="prod__titlelink" href="' + cardHref + '">' + esc(L(p.title)) + '</a></h3>' +
         (isGlasses ? '' : '<p class="prod__sub">' + esc(L(p.subtitle)) + '</p>') +
         productColorMetaHTML(p) +
-        '<p class="prod__price">' + (p.startingPrice ? (state.lang === 'he' ? 'החל מ־' : 'From ') : '') + money(cardPrice) +
+        '<p class="prod__price">' +
+          '<span class="prod__now">' + (p.startingPrice ? (state.lang === 'he' ? 'החל מ־' : 'From ') : '') + money(cardPrice) + '</span>' +
+          (hasComparePrice ? '<del class="prod__was" aria-label="מחיר לפני הנחה">' + money(comparePrice) + '</del>' : '') +
         '</p>' +
         '<div class="prod__actions">' +
           (outOfStock ? '<button class="btn btn--primary" disabled>אזל מהמלאי</button>' : (isGreetingEditorEntry
@@ -2407,11 +2414,16 @@
   function subtotal() {
     return cartLines().reduce(function (s, l) { return s + l.unitPrice * l.qty; }, 0);
   }
-  function shippingCost() {
-    var s = subtotal();
-    if (!s) return 0;
-    return (CFG.shipping.freeOver && s >= CFG.shipping.freeOver) ? 0 : CFG.shipping.flat;
+  function shippingSelection() {
+    var selected = document.querySelector('#coForm input[name="shippingMethod"]:checked');
+    return selected ? selected.value : null;
   }
+  function shippingInfo() {
+    return window.VERSANS_SHIPPING
+      ? window.VERSANS_SHIPPING.calculate(cartLines(), shippingSelection())
+      : {method:null, jewelryCount:0, homeFree:false, price:0};
+  }
+  function shippingCost() { return shippingInfo().price; }
   function pricingSummary() {
     var pricing = window.VERSANS_PRICING;
     if (!pricing || !pricing.calculate) {
@@ -2839,8 +2851,8 @@ function orderTotal() {
     return '<div class="cart-pricing-card cart-pricing-card--compact' + (checkout ? ' cart-pricing-card--checkout' : '') + '">' +
       '<div class="sum cart-summary-subtotal"><span>' + esc(t('cart.subtotal')) + '</span><span>' + money(summary.subtotal) + '</span></div>' +
       savingsResizableHtml(summary) +
-      '<div class="sum cart-summary-shipping"><span>' + esc(t('cart.shipping')) + '</span><span>' + (summary.shipping ? money(summary.shipping) : esc(t('cart.free'))) + '</span></div>' +
-      '<div class="sum sum--payable"><span>' + esc(state.lang === 'he' ? 'לתשלום' : 'To pay') + '</span><strong>' + money(summary.total) + '</strong></div>' +
+      '<div class="sum cart-summary-shipping"><span>' + esc(t('cart.shipping')) + '</span><span>' + (shippingSelection() ? (summary.shipping ? money(summary.shipping) : esc(t('cart.free'))) : esc(state.lang === 'he' ? 'בחירה בקופה' : 'Choose at checkout')) + '</span></div>' +
+      '<div class="sum sum--payable"><span>' + esc(state.lang === 'he' ? (shippingSelection() ? 'לתשלום' : 'סכום לפני בחירת משלוח') : (shippingSelection() ? 'To pay' : 'Before shipping selection')) + '</span><strong>' + money(summary.total) + '</strong></div>' +
     '</div>';
   }
 
@@ -2901,7 +2913,17 @@ function orderTotal() {
   }
 
   /* ---------- קופה ------------------------------------------------------- */
+  function updateShippingChoiceUi() {
+    var info = shippingInfo();
+    var title = document.getElementById('versansHomeShippingTitle');
+    var note = document.getElementById('versansHomeShippingNote');
+    if (title) title.textContent = info.homeFree ? 'משלוח עד הבית — חינם' : 'משלוח עד הבית — 19.90 ₪';
+    if (note) note.textContent = info.homeFree
+      ? 'ההטבה פעילה: יש לפחות 2 תכשיטים בסל'
+      : 'בקניית 2 תכשיטים ומעלה המשלוח עד הבית חינם';
+  }
   function renderSummary() {
+    updateShippingChoiceUi();
     var summary = pricingSummary();
     $('#coSummary').innerHTML = cartLines().map(function (l) {
       var meta = [];
@@ -3068,14 +3090,32 @@ function orderTotal() {
 
   function validate(form) {
     var ok = true;
+    var selectedMethod = shippingSelection();
+    var methodError = document.getElementById('coShippingError');
+    if (!selectedMethod) { ok = false; if (methodError) { methodError.classList.add('is-error'); methodError.textContent = 'בחרו שיטת משלוח לפני התשלום.'; } }
+    else if (methodError) { methodError.classList.remove('is-error'); methodError.textContent = ''; }
+    var apartment = document.getElementById('f_apartment');
+    var withoutApartment = document.getElementById('f_no_apartment');
+    if (apartment) apartment.required = !(withoutApartment && withoutApartment.checked);
     $$('input, textarea', form).forEach(function (el) {
       if (el.required && !el.value.trim()) ok = fieldError(el, t('co.err.required')) && ok;
       else if (el.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(el.value.trim())) ok = fieldError(el, t('co.err.email')) && ok;
       else if (el.type === 'tel' && el.value.replace(/\D/g, '').length < 9) ok = fieldError(el, t('co.err.phone')) && ok;
+      else if (el.name === 'zip' && !/^\d{7}$/.test(el.value.trim())) ok = fieldError(el, 'נדרש מיקוד ישראלי בן 7 ספרות') && ok;
       else fieldError(el, '');
     });
     return ok;
   }
+
+  document.addEventListener('change', function (event) {
+    if (event.target && event.target.name === 'shippingMethod' && event.target.closest('#coForm')) {
+      renderSummary();
+    }
+    if (event.target && event.target.id === 'f_no_apartment') {
+      var apartment = document.getElementById('f_apartment');
+      if (apartment) { apartment.disabled = event.target.checked; apartment.required = !event.target.checked; if (event.target.checked) apartment.value = ''; }
+    }
+  });
 
   function submitCheckout(e) {
     e.preventDefault();
@@ -3106,6 +3146,7 @@ function orderTotal() {
           customer: customer,
           lang: state.lang,
           couponCode: state.coupon && state.coupon.code ? state.coupon.code : null,
+          shippingMethod: shippingSelection(),
           expectedTotal: pricingSummary().total
         })
       });
@@ -3531,6 +3572,8 @@ function orderTotal() {
     window.VERSANS_CART_STATE.syncBadge();
     var cartOverlay = document.getElementById('cartOverlay');
     if (cartOverlay && cartOverlay.classList.contains('is-open')) renderCart();
+    var coOverlay = document.getElementById('coOverlay');
+    if (coOverlay && coOverlay.classList.contains('is-open')) renderSummary();
   });
   window.addEventListener('pageshow', function () {
     refreshCartFromStorage();

@@ -160,6 +160,7 @@ body:is([data-product-slug="product-285"],[data-product-slug="product-286"]) #si
 <link rel="stylesheet" href="/assets/marketing-storefront.css?v=20261023-marketing-v1">
 <link rel="stylesheet" href="/assets/promo-popups.css?v=20261013-video-minimal-v4">
 <link rel="stylesheet" href="/assets/review-official-reply.css?v=20261027-v1">
+<link rel="stylesheet" href="/assets/mobile-nav-extras.css?v=20261126-hot-links-v1">
 </head>
 <body class="product-page-body">
 <!-- VERSANS-PRODUCT-MOBILE-NAV-FIX-V4 -->
@@ -175,7 +176,7 @@ body:is([data-product-slug="product-285"],[data-product-slug="product-286"]) #si
         <span class="promo-marquee__sep" aria-hidden="true">•</span>
         <a class="promo-marquee__item promo-marquee__item--greeting" href="/#shop"><span class="promo-marquee__icon">✉</span><span class="promo-he">תכשיט עם ברכה מעוצבת</span></a>
         <span class="promo-marquee__sep" aria-hidden="true">•</span>
-        <a class="promo-marquee__item promo-marquee__item--shipping" href="/policies#shipping"><span class="promo-marquee__icon">✈</span><span class="promo-he">משלוח חינם</span></a>
+        <a class="promo-marquee__item promo-marquee__item--shipping" href="/policies#shipping"><span class="promo-marquee__icon">✈</span><span class="promo-he">משלוח לנקודת איסוף חינם</span></a>
         <span class="promo-marquee__sep" aria-hidden="true">•</span>
         <a class="promo-marquee__item promo-marquee__item--projection" href="/photo-projection-bracelet"><span class="promo-marquee__icon">◎</span><span class="promo-he">תכשיטים עם הקרנת תמונה אישית</span></a>
         <span class="promo-marquee__sep" aria-hidden="true">•</span>
@@ -189,7 +190,7 @@ body:is([data-product-slug="product-285"],[data-product-slug="product-286"]) #si
         <span class="promo-marquee__sep" aria-hidden="true">•</span>
         <a class="promo-marquee__item promo-marquee__item--greeting" href="/#shop" tabindex="-1"><span class="promo-marquee__icon">✉</span><span class="promo-he">תכשיט עם ברכה מעוצבת</span></a>
         <span class="promo-marquee__sep" aria-hidden="true">•</span>
-        <a class="promo-marquee__item promo-marquee__item--shipping" href="/policies#shipping" tabindex="-1"><span class="promo-marquee__icon">✈</span><span class="promo-he">משלוח חינם</span></a>
+        <a class="promo-marquee__item promo-marquee__item--shipping" href="/policies#shipping" tabindex="-1"><span class="promo-marquee__icon">✈</span><span class="promo-he">משלוח לנקודת איסוף חינם</span></a>
         <span class="promo-marquee__sep" aria-hidden="true">•</span>
         <a class="promo-marquee__item promo-marquee__item--projection" href="/photo-projection-bracelet" tabindex="-1"><span class="promo-marquee__icon">◎</span><span class="promo-he">תכשיטים עם הקרנת תמונה אישית</span></a>
         <span class="promo-marquee__sep" aria-hidden="true">•</span>
@@ -233,8 +234,41 @@ body:is([data-product-slug="product-285"],[data-product-slug="product-286"]) #si
       <a href="/watches#shop" data-cat="watches" data-nav-cat="watches">שעונים</a>
       <a href="/glasses#shop" data-cat="glasses" data-nav-cat="glasses">משקפיים</a>
       <a href="/hats#shop" data-cat="hats" data-nav-cat="hats">כובעים</a>
+      <a class="nav__feature-link nav__feature-link--hot" href="/hot.html"><span class="nav__feature-icon" aria-hidden="true">★</span><span>חמים באתר</span></a>
+      <a class="nav__feature-link nav__feature-link--reviews" href="/shop#reviews"><span class="nav__feature-icon" aria-hidden="true">✦</span><span>ביקורות</span></a>
       <a class="nav__track-link" href="/track" aria-label="מעקב הזמנה">מעקב הזמנה</a>
     </nav>
+    <!-- Sync product-page hamburger links with category visibility from PostgreSQL.
+         Use inline !important because mobile styles.css forces menu links to display. -->
+    <script id="versansProductHiddenNavFix">
+    (function () {
+      'use strict';
+      function syncHiddenProductNav() {
+        var hidden = window.__VERSANS_HIDDEN_CATEGORIES__;
+        var menu = document.getElementById('navmenu');
+        if (!menu || !hidden || typeof hidden !== 'object') return;
+        menu.querySelectorAll('[data-nav-cat], [data-nav-subcat], [data-nav-group]').forEach(function (item) {
+          var key = item.getAttribute('data-nav-group') || item.getAttribute('data-nav-subcat') || item.getAttribute('data-nav-cat');
+          if (!key || key === 'all') return;
+          if (hidden[key] === true) {
+            // Inline important wins over .product-page-body .nav__menu > a { display:block!important }.
+            item.style.setProperty('display', 'none', 'important');
+            item.setAttribute('aria-hidden', 'true');
+            item.setAttribute('data-versans-visibility-hidden', 'true');
+          } else if (item.getAttribute('data-versans-visibility-hidden') === 'true') {
+            item.style.removeProperty('display');
+            item.removeAttribute('aria-hidden');
+            item.removeAttribute('data-versans-visibility-hidden');
+          }
+        });
+      }
+      syncHiddenProductNav();
+      window.addEventListener('pageshow', syncHiddenProductNav);
+      document.addEventListener('click', function (event) {
+        if (event.target.closest('#burger')) syncHiddenProductNav();
+      }, true);
+    })();
+    </script>
 
     <div class="nav__actions">
       <button class="iconbtn nav__desktop-search" type="button" data-site-search-open aria-label="חיפוש באתר">
@@ -304,13 +338,13 @@ body:is([data-product-slug="product-285"],[data-product-slug="product-286"]) #si
           <span class="product-info__save" id="productSaveAmount" hidden></span>
         </div>
         <div id="productPromoLine" class="product-hat-promo" role="note" aria-label="מבצע כובעים" hidden></div>
-        <div class="versans-free-shipping" role="note" aria-label="משלוח חינם על כל הזמנה">
+        <div class="versans-free-shipping" role="note" aria-label="אפשרויות משלוח והטבת משלוח עד הבית">
           <span class="versans-free-shipping__icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h11v11H3z"/><path d="M14 10h4l3 3v4h-7z"/><circle cx="7.5" cy="18" r="2"/><circle cx="17.5" cy="18" r="2"/></svg>
           </span>
           <div class="versans-free-shipping__text">
-            <strong>משלוח חינם</strong>
-            <span>על כל הזמנה באתר</span>
+            <strong>משלוח חינם עד הבית</strong>
+            <span>בקניית 2 תכשיטים ומעלה • נקודת איסוף חינם בכל הזמנה</span>
           </div>
           <a href="/policies#shipping" class="versans-free-shipping__details" aria-label="לפרטי מדיניות המשלוחים">לפרטים <span aria-hidden="true">←</span></a>
         </div>
@@ -559,7 +593,7 @@ body:is([data-product-slug="product-285"],[data-product-slug="product-286"]) #si
 <script src="assets/site-header.js?v=20260922-hide-zero-favorites-v1"></script>
 <script src="assets/glasses-pricing.js?v=20260912-glasses-v9"></script>
 <script src="/assets/pricing.js?v=20261023-marketing-v1"></script>
-<script src="/assets/cart-drawer.js?v=20261003-fashion-color-identity-v25"></script>
+<script src="/assets/cart-drawer.js?v=20261126-shipping-selection-v1"></script>
 <script src="assets/i18n.js?v=20260905-versans-v1"></script>
 <script src="assets/product.js?v=20261121-ice-no-message-v1"></script>
 <script src="assets/product-gallery-progress.js?v=20261123-v3-autofit"></script>
