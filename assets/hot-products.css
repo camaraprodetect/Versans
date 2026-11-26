@@ -54,3 +54,19 @@
 .hot-footer{background:#000;color:#bcbcbc}
 .hot-footer span{color:#fff}
 .hot-footer a{color:#d0d0d0}
+
+
+/* VerSans brand assets: use images for standalone logos on this page. */
+.hot-brand{display:inline-flex;align-items:center;justify-content:center;min-width:0;flex:0 1 auto;line-height:1}
+.hot-brand img{display:block;width:clamp(135px,16vw,185px);height:auto;max-height:48px;max-width:100%;object-fit:contain}
+.hot-footer__logo{display:inline-flex;align-items:center;justify-content:center;line-height:1}
+.hot-footer__logo img{display:block;width:140px;height:auto;max-height:38px;object-fit:contain}
+
+/* Compact title instead of the former full-screen dark banner. */
+.hot-page-title{width:min(1320px,calc(100% - 40px));margin:34px auto 0;font-size:clamp(1.65rem,2.6vw,2.25rem);line-height:1.25;font-weight:700;text-align:right;color:#17202a}
+.hot-page-title + .hot-container{margin-top:22px}
+@media(max-width:700px){
+  .hot-brand img{width:clamp(120px,34vw,155px);max-height:38px}
+  .hot-page-title{width:calc(100% - 24px);margin:22px auto 0;font-size:1.65rem}
+  .hot-page-title + .hot-container{margin-top:14px}
+}
