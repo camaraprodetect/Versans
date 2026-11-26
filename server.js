@@ -3115,6 +3115,9 @@ async function adminOrderWorkPayload(row, prefetchedStates = null) {
     currency: sheetPayload.currency,
     orderTotal: sheetPayload.orderTotal,
     customer: sheetPayload.customer,
+    // This is the option selected at checkout, stored in customer_json.
+    // Keep it independent of Google Sheets and fulfillment tracking status.
+    shippingMethod: parseStoredCustomer(row).shippingMethod || null,
     customerName: sheetPayload.customer && sheetPayload.customer.fullName
       ? sheetPayload.customer.fullName
       : (row.user_name || row.guest_username || row.customer_email || 'אורח'),

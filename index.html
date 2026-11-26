@@ -700,6 +700,19 @@ html, body {
   pointer-events:none!important;
 }
 
+/* Desktop video uses the same breakpoint as the home hero and media loader. */
+@media (min-width: 701px) {
+  .home-page .hero.hero--full .hero__video {
+    display: block !important;
+    position: relative !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 1986 / 780 !important;
+    object-fit: contain !important;
+    object-position: center top !important;
+  }
+}
 /* Video hero - desktop */
 @media (min-width: 768px) {
   .home-page .hero.hero--full .hero__video {
@@ -714,7 +727,7 @@ html, body {
     filter: brightness(1.16) !important;
   }
   .home-page .desktop-hero-actions {
-    top: 74% !important;
+    top: 72.5% !important;
     left: 22.1% !important;
     width: 32.5% !important;
     gap: 7px !important;
@@ -729,12 +742,12 @@ html, body {
   }
   .home-page .desktop-hero-cta--primary {
     color: #17120a !important;
-    background: radial-gradient(ellipse 125% 190% at 50% 48%, #ffe8a4 0%, #f4cf6f 40%, #deb04c 74%, #c9952f 100%) !important;
-    border: 1px solid #f1cf77 !important;
+    background: radial-gradient(ellipse 125% 190% at 50% 48%, #f7df9a 0%, #ecc66a 40%, #d6a747 74%, #c18d2b 100%) !important;
+    border: 1px solid #e9c571 !important;
     box-shadow: 0 5px 14px rgba(0,0,0,.24) !important;
   }
   .home-page .desktop-hero-cta--primary:hover {
-    background: radial-gradient(ellipse 125% 190% at 50% 48%, #fff0bd 0%, #f8d982 40%, #e4b957 74%, #d09d38 100%) !important;
+    background: radial-gradient(ellipse 125% 190% at 50% 48%, #f8e7b3 0%, #f0d078 40%, #dcb052 74%, #c89534 100%) !important;
   }
   .home-page .desktop-hero-cta--secondary {
     color: #fff !important;
@@ -976,11 +989,13 @@ html, body {
 <!-- הירו -->
 <section class="hero hero--full" id="top" aria-label="באנר VerSans">
   <div class="hero__visual" data-hero-slider aria-live="off">
-    <img class="hero__image versans-desktop-giveaway-hero"
-         src="/images/hero-hagrala-desktop.png"
-         width="1600" height="633"
-         alt="הגרלה בכל קנייה ב-VerSans – כל קנייה באתר מכניסה אוטומטית להגרלה על 2,000 ש״ח"
-         fetchpriority="high" decoding="async">
+    <video class="hero__video" width="1986" height="780" autoplay muted loop playsinline webkit-playsinline preload="none" data-poster="/images/hero-desktop-poster.jpg" aria-hidden="true" data-versans-hero-video controlslist="nodownload noplaybackrate nofullscreen" disablepictureinpicture disableremoteplayback x-webkit-airplay="deny" tabindex="-1">
+      <source data-src="/images/hero-desktop.mp4" type="video/mp4">
+    </video>
+    <div class="desktop-hero-actions" aria-label="קישורים מהירים">
+      <a class="desktop-hero-cta desktop-hero-cta--primary" href="#shopTitle">לגלות את הקולקציה</a>
+      <a class="desktop-hero-cta desktop-hero-cta--secondary" href="#reviews">לביקורות הלקוחות</a>
+    </div>
   </div>
 </section>
 

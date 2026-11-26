@@ -1550,6 +1550,12 @@
     });
   }
 
+  function selectedShippingMethodLabel(value) {
+    if (value === 'home') return 'משלוח עד הבית';
+    if (value === 'pickup') return 'משלוח לנקודת איסוף';
+    return 'לא צוין (הזמנה ישנה)';
+  }
+
   function orderShippingAddress(shipping) {
     shipping = shipping || {};
     var first = [shipping.street, shipping.houseNumber].filter(Boolean).join(' ');
@@ -1600,6 +1606,7 @@
         ['מספר הזמנה', order.orderRef || orderRef],
         ['סטטוס', order.status === 'paid' ? 'שולם' : text(order.status)],
         ['כמות יחידות', numberFmt(order.units || 0)],
+        ['סוג משלוח שהלקוח בחר', selectedShippingMethodLabel(order.shipping && order.shipping.shippingMethod)],
         ['משלוחים', order.fulfillment && order.fulfillment.state === 'complete' ? 'הכול מחובר' : (order.fulfillment && order.fulfillment.state === 'partial' ? 'מחובר חלקית' : 'טרם חובר')]
       ].forEach(function (entry) {
         var box = make('div'); box.appendChild(make('span', '', entry[0])); box.appendChild(make('strong', '', entry[1])); overview.appendChild(box);
@@ -1618,9 +1625,10 @@
       panel.appendChild(itemsSection);
 
       var address = orderShippingAddress(order.shipping);
-      if (address || (order.shipping && order.shipping.notes)) {
+      if (order.shipping && (order.shipping.shippingMethod || address || order.shipping.notes)) {
         var shippingSection = make('section', 'admin-shipping-section admin-order-detail-address');
         shippingSection.appendChild(make('h3', '', 'פרטי משלוח'));
+        shippingSection.appendChild(make('strong', 'admin-table__strong', 'סוג משלוח: ' + selectedShippingMethodLabel(order.shipping && order.shipping.shippingMethod)));
         if (address) shippingSection.appendChild(make('p', '', address));
         if (order.shipping && order.shipping.notes) {
           var notes = make('div', 'admin-order-detail-notes'); notes.appendChild(make('span', '', 'הערות לקוח')); notes.appendChild(make('strong', '', order.shipping.notes)); shippingSection.appendChild(notes);
@@ -1678,6 +1686,8 @@
     async function load() {
       try {
         var data = await api('/api/admin/orders/' + encodeURIComponent(order.orderRef) + '/shipments');
+        var orderDetailData = await api('/api/admin/orders/' + encodeURIComponent(order.orderRef)).catch(function () { return null; });
+        var selectedShipping = orderDetailData && orderDetailData.order && orderDetailData.order.shipping;
         updateOrderFulfillmentColor(order, data);
         panel.replaceChildren();
 
@@ -1687,6 +1697,8 @@
         headText.appendChild(make('h2', '', order.orderRef));
         var close = make('button', 'admin-shipping-close', '×'); close.type = 'button'; close.addEventListener('click', closeShippingModal);
         head.append(headText, close); panel.appendChild(head);
+        panel.appendChild(make('p', 'admin-order-shipping-help',
+          'סוג משלוח שהלקוח בחר: ' + selectedShippingMethodLabel(selectedShipping && selectedShipping.shippingMethod)));
 
         var customerState = data.customerTracking || { label: 'ההזמנה בהכנה' };
         var customerPreview = make('div', 'admin-shipping-customer-preview');
@@ -3351,6 +3363,7 @@
 
     var title = make('div', 'admin-order-work-card__title');
     title.appendChild(make('strong', '', order.orderRef || 'הזמנה'));
+    title.appendChild(make('small', '', 'סוג משלוח: ' + selectedShippingMethodLabel(order.shippingMethod)));
     title.appendChild(make('small', '', (order.paidAt ? dateTime(order.paidAt) : dateTime(order.createdAt)) + ' · ' + moneyValue(order.orderTotal, order.currency)));
 
     var statusLabel = order.workState === 'green' ? 'הושלמה' : (order.workState === 'partial' ? 'חלקית' : 'ממתינה');
@@ -3435,6 +3448,7 @@
       ['שם מלא', order.customerName || customer.fullName || 'אורח'],
       ['טלפון', order.customerPhone || customer.phone || '-'],
       ['אימייל', order.customerEmail || customer.email || '-'],
+      ['סוג משלוח שהלקוח בחר', selectedShippingMethodLabel(order.shippingMethod)],
       ['כתובת מלאה', orderShippingAddress(customer) || '-'],
       ['מיקוד', customer.zip || '-'],
       ['כניסה', customer.entrance || '-'],
