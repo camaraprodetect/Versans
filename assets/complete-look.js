@@ -96,8 +96,12 @@
     return color(p.subtitle && (p.subtitle.he || p.subtitle.en) || '');
   }
   function audience(p) { var c=categories(p), t=title(p); var men=c.some(function(x){return /-men$/.test(x);}),women=c.some(function(x){return /-women$/.test(x);}); if(/לנשים/.test(t))return 'women'; if(/לגברים/.test(t))return 'men'; return men===women || c.includes('glasses-unisex')?'':(men?'men':'women'); }
-  var complements={necklaces:['bracelets','rings','watches','glasses','necklaces'],bracelets:['necklaces','rings','watches','glasses','bracelets'],watches:['bracelets','necklaces','glasses','rings'],glasses:['necklaces','bracelets','watches','hats'],rings:['bracelets','necklaces','watches','glasses'],hats:['glasses','watches','necklaces'],greeting:['bracelets','necklaces','watches','glasses'], 'photo-bracelets':['necklaces','bracelets','watches']};
+  var complements={necklaces:['bracelets','rings','watches','necklaces'],bracelets:['necklaces','rings','watches','bracelets'],watches:['bracelets','necklaces','rings'],glasses:['necklaces','bracelets','watches','rings'],rings:['bracelets','necklaces','watches'],hats:['watches','necklaces','bracelets','rings'],greeting:['bracelets','necklaces','watches','rings'], 'photo-bracelets':['necklaces','bracelets','watches']};
   var jewelry=['necklaces','bracelets','rings'];
+  // Commercial rule: only jewelry and compatible watches, never eyewear or hats.
+  function eligibleKind(p) {
+    return !categories(p).some(function(c){return /^(?:glasses|hats)(?:-|$)/i.test(c);}) && (jewelry.includes(kind(p)) || kind(p)==='watches');
+  }
   function style(p,t) {
     var k=kind(p), f=family(t), name=String(t).toLowerCase();
     var sub=String(p.subtitle && (p.subtitle.he || p.subtitle.en) || '').toLowerCase();
@@ -141,34 +145,33 @@
     var currentKind=kind(current), targets=complements[currentKind]||[], t=displayTitle||title(current), f=family(t), c=productColor(current,t), gender=audience(current), mood=style(current,t), cm=metal(c);
     var denied=new Set((excluded||[]).map(String).concat(identities(current))), seen=new Set(), chosen=[], counts=Object.create(null), limit=max==null?4:Math.max(0,max);
     var currentModel=modelKey(current,t,f), seed=identities(current)[0]||t;
-    var scored=(list||[]).filter(function(p){return p&&identities(p).length&&!identities(p).some(function(id){return denied.has(id);})&&p.hidden!==true&&p.inStock!==false&&!hidden(p,flags||{})&&image(p)&&Number(p.price)>0&&targets.includes(kind(p))&&!(gender&&audience(p)&&gender!==audience(p));}).map(function(p){
+    var scored=(list||[]).filter(function(p){return p&&identities(p).length&&!identities(p).some(function(id){return denied.has(id);})&&p.hidden!==true&&p.inStock!==false&&!hidden(p,flags||{})&&image(p)&&Number(p.price)>0&&eligibleKind(p)&&targets.includes(kind(p))&&!(gender&&audience(p)&&gender!==audience(p));}).map(function(p){
       var pt=title(p), k=kind(p), pf=family(pt), pc=productColor(p,pt), pm=metal(pc), ps=style(p,pt), model=modelKey(p,pt,pf), layering=k===currentKind, pair=(currentKind==='necklaces'&&k==='bracelets')||(currentKind==='bracelets'&&k==='necklaces');
       var match=pair&&!!f&&pf===f, sameColors=c.filter(function(x){return pc.includes(x);}).length, exactColor=c.length&&c.length===pc.length&&sameColors===c.length;
       var conflictingMetal=cm.length&&pm.length&&!cm.some(function(x){return pm.includes(x);});
       var conflictingAccent=c.length&&pc.length&&!sameColors;
-      var neutralGlasses=k==='glasses'&&(!pc.length||pc.includes('black')||/smoke|graphite|clear/.test(pt.toLowerCase()));
       // Cross-category set before any generic color or watch match. Layer only distinct models.
       if(layering&&(model===currentModel||!sameColors||conflictingMetal||styleAffinity(mood,ps)<14||(mood==='bold'&&ps==='bold')||(mood==='soft'&&ps==='soft')))return null;
-      if(conflictingMetal&&!match&&k!=='glasses')return null;
-      var colorPoints=k==='glasses'?(sameColors?10:0):(exactColor?34:sameColors*17);
-      var colorPenalty=k==='glasses'&&neutralGlasses?0:conflictingMetal?55:conflictingAccent?24:0;
-      var score=(pair?45:jewelry.includes(k)?30:k==='watches'?13:12)+styleAffinity(mood,ps)+colorPoints-colorPenalty+(neutralGlasses?18:0)+(match?110:0)-(layering?14:0);
+      if(conflictingMetal&&!match)return null;
+      var colorPoints=exactColor?34:sameColors*17;
+      var colorPenalty=conflictingMetal?55:conflictingAccent?24:0;
+      var score=(pair?45:jewelry.includes(k)?30:k==='watches'?13:12)+styleAffinity(mood,ps)+colorPoints-colorPenalty+(match?110:0)-(layering?14:0);
       if(match&&conflictingAccent)score-=55;
       if(match&&f==='curb'&&/משובצ|משובץ|iced|pav[eé]/i.test(t)!==/משובצ|משובץ|iced|pav[eé]/i.test(pt))score-=45;
       if(match&&/קלאס|classic/i.test(t)&&/קלאס|classic/i.test(pt))score+=25;
       if(match&&/משובצ|משובץ|iced|pav[eé]/i.test(t)===/משובצ|משובץ|iced|pav[eé]/i.test(pt))score+=10;
       // A stable per-product tiebreak avoids identical recommendations for every silver item.
       // It is deliberately too small to override a meaningful style or color advantage.
-      score+=(hash(seed+'|'+identities(p)[0])%1000)/1000*(k==='glasses'?16:10);
+      score+=(hash(seed+'|'+identities(p)[0])%1000)/1000*10;
       return {p:p,k:k,score:score,group:k+'|'+model,mood:ps,match:match,layering:layering};
     }).filter(Boolean).sort(function(a,b){return b.score-a.score;});
-    function allowed(e){return !seen.has(e.group)&&!e.picked&&e.score>=32&&(counts[e.k]||0)<(['watches','glasses','hats'].includes(e.k)?1:2)&&(!e.layering||!chosen.some(function(x){return x.layering;}));}
+    function allowed(e){return !seen.has(e.group)&&!e.picked&&e.score>=32&&(counts[e.k]||0)<(e.k==='watches'?1:2)&&(!e.layering||!chosen.some(function(x){return x.layering;}));}
     function pick(e){e.picked=true;seen.add(e.group);chosen.push(e);counts[e.k]=(counts[e.k]||0)+1;}
     while(chosen.length<limit){
       var eligible=scored.filter(allowed);if(!eligible.length)break;
       // Preserve the strongest true set in slot one. Subsequent slots reward a new type/style,
       // but never fill a slot with a duplicate watch or an irrelevant accessory.
-      function rank(e){var same=counts[e.k]||0;var styles=chosen.filter(function(x){return x.mood===e.mood;}).length;return e.score-(same?38:0)-styles*8+(chosen.length&&!same?12:0);}
+      function rank(e){var same=counts[e.k]||0;var styles=chosen.filter(function(x){return x.mood===e.mood;}).length;return e.score+(jewelry.includes(e.k)?12:0)-(same?38:0)-styles*8+(chosen.length&&!same?12:0);}
       eligible.sort(function(a,b){return rank(b)-rank(a);});pick(eligible[0]);
     }
     return chosen.map(function(e){return e.p;});
