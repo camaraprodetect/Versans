@@ -955,6 +955,29 @@ html, body {
       <a class="nav__feature-link nav__feature-link--reviews" href="/shop#reviews">ביקורות</a>
       <a class="nav__track-link" href="/track" aria-label="מעקב הזמנה">מעקב הזמנה</a>
     </nav>
+    <script id="versansMobileCategoryOrder">
+    (function () {
+      var menu = document.getElementById('navmenu');
+      if (!menu) return;
+      var original = Array.from(menu.children).filter(function (node) {
+        return node.hasAttribute('data-nav-cat') && node.getAttribute('data-nav-cat') !== 'all';
+      });
+      if (!original.length) return;
+      var order = ['necklaces', 'bracelets', 'watches', 'greeting', 'glasses', 'rings', 'photo-bracelets', 'hats'];
+      var mobile = original.slice().sort(function (a, b) {
+        return order.indexOf(a.getAttribute('data-nav-cat')) - order.indexOf(b.getAttribute('data-nav-cat'));
+      });
+      var end = document.createComment('category-order-end');
+      menu.insertBefore(end, original[original.length - 1].nextSibling);
+      var query = window.matchMedia('(max-width: 980px)');
+      function applyOrder() {
+        (query.matches ? mobile : original).forEach(function (node) { menu.insertBefore(node, end); });
+      }
+      applyOrder();
+      if (query.addEventListener) query.addEventListener('change', applyOrder);
+      else if (query.addListener) query.addListener(applyOrder);
+    })();
+    </script>
 
     <div class="nav__actions">
       <button class="iconbtn nav__desktop-search" type="button" data-site-search-open aria-label="חיפוש באתר">
@@ -1044,10 +1067,6 @@ html, body {
           <span class="mobile-collection-picker__image"><img src="images/mobile-collections/all.png" alt="עמוד בית" loading="lazy" decoding="async"></span>
           <span class="mobile-collection-picker__label">עמוד בית</span>
         </a>
-        <a class="mobile-collection-picker__item" href="/message-jewelry#shop" data-cat="greeting">
-          <span class="mobile-collection-picker__image"><img src="images/mobile-collections/greeting.png" alt="תכשיט עם ברכה" loading="lazy" decoding="async"></span>
-          <span class="mobile-collection-picker__label">תכשיט עם ברכה</span>
-        </a>
         <a class="mobile-collection-picker__item" href="/necklaces#shop" data-cat="necklaces">
           <span class="mobile-collection-picker__image"><img src="images/mobile-collections/necklaces.png" alt="שרשראות" loading="lazy" decoding="async"></span>
           <span class="mobile-collection-picker__label">שרשראות</span>
@@ -1056,6 +1075,18 @@ html, body {
           <span class="mobile-collection-picker__image"><img src="images/mobile-collections/bracelets.png" alt="צמידים" loading="lazy" decoding="async"></span>
           <span class="mobile-collection-picker__label">צמידים</span>
         </a>
+        <a class="mobile-collection-picker__item" href="/watches#shop" data-cat="watches">
+          <span class="mobile-collection-picker__image"><img src="images/mobile-collections/watches.png" alt="שעונים" loading="lazy" decoding="async"></span>
+          <span class="mobile-collection-picker__label">שעונים</span>
+        </a>
+        <a class="mobile-collection-picker__item" href="/message-jewelry#shop" data-cat="greeting">
+          <span class="mobile-collection-picker__image"><img src="images/mobile-collections/greeting.png" alt="תכשיט עם ברכה" loading="lazy" decoding="async"></span>
+          <span class="mobile-collection-picker__label">תכשיט עם ברכה</span>
+        </a>
+        <a class="mobile-collection-picker__item" href="/glasses#shop" data-cat="glasses">
+          <span class="mobile-collection-picker__image"><img src="images/mobile-collections/glasses.png" alt="משקפיים" loading="lazy" decoding="async"></span>
+          <span class="mobile-collection-picker__label">משקפיים</span>
+        </a>
         <a class="mobile-collection-picker__item" href="/rings#shop" data-cat="rings">
           <span class="mobile-collection-picker__image"><img src="images/mobile-collections/rings.png" alt="טבעות" loading="lazy" decoding="async"></span>
           <span class="mobile-collection-picker__label">טבעות</span>
@@ -1063,14 +1094,6 @@ html, body {
         <a class="mobile-collection-picker__item" href="/photo-bracelets#shop" data-cat="photo-bracelets">
           <span class="mobile-collection-picker__image"><img src="images/mobile-collections/photo-jewelry.png" alt="תכשיטי תמונה" loading="lazy" decoding="async"></span>
           <span class="mobile-collection-picker__label">תכשיטי תמונה</span>
-        </a>
-        <a class="mobile-collection-picker__item" href="/watches#shop" data-cat="watches">
-          <span class="mobile-collection-picker__image"><img src="images/mobile-collections/watches.png" alt="שעונים" loading="lazy" decoding="async"></span>
-          <span class="mobile-collection-picker__label">שעונים</span>
-        </a>
-        <a class="mobile-collection-picker__item" href="/glasses#shop" data-cat="glasses">
-          <span class="mobile-collection-picker__image"><img src="images/mobile-collections/glasses.png" alt="משקפיים" loading="lazy" decoding="async"></span>
-          <span class="mobile-collection-picker__label">משקפיים</span>
         </a>
         <a class="mobile-collection-picker__item" href="/hats#shop" data-cat="hats">
           <span class="mobile-collection-picker__image"><img src="images/mobile-collections/hats.png" alt="כובעים" loading="lazy" decoding="async"></span>

@@ -230,6 +230,29 @@ body:is([data-product-slug="product-285"],[data-product-slug="product-286"]) #si
       <a class="nav__feature-link nav__feature-link--reviews" href="/shop#reviews">ביקורות</a>
       <a class="nav__track-link" href="/track" aria-label="מעקב הזמנה">מעקב הזמנה</a>
     </nav>
+    <script id="versansMobileCategoryOrder">
+    (function () {
+      var menu = document.getElementById('navmenu');
+      if (!menu) return;
+      var original = Array.from(menu.children).filter(function (node) {
+        return node.hasAttribute('data-nav-cat') && node.getAttribute('data-nav-cat') !== 'all';
+      });
+      if (!original.length) return;
+      var order = ['necklaces', 'bracelets', 'watches', 'greeting', 'glasses', 'rings', 'photo-bracelets', 'hats'];
+      var mobile = original.slice().sort(function (a, b) {
+        return order.indexOf(a.getAttribute('data-nav-cat')) - order.indexOf(b.getAttribute('data-nav-cat'));
+      });
+      var end = document.createComment('category-order-end');
+      menu.insertBefore(end, original[original.length - 1].nextSibling);
+      var query = window.matchMedia('(max-width: 980px)');
+      function applyOrder() {
+        (query.matches ? mobile : original).forEach(function (node) { menu.insertBefore(node, end); });
+      }
+      applyOrder();
+      if (query.addEventListener) query.addEventListener('change', applyOrder);
+      else if (query.addListener) query.addListener(applyOrder);
+    })();
+    </script>
     <!-- Sync product-page hamburger links with category visibility from PostgreSQL.
          Use inline !important because mobile styles.css forces menu links to display. -->
     <script id="versansProductHiddenNavFix">
