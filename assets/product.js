@@ -1893,6 +1893,10 @@ async function uploadProductPhoto(blob, meta) {
     }
     if (minusBtn) minusBtn.disabled = !ready;
     if (plusBtn) plusBtn.disabled = !ready;
+    // Notify the optional styling recommendations when the actual SKU or color changes.
+    window.dispatchEvent(new CustomEvent('versans:complete-look-product', { detail: {
+      product: product, title: selectedDisplayTitle(), companionPicker: isCompanionPickerFlow()
+    } }));
   }
 
   function renderOptions() {

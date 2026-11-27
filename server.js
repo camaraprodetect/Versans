@@ -8960,6 +8960,30 @@ async function authApi(req, res, pathname, parsed) {
     if(!full||!verifyPassword(password,full.password_hash)){json(res,401,{ok:false,error:'reauth_failed'});return true;}
     await database.deleteUserPreservingReviews(sessionUser.id); json(res,200,{ok:true},{'Set-Cookie':clearSessionCookie(req)}); return true;
   }
+  // Only the current account's (or current browser guest's) purchased IDs.
+  // Never return customer data or accept a user/visitor identifier from the client.
+  if (pathname === '/api/account/purchased-product-ids' && req.method === 'GET') {
+    const user = await getCurrentUser(req, res);
+    const visitorId = getVisitorId(req);
+    // Existing database adapters accept a numeric LIMIT. Use the full history,
+    // not the 500-order display limit of the account page.
+    const limit = 2147483647;
+    const rows = user ? await database.listAccountOrders(user.id, limit) : [];
+    if (!user && visitorId && typeof database.listGuestOrders === 'function') {
+      for (const row of await database.listGuestOrders(visitorId, limit)) rows.push(row);
+    }
+    const ids = new Set();
+    for (const row of rows) {
+      if (String(row.status || '').toLowerCase() !== 'paid' || String(row.order_ref || '').startsWith('VS-DEMO-')) continue;
+      for (const item of normalizeStoredOrderItems(row.items_json, PRODUCTS)) {
+        if (item.id) ids.add(String(item.id));
+        if (item.productSlug) ids.add(String(item.productSlug));
+        if (item.slug) ids.add(String(item.slug));
+      }
+    }
+    json(res, 200, { ok: true, ids: [...ids] });
+    return true;
+  }
   if (pathname === '/api/account/orders' && req.method === 'GET') {
     const user=await getCurrentUser(req, res);
     let rows=[];
@@ -9507,7 +9531,7 @@ function injectStorefrontRouting(html, bootRoute, previewProduct) {
     .replace(/(\/?assets\/styles\.css)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261001-product-help-v1')
     .replace(/(\/?assets\/store\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261121-hidden-category-promos-v1')
     .replace(/(\/?assets\/products\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=live-' + currentCatalogVersion())
-    .replace(/(\/?assets\/product\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261003-all-color-identity-v48')
+    .replace(/(\/?assets\/product\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261128-complete-look-v1')
     .replace(/(\/?assets\/cart-drawer\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261004-cart-checkout-fix-v64')
     .replace(/(\/?assets\/cart-state\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261003-all-color-identity-v48')
     .replace(/(\/?assets\/site-header\.js)(?:\?v=[^"'\s>]+)?/g, '$1?v=20261121-hidden-category-promos-v1')
