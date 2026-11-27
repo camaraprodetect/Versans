@@ -83,11 +83,18 @@ test('protected admin shell is served for approved admin routes', async () => {
   let running;
   try {
     running = await runServer(fixture);
-    for (const route of ['/admin', '/admin/sales', '/admin/products', '/admin/reviews']) {
+    for (const route of ['/admin', '/admin/sales', '/admin/products', '/admin/product-links', '/admin/reviews']) {
       const response = await fetch(running.baseUrl + route, { headers: adminHeaders(fixture.token), redirect: 'manual' });
       assert.equal(response.status, 200, route);
       assert.equal(response.headers.get('cache-control'), 'no-store');
       assert.match(await response.text(), /id="adminContent"/);
+    }
+    const privateLinks = await fetch(running.baseUrl + '/api/admin/product-links');
+    assert.equal(privateLinks.status,403);
+    if(!process.env.GOOGLE_PRODUCT_LINKS_SERVICE_ACCOUNT_JSON){
+      const missing = await fetch(running.baseUrl + '/api/admin/product-links',{headers:adminHeaders(fixture.token)});
+      assert.equal(missing.status,503);
+      assert.equal((await missing.json()).error,'product_sheet_not_configured');
     }
     const removedTraffic = await fetch(running.baseUrl + '/admin/traffic', { headers: adminHeaders(fixture.token), redirect: 'manual' });
     assert.equal(removedTraffic.status, 404);

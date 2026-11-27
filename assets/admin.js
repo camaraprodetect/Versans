@@ -156,6 +156,7 @@
     arrivals: ['הגעת הזמנות', 'מה הגיע, מה חסר וקליטה לפי הסריקות הקיימות'],
     anomalies: ['הזמנות חריגות', 'זיהוי הזמנות כפולות, סכומים לא סבירים וניסיונות תשלום חוזרים'],
     products: ['ניהול מוצרים', 'הוספה, עריכה, מחיקה וסנכרון קטלוג עם Google Sheets'],
+    'product-links': ['קישורי מוצרים', 'תצוגה חיה של גיליון קישורי המוצרים'],
     marketing: ['שיווק ומבצעים','קופונים, מבצעי כמות, פופ־אפים, באנרים וקמפיינים'],
     creators: ['יוצרי תוכן', 'ניהול הרשאות, קודי יוצרים ומכירות'],
     customers: ['לקוחות', 'משתמשים רשומים, רכישות והוצאות מצטברות'],
@@ -223,7 +224,7 @@
       return 'order-work';
     }
 
-    var match = /^\/admin\/(security|visitors|sales|income|expenses|order-work|arrivals|anomalies|products|marketing|customers|reviews|creators|support|tasks|reports|employees)$/.exec(path);
+    var match = /^\/admin\/(security|visitors|sales|income|expenses|order-work|arrivals|anomalies|products|product-links|marketing|customers|reviews|creators|support|tasks|reports|employees)$/.exec(path);
     return match ? match[1] : 'dashboard';
   }
 
@@ -3495,7 +3496,7 @@
       var itemOrderRef = sheetItem.itemOrderRef || item.itemOrderRef || '';
       if (itemOrderRef) itemTitle.appendChild(make('small', 'admin-order-work-item__ref', itemOrderRef));
 
-      var productLinkTop = orderWorkLink(sheetItem.productLink || item.productLink || '', 'קישור מוצר ↗');
+      var productLinkTop = orderWorkLink(item.productLinkLive ? item.productLink : (sheetItem.productLink || item.productLink || ''), 'קישור מוצר ↗');
       top.append(checkWrap, thumb, itemTitle, productLinkTop);
       row.appendChild(top);
 
@@ -3508,7 +3509,7 @@
       details.appendChild(orderWorkField('סה״כ שורה', moneyValue(sheetItem.lineTotal != null ? sheetItem.lineTotal : item.lineTotal, order.currency)));
       details.appendChild(orderWorkField('תאריך הזמנה', sheetItem.orderDate || (order.paidAt ? dateTime(order.paidAt) : dateTime(order.createdAt))));
       details.appendChild(orderWorkField('מספר הזמנה למוצר', sheetItem.itemOrderRef || item.itemOrderRef || '-'));
-      details.appendChild(orderWorkField('קישור מוצר', orderWorkLink(sheetItem.productLink || item.productLink || '', 'פתיחת מוצר ↗')));
+      details.appendChild(orderWorkField('קישור מוצר', orderWorkLink(item.productLinkLive ? item.productLink : (sheetItem.productLink || item.productLink || ''), 'פתיחת מוצר ↗')));
       row.appendChild(details);
 
       /* Only product-specific fields that actually belong to this product. */
@@ -4375,7 +4376,7 @@
     var title=make('div');title.appendChild(make('h2','','ניהול קטלוג'));title.appendChild(make('p','',catalogItemsCache.length+' מוצרים בחנות · עריכה, הוספה ומחיקה עם עדכון מיידי באתר'));
     var buttons=make('div','admin-catalog-heading-actions');buttons.appendChild(catalogButton('+ הוסף מוצר','admin-catalog-primary',function(){openCatalogEditor(null)}));
     var sync=catalogButton('סנכרן לגיליון','',async function(){sync.disabled=true;try{var res=await apiAction('/api/admin/catalog/sync','POST',{});await renderProductsPage();if((res.pendingSheetIds||[]).length)alert('יש עדיין '+res.pendingSheetIds.length+' מוצרים הממתינים לסנכרון. יש לבדוק את הגדרת Webhook.');}catch(err){alert(err.message)}finally{sync.disabled=false}});
-    buttons.appendChild(sync);head.append(title,buttons);wrap.appendChild(head);
+    buttons.appendChild(sync);buttons.appendChild(catalogButton('קישורי מוצרים','',function(){window.location.href='/admin/product-links';}));head.append(title,buttons);wrap.appendChild(head);
     var info=make('p','admin-catalog-hint', result.sheetConfigured?'שינויים נשמרים במסד הנתונים ונשלחים לגיליון "קישורי מוצרים".':'שינויים בחנות נשמרים. כדי לעדכן גם את Google Sheets, יש להגדיר GOOGLE_PRODUCTS_WEBHOOK_URL ו-GOOGLE_PRODUCTS_WEBHOOK_SECRET ב-Render.');wrap.appendChild(info);
     wrap.appendChild(renderCategoryVisibilityManager(result));
     var search=make('input','admin-catalog-search');search.type='search';search.placeholder='חיפוש לפי שם מוצר, מזהה, מק"ט או קטגוריה';search.value=catalogSearchText;search.setAttribute('aria-label','חיפוש מוצרים');
@@ -4588,6 +4589,30 @@
       }catch(e){status.textContent=e.message;}
     }
     selector.onchange=load;area.append(title,hint,selector,inputs,save,verification,status);if(products.length)await load();return area;
+  }
+
+  async function renderProductLinksPage() {
+    if (!hasCapability('products.edit')) throw new Error('permission_denied');
+    var sheetUrl='https://docs.google.com/spreadsheets/d/1R027x8Di2X7Rbf-3NnZz_tbESlgx9o0pzl1kgvCpKoQ/edit?gid=1810220923#gid=1810220923';
+    var panel=make('section','admin-catalog-section product-links-panel');
+    var head=make('div','admin-catalog-heading');
+    var title=make('div');title.append(make('h2','','קישורי מוצרים'),make('p','','הנתונים מוצגים מהגיליון המקורי לפי סדר השורות. לעריכה מלאה, פתחו את Google Sheets.'));
+    var actions=make('div','admin-catalog-heading-actions');
+    var back=make('a','admin-catalog-btn','חזרה למוצרים');back.href='/admin/products';
+    var open=make('a','admin-catalog-btn admin-catalog-primary','פתיחה ועריכה ב-Google Sheets ↗');open.href=sheetUrl;open.target='_blank';open.rel='noopener noreferrer';
+    var refresh=catalogButton('רענון נתונים','',function(){load();});actions.append(back,open,refresh);head.append(title,actions);
+    var status=make('p','admin-catalog-hint','טוען את הגיליון…');status.setAttribute('role','status');
+    var filter=make('input','admin-catalog-search');filter.type='search';filter.placeholder='חיפוש לפי מספר או שם מוצר';filter.setAttribute('aria-label','חיפוש בקישורי מוצרים');
+    var scroller=make('div','product-links-scroll');var table=make('table','product-links-grid');table.setAttribute('dir','rtl');
+    var thead=make('thead'),header=make('tr');['#','מספר מוצר','שם מוצר','קישור מוצר','תמונת מוצר'].forEach(function(label){var th=make('th','',label);th.scope='col';header.appendChild(th);});thead.appendChild(header);var tbody=make('tbody');table.append(thead,tbody);scroller.appendChild(table);
+    panel.append(head,status,filter,scroller);content.replaceChildren(panel);
+    var rows=[], fingerprint=null, busy=false;
+    function safeUrl(value){try{var u=new URL(value);return u.protocol==='https:'&&!u.username&&!u.password?u.href:'';}catch(e){return '';}}
+    function draw(){var q=filter.value.trim().toLowerCase();var fragment=document.createDocumentFragment();rows.forEach(function(row){if(q&&!(row.id+' '+row.name+' '+row.row).toLowerCase().includes(q))return;var tr=make('tr');tr.append(make('td','product-links-row-number',String(row.row)),make('td','',row.id),make('td','',row.name));var linkCell=make('td'),url=safeUrl(row.link);if(url){var a=make('a','',row.linkLabel||'קישור מוצר');a.href=url;a.target='_blank';a.rel='noopener noreferrer';linkCell.appendChild(a);}else{linkCell.textContent=row.linkLabel||'—';}var imageCell=make('td'),image=safeUrl(row.image);if(image){var img=make('img');img.src=image;img.alt=row.name||'תמונת מוצר';img.loading='lazy';img.referrerPolicy='no-referrer';imageCell.appendChild(img);}tr.append(linkCell,imageCell);fragment.appendChild(tr);});tbody.replaceChildren(fragment);}
+    async function load(){if(busy||!panel.isConnected)return;busy=true;refresh.disabled=true;try{var data=await api('/api/admin/product-links');if(!panel.isConnected)return;var next=JSON.stringify(data.rows||[]);if(next!==fingerprint){rows=data.rows||[];fingerprint=next;draw();}status.textContent=rows.length+' שורות · עדכון אחרון '+new Date(data.fetchedAt).toLocaleTimeString('he-IL')+' · רענון אוטומטי';}catch(err){if(!panel.isConnected)return;status.textContent=(err.code==='product_sheet_not_configured'||err.message==='product_sheet_not_configured')?'נדרש חיבור קריאה מאומת של Google Sheets בשרת. אפשר לפתוח את הגיליון המקורי באמצעות הכפתור למעלה.':'לא ניתן לרענן כרגע את הגיליון. '+(fingerprint?'מוצגים הנתונים מהעדכון המוצלח האחרון.':'אפשר לפתוח את הגיליון המקורי.');}finally{busy=false;refresh.disabled=false;}}
+    filter.addEventListener('input',draw);
+    var timer=setInterval(function(){if(!panel.isConnected){clearInterval(timer);return;}if(!document.hidden)load();},20000);
+    await load();
   }
 
   async function renderProductsPage() {
@@ -5172,7 +5197,7 @@
     var meta = pageMeta[state.page] || pageMeta.dashboard;
     setPageMeta(meta[0], meta[1]);
     Array.prototype.forEach.call(document.querySelectorAll('[data-admin-page]'), function (link) {
-      link.classList.toggle('is-active', link.dataset.adminPage === state.page);
+      link.classList.toggle('is-active', link.dataset.adminPage === state.page || (state.page==='product-links' && link.dataset.adminPage==='products'));
     });
     if (!options.keepContent) setLoading();
     var version = ++state.requestVersion;
@@ -5187,6 +5212,7 @@
       else if (state.page === 'arrivals') await window.VersansAdminArrivals.render(content,{canEdit:hasCapability('orders.edit')});
       else if (state.page === 'anomalies') await window.VersansAnomalies.render(content);
       else if (state.page === 'products') await renderProductsPage();
+      else if (state.page === 'product-links') await renderProductLinksPage();
       else if (state.page === 'creators') await renderCreatorsPage();
       else if (state.page === 'marketing') await window.VersansAdminMarketing.render(content,hasCapability('marketing.edit'));
       else if (state.page === 'customers') await renderCustomersPage();

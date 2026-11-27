@@ -17,6 +17,7 @@ const { createAdminReporting, SENSITIVE_TYPES, SOURCE_PERMISSIONS } = require('.
 const reportExport = require('./lib/report-export.js');
 const { createFinanceLedger } = require('./lib/finance-ledger.js');
 const employeePolicy = require('./lib/employee-access.js');
+const liveProductLinks = require('./lib/live-product-links.js');
 const orderAnomalies = require('./lib/admin-order-anomalies.js');
 const { createPaymentUrl, verifyPayment, priceOrder } = require('./api/_hyp.js');
 const { assessVerifiedPayment, hasUniquePaymentReturnFields } = require('./lib/payment-verification.js');
@@ -85,7 +86,7 @@ const ADMIN_PUSH_DEVICE_TTL_MS = 365 * 24 * 60 * 60 * 1000;
 const ADMIN_PUSH_VAPID_PUBLIC_META_KEY = 'admin_push_vapid_public_v1';
 const ADMIN_PUSH_VAPID_PRIVATE_META_KEY = 'admin_push_vapid_private_jwk_v1';
 const ADMIN_PUSH_TIMEOUT_MS = 10 * 1000;
-const ADMIN_PAGES = new Set(['security', 'tasks', 'reports', 'expenses', 'income', '', 'dashboard', 'visitors', 'sales', 'orders', 'order-work', 'arrivals', 'anomalies', 'products', 'customers', 'reviews', 'creators', 'employees', 'marketing', 'support']);
+const ADMIN_PAGES = new Set(['security', 'tasks', 'reports', 'expenses', 'income', '', 'dashboard', 'visitors', 'sales', 'orders', 'order-work', 'arrivals', 'anomalies', 'products', 'product-links', 'customers', 'reviews', 'creators', 'employees', 'marketing', 'support']);
 const BODY_LIMIT = 48 * 1024 * 1024;
 const REVIEW_IMAGE_LIMIT = 2 * 1024 * 1024;
 const REVIEW_VIDEO_LIMIT = 20 * 1024 * 1024;
@@ -3089,6 +3090,7 @@ async function syncGoogleSheetOrderStatus(order, completed) {
 
 async function adminOrderWorkPayload(row, prefetchedStates = null) {
   const sheetPayload = buildPaidOrderPayload(row);
+  await liveProductLinks.applyLiveProductLinks(sheetPayload.items);
   const states = Array.isArray(prefetchedStates)
     ? prefetchedStates
     : (typeof database.listOrderWorkItems === 'function'
@@ -5399,6 +5401,17 @@ async function adminApi(req, res, pathname, parsed) {
     (hasAdminPermission(admin,'products.description')||hasAdminPermission(admin,'products.price'));
   if (admin && pathname !== '/api/admin/employees/me' && !adminCanAccess(admin, pathname, req.method) && !scopedProductWrite && !scopedBulkWrite) {
     json(res, 403, { ok: false, error: 'permission_denied' });
+    return true;
+  }
+  if (pathname === '/api/admin/product-links' && req.method === 'GET') {
+    if (!admin || !hasAdminPermission(admin,'products.edit')) { json(res,403,{ok:false,error:'permission_denied'}); return true; }
+    try {
+      const data=await liveProductLinks.loadProductLinks();
+      json(res,200,{ok:true,...data},{'Cache-Control':'no-store'});
+    } catch (error) {
+      const code=String(error.message||'');
+      json(res,503,{ok:false,error:code==='product_sheet_not_configured'?code:'product_sheet_unavailable'},{'Cache-Control':'no-store'});
+    }
     return true;
   }
   // Password step-up is bound to the currently authenticated HttpOnly session,

@@ -1504,3 +1504,17 @@ button,input,textarea,select,a{font:inherit}.admin-app{display:grid;grid-templat
 .admin-catalog-inline-reauth p{margin:0;font-size:13px;line-height:1.7}
 .admin-catalog-inline-reauth input{width:100%;max-width:430px;box-sizing:border-box;border:1px solid #bccbd5;border-radius:9px;padding:12px;font:inherit;background:#fff;color:#142333}
 .admin-catalog-inline-reauth-actions{display:flex;gap:10px;flex-wrap:wrap}
+
+/* Live Google product links: isolated admin grid. */
+.product-links-panel .admin-catalog-heading-actions a{text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+.product-links-panel .admin-catalog-search{margin:12px 0;max-width:420px;width:100%}
+.product-links-scroll{max-height:72vh;overflow:auto;border:1px solid #d6dbdf;border-radius:8px;overscroll-behavior:contain}
+.product-links-grid{border-collapse:separate;border-spacing:0;width:100%;min-width:650px;text-align:center;font-size:14px}
+.product-links-grid th,.product-links-grid td{padding:10px;border-inline-end:1px solid #d6dbdf;border-bottom:1px solid #d6dbdf;vertical-align:middle}
+.product-links-grid th{position:sticky;top:0;z-index:1;background:#e9edf0;color:#17212a;font-weight:700}
+.product-links-grid td:nth-child(3){min-width:180px;text-align:start}
+.product-links-grid td:nth-child(5){width:380px;min-width:180px}
+.product-links-grid td img{width:min(100%,380px);height:auto;aspect-ratio:1;object-fit:contain;display:block;margin:auto;background:#fff}
+.product-links-grid a{color:#2774c9;text-decoration:underline;overflow-wrap:anywhere}
+.product-links-row-number{font-size:12px;opacity:.7}
+@media(max-width:620px){.product-links-grid{min-width:580px}.product-links-grid td:nth-child(5){width:180px}.product-links-scroll{max-height:65vh}}

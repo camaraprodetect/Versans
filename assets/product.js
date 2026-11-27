@@ -2581,8 +2581,8 @@ async function uploadProductPhoto(blob, meta) {
       var imgs = galleryImages();
       if (imgs.length < 2) return;
 
-      // In RTL a left swipe moves forward through the image list.
-      var nextIndex = dx < 0 ? activeImageIndex + 1 : activeImageIndex - 1;
+      // RTL gallery: a rightward swipe reveals the next image on the left.
+      var nextIndex = dx > 0 ? activeImageIndex + 1 : activeImageIndex - 1;
       if (nextIndex < 0) nextIndex = imgs.length - 1;
       if (nextIndex >= imgs.length) nextIndex = 0;
       showGalleryImage(nextIndex);
