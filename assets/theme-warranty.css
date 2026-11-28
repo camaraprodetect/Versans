@@ -1,0 +1,23 @@
+/* Dark storefront palette. Original styles remain authoritative for layout and light mode. */
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .brand__sr{border:0!important;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) body{background:#15171a;color:#e4e6e9;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) a{color:inherit;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .warranty-topbar{background:#090a0b;color:#fff;border-bottom:1px solid rgba(255,255,255,.08);}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .warranty-back,:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .warranty-policy-link{color:#f4f4f4;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .warranty-card{border:1px solid #333840;background:#15171a;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .warranty-card.soft{background:#191b1d;border-color:transparent;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .card-number{color:#c6c8cb;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .warranty-card p,:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .warranty-card li{color:#dadcdf;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .card-badge{color:#cacccf;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .important{color:#e2e4e7;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .care-strip{background:#0c0e10;color:#fff;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .care-strip p{color:#d4d7d9;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .care-point{border:1px solid rgba(51,56,64,0.14);background:rgba(255,255,255,.05);}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .claim{border:1px solid #333840;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .claim p{color:#d2d4d8;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .claim-step{background:#191b1d;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .btn{border:1px solid #666e78;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .btn.primary{background:#111;color:#fff;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .btn.secondary{background:#15171a;color:#e4e6e9;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .legal-note{background:#17191c;color:#d1d3d6;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .warranty-footer{color:#cbcdd0;}

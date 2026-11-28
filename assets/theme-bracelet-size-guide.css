@@ -1,0 +1,11 @@
+/* Dark storefront palette. Original styles remain authoritative for layout and light mode. */
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .brand__sr{border:0!important;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) body{background:#15171a;color:#e3e5e8;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) a{color:inherit;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .size-video-card::after{border:4px solid #333840;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .size-card{border:1px solid #333840;background:#15171a;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .size-card--soft{background:#181a1d;border-color:transparent;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .bracelet-sizes{color:#dadcdf;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .measure-step p{color:#dbdde0;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .measure-final{border-top:1px solid #333840;color:#dfe1e4;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .size-footer{color:#cbcdd0;}

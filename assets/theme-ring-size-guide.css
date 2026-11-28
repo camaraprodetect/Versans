@@ -1,0 +1,20 @@
+/* Dark storefront palette. Original styles remain authoritative for layout and light mode. */
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .brand__sr{border:0!important;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) body{background:#15171a;color:#e3e5e8;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) a{color:inherit;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .topbar{background:#090a0b;color:#fff;border-bottom:1px solid rgba(255,255,255,.08);}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .topbar__back,:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .topbar__warranty{color:#f5f5f5;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .card{border:1px solid #333840;background:#15171a;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .card--soft{background:#181a1c;border-color:transparent;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .step__n{background:#111;color:#fff;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .step p{color:#dadcdf;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .measure-tip{background:#3f351c;border:1px solid #a78c35;color:#dbdde0;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .table-wrap{border:1px solid #333840;background:#15171a;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) th,:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) td{border-bottom:1px solid #333840;border-left:1px solid #333840;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) th:last-child,:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) td:last-child{border-left:0;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) tr:last-child td{border-bottom:0;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) thead th{background:#462e20;color:#e4e6e9;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) tbody tr:nth-child(even) td{background:#181a1d;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) tbody tr:nth-child(odd) td{background:#15171a;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .table-note{color:#cfd1d4;}
+:where(html[data-versans-theme="dark"]:not(.vs-a11y-high-contrast)) .footer{color:#cbcdd0;}
